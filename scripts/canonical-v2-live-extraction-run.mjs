@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 /**
- * scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs
+ * scripts/canonical-v2-live-extraction-run.mjs
  *
  * GENERAL LIVE-EXTRACTION RUNNER: any registered section family, against any
  * deal whose source is committed and pinned. Originally written narrowly for
- * one scope-corrected Modiv/Global Net Lease TERMINATION_FEE re-run (see the
- * "ORIGINAL MODIV RUN" section below for the history that name still
- * reflects); generalised because almost nothing about it actually was
- * Modiv- or TERMINATION_FEE-specific. The extraction engine underneath
+ * one scope-corrected Modiv/Global Net Lease TERMINATION_FEE re-run, as
+ * `canonical-v2-modiv-termination-fee-scope-correction-run.mjs` (see the
+ * "ORIGINAL MODIV RUN" section below for that history); generalised because
+ * almost nothing about it actually was Modiv- or TERMINATION_FEE-specific.
+ * The old name was left in place through that generalisation -- purely to
+ * avoid re-touching this file's Phase 1 authority-boundary classification --
+ * which was the wrong trade: a script run against all 25 families under a
+ * name claiming one scope correction for one deal is a misleading provenance
+ * record, not a cosmetic mismatch. Renamed to this path once that was
+ * corrected, with the classification re-done properly rather than skipped
+ * (see phase1-authority-boundary-inventory.js's LIVE_EXTRACTION_RUN_SOURCES
+ * comment for that side of it). The extraction engine underneath
  * (`runNativeExtraction`) already resolves its producer prompt through
  * `getProducerPromptModule(section_family)` against a registry of 25
  * families (`listRegisteredSectionFamilies()`); the only things that were
@@ -98,7 +106,7 @@
  * this run exists partly to report.
  *
  * Usage:
- *   node scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs \
+ *   node scripts/canonical-v2-live-extraction-run.mjs \
  *     [--deal <deal id registered in DEAL_PINS, default "modiv">] \
  *     [--family <registered section_family, default "TERMINATION_FEE">] \
  *     [--raw-html <path, default: the deal's own pinned source path>] \
@@ -109,6 +117,7 @@
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
  *     [--model <claude CLI model alias, default "sonnet">] \
  *     [--no-follow-citations] \
+ *     [--call-timeout-ms <positive integer, default 600000>] \
  *     [--dry-run]
  *
  * --follow-citations dispatches an extra single-section call for each
@@ -128,6 +137,7 @@ import {
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
@@ -140,7 +150,13 @@ const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admi
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
-const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+// V38, not V34. The runner sat on V34 while the resolver dispatch table and
+// claim definitions for three antitrust assertion kinds had already landed in
+// V38, so every one of those candidates fell out as open world for want of a
+// governed home that existed. Replaying the committed antitrust run with V38
+// gives all eleven a home, two resolving and nine queueing honestly, with no
+// change to anything that already resolved.
+const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   getProducerPromptModule, listRegisteredSectionFamilies,
@@ -164,6 +180,21 @@ const {
 
 const DEFAULT_DEAL = 'modiv';
 const DEFAULT_FAMILY = 'TERMINATION_FEE';
+
+/**
+ * This script's own path, relative to the current working directory --
+ * derived from `import.meta.url`, never hard-coded. `run-manifest.json`'s
+ * `script` field is a provenance record of which script produced it: a
+ * literal string here is exactly the trap this file's own filename fell
+ * into once already (generalised without being renamed, so every manifest
+ * it wrote kept naming a one-off scope correction it no longer was). Deriving
+ * it means a future rename of this file keeps every manifest it writes
+ * afterwards accurate automatically, with nothing to remember to update.
+ */
+function scriptRelativePath() {
+  const absolutePath = fileURLToPath(import.meta.url);
+  return absolutePath.includes(process.cwd()) ? absolutePath.slice(process.cwd().length + 1) : absolutePath;
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // DEAL_PINS -- the ONE place a deal identifier is mapped to its expected
@@ -251,6 +282,7 @@ function parseArgs(argv) {
     agreementDate: null,
     agreementDateGiven: false,
     followCitations: true,
+    timeoutMs: null,
     dryRun: false,
     outDir: null,
   };
@@ -266,6 +298,13 @@ function parseArgs(argv) {
       case '--model': out.model = argv[++i]; break;
       case '--follow-citations': out.followCitations = true; break;
       case '--no-follow-citations': out.followCitations = false; break;
+      case '--call-timeout-ms': {
+        const raw = argv[++i];
+        const parsed = Number.parseInt(raw, 10);
+        if (!Number.isFinite(parsed) || parsed <= 0) throw new Error(`--call-timeout-ms must be a positive integer, got ${JSON.stringify(raw)}`);
+        out.timeoutMs = parsed;
+        break;
+      }
       case '--dry-run': out.dryRun = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
@@ -623,7 +662,7 @@ function makeMeasuredCliClient({
         const sectionReference = orderedSectionRefs[callIndex] || `unknown-call-${callIndex}`;
         const prompt = flattenMessages(params);
         const startedAt = Date.now();
-        const rawCliOutput = await runClaudeCli(prompt, { model });
+        const rawCliOutput = await runClaudeCli(prompt, { model, ...(config.timeoutMs ? { timeoutMs: config.timeoutMs } : {}) });
         const wallClockMs = Date.now() - startedAt;
         const parsed = JSON.parse(rawCliOutput);
         if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
@@ -749,7 +788,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV34();
+  const contractBundle = compileFixtureContractV38();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -848,7 +887,7 @@ async function main() {
 
   writeFileSync(resolve(outDir, 'run-manifest.json'), JSON.stringify({
     schema_version: 'GENERAL_EXTRACTION_RUN_MANIFEST/V1',
-    script: 'scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs',
+    script: scriptRelativePath(),
     deal: config.deal,
     deal_label: config.dealPin.label || null,
     section_family: config.family,
@@ -857,7 +896,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV34',
+    contract_bundle_version: 'compileFixtureContractV38',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,
@@ -900,6 +939,7 @@ export {
   DEAL_PINS,
   DEFAULT_DEAL,
   DEFAULT_FAMILY,
+  scriptRelativePath,
   parseArgs,
   resolveRunConfig,
   resolvePromptVersionInfo,

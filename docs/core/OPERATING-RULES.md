@@ -14,13 +14,22 @@ Branch: `codex/m3-production-phase1`. Worktree:
 routes locally and on Vercel preview deployments is permitted. Also since
 2026-08-05, **running extraction to produce Canonical V2 data is permitted**
 (see "Extraction authorised for Canonical V2 production", below, for its
-exact limits). Everything else stays prohibited regardless of those
-carve-outs:
+exact limits).
+
+Since 2026-08-06, **importing canonical data is permitted in principle**. Ben
+ruled directly, in response to being told the import path was still prohibited:
+"I have NOT kept the import path prohibited." That ruling removes the
+authority objection, and nothing more. It does not grant any of the other
+carve-outs below, and in particular it does not grant production data access
+or real credentials, so an import can be built and proved offline or against a
+non-production database, and running one against production remains a separate
+act needing its own explicit authorisation. See lane D's import steps.
+
+Everything else stays prohibited regardless of those carve-outs:
 
 - production activation of any route;
 - accessing or changing production data;
 - using real credentials or a real production database client;
-- importing candidate data;
 - executing the v1 reclassification apply (only "go, fixtures first" is
   authorised; the execution act itself is not);
 - issuing a freeze, policy-adoption, successor-M1 PASS, M3 PASS,
@@ -554,6 +563,47 @@ These govern how work is done on this programme, independent of which step
 is in progress. They are standing methodology, not one-off decisions like
 the rulings above.
 
+### A file's header comment is part of the change
+
+**When you change what a module does, update its header comment in the same
+change.** Not afterwards, not in a follow-up. The header is the first thing the
+next reader believes, and it is believed more readily than a document, because
+it sits inside the code and therefore looks authoritative.
+
+This rule exists because of a specific and expensive failure on 2026-08-06.
+`lib/canonical-v2/native-producer/section-family-classifier.js` said in its own
+header, "This is the ONLY stage-1 rule this slice ports". True when written.
+Twenty-five more rules were added by later work and nobody touched the
+sentence. That header was then read, believed, and used as the basis for
+telling the owner that automatic section classification did not scale, and that
+every family would have to be mapped to sections by hand across forty
+agreements. None of it was true. The module classifies all twenty-six families,
+and the scaling problem described to him did not exist.
+
+The same class of error had already been found twenty-eight times across this
+programme's documents by a separate audit. That audit's conclusion applies here
+unchanged: prose cannot detect its own staleness, and a hardcoded claim inside
+a JavaScript file is prose that happens to live in a source tree.
+
+Concretely:
+
+- **Never state what code does from its comment.** Read the code. Before
+  telling anyone "this module only handles X", count the cases.
+- **A count in a header is a liability.** "The only rule", "these two cases",
+  "three families". Writing one is a promise to maintain it. Prefer describing
+  the shape, for example "one rule per family, each added in that family's own
+  reviewed change", which stays true as rules are added.
+- **Keep the reasoning, correct the specifics.** Headers in this codebase are
+  unusually good at explaining why a thing is as it is, which is worth more
+  than the specifics. Where the argument still holds but the numbers have
+  moved, fix the numbers and keep the argument.
+- **History is fine when marked as history.** "Ported verbatim from X so that Y
+  never happens" should stay. What must not stay is a past-tense fact written
+  in the present tense.
+- **The same duty applies to documents naming code.** A document naming a file,
+  function or count is making a checkable claim and owns keeping it true. Where
+  a command can produce the answer, cite the command rather than the answer.
+
 ### Delegating to agents
 
 Learned the hard way on 2026-08-05, when five agents failed in one session and
@@ -723,18 +773,21 @@ of them.
 
 | Document | Owns | Editable |
 | --- | --- | --- |
-| `docs/codex-program/OPERATING-RULES.md` | This file. Authority, rulings, architectural decisions, conventions | Freely |
+| `docs/core/OPERATING-RULES.md` | This file. Authority, rulings, architectural decisions, conventions | Freely |
 | `docs/codex-program/ROADMAP.md` | The sequence to publication, decisions needed, open risks, current state | Freely |
 | `docs/codex-program/WORK-COMPLETED.md` | History. Append-only | Freely |
 | `docs/codex-program/adversarial-tests.md` | The register of adversarial testing and what it found | **Governed, see below** |
 
-**Five stubs.** `MASTER-PLAN.md`, `ROADMAP-TO-PUBLICATION.md`,
-`CANONICAL-V2-ACTIVATION-PACKAGE.md`, `ADR-001-dark-bridge-flattening-is-scaffolding.md`
-and `docs/handoffs/CODEX-TO-CLAUDE-HANDOFF-2026-08-04.md` are superseded pointers.
-They are kept only because commit messages and other sessions reference them by
-path. Do not add content to them. The handoff stub additionally carries the
-authority boundary at its top, so a session that reads only that file cannot
-infer more authority than it has.
+**Five stubs.** `archive/MASTER-PLAN.md`, `archive/ROADMAP-TO-PUBLICATION.md`,
+`archive/CANONICAL-V2-ACTIVATION-PACKAGE.md`,
+`archive/ADR-001-dark-bridge-flattening-is-scaffolding.md`
+and `docs/archive/handoffs/CODEX-TO-CLAUDE-HANDOFF-2026-08-04.md` are superseded
+pointers, moved into `archive/` on 2026-08-06 along with the rest of the
+repository's unused root-level documents. They are kept, not deleted, because
+commit messages and other sessions reference them by name. Do not add content
+to them. The handoff stub additionally carries the authority boundary at its
+top, so a session that reads only that file cannot infer more authority than
+it has.
 
 **Full historical detail** beyond what `WORK-COMPLETED.md` condenses is in commit
 `59568f92`, which holds the original 3,629-line handoff. Recover it with

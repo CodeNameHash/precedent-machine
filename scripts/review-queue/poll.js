@@ -19,7 +19,7 @@ function parseArgs(argv = process.argv.slice(2)) {
 
 function handoffPath(options = {}) {
   const root = options.root || process.env.REVIEW_QUEUE_ROOT || process.cwd();
-  return options.handoffFile || path.join(root, 'HANDOFF.md');
+  return options.handoffFile || path.join(root, 'archive', 'HANDOFF.md');
 }
 
 function parseResolutionLine(line) {

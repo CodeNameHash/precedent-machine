@@ -1,0 +1,403 @@
+{
+  "baseline_taken_at_commit": "bff5cd28f4eafa07be52a5f5d0a75a88a00554ae",
+  "correction": "Regenerated 2026-08-06. The first version judged a run complete on resolution.json alone, which wrongly counted NO_OTHER_REPS_FRAUD as healthy: it produces a resolution and then dies inside validation. It also recorded CAPITALISATION as merely lacking a summary when it had in fact timed out at 600 seconds. Completeness is now judged on the last stage, not the first, so the incomplete count is four rather than three.",
+  "runs": 25,
+  "incomplete": 4,
+  "totals": {
+    "resolved": 108,
+    "queued": 203,
+    "open_world": 193
+  },
+  "review_queue_reasons_ranked": [
+    {
+      "reason": "TERMINATING_PARTY_REF_NOT_IN_QUOTE",
+      "count": 12
+    },
+    {
+      "reason": "CLAUSE_LABEL_NOT_IN_QUOTE",
+      "count": 12
+    },
+    {
+      "reason": "TRIGGER_UNCORROBORATED",
+      "count": 10
+    },
+    {
+      "reason": "PROXY_MEETING_KIND_UNCORROBORATED",
+      "count": 6
+    },
+    {
+      "reason": "CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE",
+      "count": 5
+    },
+    {
+      "reason": "CONSULTATION_RIGHT_UNCORROBORATED",
+      "count": 4
+    },
+    {
+      "reason": "DNO_KIND_UNCORROBORATED",
+      "count": 4
+    },
+    {
+      "reason": "MEETING_REF_NOT_IN_QUOTE",
+      "count": 4
+    },
+    {
+      "reason": "ASSERTION_KIND_UNCORROBORATED",
+      "count": 3
+    },
+    {
+      "reason": "NO_SHOP_PREREQUISITE_UNCORROBORATED",
+      "count": 3
+    },
+    {
+      "reason": "FILING_REGIME_NOT_SINGLE_NAMED_REGIME",
+      "count": 2
+    },
+    {
+      "reason": "OBLIGOR_SCOPE_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "OBLIGOR_REF_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "NO_SHOP_ACTION_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "TERMINATING_PARTY_REF_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "AMBIGUOUS_TRIGGER_CORROBORATION",
+      "count": 2
+    },
+    {
+      "reason": "MAE_CARVEOUT_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "FILING_TIMING_STANDARD_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "STRATEGY_CONTROL_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "NO_MONEY_LITERAL",
+      "count": 1
+    },
+    {
+      "reason": "RATIO_CONTEXT_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "PER_SHARE_CONTEXT_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "YEAR_COUNT_UNRESOLVED",
+      "count": 1
+    },
+    {
+      "reason": "PERCENT_UNRESOLVED",
+      "count": 1
+    },
+    {
+      "reason": "NO_SHOP_PERIOD_ROLE_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "STANDSTILL_ACTION_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "AMBIGUOUS_PROXY_MEETING_KIND",
+      "count": 1
+    },
+    {
+      "reason": "NO_DAY_COUNT",
+      "count": 1
+    },
+    {
+      "reason": "CONTROL_PARTY_REF_NOT_IN_QUOTE",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_KIND_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_CORROBORATION_DISAGREES",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_NOT_ASSERTED",
+      "count": 1
+    }
+  ],
+  "per_family": [
+    {
+      "dir": "modiv-antitrust-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 10,
+      "queued": 22,
+      "open_world": 11,
+      "reasons": {
+        "CONSULTATION_RIGHT_UNCORROBORATED": 4,
+        "FILING_REGIME_NOT_SINGLE_NAMED_REGIME": 2,
+        "OBLIGOR_SCOPE_UNCORROBORATED": 2,
+        "OBLIGOR_REF_UNCORROBORATED": 2,
+        "FILING_TIMING_STANDARD_UNCORROBORATED": 1,
+        "STRATEGY_CONTROL_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-appraisal-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-capitalisation-20260806",
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
+    },
+    {
+      "dir": "modiv-closing-conditions-20260806",
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
+    },
+    {
+      "dir": "modiv-consideration-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 1,
+      "queued": 4,
+      "open_world": 20,
+      "reasons": {
+        "NO_MONEY_LITERAL": 1,
+        "RATIO_CONTEXT_UNCORROBORATED": 1,
+        "PER_SHARE_CONTEXT_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-dividends-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-dno-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 4,
+      "queued": 10,
+      "open_world": 7,
+      "reasons": {
+        "DNO_KIND_UNCORROBORATED": 4,
+        "YEAR_COUNT_UNRESOLVED": 1,
+        "PERCENT_UNRESOLVED": 1
+      }
+    },
+    {
+      "dir": "modiv-employee-matters-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-financing-covenants-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 3,
+      "open_world": 2,
+      "reasons": {
+        "ASSERTION_KIND_UNCORROBORATED": 3
+      }
+    },
+    {
+      "dir": "modiv-general-covenants-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 12,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-guaranty-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-interim-operating-20260806",
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
+    },
+    {
+      "dir": "modiv-key-defined-terms-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 15,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-material-contracts-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 5,
+      "queued": 5,
+      "open_world": 26,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-merger-structure-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 20,
+      "queued": 20,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-misc-boilerplate-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 14,
+      "queued": 14,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-no-other-reps-20260806",
+      "status": "INCOMPLETE",
+      "failed_stage": "VALIDATION"
+    },
+    {
+      "dir": "modiv-no-shop-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 42,
+      "queued": 52,
+      "open_world": 9,
+      "reasons": {
+        "NO_SHOP_ACTION_UNCORROBORATED": 2,
+        "NO_SHOP_PREREQUISITE_UNCORROBORATED": 3,
+        "NO_SHOP_PERIOD_ROLE_UNCORROBORATED": 1,
+        "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD_UNCORROBORATED": 2,
+        "RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED": 1,
+        "STANDSTILL_ACTION_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-proxy-meeting-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 13,
+      "open_world": 8,
+      "reasons": {
+        "AMBIGUOUS_PROXY_MEETING_KIND": 1,
+        "PROXY_MEETING_KIND_UNCORROBORATED": 6,
+        "MEETING_REF_NOT_IN_QUOTE": 4,
+        "NO_DAY_COUNT": 1,
+        "CONTROL_PARTY_REF_NOT_IN_QUOTE": 1
+      }
+    },
+    {
+      "dir": "modiv-representations-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 28,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-specific-performance-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-tax-matters-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 11,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-termination-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 1,
+      "queued": 16,
+      "open_world": 13,
+      "reasons": {
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE": 12,
+        "TERMINATING_PARTY_REF_UNCORROBORATED": 2,
+        "TRIGGER_KIND_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-termination-fee-citation-following-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 9,
+      "queued": 23,
+      "open_world": 20,
+      "reasons": {
+        "AMBIGUOUS_TRIGGER_CORROBORATION": 2,
+        "TRIGGER_CORROBORATION_DISAGREES": 1,
+        "TRIGGER_UNCORROBORATED": 10,
+        "TRIGGER_NOT_ASSERTED": 1
+      }
+    },
+    {
+      "dir": "topbuild-mae-definition-20260806",
+      "status": "COMPLETE",
+      "failed_stage": null,
+      "resolved": 2,
+      "queued": 21,
+      "open_world": 2,
+      "reasons": {
+        "CLAUSE_LABEL_NOT_IN_QUOTE": 12,
+        "MAE_CARVEOUT_UNCORROBORATED": 2,
+        "CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE": 5
+      }
+    }
+  ]
+}

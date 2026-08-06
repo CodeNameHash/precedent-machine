@@ -12,6 +12,20 @@
  * 4. Creates provision records with AI annotations
  *
  * Requires: ANTHROPIC_API_KEY and Supabase env vars (loaded from .env.local)
+ *
+ * CURRENTLY NON-FUNCTIONAL END-TO-END. This is a Feb 2026-era prototype
+ * (one of this repo's earliest commits), hardcoded to four named deals
+ * (d1-d4: Broadcom/VMware, Microsoft/Activision Blizzard, Pfizer/Seagen,
+ * Amgen/Horizon Therapeutics) and calling `POST /api/ingest/agreement`.
+ * That route is now unconditionally hard-503'd by
+ * lib/broad-corpus-containment.js (see docs/API-ROUTE-CLASSIFICATION.md) --
+ * every call this script makes will fail with a contained-route error, not
+ * silently succeed. `scripts/ingest-local.js` / `pages/api/ingest/
+ * from-url.js` are the current, supported ingestion path for any deal, not
+ * just these four. This file is still cited in
+ * lib/admin/processing-flow-stages.js's "Ingest" stage file list alongside
+ * from-url.js, which reads as current when it is not -- flagging here since
+ * that file is outside this pass's scope to correct.
  */
 
 const fs = require('fs');

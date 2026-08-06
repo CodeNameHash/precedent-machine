@@ -24,7 +24,7 @@
      REP-B count        >= 5    (--min-rep-b)
      DEF count          >= 40   (--min-def)
      COND count (M+B+S) >= 8    (--min-cond)
-     coverage %          >= 85   (--min-coverage)
+     coverage %          >= 95   (--min-coverage)
      unverified quotes  == 0
      duplicate clauses  == 0
      canonical rate     >= 0.70
@@ -32,6 +32,25 @@
    IOC, NOSOL, TERMR and TERMF are counted and printed for visibility but are
    not gated — the corpus doesn't yet have a settled expectation for them the
    way it does for reps/defs/conditions/coverage/trust.
+
+   TWO MORE GATE GROUPS run and can each independently fail the overall
+   PASS/FAIL, beyond the counts/coverage/trust checks above (see
+   evaluateDealMetadataGates / evaluateClaimsGates):
+     - deal metadata: buyer_display, value, consideration_type, buyer_profile,
+       signing_date must all be populated on the deal row (staging deals are
+       exempt — printed but not counted). advisors_found / law_firms_found
+       are informational only.
+     - claims (additive, SPEC-MECHANICAL-HARDENING-2026-07-23 part B):
+       --min-claims-when-coded (default 1) — a deal with ANY coded-taxonomy
+       feature must have at least this many `claims` rows, which in practice
+       means "provision_cards materialization ran for this deal" (see
+       scripts/curation/mint-cards.js / scripts/demo-dryrun.js's KNOWN
+       PIPELINE GAP note — production ingest does not mint cards on its own,
+       so this check is what actually catches a freshly-ingested deal that
+       nobody materialized yet); --min-coded-card-coverage (default 0.95) —
+       of coded provisions that DO have a matched card, what fraction have a
+       claim. Both skip (never fail) if the claims/provision_cards tables
+       are themselves unreachable (pre-claims-schema database).
 
    Read-only against `deals`/`provisions`. Creds from env / .env.local, same
    pattern as scripts/taxonomy-report.js.

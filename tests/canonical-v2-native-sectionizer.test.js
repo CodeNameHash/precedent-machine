@@ -792,10 +792,9 @@ test('the last section in a document terminates correctly: Modiv 8.12 ends exact
 // Pre-fix, "(z)" silently claimed the ENTIRE remainder of Section 8.12
 // (32,137 bytes, ending exactly where "8.12" itself ends), and every
 // definition after it, including "(gg)" "Parent Base Amount" and "(vv)"
-// "Parent Termination Fee", the two references
-// docs/codex-program/notes/citation-scope-design.md and
-// scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs both
-// name explicitly, existed in the tree only as an ever-deeper phantom
+// "Parent Termination Fee", the two references docs/codex-program/notes/
+// citation-scope-design.md and scripts/canonical-v2-live-extraction-run.mjs
+// both name explicitly, existed in the tree only as an ever-deeper phantom
 // reference ("8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)" for "(gg)"), never under
 // its own printed name.
 test('regression: Modiv 8.12(gg)/8.12(vv) resolve once the outer lettered list is tracked past its 26th entry, "(z)" no longer swallows the rest of Section 8.12', () => {

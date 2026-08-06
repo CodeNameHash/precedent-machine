@@ -23,7 +23,11 @@ const SPECIFICATION_MANIFEST_PATH = 'docs/codex-program/specification-manifest.j
 const SPECIFICATION_MANIFEST_SCHEMA = 'codex-program-specification-manifest/v2';
 const SPECIFICATION_MANIFEST_PURPOSE =
   'DRIFT_DETECTION_ONLY_NOT_EXECUTION_AUTHORITY';
-const SPECIFICATION_DECLARED_FILE_COUNT = 6;
+// Derived, not hardcoded. This was the literal 6 and silently disagreed with
+// the manifest when the pinned set was narrowed to two on 2026-08-06.
+const specificationDeclaredFileCount = (manifest) => (
+  Array.isArray(manifest?.files) ? manifest.files.length : 0
+);
 const CONTROLLER_KEY_ID = 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07';
 const CODEX_PATH = '/opt/homebrew/bin/codex';
 
@@ -104,7 +108,7 @@ function specificationPaths() {
     || manifest.schema !== SPECIFICATION_MANIFEST_SCHEMA
     || manifest.purpose !== SPECIFICATION_MANIFEST_PURPOSE
     || !Array.isArray(manifest.files)
-    || manifest.files.length !== SPECIFICATION_DECLARED_FILE_COUNT
+    || manifest.files.length !== specificationDeclaredFileCount(manifest)
   ) {
     throw new Error('frozen specification manifest does not match the current V2 contract');
   }

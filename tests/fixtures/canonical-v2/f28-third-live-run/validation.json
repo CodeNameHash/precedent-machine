@@ -8,6 +8,33 @@
     },
     "excerpts": [
       {
+        "absolute_end": 57975,
+        "absolute_start": 57930,
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "closure_id": "5c08fb7aa8ea0c6fc9a322d8fa1e0f928ab83ae89f49deb5a925a8e468034074",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "exact_bytes_digest": "0908d8b4cfe8a9820d34e820bd1b2cd4e7f80e59fb246d756a72c5c2a13caa3f",
+        "exact_text": "as of the close of business on April 17, 2026",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "2b39270107a4768c1ade6f67b95b1570683475bd5e93e1f0809a3c34c580683d",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "d0a136fba1f3be15793c859c7390c2ac0d8cb0028981e92efb8386512d0d93da"
+          }
+        ],
+        "output_text_hash": "0908d8b4cfe8a9820d34e820bd1b2cd4e7f80e59fb246d756a72c5c2a13caa3f",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "92f21d175dedbcdb03259899c0b58c6c6cdf5c56e0aa0dedcb8f1d1ebb24c1f8",
+        "source_occurrence_id": "3d973050f68c705dbf202d9a75b9ecc5c79f9cbff52248345914b23fee52d559",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      },
+      {
         "absolute_end": 58179,
         "absolute_start": 58158,
         "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
@@ -90,8 +117,8 @@
         "attributes": {
           "answer_provenance": {
             "pins": {
-              "mapping_table_version": 3,
-              "qualifier_kind_lexicon_version": 1
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
             },
             "tag": "MECHANICAL"
           },
@@ -119,8 +146,8 @@
         "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
         "claim_definition_version": 1,
         "claim_occurrence_id": "e551eb6f8fe4eeb1b61eab78199a4ab415c1b4b20a441dc4e53c46b441f8e467",
-        "claim_revision_id": "77630b2819d496044f04eec92c4730c4c940ca967cf1ee4c2ab2ad68e6384bb6",
-        "closure_id": "14259753020c6c680b1af8313208adc61d72f210e41939cd0d27adab9085f378",
+        "claim_revision_id": "68817d7d134b0aee47a240d3c0da9a11cda6a73613d1512f74a2915226776d2b",
+        "closure_id": "ad128a4eea76ebcad99c6cb68bbdf77ed49ec76ed86725072b2c91993d7c6749",
         "day_basis": null,
         "denominator": null,
         "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
@@ -182,10 +209,10 @@
   },
   "residuals": [
     {
-      "residual_id": "6c061ad08e4d673b82f5f2c3fd4611fba673a0b803ae5aad43501f857c7bfad3",
+      "residual_id": "8c71fbe849dde226c532c3feb648af4904b87b3aa0df5d2d6554f823dc0996ee",
       "source_kind": "claims",
-      "source_object_id": "6c94cb6c93ea01cf51d462b60a1b7028125df85c39a426a4f54441e0f1150d77",
-      "closure_id": "9498f71e8a2c2b90e06964e0984d9544daa9b3650aca89668403e3a1cf8f1369",
+      "source_object_id": "3051529f0fb823566d1c90ce4f169633d53dd23b1ab87f53238cc511e46db5eb",
+      "closure_id": "e118a2de102f22ba69e0cc2662b01d5eaaf30360646b0ca6772c9cc327edce74",
       "reason_code": "SEMANTIC_REFERENCE_UNRESOLVED",
       "contract_key": null,
       "upstream_residual": null,
@@ -194,8 +221,90 @@
         "attributes": {
           "answer_provenance": {
             "pins": {
-              "mapping_table_version": 3,
-              "qualifier_kind_lexicon_version": 1
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "attachment": {
+            "ambiguity_signals": {
+              "comma_before_qualifier": false,
+              "in_each_case_language": null,
+              "items_grammatically_parallel": true,
+              "single_clause_language": null
+            },
+            "governs_path": [
+              "(i)",
+              "(A)"
+            ],
+            "position": "ITEM",
+            "readings": null,
+            "scope_reading": "THIS_ITEM_ONLY"
+          },
+          "comparability": "NOT_COMPARABLE",
+          "deterministic_kind": "TEMPORAL",
+          "enrichment_state": "UNENRICHED",
+          "measurement_date_resolution": "CALENDAR",
+          "party_making": "the Company",
+          "qualifier_kind": "TEMPORAL",
+          "section_reference": "3.1(b)"
+        },
+        "canonical_value": "2026-04-17",
+        "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "bc3cb1c2412f6eaf59877dfdb87b8e94853a24d39547c928b0306ad0919abe39",
+        "claim_revision_id": "3051529f0fb823566d1c90ce4f169633d53dd23b1ab87f53238cc511e46db5eb",
+        "closure_id": "e118a2de102f22ba69e0cc2662b01d5eaaf30360646b0ca6772c9cc327edce74",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 57975,
+            "absolute_start": 57930,
+            "claim_evidence_id": "382981f2f8d465570e9c7092c2dfd752edfec107e8883776af1024a768fd5fe3",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2b39270107a4768c1ade6f67b95b1570683475bd5e93e1f0809a3c34c580683d",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "382981f2f8d465570e9c7092c2dfd752edfec107e8883776af1024a768fd5fe3"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "as of the close of business on April 17, 2026",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "899c69f0d3de1dc3ed7e1bad0fa79fda6894a06b683cd03a947b101f2064a033",
+        "taxonomy_codes": {},
+        "unit": null
+      }
+    },
+    {
+      "residual_id": "e01cfa922973721f4e9f2307292e6b7e46fff7d386a6f7af33a9bc856df71535",
+      "source_kind": "claims",
+      "source_object_id": "2092b3a7265c1b8c5152f7d667fb69eab2bd7ff5983289978eef0503e70f6b5e",
+      "closure_id": "ad50a89b65e3152a7503f5425940fa09ed410b187e722b62d5a189e05e68da9b",
+      "reason_code": "SEMANTIC_REFERENCE_UNRESOLVED",
+      "contract_key": null,
+      "upstream_residual": null,
+      "source_object": {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
             },
             "tag": "MECHANICAL"
           },
@@ -226,8 +335,8 @@
         "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
         "claim_definition_version": 1,
         "claim_occurrence_id": "0e54d1cf2c9881bfacd9fdb14c0f51e578a531198c9e61d8ac1fcf9878ac5d7b",
-        "claim_revision_id": "6c94cb6c93ea01cf51d462b60a1b7028125df85c39a426a4f54441e0f1150d77",
-        "closure_id": "9498f71e8a2c2b90e06964e0984d9544daa9b3650aca89668403e3a1cf8f1369",
+        "claim_revision_id": "2092b3a7265c1b8c5152f7d667fb69eab2bd7ff5983289978eef0503e70f6b5e",
+        "closure_id": "ad50a89b65e3152a7503f5425940fa09ed410b187e722b62d5a189e05e68da9b",
         "day_basis": null,
         "denominator": null,
         "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
@@ -262,191 +371,24 @@
         "taxonomy_codes": {},
         "unit": null
       }
-    },
-    {
-      "residual_id": "351156095eedf8900c1f935989c4f5c8c72a46f8791dc2ab563ce9fda4495674",
-      "source_kind": "claims",
-      "source_object_id": "2cb72d2938734eeff4ff60e5765adbb0ea89b064f101ec0ce0c8e14c0e76cf99",
-      "closure_id": "0521b7ac5f7a3046037af50740c79a56e0e1538ddd9ebec5278a03e1e4b4a64e",
-      "reason_code": "SEMANTIC_REFERENCE_UNRESOLVED",
-      "contract_key": null,
-      "upstream_residual": null,
-      "source_object": {
-        "applicability": null,
-        "attributes": {
-          "answer_provenance": {
-            "pins": {
-              "mapping_table_version": 3,
-              "qualifier_kind_lexicon_version": 1
-            },
-            "tag": "MECHANICAL"
-          },
-          "attachment": {
-            "ambiguity_signals": {
-              "comma_before_qualifier": false,
-              "in_each_case_language": null,
-              "items_grammatically_parallel": false,
-              "single_clause_language": null
-            },
-            "governs_path": [
-              "(i)"
-            ],
-            "position": "ITEM",
-            "readings": null,
-            "scope_reading": "THIS_ITEM_ONLY"
-          },
-          "comparability": "NOT_COMPARABLE",
-          "deterministic_kind": "TEMPORAL",
-          "enrichment_state": "UNENRICHED",
-          "measurement_date_resolution": "CALENDAR",
-          "party_making": "the Company",
-          "qualifier_kind": "TEMPORAL",
-          "section_reference": "3.1(b)"
-        },
-        "canonical_value": "2026-04-17",
-        "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
-        "claim_definition_version": 1,
-        "claim_occurrence_id": "152c0d73bf8af4a7a86521c88a695a4636fc1b2fe7ed0df07e5ce0006f34b284",
-        "claim_revision_id": "2cb72d2938734eeff4ff60e5765adbb0ea89b064f101ec0ce0c8e14c0e76cf99",
-        "closure_id": "0521b7ac5f7a3046037af50740c79a56e0e1538ddd9ebec5278a03e1e4b4a64e",
-        "day_basis": null,
-        "denominator": null,
-        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-        "evidence": [
-          {
-            "absolute_end": 58320,
-            "absolute_start": 58299,
-            "claim_evidence_id": "63882735e28e36156e5f5246db1386e98142ea2f934a4436d96668334c4e8175",
-            "document_ordinal": 0,
-            "evidence_role": "OPERATIVE_TEXT",
-            "excerpt_id": "c77183e88f0348e22335e003195b64f16ed9cf5133823abe16476d27ee6a288f",
-            "ordinal": 0,
-            "schema_version": "CLAIM_EVIDENCE/V1"
-          }
-        ],
-        "evidence_ids": [
-          "63882735e28e36156e5f5246db1386e98142ea2f934a4436d96668334c4e8175"
-        ],
-        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-        "failure": null,
-        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-        "not_examined": null,
-        "ordinal": 0,
-        "publication_state": "VALIDATED",
-        "quarantine": null,
-        "raw_value": "As of April 17, 2026,",
-        "retained_residuals": [],
-        "schema_version": "CLAIM_REVISION/V1",
-        "scope": null,
-        "state": "PRESENT",
-        "subject_occurrence_id": "c509628d417aac441200627d015243c229f52307bed82e2305a63957f56918fc",
-        "taxonomy_codes": {},
-        "unit": null
-      }
     }
   ],
   "quarantines": [
     {
-      "quarantine_id": "53fc0fd7dbcfd87a6215786dd6396e741bcef8bb52d08be412b5e0b8e66c6ddb",
+      "quarantine_id": "b52e0a0ba6740178b8c86be4b685fa4097bfca12465e5463fe689e6f1fd7c1b9",
       "reason_code": "UNRESOLVED_RESIDUAL",
-      "closure_id": "0521b7ac5f7a3046037af50740c79a56e0e1538ddd9ebec5278a03e1e4b4a64e",
+      "closure_id": "ad50a89b65e3152a7503f5425940fa09ed410b187e722b62d5a189e05e68da9b",
       "affected_objects": [
         {
           "kind": "claims",
-          "object_id": "2cb72d2938734eeff4ff60e5765adbb0ea89b064f101ec0ce0c8e14c0e76cf99",
+          "object_id": "2092b3a7265c1b8c5152f7d667fb69eab2bd7ff5983289978eef0503e70f6b5e",
           "source_object": {
             "applicability": null,
             "attributes": {
               "answer_provenance": {
                 "pins": {
-                  "mapping_table_version": 3,
-                  "qualifier_kind_lexicon_version": 1
-                },
-                "tag": "MECHANICAL"
-              },
-              "attachment": {
-                "ambiguity_signals": {
-                  "comma_before_qualifier": false,
-                  "in_each_case_language": null,
-                  "items_grammatically_parallel": false,
-                  "single_clause_language": null
-                },
-                "governs_path": [
-                  "(i)"
-                ],
-                "position": "ITEM",
-                "readings": null,
-                "scope_reading": "THIS_ITEM_ONLY"
-              },
-              "comparability": "NOT_COMPARABLE",
-              "deterministic_kind": "TEMPORAL",
-              "enrichment_state": "UNENRICHED",
-              "measurement_date_resolution": "CALENDAR",
-              "party_making": "the Company",
-              "qualifier_kind": "TEMPORAL",
-              "section_reference": "3.1(b)"
-            },
-            "canonical_value": "2026-04-17",
-            "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
-            "claim_definition_version": 1,
-            "claim_occurrence_id": "152c0d73bf8af4a7a86521c88a695a4636fc1b2fe7ed0df07e5ce0006f34b284",
-            "claim_revision_id": "2cb72d2938734eeff4ff60e5765adbb0ea89b064f101ec0ce0c8e14c0e76cf99",
-            "closure_id": "0521b7ac5f7a3046037af50740c79a56e0e1538ddd9ebec5278a03e1e4b4a64e",
-            "day_basis": null,
-            "denominator": null,
-            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-            "evidence": [
-              {
-                "absolute_end": 58320,
-                "absolute_start": 58299,
-                "claim_evidence_id": "63882735e28e36156e5f5246db1386e98142ea2f934a4436d96668334c4e8175",
-                "document_ordinal": 0,
-                "evidence_role": "OPERATIVE_TEXT",
-                "excerpt_id": "c77183e88f0348e22335e003195b64f16ed9cf5133823abe16476d27ee6a288f",
-                "ordinal": 0,
-                "schema_version": "CLAIM_EVIDENCE/V1"
-              }
-            ],
-            "evidence_ids": [
-              "63882735e28e36156e5f5246db1386e98142ea2f934a4436d96668334c4e8175"
-            ],
-            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-            "failure": null,
-            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-            "not_examined": null,
-            "ordinal": 0,
-            "publication_state": "VALIDATED",
-            "quarantine": null,
-            "raw_value": "As of April 17, 2026,",
-            "retained_residuals": [],
-            "schema_version": "CLAIM_REVISION/V1",
-            "scope": null,
-            "state": "PRESENT",
-            "subject_occurrence_id": "c509628d417aac441200627d015243c229f52307bed82e2305a63957f56918fc",
-            "taxonomy_codes": {},
-            "unit": null
-          }
-        }
-      ],
-      "residual_ids": [
-        "351156095eedf8900c1f935989c4f5c8c72a46f8791dc2ab563ce9fda4495674"
-      ]
-    },
-    {
-      "quarantine_id": "406dbc657311ce7625af9c23d908f2bc1c2e772a73309f08fec9f6d65b2f8bfe",
-      "reason_code": "UNRESOLVED_RESIDUAL",
-      "closure_id": "9498f71e8a2c2b90e06964e0984d9544daa9b3650aca89668403e3a1cf8f1369",
-      "affected_objects": [
-        {
-          "kind": "claims",
-          "object_id": "6c94cb6c93ea01cf51d462b60a1b7028125df85c39a426a4f54441e0f1150d77",
-          "source_object": {
-            "applicability": null,
-            "attributes": {
-              "answer_provenance": {
-                "pins": {
-                  "mapping_table_version": 3,
-                  "qualifier_kind_lexicon_version": 1
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
                 },
                 "tag": "MECHANICAL"
               },
@@ -477,8 +419,8 @@
             "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
             "claim_definition_version": 1,
             "claim_occurrence_id": "0e54d1cf2c9881bfacd9fdb14c0f51e578a531198c9e61d8ac1fcf9878ac5d7b",
-            "claim_revision_id": "6c94cb6c93ea01cf51d462b60a1b7028125df85c39a426a4f54441e0f1150d77",
-            "closure_id": "9498f71e8a2c2b90e06964e0984d9544daa9b3650aca89668403e3a1cf8f1369",
+            "claim_revision_id": "2092b3a7265c1b8c5152f7d667fb69eab2bd7ff5983289978eef0503e70f6b5e",
+            "closure_id": "ad50a89b65e3152a7503f5425940fa09ed410b187e722b62d5a189e05e68da9b",
             "day_basis": null,
             "denominator": null,
             "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
@@ -516,16 +458,103 @@
         }
       ],
       "residual_ids": [
-        "6c061ad08e4d673b82f5f2c3fd4611fba673a0b803ae5aad43501f857c7bfad3"
+        "e01cfa922973721f4e9f2307292e6b7e46fff7d386a6f7af33a9bc856df71535"
+      ]
+    },
+    {
+      "quarantine_id": "92fdc051df29cd9a4585d0a769be93de639f2da58132cf22cc11cfda7bfba966",
+      "reason_code": "UNRESOLVED_RESIDUAL",
+      "closure_id": "e118a2de102f22ba69e0cc2662b01d5eaaf30360646b0ca6772c9cc327edce74",
+      "affected_objects": [
+        {
+          "kind": "claims",
+          "object_id": "3051529f0fb823566d1c90ce4f169633d53dd23b1ab87f53238cc511e46db5eb",
+          "source_object": {
+            "applicability": null,
+            "attributes": {
+              "answer_provenance": {
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                },
+                "tag": "MECHANICAL"
+              },
+              "attachment": {
+                "ambiguity_signals": {
+                  "comma_before_qualifier": false,
+                  "in_each_case_language": null,
+                  "items_grammatically_parallel": true,
+                  "single_clause_language": null
+                },
+                "governs_path": [
+                  "(i)",
+                  "(A)"
+                ],
+                "position": "ITEM",
+                "readings": null,
+                "scope_reading": "THIS_ITEM_ONLY"
+              },
+              "comparability": "NOT_COMPARABLE",
+              "deterministic_kind": "TEMPORAL",
+              "enrichment_state": "UNENRICHED",
+              "measurement_date_resolution": "CALENDAR",
+              "party_making": "the Company",
+              "qualifier_kind": "TEMPORAL",
+              "section_reference": "3.1(b)"
+            },
+            "canonical_value": "2026-04-17",
+            "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+            "claim_definition_version": 1,
+            "claim_occurrence_id": "bc3cb1c2412f6eaf59877dfdb87b8e94853a24d39547c928b0306ad0919abe39",
+            "claim_revision_id": "3051529f0fb823566d1c90ce4f169633d53dd23b1ab87f53238cc511e46db5eb",
+            "closure_id": "e118a2de102f22ba69e0cc2662b01d5eaaf30360646b0ca6772c9cc327edce74",
+            "day_basis": null,
+            "denominator": null,
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "absolute_end": 57975,
+                "absolute_start": 57930,
+                "claim_evidence_id": "382981f2f8d465570e9c7092c2dfd752edfec107e8883776af1024a768fd5fe3",
+                "document_ordinal": 0,
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2b39270107a4768c1ade6f67b95b1570683475bd5e93e1f0809a3c34c580683d",
+                "ordinal": 0,
+                "schema_version": "CLAIM_EVIDENCE/V1"
+              }
+            ],
+            "evidence_ids": [
+              "382981f2f8d465570e9c7092c2dfd752edfec107e8883776af1024a768fd5fe3"
+            ],
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "failure": null,
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "not_examined": null,
+            "ordinal": 0,
+            "publication_state": "VALIDATED",
+            "quarantine": null,
+            "raw_value": "as of the close of business on April 17, 2026",
+            "retained_residuals": [],
+            "schema_version": "CLAIM_REVISION/V1",
+            "scope": null,
+            "state": "PRESENT",
+            "subject_occurrence_id": "899c69f0d3de1dc3ed7e1bad0fa79fda6894a06b683cd03a947b101f2064a033",
+            "taxonomy_codes": {},
+            "unit": null
+          }
+        }
+      ],
+      "residual_ids": [
+        "8c71fbe849dde226c532c3feb648af4904b87b3aa0df5d2d6554f823dc0996ee"
       ]
     }
   ],
   "quarantinedClosureIds": [
-    "0521b7ac5f7a3046037af50740c79a56e0e1538ddd9ebec5278a03e1e4b4a64e",
-    "9498f71e8a2c2b90e06964e0984d9544daa9b3650aca89668403e3a1cf8f1369"
+    "ad50a89b65e3152a7503f5425940fa09ed410b187e722b62d5a189e05e68da9b",
+    "e118a2de102f22ba69e0cc2662b01d5eaaf30360646b0ca6772c9cc327edce74"
   ],
   "counts": {
-    "publishable": 4,
+    "publishable": 5,
     "residuals": 2,
     "quarantinedClosures": 2
   }

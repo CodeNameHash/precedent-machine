@@ -606,8 +606,8 @@ test('citation-following: resolution.relationships bundles are concatenated into
     resolution: {
       // citingProvision itself is supplied here exactly as a real caller
       // supplies every OTHER resolved claim's own provision_instance (see
-      // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs,
-      // `provisionsById = new Map(resolution.resolved.map((entry) => [...,
+      // scripts/canonical-v2-live-extraction-run.mjs, `provisionsById = new
+      // Map(resolution.resolved.map((entry) => [...,
       // entry.provision_instance]))`) -- citation-following mints a NEW
       // relationship, not a new claim, so it does not appear in
       // resolution.resolved itself, but the provision it names as its

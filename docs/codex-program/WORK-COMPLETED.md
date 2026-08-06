@@ -79,8 +79,29 @@ not" from "would not have a Material Adverse Effect") produced an
 accepted, "verbatim" quote with the opposite legal meaning. It mattered
 because this is the worst class of error a product like this can produce:
 confidently wrong, with no visible signal to the reader. Crude trimming is
-now blocked everywhere; the negation case specifically remains open and is
-tracked in the roadmap's known risks, with its fix designed as step 1b.
+now blocked everywhere for the truncation, mid-word-slice and
+arbitrary-substring shapes; the negation case specifically remained open.
+
+**Correction, 2026-08-06.** The sentence that stood here previously claimed
+this open case was "tracked in the roadmap's known risks, with its fix
+designed as step 1b." That was false. No step 1b, and no roadmap entry
+naming this defect, existed anywhere; confirmed independently twice, once
+by a documentation audit (`docs/codex-program/notes/doc-reality-audit.md`,
+finding F27) and once more directly for this correction, both by full-text
+search of `ROADMAP.md`. See `docs/codex-program/notes/negation-
+reversal.md` for the investigation that replaced the false claim with a
+real one: the gap was proved open by construction, against real filed
+merger-agreement text, at the live production quote-verification path
+(`lib/verification.js`, the function `lib/parser-v2/store.js` actually
+calls at ingestion) and at the representations-dark-bridge.js preview
+surface, and closed at both. What is still open, and why, is recorded
+there rather than claimed fixed here: the same gap in
+`no-other-reps-fraud-dark-bridge.js` was attempted, found to need a more
+careful fix than first tried, and deliberately reverted rather than
+shipped half-right; and the more principled fix, an offset captured before
+any trim can happen, belongs in `candidate-resolution.js` and is specified
+there, not implemented, because that file was outside this task's
+permitted scope.
 
 ### A gate-ordering defect, found the same way twice
 

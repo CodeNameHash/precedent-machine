@@ -5,44 +5,49 @@
   "source_byte_length": 412860,
   "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
   "requested_section_references": [
-    "III-INTRO(b)"
+    "3.1(b)"
   ],
   "resolved_sections": [
     {
-      "section_reference": "III-INTRO(b)",
-      "section_id": "77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7",
-      "parent_section_id": "6e7bc343be6f5d106a396f83e68fc0508e88db58a70af4a19f3a0f90cd3064ba",
+      "section_reference": "3.1(b)",
+      "section_id": "66f01432485170a2d87fffaf6139e0b7f6c6dd380bfdc0550f76c2bad4dba418",
+      "parent_section_id": "cce25267ae203fd4ba8138dc98f503bd973a70c8513b1b92b7755d850615a4f5",
       "kind": "SUBSECTION",
       "depth": 3,
       "start": 57763,
       "end": 62446,
       "text_sha256": "ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487",
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
       "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
-      "prompt_version": 4,
-      "prompt_digest": "acf52c4c8f229a60c20ff06516044e6fbb51c609a695330c5aa298949a15e1b2",
+      "prompt_version": 5,
+      "prompt_digest": "20831596350788ba51ee2abf005c85915c1ddaae413a9d7a57d818f6e34cd14e",
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
-        "provider_id": "native-producer-anthropic/v1",
-        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
-        "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-        "input_scope_digest": "d661a9c1d29699bb3c9407c7730e301e54860d65d81d10a3c4dd17ace1474285",
-        "proposal_count": 37,
+        "provider_id": "f28-third-live-run-rederivation-replay/v1",
+        "model_id": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+        "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+        "input_scope_digest": "f8cf9453b64c1172ab1908f573e83044cd3ec3907f0b8389b991684b78199631",
+        "proposal_count": 38,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c"
+        "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64"
       }
     }
   ],
   "compiled_candidates": [
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -94,30 +99,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "206002a765cd5d5eba9a1174e2cb6f26152ec711e08dd7bd2af3c65f9c830bb8"
+          "closure_id": "f72280df5f84223d55e1ce75de093e921a71b327e4084e3765b91915e5c7177c"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -170,30 +178,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "7ec6ef38a8d6b66bb6b48b32d813bf1642f6466fee5571c8041bc50270aa60fe"
+          "closure_id": "d877983e6dd53c5b0b59df0fbc62d2050c9198ad57030f479089a66c017dcb0c"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -246,30 +257,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "3e0ca2109043920cf37b6f6e095aadd006f109c25561e2753eb0644361fbcd24"
+          "closure_id": "52f806073cc547325a3f11cd8c0ad6ab8c6dd2e11f9be8b8609512f087becd09"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -321,30 +335,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "2e2f765812f1cf55e2354b981f0cf5c34f680bbc474104a5511398b8957df0f7"
+          "closure_id": "c0233385bdfa963dbe452dcd68f297071bd80d8c6ba5a84850c2f19919232af0"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -396,30 +413,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "57736a8800ed65fcddea0911ece4fd9db81efd93613343edf6ada5ecd3673bb3"
+          "closure_id": "328f9744839edbeab9feec1b0e953e03f3008022fb468a8e5afd52772c2bcd7e"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -471,30 +491,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "83add8192fde87ba2ddfc82411d4836d47b708d6d1a5f8b28a12263e210a1888"
+          "closure_id": "376a97fcd014aaf290c867e185566ff12cba87815c75d375ff242b12ad15aa24"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -547,30 +570,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "268be00088398014b67d4c3ef12ff04c7e9fac6fa3e69c8cf9a9958f6d6426e6"
+          "closure_id": "1c1748873daa3692b313499d1fd42425aa6f96f4f2fe5117878a0896614a2a55"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -623,30 +649,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "d8219e09c7b370eda2dec5d4989499afb2c286ec44e57278d5cf7a7c1b9f9b3c"
+          "closure_id": "3df19bf900efef8acf1400aafcb667849d93e646539eae5e2cfbedb97194a8fc"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -699,30 +728,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "74e9251cd9eb486055deb3facb51d843323c7a4aee5907f7c355c7513f7fb1b9"
+          "closure_id": "3ee225831ff7a1b8a503971483cc93639e35eaf37b79cd14eefb6094700fadec"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -774,30 +806,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "22593b534fa9d44374f337c9cb4da9a21dd5778610bc37687877347a81f7c470"
+          "closure_id": "9b1157b410268f70947841ce569eb96255840db020ceb9dc16ecba994e1b7019"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -849,30 +884,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "e5cb8a63b6244e50c76c9c85df1bb91998e4a186f66eb8c7b9ad96fd64d12b22"
+          "closure_id": "649afce1d7e3095855c81ce9e393f2c21e7ab1d40c713c5cdb5954b1f7de2da2"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -924,30 +962,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "751b93616e35a65caf4a8210b7d792094a3e5fde72843c9e0476193c1467b11b"
+          "closure_id": "694f86db4152c320b43564d80761e3e979602f7dcf1fc853875e5092e246c92b"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1000,30 +1041,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "2b91c41cc4c0ff7033658c21e5604704112c102baea1f296884614fa6fc2b70a"
+          "closure_id": "785fe7d79dafbf7021f3a1fc645eb385f61c61a80d057c52f7ca639fdb021fa9"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1076,30 +1120,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "d89e79471a26f09cfbdf48225b416ed9599683f4bfd16e4b3989e6978af78766"
+          "closure_id": "a9f58ab1dd152716f94c628164cadeb0eeef713e0c5f0b8863c4bcbed8b253ce"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1152,30 +1199,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "2416d2d71378660512b9f7515f937f5f4f6fe7e2b70909467bfa285439e0efd6"
+          "closure_id": "dd89f8f64826ba336a194bb8060c5962f9887409f562738f0e4210a3ac353f94"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1227,30 +1277,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "bd26f966529d7f63d4508e751c2f7e63a5f210ac1f609e9dffa96e5841ec261d"
+          "closure_id": "8f9e01243e6a0a30b7977e51bfed7dd94bf19a54b94edf663989460844deb530"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1302,30 +1355,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "0838690cc24744bc1c1ad12a8d2bdeb2190e1f1c0748fa45e2f40fb48f7e1f8e"
+          "closure_id": "ce1011ffe4224ef2e7e6649983670f2c54f16568860fec846fb6e32622c9e56e"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1377,30 +1433,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "3f8ad83471191ba1b6a1f8410ff0009dc957cba9e7e5106f0295fc3ac0fac19b"
+          "closure_id": "38ff76c33bfa60b305f5b777952f307e9f26a02945d9d64bc95703535aab4929"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1452,30 +1511,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "afd6bd542aa8721eb7ca6efea3e89d272d65ce83599fe947cd13473031f19609"
+          "closure_id": "86f19a0396043edf8731e9093eb53e5573d043d9b86f75046bd13a3322c144b3"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1527,30 +1589,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "73dd3d783d39d5cb24e20221671564e1f7377b1ee38c794f4962252d8c14659f"
+          "closure_id": "c9b6f66760622f271a6468e07350728dd5ff1d365dc273f4a57bdcdecf581b09"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(v)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1602,30 +1667,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "8f5d4326cf6ea3ebc8c7962d909f9b8dd894a638f7adf4075b90b13785e2a6a4"
+          "closure_id": "6b6287716cd9df823ce81a8aead7738607791fe5a0a680a16c2c1bbffc8c132c"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1689,30 +1757,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "b6185150ea60d753755d8e84e137b0e3514b0c0b07a376870b45976c4011a0e4"
+          "closure_id": "15eeead850bc3c63294b831b57dc1c696757fa909f5b05ee502daedfa89a1671"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1776,30 +1847,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "f4758add45eafc3c5a70b4e935f6cea6398f330070a820d1b81f19e04a3c7aa5"
+          "closure_id": "42272608906cbbb6d49fa9aa8f5d6961d4630b806a27a246fb321036ed695069"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1863,30 +1937,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "5165db89c424a473aceef01f04fce7560b3f546ceac3b192fe8cf88b654a2cd9"
+          "closure_id": "c43397a18295cdbab8b23d74e11975a8063d239d6bd1dcc7e89f2534088464f4"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -1949,30 +2026,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "578dee7f98ea48a84d4bef515cd4068b74b767c8d0052a1a4a6a446c5459d05b"
+          "closure_id": "ede23fd83f7b2abfdd1a6f57dce06935ab5f3d760d89243c3a293a3fdae08946"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2035,30 +2115,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "214ac3d788ecff5f6ef8a637d033c8c9cf0ba03ae606e658340a6a8b529fa7d3"
+          "closure_id": "98103dd608cc9fb247fc63d76cda7fd9ea7caa187ba9a593142d60ca05e78400"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(i)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2119,30 +2202,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "3b5b716f3045aaf779f3a25415fc25eabc9be1b5c433e1cbedbb2557cb1d20ab"
+          "closure_id": "4d59a9849ac2fb175acd440623235dcaac40e6effeb1a110b614d9fa7728c9e0"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2206,36 +2292,39 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "a98971817b44a76d2a1f699237bbdba5ea70f651113231acf1628f42f624db19"
+          "closure_id": "82db158837f7e1212b3f32c1afd03dc3f5f413e215d017324719c26ec604935f"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
         "claim": {
           "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "0328a5095ffd28ab8c7236e138ec7da25d878e319cc4d340b1cc21451a254ff8",
+          "claim_revision_id": "2695c5406309ecd3b6a1a3ac273d13cf668446cacc3828cc67b7282c1c4d2e5c",
           "claim_occurrence_id": "67fcd994fedea53e6f272b976cb07c9dd3dcb0330e5e7353f413dd0e8170784f",
           "subject_occurrence_id": "d443122014f9652fdca00b6992e82062d0cf30a3bdf04acdad1c49df30ec4bab",
           "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
@@ -2252,7 +2341,7 @@
           "not_examined": null,
           "failure": null,
           "evidence_ids": [
-            "102b0562959c04f7c6ae08cf71e13c8a3a78e0e4baa997b2e09dc48779874ca4"
+            "c838cadfec82e3181ecd980b736e2a15bfb6eec4d4d944a6f8a4e904fd8342b2"
           ],
           "attributes": {
             "section_reference": "3.1(b)",
@@ -2280,42 +2369,45 @@
           "evidence": [
             {
               "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "102b0562959c04f7c6ae08cf71e13c8a3a78e0e4baa997b2e09dc48779874ca4",
+              "claim_evidence_id": "c838cadfec82e3181ecd980b736e2a15bfb6eec4d4d944a6f8a4e904fd8342b2",
               "evidence_role": "OPERATIVE_TEXT",
-              "excerpt_id": "6b3018a9271ba65fb86b65c6c4a8d97fccdf2165966c8d73d06ad7cc0c9a58db",
+              "excerpt_id": "992498a30259800868631470cf3859ecdbc8cbd9d5a32a3809b7f281ed284cf3",
               "document_ordinal": 0,
-              "absolute_start": 167,
-              "absolute_end": 212,
+              "absolute_start": 1367,
+              "absolute_end": 1412,
               "ordinal": 0
             }
           ],
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "565459b0eeab090216737e404c0e5b37c3fb73b62392f891cb07313968d91e3f"
+          "closure_id": "c1f1c41c46f4cd1ac53f801fd605173e739bce37a1e81774f58f840c2d42ae5a"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2378,30 +2470,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "a557b30faf2074effb25c04da8e6e887714374faccbcb0937b19301a0c99e801"
+          "closure_id": "e0b01d4ffaefd57cfb38270ea29ffba4977157a54b9743c82c95d56ba14f6dbf"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2464,30 +2559,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "57ac1d2efcf21f7732735574affa74ba582883e0f657a790c672dc609150c08b"
+          "closure_id": "a362417515243cf29e291fb5fa8ebc47955ac2d8e4510a1d5f6616717c657c55"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2550,30 +2648,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "c0053a6f1f79330736d47b38b79ea30722963d2e2bfc9d48f39d349dcfc87de8"
+          "closure_id": "9f6febca42ff38345e3dff2266ee30a56736301ce4b343abb6b2404d6acfd0cb"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(ii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2636,30 +2737,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "9bf8fe358dd20c2dfd9daa78d5c9825fc7f0a07c737f519058e569943f3acfee"
+          "closure_id": "37196bde4bc4bc94d80665c9fe1b69456f49db41aa6b2328e2caa23160667073"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iii)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2720,30 +2824,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "0bc6c5a5ad5040994af6c9a480d16aafeb286c8a1f866d9f0b3166042a324a0c"
+          "closure_id": "e5221b7dcb03bd87e9d4eb094ce5f2c11a79712b2b8802700505068a5c5e1adb"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2806,30 +2913,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "0dc8802229f888829b10e708be6976c377b358f90e30a5aea5ad023e278082c2"
+          "closure_id": "ec483365805edd90199655335e364fd0de6bae8eca5d7f5697106ed5307f1e9a"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2892,30 +3002,33 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "687dd6e1b210e437a73c22aa6957536c20437235c8d22e69a985949a308322c0"
+          "closure_id": "f8de11e298d3f64e8c7327c6f7af05344af1f2a94a861d7670f6632531b8bb3d"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
         }
       }
     },
     {
-      "section_reference": "III-INTRO(b)",
+      "section_reference": "3.1(b)",
       "citation_validation": {
-        "status": "CITATION_NOT_CONSTRUCTIBLE",
+        "status": "AGREEMENT",
         "accepted": true,
-        "validation_source": "CORROBORATED_BY_DOCUMENT_TEXT",
+        "validation_source": "CONSTRUCTED_FROM_TREE",
         "model_citation": "3.1(b)",
         "normalized_citation": "3.1(b)",
-        "derived_citation": "III-INTRO(b)"
+        "derived_citation": "3.1(b)(iv)"
       },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
       "ok": true,
       "candidate": {
         "kind": "claim",
@@ -2978,17 +3091,100 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "1071dfebb5792ee2888dd245f6e404080a54579e9ad31af22877de2bec0f4961"
+          "closure_id": "93ad581d36ea6395eea3531c50331875911012d8297f3190e76393bd0c0447f6"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "GOVERNED",
-          "prompt_digest": "8f09325896a59c33b922c3ed1fbc48b4b66e3a2a11f9507b2030de16547b4b7b",
-          "producer_receipt_id": "148f400a2c8dfc68e281ca70f17c0b7d0656519b04f3636839caad6961cba72c",
-          "governed_scope_digest": "c90fe6c6b12c66aeb8188eb99514c57e9fb77cfa4fec64bf72e564ab12d3b6dd",
-          "extraction_provenance_id": "d8b4e9f6ca073e684c11c7a0b7d591fac786f1cdd0fc592174e85dfd17543da3"
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c70ae456e84eda40f55d40a523896a31de93a96b79913a2b57f82c34248dd68a"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1(b)",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.1(b)",
+        "normalized_citation": "3.1(b)",
+        "derived_citation": "3.1(b)(i)"
+      },
+      "section_family": "CAPITALISATION",
+      "section_family_provenance": null,
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "86a75f8a4732f955bd82b5b9c9498fccc656be9eb1ea467214d289605bd2b8e9",
+          "claim_occurrence_id": "f92c2eb5d1f334485c97454c5b503d2e2b4dc537b353869571e4ab2faaa412ee",
+          "subject_occurrence_id": "0e33beb4a6aa4dca84addf83b5972ca20e4360288fdb6411bc4f8e27411cb77a",
+          "claim_definition_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2caca9748ab883b1be64864be4681dd2cbabb8b57c23140e2c1b12e1d940b157"
+          ],
+          "attributes": {
+            "section_reference": "3.1(b)",
+            "party_making": "the Company",
+            "count_kind": "ISSUED_OUTSTANDING",
+            "share_class_ref": "preferred stock, par value $0.01 per share",
+            "plan_ref": null,
+            "limb_path": [
+              "(i)",
+              "(B)"
+            ]
+          },
+          "taxonomy_codes": {
+            "count_kind": "ISSUED_OUTSTANDING"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2caca9748ab883b1be64864be4681dd2cbabb8b57c23140e2c1b12e1d940b157",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "86363b926f3b07113a263a41f53c2a631cc1cf6a23de3b1c87a5c2056cb2ba7e",
+              "document_ordinal": 0,
+              "absolute_start": 310,
+              "absolute_end": 416,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b93655bbfcf6b14001dbc257d68fa1bda6d5dbd7c98d94e1f58f5e3571b6d197"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SHARE_COUNT",
+          "prompt_digest": "7f824581610637a4d84f3ac51bdb55205a5c2379fc779442b7e015afd9c1dc40",
+          "producer_receipt_id": "f0af445e2b8e5dcf4ee209b7499bbdbb950018e97054a83e80014d839a0e4a64",
+          "governed_scope_digest": "5f02c20f80c929ca6969db74d75bf6b480970ccb2f57799ad17d7a4cedc9edf6",
+          "extraction_provenance_id": "c1439150ca82e88dc22950e6c4ab48b936c927855d16b09c636bf8c1beff31d9"
         }
       }
     }
@@ -2996,10 +3192,219 @@
   "evidence_residuals": [],
   "scope_violations": [],
   "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.1(b)",
+      "source_byte_length": 4683,
+      "covered_byte_length": 4416,
+      "coverage_share": 0.942985265855221,
+      "marker_counts": {
+        "as of": 5,
+        "except": 4,
+        "knowledge": 0,
+        "material": 1,
+        "total": 10
+      },
+      "qualifiers_emitted_count": 16,
+      "qualifier_to_marker_ratio": 1.6,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.1(b)",
+      "markers_found": [
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 0,
+          "end": 3
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23,
+          "end": 26
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 83,
+          "end": 86
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 295,
+          "end": 298
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 779,
+          "end": 783
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 806,
+          "end": 809
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 934,
+          "end": 937
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1009,
+          "end": 1012
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1174,
+          "end": 1177
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1177,
+          "end": 1181
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2481,
+          "end": 2486
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2576,
+          "end": 2579
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2579,
+          "end": 2582
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2593,
+          "end": 2596
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2596,
+          "end": 2600
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2615,
+          "end": 2618
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2686,
+          "end": 2689
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3094,
+          "end": 3097
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3401,
+          "end": 3404
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3409,
+          "end": 3412
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3652,
+          "end": 3656
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4432,
+          "end": 4435
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 19,
+        "section_paragraph_marker": 1,
+        "cross_reference_marker": 2
+      },
+      "proposed_tokens": [
+        "(i)",
+        "(A)",
+        "(B)",
+        "(ii)",
+        "(C)",
+        "(iii)",
+        "(iv)",
+        "(v)"
+      ],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2593,
+          "end": 2596
+        }
+      ],
+      "disagreement_count": 1
+    }
+  ],
+  "undispatched_sections": [],
   "evidence_residual_count": 0,
   "scope_violation_count": 0,
   "citation_residual_count": 0,
-  "compiled_candidate_count": 37,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 38,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "27d3223ef0a8d0ad0aea445d10ebc6a3ab260cf72d785a834bace3fc99f64129"
+  "run_receipt_id": "777f2b22ef7e530844758b45e5ee1d879045d31a7cbf0aa705bb05580122cf68"
 }

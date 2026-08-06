@@ -106,7 +106,7 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
   assert.equal(packet.p9_binding.completion_gate_id, 'P9_PROGRAMME_COMPLETION_ATTESTATION');
   assert.equal(packet.p9_binding.completion_gate_live, true);
   // D3 (2026-08-05): the self-verifying p9-acceptance-* proposal layer is
-  // deleted (docs/codex-program/DECISIONS.md item 10). The two gates whose
+  // deleted (docs/core/DECISIONS.md item 10). The two gates whose
   // work is actually finished now close from governing-registry.js's live,
   // evidence-verified computePreproductionGateStatus, re-derived on every
   // load rather than trusted from a stored assertion.

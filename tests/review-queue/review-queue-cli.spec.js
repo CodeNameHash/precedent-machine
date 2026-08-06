@@ -10,7 +10,8 @@ const { resolveEntry } = require('../../lib/review-queue/resolve');
 
 function tempRoot() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-review-queue-cli-'));
-  fs.writeFileSync(path.join(root, 'HANDOFF.md'), '# Handoff\n');
+  fs.mkdirSync(path.join(root, 'archive'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'archive', 'HANDOFF.md'), '# Handoff\n');
   return root;
 }
 
@@ -66,7 +67,7 @@ test('poll CLI returns no match cleanly', () => {
 test('poll CLI can match by review queue id', () => {
   const line = 'REVIEW_QUEUE_RESOLUTION {"id":"rq-id-only","kind":"clarify","title":"Clarify","choice_key":"approve","codex_action":"self-merge PR #321","resolved_at":"2026-07-07T22:05:00.000Z","resolved_by":"ben"}';
   const root = tempRoot();
-  fs.appendFileSync(path.join(root, 'HANDOFF.md'), `${line}\n`);
+  fs.appendFileSync(path.join(root, 'archive', 'HANDOFF.md'), `${line}\n`);
   assert.equal(pollCli.run(['--id', 'rq-id-only'], { root }).found, true);
   assert.equal(pollCli.run(['--id', 'missing'], { root }).found, false);
 });

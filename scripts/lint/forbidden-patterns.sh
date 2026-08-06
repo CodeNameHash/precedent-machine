@@ -69,7 +69,15 @@ const globalPatterns = [
 // this exemption only by being added here deliberately after the same
 // verification, never by its name.
 const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28-second-live-run|f28-third-live-run|modiv-first-live-run|skechers-first-live-run|antitrust-regulatory-fixtures|appraisal-fixtures|closing-conditions-fixtures|dividends-fixtures|dno-fixtures|employee-matters-fixtures|financing-covenants-fixtures|guaranty-fixtures|m3-v31-fixtures|tax-matters-fixtures|v1v2-comparator)\//;
-const LIVE_RUN_ADAPTER_RESULT = /^evidence\/canonical-v2\/[^/]+\/adapter-result\.json$/;
+// Two filenames under a live-run directory always embed admitted agreement
+// text: the adapter result, and the raw recorded model response, which quotes
+// the agreement back verbatim. Both therefore trip PROSE-class fingerprints
+// on real contract language, on spans thousands of characters long bridging
+// entirely unrelated words. Named individually rather than exempting the
+// directory, so resolution.json, validation.json, the receipts and everything
+// else in the same directory stay fully checked, and CODE-class fingerprints
+// still apply to these two in full.
+const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|native-producer-recorded-response-[^/]+)\.json$/;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
@@ -92,11 +100,11 @@ function walk(dir, files = []) {
     const full = path.join(dir, entry.name);
     const rel = path.relative(root, full).replace(/\\/g, '/');
     if (entry.isDirectory()) {
-      if (['node_modules', '.next', 'docs', '.git', '.claude', '.vercel'].includes(entry.name)) continue;
+      if (['node_modules', '.next', 'docs', 'archive', '.git', '.claude', '.vercel'].includes(entry.name)) continue;
       walk(full, files);
     } else if (
       rel !== 'scripts/lint/forbidden-patterns.sh' &&
-      rel !== 'pm-master-straitjacket.codex.md'
+      rel !== 'archive/pm-master-straitjacket.codex.md'
     ) {
       files.push({ full, rel });
     }
@@ -342,13 +350,14 @@ for (const rel of changedFiles()) {
     rel.startsWith('node_modules/') ||
     rel.startsWith('.next/') ||
     rel.startsWith('docs/') ||
+    rel.startsWith('archive/') || // relocated, superseded documents: historical prose, not live code
     rel.startsWith('.git/') ||
     rel.startsWith('.claude/') ||
     rel.startsWith('.vercel/') ||
     rel.startsWith('public/generated/') || // Data labels can legitimately match code-regression fingerprints.
     rel.startsWith('reports/backups/') || // raw DB dumps: agreement text legitimately hits bug-fingerprints
     rel.startsWith('scripts/lint/') ||
-    rel === 'pm-master-straitjacket.codex.md'
+    rel === 'archive/pm-master-straitjacket.codex.md'
   ) {
     continue;
   }
@@ -388,7 +397,7 @@ for (const rel of changedFiles()) {
     // same directories, including resolution.json and the recorded responses,
     // is still checked in full, and the CODE-class fingerprints still apply
     // here in full too.
-    if (LIVE_RUN_ADAPTER_RESULT.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    if (LIVE_RUN_SOURCE_TEXT_FILE.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }

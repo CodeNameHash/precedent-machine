@@ -5,9 +5,13 @@
    Runs the full pre-demo smoke test against the live Supabase project: ingest
    a pinned fixture agreement as a STAGING deal, QA it, verify the review
    surface (cards + source-overlay span resolution), verify the query surface
-   (20/20 demo-set answers, staging deal invisible everywhere), persist a
-   run_reports row, and ALWAYS tear the staging deal back out — success or
-   failure. Exits non-zero on the first hard failure (after teardown runs).
+   (every lib/query/fixtures/demo-set.json answer passing, staging deal
+   invisible everywhere -- count deliberately not pinned here, it drifts
+   with the demo set itself: 20 at WP-1, 18 after 61d7280c retired the
+   DEAL_COMPARE/DEAL_TO_MARKET query kinds and their demo-set entries with
+   them), persist a run_reports row, and ALWAYS tear the staging deal back
+   out — success or failure. Exits non-zero on the first hard failure
+   (after teardown runs).
 
    This is the exact pre-demo smoke test Ben runs by hand:
 

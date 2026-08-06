@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:28:40.657Z",
+  "section_reference": "6.2",
+  "note": "General extraction run: deal=modiv, family=CLOSING_CONDITIONS, section_references=[\"6.1\",\"6.2\",\"6.3\",\"6.4\"] (all dispatched as CLOSING_CONDITIONS via section_family_assignments), prompt_id=native-producer-closing-conditions/v3, prompt_version=4. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "Written to `evidence/canonical-v2/modiv-closing-conditions-20260806/native-producer-recorded-response-6.2.json`, matching the sibling `6.1` file's `NATIVE_PRODUCER_RECORDED_RESPONSE/V1` schema.\n\n**8 closing-condition assertions:**\n- 5× `BRING_DOWN_TIER` (split per (a)(i)(x), (a)(i)(y), (a)(ii), (a)(iii), (a)(iv) — accuracy codes `MAT_ALL_RESPECTS`, `MAT_ALL_MATERIAL`, `MAT_ALL_RESPECTS_DE_MINIMIS`, `MAT_ALL_RESPECTS`, `MAT_MAE_QUALIFIED`)\n- 1× `COVENANT_COMPLIANCE` (b)\n- 1× `NO_MAE_CONDITION` (e)\n- 1× `OFFICER_CERTIFICATE` (f), with `certified_condition_refs` = `[\"Section 6.2(a)\", \"Section 6.2(b)\", \"Section 6.2(e)\"]`\n\n**3 open_world_candidates:** the REIT tax opinion (c) and Section 368 opinion (d) conditions, plus the Morrison & Foerster satisfactory-firm designation — none map to a controlled `assertion_kind`.\n\nEvery `section_reference` is exactly `\"6.2\"` (no subsection labels), and every `quote`/`scrape_quote`/`covered_scope` was verified as a byte-identical contiguous substring of the source text before writing."
+}

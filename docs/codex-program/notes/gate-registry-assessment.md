@@ -189,7 +189,7 @@ proposed.
 
 ### Why each of the other 23 can't close: four distinct causes, not one
 
-I did not re-derive this from scratch. `docs/codex-program/P9-ACCEPTANCE-DEFINITIONS.md`
+I did not re-derive this from scratch. `archive/P9-ACCEPTANCE-DEFINITIONS.md`
 (dated 2026-08-01, status `WITHDRAWN_NON_AUTHORITY` — a proposal that was
 never adopted into the YAML) already ran a rigorous, grep-sourced,
 gate-by-gate audit of all 22 `P9_*` gates against `canonical-contracts.md`

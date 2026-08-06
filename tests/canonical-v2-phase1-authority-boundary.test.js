@@ -737,7 +737,7 @@ test('production-path pure analysis sources are capability-free leaf modules', (
 });
 
 test('live extraction run sources have their exact capability boundary', () => {
-  assert.ok(LIVE_EXTRACTION_RUN_SOURCES.includes('scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs'));
+  assert.ok(LIVE_EXTRACTION_RUN_SOURCES.includes('scripts/canonical-v2-live-extraction-run.mjs'));
   for (const relativePath of LIVE_EXTRACTION_RUN_SOURCES) {
     const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
     assertNoCapabilities(source, LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES, relativePath);

@@ -602,6 +602,23 @@ should be checked against.
 
 #### SEC2. Fix Section 8.12's nested-lettering collision
 
+**Correction, 2026-08-06.** This section originally described the mechanism
+as an inner lettered list swallowing the outer list's next item, because
+Section 8.12's Intellectual Property definition sits at outer label "(z)"
+with its own inner sub-clauses lettered (a) through (f). That description is
+wrong, found independently by a dedicated investigation that traced the real
+Modiv tree directly rather than reasoning from the label pattern
+(`docs/codex-program/notes/nested-lettering-collision.md`, section 1.2). The
+real mechanism has nothing to do with an inner list: the letter "z" itself
+has no defined successor in the marker-tree builder's alphabet sequence, so
+the outer list simply stops at "(z)" and cannot continue to "(aa)" at all,
+whether or not "(z)" happens to contain its own inner (a)-(f) run. Neither
+bug requires an inner list to be present, and the fix, landed in commit
+`991330ee`, teaches the sectionizer that the letter after "z" is "aa", not
+nothing. What follows below is left as the original diagnosis for the record
+of what was believed at the time; read the note above for what is actually
+true.
+
 **What it is.** A different, unrelated bug in the same file: Section 8.12's own
 sub-clause labels "(gg)" (Parent Base Amount, $15,000,000) and "(vv)" (Parent
 Termination Fee, the REIT-capped formula) cannot be looked up individually at
@@ -609,27 +626,21 @@ all.
 
 **Why it matters, and why it is not urgent.** Independently reproduced this
 session: `findSectionByReference(tree, '8.12(gg)')` and `'8.12(vv)'` both
-return null against the committed fixture. The cause: Section 8.12 defines a
-term, Intellectual Property, at printed label "(z)", whose own internal
-sub-clauses happen to be lettered (a) through (f). The marker-tree builder's
-continuation rule checks open stack frames from the deepest outward
-(`deterministic-sectionizer.js`'s `buildMarkerTree`, the `for (let depth =
-stack.length - 1; depth >= 1; depth--)` loop), so the outer list's next item,
-"(aa)", gets matched as a continuation of (z)'s own inner (a)-(f) run instead
-of as (z)'s sibling. This fails closed: a lookup for "8.12(gg)" returns
-`null`, not a wrong node, so nothing downstream can silently trust bad text
-from it. That makes this a completeness blocker, not a wrongness risk, and
-none of tonight's fourteen review-queue targets needs it, none of them cite
-"(gg)" or "(vv)". Tonight's scope-correction run worked around it by pinning
-the whole "8.12" node rather than the specific sub-clause; that remains a
-viable short-term move.
+return null against the committed fixture. The cause, per the correction
+above, is that the outer list's own lettering has no successor defined past
+"z", not an inner list collision. This fails closed: a lookup for "8.12(gg)"
+returns `null`, not a wrong node, so nothing downstream can silently trust bad
+text from it. That makes this a completeness blocker, not a wrongness risk,
+and none of tonight's fourteen review-queue targets needs it, none of them
+cite "(gg)" or "(vv)". Tonight's scope-correction run worked around it by
+pinning the whole "8.12" node rather than the specific sub-clause; that
+remains a viable short-term move.
 
-**Done when.** `8.12(gg)` and `8.12(vv)` (and any other outer-list letter that
-collides with an inner defined term's own short lettered run) resolve to their
-real, printed spans. A regression test pins this specific collision shape
-(an outer list continuing past a nested list whose own letters overlap the
-outer sequence), because the current algorithm's "deepest match wins" rule is a
-general ambiguity, not a Modiv-only quirk.
+**Done when.** `8.12(gg)` and `8.12(vv)` (and any other outer-list letter
+past "z") resolve to their real, printed spans. A regression test pins this
+specific collision shape, because the underlying gap (no successor defined
+past "z") is a general ambiguity, not a Modiv-only quirk. This is now fixed;
+see the correction above.
 
 **Technical.** Same file as SEC1, a scoped algorithmic change to the
 marker-tree continuation rule (for example, preferring a shallower match when
@@ -642,7 +653,10 @@ convenient; nothing in RES1 through SCHEMA1 below needs it first.
 
 **Risk.** Low in isolation, but shares an underlying algorithm with SEC1; fix
 and test both together rather than in two uncoordinated passes, since both
-live in `buildMarkerTree`'s continuation logic.
+live in `buildMarkerTree`'s continuation logic. This lane's proposed cost and
+risk are left as written above for the record; the fix itself already landed
+(commit `991330ee`, see the correction at the top of this section), so
+nothing here is still to be sequenced.
 
 #### The acceptance test for this lane: a corpus-wide tree-integrity sweep
 

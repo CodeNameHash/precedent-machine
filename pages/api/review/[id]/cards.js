@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   try {
     const reviewDeal = await fetchReviewDealCards(dealId, sb, { mode });
     // Canonical V2 dark-bridge preview (pre-production activation phase,
-    // see docs/codex-program/ADR-001-dark-bridge-flattening-is-scaffolding.md):
+    // see archive/ADR-001-dark-bridge-flattening-is-scaffolding.md):
     // read-time only, gated by isDarkBridgeIntegrationEnabled() inside
     // attachCanonicalV2Preview itself, so this is a no-op (same reference)
     // everywhere the gate isn't explicitly on. Attached here rather than

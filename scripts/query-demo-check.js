@@ -12,7 +12,14 @@
    Read-only against `deals`/`provisions`. Never writes to the corpus.
 
    Usage:
-     node scripts/query-demo-check.js                 # run and grade all 20
+     node scripts/query-demo-check.js                 # run and grade every
+                                                        # entry in demo-set.json
+                                                        # (18 as of this writing
+                                                        # -- was 20 at WP-1;
+                                                        # commit 61d7280c
+                                                        # retired 2 entries
+                                                        # with the query kinds
+                                                        # they tested)
      node scripts/query-demo-check.js --query fee-pct-of-value
      node scripts/query-demo-check.js --update         # rewrite `expected`
                                                         # in demo-set.json from

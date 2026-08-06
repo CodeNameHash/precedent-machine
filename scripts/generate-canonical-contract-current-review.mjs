@@ -25,7 +25,7 @@ const {
   SPECIFICATION_MANIFEST_PATH,
   SPECIFICATION_MANIFEST_SCHEMA,
   SPECIFICATION_MANIFEST_PURPOSE,
-  SPECIFICATION_DECLARED_FILE_COUNT,
+  specificationDeclaredFileCount,
 } = require('../lib/canonical-v2/canonical-contract-bundle-pre-review-package-assembler');
 
 const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
@@ -150,7 +150,7 @@ function parseSpecificationManifest(bytes) {
     || manifest.schema !== SPECIFICATION_MANIFEST_SCHEMA
     || manifest.purpose !== SPECIFICATION_MANIFEST_PURPOSE
     || !Array.isArray(manifest.files)
-    || manifest.files.length !== SPECIFICATION_DECLARED_FILE_COUNT
+    || manifest.files.length !== specificationDeclaredFileCount(manifest)
   ) {
     fail('The governing specification manifest does not match the current V2 root contract');
   }

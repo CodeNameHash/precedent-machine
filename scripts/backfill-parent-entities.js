@@ -3,12 +3,15 @@
    scripts/backfill-parent-entities.js — one-off backfill of parent-entity /
    display-name metadata on EXISTING deals.
 
-   Ingest (scripts/ingest-local.js, pages/api/ingest/from-url.js) now asks the
-   extractor for parent_entity / target_entity / acquirer_display /
-   target_display alongside acquirer/target at ingest time. Deals ingested
-   before that change don't have them — this script backfills those deals
-   from their already-stored metadata.full_text, using the same subscription
-   CLI client (zero API tokens) the local ingest runner uses.
+   Ingest (scripts/ingest-local.js; the URL-ingest path's logic now lives in
+   lib/broad-corpus/contained-routes/from-url.js -- pages/api/ingest/from-url.js
+   itself is a contained 503 stub today, ingestion-by-URL is off in
+   production, see docs/API-ROUTE-CLASSIFICATION.md) now asks the extractor
+   for parent_entity / target_entity / acquirer_display / target_display
+   alongside acquirer/target at ingest time. Deals ingested before that
+   change don't have them — this script backfills those deals from their
+   already-stored metadata.full_text, using the same subscription CLI client
+   (zero API tokens) the local ingest runner uses.
 
    Usage:
      node scripts/backfill-parent-entities.js                 # dry run, all deals

@@ -16,6 +16,40 @@ decision for a person.
 
 ---
 
+## Correction, 2026-08-06: this plan was executed
+
+This document is written throughout, including in the paragraph immediately
+above, as an assessment of a not-yet-decided future merge. It no longer is
+one. The merge happened, in exactly the two-pull-request shape Part 5 below
+proposes, plus a third pull request that then merged the whole branch head:
+PR #476 (`wp/m3-canonical-v2-foundation`, merged 2026-08-05T21:55:41Z), PR
+#477 (`wp/m3-tonight-integration-and-live-fixes`, merged 2026-08-06T00:30:37Z)
+and PR #478 (`codex/m3-production-phase1`, merged 2026-08-06T09:51:01Z: this
+last merge covers everything below, since it landed after this whole plan was
+written and executed). Checked directly against GitHub, not against another
+document: `gh pr list --state merged --json number,title,mergedAt,baseRefName,headRefName`.
+`origin/main` is now at `016288cb`, the merge commit for PR #478.
+
+Everything below this point is therefore a historical record of a plan that
+was carried out, not a live proposal. Read it as evidence of how the merge
+was actually done, most of Part 2's risk analysis remains a fair description
+of what shipped. Do not read any sentence below as describing a pending
+decision: none of them are pending; all three pull requests are merged.
+
+**What is genuinely still open, and is not what this document describes.**
+Work on `codex/m3-production-phase1` continued after PR #478 (including this
+correction), and the branch is 15 commits ahead of `origin/main` again as of
+this correction (`git log --oneline origin/main..HEAD`; this branch moved
+twice more while this document was being corrected, run the command rather
+than trust the figure). Merging that new,
+much smaller body of work is a fresh question this document does not answer
+and was not written to answer; do not extend this plan's slicing or commit
+counts to it without re-running the commands in Part 5's own "keeping this
+current" note against the branch's current tip, exactly as this document
+already instructed before it was itself overtaken by events.
+
+---
+
 ## How to read this
 
 Every part has two sections, in this order:
@@ -62,11 +96,15 @@ breaks the CI phase check; see Part 4).
 - Diff `main...codex/m3-production-phase1`: 912 files changed, 314,982
   insertions, 9,825 deletions.
 
-Commit subjects by conventional-commit scope (290 total; the 18 without a
+Commit subjects by conventional-commit scope (290 total; the 82 without a
 `type(scope):` prefix are the M3-family-adapter integration wave and five
 `Merge remote-tracking branch 'origin/main'` housekeeping commits absorbed
 earlier in the branch's life, which is mechanically why main is a strict
-ancestor today rather than a diverged branch):
+ancestor today rather than a diverged branch). **Correction, 2026-08-06:**
+this row originally read 18, a miscount; 82 is what direct enumeration
+finds, and it is also the figure that makes this table's own rows sum to
+the stated 290 total (docs/codex-program/notes/doc-reality-audit.md,
+part 1.5).
 
 | Scope | Commits |
 |---|---:|
@@ -82,7 +120,7 @@ ancestor today rather than a diverged branch):
 | fix(programme) | 2 |
 | chore(canonical-v2) | 2 |
 | fix(review), fix(query), fix(backfill), feat(taxonomy), feat(reprocess), chore(schema), chore(programme), chore(process-intelligence) | 1 each |
-| no scope prefix (M3 adapter wave, main-merges) | 18 |
+| no scope prefix (M3 adapter wave, main-merges) | 82 (corrected 2026-08-06; see note above) |
 
 Files changed by top-level directory:
 
@@ -324,14 +362,16 @@ allowing `lib/canonical-v2/**`, `tests/**`, `docs/**`, `evidence/**`, or
 `scripts/**` at all. Either way this PR does not pass as opened.
 
 **Is the allowlist self-amendable? Yes, and this is not a new mechanism
-invented for this assessment.** The repository already contains roughly 300
-files under `.github/phase-allowlists/`, each authored in the same PR as the
-work package it scopes, each named for the `wp/<slug>` (or `phase-{N}/`)
-branch that introduced it. This exact "open a correctly-named branch, add
-one allowlist file scoping exactly what you are about to touch, in the same
-PR" pattern is how every one of those roughly 300 prior phases already
-merged. It is a proven, working piece of process, not a barrier invented
-against this merge specifically.
+invented for this assessment.** The repository already contains 436 files
+under `.github/phase-allowlists/` (438 as of 2026-08-06; corrected from
+"roughly 300", which was wrong even the day this was written, per
+docs/codex-program/notes/doc-reality-audit.md, part 1.5), each authored in
+the same PR as the work package it scopes, each named for the `wp/<slug>`
+(or `phase-{N}/`) branch that introduced it. This exact "open a
+correctly-named branch, add one allowlist file scoping exactly what you are
+about to touch, in the same PR" pattern is how every one of those prior
+phases already merged. It is a proven, working piece of process, not a
+barrier invented against this merge specifically.
 
 **What the minimal honest fix is, and what it is not.** The honest fix is
 to give each merge slice (Part 5) its own correctly-named `wp/<slug>`
@@ -343,7 +383,7 @@ entire diff is functionally equivalent to deleting the check, just spelled
 differently. This assessment explicitly rejects that option. The per-slice
 allowlists in Part 5 use directory-prefix globs (`lib/canonical-v2/**`,
 `tests/**`, and so on) matched against what each slice actually contains,
-the same granularity the existing ~300 precedent files use, which keeps the
+the same granularity the existing 436 precedent files use, which keeps the
 check meaningful rather than decorative.
 
 **One fact that changes the urgency, not the recommendation.** `main` has

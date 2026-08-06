@@ -1,0 +1,46 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "MERGER_STRUCTURE_CLOSING",
+  "purpose": "General extraction run: family MERGER_STRUCTURE_CLOSING on deal modiv.",
+  "section_references": [
+    "1.1",
+    "1.4",
+    "1.5",
+    "1.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "1.1",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.4",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.5",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.6",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "prompt_id": "native-producer-merger-structure/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-06T10:32:43.907Z",
+  "total_elapsed_ms": 220714,
+  "extraction_wall_clock_ms": 216783,
+  "model_call_count": 4,
+  "run_receipt_id": "d019dc9a02445d9d0f733385d0f351883b3144ce78d7fa3f9777c5a3a1e0a942",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

@@ -1,0 +1,3884 @@
+{
+  "resolved": [
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "the Company shall be merged with and into Company Merger Sub"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c1d820fe07ff1cecf3745466c306e697c321fa2226e00be2333c442ea14411c1",
+        "claim_occurrence_id": "7fe2186330d434265fd0173bd639fa1975f07cbc179c8d094a3595b2288cb779",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company shall be merged with and into Company Merger Sub",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "be546fbd04782e3c94a813fea726ef94735a9434ab1d43a1732910908722a3a0"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "be546fbd04782e3c94a813fea726ef94735a9434ab1d43a1732910908722a3a0",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6f4a7bcc4b0ae90a6938bb7d8ebb2a2697c50a6587550019ac66078a85a7503e",
+            "document_ordinal": 0,
+            "absolute_start": 279,
+            "absolute_end": 339,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c4ef30f4b9b5935b6e5a4c589b17b48f5bba32073cc2299ff7b0b6ec1aacdc29"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c1d820fe07ff1cecf3745466c306e697c321fa2226e00be2333c442ea14411c1",
+            "claim_occurrence_id": "7fe2186330d434265fd0173bd639fa1975f07cbc179c8d094a3595b2288cb779",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company shall be merged with and into Company Merger Sub",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "be546fbd04782e3c94a813fea726ef94735a9434ab1d43a1732910908722a3a0"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "be546fbd04782e3c94a813fea726ef94735a9434ab1d43a1732910908722a3a0",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6f4a7bcc4b0ae90a6938bb7d8ebb2a2697c50a6587550019ac66078a85a7503e",
+                "document_ordinal": 0,
+                "absolute_start": 279,
+                "absolute_end": 339,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c4ef30f4b9b5935b6e5a4c589b17b48f5bba32073cc2299ff7b0b6ec1aacdc29"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "the separate existence of the Company shall thereupon cease"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4548b4da414ea6cac7653ce75311d39ae823d96462a4667b2c7057e2c3c1775a",
+        "claim_occurrence_id": "01d4827e055854f37f0ae77e50fcf1bcd78c2ad1f704883d2ca78d20c67475d4",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the separate existence of the Company shall thereupon cease",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "651c24d7485f694961d94aba103a95de273f6b4cf66cb32a2530aa5c5acd4a98"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "651c24d7485f694961d94aba103a95de273f6b4cf66cb32a2530aa5c5acd4a98",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5067f60e894c20c295f52f8e4515e516559ed11af9765fd0022e491430c8a3c8",
+            "document_ordinal": 0,
+            "absolute_start": 344,
+            "absolute_end": 403,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "77b416cf1af943a0421e7e013657a1d6271faa4165c5cf276986fa6bd9a8c82a"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4548b4da414ea6cac7653ce75311d39ae823d96462a4667b2c7057e2c3c1775a",
+            "claim_occurrence_id": "01d4827e055854f37f0ae77e50fcf1bcd78c2ad1f704883d2ca78d20c67475d4",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the separate existence of the Company shall thereupon cease",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "651c24d7485f694961d94aba103a95de273f6b4cf66cb32a2530aa5c5acd4a98"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "651c24d7485f694961d94aba103a95de273f6b4cf66cb32a2530aa5c5acd4a98",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5067f60e894c20c295f52f8e4515e516559ed11af9765fd0022e491430c8a3c8",
+                "document_ordinal": 0,
+                "absolute_start": 344,
+                "absolute_end": 403,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "77b416cf1af943a0421e7e013657a1d6271faa4165c5cf276986fa6bd9a8c82a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "Company Merger Sub shall survive the Company Merger"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "89d909f45f4b32a955edaf5a12b7752f9781132639b1ac237166056544feca74",
+        "claim_occurrence_id": "a76ecffdb32c1be2a0ab4dea4e18f9c37bba6157e4dfd58184ec76df3f077157",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "Company Merger Sub shall survive the Company Merger",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3bd1c9337b36abdfb133265b43af1439f5265e39c8f5bf424b09bb337f3c4767"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3bd1c9337b36abdfb133265b43af1439f5265e39c8f5bf424b09bb337f3c4767",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c629919668fa40a648a91cf08e914261c59945380f62bf467aa7704b0aa3594f",
+            "document_ordinal": 0,
+            "absolute_start": 413,
+            "absolute_end": 464,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "bc0a0c0803e56e8c8fff35bd23ba5781ab8eec78ab950040087fba42f181b64b"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "89d909f45f4b32a955edaf5a12b7752f9781132639b1ac237166056544feca74",
+            "claim_occurrence_id": "a76ecffdb32c1be2a0ab4dea4e18f9c37bba6157e4dfd58184ec76df3f077157",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "Company Merger Sub shall survive the Company Merger",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3bd1c9337b36abdfb133265b43af1439f5265e39c8f5bf424b09bb337f3c4767"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3bd1c9337b36abdfb133265b43af1439f5265e39c8f5bf424b09bb337f3c4767",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "c629919668fa40a648a91cf08e914261c59945380f62bf467aa7704b0aa3594f",
+                "document_ordinal": 0,
+                "absolute_start": 413,
+                "absolute_end": 464,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "bc0a0c0803e56e8c8fff35bd23ba5781ab8eec78ab950040087fba42f181b64b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "Parent shall be the sole member and manager of the Surviving Company"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0d5771e529ae89d8e262cc0547af6823824d18ffe137c4fb0020ac6562314e19",
+        "claim_occurrence_id": "b852068058dfdeca6980f634b05b746829064dec8fb8d54ac6ca1ce0d1859941",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 3,
+        "state": "PRESENT",
+        "raw_value": "Parent shall be the sole member and manager of the Surviving Company",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d81d9f479bc7620c6143cf4a533839eec084f9ef36f3c11ae39acae711632d17"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d81d9f479bc7620c6143cf4a533839eec084f9ef36f3c11ae39acae711632d17",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "f765557cf6af9d6fbc63b3aa50991d667c51ca28d145565d1941d9319c26d279",
+            "document_ordinal": 0,
+            "absolute_start": 549,
+            "absolute_end": 617,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "eaeff57b7799aff1f660a0fa5bacfda4fd26d38e145a98528150eba299441856"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0d5771e529ae89d8e262cc0547af6823824d18ffe137c4fb0020ac6562314e19",
+            "claim_occurrence_id": "b852068058dfdeca6980f634b05b746829064dec8fb8d54ac6ca1ce0d1859941",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 3,
+            "state": "PRESENT",
+            "raw_value": "Parent shall be the sole member and manager of the Surviving Company",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d81d9f479bc7620c6143cf4a533839eec084f9ef36f3c11ae39acae711632d17"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d81d9f479bc7620c6143cf4a533839eec084f9ef36f3c11ae39acae711632d17",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "f765557cf6af9d6fbc63b3aa50991d667c51ca28d145565d1941d9319c26d279",
+                "document_ordinal": 0,
+                "absolute_start": 549,
+                "absolute_end": 617,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "eaeff57b7799aff1f660a0fa5bacfda4fd26d38e145a98528150eba299441856"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "OpCo Merger Sub shall be merged with and into the Partnership"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "9c309f3244b4ae0b5840306a2c38364be59421b5f2cda8385a8c6ff03451d046",
+        "claim_occurrence_id": "09aefb9f35556f5371364ec56c99068323d1d1041a85ecd7b7079614cf90256b",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 4,
+        "state": "PRESENT",
+        "raw_value": "OpCo Merger Sub shall be merged with and into the Partnership",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a984737d686c76f9200632670e72c6a10a514462cb50affdaa420dd4e4325116"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a984737d686c76f9200632670e72c6a10a514462cb50affdaa420dd4e4325116",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "877c38af6bd8e9376f343c4d844f0a6b26990754ac9c2ab1904b9d90fe8b05f4",
+            "document_ordinal": 0,
+            "absolute_start": 863,
+            "absolute_end": 924,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f260f97ee1133de678f5e42fea5f448139b66c3198f2dbf4f59bf23c87e656a7"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "9c309f3244b4ae0b5840306a2c38364be59421b5f2cda8385a8c6ff03451d046",
+            "claim_occurrence_id": "09aefb9f35556f5371364ec56c99068323d1d1041a85ecd7b7079614cf90256b",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 4,
+            "state": "PRESENT",
+            "raw_value": "OpCo Merger Sub shall be merged with and into the Partnership",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a984737d686c76f9200632670e72c6a10a514462cb50affdaa420dd4e4325116"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a984737d686c76f9200632670e72c6a10a514462cb50affdaa420dd4e4325116",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "877c38af6bd8e9376f343c4d844f0a6b26990754ac9c2ab1904b9d90fe8b05f4",
+                "document_ordinal": 0,
+                "absolute_start": 863,
+                "absolute_end": 924,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f260f97ee1133de678f5e42fea5f448139b66c3198f2dbf4f59bf23c87e656a7"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "the separate existence of OpCo Merger Sub shall thereupon cease"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "7eaf8ed5531b610fd49e718473b93ed5630ce57a56198b66e1fd64f12f4808ea",
+        "claim_occurrence_id": "c6b406c4ddbb2ded0305ca93a7a7d6296cfc23013f3abc1a772ddf7b1d85bc5d",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 5,
+        "state": "PRESENT",
+        "raw_value": "the separate existence of OpCo Merger Sub shall thereupon cease",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a0c66d891c4620a1af814cd4471349ce0bfce72cf66c816bdf7a3fd9a3568d70"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a0c66d891c4620a1af814cd4471349ce0bfce72cf66c816bdf7a3fd9a3568d70",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a374bbd5169017d355e4b8005bc1986b8a2aeb50dc2dc0cc63af785066877fc7",
+            "document_ordinal": 0,
+            "absolute_start": 929,
+            "absolute_end": 992,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "4c76da851ccdd29c19e6e1671db63dcdf318826a53cc5fbd29b6db5d402451f7"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "7eaf8ed5531b610fd49e718473b93ed5630ce57a56198b66e1fd64f12f4808ea",
+            "claim_occurrence_id": "c6b406c4ddbb2ded0305ca93a7a7d6296cfc23013f3abc1a772ddf7b1d85bc5d",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 5,
+            "state": "PRESENT",
+            "raw_value": "the separate existence of OpCo Merger Sub shall thereupon cease",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a0c66d891c4620a1af814cd4471349ce0bfce72cf66c816bdf7a3fd9a3568d70"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a0c66d891c4620a1af814cd4471349ce0bfce72cf66c816bdf7a3fd9a3568d70",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a374bbd5169017d355e4b8005bc1986b8a2aeb50dc2dc0cc63af785066877fc7",
+                "document_ordinal": 0,
+                "absolute_start": 929,
+                "absolute_end": 992,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "4c76da851ccdd29c19e6e1671db63dcdf318826a53cc5fbd29b6db5d402451f7"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "Section 1.1 The Mergers.",
+        "child_clause_quote": "the Partnership shall be the surviving entity in the OpCo Merger"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 13178,
+        "absolute_end": 14273,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "9fcb61cda0bba9c701ec896f70e97f678882f80b498dc70fe3f35ad73c3156e8",
+        "provision_instance_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "closure_id": "223d16e7c3fb951f8810e40e56fd9d7cb59e18127e52649642873f076c18c1e4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "885e0eb84676cb581edc0990132644168a340a9bc638fea5c31af1083f5f26e8",
+        "claim_occurrence_id": "8d9faebc4f90bf4fe1b15e2011a4c895a8d1c0199f3f883836869ed4c233f5c8",
+        "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 6,
+        "state": "PRESENT",
+        "raw_value": "the Partnership shall be the surviving entity in the OpCo Merger",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ab574b05f1dc87cc460e324f0352d8de567385a0a1b533149bdd919fde7bd4fb"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ab574b05f1dc87cc460e324f0352d8de567385a0a1b533149bdd919fde7bd4fb",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "204fbd7937485caeda2cdb6669fd89acd02f8e94815c3349992749b677d17ba6",
+            "document_ordinal": 0,
+            "absolute_start": 1002,
+            "absolute_end": 1066,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8d5452d3b6903dbec6b8a8a2c52f6d3c6815bd2c13adc2204b5272e297247342"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "885e0eb84676cb581edc0990132644168a340a9bc638fea5c31af1083f5f26e8",
+            "claim_occurrence_id": "8d9faebc4f90bf4fe1b15e2011a4c895a8d1c0199f3f883836869ed4c233f5c8",
+            "subject_occurrence_id": "00c659bf25ac214f162ce44ccae1b4cf9be58374387fe98d06b1dc21d1733684",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 6,
+            "state": "PRESENT",
+            "raw_value": "the Partnership shall be the surviving entity in the OpCo Merger",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ab574b05f1dc87cc460e324f0352d8de567385a0a1b533149bdd919fde7bd4fb"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ab574b05f1dc87cc460e324f0352d8de567385a0a1b533149bdd919fde7bd4fb",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "204fbd7937485caeda2cdb6669fd89acd02f8e94815c3349992749b677d17ba6",
+                "document_ordinal": 0,
+                "absolute_start": 1002,
+                "absolute_end": 1066,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8d5452d3b6903dbec6b8a8a2c52f6d3c6815bd2c13adc2204b5272e297247342"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "46f81b3e4fad443ad3d54fcefdf3bca90f822d64bda2a9f710dd534b322c7d3a",
+            "producer_receipt_id": "6f4af89c8017b096eb9910cbee99075ad05e550c1593cddeb4ebd5d10bbffeaf",
+            "governed_scope_digest": "f981f5a7d6754948bb0ddae765a2f9c8bafac6fa5397556d3f3123a345b4b1a5",
+            "extraction_provenance_id": "181a2e42decd310e11929c35cbec7cb48a115ae93087c93f6c439293cda7866e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "Company Merger Sub and the Company shall duly execute and file articles of merger (the “Company Merger Articles of Merger”) with the State Department of Assessments and Taxation of Maryland (the “SDAT”) in accordance with the Laws of the State of Maryland"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5b1c415fbea714de2ff54ca922898c581516da3cce1598652b0a8397f710a861",
+        "claim_occurrence_id": "5b62e0d40068b6902f46c87e5503764199d06a6ca2cd184fca6c3241cb0900a1",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Company Merger Sub and the Company shall duly execute and file articles of merger (the “Company Merger Articles of Merger”) with the State Department of Assessments and Taxation of Maryland (the “SDAT”) in accordance with the Laws of the State of Maryland",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7fc5a1223f2f50b2785ab89e5a084162c4593b3873b42e67deecca8a66236437"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7fc5a1223f2f50b2785ab89e5a084162c4593b3873b42e67deecca8a66236437",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "18fdc2ff77a75850d48e72f78a6389dc317b6cd8b624a2f013892d425eb59838",
+            "document_ordinal": 0,
+            "absolute_start": 58,
+            "absolute_end": 321,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "dc5c544658831f61107b65c78aa6f01ef63b7f59db13a3e34f31130213188e8d"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5b1c415fbea714de2ff54ca922898c581516da3cce1598652b0a8397f710a861",
+            "claim_occurrence_id": "5b62e0d40068b6902f46c87e5503764199d06a6ca2cd184fca6c3241cb0900a1",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Company Merger Sub and the Company shall duly execute and file articles of merger (the “Company Merger Articles of Merger”) with the State Department of Assessments and Taxation of Maryland (the “SDAT”) in accordance with the Laws of the State of Maryland",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7fc5a1223f2f50b2785ab89e5a084162c4593b3873b42e67deecca8a66236437"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7fc5a1223f2f50b2785ab89e5a084162c4593b3873b42e67deecca8a66236437",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "18fdc2ff77a75850d48e72f78a6389dc317b6cd8b624a2f013892d425eb59838",
+                "document_ordinal": 0,
+                "absolute_start": 58,
+                "absolute_end": 321,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "dc5c544658831f61107b65c78aa6f01ef63b7f59db13a3e34f31130213188e8d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "Company Merger Sub shall duly execute and file a certificate of merger (the “Company Merger Certificate”) with the Secretary of State of the State of Delaware (the “DSOS”) in accordance with the Laws of the State of Delaware"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a2a99f2c106b2562085e37aa56158a167bedbe4baa29bacd1b5274a980d3592a",
+        "claim_occurrence_id": "d95e49bf1c403c2078af72e6f4ec66fd1cc91b3a2d5095762eb1e51f371f63c0",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "Company Merger Sub shall duly execute and file a certificate of merger (the “Company Merger Certificate”) with the Secretary of State of the State of Delaware (the “DSOS”) in accordance with the Laws of the State of Delaware",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5f5263b54ace10be3c0792741ce503cd392d766f15ed1fc5fc6804bd143d3a26"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5f5263b54ace10be3c0792741ce503cd392d766f15ed1fc5fc6804bd143d3a26",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "767b8ea07b5a3ba6f8a40fc86c8df02ade50cd60fc5950c2d9b147b409354a02",
+            "document_ordinal": 0,
+            "absolute_start": 328,
+            "absolute_end": 560,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f7555c2eac09abd6644b091886e2b2cb95414079a564aa0a19cb25261f038210"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a2a99f2c106b2562085e37aa56158a167bedbe4baa29bacd1b5274a980d3592a",
+            "claim_occurrence_id": "d95e49bf1c403c2078af72e6f4ec66fd1cc91b3a2d5095762eb1e51f371f63c0",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "Company Merger Sub shall duly execute and file a certificate of merger (the “Company Merger Certificate”) with the Secretary of State of the State of Delaware (the “DSOS”) in accordance with the Laws of the State of Delaware",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5f5263b54ace10be3c0792741ce503cd392d766f15ed1fc5fc6804bd143d3a26"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5f5263b54ace10be3c0792741ce503cd392d766f15ed1fc5fc6804bd143d3a26",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "767b8ea07b5a3ba6f8a40fc86c8df02ade50cd60fc5950c2d9b147b409354a02",
+                "document_ordinal": 0,
+                "absolute_start": 328,
+                "absolute_end": 560,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f7555c2eac09abd6644b091886e2b2cb95414079a564aa0a19cb25261f038210"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "Company Merger Sub and the Company shall make any other filings, recordings or publications required to be made by the Company or Company Merger Sub under the MGCL and the DLLCA in connection with the Company Merger."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ffdb3d78702cd445bc36f90c9eca0f69524e02e9841986b2f5a8c9cfaa28d315",
+        "claim_occurrence_id": "f6b71384f734fb428f727caaac0b69f7a4dfb493dbbcf20b8933f2cae958a067",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "Company Merger Sub and the Company shall make any other filings, recordings or publications required to be made by the Company or Company Merger Sub under the MGCL and the DLLCA in connection with the Company Merger.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a09616db43e3bd2c7ba22446a314682fa2d5513e5d4ad2c8ca0f1af7537c0fb4"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a09616db43e3bd2c7ba22446a314682fa2d5513e5d4ad2c8ca0f1af7537c0fb4",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6c1db38ac9f91d2d092b0458a0be48c41445bd07a8c86957b17953033fd44413",
+            "document_ordinal": 0,
+            "absolute_start": 571,
+            "absolute_end": 787,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c0b58076b78866163494ce320670fe5dd2cac3771c176972b643e5bc3a6e715b"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ffdb3d78702cd445bc36f90c9eca0f69524e02e9841986b2f5a8c9cfaa28d315",
+            "claim_occurrence_id": "f6b71384f734fb428f727caaac0b69f7a4dfb493dbbcf20b8933f2cae958a067",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "Company Merger Sub and the Company shall make any other filings, recordings or publications required to be made by the Company or Company Merger Sub under the MGCL and the DLLCA in connection with the Company Merger.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a09616db43e3bd2c7ba22446a314682fa2d5513e5d4ad2c8ca0f1af7537c0fb4"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a09616db43e3bd2c7ba22446a314682fa2d5513e5d4ad2c8ca0f1af7537c0fb4",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6c1db38ac9f91d2d092b0458a0be48c41445bd07a8c86957b17953033fd44413",
+                "document_ordinal": 0,
+                "absolute_start": 571,
+                "absolute_end": 787,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c0b58076b78866163494ce320670fe5dd2cac3771c176972b643e5bc3a6e715b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "The Company Merger shall become effective upon the later of (i) the acceptance for record of the Company Merger Articles of Merger by the SDAT or (ii) the filing of the Company Merger Certificate with the DSOS"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e07e086f21cf1f81ff650f613f07e4984edd7f11ea19bb1ea7f809d9c711b99d",
+        "claim_occurrence_id": "cbf6cb15de74a366cafea942f50aeb709f66391c5b9c23442e9c7d2893a23e10",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 3,
+        "state": "PRESENT",
+        "raw_value": "The Company Merger shall become effective upon the later of (i) the acceptance for record of the Company Merger Articles of Merger by the SDAT or (ii) the filing of the Company Merger Certificate with the DSOS",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7628cf5dd23d46eda61de1de24af25d5ead63d06a9777c09b56fc836d38a8670"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTIVE_TIME",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTIVE_TIME"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7628cf5dd23d46eda61de1de24af25d5ead63d06a9777c09b56fc836d38a8670",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6e4badd6b7010ed490b735d54365d039856bdebe6c1819a488b7df25dc8fa561",
+            "document_ordinal": 0,
+            "absolute_start": 788,
+            "absolute_end": 997,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "12b7bada1b11eeea6d75c783372ee9ef683f340b14afaa1123784b4d64175c45"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e07e086f21cf1f81ff650f613f07e4984edd7f11ea19bb1ea7f809d9c711b99d",
+            "claim_occurrence_id": "cbf6cb15de74a366cafea942f50aeb709f66391c5b9c23442e9c7d2893a23e10",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 3,
+            "state": "PRESENT",
+            "raw_value": "The Company Merger shall become effective upon the later of (i) the acceptance for record of the Company Merger Articles of Merger by the SDAT or (ii) the filing of the Company Merger Certificate with the DSOS",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7628cf5dd23d46eda61de1de24af25d5ead63d06a9777c09b56fc836d38a8670"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTIVE_TIME",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTIVE_TIME"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7628cf5dd23d46eda61de1de24af25d5ead63d06a9777c09b56fc836d38a8670",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6e4badd6b7010ed490b735d54365d039856bdebe6c1819a488b7df25dc8fa561",
+                "document_ordinal": 0,
+                "absolute_start": 788,
+                "absolute_end": 997,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "12b7bada1b11eeea6d75c783372ee9ef683f340b14afaa1123784b4d64175c45"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "the Partnership shall duly execute and file a certificate of merger (the “OpCo Merger Certificate”) with the DSOS in accordance with the Laws of the State of Delaware"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c75b347ae2bb79233c1d487c6175388499f5cc91c15d5f6ba99a025efe221efb",
+        "claim_occurrence_id": "71fa92a082cad3338cf24a2faf71ce1550c7cc5daa75c3904437af17590da105",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 4,
+        "state": "PRESENT",
+        "raw_value": "the Partnership shall duly execute and file a certificate of merger (the “OpCo Merger Certificate”) with the DSOS in accordance with the Laws of the State of Delaware",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "cab2f32663bc860ba18b4aaee1059e119a82d54398408c582a3d119f16bdd64d"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "cab2f32663bc860ba18b4aaee1059e119a82d54398408c582a3d119f16bdd64d",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0084d9e662682294b18ee24ac40ddfd15e396fe4217ce25b56934634eac7ecea",
+            "document_ordinal": 0,
+            "absolute_start": 1545,
+            "absolute_end": 1715,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "73f10579a6bdaa7b595fbea55cc0a42e3d42debfd870c630a795ea649100af90"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c75b347ae2bb79233c1d487c6175388499f5cc91c15d5f6ba99a025efe221efb",
+            "claim_occurrence_id": "71fa92a082cad3338cf24a2faf71ce1550c7cc5daa75c3904437af17590da105",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 4,
+            "state": "PRESENT",
+            "raw_value": "the Partnership shall duly execute and file a certificate of merger (the “OpCo Merger Certificate”) with the DSOS in accordance with the Laws of the State of Delaware",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "cab2f32663bc860ba18b4aaee1059e119a82d54398408c582a3d119f16bdd64d"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "cab2f32663bc860ba18b4aaee1059e119a82d54398408c582a3d119f16bdd64d",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0084d9e662682294b18ee24ac40ddfd15e396fe4217ce25b56934634eac7ecea",
+                "document_ordinal": 0,
+                "absolute_start": 1545,
+                "absolute_end": 1715,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "73f10579a6bdaa7b595fbea55cc0a42e3d42debfd870c630a795ea649100af90"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "the Company, the Surviving Company, Parent, Parent OpCo, OpCo Merger Sub and the Partnership shall make any other filings, recordings or publications required to be made by any of them under the DRULPA in connection with the OpCo Merger."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "7c9aba0811f45e940e624c7cdba711a778718e8e19f6b792ff2f519a2e28e1fa",
+        "claim_occurrence_id": "f417da214bc1046eb0cdb16a9248432aaff81dd5967a06cec7dbb13b09734236",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 5,
+        "state": "PRESENT",
+        "raw_value": "the Company, the Surviving Company, Parent, Parent OpCo, OpCo Merger Sub and the Partnership shall make any other filings, recordings or publications required to be made by any of them under the DRULPA in connection with the OpCo Merger.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "94bb53a77b2a2d47049bbef218afde1a927628c97e4732dcebdece655d650993"
+        ],
+        "attributes": {
+          "assertion_kind": "ACTIONS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACTIONS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "94bb53a77b2a2d47049bbef218afde1a927628c97e4732dcebdece655d650993",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5b1de0b4cbac1ba4f993c2023327e38a00452b24ac28fbc370e23abf5d1b6157",
+            "document_ordinal": 0,
+            "absolute_start": 1725,
+            "absolute_end": 1962,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "87f0b1d3244e0f59c909730c4ff3ac9a163dc8109ecea24f8f9342b91c1807d1"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "7c9aba0811f45e940e624c7cdba711a778718e8e19f6b792ff2f519a2e28e1fa",
+            "claim_occurrence_id": "f417da214bc1046eb0cdb16a9248432aaff81dd5967a06cec7dbb13b09734236",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 5,
+            "state": "PRESENT",
+            "raw_value": "the Company, the Surviving Company, Parent, Parent OpCo, OpCo Merger Sub and the Partnership shall make any other filings, recordings or publications required to be made by any of them under the DRULPA in connection with the OpCo Merger.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "94bb53a77b2a2d47049bbef218afde1a927628c97e4732dcebdece655d650993"
+            ],
+            "attributes": {
+              "assertion_kind": "ACTIONS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACTIONS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "94bb53a77b2a2d47049bbef218afde1a927628c97e4732dcebdece655d650993",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5b1de0b4cbac1ba4f993c2023327e38a00452b24ac28fbc370e23abf5d1b6157",
+                "document_ordinal": 0,
+                "absolute_start": 1725,
+                "absolute_end": 1962,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "87f0b1d3244e0f59c909730c4ff3ac9a163dc8109ecea24f8f9342b91c1807d1"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "The OpCo Merger shall become effective upon the filing of the OpCo Merger Certificate with the DSOS"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5c132a6e6a76d920aab9d21060b07cb6523798804b6eba65b6a4a049a812ba1d",
+        "claim_occurrence_id": "7e10547d85b7698e03659492c713b0dae5ba0e7e25d73089e3d4809e4cf9f09d",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 6,
+        "state": "PRESENT",
+        "raw_value": "The OpCo Merger shall become effective upon the filing of the OpCo Merger Certificate with the DSOS",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3f5daa9e519abc76236a319b8dd2ee4febcf4c0fd9aba6ace48b9ff4a4b44f70"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTIVE_TIME",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTIVE_TIME"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3f5daa9e519abc76236a319b8dd2ee4febcf4c0fd9aba6ace48b9ff4a4b44f70",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "097bbd638baa1bfb193089e5ebb685a5a4826898020217e09b4b4e2c9abfcb9b",
+            "document_ordinal": 0,
+            "absolute_start": 1963,
+            "absolute_end": 2062,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "86e6f2c3e98b6223c1aeafc65c3f301679771a3ec7c62c87d3e7c444e14418a8"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5c132a6e6a76d920aab9d21060b07cb6523798804b6eba65b6a4a049a812ba1d",
+            "claim_occurrence_id": "7e10547d85b7698e03659492c713b0dae5ba0e7e25d73089e3d4809e4cf9f09d",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 6,
+            "state": "PRESENT",
+            "raw_value": "The OpCo Merger shall become effective upon the filing of the OpCo Merger Certificate with the DSOS",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3f5daa9e519abc76236a319b8dd2ee4febcf4c0fd9aba6ace48b9ff4a4b44f70"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTIVE_TIME",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTIVE_TIME"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3f5daa9e519abc76236a319b8dd2ee4febcf4c0fd9aba6ace48b9ff4a4b44f70",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "097bbd638baa1bfb193089e5ebb685a5a4826898020217e09b4b4e2c9abfcb9b",
+                "document_ordinal": 0,
+                "absolute_start": 1963,
+                "absolute_end": 2062,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "86e6f2c3e98b6223c1aeafc65c3f301679771a3ec7c62c87d3e7c444e14418a8"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "citation_context": {
+        "parent_section_reference": "1.4",
+        "child_section_reference": "1.4",
+        "parent_chapeau_quote": "Section 1.4 Effective Times.",
+        "child_clause_quote": "Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 16721,
+        "absolute_end": 19285,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "be05620bcc2c6676bb836f2c92fc80c80ab794db81fe949d28e940ad16d25fc7",
+        "provision_instance_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "closure_id": "f4b1d5a16cd708ac0239d4ba9e0eda9b2429a6e021a1d13a193fe0d00fd69740"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "abf32e67dc570aa900a3b9b929882e4cf54c88f20dd3fc7c74e34c371f089a62",
+        "claim_occurrence_id": "db2f4f64ce9daff7afb6ede1d5c5f9132a8d9849ce6f6c0e74dab7964a54238e",
+        "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 7,
+        "state": "PRESENT",
+        "raw_value": "Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e28338784ee91172d6f4845931bddf0549b0522a343dd124229942bb5ea291c5"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTIVE_TIME",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTIVE_TIME"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e28338784ee91172d6f4845931bddf0549b0522a343dd124229942bb5ea291c5",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1ef24adf8c72a2acc68933b782cda439f5c3c3ff1b79ac0931a40ff7a67aa48e",
+            "document_ordinal": 0,
+            "absolute_start": 2280,
+            "absolute_end": 2563,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3ae2c9063b5ad758ee06eb172b730f72c8fef93ccee2ff349a4bea7b09a775f5"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "abf32e67dc570aa900a3b9b929882e4cf54c88f20dd3fc7c74e34c371f089a62",
+            "claim_occurrence_id": "db2f4f64ce9daff7afb6ede1d5c5f9132a8d9849ce6f6c0e74dab7964a54238e",
+            "subject_occurrence_id": "9524858264b44f0ed599911fbe02e1326e81850c561cec1dd14672a421f5e01e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 7,
+            "state": "PRESENT",
+            "raw_value": "Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e28338784ee91172d6f4845931bddf0549b0522a343dd124229942bb5ea291c5"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTIVE_TIME",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTIVE_TIME"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e28338784ee91172d6f4845931bddf0549b0522a343dd124229942bb5ea291c5",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1ef24adf8c72a2acc68933b782cda439f5c3c3ff1b79ac0931a40ff7a67aa48e",
+                "document_ordinal": 0,
+                "absolute_start": 2280,
+                "absolute_end": 2563,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3ae2c9063b5ad758ee06eb172b730f72c8fef93ccee2ff349a4bea7b09a775f5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+            "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+            "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+            "extraction_provenance_id": "b6d38d5afdf4d207f211f2464ad2e5e6f9354ed2ee23b41f1d1d9907ad8a5d08"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "source_citation": "1.5",
+      "citation_context": {
+        "parent_section_reference": "1.5",
+        "child_section_reference": "1.5",
+        "parent_chapeau_quote": "Section 1.5 Closing of the Mergers. The closing of the Mergers (the “Closing”) shall take place",
+        "child_clause_quote": "on the third Business Day after satisfaction or, to the extent permitted by applicable Law, waiver of the conditions set forth in Article VI (other than those conditions that by their nature are to be satisfied or waived at the Closing, but subject to the satisfaction of such conditions or, to the extent permitted by applicable Law, waiver by the party entitled to waive such conditions)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 19285,
+        "absolute_end": 20577,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "518f46a88b88cc6eaa280b8bc824f396b47e569ac25b5fd5e657c83a85670a0d",
+        "provision_instance_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "closure_id": "f9e70ba4ffee60e3ea0bedb7a647c19fbc8e4ea748c1381b85a977594e3b159b"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6c8a6b922f47dc50ce21c89399f2e4b5d5851430fce89b6e8b9469dc16304f17",
+        "claim_occurrence_id": "0eef1dd0bdf9f7cf093244969060392aef7fc204638150a6bc5f3222a52c1717",
+        "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "on the third Business Day after satisfaction or, to the extent permitted by applicable Law, waiver of the conditions set forth in Article VI (other than those conditions that by their nature are to be satisfied or waived at the Closing, but subject to the satisfaction of such conditions or, to the extent permitted by applicable Law, waiver by the party entitled to waive such conditions)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "31deb796e6b585c807b1f848050f2e27c6a34779763d83586512aa1b7cbc9307"
+        ],
+        "attributes": {
+          "assertion_kind": "CLOSING_TIMING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CLOSING_TIMING"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "31deb796e6b585c807b1f848050f2e27c6a34779763d83586512aa1b7cbc9307",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9c3b45e7d725059b0be5b1b1ea334c309d49cd9063f0db5e8876d842150bb9b7",
+            "document_ordinal": 0,
+            "absolute_start": 108,
+            "absolute_end": 497,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8969bb9f978adec73406c7d40745577c7468e68a104c4ba873e452d319bcaa07"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.5",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6c8a6b922f47dc50ce21c89399f2e4b5d5851430fce89b6e8b9469dc16304f17",
+            "claim_occurrence_id": "0eef1dd0bdf9f7cf093244969060392aef7fc204638150a6bc5f3222a52c1717",
+            "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "on the third Business Day after satisfaction or, to the extent permitted by applicable Law, waiver of the conditions set forth in Article VI (other than those conditions that by their nature are to be satisfied or waived at the Closing, but subject to the satisfaction of such conditions or, to the extent permitted by applicable Law, waiver by the party entitled to waive such conditions)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "31deb796e6b585c807b1f848050f2e27c6a34779763d83586512aa1b7cbc9307"
+            ],
+            "attributes": {
+              "assertion_kind": "CLOSING_TIMING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CLOSING_TIMING"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "31deb796e6b585c807b1f848050f2e27c6a34779763d83586512aa1b7cbc9307",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9c3b45e7d725059b0be5b1b1ea334c309d49cd9063f0db5e8876d842150bb9b7",
+                "document_ordinal": 0,
+                "absolute_start": 108,
+                "absolute_end": 497,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8969bb9f978adec73406c7d40745577c7468e68a104c4ba873e452d319bcaa07"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "182f1dd5f5a5af821ce2d31e55adc9b38db5ed5d3a8d24c97e365153491bb6e2",
+            "producer_receipt_id": "66c473308aa00818ae4533fea24dc9355937abd5119b4ae2bc42e25e39e1c726",
+            "governed_scope_digest": "1e20549866ec4945cd9d22c93b9e59798cb5498b9db3b1c398e427418e634096",
+            "extraction_provenance_id": "1a031ebda0ab947a1f6cef29e21279e02ff77b88030e7744c32c88185d77b012"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "source_citation": "1.5",
+      "citation_context": {
+        "parent_section_reference": "1.5",
+        "child_section_reference": "1.5",
+        "parent_chapeau_quote": "Section 1.5 Closing of the Mergers. The closing of the Mergers (the “Closing”) shall take place",
+        "child_clause_quote": "if the day in which the aforementioned satisfaction or waiver occurs is within the last five (5) Business Days of any calendar year quarter, then Parent shall have the right but not the obligation to require that the Closing occur on the first (1st) Business Day of the calendar year quarter immediately following the quarter in which such satisfaction or waiver occurs"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 19285,
+        "absolute_end": 20577,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "518f46a88b88cc6eaa280b8bc824f396b47e569ac25b5fd5e657c83a85670a0d",
+        "provision_instance_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "closure_id": "f9e70ba4ffee60e3ea0bedb7a647c19fbc8e4ea748c1381b85a977594e3b159b"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0a89ab873f62bbe691bcd8bb0238c401b62bb243e4bafe0f9f68d2b6994abb1a",
+        "claim_occurrence_id": "a975288d7592e1fca1d9beef467b3f813b42bf7864f6345db403852e5ca431a4",
+        "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "if the day in which the aforementioned satisfaction or waiver occurs is within the last five (5) Business Days of any calendar year quarter, then Parent shall have the right but not the obligation to require that the Closing occur on the first (1st) Business Day of the calendar year quarter immediately following the quarter in which such satisfaction or waiver occurs",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ae4733be60eab0a30ed059defadb649f2d5c03c2d4b2632da3c153c1cabc442c"
+        ],
+        "attributes": {
+          "assertion_kind": "CLOSING_TIMING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CLOSING_TIMING"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ae4733be60eab0a30ed059defadb649f2d5c03c2d4b2632da3c153c1cabc442c",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "42716eb2d88362a5ae0c65e0070d3f518f7d724095c9674b8f9fa7f3f82bcf6b",
+            "document_ordinal": 0,
+            "absolute_start": 506,
+            "absolute_end": 875,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8bc8920b66133e14467a2aad61901b2c384c2bd3a0e23c78e2c869727ec9bbd8"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.5",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0a89ab873f62bbe691bcd8bb0238c401b62bb243e4bafe0f9f68d2b6994abb1a",
+            "claim_occurrence_id": "a975288d7592e1fca1d9beef467b3f813b42bf7864f6345db403852e5ca431a4",
+            "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "if the day in which the aforementioned satisfaction or waiver occurs is within the last five (5) Business Days of any calendar year quarter, then Parent shall have the right but not the obligation to require that the Closing occur on the first (1st) Business Day of the calendar year quarter immediately following the quarter in which such satisfaction or waiver occurs",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ae4733be60eab0a30ed059defadb649f2d5c03c2d4b2632da3c153c1cabc442c"
+            ],
+            "attributes": {
+              "assertion_kind": "CLOSING_TIMING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CLOSING_TIMING"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ae4733be60eab0a30ed059defadb649f2d5c03c2d4b2632da3c153c1cabc442c",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "42716eb2d88362a5ae0c65e0070d3f518f7d724095c9674b8f9fa7f3f82bcf6b",
+                "document_ordinal": 0,
+                "absolute_start": 506,
+                "absolute_end": 875,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8bc8920b66133e14467a2aad61901b2c384c2bd3a0e23c78e2c869727ec9bbd8"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "182f1dd5f5a5af821ce2d31e55adc9b38db5ed5d3a8d24c97e365153491bb6e2",
+            "producer_receipt_id": "66c473308aa00818ae4533fea24dc9355937abd5119b4ae2bc42e25e39e1c726",
+            "governed_scope_digest": "1e20549866ec4945cd9d22c93b9e59798cb5498b9db3b1c398e427418e634096",
+            "extraction_provenance_id": "1a031ebda0ab947a1f6cef29e21279e02ff77b88030e7744c32c88185d77b012"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "source_citation": "1.5",
+      "citation_context": {
+        "parent_section_reference": "1.5",
+        "child_section_reference": "1.5",
+        "parent_chapeau_quote": "Section 1.5 Closing of the Mergers. The closing of the Mergers (the “Closing”) shall take place",
+        "child_clause_quote": "remotely by exchange of documents and signatures (or their electronic counterparts)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 19285,
+        "absolute_end": 20577,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "518f46a88b88cc6eaa280b8bc824f396b47e569ac25b5fd5e657c83a85670a0d",
+        "provision_instance_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "closure_id": "f9e70ba4ffee60e3ea0bedb7a647c19fbc8e4ea748c1381b85a977594e3b159b"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "b236f6fc55369c42bbc835923b81362223e2160b65ad46210d7627dd083fb5d9",
+        "claim_occurrence_id": "f3c15ad9e57c03fc8cb97fa707a5e35d6fa7b4108e755c18bf1f68e29fdf379e",
+        "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "remotely by exchange of documents and signatures (or their electronic counterparts)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "f82f061f211d635df65f808274c610a3ccf390dcb291a83832830bde31b5c69b"
+        ],
+        "attributes": {
+          "assertion_kind": "CLOSING_LOCATION",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CLOSING_LOCATION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "f82f061f211d635df65f808274c610a3ccf390dcb291a83832830bde31b5c69b",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ebf3b8d8e1cdb9a3b16b8f7e5c0cc2bbedb4b4883b57a6a85050127a19d47393",
+            "document_ordinal": 0,
+            "absolute_start": 1017,
+            "absolute_end": 1100,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "54e01721f573faf82fb84198242f6c5bc5dc787f01a845fd2831a4de5ca564ea"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.5",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "b236f6fc55369c42bbc835923b81362223e2160b65ad46210d7627dd083fb5d9",
+            "claim_occurrence_id": "f3c15ad9e57c03fc8cb97fa707a5e35d6fa7b4108e755c18bf1f68e29fdf379e",
+            "subject_occurrence_id": "a074f1062eb4bf17a0de6add8645603d4b497dc85f8a4d451df9d5d6fd4a217e",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "remotely by exchange of documents and signatures (or their electronic counterparts)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "f82f061f211d635df65f808274c610a3ccf390dcb291a83832830bde31b5c69b"
+            ],
+            "attributes": {
+              "assertion_kind": "CLOSING_LOCATION",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CLOSING_LOCATION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "f82f061f211d635df65f808274c610a3ccf390dcb291a83832830bde31b5c69b",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ebf3b8d8e1cdb9a3b16b8f7e5c0cc2bbedb4b4883b57a6a85050127a19d47393",
+                "document_ordinal": 0,
+                "absolute_start": 1017,
+                "absolute_end": 1100,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "54e01721f573faf82fb84198242f6c5bc5dc787f01a845fd2831a4de5ca564ea"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "182f1dd5f5a5af821ce2d31e55adc9b38db5ed5d3a8d24c97e365153491bb6e2",
+            "producer_receipt_id": "66c473308aa00818ae4533fea24dc9355937abd5119b4ae2bc42e25e39e1c726",
+            "governed_scope_digest": "1e20549866ec4945cd9d22c93b9e59798cb5498b9db3b1c398e427418e634096",
+            "extraction_provenance_id": "1a031ebda0ab947a1f6cef29e21279e02ff77b88030e7744c32c88185d77b012"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "source_citation": "1.6",
+      "citation_context": {
+        "parent_section_reference": "1.6",
+        "child_section_reference": "1.6",
+        "parent_chapeau_quote": "Section 1.6 Effects of the Mergers.",
+        "child_clause_quote": "at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 20577,
+        "absolute_end": 21637,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "368e51cc95af4b3904ec2d20aeb3da4601e25a2aeb234b0cca782bea717cff36",
+        "provision_instance_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+        "closure_id": "1f45995daf08f4d0c1d7dd8b30e487e8486a12ca5e0f6c9fdc389db3e84d7056"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "40351f57fff6643682a901c309cdad8d3b3f969a5164448f257978577934a621",
+        "claim_occurrence_id": "21ab830ebb3fd379d040e900a6c9c965399d59d0e02d2ce510e35541112feb0c",
+        "subject_occurrence_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "07b6afb7863f7f76bc5decb00c5fd0a3949cf893dd9ec91d5f7e4efbccfeb3db"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "07b6afb7863f7f76bc5decb00c5fd0a3949cf893dd9ec91d5f7e4efbccfeb3db",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5753af96c8dfb8a76ab359ec0aae15b2358adcbcd03265f949c4d70d39b2c707",
+            "document_ordinal": 0,
+            "absolute_start": 190,
+            "absolute_end": 567,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "03d5c10fe0853227d8a3996fa501b06a8bf1a873c168a36d7d419b7027b36594"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.6",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "40351f57fff6643682a901c309cdad8d3b3f969a5164448f257978577934a621",
+            "claim_occurrence_id": "21ab830ebb3fd379d040e900a6c9c965399d59d0e02d2ce510e35541112feb0c",
+            "subject_occurrence_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "07b6afb7863f7f76bc5decb00c5fd0a3949cf893dd9ec91d5f7e4efbccfeb3db"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "07b6afb7863f7f76bc5decb00c5fd0a3949cf893dd9ec91d5f7e4efbccfeb3db",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5753af96c8dfb8a76ab359ec0aae15b2358adcbcd03265f949c4d70d39b2c707",
+                "document_ordinal": 0,
+                "absolute_start": 190,
+                "absolute_end": 567,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "03d5c10fe0853227d8a3996fa501b06a8bf1a873c168a36d7d419b7027b36594"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "ff1c570f19605000b4e0e293440e088e1e5bec2a561c2eba6ac69ac4c24a5a82",
+            "producer_receipt_id": "7b3cf576de667934b0e3ae688077726321c10666312725e4aae14ddd99f4a140",
+            "governed_scope_digest": "ae275b8883849451467d8b4abc4662b1b593e2d4a2e9c961b9bd6fb8cd2012e9",
+            "extraction_provenance_id": "fa27d26f5a99ff1e17dd73cd505f2354492e188678df6f3271f44c85fefab469"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "source_citation": "1.6",
+      "citation_context": {
+        "parent_section_reference": "1.6",
+        "child_section_reference": "1.6",
+        "parent_chapeau_quote": "Section 1.6 Effects of the Mergers.",
+        "child_clause_quote": "at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "8e30df9d55ea5e039a3a6fbfcf5e4a124c9bae8e36a3996b5f42bf5818ef3f82",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 20577,
+        "absolute_end": 21637,
+        "concept_key": "MERGER-STRUCTURE",
+        "ordinal": 1,
+        "source_anchor_id": "368e51cc95af4b3904ec2d20aeb3da4601e25a2aeb234b0cca782bea717cff36",
+        "provision_instance_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+        "closure_id": "1f45995daf08f4d0c1d7dd8b30e487e8486a12ca5e0f6c9fdc389db3e84d7056"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "7dc3a8bd2b957f49a412fd6016eb6dea54be7bcd178efecebf74bfd53f190ba7",
+        "claim_occurrence_id": "0a37ca28903de00cdbcef65f4690656f68dda7c8268a536c4de62e944fb5178c",
+        "subject_occurrence_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+        "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "13eb5c48d66a931f93363d569e8a1a0e4e2e1912387847ed09b790494f9b4097"
+        ],
+        "attributes": {
+          "assertion_kind": "EFFECTS",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EFFECTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "13eb5c48d66a931f93363d569e8a1a0e4e2e1912387847ed09b790494f9b4097",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "fe1fc1dff38bb89beb0c0238b00caa49befc1e52fa28822960fa3b36a494fe3d",
+            "document_ordinal": 0,
+            "absolute_start": 717,
+            "absolute_end": 1059,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "97b73014e151163cfd8e3749f95eaf30ba56578bd8ed24587d3ac7ed5b4a1206"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.6",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "7dc3a8bd2b957f49a412fd6016eb6dea54be7bcd178efecebf74bfd53f190ba7",
+            "claim_occurrence_id": "0a37ca28903de00cdbcef65f4690656f68dda7c8268a536c4de62e944fb5178c",
+            "subject_occurrence_id": "6de29458ba8f4ce9d87a16f46e5612bfa3b6dba52625595b313b723ede0160f6",
+            "claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "13eb5c48d66a931f93363d569e8a1a0e4e2e1912387847ed09b790494f9b4097"
+            ],
+            "attributes": {
+              "assertion_kind": "EFFECTS",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EFFECTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "13eb5c48d66a931f93363d569e8a1a0e4e2e1912387847ed09b790494f9b4097",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "fe1fc1dff38bb89beb0c0238b00caa49befc1e52fa28822960fa3b36a494fe3d",
+                "document_ordinal": 0,
+                "absolute_start": 717,
+                "absolute_end": 1059,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "97b73014e151163cfd8e3749f95eaf30ba56578bd8ed24587d3ac7ed5b4a1206"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MERGER_STRUCTURE",
+            "prompt_digest": "ff1c570f19605000b4e0e293440e088e1e5bec2a561c2eba6ac69ac4c24a5a82",
+            "producer_receipt_id": "7b3cf576de667934b0e3ae688077726321c10666312725e4aae14ddd99f4a140",
+            "governed_scope_digest": "ae275b8883849451467d8b4abc4662b1b593e2d4a2e9c961b9bd6fb8cd2012e9",
+            "extraction_provenance_id": "fa27d26f5a99ff1e17dd73cd505f2354492e188678df6f3271f44c85fefab469"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 87,
+        "materiality_label": "MERGER_STRUCTURE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7eaf8ed5531b610fd49e718473b93ed5630ce57a56198b66e1fd64f12f4808ea",
+      "closure_id": "4c76da851ccdd29c19e6e1671db63dcdf318826a53cc5fbd29b6db5d402451f7",
+      "normalised_phrase": "the separate existence of OpCo Merger Sub shall thereupon cease",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4548b4da414ea6cac7653ce75311d39ae823d96462a4667b2c7057e2c3c1775a",
+      "closure_id": "77b416cf1af943a0421e7e013657a1d6271faa4165c5cf276986fa6bd9a8c82a",
+      "normalised_phrase": "the separate existence of the Company shall thereupon cease",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "885e0eb84676cb581edc0990132644168a340a9bc638fea5c31af1083f5f26e8",
+      "closure_id": "8d5452d3b6903dbec6b8a8a2c52f6d3c6815bd2c13adc2204b5272e297247342",
+      "normalised_phrase": "the Partnership shall be the surviving entity in the OpCo Merger",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "89d909f45f4b32a955edaf5a12b7752f9781132639b1ac237166056544feca74",
+      "closure_id": "bc0a0c0803e56e8c8fff35bd23ba5781ab8eec78ab950040087fba42f181b64b",
+      "normalised_phrase": "Company Merger Sub shall survive the Company Merger",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c1d820fe07ff1cecf3745466c306e697c321fa2226e00be2333c442ea14411c1",
+      "closure_id": "c4ef30f4b9b5935b6e5a4c589b17b48f5bba32073cc2299ff7b0b6ec1aacdc29",
+      "normalised_phrase": "the Company shall be merged with and into Company Merger Sub",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0d5771e529ae89d8e262cc0547af6823824d18ffe137c4fb0020ac6562314e19",
+      "closure_id": "eaeff57b7799aff1f660a0fa5bacfda4fd26d38e145a98528150eba299441856",
+      "normalised_phrase": "Parent shall be the sole member and manager of the Surviving Company",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9c309f3244b4ae0b5840306a2c38364be59421b5f2cda8385a8c6ff03451d046",
+      "closure_id": "f260f97ee1133de678f5e42fea5f448139b66c3198f2dbf4f59bf23c87e656a7",
+      "normalised_phrase": "OpCo Merger Sub shall be merged with and into the Partnership",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e07e086f21cf1f81ff650f613f07e4984edd7f11ea19bb1ea7f809d9c711b99d",
+      "closure_id": "12b7bada1b11eeea6d75c783372ee9ef683f340b14afaa1123784b4d64175c45",
+      "normalised_phrase": "The Company Merger shall become effective upon the later of (i) the acceptance for record of the Company Merger Articles of Merger by the SDAT or (ii) the filing of the Company Merger Certificate with the DSOS",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "abf32e67dc570aa900a3b9b929882e4cf54c88f20dd3fc7c74e34c371f089a62",
+      "closure_id": "3ae2c9063b5ad758ee06eb172b730f72c8fef93ccee2ff349a4bea7b09a775f5",
+      "normalised_phrase": "Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c75b347ae2bb79233c1d487c6175388499f5cc91c15d5f6ba99a025efe221efb",
+      "closure_id": "73f10579a6bdaa7b595fbea55cc0a42e3d42debfd870c630a795ea649100af90",
+      "normalised_phrase": "the Partnership shall duly execute and file a certificate of merger (the “OpCo Merger Certificate”) with the DSOS in accordance with the Laws of the State of Delaware",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5c132a6e6a76d920aab9d21060b07cb6523798804b6eba65b6a4a049a812ba1d",
+      "closure_id": "86e6f2c3e98b6223c1aeafc65c3f301679771a3ec7c62c87d3e7c444e14418a8",
+      "normalised_phrase": "The OpCo Merger shall become effective upon the filing of the OpCo Merger Certificate with the DSOS",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7c9aba0811f45e940e624c7cdba711a778718e8e19f6b792ff2f519a2e28e1fa",
+      "closure_id": "87f0b1d3244e0f59c909730c4ff3ac9a163dc8109ecea24f8f9342b91c1807d1",
+      "normalised_phrase": "the Company, the Surviving Company, Parent, Parent OpCo, OpCo Merger Sub and the Partnership shall make any other filings, recordings or publications required to be made by any of them under the DRULPA in connection with the OpCo Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ffdb3d78702cd445bc36f90c9eca0f69524e02e9841986b2f5a8c9cfaa28d315",
+      "closure_id": "c0b58076b78866163494ce320670fe5dd2cac3771c176972b643e5bc3a6e715b",
+      "normalised_phrase": "Company Merger Sub and the Company shall make any other filings, recordings or publications required to be made by the Company or Company Merger Sub under the MGCL and the DLLCA in connection with the Company Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5b1c415fbea714de2ff54ca922898c581516da3cce1598652b0a8397f710a861",
+      "closure_id": "dc5c544658831f61107b65c78aa6f01ef63b7f59db13a3e34f31130213188e8d",
+      "normalised_phrase": "Company Merger Sub and the Company shall duly execute and file articles of merger (the “Company Merger Articles of Merger”) with the State Department of Assessments and Taxation of Maryland (the “SDAT”) in accordance with the Laws of the State of Maryland",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a2a99f2c106b2562085e37aa56158a167bedbe4baa29bacd1b5274a980d3592a",
+      "closure_id": "f7555c2eac09abd6644b091886e2b2cb95414079a564aa0a19cb25261f038210",
+      "normalised_phrase": "Company Merger Sub shall duly execute and file a certificate of merger (the “Company Merger Certificate”) with the Secretary of State of the State of Delaware (the “DSOS”) in accordance with the Laws of the State of Delaware",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b236f6fc55369c42bbc835923b81362223e2160b65ad46210d7627dd083fb5d9",
+      "closure_id": "54e01721f573faf82fb84198242f6c5bc5dc787f01a845fd2831a4de5ca564ea",
+      "normalised_phrase": "remotely by exchange of documents and signatures (or their electronic counterparts)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6c8a6b922f47dc50ce21c89399f2e4b5d5851430fce89b6e8b9469dc16304f17",
+      "closure_id": "8969bb9f978adec73406c7d40745577c7468e68a104c4ba873e452d319bcaa07",
+      "normalised_phrase": "on the third Business Day after satisfaction or, to the extent permitted by applicable Law, waiver of the conditions set forth in Article VI (other than those conditions that by their nature are to be satisfied or waived at the Closing, but subject to the satisfaction of such conditions or, to the extent permitted by applicable Law, waiver by the party entitled to waive such conditions)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0a89ab873f62bbe691bcd8bb0238c401b62bb243e4bafe0f9f68d2b6994abb1a",
+      "closure_id": "8bc8920b66133e14467a2aad61901b2c384c2bd3a0e23c78e2c869727ec9bbd8",
+      "normalised_phrase": "if the day in which the aforementioned satisfaction or waiver occurs is within the last five (5) Business Days of any calendar year quarter, then Parent shall have the right but not the obligation to require that the Closing occur on the first (1st) Business Day of the calendar year quarter immediately following the quarter in which such satisfaction or waiver occurs",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "40351f57fff6643682a901c309cdad8d3b3f969a5164448f257978577934a621",
+      "closure_id": "03d5c10fe0853227d8a3996fa501b06a8bf1a873c168a36d7d419b7027b36594",
+      "normalised_phrase": "at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7dc3a8bd2b957f49a412fd6016eb6dea54be7bcd178efecebf74bfd53f190ba7",
+      "closure_id": "97b73014e151163cfd8e3749f95eaf30ba56578bd8ed24587d3ac7ed5b4a1206",
+      "normalised_phrase": "at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "or on such other later date and time (not to exceed thirty (30) days after the Company Merger Articles of Merger are accepted for record by the SDAT) as may be mutually agreed to by the Company and Parent and specified in the Company Merger Articles of Merger and the Company Merger Certificate in accordance with the MGCL and the DLLCA (such date and time being hereinafter referred to as the “Company Merger Effective Time”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EFFECTIVE_TIME: Parties may instead mutually agree to a later effective date and time for the Company Merger, specified in the merger filings, subject to a thirty-day outer limit after SDAT acceptance.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "855afc273aeba80a3fca86086e5ac07275f4fbaebe3fef59460bcb453934afd6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8983399e2fc70db84005d229aea7367e671284be23f6d5a211654afaeb8a36fb",
+          "document_ordinal": 0,
+          "absolute_start": 999,
+          "absolute_end": 1430,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "cb20090ee3a6cd03e6c7b59965c58eceb578c219db6329fa9ef2500855a3f72f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+        "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+        "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+        "extraction_provenance_id": "1dfaade9b4797fa7e24452283ef6838afeb8400cf3e657b2d0775d67133602d4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "or on such other date and time as may be mutually agreed to by the Company and Parent and specified in the OpCo Merger Certificate in accordance with the DRULPA and DLLCA (the “OpCo Merger Effective Time”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EFFECTIVE_TIME: Parties may instead mutually agree to an alternate effective date and time for the OpCo Merger, specified in the OpCo Merger Certificate.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "74ecd3093f297d9af75d3d1a35eb3daa798f61e2a85d98304928c8cde0876cc4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7962f05b055c6dadf252818e6fd3f192a1ca52a17625045fdbac2004df21339a",
+          "document_ordinal": 0,
+          "absolute_start": 2063,
+          "absolute_end": 2273,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ed4f69c3e616f78f9dd92590710b9ad1b39052b1ab1459572d67642dfd710454",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "bf9d3fe9072f6c6b19b8e0adc018cab19733f8dfc13514a704b956c2e381c2f1",
+        "producer_receipt_id": "153577d26611fc3922dbe9808dca91ba63b273f64f3dd54df772f93608fd45be",
+        "governed_scope_digest": "9a1a1ad181ee93829de66ce942a201097f26e89a60c199866b58c348a6341223",
+        "extraction_provenance_id": "1dfaade9b4797fa7e24452283ef6838afeb8400cf3e657b2d0775d67133602d4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "1.5",
+      "source_citation": "1.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "at such other time, date and place as may be mutually agreed to in writing by the parties hereto",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "CLOSING_TIMING: Fallback mechanism allowing the parties to close at a different time, date, and place than the default formula, if mutually agreed in writing; no fixed alternative time/place is stated in the agreement.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5d3249e13cec848d95096c4a5eb73d234110ac757577d17b65465ea3ca53eb58",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d1438ba8636be543c05aee5aca3d0a5728e0d532976f54e6804639660c0e15fc",
+          "document_ordinal": 0,
+          "absolute_start": 1108,
+          "absolute_end": 1204,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4f31e83da3908bc16f46d2a957fb45d78ada558ad79d60580b3ff575ac639f39",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "182f1dd5f5a5af821ce2d31e55adc9b38db5ed5d3a8d24c97e365153491bb6e2",
+        "producer_receipt_id": "66c473308aa00818ae4533fea24dc9355937abd5119b4ae2bc42e25e39e1c726",
+        "governed_scope_digest": "1e20549866ec4945cd9d22c93b9e59798cb5498b9db3b1c398e427418e634096",
+        "extraction_provenance_id": "03c4a7e335ab0ba4642bebb594c9a1156a3bf5037dd422e4f025df7de64b1ba4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "d019dc9a02445d9d0f733385d0f351883b3144ce78d7fa3f9777c5a3a1e0a942",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "85ee29f08d8bbd8553122f54298f63a8823689cb64c37c435a2730df49cdd0b0",
+    "counts": {
+      "compiled_candidates": 23,
+      "resolved": 20,
+      "auto_pass": 0,
+      "review_queue": 20,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 4,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "4d0e887c4ef06b9223aa006d1c138fb371319185c961f996d4ee3a9d41e28d26"
+  }
+}

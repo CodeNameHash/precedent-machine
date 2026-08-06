@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:29:37.486Z",
+  "section_reference": "3.11",
+  "note": "General extraction run: deal=modiv, family=EMPLOYEE_MATTERS, section_references=[\"3.11\",\"3.12\"] (all dispatched as EMPLOYEE_MATTERS via section_family_assignments), prompt_id=native-producer-employee-matters/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"employee_matters_assertions\":[],\"employee_dno_mechanics\":[{\"surface\":\"RETIREMENT_401K\",\"quote\":\"that is intended to be \\u201cqualified\\u201d within the meaning of Section 401(a) of the Code has received a favorable opinion letter, advisory or determination letter from the IRS and, to the Company\\u2019s knowledge, there is no fact which would adversely affect the qualified status of any such Company Employee Benefit Plan or PEO Plan.\",\"detail\":\"Tax-qualification representation for retirement plans intended to qualify under Code Section 401(a): IRS opinion, advisory, or determination letter received, with no known fact adversely affecting qualified status.\"}],\"open_world_candidates\":[]}\n```"
+}

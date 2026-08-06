@@ -41,7 +41,7 @@ function sha256(file) {
 }
 
 function appendixFBlocks() {
-  const src = fs.readFileSync('pm-master-straitjacket.codex.md', 'utf8');
+  const src = fs.readFileSync('archive/pm-master-straitjacket.codex.md', 'utf8');
   const appendix = src.slice(src.indexOf('# APPENDIX F'), src.indexOf('# APPENDIX G'));
   return [...appendix.matchAll(/```json\n([\s\S]*?)\n```/g)].map((match) => JSON.parse(match[1]));
 }
@@ -71,10 +71,10 @@ test('PH-1-C phase allowlist files match Appendix F', () => {
 
 test('PH-1-D ACK reference pins straitjacket SHA256', () => {
   const reference = fs.readFileSync('docs/acks/ACK-MASTER-V1.reference.md', 'utf8');
-  assert.match(reference, new RegExp(`PM_MASTER_STRAITJACKET_SHA256: ${sha256('pm-master-straitjacket.codex.md')}`));
+  assert.match(reference, new RegExp(`PM_MASTER_STRAITJACKET_SHA256: ${sha256('archive/pm-master-straitjacket.codex.md')}`));
   assert.match(reference, /I acknowledge master straitjacket WP-MASTER-V1/);
-  const worklog = fs.readFileSync('WORKLOG-P-1.md', 'utf8');
-  assert.match(worklog, new RegExp(`PM_MASTER_STRAITJACKET_SHA256: ${sha256('pm-master-straitjacket.codex.md')}`));
+  const worklog = fs.readFileSync('archive/WORKLOG-P-1.md', 'utf8');
+  assert.match(worklog, new RegExp(`PM_MASTER_STRAITJACKET_SHA256: ${sha256('archive/pm-master-straitjacket.codex.md')}`));
 });
 
 test('PH-1-E CI workflow names every invariant script', () => {

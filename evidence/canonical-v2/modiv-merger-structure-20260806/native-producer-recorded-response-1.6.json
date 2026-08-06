@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:36:24.505Z",
+  "section_reference": "1.6",
+  "note": "General extraction run: deal=modiv, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.1\",\"1.4\",\"1.5\",\"1.6\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"structure_assertions\":[{\"assertion_kind\":\"EFFECTS\",\"quote\":\"at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company.\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo.\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}"
+}

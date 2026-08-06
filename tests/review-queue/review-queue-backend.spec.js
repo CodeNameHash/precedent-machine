@@ -12,7 +12,8 @@ const resolveHandler = require('../../pages/api/admin/review-queue/[id]/resolve'
 
 function tempRoot() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-review-queue-'));
-  fs.writeFileSync(path.join(root, 'HANDOFF.md'), '# Handoff\n');
+  fs.mkdirSync(path.join(root, 'archive'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'archive', 'HANDOFF.md'), '# Handoff\n');
   return root;
 }
 
@@ -75,7 +76,7 @@ test('resolveEntry records resolution and appends machine-readable HANDOFF line'
   }, { root, now: '2026-07-07T21:05:00.000Z' });
   assert.equal(result.entry.resolution.choice_key, 'approve');
   assert.equal(readEntry('rq-test-1', { root }).resolved_at, '2026-07-07T21:05:00.000Z');
-  const handoff = fs.readFileSync(path.join(root, 'HANDOFF.md'), 'utf8');
+  const handoff = fs.readFileSync(path.join(root, 'archive', 'HANDOFF.md'), 'utf8');
   assert.match(handoff, /^REVIEW_QUEUE_RESOLUTION /m);
   assert.match(handoff, /"id":"rq-test-1"/);
   assert.throws(() => resolveEntry('rq-test-1', { choice_key: 'approve' }, { root }), /already resolved/);

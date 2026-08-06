@@ -1,0 +1,41 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "GENERAL_COVENANTS",
+  "purpose": "General extraction run: family GENERAL_COVENANTS on deal modiv.",
+  "section_references": [
+    "5.3",
+    "5.7",
+    "5.9"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.3",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "5.7",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "5.9",
+      "family_id": "GENERAL_COVENANTS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "prompt_id": "native-producer-general-covenants/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-06T10:32:43.912Z",
+  "total_elapsed_ms": 128067,
+  "extraction_wall_clock_ms": 124312,
+  "model_call_count": 3,
+  "run_receipt_id": "1f6f7921e3b781b60dca23c4fc929f00968540947d9ff92b4be70e2abda6ec0c",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

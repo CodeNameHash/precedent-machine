@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:33:47.338Z",
+  "section_reference": "5.7",
+  "note": "General extraction run: deal=modiv, family=GENERAL_COVENANTS, section_references=[\"5.3\",\"5.7\",\"5.9\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"5.7\",\n      \"covenant_obligor\": \"The Company and Parent, and their respective Subsidiaries\",\n      \"covenant_code\": \"COV-PUBLICITY\",\n      \"definition_cross_references\": [],\n      \"quote\": \"shall consult with each other before issuing any press release or otherwise making any public statements that may, or could reasonably be expected to, delay the consummation of the Mergers or with respect to this Agreement or the Mergers\"\n    },\n    {\n      \"section_reference\": \"5.7\",\n      \"covenant_obligor\": \"The Company and Parent, and their respective Subsidiaries\",\n      \"covenant_code\": \"COV-PUBLICITY\",\n      \"definition_cross_references\": [],\n      \"quote\": \"shall not issue any such press release or make any such public statement without the prior written consent of the other parties hereto (which consent shall not be unreasonably withheld, conditioned or delayed)\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

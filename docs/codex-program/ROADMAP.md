@@ -311,34 +311,56 @@ it moves first, below.
 
 ---
 
-## D1. Merge to main: authorised, moved up
+## D1. Merge to main: done, three times over, and now open again in miniature
 
-**Ben authorised this on 2026-08-05 and wants it moving now: he does not
-want to keep developing on a branch.** It no longer waits behind anything
-else in this plan; it runs in parallel with lanes S and P, same as
-everything else here that does not touch containment.
+**Correction, 2026-08-06.** This step previously read as still pending: "This
+branch is 287 commits and 910 files ahead of main... None of it has ever
+passed CI as a merged unit." That stopped being true on 2026-08-05. The merge
+happened, in exactly the shape `MERGE-PLAN.md` proposed, as three pull
+requests: #476 (`wp/m3-canonical-v2-foundation`, merged
+2026-08-05T21:55:41Z), #477 (`wp/m3-tonight-integration-and-live-fixes`,
+merged 2026-08-06T00:30:37Z), and #478 (the whole `codex/m3-production-phase1`
+branch head, merged 2026-08-06T09:51:01Z). Checked directly against GitHub,
+not against another document: `gh pr list --state merged --json
+number,title,mergedAt,baseRefName,headRefName`. `origin/main` is now at
+`016288cb`, the merge commit for PR #478. What follows below is left as
+written, as the record of the step that was authorised and then carried out;
+read it in the past tense.
 
-**What it is.** This branch is 287 commits and 910 files ahead of `main`,
-with 314,632 lines inserted. Production tracks `main`. None of it has ever
-passed CI as a merged unit.
+**What is actually open now.** Work continued on `codex/m3-production-phase1`
+after PR #478, including the documentation audit this correction is part of.
+As of this correction the branch is 15 commits ahead of `origin/main` again
+(`git log --oneline origin/main..HEAD`; this number moves as other agents
+land documentation-only commits on this same branch concurrently, run the
+command rather than trust the figure), not yet merged. This is a small,
+fresh merge, not a revival of the original 287-commit backlog; it needs its
+own slicing decision if `MERGE-PLAN.md`'s per-phase-allowlist discipline is
+still wanted for it, but it is nowhere near the size or risk of what is
+described below.
 
-**Why it matters.** Step D2 is unreachable without it, and this is
-plausibly weeks of integration on its own. Treating it as ambient is how it
-becomes a crisis, which is exactly why it is authorised now rather than left
-for later.
+**What it was.** This branch was 287 commits and 910 files ahead of `main`,
+with 314,632 lines inserted. Production tracks `main`. None of it had passed
+CI as a merged unit until the merges above.
 
-**How it gets sliced.** Not decided here. A separate assessment is
-establishing how to break 910 files into a mergeable sequence, recorded in
-`docs/codex-program/MERGE-PLAN.md`. Read that document for the actual
-slicing; nothing in this roadmap should be read as pre-empting it.
+**Why it mattered.** Step D2 was unreachable without it, and it was
+plausibly weeks of integration on its own. Treating it as ambient was how it
+would have become a crisis, which is why it was authorised immediately
+rather than left for later.
 
-**Done when.** The branch is merged, CI passes on `main` as a merged unit,
-and the deployed site is verified live rather than assumed.
+**How it was sliced.** Recorded in `docs/codex-program/MERGE-PLAN.md`,
+itself corrected 2026-08-06 to state plainly that its plan was executed.
+Read that document for the actual slicing that was used.
 
-**Technical.** The `phase-allowlist` CI job runs on pull requests and the
-active phase's allowlist covers none of tonight's moved paths; it will fail
-until amended. Run `npm test` plus `npm run build` on the merge result, not
-just on the branch.
+**Done when.** Was: the branch is merged, CI passes on `main` as a merged
+unit, and the deployed site is verified live rather than assumed. All three
+merges above passed CI (each landing commit's own message records "Suite
+green as CI runs it"); live-site verification after PR #478 specifically was
+not independently re-checked as part of this correction.
+
+**Technical.** The `phase-allowlist` CI job ran on these pull requests and
+the allowlist mechanism `MERGE-PLAN.md` designed was used to satisfy it. Run
+`npm test` plus `npm run build` on any future merge result, not just on the
+branch, exactly as this instruction originally said.
 
 ---
 
@@ -481,6 +503,146 @@ The runner requires `prompt_budget_split_preflights` and
 Codex path sets `maxRetries: 0`, the Anthropic path allows two with no
 backoff. Acceptance for a fresh run: harness exits 0 or 1, never 2 (which
 means coverage incomplete), and a human reads its report field by field.
+
+### P1 addendum, 2026-08-06. All 25 families run once against real data
+
+**What it is.** Every registered section family, not just termination fees,
+was dispatched against Modiv in a single sweep: 58 model calls, $20.30,
+resolving 108 claims, queueing 203 for human review, and leaving 193
+candidates in open world (no governed home at all). Pinned as a baseline
+before any of the fixes below, so a later re-run can be measured against it
+rather than against impressions:
+`docs/codex-program/notes/all-families-baseline-20260806.json`. Full detail:
+`docs/codex-program/notes/all-families-aggregate.md`,
+`all-families-aggregate-review.md` (the adversarial check on that first
+analysis, which found its fix plan covered at most 74 of the 193 open-world
+candidates and named 119 with no owner), and `open-world-ownership.md` (the
+follow-up that classified all 193).
+
+**Why it matters.** P1 above proved the mechanism works for one family. This
+is the first time the same mechanism was pointed at everything the product
+is meant to eventually extract, in one sweep rather than one family at a
+time, and it is the first real evidence of where the whole extraction layer,
+not just termination fees, actually stands today.
+
+**Three crashes, fixed, none of them the model's fault.** Each reproduced
+offline from the real recorded evidence before being touched
+(`docs/codex-program/notes/extraction-crashes.md`):
+
+- A shared helper, used by two different resolution steps, handed back its
+  caller's own in-progress list of unmatched items by reference instead of a
+  copy, then froze that list as part of building an unrelated result. Every
+  family's run has been doing this silently for as long as this code has
+  existed; it only crashed the one family (interim operating covenants)
+  whose own code writes into that list a second time afterward. Fixed by
+  copying, not aliasing, at the point the list is handed back.
+- A second family's resolver rebuilt a claim's data wholesale rather than
+  merging into it, and the rebuilt version dropped one required provenance
+  tag that every other resolver in the same file remembers to keep. The
+  family produced three good answers, then crashed two steps later, in a
+  check that a governed answer must always say where it came from.
+- A third family's run received a reply from the model that was not the
+  data it asked for: over a thousand characters of ordinary prose narrating
+  that a file had been written, not the file itself, consistent with the
+  model going agentic under the command-line transport rather than the
+  reply being truncated. The old behaviour discarded the whole batch on this
+  kind of failure, including earlier sections in the same batch that had
+  already succeeded and been paid for. Fixed by keeping what already
+  succeeded when a later step in the same batch fails, instead of
+  discarding it.
+
+**A legal-correctness defect, found and fixed, separately from the
+25-family sweep.** Adversarial testing found that the live, production
+quote-acceptance gate would accept a quote with a governing negation cut
+from its front, for example storing "have a Company Material Adverse
+Effect" as if it were the whole sentence when the source actually read
+"would not have a Company Material Adverse Effect": a stored quote reading
+as genuine, verbatim evidence for the opposite of what the agreement says.
+This was live in production with no boundary check of any kind, and two
+committed tests literally named "KNOWN LIMITATION" pinned the unsafe
+behaviour as expected. Both are now fixed, at the live production
+quote-acceptance path (`lib/verification.js`) and at one of the four preview
+bridges (`representations-dark-bridge.js`); a second bridge was attempted,
+found to need a more careful fix than first tried, and deliberately
+reverted rather than shipped half-right; the most principled version of the
+fix, capturing a quote's position before any trimming rather than
+re-deriving it afterward, is specified but not built, because it belongs in
+a file that was under another agent's active edit at the time. Full
+account, including exactly what remains open and why:
+`docs/codex-program/notes/negation-reversal.md`. `WORK-COMPLETED.md` is
+corrected to match; it previously claimed this was tracked in this
+roadmap's known risks as "step 1b", which never existed.
+
+**Termination corroboration: one resolved claim becomes eight.** The
+termination family (which party may exercise a given termination right, a
+different family from termination fees above) was refusing nearly every
+candidate because the right's own chapeau names no party, which describes
+most of Modiv's rights: the party is only named down in each lettered
+limb's own grant language ("by written notice from Parent to the Company"),
+and every limb names both parties, so a naive text match would have
+attributed a right to the wrong side on roughly half of them, an answer
+worse than refusing because it reads as correct. Fixed by anchoring
+corroboration on the specific limb a candidate cites, reading that limb's
+own grant direction ("from X to Y" grants to X), and failing closed
+whenever the direction cannot be determined. Twelve candidates, the single
+largest blocked group in the 25-family sweep, clear this gate; six of them
+then queue at a different, pre-existing gate, on four identified vocabulary
+gaps left named rather than fixed.
+`docs/codex-program/notes/resolver-reference-fixes.md`.
+
+**Open-world candidates: all 193 classified, 21 given a governed home in
+code.** `open-world-ownership.md` traced every one of the 193 to one of
+fifteen mechanisms and fixed the ones that were genuinely mechanical.
+Material contracts' corroboration vocabulary was too narrow for real
+drafting ("Space Lease", "earn-out", hyphenated "in-bound"/"out-bound"), now
+widened, moving 10 of its 26 open-world items to resolved, verified by
+replaying the real recorded run with no regressions. Antitrust's 11
+open-world items were not a vocabulary gap at all: the extraction runner
+was compiling an old version of the shared contract definitions (version
+34) after the resolver's own dispatch logic for these exact three
+obligation types had already shipped, tested, in version 38; the runner now
+compiles version 38, verified by replaying the real recorded run, which
+gives all 11 a governed home, 2 resolved and 9 correctly queued for review,
+with nothing that already resolved changing. Representations needed one
+word added in two places: an UPREIT deal structure gives the target its own
+operating partnership, which makes representations alongside it, and
+nothing in the party-recognition code treated "the Partnership" as
+belonging to either side; fixed in both places it needed fixing, which
+unblocks at most one of the three items it touches, the other two being
+temporal qualifiers correctly routed to open world by an existing,
+deliberate design rule rather than a bug. None of these three fixes has
+been re-confirmed by a fresh, paid model call against the corrected code;
+what confirms them today is replaying the already-recorded run through the
+corrected, real resolver and vocabulary, which is real evidence but a
+different kind of proof from a fresh run. The rest of the 193 are, for the
+most part, correctly left alone: real design work needing new claim types
+(consideration, proxy meeting), genuine judgement calls named for Ben
+rather than guessed at, or defects diagnosed and specified precisely that
+sit in `candidate-resolution.js`, a file none of this work was permitted to
+touch. Full per-item accounting:
+`docs/codex-program/notes/open-world-ownership.md`.
+
+**What this does not yet prove.** A per-run call timeout is now
+configurable rather than fixed at ten minutes, after capitalisation's own
+definitions section ran long and was killed by the old default (commit
+`ae8b12de`). Separately, the same commit checked directly against the
+source and confirmed that guaranty returning nothing for Modiv is correct:
+this is an unfinanced REIT merger with no financing-party protections in
+the text, not a mapping failure. Neither of these changes the central
+caution: this sweep ran against one agreement. The recommended next check,
+running all 25 families again against a second, differently-drafted deal
+(TopBuild, a financed transaction the Modiv-tuned fixes were never tested
+against) to see which fixes generalise and which were tuned to Modiv's own
+drafting, has not been done (`docs/codex-program/HANDOFF-2026-08-06.md`).
+
+**Technical.** `scripts/canonical-v2-live-extraction-run.mjs` (renamed from
+`scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs`,
+history preserved with `git mv`, once it became a general runner rather
+than a Modiv-termination-fee-only one) dispatches any of the 25 registered
+families against any pinned deal; `--dry-run` reports projected call count
+and cost with no model call. Full measured totals, per family, with every
+review-queue reason code and its count:
+`docs/codex-program/notes/all-families-baseline-20260806.json`.
 
 ### P2. Widen the claim definitions where the diff says to
 
@@ -643,9 +805,27 @@ subtype-less cards.
 
 **What it is.** Store the exact position of every quote, not just its text.
 
-**Why it matters.** Without it, a quote that arrives already trimmed in a way
-that reverses its legal meaning cannot be detected. It is also the cheapest
-item in this plan.
+**Why it matters.** It is the cheapest item in this plan, and it catches a
+real, separate problem: a quote whose stored text is later changed while an
+old, stale position is left in place beside it. **Correction, 2026-08-06.**
+This entry previously said, in this sentence, that without this feature "a
+quote that arrives already trimmed in a way that reverses its legal meaning
+cannot be detected." That overstated what this feature does, checked
+directly against `span-claims.js` itself
+(`docs/codex-program/notes/negation-reversal.md`, section 7a): it runs
+strictly after extraction, locating whatever text it is handed inside the
+section it came from. If that text was already trimmed, in a meaning-
+reversing way or otherwise, before this module ever sees it, the module will
+find a real, self-consistent position for the wrong text and report nothing
+wrong, because nothing about that position is actually wrong: it correctly
+answers "where does this exact string sit in the section," which is a
+different question from "was this string cut in a way that changed what it
+asserts." The meaning-reversing trim this sentence originally had in mind
+(dropping a governing "would not" from a materiality quote) was found live in
+production and fixed directly, at the point a quote is accepted or rejected,
+in `lib/verification.js` and `lib/canonical-v2/representations-dark-
+bridge.js` (`docs/codex-program/notes/negation-reversal.md`); turning this P5
+feature on does not touch that defect and was never capable of catching it.
 
 **Technical.** `lib/parser-v2/span-claims.js` already does the job,
 deterministically and with no model. It was gated at `extract.js:102` and the
@@ -907,6 +1087,13 @@ comparison proving the imported data matches; an activation switch,
 smoke-tested immediately after; and a rollback script that gets actually
 run, not just written, before D2 is called done.
 
+**Addendum, 2026-08-06.** This section named the import script as missing
+without saying what it should do. D4 and D5 below now give that design:
+what the script writes, where it writes it, how re-running it stays safe,
+how it is undone, and how it is built and tested by someone holding no
+production credentials at all. Nothing above changes; D4 and D5 fill in
+what this section left open.
+
 ### D3. The gate registry: ratified, and the catalogue reclassified
 
 **What it is.** The 25 pre-production gates cannot be closed by design, and
@@ -1029,6 +1216,302 @@ graded starting draft: it reached materially the same conclusions as this
 step, independently, and its own summary table is a reasonable order for
 whoever formalises the next gate.
 
+### D4. Build the import path and prove it, entirely offline
+
+**What it is.** The extraction system produces a finished, checked set of
+facts about a deal, a "write-set": the claims, the provisions they belong
+to, the relationships between them, and the exact quotes that back them,
+and saves it as a JSON file. Nothing then takes that file and puts it
+anywhere the website reads from. This step builds the tool that does that,
+and proves the tool works, on a database nobody else uses and that holds no
+real credentials, so all of it can be built and tested before anyone needs
+to touch anything real.
+
+**Why it matters.** Most of the pieces already exist. The code that turns
+facts into the rows a reviewer sees, the "projection" modules, is built and
+tested for sixteen provision families. The database tables to hold the
+facts are already designed, sitting unused in
+`supabase/canonical-v2-foundation.sql`. There is even a database function,
+`canonical_v2_write`, that already appears to know how to check a write-set
+and insert it. What is missing is the connecting piece: a script that reads
+a write-set file, writes it safely, and a matching piece that reads the
+facts back out for a given deal and hands them to the projection code, the
+way `termination-fee-serving-source.js` already does by hand for one deal
+and one fixture file. That connecting piece is genuinely new work. Most of
+what sits either side of it is reused, not invented here.
+
+**Why this step needs nobody's permission.** Nothing here touches a real
+database. It runs on a Postgres instance the person doing the work creates
+and destroys themselves, the same way `npm test` runs without touching
+anything real. It sits alongside steps P1 to P6 in this roadmap, work that
+proceeds regardless of the security lane, because there is nothing here for
+a permission boundary to apply to.
+
+**Done when.** A validated write-set for a real deal can be imported into a
+throwaway local database, read back out through a new, deal-agnostic
+reader, run through the family's existing projection code, and rendered as
+cards that agree with what the fixture-based version renders for the one
+deal that already works today. A second real deal, with no hand-written
+fixture file, renders correctly through the same path. Importing the same
+write-set twice does not create duplicate rows. A write-set containing a
+deliberately quarantined object, or an id that also appears in that run's
+review queue, is refused, not silently dropped and not silently imported.
+The whole import is undone by one command, proven by actually running it,
+not merely by the command existing.
+
+**Technical.**
+
+**What gets written, precisely.** The import's input is what
+`lib/canonical-v2/canonical-writer.js` already calls a `DEAL_SCOPE_RUN`
+write-set: `source_references`, `deal`, and the arrays named in
+`WRITE_ORDER` (`excerpts`, `provisions`, `claims`, `relationships`,
+`components`, `condition_groups`, the four `open_world_*` arrays,
+`semantic_impact_closures`, `reviewed_source_specific_rows`,
+`incomplete_canonical_result_rows`). This is not the raw model output and
+not the resolver's `resolution.json`; it is what remains after
+`validateCanonicalWriteSet` and `validateResolvedCanonicalWriteSet`
+(`lib/canonical-v2/validate-write-set.js`) have already split it into
+`publishableWriteSet`, `residuals` and `quarantines`. Only rows in
+`publishableWriteSet`, the ones carrying `publication_state: 'VALIDATED'`
+(`lib/canonical-v2/claims-relationships.js`), are candidates for import. The
+importer must call these same validators itself on whatever file it is
+given, rather than trust the file's own claim to be already validated; a
+file that fails validation is refused before any database call is made.
+This is also how a quarantined object is excluded: it never appears in
+`publishableWriteSet`, so an importer that only ever reads that field
+cannot import one by construction. Prove the construction rather than
+assert it: a hostile test that hand-builds a write-set with a quarantined
+object spliced into the `claims` array must be refused, not silently
+accepted.
+
+**The review queue, kept out a different way.** Unresolved candidates live
+in a separate artefact entirely, `RESOLUTION_REVIEW_QUEUE/V1`
+(`lib/canonical-v2/native-producer/review-queue-artifact.js`), written by
+the run driver and read today only by three human-triage scripts. It never
+becomes part of a write-set, so it is excluded from import by the same kind
+of construction as quarantine, not by a rule the importer has to remember.
+Add one belt-and-braces check anyway: where a sibling review-queue artefact
+exists for the same run receipt, confirm none of its item identities appear
+among the write-set's claim ids before importing, and refuse if one does.
+This turns "review-queue items cannot reach the importer" from an assumption
+about upstream code into a tested property.
+
+**What does not need to be built again.** `lib/canonical-v2/*-product-projection.js`,
+sixteen modules, already turn resolved claims into the cards the review
+page renders, each stamped with `canonical_v2_lineage` recording which
+claim revisions back it. `termination-product-projection.js`'s
+`projectTerminationFeeProductSurfaces` is the one already proven against
+real, live-extracted text. This step does not rebuild that mapping; it
+feeds it from a database instead of a hand-typed fixture. Two families have
+no working projection at all, Merger Structure and Miscellaneous
+Boilerplate (section 2.3 above calls them dead code), and one, No-Shop, has
+no projection module and a separate architecture entirely (section 2.4).
+Import machinery built here works for any family with a real projection
+module and does nothing for those three; it should not be made to pretend
+otherwise.
+
+**Where it goes.** `supabase/canonical-v2-foundation.sql` already defines a
+`canonical_v2_staging` schema with one table per write-set object kind
+(`claim_revisions`, `provision_instances`, `relationship_revisions`,
+`excerpts`, and the rest of `WRITE_ORDER`, plus `residuals`, `quarantines`,
+`deals`, `deal_admission_records`, `write_receipts`), each row keyed by the
+object's own content-addressed id, holding the row as `canonical_payload
+jsonb` with a database-computed digest column for identity checking. This
+is not a design choice left open; it already exists, unused. The owner's
+own architectural ruling, ADR-001 in `OPERATING-RULES.md`, forbids,
+absolutely, ever writing Canonical V2 data into the legacy tables,
+`public.provision_cards` or `public.claims`, in the flattened shape the
+four "dark bridges" use for preview only: "Flattened cards must not be
+written to the production card table, the claims table, or any other
+persistent store, ever." That destination is closed by standing ruling, not
+by this step's own judgement. `canonical_v2_staging` (or a same-shaped
+schema kept out of `public`, for any later, real project) is the only
+destination consistent with that ruling, because native serving reads the
+new system's own claims and provisions and projects them itself, exactly as
+`termination-fee-serving-source.js` already does from a fixture.
+
+**The writer.** The same file also already defines
+`public.canonical_v2_write(p_environment, p_operation, p_idempotency_key,
+p_input_digest, p_write_set, p_residuals, p_quarantines, p_receipt)`, a
+`SECURITY DEFINER` function, meaning it runs with its own fixed database
+privileges rather than the caller's, that independently recomputes each
+object's content-addressed identity inside the database before inserting
+it: the same defence-in-depth idea as `canonical-writer.js`'s own identity
+checks, done twice, once in the application and once in the database, so a
+bug in one does not silently corrupt the other. It appears complete for
+`DEAL_SCOPE_RUN`. It has never been proven to run. The nine
+`tests/canonical-v2-writer-*-identity-sql.test.js` files that reference it
+check its source text for the right fragments in the right order; none
+opens a database connection, confirmed by
+`grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js`
+listing all of them. One neighbouring script,
+`scripts/canonical-v2-staging-qxo-termination-fee.mjs`, says in its own
+header that it has deliberately never called this function against a real
+database. This step's first concrete task, before writing anything new, is
+to stand up a throwaway Postgres, apply
+`supabase/canonical-v2-foundation.sql` to it directly, and call
+`canonical_v2_write` with a real, validated write-set, to find out whether
+it works as its text implies. If it does, the import driver is thin: read a
+write-set file, validate it, call the function once per deal, record the
+result. If it does not, that is a real finding this step exists to
+surface, and the fallback is a new repository class,
+`PostgresCanonicalRepository`, implementing the same method contract
+`InMemoryCanonicalRepository` already implements (`getReceipt`,
+`transaction`, `writeObject`, `writeDeal`, `writeReceipt`, and the rest), so
+`canonical-writer.js`'s own, already-tested orchestration logic stays
+unchanged and runs against real tables instead of an in-memory object.
+Either way, no new orchestration logic should be needed, only a repository
+adapter.
+
+**Idempotency, identity and checkpointed resume.** Every write-set object's
+id (`claim_revision_id`, `provision_instance_id`, and the rest of
+`OBJECT_ID_FIELDS` in `canonical-writer.js`) is content-addressed: the same
+fact, extracted the same way, produces the same id every time, never a
+random one. `canonical-writer.js` already uses this for safe replay: a
+write under an `idempotencyKey` already bound to the same content is a
+no-op returning the original receipt; the same key with different content
+is a hard failure, never a silent overwrite. Reuse this exactly, one
+write-set (one deal, one family, one run) per idempotency key. Checkpointed
+resume, named as required by this step's own D2 entry above and by
+`EXECUTION-LEDGER.md`'s `P10-PRODUCTION-IMPORT` milestone, follows from
+this at little extra cost: a driver that processes a directory of
+write-set files in order, one at a time, and can be rerun from the top
+after a crash, is safe, because every already-committed file replays as a
+no-op and only the rest actually write. No separate checkpoint file should
+be needed if this holds. Prove that it holds, with a test that kills the
+driver mid-batch and reruns it, rather than assuming it from the design.
+
+**Reversibility.** Reversal here is close to free, and proven anyway, as
+rehearsal for the layer that matters: drop the throwaway database, and
+separately, take one `pg_dump` before a run and prove `pg_restore` brings
+back the exact pre-import state. This is D2's own first decided
+deliverable, done here at no cost, which is how it stops being untested.
+For any real database, later, the same content-addressed idempotency key
+that makes a rerun safe also makes an undo precise: "delete every row
+written under idempotency key K" is a well-defined, narrow operation, not a
+guess. Write it as a companion `--rollback` mode taking the idempotency key
+the import used, dry-run first, matching the exact convention already
+established in `sql/qxo-reverse-f3/generated/` and
+`sql/qxo-reverse-f4/generated/` (`09-rollback-dry-run.sql`, then
+`10-rollback-apply.sql`, then `11-verify-rollback.sql`). Follow that
+convention rather than inventing a new one; it already exists and nothing
+here needs to improve on its shape.
+
+**The read side, and its acceptance test.** Add one new, deal-agnostic
+module, reading validated claims and relationships for a given deal out of
+`canonical_v2_staging` instead of a fixture file, and returning them in the
+same shape a `*-product-projection.js` module already expects, exactly what
+`termination-fee-serving-source.js` does by hand for its one deal. Prove it
+by wiring a second real deal into the termination-fee family through this
+new reader rather than a hand-written fixture file, and rendering it on the
+review page next to QXO/TopBuild.
+`evidence/canonical-v2/modiv-termination-20260806` is real, extracted data
+already in the repository; confirm its exact shape before relying on it,
+since it was produced by a run this step did not perform, and several
+extraction runs are in flight elsewhere at the time of writing, so check a
+run has actually finished before treating its output as final. P1 above
+named exactly this as the one piece of the proven family still missing:
+"Connecting a second deal to the screen without hand-writing a new file for
+it... is separate work and has not been done." This step is where that
+gets done, for the underlying machinery only; wiring every remaining family
+through it, and deciding when each one is ready to show a user, stays P9's
+job, not this one. `scripts/review-parity-check.js`, the equivalence
+harness P1 and P3 already built, is the existing tool for checking the
+result agrees with V1; reuse it rather than writing a second one.
+
+**Setting up the throwaway database.** No local Postgres or Supabase CLI
+convention exists in this repository today; this step establishes one. The
+plainest option, needing no account and no cloud dependency: run Postgres
+in a local container, apply `supabase/canonical-v2-foundation.sql` directly
+with `psql`, and point `pg` (already a dependency, `package.json`,
+`^8.22.0`) at it with a connection string that never leaves the machine.
+Record the exact commands used, so a colleague with no Supabase account can
+reproduce the whole of this step from a clean checkout.
+
+### D5. Rehearse the import against staging, for real
+
+**Gated on D4 passing, and on an explicit answer to the open authorisation
+question below.**
+
+**What it is.** Once D4's tool works against a throwaway database nobody
+depends on, this step runs the same tool against the one real, hosted
+database this system already talks to for testing, the "staging" project.
+It backs that database up, restores the backup somewhere else to prove the
+backup is real, imports one real deal's data into it, checks the result
+against the source file field by field, and then deliberately undoes the
+whole thing, keeping a record that it was actually done rather than merely
+written down as a plan. Nothing in this step touches the live product or
+anything a user can reach.
+
+**Why it matters.** `DECISIONS.md` item 9 records Ben's ruling that going
+live needs five things, not the twenty-five a fuller design once called
+for: a real backup-and-restore drill, an import into a copy the live site
+is not reading, a comparison proving the two agree, flipping a switch, and
+a rollback someone has actually run. This step is the first three of those
+five, done against the real staging project rather than production,
+because that is the only honest way to know the backup-and-restore drill
+and the importer built in D4 actually work outside a throwaway sandbox. It
+is not the fourth or fifth step. Flipping the switch and a production
+rollback stay D2's own job, later, gated exactly as D2 already says.
+
+**The authorisation question, stated precisely.**
+`OPERATING-RULES.md`'s authority boundary lists "importing candidate data"
+as prohibited under current authority, with no carve-out for it the way
+running extraction was carved out by name. `DECISIONS.md` item 9 decides
+what import should look like once it runs; read on its own words, it does
+not say it may run yet, and D2 above gates its own "load the new data"
+deliverable on lane S completing. This plan was briefed on the
+understanding that import is authorised; set against the boundary and the
+decision as written, that does not obviously follow, and this document
+does not have the standing to resolve the tension on its own authority. So
+this step is gated on an explicit, fresh confirmation, independent of lane
+S: staging is not production, nobody outside whoever runs this reaches it,
+and the reason lane S gates D2 itself, an unauthenticated production
+route, does not apply here. What is missing is narrower and specific to
+this step alone.
+
+**Needs from Ben.** Confirm whether running D4's tool against the real
+staging database, not production, is already covered by the authorisation
+already given, or say what is needed. Recorded as the second open item in
+Part 5 below.
+
+**Done when.** A backup of the staging project exists and has been
+restored to a separate location, with the restored data checked against
+the source, not merely assumed to match. A real write-set, for a real
+deal, has been imported into `canonical_v2_staging` on the staging project
+itself, through D4's tool, unchanged. The imported rows have been compared
+field by field against the source write-set file and found to agree. The
+whole import has then been undone using the rollback mode D4 built, and
+the undo has been verified by checking the affected tables are back to
+their pre-import state, not assumed from the rollback command's exit code
+alone. All four are demonstrated by a command actually run with its output
+kept, per this programme's own standing rule that "a receipt must name its
+exact command" (`OPERATING-RULES.md`).
+
+**Technical.** Target `CANONICAL_V2_STAGING_DATABASE_URL`, the same
+connection `lib/canonical-v2/serving-client.js` already validates the shape
+of (host `aws-1-us-west-2.pooler.supabase.com`, role
+`canonical_v2_preview.<project ref>`), so this step introduces no new
+credential, only a careful use of one that already exists and that, per
+`OPERATING-RULES.md`, only ever runs from Ben's own machine. Before any
+import: `pg_dump` the relevant schema, restore it to a second, disposable
+database, a Supabase branch created for this purpose and deleted
+afterwards is the natural fit since branching an existing project needs no
+new credential, and diff the two. Then run D4's importer, unmodified,
+against the real project, for one real deal's write-set, the QXO/TopBuild
+data already pinned in `termination-fee-serving-source.js` or the Modiv
+data named in D4, whichever D4 last proved against. Compare imported rows
+to the source file by loading both and asserting deep equality on every
+field, not by checking row counts. Then run the rollback mode D4 built,
+dry-run first per the `sql/qxo-reverse-f3/` and `sql/qxo-reverse-f4/`
+convention, then applied, then verified, and keep the three SQL files and
+their output as the record that this happened, the same shape those two
+existing directories already use. Nothing in this step writes to
+`public.provision_cards`, `public.claims`, or any table a live route reads;
+`canonical_v2_staging` is not on the read path of anything in production
+today, confirmed under D4 above, so an error here is recoverable by
+construction, not merely by care.
+
 ---
 
 # Part 5. What I need from Ben
@@ -1047,6 +1530,19 @@ nobody needs to make. See the note under P3.
 | # | Decision | Blocks | If it waits |
 |---|---|---|---|
 | 1 | **Check the live site requires a login, and whether the July database key was rotated** | S0 | The corpus may be reachable now |
+
+**A second open item, added 2026-08-06, not yet in `DECISIONS.md` because it
+surfaced while designing D4 and D5.** Whether running an import script
+against the real staging database, not production, is covered by the
+authorisation already given, or needs its own. `OPERATING-RULES.md`'s
+authority boundary lists "importing candidate data" as prohibited under
+current authority, with no staging carve-out the way extraction was named
+by exception. `DECISIONS.md` item 9 decides what import should look like
+once it runs; it does not, on its own words, say it may run yet. This plan
+treats the two as not yet reconciled and gates step D5 on an explicit
+answer rather than guessing one. Blocks D5 only. If it waits, D4 still
+proceeds in full, since D4 touches no real database and needs nothing from
+Ben.
 
 **Decided, 2026-08-05.** Recorded in full, with reasoning, in
 `DECISIONS.md`:
@@ -1083,12 +1579,15 @@ approval; the four no-shop concepts, all approved; representation subjects
 stay open indefinitely rather than ever closing; and the human-verified
 status is named `DOCUMENT_TEXT_VERIFIED_AGAINST_SOURCE_BYTES`.
 
-**What remains genuinely open.** One item. S0's browser check, whether
+**What remains genuinely open.** Two items. S0's browser check, whether
 `precedent-machine.vercel.app` requires a login and whether the July
 database key was rotated: an action for Ben to perform, not a ruling for
 him to make, and `DECISIONS.md` item 1 already recorded what happens once
-the answer is known. Nothing else on this page is waiting on a decision or a
-grant.
+the answer is known. And, new in this revision, whether D5's staging
+import is already covered by an existing authorisation or needs its own: a
+ruling for Ben to make, not an action for him to perform, and nothing in
+`DECISIONS.md` has recorded one yet. Nothing else on this page is waiting
+on a decision or a grant.
 
 When authentication is switched on there will be one more, and it is
 configuration rather than a decision: `AUTH_PASSWORD` and `SESSION_SECRET`
@@ -1100,15 +1599,13 @@ also means it does nothing at all until someone sets them.
 
 # Part 6. Risks, in order
 
-1. **Merging 287 commits and 910 files to `main`**, never tested as a merged
-   unit. The danger is not the raw count: most of those files are gated off
-   in production, additive, or documentation. What is actually risky is
-   whatever subset touches the live path, and how large that subset is is
-   being measured, not assumed, as part of the slicing work in
-   `MERGE-PLAN.md`. That does not make the merge safe; it narrows what is
-   still unknown to a smaller, checkable question. D1 is now authorised and
-   moved up in this plan (see above) precisely so this stops being owned by
-   nobody.
+1. **Merging to `main`.** Corrected 2026-08-06: this item previously
+   described merging 287 commits and 910 files, never tested as a merged
+   unit, as the open risk. That merge happened, three times, the most
+   recent nine hours before this correction (see D1 above). The residual
+   version of this risk is smaller: 12 commits of this session's own work,
+   not yet merged, and D1 above records both what already landed and what
+   is still outstanding.
 2. **The evidence base is thinner than the register says.** One family has real
    committed model output. The first corpus run is the first honest
    measurement.
@@ -1118,7 +1615,10 @@ also means it does nothing at all until someone sets them.
    a lawyer may compare is tested only against an in-memory fixture, and its
    database reader has no coverage at all. Bites at P7.
 5. **One in seven search fields returns the wrong term.** Bites at P8.
-6. **There is no cutover mechanism and no tested restore.**
+6. **There is no cutover mechanism and no tested restore.** D4 and D5 above
+   now plan how both get built and proven, offline first and then against
+   the real staging database. Neither has been run yet, so this risk stays
+   exactly as open as it was until they are.
 7. **Quotation provenance sits in three incompatible coordinate systems**, two
    of them populated with wrong values that read as right.
 8. **No monitoring of any kind.** No error tracking, no health endpoint, no
@@ -1128,19 +1628,46 @@ also means it does nothing at all until someone sets them.
 
 # Appendix: current state, verified 2026-08-06
 
-- Test suite: **7555 tests, 7513 pass, 0 fail, 42 skipped**, exit 0, measured
-  at commit 84518eef. Lint invariant 4 passes and the build exits 0. The suite
-  grew by roughly 490 tests overnight, almost all of them pinning behaviour
-  that was found to be wrong and corrected.
-- Parity: **103 blockers** (was 104; one cleared by the compare-locator work,
-  see P9), **0 natively visible**, 443 served modules, 0 unparseable. The
-  earlier split of that total, 73 finished-not-displayed, 27 not analysed, 3
-  unowned and 1 route-blocked, predates the six-way breakdown in P9 and P9 is
-  the current account.
-- Pre-production gates: 25, none closed, none closeable while the loader
-  forbids it.
-- Corpus: 40 deals, last quality snapshot 13 July, 18 fully clean.
-- Real V2 model output: 1 family as committed recorded responses, plus a
-  12-item run across 11 families preserved tonight.
-- Branch `codex/m3-production-phase1`: 287 commits and 910 files ahead of
-  `main`, pushed, tree clean.
+**Corrected 2026-08-06, same day.** This appendix's own numbers went stale
+within the day they were measured, because commits kept landing after they
+were taken; that is the general problem
+`docs/codex-program/notes/doc-reality-audit.md` was commissioned to find
+(its finding F15 is this exact appendix). Every figure below carries the
+command that produces it, per that audit's own recommendation, so the next
+reader can re-check rather than trust a typed number.
+
+- Test suite: **7718 tests, 7676 pass, 0 fail, 42 skipped**, exit 0. Measured
+  by `CI=true npm test`, reading `$?` from the `npm test` command itself,
+  never through a pipe to `tail`/`head`.
+- Parity: **102 blockers**, down from 104. Measured by
+  `node -e "const {CURRENT_M3_FAMILY_PARITY_REGISTER,listM3ProductParityBlockers}=require('./lib/canonical-v2/native-producer/m3-family-parity-register.js');console.log(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length)"`.
+  The earlier split of the total (73 finished-not-displayed, 27 not
+  analysed, 3 unowned, 1 route-blocked) predates the six-way breakdown in P9
+  and P9 is the current account.
+- Pre-production gates: 25 declared under `P1_*`/`P9_*` (2 P1, 23 P9;
+  `grep -c "id: P9_" docs/codex-program/programme-gates.yaml` gives 23),
+  every one declared `OPEN` in the frozen registry, by design, so the
+  reviewed contract stays byte-identical. Separately, `governing-
+  registry.js`'s live overlay re-derives fresh evidence for 2 of the 25
+  (`P1_CONTRACT_BUNDLE_COMPLETE`, `P1_VERTICAL_SLICE_PASS`) on every load;
+  both currently compute `PASS` (`docs/codex-program/EXECUTION-LEDGER.md`,
+  entry "D3 ratified", has the method and a runnable check). See
+  `docs/certification/programme-gate-status.json`, corrected 2026-08-06,
+  for the fuller account of why this file, `programme-gates.yaml` and
+  `governing-registry.js` can look like they disagree.
+- Corpus: 40 deals, last quality snapshot 13 July, 18 fully clean. Not
+  independently re-verified for this correction.
+- Real V2 model output: grown substantially since this line was last true.
+  All 25 registered families have now been run live against Modiv in one
+  sweep (58 model calls, $20.30), pinned as a baseline at
+  `docs/codex-program/notes/all-families-baseline-20260806.json`; see the
+  P1 addendum above for what that found and fixed. This is still one
+  agreement; a second, differently-drafted deal has not yet been run
+  through the same sweep.
+- Branch `codex/m3-production-phase1`: the 287 commits and 910 files this
+  line used to describe were merged to `main` on 2026-08-05 and
+  2026-08-06, across three pull requests (#476, #477, #478; see D1 above).
+  The branch is now 15 commits ahead of `origin/main` again
+  (`git log --oneline origin/main..HEAD`; run it fresh, this branch has
+  moved twice already while this appendix was being corrected), pushed,
+  tree clean.
