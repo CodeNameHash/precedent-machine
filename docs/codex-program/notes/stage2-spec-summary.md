@@ -1,7 +1,8 @@
 # Stage 2 spec — short version
 
 The long version is `stage2-fanout-spec.md`. This is the same plan in two
-pages. **Nothing is implemented yet** — `docs/core/` is untouched.
+pages. **Stage 2 is now implemented** in `docs/core/PLAN.md`, in a changed
+shape — see Status at the end. Everything else here is still a plan.
 
 ## The problem
 
@@ -44,7 +45,12 @@ two of its three modes.
 it. D last because it's the only part that spends real money on model
 calls, and every part before it is a reason a round would have to re-run.
 
-## The ladder (Part D)
+## The ladder (as implemented — see PLAN.md Stage 2 for the authoritative text)
+
+**Every rung runs the whole chain:** `extract → validate → write → serve →
+confirm it renders`. Extraction-only rungs were the earlier design and were
+wrong: they would have proved extraction generalises into a void, since a run's
+output is terminal today and no serving source reads the database.
 
 **Families, on Modiv:** 1 → 4 → 12 → 25. Each round re-runs the earlier
 families, not just the new ones. Gate after *every* round: nothing
