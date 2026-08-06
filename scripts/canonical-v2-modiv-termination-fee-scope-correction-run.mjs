@@ -70,7 +70,13 @@
  *     [--section-refs <comma-separated, default "7.1,7.3,8.12">] \
  *     [--out-dir <default evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805>] \
  *     [--agreement-date <default 2026-05-03, read from the agreement's own "Dated as of" preamble>] \
- *     [--model <claude CLI model alias, default "sonnet">]
+ *     [--model <claude CLI model alias, default "sonnet">] \
+ *     [--follow-citations]
+ *
+ * --follow-citations dispatches an extra single-section call for each section
+ * a fee trigger cites by bare cross-reference, so the model can read the
+ * ground it is being asked to name. One hop only. Off by default because it
+ * takes this filing from three model calls to roughly fourteen.
  */
 
 import {
@@ -95,6 +101,12 @@ const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bund
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { PROMPT_VERSION: TERMINATION_FEE_PROMPT_VERSION } = require('../lib/canonical-v2/native-producer/termination-fee-producer-prompt');
 const { runNativeExtraction, NativeExtractionRunError } = require('../lib/canonical-v2/native-producer/native-extraction-run');
+// Opt-in only, via --follow-citations. The wrapper takes the same arguments and
+// is inert when nothing cites anything, but it is NOT free: on this filing it
+// turns three model calls into roughly fourteen, because Section 7.3 states
+// every fee trigger as a bare cross-reference into Section 7.1. Left off by
+// default so an ordinary re-run stays comparable with every earlier one.
+const { runNativeExtractionWithCitationFollowup } = require('../lib/canonical-v2/native-producer/native-extraction-run-citation-followup');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
@@ -136,6 +148,7 @@ function parseArgs(argv) {
     rawHtml: DEFAULT_RAW_HTML_PATH,
     sectionRefs: DEFAULT_SECTION_REFS.slice(),
     agreementDate: '2026-05-03',
+    followCitations: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -145,6 +158,7 @@ function parseArgs(argv) {
       case '--out-dir': out.outDir = argv[++i]; break;
       case '--agreement-date': out.agreementDate = argv[++i]; break;
       case '--model': out.model = argv[++i]; break;
+      case '--follow-citations': out.followCitations = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
@@ -396,7 +410,10 @@ async function main() {
   const extractionStart = Date.now();
   let receipt;
   try {
-    receipt = await runNativeExtraction({
+    const runExtraction = args.followCitations
+      ? runNativeExtractionWithCitationFollowup
+      : runNativeExtraction;
+    receipt = await runExtraction({
       source_text: fullText,
       document_hash: documentHash,
       section_references: args.sectionRefs,

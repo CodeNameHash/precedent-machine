@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T04:57:21.282Z",
+  "section_reference": "unknown-call-10",
+  "note": "Modiv TERMINATION_FEE scope-correction run (7.1 + 7.3 + 8.12 pinned together, all dispatched as TERMINATION_FEE via section_family_assignments), PROMPT_VERSION 3. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"fee_amount_assertions\": [],\n  \"fee_trigger_assertions\": [],\n  \"tail_period_assertions\": [],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"by the Company pursuant to Section 7.1(c)(i),\",\n      \"why_unmapped\": \"names the terminating party and a cross-referenced section but states no payment-direction language, so fee_side cannot be determined without guessing who pays\",\n      \"nearest_concept\": \"fee_trigger_assertions\"\n    }\n  ]\n}\n```"
+}

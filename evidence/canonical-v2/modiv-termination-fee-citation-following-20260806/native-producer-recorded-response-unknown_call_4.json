@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T04:50:59.548Z",
+  "section_reference": "unknown-call-4",
+  "note": "Modiv TERMINATION_FEE scope-correction run (7.1 + 7.3 + 8.12 pinned together, all dispatched as TERMINATION_FEE via section_family_assignments), PROMPT_VERSION 3. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"fee_amount_assertions\": [],\n  \"fee_trigger_assertions\": [\n    {\n      \"section_reference\": \"7.1(c)(ii)\",\n      \"fee_side\": \"BUYER\",\n      \"trigger_code\": \"COUNTERPARTY_COVENANT_BREACH_TERMINATION\",\n      \"quote\": \"Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement which breach or failure to perform (A) would result in a failure of a condition set forth in Section 6.3(a) or Section 6.3(b) and (B) is not cured or cannot be cured prior to the earlier of (x) forty-five (45) days following notice to Parent from the Company of such breach or failure and (y) the Outside Date\"\n    }\n  ],\n  \"tail_period_assertions\": [],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": []\n}\n```"
+}
