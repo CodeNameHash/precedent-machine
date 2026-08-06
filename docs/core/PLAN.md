@@ -61,17 +61,27 @@ Run these yourself. They take seconds.
 | Of those, with any acceptance criteria | 5 | section 5 below |
 | Mandatory adversarial tests, implemented | 7 of 289 | `node -e "const {MANDATORY_ADVERSARIAL_TEST_IDS,testExecutableState}=require('./lib/programme-gates/test-executable-registry.js');console.log(MANDATORY_ADVERSARIAL_TEST_IDS.filter(id=>testExecutableState(id)==='IMPLEMENTED').length)"` |
 | Lines of database schema written | 8,686 | `wc -l supabase/canonical-v2-foundation.sql` |
-| Times that schema has been executed | 0 | its nine tests pattern-match its source text: `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` lists all of them |
+| Times that schema has been executed | at least several, against isolated staging, all rolled back | `docs/codex-program/EXECUTION-LEDGER.md` P8 rows: `PM-METSERA-PERSISTENCE-01` used the existing `canonical_v2_write` entry point, `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic writer against isolated staging, both COMPLETE. A previous version of this row said **0**, citing `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` — which shows only that those tests pattern-match source text, and cannot show the schema was never executed anywhere. What is still unproven is a **durable, non-rolled-back** write. |
 | API routes using the service key | 19 | `grep -rl getServiceSupabase pages/api/ \| wc -l` |
 | Authentication | built, enforced, 101 real-request tests pass | `CI=true node --test tests/auth-route-enforcement.test.js` |
 
 **Read this before you read anything else.** The extraction pipeline is proven
-across 25 families on essentially one agreement. Nothing has been imported into
-the product's database. Nothing V2 renders on the live site. The schema for the
-import exists and has never been executed. One family, termination fees, serves
-V2 data on a preview deployment, and it does so from a hand-typed fixture file,
-not from a database. The volume of work behind this is large and it has not yet
-reached a user.
+across 25 families on essentially one agreement — and four of those 25 runs did
+not complete. Nothing has been imported durably into the product's database.
+Nothing V2 renders on the live site, and that is by construction rather than by
+oversight: `isPermittedCanonicalV2Runtime` (`lib/canonical-v2/feature-flags.js`)
+permits a preview or local runtime and denies production outright. The import
+schema has been executed against isolated staging and rolled back, never
+durably. One family, termination fees, serves V2 data on a preview deployment,
+and it does so from a hand-typed fixture file, not from a database.
+
+A run's output is also, today, terminal: it is written to
+`evidence/canonical-v2/<deal>-<family>-<date>/` and nothing functional reads it
+back. Step 2B builds the bridge that changes this. Until it exists, a
+successful extraction campaign of any size changes nothing a user can see —
+see `CODEBASE-GUIDE.md` section 12.
+
+The volume of work behind this is large and it has not yet reached a user.
 
 ---
 
@@ -139,17 +149,18 @@ below was opened and confirmed, not inferred from its name.
 | Qualifier marker words (knowledge, materiality, temporal, accuracy) | `lib/canonical-v2/native-producer/qualifier-kind-lexicon.js` | `KNOWLEDGE_PATTERNS` 131, `TEMPORAL_SYMBOLIC_DATES` 146, `ACCURACY_PATTERNS` 171, `THRESHOLD_PATTERNS` 178. |
 | Two small per-family corroboration files | `guaranty-corroboration.js`, `ioc-corroboration.js` | Same directory. Regexes per assertion kind. |
 | Claim definitions, the contract bundle | `lib/canonical-v2/contract-bundle.js` | A genuine new claim definition costs 11 edits here. Watch the dual numbering: input at V38, concept keys at V24. |
-| The runner that dispatches a family at a deal | `scripts/canonical-v2-live-extraction-run.mjs` | 951 lines. Flags: `--deal`, `--family`, `--raw-html`, `--section-refs`, `--out-dir`, `--agreement-date`, `--model`, `--follow-citations` / `--no-follow-citations`, `--call-timeout-ms`, `--dry-run`. Deal pins at line 226. |
+| The runner that dispatches a family at a deal | `scripts/canonical-v2-live-extraction-run.mjs` | 951 lines. Does **not** supply Ben's two M3 auto-pass conditions: `v1v2_comparison` and `lexical_disagreement` both grep to zero occurrences in this file, so a run through it evaluates neither. `scripts/nets-eligibility-report.mjs`, the reporting side, has been broken since `0d17ad00`. Flags: `--deal`, `--family`, `--raw-html`, `--section-refs`, `--out-dir`, `--agreement-date`, `--model`, `--follow-citations` / `--no-follow-citations`, `--call-timeout-ms`, `--dry-run`. Deal pins at line 226. |
 | Where a run writes | `evidence/canonical-v2/<deal>-<family>-<date>/` | 28 directories today. Each holds `run-receipt.json`, `resolution.json`, `review-queue.json`, `adapter-result.json`, `validation.json`, `run-manifest.json`, `call-telemetry.json`. |
 | Cure-period and number parsing | `lib/canonical-v2/native-producer/cure-period-parse.js` | `SPELLED_NUMBER_VALUES` line 88. |
-| The classifier that could assign families to sections automatically | `lib/canonical-v2/native-producer/section-family-classifier.js` | Exists, deliberately not wired in: anything it classifies carries a blocking unverified flag. |
+| The classifier that assigns families to sections automatically | `lib/canonical-v2/native-producer/section-family-classifier.js` | Wired in, as the opt-in `section_family_classifier` parameter to `runNativeExtraction` (`native-extraction-run.js:576`), exercised by dozens of tests. 27 rules, 26 family labels, 25 with a registered producer. Stage 1 is deterministic title/heading matching, costs zero model calls, and carries **no** blocking flag. Only stage-2 model-assisted matches (`SECTION_FAMILY_AI_CLASSIFIED`) raise `SECTION_FAMILY_AI_UNVERIFIED` — see `sectionFamilyUnverifiedReason`, `candidate-resolution.js:3928-3932`. A previous version of this row said it was "deliberately not wired in" and always blocked; both halves were false, and Step 2A was designed around that error. |
 
 ### The write and serving path
 
 | What | Where | Note |
 |---|---|---|
 | The write-set validator | `lib/canonical-v2/validate-write-set.js` | Splits a write-set into `publishableWriteSet`, `residuals`, `quarantines`. Only the first is importable. |
-| The write orchestrator | `lib/canonical-v2/canonical-writer.js` | `WRITE_ORDER`, `OBJECT_ID_FIELDS`, and `InMemoryCanonicalRepository` at line 787. There is no persistent repository. |
+| The write orchestrator | `lib/canonical-v2/canonical-writer.js` | `WRITE_ORDER`, `OBJECT_ID_FIELDS`, and `InMemoryCanonicalRepository` at line 787. |
+| A real Postgres client | `lib/canonical-v2/serving-client.js` | A genuine `pg` `Pool` client (`createPostgresServingClient`, line 198) against staging, with import scripts under `scripts/canonical-v2-staging-*.mjs` and SQL under `sql/optionA/`. A previous version of the row above ended "There is no persistent repository", which is false. It is accurate only in the narrow sense that this client is a separate hand-built per-deal pipeline (QXO), not something the general 25-family runner reaches — which is what Step 2B builds. |
 | The database schema and SQL writer | `supabase/canonical-v2-foundation.sql` | 8,686 lines. `public.canonical_v2_write` at line 1167. Never executed. |
 | The one family that serves V2 today | `lib/canonical-v2/termination-fee-serving-source.js` | Server side. Hand-typed fixture for QXO/TopBuild, hash verified. |
 | The client-side switch for that family | `components/review/table-configs/termination-fees.config.js` | `selectRows()`, `isCanonicalTerminationFeeServingEnabled()`, `partitionTerminationFeeCards()`. |
@@ -222,9 +233,9 @@ is preserved because it exists.
 | `P9_BEN_RUNBOOK` | no | **Rewritten** as Step 9B, which requires the exact commands to be recorded with their output. |
 | `P9_NUMERIC` | no | **Rewritten** as Step 3B. |
 | `P9_RENDER_PARITY` | no | **Replaced, measure known inadequate.** It leans on the parity register, whose entire proof chain is a static walk over one module graph. `notes/serving-path-proof.md` Part 4 item 1 states plainly that it cannot execute an HTTP request or observe a render, and V2 data reaches the browser only across that boundary. New criterion: Step 5C, a test that starts the server, fetches the route and asserts the value in the response. |
-| `P9_STRUCTURED_CLAIMS` | no | **Rewritten** as Step 2B: every family produces resolved claims or a stated, checked reason why it does not. |
+| `P9_STRUCTURED_CLAIMS` | no | **Rewritten** as Step 2D: every family produces resolved claims or a stated, checked reason why it does not. |
 | `P9_PARTY_LINT` | no | **Rewritten** as Step 3F. |
-| `P9_SHADOW_REEXTRACTION` | no | **Rewritten** as Step 2B: re-extract and diff against a pinned baseline. |
+| `P9_SHADOW_REEXTRACTION` | no | **Rewritten** as Step 2D: re-extract and diff against a pinned baseline. |
 | `P9_IDENTITY_AND_DRIFT` | no | **Rewritten** as Step 4C (idempotent replay) and Step 6C (claim identity). |
 | `P9_BROWSER_A11Y_PERFORMANCE` | no | **Retired.** One user, no customers, and no accessibility or performance target has ever been set. Reinstate it the day a target exists. |
 | `P9_STAGING_SMOKE_AND_ROLLBACK` | no | **Rewritten** as Step 9A. |
@@ -296,18 +307,49 @@ fail.
 
 ---
 
-# Stage 2. Find out whether the extraction generalises
+# Stage 2. Find out whether the whole chain generalises
 
-Everything in Stage 3 onwards assumes the extraction is good. That assumption
-rests on one agreement. This stage is the cheapest way to find out whether it is
-true, and it is question 3 of the five: where we do not know something works,
-how do we test it.
+Everything downstream assumes the extraction is good. That assumption rests on
+one agreement. This stage is the cheapest way to find out whether it is true,
+and it is question 3 of the five: where we do not know something works, how do
+we test it.
 
-## Step 2A. Recover the section lists, because 24 of the 25 exist nowhere reusable
+**This stage was rewritten on 2026-08-06, and the rewrite changed its shape,
+not just its steps.** The previous version dispatched all 25 families at a
+document in one batch, twice, and stopped at extraction. Two things were wrong
+with that.
 
-**What it is.** Each family is run against a named list of sections of the
-agreement. Only one of those lists is recorded in the code. The other 24 exist
-only inside the run manifests of the one sweep that used them.
+First, a batch of 25 tells you something broke, not which change broke it, and
+it repeats a defect 24 more times before anyone reads a directory. Every step
+below is therefore a ladder: one, then a few, then all, re-running everything
+proven earlier at each rung, with a gate that must pass before the next rung
+adds anything.
+
+Second, and more important: **proving extraction generalises while proving the
+write path once is the same mistake one layer down.** A single validated
+write-set proves the writer handles one family's shape from one deal. The
+existing evidence for the write path is exactly that — QXO F28 and Metsera,
+hand-built, per deal (`docs/codex-program/EXECUTION-LEDGER.md`, P8). So each
+rung here runs the *whole chain*:
+
+```
+extract -> validate write-set -> write -> serve -> confirm it renders
+```
+
+A rung that extracts cleanly and cannot be written, or writes and cannot be
+served, has not passed. This finds a writer defect at family 1 rather than
+after fifteen documents of extraction, and it costs almost nothing extra:
+extraction is the expensive part, and the other four steps are fast.
+
+**What this stage does not do.** It does not turn Canonical V2 on in
+production. Production is hard-off by construction and deliberately so — see
+`CODEBASE-GUIDE.md` section 12.2. "Serve" below means a preview or local
+runtime, which is where `isPermittedCanonicalV2Runtime` permits it.
+
+## Step 2A. Recover the section lists, which are not lost
+
+**What it is.** Each family is run against a named list of sections. Only one
+of those lists is pinned in code.
 
 **Why.** Nothing else in this stage can run without it. Worse, two families
 produced almost nothing purely because they were pointed at the wrong sections,
@@ -319,6 +361,14 @@ console.log(s.match(/default_section_refs_by_family:\s*Object\.freeze\(\{[\s\S]{
 ```
 shows `modiv` has exactly one entry, `TERMINATION_FEE: ['7.1','7.3','8.12']`, and
 `topbuild` has none.
+
+**The other 24 exist and are mechanically recoverable.** Twenty are in
+`section_references` in each `evidence/canonical-v2/modiv-*-20260806/run-manifest.json`.
+The remaining four have no manifest at all — `capitalisation`,
+`closing-conditions`, `interim-operating`, `no-other-reps` — and their lists are
+in `section-location-scan.json` under `requested_section_references` (verified:
+capitalisation is `["3.2","4.2"]`). Harvest both shapes. Do not re-derive by
+hand what is already committed.
 
 **Two lists are wrong, both found by reading them.**
 
@@ -338,84 +388,210 @@ shows `modiv` has exactly one entry, `TERMINATION_FEE: ['7.1','7.3','8.12']`, an
 - **KEY_DEFINED_TERMS was pointed at 8.5 alone.** Modiv's definitions are in
   section **8.12**, which the runner's own header comment already says, because
   TERMINATION_FEE's pinned list includes it. All 15 of that family's output fell
-  into open world.
+  into open world. The harvest will return 8.5 for this family: that is the
+  error being corrected, not evidence against the correction.
 
-Confirm both with
-`node -e "console.log(require('./evidence/canonical-v2/modiv-consideration-20260806/run-manifest.json').section_references)"`
-and the same for `modiv-key-defined-terms-20260806`.
+**A generator, as a cross-check and for every document after this one.** Write
+`scripts/canonical-v2-generate-family-section-refs.mjs`: sectionize with
+`sectionizeAdmittedSource`, label each node with
+`classifyDeterministicSectionFamilies`
+(`lib/canonical-v2/native-producer/section-family-classifier.js:410`, stage 1
+only — deterministic, unflagged, zero model calls), invert to
+`family -> [section_references]`. Diff it against the harvest; read the
+document wherever they disagree.
 
-**Change.** `scripts/canonical-v2-live-extraction-run.mjs`, `DEAL_PINS.modiv.default_section_refs_by_family`.
-Read `section_references` out of each of the 25 run manifests, add all 25 as
-pinned defaults, and correct the two above.
+Three things are required by construction, and skipping any of them produces
+wrong output that does not throw:
 
-**Proves it is done.** A test asserting that every registered family has a
-pinned section list for `modiv`, and that invoking the runner with only
-`--deal`, `--family` and `--out-dir` reproduces the manifest's own
-`section_references` for each. Twenty-five entries, checked against the
-manifests, not typed from memory.
+- **Inherit titles.** Most nodes carry no `heading`
+  (`deterministic-sectionizer.js:327`). Walk `parent_section_id` to the nearest
+  non-empty one. Copy `deriveSectionTitle`
+  (`native-extraction-run.js:330-340`) or `inheritedTitle`
+  (`prompt-budget-split-preflight.js:156-165`).
+- **Filter to dispatchable nodes** before classifying, or a matching section
+  drags its whole subtree into the family. Copy `dispatchableNodes`
+  (`full-corpus-routing-prompt-cost-audit.js:258-276`).
+- **Slice by bytes** (`utf8Slice`/`Buffer`), never `.slice()`/`indexOf`.
 
-## Step 2B. Re-run the 25 families against Modiv and diff against the pinned baseline
+`buildAuditFromCaptureRecords` in the same file (function at 278, loop at
+303-347) already does this composition and is a working template. It is not
+exported and is scoped to a fixed cohort, so it cannot be called directly.
+Note `article_context` is `null` in every live path today; do not rely on it.
 
-**What it is.** Dispatch every registered family at the Modiv agreement again,
-and compare the result to the snapshot taken before this week's fixes landed.
+`MAE_DEFINITION` has no Modiv run to harvest from, so it gets a full human read
+regardless of whether the generator disagrees with anything.
 
-**Why.** Four families crashed and roughly a dozen fixes landed after the
-baseline was pinned. Nobody has measured whether the fixes worked. The baseline
-exists precisely so this can be a measurement rather than an impression.
+**Change.** `scripts/canonical-v2-live-extraction-run.mjs`,
+`DEAL_PINS.modiv.default_section_refs_by_family`: all 25 families, harvested,
+cross-checked, and the two corrections above applied.
 
-**Change.** No code beyond Step 2A. Run
-`scripts/canonical-v2-live-extraction-run.mjs`, one process per family, six to
-ten in parallel. `--deal modiv`, `--family <NAME>`,
-`--out-dir evidence/canonical-v2/modiv-<family>-<yyyymmdd>`. Capitalisation
-needs `--call-timeout-ms` above the 600000 default: it ran 18.8 minutes last
-time and was killed. Note that MAE_DEFINITION has never run against Modiv at
-all, so this creates its first baseline rather than re-testing one.
+**Proves it is done.** A test asserting every registered family has a pinned
+section list for `modiv`, and that invoking the runner with only `--deal`,
+`--family` and `--out-dir` reproduces the manifest's own `section_references`
+for each. Twenty-five entries, checked against the artefacts, not typed from
+memory. The generator and its raw pre-correction output are both committed as
+`docs/codex-program/notes/family-section-refs-modiv-<date>-generated.json`, so a
+reader can see what was proposed against what a human corrected, and why.
 
-Expect roughly 70 model calls and $25. Basis: the first sweep measured 58 calls
-and $20.30 for 25 families, and citation-following is now on by default but
-scoped to termination-fee bare-citation triggers, so it adds nothing elsewhere.
+## Step 2B. Build the bridge from a run to the writer
 
-**Proves it is done.** Regenerate the baseline JSON in the same shape and diff
-it against `docs/codex-program/notes/all-families-baseline-20260806.json`. Two
-conditions, both mechanical:
+**What it is.** Today an extraction run writes JSON into
+`evidence/canonical-v2/<deal>-<family>-<date>/` and stops. Nothing functional
+reads it back: grep every output filename and the only non-comment consumer is
+`scripts/nets-eligibility-report.mjs`, broken since `0d17ad00`.
+`validate-write-set.js` produces a `publishableWriteSet` and the runner writes
+it to `validation.json` and nowhere else. This step carries it into the writer.
 
-1. `incomplete` is 0. It was 4: capitalisation and closing conditions and
-   interim operating failed at extraction or resolution, no-other-reps failed at
-   validation. Commit `d261df30` fixed three crash causes and `ae8b12de` made
-   the timeout configurable. This is the test of those claims. Note that closing
-   conditions is only partly addressed: what was fixed is that a partial receipt
-   is now kept, and the underlying unparseable response on call 2 of 4 persists,
-   with sections 6.3 and 6.4 never attempted. If it fails again, that is
-   expected, and the finding is what the model returned.
-2. No family's `resolved` count falls. A fall is a regression and must be
-   explained before the stage continues.
+**Why.** Without it every rung below ends in a file nobody reads, and this
+stage would prove that extraction generalises into a void. This is the missing
+stage named in `CODEBASE-GUIDE.md` section 12.1.
 
-Record the new file as `notes/all-families-baseline-<date>.json` and keep the old
-one. This step also discharges `P9_SHADOW_REEXTRACTION` and `P9_STRUCTURED_CLAIMS`.
+**Change.** A driver that takes a run's output directory, re-validates it,
+and calls `canonical_v2_write` — the same entry point P8's staging proofs used
+(`supabase/canonical-v2-foundation.sql:1167`), through
+`lib/canonical-v2/serving-client.js`, against isolated staging. Two modes:
+rollback (default) and durable (explicit flag). Rollback-only cannot serve, so
+the rungs below need the durable mode; the flag exists so that proving the
+write and proving the serving stay separable when one of them breaks.
 
-## Step 2C. Map the 25 families to TopBuild's sections, for nothing
+Read P8's rows in `docs/codex-program/EXECUTION-LEDGER.md` before writing this.
+They record real runs of this function against isolated staging with replay
+no-op, conflicting-replay rejection and RLS proofs, all COMPLETE. This step is
+not discovering whether the writer works; it is making the general runner reach
+it. Note also that `PLAN.md`'s own former claim that the schema had "never been
+executed" rested on a command that only shows some tests pattern-match source
+text — see `CODEBASE-GUIDE.md` section 9.
+
+**Proves it is done.** One family's committed evidence directory goes in, rows
+come out in staging, and a second identical invocation is a no-op. Both proved
+by test, not by a screenshot.
+
+## Step 2C. One family, end to end
+
+**What it is.** `TERMINATION_FEE` on Modiv, through all five steps: extract,
+validate, write durably to staging, serve, confirm it renders.
+
+**Why.** It is the family with a real baseline and a known-correct section
+list, so anything that fails here is a defect in the chain rather than in the
+mapping. Everything after this is fan-out; this is the rung that establishes
+the chain exists at all.
+
+**Change.** No new code beyond 2A and 2B. Run it, diff the extraction against
+`all-families-baseline-20260806.json`'s `TERMINATION_FEE` entry, write, serve
+in a preview or local runtime, and look at it.
+
+**Proves it is done.** The extraction matches the baseline; staging holds the
+rows; the review surface renders the family for that deal in a permitted
+runtime. A screenshot is not the proof — a test that reads the served payload
+back is. The screenshot is for the human.
+
+## Step 2D. Fan out the families on Modiv
+
+**What it is.** 1 -> 4 -> 12 -> 25, each rung re-running every family proven
+earlier, every rung full-depth through serving.
+
+**Why.** So a defect is found once rather than 24 times, and so a fix that
+breaks an earlier family is caught by the rung that introduced it.
+
+**Change.** Same runner. One process per family, six to ten in parallel — the
+runner is serial within a run (`native-extraction-run.js:635`) but the
+processes are independent. Measured from the 25 committed telemetry files, a
+family-run averages ~4.85 minutes (median ~3.4, max ~19), so a 42-run ladder is
+roughly 6-7 hours per document at eight-way parallelism, not the days it would
+take serially.
+
+- **Rung 1 — one family.** `TERMINATION_FEE`, already done as 2C.
+- **Rung 2 — four.** Add `CONSIDERATION` and `KEY_DEFINED_TERMS` — the two
+  corrected in 2A, so this is the first real test of those corrections — and
+  `APPRAISAL_DISSENTERS_RIGHTS`, whose zero output was judged correct by
+  design: confirm it is still zero **for the same reason**, not because it
+  silently broke.
+- **Rung 3 — twelve.** Add `TERMINATION`, `SPECIFIC_PERFORMANCE_REMEDIES`,
+  `MATERIAL_CONTRACTS`, `GENERAL_COVENANTS`, `REPRESENTATIONS`, `TAX_MATTERS`,
+  `CLOSING_CONDITIONS`, `INTERIM_OPERATING` — the families named elsewhere in
+  this plan as having known issues to watch.
+- **Rung 4 — all 25.** Including `MAE_DEFINITION`, which has never run against
+  Modiv, so it creates a first baseline rather than re-testing one, and
+  `CAPITALISATION`, which needs `--call-timeout-ms` above the 600000 default:
+  it ran 18.8 minutes last time and was killed.
+
+Family names above are the registered identifiers; the runner rejects anything
+else with `UNREGISTERED_FAMILY`.
+
+**Proves it is done.** Checked after **every** rung, not only the last:
+
+1. `incomplete` is 0 among families run so far. **It is 4 today** —
+   capitalisation, closing conditions and interim operating failed at
+   extraction or resolution, no-other-reps at validation. Commit `d261df30`
+   fixed three crash causes and `ae8b12de` made the timeout configurable; this
+   is the test of those claims. Closing conditions is only partly addressed:
+   what was fixed is that a partial receipt is now kept, and the underlying
+   unparseable response on call 2 of 4 persists, with sections 6.3 and 6.4
+   never attempted. If it fails again, that is expected, and the finding is
+   what the model returned.
+2. No family's `resolved` count falls against its own most recent prior rung.
+3. Every family run so far still writes and still serves.
+
+A failed gate is a stop, not a note to fix at the end. Eleven of the twenty
+complete Modiv runs currently resolve zero, so note that condition 2 is
+**vacuously satisfied** by 0 -> 0: for every zero-resolving family, state why
+zero is correct and what would make it wrong, or the gate is checking nothing.
+`GUARANTY_FINANCING_PARTY` is the standing example of correct zero;
+`REPRESENTATIONS`, `PROXY_MEETING` and `KEY_DEFINED_TERMS` show candidates
+present with zero resolved, which looks like a resolver gap rather than absence.
+
+Regenerate the baseline as `notes/all-families-baseline-<date>.json`, keep the
+old one, and diff. This step also discharges `P9_SHADOW_REEXTRACTION` and
+`P9_STRUCTURED_CLAIMS`.
+
+**Re-runs are change-triggered, not blanket.** Re-run a (deal, family) pair
+only when something it depends on changed since its last green receipt: code,
+`prompt_version`, `contract_bundle_version`, or `section_references`. An
+unchanged-input re-run against a live model is sampling noise, not a regression
+check. **This needs one runner change first:** the manifest records
+`prompt_version`, `contract_bundle_version` and `section_references`, but no
+commit hash and no resolved model ID — only `model_cli_alias` — so today
+neither "did the code change" nor "did the model change" can be answered from a
+receipt. Record both, and write down what counts as a family run's code
+footprint. Accepted loss, stated rather than hidden: blanket re-running would
+surface flakiness that a single receipt hides.
+
+**Nondeterminism.** The runner makes live model calls with no `--replay` and no
+pinned seed (a replay path exists only on the sibling
+`canonical-v2-native-extract.mjs:70`). Two identical runs can differ. Before
+rung 1, either build a replay path or write down the tolerance: what size of
+`resolved` delta is noise, how many confirmations a red gate needs, and who
+decides. Without that, the first flaky rung is resolved by whoever is at the
+keyboard, which is the gate erosion this ladder exists to prevent.
+
+## Step 2E. Map the families to TopBuild's sections, for nothing
 
 **What it is.** Work out which sections of the TopBuild agreement each family
 should be pointed at, without calling a model.
 
 **Why.** TopBuild has 63 sections to Modiv's 99 and the articles do not align:
 Modiv's termination sits at 7.1, TopBuild's boilerplate runs to 7.16. Modiv's
-mapping must not be assumed.
+mapping must not be assumed. TopBuild has no run manifests, so 2A's generator is
+the only source here — this is what it was built for.
 
-**Change.** `scripts/canonical-v2-live-extraction-run.mjs --dry-run --deal
-topbuild --family <NAME>` for each of the 25. The runner resolves sections and
-prints `DRY RUN complete: projected_model_call_count=N. Stopping before any
-model call.` Costs nothing.
+**Change.** Run the generator with `--deal topbuild`, human-review every
+family's proposed list against the actual text, then confirm with
+`scripts/canonical-v2-live-extraction-run.mjs --dry-run --deal topbuild
+--family <NAME>` for each of the 25. The runner prints `DRY RUN complete:
+projected_model_call_count=N. Stopping before any model call.` Costs nothing.
 
 **Proves it is done.** A committed mapping file listing, per family, the
 resolved section references and the projected call count, with 25 entries and
 zero model calls made. Any family resolving to zero sections is a finding to
-record, not a family to skip.
+record, not a family to skip — and specifically,
+`GUARANTY_FINANCING_PARTY` resolving to zero *here* would mean the mapping is
+wrong, before 2F ever runs. Check that by name.
 
-## Step 2D. Run the 25 families against TopBuild
+## Step 2F. Fan out the families on TopBuild
 
 **What it is.** The honesty check. Modiv is the controlled comparison; TopBuild
-is the different drafter.
+is the different drafter. Same four rungs as 2D, same gates, same depth through
+serving.
 
 **Why.** Almost every fix this week was tuned on Modiv's own language. The
 synonym lists learned Modiv's vocabulary, the termination fix parses "from X to
@@ -429,11 +605,11 @@ a financed deal where Modiv is not, with 39 mentions of Debt Financing against
 Modiv's zero, a financing condition, and dedicated sections at 4.17 "Financing
 Provisions" and 7.16 "Waiver of Claims Against Financing Sources".
 
-**Change.** The same runner, `--deal topbuild`, with Step 2C's mapping.
-Estimated 50 to 60 calls; that is an estimate, not a measurement.
+**Change.** The same runner, `--deal topbuild`, with 2E's mapping.
 
-**Proves it is done.** 25 run receipts under `evidence/canonical-v2/topbuild-*`,
-plus one falsifiable prediction resolved either way:
+**Proves it is done.** Run receipts under `evidence/canonical-v2/topbuild-*`
+for every rung, the same three gate conditions as 2D, plus one falsifiable
+prediction resolved either way:
 
 **GUARANTY_FINANCING_PARTY must produce non-zero output on TopBuild.** It
 returned zero on Modiv, and commit `ae8b12de` judged that correct on the grounds
@@ -442,20 +618,66 @@ returns zero on a financed deal with two dedicated financing sections, that
 reasoning was wrong and the family is broken rather than correctly quiet. Write
 down which it was.
 
-## Step 2E. Say which fixes generalised and which were Modiv-only
+## Step 2G. Fan out across documents, to ten or fifteen
 
-**What it is.** One table. A row per fix landed since commit `bff5cd28`, with its
-Modiv result and its TopBuild result.
+**What it is.** The same ladder on the document axis, each new agreement run
+alone first, then the whole accumulated set together.
 
-**Why.** Without it, Step 2D is 25 directories nobody reads, and the next person
+**Why.** Two documents is two samples. The point of this stage is a claim about
+generalisation, and that claim needs enough drafters to survive contact with a
+third, fourth and tenth.
+
+**Onboarding is the constraint, not the ladder.** Adding a document is not
+routine today: the admin UI cannot save a deal in any of its three modes, the
+only live ingest path (`scripts/ingest-local.js`) skips the amendment
+classifier entirely, a freshly ingested deal renders an empty review page until
+card-materialisation scripts are run by hand, and each `DEAL_PINS` entry is
+hand-authored with two SHA256 hashes and ~600-900KB of raw HTML committed to
+git. See `CODEBASE-GUIDE.md` section 12.3. Budget for that before budgeting for
+model calls.
+
+**Change.**
+
+- **Round A — the base pair.** Modiv and TopBuild, all 25, both already proven.
+  The baseline later rounds diff against, not new work.
+- **Round B — one more document.** A different drafter from both, ideally a
+  deal shape neither covers. All 25 families against it alone first; only once
+  clean, re-run Modiv and TopBuild alongside it. A regression there would mean a
+  fix for document 3 changed behaviour on 1 and 2, which should be structurally
+  impossible and must therefore be checked rather than assumed.
+- **Rounds C and D — five to ten more each, to 10-15 total.** Each new document
+  individually first, then the full accumulated set as the regression check.
+  Record every issue and fix or explicitly defer it, with a reason — no "needs
+  more analysis", same discipline as Step 3H.
+
+Ten to fifteen, not forty: the re-run cost grows with the accumulated set, and
+ten to fifteen drafters establishes generalisation about as well as forty. The
+remaining deals are covered by corpus certification, which is a different claim
+— that the corpus is clean — and belongs in its own step.
+
+**Proves it is done.** Run receipts for every deal x family pair executed, every
+round kept rather than only the last, so the ladder is auditable afterwards. A
+regression table per round: which families, which documents, incomplete count,
+resolved deltas against the previous round for that pair. And each document
+reaching the serving check, not only the extraction one.
+
+## Step 2H. Say which fixes generalised and which were Modiv-only
+
+**What it is.** One table. A row per fix landed since commit `bff5cd28`, with
+its result on every document the ladder reached.
+
+**Why.** Without it, 2F and 2G are directories nobody reads, and the next person
 re-derives the same question.
 
-**Change.** A new note, `docs/codex-program/notes/generalisation-<date>.md`.
+**Change.** A new note, `docs/codex-program/notes/generalisation-<date>.md`,
+with a column for which document round first exercised each fix and which later
+rounds re-confirmed it, so a fix proven on two documents and one proven on
+fifteen are visibly different confidence rather than both "pass".
 
 **Proves it is done.** Every row cites an evidence directory and a reason-code
-count from a `review-queue.json`, not a recollection. Any fix whose TopBuild
-result cannot be determined from the evidence is recorded as undetermined, not
-as a pass.
+count from a `review-queue.json`, not a recollection. Any fix whose result
+cannot be determined from the evidence is recorded as undetermined, not as a
+pass.
 
 ---
 
@@ -679,18 +901,39 @@ than asserted.
 
 ---
 
-# Stage 4. Find out whether the database write path works at all
+# Stage 4. Prove the write path durably, and harden it
 
-This stage is the largest single unknown in the programme. It is answerable in a
-day and nothing downstream is real until it is answered.
+**Rescoped 2026-08-06.** This stage previously opened "This stage is the
+largest single unknown in the programme", on the premise that the schema had
+never been executed. That premise is stale.
+`docs/codex-program/EXECUTION-LEDGER.md`'s P8 rows record real runs against
+isolated Supabase staging through the existing `canonical_v2_write` entry
+point, with exact-replay no-op, conflicting-replay rejection and RLS proofs,
+all marked COMPLETE. The write path is not an unknown; it is proven on two
+hand-built per-deal slices (QXO F28 and Metsera), every one of them rolled back.
 
-## Step 4A. Execute the 8,686 lines of SQL that have never been executed
+So two real unknowns remain, and they are narrower and more specific than the
+old framing:
+
+1. **Does a durable, non-rolled-back write survive and serve?** Every existing
+   proof ends in rollback by design.
+2. **Does the writer generalise?** Two hand-built slices is the same sample
+   size problem Stage 2 exists to solve for extraction. Stage 2 now runs each
+   family end to end through the writer for exactly this reason, so the
+   generalisation half of this question is answered *there*, not here.
+
+What remains in this stage is the hardening that Stage 2's ladder does not
+cover: idempotency and resume under interruption, refusal of what must never be
+imported, row-level traceability, and backup and restore.
+
+## Step 4A. Execute the schema against a real database, durably
 
 **What it is.** `supabase/canonical-v2-foundation.sql` defines a
 `canonical_v2_staging` schema with one table per write-set object kind, plus
 `public.canonical_v2_write` at line 1167, a function that recomputes each
 object's content-addressed identity inside the database before inserting it.
-Nobody has ever run it. Its nine tests read the file as a string and
+It has been run against isolated staging (see this stage's opening) but never
+durably. Its nine tests read the file as a string and
 pattern-match fragments of it.
 
 **Why.** Two thirds of the import plan assumes this works. It might, and it
@@ -813,6 +1056,22 @@ mode is actually run, not merely written.
 
 The parity register cannot answer this and says so. This stage builds the
 answer it cannot give.
+
+**Boundary with Stage 2, set 2026-08-06.** Stage 2's ladder now runs each
+family end to end — extract, validate, write, serve, confirm it renders — so
+"does this family reach a surface at all" is answered there, per family, as the
+ladder climbs. What stays here is everything that is about the *product*
+rather than about generalisation: reading claims for any deal out of
+`canonical_v2_staging` rather than a fixture, rendering a second deal without
+hand-writing a file for it, making runtime proof the progress measure, and
+rolling the remaining families onto real product surfaces.
+
+The two stages therefore overlap deliberately and are not redundant. Stage 2
+proves the chain works for 25 families across 10-15 documents in a permitted
+runtime. Stage 5 proves the product serves it. If Stage 2's serving check ever
+starts feeling like it discharges Stage 5, that is a sign the check has been
+weakened to a smoke test — it is meant to confirm a rendered surface, not a
+200 response.
 
 ## Step 5A. Read claims out of the database, for any deal
 
