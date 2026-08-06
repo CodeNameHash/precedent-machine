@@ -330,6 +330,25 @@ const FILE_PATTERN_EXEMPTIONS = {
   // this evidence/ output was not independently produced by this change --
   // see the task report for full provenance.
   'evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
+  // Same situation, same single prose-class pattern, one run later: the
+  // PROMPT_VERSION 3 re-run of the same Modiv family against the same
+  // already-admitted, already hash-pinned source bytes. Differs from the
+  // entry above in one respect worth stating rather than glossing: that run's
+  // output was not produced by the change that recorded it, whereas this
+  // bundle WAS produced here, so its provenance is this repository's own
+  // committed run receipt rather than an import.
+  //
+  // Verified before exempting rather than assumed. The file trips exactly one
+  // pattern, and the match is verbatim admitted merger-agreement prose: the
+  // embedded document sits on a single JSON line, so `.*` bridges thousands
+  // of characters between the unrelated words "Qualification" and
+  // "litigation" in Article III's representations. Nothing about it resembles
+  // the code regression the fingerprint was written to catch. Kept as a
+  // narrow per-file entry, and deliberately NOT folded into
+  // RECORDED_LIVE_RUN_DIR: that regex names individual fixture directories on
+  // purpose, and widening it to all of evidence/ would auto-exempt every
+  // future run's dump from the prose-class checks without anyone looking.
+  'evidence/canonical-v2/modiv-termination-fee-promptv3-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];
