@@ -349,6 +349,20 @@ const FILE_PATTERN_EXEMPTIONS = {
   // purpose, and widening it to all of evidence/ would auto-exempt every
   // future run's dump from the prose-class checks without anyone looking.
   'evidence/canonical-v2/modiv-termination-fee-promptv3-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
+  // Third instance of the same thing, and the repetition is itself the point:
+  // every real Modiv run's adapter result embeds the admitted agreement text,
+  // that text is one JSON line, and so a wildcard bridges the unrelated words
+  // "Qualification" and "litigation" in Article III's representations. This is
+  // the citation-following run, which dispatches an extra call per cited
+  // section and therefore carries more of the same admitted prose, not
+  // different prose.
+  //
+  // Left as a third per-file entry rather than folded into a directory rule
+  // deliberately. Widening RECORDED_LIVE_RUN_DIR to cover evidence/ would
+  // auto-exempt every future run's dump from the prose-class checks with
+  // nobody looking, and the cost of adding a line here per run is exactly the
+  // moment of inspection that keeps the check worth having.
+  'evidence/canonical-v2/modiv-termination-fee-citation-following-20260806/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];

@@ -47,6 +47,12 @@ const {
   MAPPING_TABLE_VERSION,
   indexFeeTriggerCandidatesBySection,
   resolveCitationFollowupTriggerCode,
+  factKeyForResolvedEntry,
+  isCitationFollowupSighting,
+  sectionReferenceDepth,
+  longestEvidenceSpan,
+  compareFeeSightingRank,
+  reconcileDuplicateTerminationFeeSightings,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { TERMINATION_FEE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
@@ -906,9 +912,26 @@ test('acceptance 3 (no regression): model asserts a registered code that equals 
 // like that fix, structurally cannot be exercised by the single-section
 // harness: it needs a SECOND, independently-dispatched section in the SAME
 // run.
+//
+// docs/codex-program/notes/claim-identity-reconciliation.md: whenever a
+// citing candidate's borrow succeeds, the section it borrowed FROM is --
+// by resolveCitationFollowupTriggerCode's own gate -- always present this
+// run as its own, independently (non-bare) corroborated candidate, sharing
+// the citing claim's own concept_key/party/canonical_value. That is exactly
+// factKeyForResolvedEntry's grouping condition, so every test below that
+// used to assert "the citing candidate resolves, carrying a TRIGGERED_BY
+// relationship to what it cited" now asserts the corrected outcome:
+// reconcileDuplicateTerminationFeeSightings folds the citing sighting into
+// the cited one (never operative on its own -- see isCitationFollowupSighting's
+// own comment for why it never wins), and mintPendingCitationRelationships
+// then finds no citing entry left to mint a relationship FROM, so none is
+// minted (CITATION_RELATIONSHIP_MINT_FAILED, reason CITING_CLAIM_NOT_
+// PUBLISHED, not a dangling reference). This is not a weaker test of the
+// same mechanism -- these are, structurally, the SAME "one legal fact,
+// several rows" defect the reconciliation was built to fix, in miniature.
 // ---------------------------------------------------------------------------
 
-test('citation-following: a bare citation resolves via a cited, independently-dispatched section, and mints a TRIGGERED_BY relationship', async () => {
+test('citation-following + reconciliation: a bare citation borrows a cited section\'s code, then the citing sighting merges into the cited one -- no separate row, no relationship', async () => {
   const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-clean-resolve', {
     a: ` Termination Fee. In the event this Agreement is terminated by Parent pursuant to Section 3.1(b), then ${SELLER_FULL_PAYMENT_SENTENCE}`,
     b: ` Grounds. the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.`,
@@ -929,39 +952,51 @@ test('citation-following: a bare citation resolves via a cited, independently-di
     },
   });
 
+  // The citing candidate (3.1(a)) is no longer its own row: it shares
+  // TERMF-TARGET/the Company/TERMINATION_FEE_TRIGGER/CHANGE_IN_RECOMMENDATION_
+  // TERMINATION with 3.1(b), so reconcileDuplicateTerminationFeeSightings
+  // folds it away. Confirmed both directions: absent from resolved...
   const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
-  assert.ok(citing, `expected the citing candidate to resolve, got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
-  assert.equal(citing.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
-  assert.equal(citing.concept_key, 'TERMF-TARGET');
-  assert.equal(citing.claim.attributes.trigger_code, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
-  assert.equal(
-    citing.claim.attributes.trigger_code_corroboration_scope, 'CITATION_FOLLOWUP',
-    'must be distinguishable from a same-section trigger-code resolution',
-  );
-  assert.deepEqual(citing.claim.attributes.trigger_code_corroboration_cited_references, ['3.1(b)']);
-  // The citing candidate's own raw_value is untouched -- still the bare
-  // quote, never rewritten to look like it said more than it did.
-  assert.equal(citing.claim.raw_value, 'by Parent pursuant to Section 3.1(b)');
+  assert.equal(citing, undefined, 'the citing sighting must not survive as its own row once its cited target resolved');
 
-  assert.ok(resolution.relationships, 'a TRIGGERED_BY relationship must be minted');
-  assert.equal(resolution.relationships.length, 1);
-  const bundle = resolution.relationships[0];
-  assert.equal(bundle.relationship.relationship_definition_key, 'TRIGGERED_BY');
-  assert.equal(bundle.relationship.state, 'PRESENT');
-  assert.equal(bundle.relationship.source_occurrence_id, citing.provision_instance.provision_instance_id);
-  assert.deepEqual(bundle.relationship.target_occurrence_ids, [bundle.cited_provision.provision_instance_id]);
-  assert.equal(bundle.relationship.effect.effect_mode, 'TYPED_LEGAL_EFFECT');
-  assert.equal(bundle.relationship.effect.legal_operation, 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER');
-  assert.equal(bundle.relationship.effect.trigger_code, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
-  assert.equal(bundle.relationship.raw_scope, 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.');
-  assert.equal(bundle.cited_reference, '3.1(b)');
-  assert.equal(bundle.relationship.evidence.length, 2);
-  assert.deepEqual(bundle.relationship.evidence.map((e) => e.evidence_role).sort(), ['CROSS_REFERENCE', 'DERIVATION_INPUT']);
-  assert.equal(bundle.relationship.retained_residuals.length, 0, 'a well-formed relationship carries no residuals');
-  assert.equal(resolution.resolution_receipt.counts.relationships, 1);
+  // ...and the cited candidate (3.1(b)) is the sole survivor, carrying an
+  // additive attribute naming exactly what merged into it.
+  const cited = resolution.resolved.find((r) => r.section_reference === '3.1(b)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(cited, `expected 3.1(b) to be the sole surviving row, got resolved ${JSON.stringify(resolution.resolved.map((r) => r.section_reference))}`);
+  assert.equal(cited.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(cited.concept_key, 'TERMF-TARGET');
+  assert.equal(cited.claim.attributes.trigger_code, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(
+    'trigger_code_corroboration_scope' in cited.claim.attributes, false,
+    '3.1(b) corroborated on its own text -- it was never itself a citation-followup borrower',
+  );
+  assert.equal(cited.claim.attributes.duplicate_sightings_merged.length, 1);
+  assert.equal(cited.claim.attributes.duplicate_sightings_merged[0].section_reference, '3.1(a)');
+  assert.equal(cited.claim.attributes.duplicate_sightings_merged[0].raw_value, 'by Parent pursuant to Section 3.1(b)');
+
+  // No relationship: the only candidate that could have been its source
+  // (3.1(a)) was merged away before mintPendingCitationRelationships ran.
+  assert.equal(resolution.relationships, undefined, 'nothing left to mint a TRIGGERED_BY relationship FROM');
+  assert.equal('relationships' in resolution.resolution_receipt.counts, false);
+
+  // Both the fold and the mint-skip are explainable in resolution.residuals,
+  // not silently absorbed -- and the merged claim's own id, independently
+  // recorded by the residual, must be the SAME id the winner's own
+  // attribute names (internal consistency, not just two separate shapes).
+  const mergeResidual = resolution.residuals.find((r) => r.residual_type === 'DUPLICATE_FACT_SIGHTING_MERGED');
+  assert.ok(mergeResidual);
+  assert.equal(mergeResidual.merged_section_reference, '3.1(a)');
+  assert.equal(mergeResidual.merged_claim_occurrence_id, cited.claim.attributes.duplicate_sightings_merged[0].claim_occurrence_id);
+  assert.equal(mergeResidual.winning_section_reference, '3.1(b)');
+  assert.equal(mergeResidual.winning_claim_occurrence_id, cited.claim.claim_occurrence_id);
+  const mintFailedResidual = resolution.residuals.find((r) => r.residual_type === 'CITATION_RELATIONSHIP_MINT_FAILED');
+  assert.ok(mintFailedResidual);
+  assert.equal(mintFailedResidual.section_reference, '3.1(a)');
+  assert.equal(mintFailedResidual.cited_reference, '3.1(b)');
+  assert.equal(mintFailedResidual.reason, 'CITING_CLAIM_NOT_PUBLISHED');
 });
 
-test('citation-following: a disjunctive bare citation naming two sections that AGREE on the same code resolves once, minting two relationships', async () => {
+test('citation-following + reconciliation: a disjunctive bare citation naming two sections that AGREE collapses all three sightings into one row', async () => {
   const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-disjunctive-agree', {
     a: ` Termination Fee. by the Company pursuant to Section 3.1(b) or Section 3.1(c). ${SELLER_FULL_PAYMENT_SENTENCE}`,
     b: ` Ground One. the Company Board has approved a Superior Proposal.`,
@@ -987,12 +1022,35 @@ test('citation-following: a disjunctive bare citation naming two sections that A
     },
   });
 
-  const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
-  assert.ok(citing, `expected the citing candidate to resolve, got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
-  assert.equal(citing.claim.canonical_value, 'SUPERIOR_PROPOSAL_TERMINATION');
-  assert.deepEqual(citing.claim.attributes.trigger_code_corroboration_cited_references, ['3.1(b)', '3.1(c)']);
-  assert.equal(resolution.relationships.length, 2, 'one relationship per cited reference');
-  assert.deepEqual(resolution.relationships.map((b) => b.cited_reference).sort(), ['3.1(b)', '3.1(c)']);
+  // All three of 3.1(a) (citation-followup), 3.1(b) and 3.1(c) (both direct)
+  // agree on TERMF-TARGET/the Company/SUPERIOR_PROPOSAL_TERMINATION -- one
+  // fact key, one surviving row. 3.1(a) always loses (isCitationFollowup
+  // Sighting). Between 3.1(b) and 3.1(c), equally direct and equally
+  // specific (both one paren-group deep), longestEvidenceSpan decides:
+  // 3.1(c)'s quote is the longer of the two.
+  const triggerRows = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(triggerRows.length, 1, `expected exactly one surviving TRIGGER row, got ${JSON.stringify(triggerRows.map((r) => r.section_reference))}`);
+  const [winner] = triggerRows;
+  assert.equal(winner.section_reference, '3.1(c)', 'the longer, equally-specific direct sighting wins the tiebreak');
+  assert.equal(winner.claim.canonical_value, 'SUPERIOR_PROPOSAL_TERMINATION');
+  assert.deepEqual(
+    winner.claim.attributes.duplicate_sightings_merged.map((m) => m.section_reference).sort(),
+    ['3.1(a)', '3.1(b)'],
+  );
+
+  // No relationship: 3.1(a), the only possible source, did not survive.
+  assert.equal(resolution.relationships, undefined);
+  const mintFailedReasons = resolution.residuals
+    .filter((r) => r.residual_type === 'CITATION_RELATIONSHIP_MINT_FAILED')
+    .map((r) => ({ cited_reference: r.cited_reference, reason: r.reason }));
+  assert.deepEqual(
+    mintFailedReasons.sort((x, y) => x.cited_reference.localeCompare(y.cited_reference)),
+    [
+      { cited_reference: '3.1(b)', reason: 'CITING_CLAIM_NOT_PUBLISHED' },
+      { cited_reference: '3.1(c)', reason: 'CITING_CLAIM_NOT_PUBLISHED' },
+    ],
+    'one mint-failed residual per originally-cited reference, both explained the same way',
+  );
 });
 
 test('citation-following hostile: a disjunctive bare citation naming two sections that DISAGREE on the code never resolves -- falls through unchanged, TRIGGER_UNCORROBORATED, no relationship', async () => {
@@ -1030,7 +1088,7 @@ test('citation-following hostile: a disjunctive bare citation naming two section
   assert.equal(resolution.relationships, undefined, 'omitted entirely -- nothing was minted');
 });
 
-test('citation-following: a chained citation (the cited section\'s own answer is ITSELF still bare) never resolves -- falls through unchanged', async () => {
+test('citation-following + reconciliation: a chained citation (the cited section\'s own answer is ITSELF still bare) never resolves for 3.1(a); 3.1(b) merges into 3.1(c) instead of carrying its own relationship', async () => {
   const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-chained', {
     a: ` Termination Fee. by Parent pursuant to Section 3.1(b). ${SELLER_FULL_PAYMENT_SENTENCE}`,
     b: ` by Parent pursuant to Section 3.1(c).`, // itself still bare
@@ -1076,15 +1134,29 @@ test('citation-following: a chained citation (the cited section\'s own answer is
   // different reason, at zero extra cost. This is not a shortfall of the
   // hop-limit design; it is what "each dispatched section is asked the
   // same question every other dispatched section is asked" (Part 6.1)
-  // means when the SAME document happens to chain through it twice.
+  // means when the SAME document happens to chain through it twice. But
+  // 3.1(b)'s own borrow is, itself, exactly the same "citing sighting of a
+  // fact its own cited section already states" shape as the top-level test
+  // above -- so it merges into 3.1(c) the same way, leaving 3.1(c) as the
+  // one surviving row for this ground and no relationship for either hop.
   const citingB = resolution.resolved.find((r) => r.section_reference === '3.1(b)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
-  assert.ok(citingB, `expected 3.1(b) to resolve on its own citation of 3.1(c), got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
-  assert.equal(citingB.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
-  assert.equal(citingB.claim.attributes.trigger_code_corroboration_scope, 'CITATION_FOLLOWUP');
+  assert.equal(citingB, undefined, '3.1(b) must not survive as its own row once 3.1(c), what it cited, resolved');
 
-  assert.equal(resolution.relationships.length, 1, 'exactly one relationship -- 3.1(b) -> 3.1(c); NONE from 3.1(a), which never resolved');
-  assert.equal(resolution.relationships[0].cited_reference, '3.1(c)');
-  assert.equal(resolution.relationships[0].relationship.source_occurrence_id, citingB.provision_instance.provision_instance_id);
+  const citedC = resolution.resolved.find((r) => r.section_reference === '3.1(c)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(citedC, `expected 3.1(c) to be the sole surviving row, got resolved ${JSON.stringify(resolution.resolved.map((r) => r.section_reference))}`);
+  assert.equal(citedC.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(
+    'trigger_code_corroboration_scope' in citedC.claim.attributes, false,
+    '3.1(c) corroborated on its own text -- it was never itself a citation-followup borrower',
+  );
+  assert.deepEqual(citedC.claim.attributes.duplicate_sightings_merged.map((m) => m.section_reference), ['3.1(b)']);
+
+  assert.equal(resolution.relationships, undefined, 'neither hop leaves a citing row to mint a relationship FROM');
+  const mintFailed = resolution.residuals.find((r) => r.residual_type === 'CITATION_RELATIONSHIP_MINT_FAILED');
+  assert.ok(mintFailed);
+  assert.equal(mintFailed.section_reference, '3.1(b)');
+  assert.equal(mintFailed.cited_reference, '3.1(c)');
+  assert.equal(mintFailed.reason, 'CITING_CLAIM_NOT_PUBLISHED');
 });
 
 test('citation-following: the cited section resolving to a DIFFERENT code than its own text supports (a live disagreement) never resolves the citing candidate either', async () => {
@@ -1494,4 +1566,280 @@ test('hostile: an expense-reimbursement figure with a bare "Company" mention is 
 test('hostile: a same-shape but unrelated "Company <word> Amount" defined term two words from the party head is still rejected -- the tightened one-word cap does not extend the pattern that far', () => {
   const quote = 'the Company Working Capital Amount shall be no less than $5,000,000 as of the Measurement Time';
   assert.deepEqual(feeSideCorroboratedSides(quote), []);
+});
+
+// ---------------------------------------------------------------------------
+// Duplicate-fact reconciliation (docs/codex-program/notes/claim-identity-
+// reconciliation.md). Unit tests for the pure ranking/grouping helpers
+// first (hermetic, hand-built minimal fixtures -- these functions only ever
+// read a small, fixed subset of a resolved entry's own fields, listed in
+// each helper's own comment in candidate-resolution.js), then integration
+// tests for reconcileDuplicateTerminationFeeSightings itself against REAL
+// resolvedEntry objects produced by this file's own harness (relabelled
+// only on the few fields needed to force a synthetic group -- every
+// identity value asserted below is the harness's own real, computed value,
+// captured before reconciliation runs, never predicted or hand-typed).
+// ---------------------------------------------------------------------------
+
+test('sectionReferenceDepth: counts bracketed sub-clause groups, not string length', () => {
+  assert.equal(sectionReferenceDepth('7.1'), 0);
+  assert.equal(sectionReferenceDepth('7.3'), 0);
+  assert.equal(sectionReferenceDepth('7.1(c)'), 1);
+  assert.equal(sectionReferenceDepth('7.1(c)(i)'), 2);
+  assert.equal(sectionReferenceDepth('7.3(b)(iii)'), 2);
+  assert.equal(sectionReferenceDepth('9.9(z)'), 1, 'depth is purely syntactic -- it does not require a real ancestor relationship to any other reference');
+  assert.equal(sectionReferenceDepth(null), 0);
+  assert.equal(sectionReferenceDepth(undefined), 0);
+  assert.equal(sectionReferenceDepth(''), 0);
+});
+
+test('isCitationFollowupSighting: true only for trigger_code_corroboration_scope === CITATION_FOLLOWUP, never confused with the unrelated fee_side_corroboration_scope marker', () => {
+  assert.equal(isCitationFollowupSighting({ claim: { attributes: { trigger_code_corroboration_scope: 'CITATION_FOLLOWUP' } } }), true);
+  assert.equal(isCitationFollowupSighting({ claim: { attributes: {} } }), false);
+  assert.equal(isCitationFollowupSighting({ claim: { attributes: { fee_side_corroboration_scope: 'SECTION_FAMILY' } } }), false);
+  assert.equal(isCitationFollowupSighting({ claim: { attributes: null } }), false);
+  assert.equal(isCitationFollowupSighting({ claim: null }), false);
+});
+
+test('longestEvidenceSpan: the widest single edge, not the sum of edges; zero for no evidence', () => {
+  assert.equal(longestEvidenceSpan({ evidence: [{ absolute_start: 100, absolute_end: 140 }, { absolute_start: 500, absolute_end: 520 }] }), 40);
+  assert.equal(longestEvidenceSpan({ evidence: [{ absolute_start: 0, absolute_end: 5 }] }), 5);
+  assert.equal(longestEvidenceSpan({ evidence: [] }), 0);
+  assert.equal(longestEvidenceSpan({ evidence: undefined }), 0);
+});
+
+test('factKeyForResolvedEntry: groups TRIGGER/TAIL entries by (concept_key, party, claim definition, canonical_value); never groups TERMINATION_FEE_AMOUNT at all', () => {
+  const trigger = (overrides) => ({
+    resolved_claim_definition_key: 'TERMINATION_FEE_TRIGGER',
+    concept_key: 'TERMF-TARGET',
+    party: { value: 'the Company' },
+    claim: { canonical_value: 'SUPERIOR_PROPOSAL_TERMINATION' },
+    ...overrides,
+  });
+  const a = trigger({});
+  const b = trigger({ party: { value: 'the Company' } });
+  assert.equal(factKeyForResolvedEntry(a), factKeyForResolvedEntry(b), 'identical (concept, party, definition, value) must produce the identical key');
+
+  const differentParty = trigger({ party: { value: 'Parent' } });
+  assert.notEqual(factKeyForResolvedEntry(a), factKeyForResolvedEntry(differentParty));
+
+  const differentValue = trigger({ claim: { canonical_value: 'CHANGE_IN_RECOMMENDATION_TERMINATION' } });
+  assert.notEqual(factKeyForResolvedEntry(a), factKeyForResolvedEntry(differentValue));
+
+  // The one legitimate non-duplicate the brief names explicitly: two
+  // TERMINATION_FEE_AMOUNT claims sharing a dollar figure but differing on
+  // concept_key must never share a key -- and, more fundamentally, amount
+  // claims are never grouped by this function at all.
+  const targetAmount = {
+    resolved_claim_definition_key: 'TERMINATION_FEE_AMOUNT', concept_key: 'TERMF-TARGET',
+    party: { value: 'the Company' }, claim: { canonical_value: '15000000.00' },
+  };
+  const reverseAmount = {
+    resolved_claim_definition_key: 'TERMINATION_FEE_AMOUNT', concept_key: 'TERMF-REVERSE',
+    party: { value: 'Parent' }, claim: { canonical_value: '15000000.00' },
+  };
+  assert.equal(factKeyForResolvedEntry(targetAmount), null);
+  assert.equal(factKeyForResolvedEntry(reverseAmount), null);
+
+  const tail = trigger({ resolved_claim_definition_key: 'TERMINATION_FEE_TAIL_PERIOD_MONTHS', concept_key: 'TERMF-TAIL', claim: { canonical_value: '12' } });
+  assert.notEqual(factKeyForResolvedEntry(tail), null);
+});
+
+test('compareFeeSightingRank: followup always loses to direct, regardless of depth or span', () => {
+  const followup = { entry: { section_reference: '7.1(c)(i)(iv)', claim: { attributes: { trigger_code_corroboration_scope: 'CITATION_FOLLOWUP' }, evidence: [{ absolute_start: 0, absolute_end: 10000 }] } }, index: 0 };
+  const direct = { entry: { section_reference: '7.1', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 1 }] } }, index: 1 };
+  assert.ok(compareFeeSightingRank(direct, followup) < 0, 'direct, even shallower and shorter, must sort before followup');
+  assert.ok(compareFeeSightingRank(followup, direct) > 0);
+});
+
+test('compareFeeSightingRank: among direct sightings, deeper section_reference wins', () => {
+  const shallow = { entry: { section_reference: '7.1', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 5000 }] } }, index: 0 };
+  const deep = { entry: { section_reference: '7.1(c)(i)', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 1 }] } }, index: 1 };
+  assert.ok(compareFeeSightingRank(deep, shallow) < 0, 'deeper, even with far less evidence, wins the depth tiebreak');
+});
+
+test('compareFeeSightingRank: among equally-deep direct sightings, longer evidence span wins', () => {
+  const shorter = { entry: { section_reference: '3.1(b)', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 40 }] } }, index: 0 };
+  const longer = { entry: { section_reference: '3.1(c)', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 90 }] } }, index: 1 };
+  assert.ok(compareFeeSightingRank(longer, shorter) < 0);
+});
+
+test('compareFeeSightingRank: a true tie on every criterion falls back to processing order (index), never Map/sort non-determinism', () => {
+  const first = { entry: { section_reference: '3.1(b)', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 40 }] } }, index: 0 };
+  const second = { entry: { section_reference: '3.1(c)', claim: { attributes: {}, evidence: [{ absolute_start: 0, absolute_end: 40 }] } }, index: 1 };
+  assert.ok(compareFeeSightingRank(first, second) < 0);
+  assert.ok(compareFeeSightingRank(second, first) > 0);
+});
+
+test('reconcileDuplicateTerminationFeeSightings: two independent real resolutions, relabelled into one fact, merge to one survivor with occurrence identity preserved and revision identity changed', async () => {
+  // Two genuinely independent resolveCandidates runs -- different deals,
+  // different documents, different real ids -- each producing exactly one
+  // resolved TRIGGER claim on its own terms (neither has anything to merge
+  // with in its own run). Relabelling copies of both onto the SAME
+  // (concept_key, party, canonical_value) is what manufactures the group;
+  // every identity value asserted below still comes from each entry's own,
+  // real, already-computed fields, never predicted.
+  const quoteA = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const runA = await resolveTerminationFeeAssertions('deal:reconcile-fixture-a', quoteA, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION', quote: quoteA })],
+  });
+  const quoteB = 'the Company Board has approved a Superior Proposal, and the Company shall pay (or cause to be paid) as directed by Parent the Company Termination Fee.';
+  const runB = await resolveTerminationFeeAssertions('deal:reconcile-fixture-b', quoteB, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: quoteB })],
+  });
+
+  const entryA = runA.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  const entryBReal = runB.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(entryA && entryBReal, 'grounding: both fixture runs must independently resolve');
+
+  // entryB is a shallow-cloned, relabelled COPY -- entryA and the real
+  // runB.resolution.resolved array are never mutated by this test.
+  const entryB = {
+    ...entryBReal,
+    section_reference: '7.1(c)(i)', // deeper than entryA's own SECTION_REFERENCE -- must win
+    concept_key: entryA.concept_key,
+    party: entryA.party,
+    claim: { ...entryBReal.claim, canonical_value: entryA.claim.canonical_value },
+  };
+  assert.equal(factKeyForResolvedEntry(entryA), factKeyForResolvedEntry(entryB), 'grounding: relabelling must actually produce one shared fact key');
+
+  const beforeWinnerOccurrenceId = entryB.claim.claim_occurrence_id;
+  const beforeWinnerSubjectId = entryB.claim.subject_occurrence_id;
+  const beforeWinnerEvidenceIds = entryB.claim.evidence_ids;
+  const beforeWinnerRevisionId = entryB.claim.claim_revision_id;
+  const beforeLoserOccurrenceId = entryA.claim.claim_occurrence_id;
+
+  const resolved = [entryA, entryB];
+  const reviewQueue = [];
+  const residuals = [];
+  reconcileDuplicateTerminationFeeSightings({ resolved, reviewQueue, residuals });
+
+  assert.equal(resolved.length, 1, 'the group must collapse to exactly one entry');
+  const [survivor] = resolved;
+  assert.equal(survivor.section_reference, '7.1(c)(i)', 'the deeper section reference wins');
+
+  // Occurrence identity: byte-identical to entryB's own, pre-reconciliation
+  // value -- never re-derived, never guessed.
+  assert.equal(survivor.claim.claim_occurrence_id, beforeWinnerOccurrenceId);
+  assert.equal(survivor.claim.subject_occurrence_id, beforeWinnerSubjectId);
+  assert.deepEqual(survivor.claim.evidence_ids, beforeWinnerEvidenceIds);
+  // Revision identity: MUST change -- attributes grew duplicate_sightings_merged.
+  assert.notEqual(survivor.claim.claim_revision_id, beforeWinnerRevisionId);
+
+  assert.equal(survivor.claim.attributes.duplicate_sightings_merged.length, 1);
+  assert.equal(survivor.claim.attributes.duplicate_sightings_merged[0].claim_occurrence_id, beforeLoserOccurrenceId);
+  assert.equal(survivor.claim.attributes.duplicate_sightings_merged[0].section_reference, entryA.section_reference);
+
+  assert.equal(residuals.length, 1);
+  assert.equal(residuals[0].residual_type, 'DUPLICATE_FACT_SIGHTING_MERGED');
+  assert.equal(residuals[0].merged_claim_occurrence_id, beforeLoserOccurrenceId);
+  assert.equal(residuals[0].winning_claim_occurrence_id, beforeWinnerOccurrenceId);
+});
+
+test('reconcileDuplicateTerminationFeeSightings: also removes the merged claim\'s own reviewQueue mirror, and repoints the survivor\'s mirror at its new revision/closure id', async () => {
+  const quoteA = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const runA = await resolveTerminationFeeAssertions('deal:reconcile-fixture-rq-a', quoteA, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION', quote: quoteA })],
+  });
+  const quoteB = 'the Company Board has approved a Superior Proposal, and the Company shall pay (or cause to be paid) as directed by Parent the Company Termination Fee.';
+  const runB = await resolveTerminationFeeAssertions('deal:reconcile-fixture-rq-b', quoteB, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: quoteB })],
+  });
+  const entryA = runA.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  const entryBReal = runB.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  const entryB = {
+    ...entryBReal,
+    section_reference: '7.1(c)(i)',
+    concept_key: entryA.concept_key,
+    party: entryA.party,
+    claim: { ...entryBReal.claim, canonical_value: entryA.claim.canonical_value },
+  };
+
+  // Real reviewQueue mirrors, mimicking finalizeResolvedCandidate's own
+  // shape (matched by claim_revision_id, its documented cross-reference
+  // field) -- one per fixture entry, plus an UNRELATED third entry that
+  // must survive completely untouched.
+  const unrelatedQueueItem = Object.freeze({ claim_revision_id: 'unrelated-revision-id', closure_id: 'unrelated-closure-id', section_reference: 'UNRELATED', reasons: [] });
+  const reviewQueue = [
+    { claim_revision_id: entryA.claim.claim_revision_id, closure_id: entryA.claim.closure_id, section_reference: entryA.section_reference, reasons: [] },
+    { claim_revision_id: entryB.claim.claim_revision_id, closure_id: entryB.claim.closure_id, section_reference: entryB.section_reference, reasons: [] },
+    unrelatedQueueItem,
+  ];
+  const resolved = [entryA, entryB];
+  const residuals = [];
+  reconcileDuplicateTerminationFeeSightings({ resolved, reviewQueue, residuals });
+
+  assert.equal(reviewQueue.length, 2, 'the loser\'s own mirror is removed; the unrelated entry and the survivor\'s mirror remain');
+  assert.ok(reviewQueue.includes(unrelatedQueueItem), 'an unrelated reviewQueue entry must be untouched, same object reference');
+  const survivorMirror = reviewQueue.find((item) => item.section_reference === '7.1(c)(i)');
+  assert.ok(survivorMirror);
+  assert.equal(survivorMirror.claim_revision_id, resolved[0].claim.claim_revision_id, 'the mirror must be repointed at the NEW (post-merge) revision id');
+  assert.equal(survivorMirror.closure_id, resolved[0].claim.closure_id);
+  const loserMirror = reviewQueue.find((item) => item.claim_revision_id === entryA.claim.claim_revision_id);
+  assert.equal(loserMirror, undefined, 'the merged-away claim\'s own OLD reviewQueue mirror must not survive under its old identity either');
+});
+
+test('reconcileDuplicateTerminationFeeSightings: entries that do NOT share a fact key are left completely untouched -- same array length, same object references, zero residuals', async () => {
+  // The named legitimate non-duplicate: two TERMINATION_FEE_AMOUNT claims
+  // valued identically but under different concept_key (TARGET vs REVERSE)
+  // must never be treated as a group at all.
+  const targetAmount = Object.freeze({
+    resolved_claim_definition_key: 'TERMINATION_FEE_AMOUNT', concept_key: 'TERMF-TARGET',
+    section_reference: '8.12', party: { value: 'the Company' },
+    claim: Object.freeze({ canonical_value: '15000000.00', claim_occurrence_id: 'fixture-target-id' }),
+  });
+  const reverseAmount = Object.freeze({
+    resolved_claim_definition_key: 'TERMINATION_FEE_AMOUNT', concept_key: 'TERMF-REVERSE',
+    section_reference: '8.12', party: { value: 'Parent' },
+    claim: Object.freeze({ canonical_value: '15000000.00', claim_occurrence_id: 'fixture-reverse-id' }),
+  });
+  const resolved = [targetAmount, reverseAmount];
+  const reviewQueue = [];
+  const residuals = [];
+  reconcileDuplicateTerminationFeeSightings({ resolved, reviewQueue, residuals });
+
+  assert.equal(resolved.length, 2);
+  assert.equal(resolved[0], targetAmount, 'untouched entries keep their exact object reference, not merely equal fields');
+  assert.equal(resolved[1], reverseAmount);
+  assert.equal(residuals.length, 0, 'nothing to explain -- nothing was merged');
+});
+
+test('reconcileDuplicateTerminationFeeSightings: a three-way group collapses to one winner and exactly two DUPLICATE_FACT_SIGHTING_MERGED residuals', async () => {
+  const quoteA = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const runA = await resolveTerminationFeeAssertions('deal:reconcile-fixture-3way-a', quoteA, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION', quote: quoteA })],
+  });
+  const quoteB = 'the Company Board has approved a Superior Proposal, and the Company shall pay (or cause to be paid) as directed by Parent the Company Termination Fee.';
+  const runB = await resolveTerminationFeeAssertions('deal:reconcile-fixture-3way-b', quoteB, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: quoteB })],
+  });
+  const quoteC = 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote, and the Company shall pay (or cause to be paid) as directed by Parent the Company Termination Fee.';
+  const runC = await resolveTerminationFeeAssertions('deal:reconcile-fixture-3way-c', quoteC, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'CHANGE_IN_RECOMMENDATION_TERMINATION', quote: quoteC })],
+  });
+
+  const entryA = runA.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  const entryBReal = runB.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  const entryCReal = runC.resolution.resolved.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(entryA && entryBReal && entryCReal, 'grounding: all three fixture runs must independently resolve');
+
+  const relabel = (entry, sectionReference) => ({
+    ...entry,
+    section_reference: sectionReference,
+    concept_key: entryA.concept_key,
+    party: entryA.party,
+    claim: { ...entry.claim, canonical_value: entryA.claim.canonical_value },
+  });
+  const entryB = relabel(entryBReal, '7.1');
+  const entryC = relabel(entryCReal, '7.1(c)(i)');
+
+  const resolved = [entryA, entryB, entryC];
+  const reviewQueue = [];
+  const residuals = [];
+  reconcileDuplicateTerminationFeeSightings({ resolved, reviewQueue, residuals });
+
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].section_reference, '7.1(c)(i)', 'the deepest reference among the three wins');
+  assert.equal(resolved[0].claim.attributes.duplicate_sightings_merged.length, 2);
+  assert.equal(residuals.filter((r) => r.residual_type === 'DUPLICATE_FACT_SIGHTING_MERGED').length, 2);
 });
