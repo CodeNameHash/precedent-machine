@@ -55,22 +55,66 @@ function resolve(input, reference, ceiling = 65536) {
   });
 }
 
-test('TopBuild III-INTRO splits MAE work at existing child boundaries', () => {
+// Retargeted on 2026-08-05 from "III-INTRO" to "3.1", for a reason that is the
+// point of the test rather than an accident of it.
+//
+// This test proves an oversized section is split at boundaries that already
+// exist, instead of at arbitrary byte offsets. It used to demonstrate that on
+// III-INTRO, because the Article III chapeau was swallowing the entire article,
+// roughly 131 KB, and minting lettered children of its own. That was a
+// sectionizer defect: TopBuild's Sections 3.1 and 3.2 have titles longer than
+// the old 78-character heading cap, so neither was ever recognised.
+//
+// With the cap raised, III-INTRO shrinks from about 131 KB to 43 bytes, which
+// is what an article chapeau should be, so asserting that it needs splitting
+// would now be asserting the bug.
+//
+// Retargeting at Section 3.1, the genuinely oversized node at about 84 KB,
+// revealed something the phantom tree had been hiding, and it is the reason
+// this test now pins a refusal rather than a split. Section 3.1 is the
+// Company's representations, so it is classified REPRESENTATIONS, and that
+// family has no complete-relevant-byte accounting. The splitter therefore
+// declines to divide it at all, reporting
+// BLOCKED_CHILD_RELEVANT_COVERAGE_LOSS, because it cannot prove the pieces
+// would still cover everything that matters. That is the correct, conservative
+// answer, and it was previously unreachable: the phantom node carried only
+// MAE_DEFINITION, for which coverage IS provable, so the old tree got a split
+// it had not earned.
+//
+// Note what the splitter still gets right in the same breath: MAE coverage is
+// complete, one relevant fact of one, via the defined-term anchor. It is not
+// failing to understand the section, it is refusing to act on a family it
+// cannot fully account for.
+//
+// The ordinary split-at-existing-child-boundaries property is unaffected and
+// remains covered by the Modiv 8.12 test below, which is why it is not
+// re-proved here.
+test('TopBuild 3.1 refuses to split a representations section it cannot fully account for', () => {
   const topbuild = material('tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm');
-  const node = findSectionByReference(topbuild.tree, 'III-INTRO');
+  const node = findSectionByReference(topbuild.tree, '3.1');
+  assert.ok(node, 'Section 3.1 must exist: its absence, swallowed by the Article III chapeau, was the original defect');
+  assert.ok(node.end - node.start > 65536, 'Section 3.1 must be over the ceiling for this test to mean anything');
   const result = buildPromptBudgetSplitPreflight({
     source_id: 'topbuild', document_hash: topbuild.document_hash,
     canonical_text: topbuild.canonical_text, tree: topbuild.tree, nodes: [node],
     prompt_budget_policy: { prompt_byte_ceiling: 65536 },
   });
 
-  assert.equal(result.status, 'PASS');
-  assert.equal(result.resolutions[0].status, 'SPLIT');
-  assert.ok(result.work_items.some((item) => (
-    item.family_id === 'MAE_DEFINITION' && item.section_reference === 'III-INTRO(a)'
-  )));
-  assert.ok(result.work_items.every((item) => item.prompt_byte_length <= item.prompt_byte_ceiling));
-  assert.ok(result.work_items.every((item) => item.work_item_id));
+  assert.equal(result.status, 'BLOCKED_IRREDUCIBLE');
+  const resolution = result.resolutions[0];
+  assert.equal(resolution.status, 'BLOCKED_IRREDUCIBLE');
+  assert.deepEqual(resolution.work_items, [], 'no work item may be issued when the split is refused');
+
+  const blocker = resolution.blockers[0];
+  assert.equal(blocker.code, 'BLOCKED_CHILD_RELEVANT_COVERAGE_LOSS');
+  assert.equal(blocker.reason, 'COMPLETE_RELEVANT_BYTE_ACCOUNTING_UNAVAILABLE');
+  assert.deepEqual(blocker.family_ids, ['REPRESENTATIONS']);
+
+  // The refusal is specific, not blanket: MAE is fully covered even so.
+  const mae = resolution.coverage.find((entry) => entry.family_id === 'MAE_DEFINITION');
+  assert.ok(mae, 'MAE coverage must still be computed');
+  assert.equal(mae.relevant_fact_count, 1);
+  assert.equal(mae.covered_relevant_fact_count, 1);
 });
 
 test('Skechers 1.1 resolves the real Certain Definitions section and covers MAE_DEFINITION directly', () => {

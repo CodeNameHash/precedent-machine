@@ -495,6 +495,21 @@ function assertDecimalSectionsAnchorOnOwnHeading(tree, sourceText, label) {
   }
 }
 
+// docs/codex-program/notes/swallowed-headings.md. The sibling-tiling
+// invariant above is structurally blind to a heading that is never
+// recognised as a candidate at all (see that file for the full account): its
+// text is silently absorbed by a neighbour, producing neither an overlap nor
+// a gap, so assertSiblingsTileExactly passes on a tree that is missing whole
+// sections. swallowed_heading_residuals is the corpus-wide tripwire built to
+// catch exactly that blind spot — this must be empty on every real filing.
+function assertNoSwallowedHeadingResiduals(tree, label) {
+  assert.deepEqual(
+    tree.swallowed_heading_residuals,
+    [],
+    `${label}: expected no swallowed-heading residuals, got ${JSON.stringify(tree.swallowed_heading_residuals)}`,
+  );
+}
+
 for (const filing of REAL_FILINGS) {
   test(`corpus-wide boundary regression check: ${filing.name} — every sibling pair tiles exactly, every decimal section anchors on its own heading`, () => {
     const { sourceText, tree } = sectionizeRealFiling(filing.htmlPath);
@@ -502,8 +517,19 @@ for (const filing of REAL_FILINGS) {
     assertSiblingsTileExactly(tree, sourceText, filing.name);
     assertDecimalSectionsAnchorOnOwnHeading(tree, sourceText, filing.name);
     assertParentageIsConsistent(tree, filing.name);
+    assertNoSwallowedHeadingResiduals(tree, filing.name);
   });
 }
+
+test('corpus-wide boundary regression check: landos — no swallowed-heading residuals', () => {
+  // Landos already gets full sibling-tiling/parentage coverage in the
+  // "round-trips every node exactly" and "findSectionByReference resolves"
+  // tests above; this adds the one check those don't make: the tripwire
+  // itself, on the one real corpus filing that isn't SEC-HTML (so isn't part
+  // of REAL_FILINGS/sectionizeRealFiling above).
+  const tree = sectionizeAdmittedSource({ source_text: landosText, document_hash: DOC_HASH });
+  assertNoSwallowedHeadingResiduals(tree, 'landos');
+});
 
 test('regression: TopBuild ARTICLE I chapeau no longer absorbs "1.1" through "1.8" (was: I-INTRO end=15734 straddling 1.1 start=8619)', () => {
   const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm');
@@ -519,6 +545,70 @@ test('regression: TopBuild ARTICLE I chapeau no longer absorbs "1.1" through "1.
   // whole article.
   assert.equal(findSectionByReference(tree, 'I-INTRO(a)'), null);
   assert.equal(findSectionByReference(tree, 'I-INTRO(b)'), null);
+});
+
+// docs/codex-program/notes/swallowed-headings.md. An adversarial audit found
+// that INLINE_DECIMAL_HEADING_RE's title-length cap (78 characters at the
+// time) silently dropped five whole TopBuild sections whose real titles run
+// long: "1.8" (90 chars), "3.1"/"3.2" (47/84 chars -- 3.1's own title fits,
+// but ARTICLE III has only these two sections, so with 3.2 uncounted, 3.1
+// alone tripped applySequenceGate's LONE_CANDIDATE rule and both were lost),
+// "4.5" (105 chars) and "5.2" (94 chars). 3.1/3.2 didn't just go missing:
+// parseStructure's own "III-INTRO" chapeau node was left spanning the
+// ENTIRE 131KB of ARTICLE III (bytes 47712-179129) with a deep tree of
+// phantom lettered/roman subsection children misattributed to "III-INTRO"
+// instead of "3.1"/"3.2" -- including "III-INTRO(b)", which had already
+// reached a committed, resolved claim in
+// tests/fixtures/canonical-v2/f28-third-live-run/resolution.json before this
+// was caught. This test pins the fix: all five sections resolve as real,
+// correctly-bounded nodes, and the phantom III-INTRO subtree is gone.
+test('regression: TopBuild sections 1.8, 3.1, 3.2, 4.5 and 5.2 no longer silently vanish on over-long titles (was: 78-char cap on INLINE_DECIMAL_HEADING_RE)', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm');
+  const buf = Buffer.from(sourceText, 'utf8');
+
+  const expectations = [
+    { ref: '1.8', heading: 'Officers and Directors of the Titanium Surviving Corporation and Forward Surviving Company' },
+    { ref: '3.1', heading: 'Representations and Warranties of the Company' },
+    { ref: '3.2', heading: 'Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub' },
+    { ref: '4.5', heading: 'Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus' },
+    { ref: '5.2', heading: 'Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub' },
+  ];
+  for (const { ref, heading } of expectations) {
+    const node = findSectionByReference(tree, ref);
+    assert.ok(node, `"${ref}" must resolve`);
+    assert.equal(node.kind, 'SECTION');
+    assert.equal(node.heading, heading, `"${ref}" heading text`);
+    assert.match(
+      buf.subarray(node.start, node.start + ref.length + 1).toString('utf8'),
+      new RegExp(`^${ref.replace('.', '\\.')}\\b`),
+      `"${ref}" node.start must land exactly on its own bare heading text`,
+    );
+  }
+
+  // The sections that previously swallowed each of these five now end
+  // exactly where the recovered section begins, not past it.
+  const s17 = findSectionByReference(tree, '1.7');
+  const s18 = findSectionByReference(tree, '1.8');
+  assert.equal(s17.end, s18.start, '1.7 must end exactly where 1.8 begins, not swallow it');
+  const s44 = findSectionByReference(tree, '4.4');
+  const s45 = findSectionByReference(tree, '4.5');
+  assert.equal(s44.end, s45.start, '4.4 must end exactly where 4.5 begins, not swallow it');
+  const s51 = findSectionByReference(tree, '5.1');
+  const s52 = findSectionByReference(tree, '5.2');
+  assert.equal(s51.end, s52.start, '5.1 must end exactly where 5.2 begins, not swallow it');
+
+  // The phantom III-INTRO subtree (the entire article, misattributed) is
+  // gone; III-INTRO survives only as the genuine short chapeau ahead of 3.1.
+  const introIII = findSectionByReference(tree, 'III-INTRO');
+  const s31 = findSectionByReference(tree, '3.1');
+  assert.ok(introIII, 'III-INTRO must still resolve, as the real (now tiny) chapeau');
+  assert.equal(introIII.end, s31.start, 'III-INTRO must end exactly where 3.1 begins, not swallow it');
+  assert.ok(introIII.end - introIII.start < 100, 'III-INTRO must no longer span the whole article');
+  assert.equal(findSectionByReference(tree, 'III-INTRO(a)'), null);
+  assert.equal(findSectionByReference(tree, 'III-INTRO(b)'), null, 'the phantom reference an already-committed fixture had cited must no longer resolve at all');
+
+  assertSiblingsTileExactly(tree, sourceText, 'topbuild-post-fix');
+  assertNoSwallowedHeadingResiduals(tree, 'topbuild-post-fix');
 });
 
 test('regression: Skechers "Company Material Adverse Effect" (clause (r)) resolves under the real "1.1" Certain Definitions section, not the stale INTRO node', () => {
@@ -595,6 +685,144 @@ test('a reference that cannot be resolved fails rather than approximating', () =
   assert.equal(findSectionByReference(tree, 'SECTION 7.1'), null, 'the literal heading text is not itself a valid reference');
   assert.equal(findSectionByReference(tree, '999.99'), null);
   assert.equal(findSectionByReference(tree, ''), null);
+});
+
+// ─── Swallowed-heading tripwire (docs/codex-program/notes/swallowed-headings.md) ───
+//
+// The corpus regression tests above prove swallowed_heading_residuals stays
+// empty on every real filing this repo has today. These synthetic fixtures
+// prove the tripwire actually FIRES when it should, and stays silent when it
+// should — properties the real corpus alone (all currently healthy, post-fix)
+// cannot demonstrate either way.
+//
+// A fixture needs care to actually exercise THIS module's inline pass rather
+// than parseStructure's own, separate section detector (required, imported,
+// not owned by this file — see the header comment at the top of
+// deterministic-sectionizer.js). Two parseStructure behaviours matter here,
+// confirmed by direct instrumentation before writing these fixtures:
+//   1. A blank line ahead of a bare "N.M" is enough on its own for
+//      parseStructure's OWN blank-line-anchored detector to find it, with NO
+//      title-length cap of its own (see the QXO Section 5.2 test above) —
+//      bypassing INLINE_DECIMAL_HEADING_RE and this module's cap entirely.
+//      Fixtures below therefore use single newlines only, matching real
+//      TopBuild's actual body shape ("...ARTICLE I\nThe Mergers\n1.1 The
+//      Titanium Merger. Upon the term...").
+//   2. Less obviously: structural.js's parseSections() has its OWN bare
+//      "N.M Title" fallback pattern (also uncapped), but only tries it when
+//      the WHOLE DOCUMENT has fewer than 5 "Section X.XX"-formatted matches
+//      anywhere (its own documented guard against sparse-cross-reference
+//      documents). A real filing's own prose is thick with "Section X.XX"
+//      cross-references, which keeps that count well over 5 and permanently
+//      disables the fallback — but a short, hand-written fixture with no
+//      cross-references at all trivially has fewer than 5, wrongly
+//      triggering a fallback that would never fire on a real document this
+//      shape. Fixtures below pad in >=5 "Section X.XX" cross-reference
+//      mentions (unrelated, cosmetic prose) to suppress it, matching real
+//      documents' own cross-reference density instead of assuming it away.
+
+test('the tripwire fires on a title too long for even the raised cap: an over-long "4.2" is reported as a residual, not silently absorbed by "4.1"', () => {
+  // 271 characters -- well past the current 200-character cap on
+  // INLINE_DECIMAL_HEADING_RE, so "4.2" never becomes a raw candidate at
+  // all (the same failure shape that dropped TopBuild's real "4.5"). "4.1"
+  // and "4.3" both have ordinary short titles, so the sequence gate still
+  // accepts that pair, and -- exactly like TopBuild's "4.4" swallowing the
+  // real "4.5" -- "4.1"'s span silently runs all the way to "4.3"'s start,
+  // absorbing "4.2" whole.
+  const overLongTitle = 'Company Stockholder Meeting and Parent Stockholder Meeting and Any '
+    + 'Adjournments or Postponements Thereof in Accordance with the Terms of This '
+    + 'Agreement, Applicable Law and the Rules and Regulations of the New York '
+    + 'Stock Exchange and the Securities and Exchange Commission';
+  assert.ok(overLongTitle.length > 200, 'fixture premise: title must exceed the current cap');
+
+  const source = [
+    'ARTICLE IV',
+    'COVENANTS',
+    '4.1 Interim Operations. The Company shall operate its business in the ordinary course of business consistent with past practice, subject to Section 3.1, Section 3.2, Section 3.3 and Section 3.4 of this Agreement, and further subject to Section 3.5 hereof.',
+    `4.2 ${overLongTitle}. The Company and Parent shall take all actions necessary to convene and hold the applicable stockholder meetings.`,
+    '4.3 Further Assurances. Each party shall use reasonable best efforts to take all actions necessary to consummate the Transactions.',
+  ].join('\n');
+
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+
+  // The failure this reproduces: "4.2" never resolves...
+  assert.equal(findSectionByReference(tree, '4.2'), null, '"4.2" must not resolve -- its title is too long to become a candidate');
+  // ...and "4.1" silently absorbs it, exactly like TopBuild's real "4.4"/"4.5".
+  const s41 = findSectionByReference(tree, '4.1');
+  const s43 = findSectionByReference(tree, '4.3');
+  assert.ok(s41 && s43);
+  assert.equal(s41.end, s43.start, 'fixture premise: "4.1" silently runs all the way to "4.3" with the tripwire absent');
+
+  // The tripwire catches exactly this.
+  assert.deepEqual(
+    tree.swallowed_heading_residuals.map((r) => ({ article: r.article, reference: r.reference, reason: r.reason })),
+    [{ article: 'IV', reference: '4.2', reason: 'UNACCOUNTED_LINE_START_DECIMAL' }],
+  );
+  const residual = tree.swallowed_heading_residuals[0];
+  assert.ok(Number.isInteger(residual.start) && residual.start >= 0);
+  // The residual's own byte offset must land exactly on "4.2"'s real
+  // position in the source bytes, not an approximation.
+  const buf = Buffer.from(source, 'utf8');
+  assert.match(buf.subarray(residual.start, residual.start + 5).toString('utf8'), /^4\.2 /);
+
+  // "4.2" was never even a raw candidate, so nothing about it appears in the
+  // rejection log either -- confirmed here so the two typed lists (rejected
+  // candidates vs swallowed residuals) are pinned as covering genuinely
+  // different, non-overlapping cases.
+  assert.equal(
+    tree.rejected_inline_heading_candidates.find((r) => r.reference === '4.2'),
+    undefined,
+  );
+});
+
+test('the tripwire does not double-report a LONE_CANDIDATE rejection that is already recorded', () => {
+  // A single valid-length inline heading with no sibling in its article:
+  // applySequenceGate rejects it as LONE_CANDIDATE (recorded, not silent).
+  // The tripwire must not ALSO report "2.1" as a residual -- a recorded
+  // rejection is, by the tripwire's own contract, not what it exists to
+  // surface.
+  const source = [
+    'ARTICLE II',
+    'THE MERGER',
+    '2.1 The Merger. Upon the terms and subject to the conditions set forth in this Agreement, and subject to Section 3.1, Section 3.2, Section 3.3, Section 3.4 and Section 3.5 hereof, Merger Sub shall merge with and into the Company.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+
+  assert.equal(findSectionByReference(tree, '2.1'), null, 'fixture premise: a lone candidate with no sibling must not resolve');
+  assert.deepEqual(
+    tree.rejected_inline_heading_candidates.map((r) => ({ reference: r.reference, reason: r.reason })),
+    [{ reference: '2.1', reason: 'LONE_CANDIDATE' }],
+  );
+  assert.deepEqual(tree.swallowed_heading_residuals, [], 'an already-recorded rejection must not also be reported as a residual');
+});
+
+test('the tripwire ignores a bare line-start decimal that belongs to a different article\'s numbering', () => {
+  // A bare "2.5" opens a line inside ARTICLE IV's own body (lower-case
+  // start, so the production pass itself never mistakes it for a real
+  // heading either) -- it names ARTICLE II's numbering, not a missed
+  // ARTICLE IV heading. The tripwire is scoped per-article (matching N
+  // against THAT article's own number) specifically so a stray line-start
+  // decimal like this is never reported.
+  const source = [
+    'ARTICLE IV',
+    'COVENANTS',
+    '4.1 Interim Operations. The Company shall comply with the following schedule:',
+    '2.5 percent of the outstanding shares must approve any amendment made under this clause.',
+    '4.2 Further Assurances. Each party shall use reasonable best efforts to take all actions necessary to consummate the Transactions.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  assert.ok(findSectionByReference(tree, '4.1') && findSectionByReference(tree, '4.2'));
+  assert.equal(findSectionByReference(tree, '2.5'), null, 'fixture premise: "2.5" is not a real ARTICLE IV section');
+  assert.deepEqual(tree.swallowed_heading_residuals, []);
+});
+
+test('a healthy document with ordinary-length inline headings reports zero swallowed-heading residuals', () => {
+  const tree = sectionizeAdmittedSource({ source_text: qxoRealisticFullText, document_hash: DOC_HASH });
+  assert.deepEqual(tree.swallowed_heading_residuals, []);
+});
+
+test('empty source text reports an empty swallowed_heading_residuals array, not a missing field', () => {
+  const tree = sectionizeAdmittedSource({ source_text: '', document_hash: DOC_HASH });
+  assert.deepEqual(tree.swallowed_heading_residuals, []);
 });
 
 // ─── Input validation ───
