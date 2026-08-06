@@ -1,0 +1,31 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "NO_SHOP",
+  "purpose": "General extraction run: family NO_SHOP on deal modiv.",
+  "section_references": [
+    "5.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.6",
+      "family_id": "NO_SHOP"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "prompt_id": "native-producer-no-shop/v2",
+  "prompt_version": 3,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-06T10:23:39.917Z",
+  "total_elapsed_ms": 548772,
+  "extraction_wall_clock_ms": 544831,
+  "model_call_count": 1,
+  "run_receipt_id": "b00fa4d6d9c3b37dcd120fa445c129d83175c52cd43c7612891177a9997f4230",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

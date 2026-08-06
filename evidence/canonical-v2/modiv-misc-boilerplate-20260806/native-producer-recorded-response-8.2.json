@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:33:18.616Z",
+  "section_reference": "8.2",
+  "note": "General extraction run: deal=modiv, family=MISC_BOILERPLATE, section_references=[\"8.2\",\"8.3\",\"8.4\",\"8.7\",\"8.9\",\"8.10\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"boilerplate_assertions\":[{\"assertion_kind\":\"ASSIGNMENT_DETAIL\",\"quote\":\"Neither this Agreement nor any of the rights, interests or obligations hereunder shall be assigned or transferred, in whole or in part, by operation of Law (including by merger or consolidation) or otherwise by any of the parties hereto without the prior written consent of the other parties.\"},{\"assertion_kind\":\"ASSIGNMENT_DETAIL\",\"quote\":\"Any assignment in violation of this Section 8.2(b) shall be void.\"},{\"assertion_kind\":\"ASSIGNMENT_DETAIL\",\"quote\":\"Subject to the preceding sentence, this Agreement will be binding upon, inure to the benefit of, and be enforceable by, the parties and their respective successors and permitted assigns.\"}],\"mechanics\":[],\"open_world_candidates\":[]}"
+}

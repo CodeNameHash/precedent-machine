@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:33:44.154Z",
+  "section_reference": "1.1",
+  "note": "General extraction run: deal=modiv, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.1\",\"1.4\",\"1.5\",\"1.6\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"structure_assertions\":[{\"assertion_kind\":\"ACTIONS\",\"quote\":\"the Company shall be merged with and into Company Merger Sub\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the separate existence of the Company shall thereupon cease\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"Company Merger Sub shall survive the Company Merger\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"Parent shall be the sole member and manager of the Surviving Company\"},{\"assertion_kind\":\"ACTIONS\",\"quote\":\"OpCo Merger Sub shall be merged with and into the Partnership\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the separate existence of OpCo Merger Sub shall thereupon cease\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the Partnership shall be the surviving entity in the OpCo Merger\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}"
+}

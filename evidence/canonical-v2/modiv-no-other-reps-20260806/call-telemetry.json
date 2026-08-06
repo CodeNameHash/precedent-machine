@@ -1,0 +1,71 @@
+{
+  "run_wall_clock_ms": 84412,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "3.25",
+      "wall_clock_ms": 84134,
+      "duration_ms_reported": 79975,
+      "duration_api_ms_reported": 84420,
+      "total_cost_usd_cli": 0.2546423,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 16565,
+        "cache_read_input_tokens": 30141,
+        "output_tokens": 9587,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 16565,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 9587,
+            "cache_read_input_tokens": 30141,
+            "cache_creation_input_tokens": 16565,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 16565
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2259,
+          "outputTokens": 28,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.002399,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 2,
+          "outputTokens": 9587,
+          "cacheReadInputTokens": 30141,
+          "cacheCreationInputTokens": 16565,
+          "webSearchRequests": 0,
+          "costUSD": 0.2522433,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "session_id": "2d5f4982-4329-4c42-96f9-9b0de270b210"
+    }
+  ]
+}

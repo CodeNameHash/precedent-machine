@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T10:33:01.256Z",
+  "section_reference": "5.11",
+  "note": "General extraction run: deal=modiv, family=GUARANTY_FINANCING_PARTY, section_references=[\"5.11\"] (all dispatched as GUARANTY_FINANCING_PARTY via section_family_assignments), prompt_id=native-producer-guaranty/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"guaranty_assertions\":[],\"financing_mechanics\":[],\"open_world_candidates\":[]}"
+}
