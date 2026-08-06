@@ -433,7 +433,30 @@ memory. The generator and its raw pre-correction output are both committed as
 `docs/codex-program/notes/family-section-refs-modiv-<date>-generated.json`, so a
 reader can see what was proposed against what a human corrected, and why.
 
-## Step 2B. Build the bridge from a run to the writer
+## Step 2B. Build the bridge, both halves: run to writer, database to surface
+
+**The bridge has two halves and both are missing.** The write half carries a
+run's output into the database. The read half carries it back out to a
+surface. Neither exists, and a rung of this ladder cannot be climbed without
+both — 2C's "confirm it renders" is unachievable otherwise.
+
+**The read half, stated plainly because it is easy to miss.** No serving
+source reads from the database today. Grep every `lib/canonical-v2/*serving*.js`
+for `serving-client` or `canonical_v2_staging`: nothing.
+`termination-fee-serving-source.js`, the one family that serves V2 data on a
+preview deployment, reads a static fixture
+(`__fixtures__/canonical-v2/qxo-termination-fee-reviewed-excerpts.generated.js`,
+line 42). So "one family serves V2" is true and does not mean what it sounds
+like — it serves from a committed file, not from anything this stage writes.
+
+This is Step 5A's module, pulled forward for the same reason the write half is
+pulled forward from Stage 4: the ladder needs it per rung, not once at the end.
+Build it here, generically — reading validated claims and relationships for a
+given deal out of `canonical_v2_staging` in the shape the projection modules
+already expect — and Step 5A becomes the product hardening around it rather
+than its first construction.
+
+### The write half
 
 **What it is.** Today an extraction run writes JSON into
 `evidence/canonical-v2/<deal>-<family>-<date>/` and stops. Nothing functional
@@ -462,9 +485,37 @@ it. Note also that `PLAN.md`'s own former claim that the schema had "never been
 executed" rested on a command that only shows some tests pattern-match source
 text — see `CODEBASE-GUIDE.md` section 9.
 
-**Proves it is done.** One family's committed evidence directory goes in, rows
-come out in staging, and a second identical invocation is a no-op. Both proved
-by test, not by a screenshot.
+**Proves it is done (write half).** One family's committed evidence directory
+goes in, rows come out in staging, and a second identical invocation is a
+no-op. Both proved by test, not by a screenshot.
+
+### The read half
+
+**What it is.** One module that reads validated claims and relationships for a
+given deal out of `canonical_v2_staging` and returns them in the shape a
+projection module already expects — the generic version of what
+`termination-fee-serving-source.js` does today from a fixture.
+
+**Why.** Without it nothing this stage writes can be looked at, and every rung
+below stops one step short of the thing it claims to prove. It is also the
+difference between "the row exists in staging" and "a person can see it",
+which is the whole point of running the ladder vertically.
+
+**Change.** A new module alongside the existing serving sources, taking its
+connection from `lib/canonical-v2/serving-client.js`. It must fail closed the
+way the existing serving gate does: `isPermittedCanonicalV2Runtime`
+(`lib/canonical-v2/feature-flags.js`) denies production outright, and this
+module must not become the exception that quietly changes that. Preview and
+local only, deliberately.
+
+**Proves it is done (read half).** The rows written by the write half come
+back out through this module for the same deal and family, in the shape the
+projection expects, and a request in a production-shaped environment is
+refused. Both by test.
+
+**Proves the step is done.** Both halves, plus one end-to-end pass: an evidence
+directory in, rows in staging, the same claims back out through the read half.
+That round trip is what Step 2C then exercises against a real surface.
 
 ## Step 2C. One family, end to end
 
@@ -954,22 +1005,32 @@ convention exists in this repository today; this establishes one.
 claims in the write-set. If it fails, that is the finding this step exists to
 produce, and the fallback is written into Step 4B.
 
-## Step 4B. Build the import driver
+## Step 4B. Harden the import driver
 
-**What it is.** A script that reads a write-set file from `evidence/`, validates
-it, and writes it to the database.
+**Moved, not deleted.** Step 2B's write half now builds this driver, for the
+same reason Step 5A's reader moved: the ladder needs it at every rung. What is
+left here is hardening — the corpus-scale and failure-path work the ladder does
+not exercise.
 
-**Why.** It is the missing connecting piece. Extraction writes JSON to disk; the
-site reads Postgres; nothing joins them.
+**What it is.** The driver Step 2B built, made safe for a real corpus rather
+than for one rung at a time: batching, partial-failure behaviour, and the
+receipt discipline Steps 4C to 4E build on.
 
-**Change.** A new script. It must call
+**Why.** The ladder imports one family at a time under supervision. A corpus
+import is unattended and larger, and the failure modes are different.
+
+**The construction requirements below still apply, and belong to Step 2B now.**
+They are kept here because they are the contract both steps share. The driver
+must call
 `validateCanonicalWriteSet` and `validateResolvedCanonicalWriteSet`
 (`lib/canonical-v2/validate-write-set.js`) itself on whatever file it is given,
 never trusting the file's own claim to be validated, and pass only
 `publishableWriteSet` rows to the insert path.
 
-If Step 4A found `canonical_v2_write` works, the driver is thin: read, validate,
-call the function once per deal, record the receipt. If it does not, add a
+Since `canonical_v2_write` is known to work against isolated staging (see this
+stage's opening), the driver is thin: read, validate,
+call the function once per deal, record the receipt. If a durable write turns
+out to behave differently from the rolled-back proofs, add a
 `PostgresCanonicalRepository` implementing the same method contract
 `InMemoryCanonicalRepository` already implements at
 `lib/canonical-v2/canonical-writer.js:787` (`getReceipt`, `transaction`,
@@ -977,8 +1038,11 @@ call the function once per deal, record the receipt. If it does not, add a
 in `canonical-writer.js` stays unchanged. Either way no new orchestration logic
 is written, only an adapter.
 
-**Proves it is done.** One real deal's write-set imports, and every object id in
-the file is present in the database, matched by id, counted by query.
+**Proves it is done.** A deal the ladder never imported goes through
+unattended, every object id in the file is present in the database, matched by
+id and counted by query — and an import interrupted partway leaves a state the
+next run can resume from rather than a half-written deal. Step 2B's own proof
+(one supervised family, round-tripped) does not discharge this.
 
 ## Step 4C. Prove that running it twice is safe, and that it resumes
 
@@ -1061,8 +1125,8 @@ answer it cannot give.
 family end to end — extract, validate, write, serve, confirm it renders — so
 "does this family reach a surface at all" is answered there, per family, as the
 ladder climbs. What stays here is everything that is about the *product*
-rather than about generalisation: reading claims for any deal out of
-`canonical_v2_staging` rather than a fixture, rendering a second deal without
+rather than about generalisation: hardening the database-backed serving module
+that Step 2B builds, rendering a second deal without
 hand-writing a file for it, making runtime proof the progress measure, and
 rolling the remaining families onto real product surfaces.
 
@@ -1073,23 +1137,31 @@ starts feeling like it discharges Stage 5, that is a sign the check has been
 weakened to a smoke test — it is meant to confirm a rendered surface, not a
 200 response.
 
-## Step 5A. Read claims out of the database, for any deal
+## Step 5A. Harden the database reader across families and deals
 
-**What it is.** One new module that reads validated claims and relationships for
-a given deal out of `canonical_v2_staging` and returns them in the shape a
-projection module already expects.
+**Moved, not deleted.** This step used to build the database-backed reader from
+scratch. Step 2B now builds it, because the vertical ladder needs it at every
+rung rather than once at the end. What is left here is the hardening that the
+ladder does not exercise.
 
-**Why.** `lib/canonical-v2/termination-fee-serving-source.js` does exactly this
-today for one deal, from a hand-typed file. Every family needs the same thing
-from a database, once.
+**What it is.** Take the reader Step 2B built and make it production-shaped:
+every family rather than the ones the ladder happened to reach, every deal in
+the corpus rather than the 10-15 the ladder onboarded, and the failure
+behaviour a real surface needs — a missing deal, a partially imported deal, a
+deal whose claims exist but whose relationships do not.
 
-**Change.** A new module alongside `termination-fee-serving-source.js`,
-deal-agnostic. The 16 `lib/canonical-v2/*-product-projection.js` modules are not
-rebuilt; they are fed from a different source.
+**Why.** The ladder proves the reader works for what the ladder ran. That is a
+sample, and the corpus is larger than the sample. This is the same distinction
+Stage 2 draws everywhere else, applied to the reader itself.
 
-**Proves it is done.** The reader returns, for the deal imported in Step 4B, an
-object that the existing termination-fee projection accepts without
-modification, asserted by test.
+**Change.** No new module. Extend the one from Step 2B. The 16
+`lib/canonical-v2/*-product-projection.js` modules are not rebuilt; they are fed
+from a different source.
+
+**Proves it is done.** The reader returns, for a deal the ladder never touched,
+an object the existing projection accepts without modification — asserted by
+test. Plus a named, tested behaviour for each of the three partial states above,
+rather than an unhandled throw.
 
 ## Step 5B. Render a second deal without hand-writing a file for it
 
