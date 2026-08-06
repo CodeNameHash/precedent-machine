@@ -423,7 +423,11 @@ document points at one of them.
 - `DECISIONS.md`'s entire cross-reference apparatus — the "Blocks:" field
   saying what each decision gates — uses ROADMAP.md's labels (`S2`, `P2`,
   `P3`, `P6`, `P7`, `D1`, `D2`, `D3`) at least 24 times. PLAN.md uses
-  Stage-based labels (`1A` … `9E`) and contains zero of them. DECISIONS.md
+  Stage-based labels (`1A` … `9E`) and uses none of them as its own step
+  identifiers — though it does cite a few (`S2`, `D3`, `P5`) when quoting
+  ROADMAP, so "contains zero instances" is literally false and an earlier
+  draft's phrasing overstated it. The substance holds: there is no PLAN.md
+  step a reader can navigate to from a `Blocks:` field. DECISIONS.md
   never names PLAN.md. A reader of "Blocks: step P2" cannot find that step
   in the plan that is current.
 - `EXECUTION-LEDGER.md` is live and governs a second programme, while
@@ -431,16 +435,32 @@ document points at one of them.
 
 **Change — ROADMAP.md.** Six moves, then archive.
 
-1. **Amendment/restatement detection gets a PLAN.md step.** The product can
-   ingest an amended-and-restated agreement and silently present it as the
-   original: `chooseAgreementExhibit` has no ambiguity guard and
-   `lib/edgar-catalog.js` scores a restatement identically to an original.
-   DECISIONS.md decides detection plus a visible warning ships before
-   go-live. It is doubly orphaned — grep for "amendment" across the current
-   ROADMAP.md returns zero hits, and nothing in `archive/` either. It gates
-   launch and has no tracked home. Highest priority. A new stage is
-   acceptable and probably correct; it does not fit Stage 2–9's dependency
-   order.
+1. **Amendment/restatement detection: scope the RESIDUE, do not build it.**
+   An earlier draft of this spec said the product "can ingest an
+   amended-and-restated agreement and silently present it as the original",
+   that `chooseAgreementExhibit` has no ambiguity guard, and that this was
+   the highest-priority move. **All of that is stale.** Verified at HEAD:
+   `lib/agreement-revision-classifier.js` (15KB) classifies `ORIGINAL` /
+   `AMENDED_AND_RESTATED` / `AMENDMENT` / `AMBIGUOUS`, with a restatement
+   regex at line 68 and the stated design "what it cannot place is
+   AMBIGUOUS for a human, never a guess" (line 7). It is imported by
+   `lib/edgar-catalog.js:6-8` and called inside `selectAgreementExhibit` at
+   334 and 514, which excludes amendments and stops on ambiguity (336).
+   The scoring comment the earlier draft paraphrased is immediately
+   followed by the code that resolves it.
+
+   **This is the third capability this document asserted into or out of
+   existence** — after the classifier (asserted absent, exists) and the
+   `classify.js` header (asserted broken, already fixed). Same mechanism
+   every time: a claim read in a report, not checked against the tree.
+
+   What the step actually covers is the residue, and it must be established
+   by reading before it is written: whether the **visible warning**
+   DECISIONS.md requires actually reaches the user, and whether any ingest
+   path **bypasses** `selectAgreementExhibit` and so never reaches the
+   classifier at all. That may be a real gap or may be nothing. It is no
+   longer the highest-priority move, and no step should be written until
+   someone has looked.
 2. **Corpus-wide certification gets a step** (ROADMAP P6's second half):
    25 families × 40 deals, against the ingest-QA gates, quote verification
    at zero flags, and the golden evaluation harness. Record the stale
@@ -496,7 +516,9 @@ wiring bucket and the register-can-be-fooled finding that is Step 5C's
 stated reason for existing). Where a label has no destination, that is
 moves 1–4. No "Blocks:" field may point at an archived document.
 
-**Proves it is done.** `grep -rn "ROADMAP" docs/core/` returns nothing but
+**Proves it is done.** `grep -rni "roadmap" docs/core/` — case-insensitive;
+the case-sensitive form misses ~20 lowercase prose references in
+OPERATING-RULES.md alone, which is most of the work — returns nothing but
 explicit historical mentions in GRAVEYARD.md or COMPLETED.md. No `Blocks:`
 field names a label absent from PLAN.md — assert this with a lint script,
 since this class of rot is precisely what recurs here. PLAN.md contains no
@@ -641,17 +663,24 @@ currently stop that being routine, not the two the first draft named.
    the same containment root cause and will be discovered by anyone
    following the runbook.
 
-**Change.** Fix 1 via Step 2A. Fix 2 via Part A move 1.
+**Change.** Fix 1 via Step 2A. Fix 2 via Part A move 1 — noting that per
+the correction there, most of that capability already exists and only the
+residue is in scope.
 
-For 3, 4 and 5: disposition all 17 undocumented contained routes — one
-decision that resolves three symptoms. Per standing ruling 3, containment
-does not get to persist because it is already there. Each route is
-uncontained unless its containment is defended on present merit, in
-writing, in the same pass. The defensible cases are real (a route that
-would serve wrong data from an unfinished subsystem should stay 503), but
-"it was contained in July and nobody revisited it" is not one of them, and
-that is the status of all 17 today — none has a disposition anywhere in
-PLAN, GRAVEYARD, OPERATING-RULES or CODEBASE-GUIDE.
+For 3, 4 and 5: disposition the undocumented contained routes — one
+decision that resolves three symptoms. There are **23** contained routes;
+how many lack a disposition is to be established as the first act of this
+pass, not inherited from this document. At least one is dispositioned
+(`/api/ingest/from-url`, `PLAN.md:1053`, unauthenticated SSRF), so the
+earlier draft's "all 17… none has a disposition anywhere" was wrong on
+both halves and contradicted build-impact 3.
+
+Per standing ruling 3, containment does not get to persist because it is
+already there. Each undocumented route is uncontained unless its
+containment is defended on present merit, in writing, in the same pass.
+Defensible cases are real — the SSRF one above is exactly that, and is
+evidence the ruling works rather than an obstacle to it — but "it was
+contained in July and nobody revisited it" is not a defence.
 
 Apply the same test to the rest of the inherited process this part touches:
 the three-mode add-a-deal UI, the hand-pinned `DEAL_PINS` convention, and
@@ -734,24 +763,39 @@ produces wrong output that does not throw):
   but it is a reviewed, working template for this exact composition.
 
 **What this is not.** Not a claim the classifier is correct, and not a
-reason to skip review. Stage 1 is title and heading pattern matching. It
+reason to skip review. Stage 1 is title and heading pattern matching; it
 cannot know that Modiv's appraisal-availability sentence sits in section
-2.6, whose title gives no hint, or that section 8.12, titled for something
-else, holds Modiv's defined terms. Both errors were found by a human
-reading the document. The generated list gets read the same way, family by
-family — and per build-impact 7, for 24 of 25 families this is the first
-time anyone will have read them at all, not a diff against existing work.
+2.6, whose title gives no hint. That one was found by a human reading the
+document, and the generated list gets read the same way wherever it
+disagrees with the harvest.
+
+Where the defined-terms section sits is **not** settled — this spec has
+said 8.12, the committed baseline manifest says 8.5, and open question 11
+holds it until someone adjudicates it against the document. Do not carry
+8.12 forward as established.
 
 **Change — harvest first, generate as cross-check.** Per build-impact 7,
 the old plan's manifest-mining method was sound and its artefacts exist.
 Order of operations:
 
-1. **Harvest** `section_references` from the 24 committed run manifests
-   under `evidence/canonical-v2/modiv-*-20260806/`. Twenty carry them
-   directly; the four that do not (`CAPITALISATION`, `CLOSING_CONDITIONS`,
-   `INTERIM_OPERATING`, `NO_OTHER_REPS_FRAUD` — they failed to parse as
-   plain `section_references`) need reading out of their manifest shape by
-   hand. This is human judgement already spent, and it is free to recover.
+1. **Harvest** `section_references` from the 24 committed run directories
+   under `evidence/canonical-v2/modiv-*-20260806/`. Twenty carry them in
+   `run-manifest.json`. The other four (`CAPITALISATION`,
+   `CLOSING_CONDITIONS`, `INTERIM_OPERATING`, `NO_OTHER_REPS_FRAUD`) have
+   **no `run-manifest.json` at all** — an earlier draft said to read them
+   "out of their manifest shape by hand", which is impossible. Their refs
+   are in `section-location-scan.json` under
+   `requested_section_references`, and are mechanically recoverable:
+   verified for capitalisation, which yields `["3.2","4.2"]`. So the
+   harvest is fully automatable across all 24, in two shapes rather than
+   one. This is human judgement already spent, and it is free to recover.
+
+   **`MAE_DEFINITION` has no Modiv harvest side.** The only 2026-08-06 MAE
+   run is `topbuild-mae-definition-20260806`. So for that family the
+   generator is the sole source on Modiv, and "review only the
+   disagreements" would review it not at all. It gets a full human read
+   regardless of whether anything disagrees — it is the one family where
+   the harvest cannot cross-check the generator.
 2. **Generate** with the script and **diff against the harvest.** The
    generator is now a cross-check on 25 families rather than the sole
    source for 24 — a much stronger position, because two independent
@@ -837,9 +881,11 @@ without new calls, or a written tolerance policy — what magnitude of
 before it is believed, and who decides. Silence here means the first flaky
 round gets resolved by whoever is at the keyboard.
 
-*A zero-resolving family passes the gate vacuously.* Ten of Modiv's 25
-families resolve zero. "No resolved count falls" is trivially satisfied by
-0 → 0, so for those ten the gate checks nothing at all. Only
+*A zero-resolving family passes the gate vacuously.* Eleven of the 20
+COMPLETE Modiv rows resolve zero (of 24 Modiv baseline rows; the 25th row
+in the baseline is TopBuild's MAE run, not Modiv). "No resolved count
+falls" is trivially satisfied by 0 → 0, so for ten of those eleven the gate
+checks nothing at all. Only
 `APPRAISAL_DISSENTERS_RIGHTS` gets the still-zero-for-the-same-reason
 check. **Required:** extend that check to every zero-resolving family, or
 state per family why zero is correct and what would make it wrong. A family
@@ -931,13 +977,37 @@ line.
 Worse, most of that spend buys nothing. Given live-model nondeterminism, a
 re-run whose inputs are unchanged is sampling noise, not a regression
 check. So: **re-run a (deal, family) pair only when something it depends on
-has changed since its last green receipt** — code, `prompt_version`,
-`contract_bundle_version`, or `section_references`, all of which are
-already recorded in `run-manifest.json`. That gives the guarantee the
-ladder actually wants ("a pair can only regress if something changed") at a
-fraction of the cost, and it is what this spec's own Doc round B reasoning
-implies when it calls a cross-document regression "structurally
-impossible". Blanket re-runs were the weaker design.
+has changed since its last green receipt.**
+
+**This requires a runner change first — it is not implementable today.**
+An earlier draft said the invalidation keys are "all already recorded in
+`run-manifest.json`". They are not. The manifest records
+`contract_bundle_version`, `prompt_version`, `prompt_id` and
+`section_references` — but **no commit hash and no code-version field of
+any kind**, so "has the code changed" cannot be answered from a receipt at
+all. And the only model field is `model_cli_alias`, a CLI shorthand, not a
+resolved model identity — so swapping the underlying model triggers zero
+re-runs, which is the single most dangerous silent invalidation miss
+available.
+
+Required before the ladder runs: the runner records (a) the commit hash at
+run time and (b) the resolved model ID, and someone writes down what counts
+as the **code footprint** of a family run — which paths, changing, should
+invalidate it. That definition is a judgement call and it should be made
+deliberately rather than defaulted to "any commit", which would degrade
+this straight back to blanket re-running.
+
+**Accepted loss, stated rather than hidden:** blanket re-running does buy
+one real thing this policy gives up — repeated sampling of a
+nondeterministic runner surfaces flakiness that a single receipt hides. We
+are trading that for tractable cost, which makes the tolerance policy in
+2B's gate section more important, not less. The two decisions are coupled
+and should be made together.
+
+With those in place the policy gives the guarantee the ladder actually
+wants ("a pair can only regress if something changed") at a fraction of the
+cost, and it is what this spec's own Doc round B reasoning implies when it
+calls a cross-document regression "structurally impossible".
 
 Round 1 of each ladder is exempt: it establishes the receipt everything
 else is compared against.
