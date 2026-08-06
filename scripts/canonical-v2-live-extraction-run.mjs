@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 /**
- * scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs
+ * scripts/canonical-v2-live-extraction-run.mjs
  *
  * GENERAL LIVE-EXTRACTION RUNNER: any registered section family, against any
  * deal whose source is committed and pinned. Originally written narrowly for
- * one scope-corrected Modiv/Global Net Lease TERMINATION_FEE re-run (see the
- * "ORIGINAL MODIV RUN" section below for the history that name still
- * reflects); generalised because almost nothing about it actually was
- * Modiv- or TERMINATION_FEE-specific. The extraction engine underneath
+ * one scope-corrected Modiv/Global Net Lease TERMINATION_FEE re-run, as
+ * `canonical-v2-modiv-termination-fee-scope-correction-run.mjs` (see the
+ * "ORIGINAL MODIV RUN" section below for that history); generalised because
+ * almost nothing about it actually was Modiv- or TERMINATION_FEE-specific.
+ * The old name was left in place through that generalisation -- purely to
+ * avoid re-touching this file's Phase 1 authority-boundary classification --
+ * which was the wrong trade: a script run against all 25 families under a
+ * name claiming one scope correction for one deal is a misleading provenance
+ * record, not a cosmetic mismatch. Renamed to this path once that was
+ * corrected, with the classification re-done properly rather than skipped
+ * (see phase1-authority-boundary-inventory.js's LIVE_EXTRACTION_RUN_SOURCES
+ * comment for that side of it). The extraction engine underneath
  * (`runNativeExtraction`) already resolves its producer prompt through
  * `getProducerPromptModule(section_family)` against a registry of 25
  * families (`listRegisteredSectionFamilies()`); the only things that were
@@ -98,7 +106,7 @@
  * this run exists partly to report.
  *
  * Usage:
- *   node scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs \
+ *   node scripts/canonical-v2-live-extraction-run.mjs \
  *     [--deal <deal id registered in DEAL_PINS, default "modiv">] \
  *     [--family <registered section_family, default "TERMINATION_FEE">] \
  *     [--raw-html <path, default: the deal's own pinned source path>] \
@@ -128,6 +136,7 @@ import {
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
@@ -164,6 +173,21 @@ const {
 
 const DEFAULT_DEAL = 'modiv';
 const DEFAULT_FAMILY = 'TERMINATION_FEE';
+
+/**
+ * This script's own path, relative to the current working directory --
+ * derived from `import.meta.url`, never hard-coded. `run-manifest.json`'s
+ * `script` field is a provenance record of which script produced it: a
+ * literal string here is exactly the trap this file's own filename fell
+ * into once already (generalised without being renamed, so every manifest
+ * it wrote kept naming a one-off scope correction it no longer was). Deriving
+ * it means a future rename of this file keeps every manifest it writes
+ * afterwards accurate automatically, with nothing to remember to update.
+ */
+function scriptRelativePath() {
+  const absolutePath = fileURLToPath(import.meta.url);
+  return absolutePath.includes(process.cwd()) ? absolutePath.slice(process.cwd().length + 1) : absolutePath;
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // DEAL_PINS -- the ONE place a deal identifier is mapped to its expected
@@ -848,7 +872,7 @@ async function main() {
 
   writeFileSync(resolve(outDir, 'run-manifest.json'), JSON.stringify({
     schema_version: 'GENERAL_EXTRACTION_RUN_MANIFEST/V1',
-    script: 'scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs',
+    script: scriptRelativePath(),
     deal: config.deal,
     deal_label: config.dealPin.label || null,
     section_family: config.family,
@@ -900,6 +924,7 @@ export {
   DEAL_PINS,
   DEFAULT_DEAL,
   DEFAULT_FAMILY,
+  scriptRelativePath,
   parseArgs,
   resolveRunConfig,
   resolvePromptVersionInfo,

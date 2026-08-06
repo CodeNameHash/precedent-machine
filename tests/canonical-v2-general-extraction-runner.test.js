@@ -3,12 +3,11 @@
 /**
  * tests/canonical-v2-general-extraction-runner.test.js
  *
- * Tests for the generalised
- * scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs: any
- * registered section family, against any deal pinned in its own `DEAL_PINS`
- * table. NEVER invokes the script without `--dry-run` (or, for the pure
- * function tests, never reaches Step 3 / `createAnthropicProvider` at all)
- * -- this file makes zero model calls and spawns zero `claude` CLI
+ * Tests for the generalised scripts/canonical-v2-live-extraction-run.mjs:
+ * any registered section family, against any deal pinned in its own
+ * `DEAL_PINS` table. NEVER invokes the script without `--dry-run` (or, for
+ * the pure function tests, never reaches Step 3 / `createAnthropicProvider`
+ * at all) -- this file makes zero model calls and spawns zero `claude` CLI
  * processes, by construction, so it is safe to run in CI and by any agent
  * forbidden from live model calls.
  *
@@ -37,7 +36,7 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const SCRIPT_PATH = path.join(ROOT, 'scripts', 'canonical-v2-modiv-termination-fee-scope-correction-run.mjs');
+const SCRIPT_PATH = path.join(ROOT, 'scripts', 'canonical-v2-live-extraction-run.mjs');
 const MODIV_RAW_HTML = path.join(ROOT, 'tests', 'fixtures', 'canonical-v2', 'mae-definition-family', 'modiv-raw-fetched.htm');
 const TOPBUILD_RAW_HTML = path.join(ROOT, 'tests', 'fixtures', 'canonical-v2', 'mae-definition-family', 'topbuild-raw-fetched.htm');
 const TOPBUILD_INTAKE_PIN = path.join(ROOT, 'tests', 'fixtures', 'canonical-v2', 'mae-definition-family', 'topbuild-intake-pin.json');
@@ -99,6 +98,21 @@ test('grounding: the producer prompt registry carries 25 families including TERM
   assert.ok(families.includes('MATERIAL_CONTRACTS'));
   assert.ok(families.includes('NO_SHOP'));
   assert.ok(families.includes('CLOSING_CONDITIONS'));
+});
+
+// This script was generalised once already without being renamed, and its
+// run-manifest.json went on recording a filename that had stopped being
+// true. scriptRelativePath() is the fix: it must derive this script's own
+// path from import.meta.url, not repeat a literal string that would go
+// stale exactly the same way, silently, the next time this file moves.
+// Checked against an independently computed expectation (path.relative,
+// not the production function's own .includes()/.slice() logic) plus a
+// concrete literal suffix, so a future rename that is not reflected here
+// fails loudly rather than two implementations quietly agreeing on drift.
+test('scriptRelativePath: derives this script\'s own path from import.meta.url rather than a hard-coded string', () => {
+  const expected = path.relative(process.cwd(), SCRIPT_PATH);
+  assert.equal(mod.scriptRelativePath(), expected);
+  assert.ok(mod.scriptRelativePath().endsWith('scripts/canonical-v2-live-extraction-run.mjs'));
 });
 
 // ─────────────────────────────────────────────────────────────────────────

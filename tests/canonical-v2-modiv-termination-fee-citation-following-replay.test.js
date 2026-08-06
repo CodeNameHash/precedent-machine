@@ -13,8 +13,8 @@
  * output of a live 14-call citation-following run, loaded verbatim, never
  * hand-edited -- is replayed through the REAL, current resolveCandidates,
  * buildNativeWriteSet and validateResolvedCanonicalWriteSet, exactly as
- * scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs itself
- * calls them. This file does not re-simulate the citation-following DISPATCH
+ * scripts/canonical-v2-live-extraction-run.mjs itself calls them. This file
+ * does not re-simulate the citation-following DISPATCH
  * orchestration (native-extraction-run-citation-followup.js has its own,
  * separate tests for that); it starts from the already-recorded receipt and
  * isolates what reconcileDuplicateTerminationFeeSightings and
