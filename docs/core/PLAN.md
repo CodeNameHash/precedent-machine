@@ -863,15 +863,31 @@ is ever resolved.
 this is one of only two families in that state whose silence is not correct by
 design. (The other, Appraisal, is correct by design and is fixed by Step 2A.)
 
-**Change.** `lib/canonical-v2/native-producer/anthropic-provider.js`, lines 1191
-to 1194. The filter returns false when a quote contains both
-`/\birreparable harm would occur\b/i` and
-`/\bmoney damages would not be an adequate remedy\b/i`. That is exactly how a
-standard specific-performance clause reads, so the filter refuses the clause it
-exists to find. Work out what it was written to exclude before changing it: the
-answer is probably a recitals-style acknowledgement rather than an operative
-grant, in which case the discriminator is `operativeGrant`, already computed one
-line above, and not the quote's wording at all.
+**Change.** `lib/canonical-v2/native-producer/anthropic-provider.js`,
+`isIncompleteSpecificPerformanceGrant` at 1188-1196.
+
+**An earlier version of this step diagnosed it backwards, and following that
+diagnosis would fix the wrong branch.** It said the filter "returns false when a
+quote contains both premise patterns", implying that is the drop. It is the
+opposite: returning `false` means *not incomplete*, so the assertion is
+**kept**. It also proposed `operativeGrant` as the discriminator; that is
+already the first condition of the drop, so it cannot discriminate anything.
+
+Read the function as it is. It returns `true` — the reshape path — only when
+all three hold: the quote contains an operative grant (`shall be entitled to`
+near `injunction|specific performance|equitable relief`), **and** the source
+text carries the operative premise, **and** the quote does *not* carry both
+`irreparable harm would occur` and `money damages would not be an adequate
+remedy`. So the real condition is a quote that grants the remedy while omitting
+premises the surrounding source does contain — a quote-scope problem, not a
+wording problem.
+
+That points at the quote boundary rather than the predicate. Establish first
+whether Modiv's zero-zero-zero is caused by this function at all: instrument or
+replay one committed run and confirm the drop happens here before changing
+anything. If it does, the fix is likely to be how much text the quote spans, or
+allowing the premise to be satisfied from the source when the quote is a
+faithful subset of it — not loosening the premise patterns.
 
 **Proves it is done.** A replay of the committed Modiv run through the corrected
 provider yields at least one candidate reaching the resolver, and a hostile test
@@ -1333,18 +1349,22 @@ appears as the evidence behind a termination-fee row. A worse case is reachable:
 a sole-remedy card landing in the fee table flips "Sole and exclusive remedy"
 from No to Yes depending on card order.
 
-**Change.** The unguarded `type || code || regex` shape. Fixed already in
-`termination-fees.config.js:71`. Remaining, all in
-`components/review/table-configs/`: `misc-boilerplate.config.js:176`,
-`antitrust-regulatory.config.js:22`, `termination-rights.config.js:47`,
-`mae-definitions.config.js:46`. Note `isTerminationRight` matches
-`/superior proposal/i`, which will pull no-shop and fee cards. Narrow it; do not
-delete it, because the fallback exists to catch genuine cards whose subtype was
-never set.
+**DONE — delete this step, it describes yesterday.** Commit `7042085`
+(2026-08-05) added `isClaimedByAnotherFamily` guards to all four configs this
+step lists as "Remaining" — `misc-boilerplate`, `antitrust-regulatory`,
+`termination-rights`, `mae-definitions` — plus `advisers-fees-expenses`, a
+sixth this step never named. The acceptance criteria below are already met by
+per-table tests (`tests/misc-boilerplate-card-selection.test.js`,
+`tests/termination-fee-card-selection.test.js`, and siblings).
 
-**Proves it is done.** A test per table that a card another family owns is
-refused, and a test per table that a genuine subtype-less card is still caught.
-Both, or the fix has traded one defect for another.
+This step was written into a plan dated 2026-08-06 describing the state of
+2026-08-05. It is the house failure mode occurring inside the document that
+warns about it, and it would have gone green with zero work done. Move it to
+`COMPLETED.md` with commit `7042085` as its evidence; do not implement it.
+
+**Original acceptance criteria, retained so the move can be checked:** a test
+per table that a card another family owns is refused, and a test per table that
+a genuine subtype-less card is still caught.
 
 ## Step 6B. Record where every quotation came from
 
@@ -1442,6 +1462,23 @@ and are dormant.
 **Why.** A contained route is not a fixed route, and the repaired code is
 untested in the live path.
 
+**Three corrections before anyone executes this.** (1) The route-inventory
+assertion this step relies on fires only inside a test, never at module load —
+`DECISIONS.md` item 1 states this correctly and this step implied otherwise.
+(2) `saved-queries`' repaired handler lives in `lib/query/contained-routes/`,
+not `lib/broad-corpus/`. (3) `saved-queries` is claimed by both this step and
+Step 8C, with conflicting order: un-containing it here first would ship 8C's
+known truncation defect. 8C goes first for that route, or this step explicitly
+excludes it.
+
+**And the scope is four of twenty-three.** There are 23 routes contained via
+`createBroadCorpusContainedHandler`; this step repairs four, and roughly 18 of
+the rest are owned by no step in this plan. That is not an argument for widening
+this step — the other 19 may be correctly contained — but Stage 9 currently goes
+live with ingest, admin and corrections routes permanently 503 and no recorded
+decision saying so. Either give them a disposition or record the containment as
+intentional, before go-live rather than after.
+
 **Change.** `pages/api/users.js` (read `is_admin` from the request body),
 `pages/api/ingest/from-url.js` (unauthenticated SSRF),
 `pages/api/admin/reprocess-cond.js` (unauthenticated destructive delete and
@@ -1507,14 +1544,21 @@ months-valued field is typed as US dollars.
 
 **Why.** Latent while search is off. Live the moment it is on. One in seven.
 
-**Change.** Fix it **through the generator**:
-`scripts/generate-query-serving-registry.js` writes
-`lib/query/serving-registry-v1.json`, and `scripts/process-intelligence-baseline.mjs`
-hash-pins it. Hand-editing the output passes a naive acceptance test and the
-next regeneration reinstates all 104 errors.
+**DONE — delete this step, same commit as Step 6A.** `7042085` fixed the
+shadowing through the generator, which is the method this step itself requires,
+and added `tests/query/serving-registry-alias-shadowing.spec.js` asserting
+`resolveKey(entry.key) === entry.key` across all entries — this step's exact
+acceptance criterion. Measured at HEAD: **0 of 699 shadowed, not 104.** The test
+passes (8 assertions).
 
-**Proves it is done.** Assert `resolveKey(entry.key) === entry.key` across all
-entries, after regeneration, not before.
+Like Step 6A, this would have gone green with no work done. Move it to
+`COMPLETED.md` citing `7042085`.
+
+**One thing worth carrying forward rather than losing with the step:** the
+reason it insisted on fixing through the generator — hand-editing
+`lib/query/serving-registry-v1.json` passes a naive test and the next
+regeneration reinstates every error — is a live constraint on anyone touching
+that registry, and belongs in `CODEBASE-GUIDE.md` rather than in a deleted step.
 
 ## Step 8C. Search, in preview
 
@@ -1525,10 +1569,15 @@ containment is unfixed, and the governing rule explicitly rejects the guard that
 exists.
 
 **Change.** Restore routes from `lib/query/contained-routes/`. Three query kinds
-survive, not five. **The archived `saved-queries.js` will not load**: its imports
-were never re-based when it moved a directory deeper and resolve to `lib/lib/...`.
-It also fetches provisions unpaginated, truncating at 1000 of roughly 12,600
-rows. Stage the reopening: `kinds`, `demo-set` and `field-options` without a
+survive, not five.
+
+**One blocker here is stale and one is live.** The import defect is fixed:
+`saved-queries.js` loaded at `lib/lib/...` paths, was re-based in `2396bf5`
+(2026-08-05), and requires cleanly at HEAD — verified by loading it. Its own
+line 1 comment records the fix. **The truncation is real**: it still fetches
+provisions unpaginated, cutting off at 1000 of roughly 12,600 rows. That is the
+blocker to plan around, and it is also why this route must be repaired here
+before Step 7C un-contains it — see the ordering note in 7C. Stage the reopening: `kinds`, `demo-set` and `field-options` without a
 field argument cost zero or trivial database work.
 
 **Proves it is done.** Search returns results on a preview deployment for at
@@ -1649,6 +1698,13 @@ safe".
 **Proves it is done.** The site serves V1 again, checked by fetching a review
 page and finding no V2 field in the payload; then serves V2 again after the
 re-flip. Both by command, both kept.
+
+**That proof is not sufficient on its own and must not be accepted alone.**
+Flipping the feature flag off produces exactly the same observable — no V2 field
+in the payload — with the rollback never run. So the receipt must also show the
+rollback executed against the database: the `--rollback` receipt id, the row
+counts before and after, and evidence that the flag was *not* the mechanism.
+Otherwise the last of Ben's five is discharged by a config change.
 
 ---
 
