@@ -370,6 +370,97 @@ test('four-letter Roman markers remain siblings in an unheaded TopBuild-style li
   assert.equal(findSectionByReference(tree, '4.1(vii)(xii)(xvi)'), null);
 });
 
+// docs/codex-program/notes/nested-lettering-collision.md. A lettered list
+// past its 26th entry ("z" -> "aa" -> "bb" -> ...) must continue as a flat
+// run of siblings, exactly like "(x)" -> "(y)" -> "(z)" before it, not as an
+// ever-deepening chain of children, one level per marker (the pre-fix
+// defect: expectedNext('LOWER_LETTER', 'z') returned null, so "(aa)" matched
+// no open sequence and fell through to buildMarkerTree's "open a brand-new
+// nested child" path). A real definition's own inline sub-references
+// ("(a)", "(b)") never open a line, so they never become markers at all.
+// Mirrored here from the real Modiv "(z)" clause's own shape, not invented.
+test('a lettered list that runs past its 26th entry continues as siblings, not as an ever-deeper chain: "(z)" is followed by "(aa)", never swallows it', () => {
+  const source = [
+    '9.1 Definitions.',
+    '(x) “Ninth” means the ninth item.',
+    '(y) “Tenth” means the tenth item.',
+    '(z) “Eleventh” means the eleventh item, including (a) a first internal point and (b) a second internal point stated inline, never at a line start.',
+    '(aa) “Twelfth” means the twelfth item.',
+    '(bb) “Thirteenth” means the thirteenth item.',
+    '(cc) “Fourteenth” means the fourteenth item.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  const section = findSectionByReference(tree, '9.1');
+  assert.ok(section);
+
+  const expected = ['9.1(x)', '9.1(y)', '9.1(z)', '9.1(aa)', '9.1(bb)', '9.1(cc)'];
+  assert.deepEqual(
+    tree.nodes.filter((node) => node.kind === 'SUBSECTION').map((node) => node.reference),
+    expected,
+  );
+  for (const reference of expected) {
+    const node = findSectionByReference(tree, reference);
+    assert.equal(node.parent_section_id, section.section_id, `${reference} is a direct child of 9.1, not of a preceding sibling`);
+    assert.equal(node.depth, section.depth + 1, `${reference} sits at the same depth as every other entry, not one level deeper each time`);
+  }
+  // The inline "(a)"/"(b)" mid-sentence inside (z)'s own prose never start a
+  // line, so (z) mints no children of its own at all.
+  assert.equal(findSectionByReference(tree, '9.1(z)(a)'), null);
+  assert.equal(tree.nodes.some((n) => n.parent_section_id === findSectionByReference(tree, '9.1(z)').section_id), false);
+  assertSiblingsTileExactly(tree, source, 'synthetic-z-to-aa');
+});
+
+test('the doubled-letter tier itself continues correctly ("aa" is followed by "bb", not "aaa") and wraps to a tripled-letter tier at its own boundary ("zz" -> "aaa")', () => {
+  // Opens directly on a doubled-letter marker (classifyOpeningKind accepts a
+  // repeated-letter opener on its own, no preceding single letters needed),
+  // isolating the doubled-letter tier's OWN continuation logic from the
+  // single-letter overflow covered by the test above. Before the fix,
+  // expectedNext('LOWER_LETTER', 'aa') returned 'aaa' (one more repetition
+  // of the same letter) instead of 'bb' (the next letter, same length), so
+  // even a list that never touched the single-letter "z" boundary at all
+  // would still misparent as soon as it reached its second doubled entry.
+  const source = [
+    '9.2 More Definitions.',
+    '(yy) “First” means the first item.',
+    '(zz) “Second” means the second item.',
+    '(aaa) “Third” means the third item.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  const section = findSectionByReference(tree, '9.2');
+  const expected = ['9.2(yy)', '9.2(zz)', '9.2(aaa)'];
+  assert.deepEqual(
+    tree.nodes.filter((node) => node.kind === 'SUBSECTION').map((node) => node.reference),
+    expected,
+  );
+  for (const reference of expected) {
+    const node = findSectionByReference(tree, reference);
+    assert.equal(node.parent_section_id, section.section_id, `${reference} is a direct child of 9.2`);
+    assert.equal(node.depth, section.depth + 1);
+  }
+});
+
+test('the letter-track fix is symmetric for UPPER_LETTER markers: "(Y)" -> "(Z)" -> "(AA)" -> "(BB)"', () => {
+  const source = [
+    '9.3 Upper Definitions.',
+    '(Y) “First” means the first item.',
+    '(Z) “Second” means the second item.',
+    '(AA) “Third” means the third item.',
+    '(BB) “Fourth” means the fourth item.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  const section = findSectionByReference(tree, '9.3');
+  const expected = ['9.3(Y)', '9.3(Z)', '9.3(AA)', '9.3(BB)'];
+  assert.deepEqual(
+    tree.nodes.filter((node) => node.kind === 'SUBSECTION').map((node) => node.reference),
+    expected,
+  );
+  for (const reference of expected) {
+    const node = findSectionByReference(tree, reference);
+    assert.equal(node.parent_section_id, section.section_id, `${reference} is a direct child of 9.3`);
+    assert.equal(node.depth, section.depth + 1);
+  }
+});
+
 test('recognises terminal-dot decimal headings split across lines, but not inline decimal prose', () => {
   const source = [
     'ARTICLE VI',
@@ -510,6 +601,26 @@ function assertNoSwallowedHeadingResiduals(tree, label) {
   );
 }
 
+// docs/codex-program/notes/nested-lettering-collision.md. findSectionByReference
+// (see its own definition below) is a plain first-match lookup with no
+// ambiguity detection at all. If two nodes anywhere in the tree ever shared
+// the same reference string, it would silently return whichever one the tree
+// lists first, with no signal a second match existed. A lettered list that
+// runs past its 26th entry ("z" -> "aa" -> "bb" -> ... -> "zz" -> "aaa" -> ...)
+// is the one place in this module where a large, mechanically-generated run
+// of references is minted from a single continuing sequence, so it is the
+// most plausible place a bug could ever produce a collision; checked
+// exhaustively on every real filing, not assumed safe.
+function assertNoReferenceCollisions(tree, label) {
+  const counts = new Map();
+  for (const node of tree.nodes) {
+    if (!node.reference) continue;
+    counts.set(node.reference, (counts.get(node.reference) || 0) + 1);
+  }
+  const collisions = [...counts.entries()].filter(([, count]) => count > 1);
+  assert.deepEqual(collisions, [], `${label}: expected zero reference collisions, got ${JSON.stringify(collisions)}`);
+}
+
 for (const filing of REAL_FILINGS) {
   test(`corpus-wide boundary regression check: ${filing.name} — every sibling pair tiles exactly, every decimal section anchors on its own heading`, () => {
     const { sourceText, tree } = sectionizeRealFiling(filing.htmlPath);
@@ -518,17 +629,20 @@ for (const filing of REAL_FILINGS) {
     assertDecimalSectionsAnchorOnOwnHeading(tree, sourceText, filing.name);
     assertParentageIsConsistent(tree, filing.name);
     assertNoSwallowedHeadingResiduals(tree, filing.name);
+    assertNoReferenceCollisions(tree, filing.name);
   });
 }
 
-test('corpus-wide boundary regression check: landos — no swallowed-heading residuals', () => {
+test('corpus-wide boundary regression check: landos, no swallowed-heading residuals, no reference collisions', () => {
   // Landos already gets full sibling-tiling/parentage coverage in the
   // "round-trips every node exactly" and "findSectionByReference resolves"
-  // tests above; this adds the one check those don't make: the tripwire
-  // itself, on the one real corpus filing that isn't SEC-HTML (so isn't part
-  // of REAL_FILINGS/sectionizeRealFiling above).
+  // tests above; this adds the two checks those don't make: the tripwire
+  // itself, and the reference-collision scan, on the one real corpus filing
+  // that isn't SEC-HTML (so isn't part of REAL_FILINGS/sectionizeRealFiling
+  // above).
   const tree = sectionizeAdmittedSource({ source_text: landosText, document_hash: DOC_HASH });
   assertNoSwallowedHeadingResiduals(tree, 'landos');
+  assertNoReferenceCollisions(tree, 'landos');
 });
 
 test('regression: TopBuild ARTICLE I chapeau no longer absorbs "1.1" through "1.8" (was: I-INTRO end=15734 straddling 1.1 start=8619)', () => {
@@ -669,6 +783,128 @@ test('the last section in a document terminates correctly: Modiv 8.12 ends exact
     /^\n\[Signature Page Follows\]/,
     '8.12 must end exactly where the signature block begins -- not swallow it, not stop short of it',
   );
+});
+
+// docs/codex-program/notes/nested-lettering-collision.md. Section 8.12 is a
+// ~74-entry definitions list; its 26th entry, "(z)" ("Intellectual
+// Property"), is where the pre-fix marker-depth heuristic lost track of the
+// outer list (see the synthetic tests above for the isolated mechanism).
+// Pre-fix, "(z)" silently claimed the ENTIRE remainder of Section 8.12
+// (32,137 bytes, ending exactly where "8.12" itself ends), and every
+// definition after it, including "(gg)" "Parent Base Amount" and "(vv)"
+// "Parent Termination Fee", the two references
+// docs/codex-program/notes/citation-scope-design.md and
+// scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs both
+// name explicitly, existed in the tree only as an ever-deeper phantom
+// reference ("8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)" for "(gg)"), never under
+// its own printed name.
+test('regression: Modiv 8.12(gg)/8.12(vv) resolve once the outer lettered list is tracked past its 26th entry, "(z)" no longer swallows the rest of Section 8.12', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
+  const buf = Buffer.from(sourceText, 'utf8');
+  const section812 = findSectionByReference(tree, '8.12');
+  assert.ok(section812);
+
+  const z = findSectionByReference(tree, '8.12(z)');
+  assert.ok(z);
+  assert.equal(z.parent_section_id, section812.section_id);
+  assert.match(buf.subarray(z.start, z.start + 30).toString('utf8'), /^\(z\) .Intellectual Property/);
+
+  const aa = findSectionByReference(tree, '8.12(aa)');
+  assert.ok(aa);
+  assert.equal(z.end, aa.start, '"(z)" must end exactly where "(aa)" begins, not swallow it');
+  assert.equal(aa.parent_section_id, section812.section_id, '"(aa)" is a sibling of "(z)", not its child');
+  assert.equal(aa.depth, z.depth);
+
+  // The two references this task named, verified against the agreement's
+  // own printed text (not an offset chosen for this test).
+  const gg = findSectionByReference(tree, '8.12(gg)');
+  assert.ok(gg, '8.12(gg) must resolve');
+  assert.equal(gg.parent_section_id, section812.section_id);
+  assert.match(
+    buf.subarray(gg.start, gg.end).toString('utf8'),
+    /^\(gg\) .Parent Base Amount. means \$15,000,000\.00\.\n$/,
+    '8.12(gg) must be exactly the "Parent Base Amount" definition, nothing more and nothing less',
+  );
+
+  const vv = findSectionByReference(tree, '8.12(vv)');
+  assert.ok(vv, '8.12(vv) must resolve');
+  assert.equal(vv.parent_section_id, section812.section_id);
+  assert.match(
+    buf.subarray(vv.start, vv.start + 60).toString('utf8'),
+    /^\(vv\) .Parent Termination Fee. means an amount equal to/,
+  );
+  const ww = findSectionByReference(tree, '8.12(ww)');
+  assert.ok(ww);
+  assert.equal(vv.end, ww.start, '8.12(vv) must end exactly where 8.12(ww) begins');
+
+  // The old, wrongly-deep-nested references must no longer resolve at all,
+  // never approximate to the corrected node, never silently keep working.
+  for (const phantom of ['8.12(z)(aa)', '8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)', '8.12(z)(aaa)']) {
+    assert.equal(findSectionByReference(tree, phantom), null, `${phantom} must no longer resolve`);
+  }
+
+  // Every one of Section 8.12's definitions from "(z)" onward is now a
+  // direct child of "8.12", at the SAME depth as "(a)" through "(y)", not an
+  // ever-deepening chain, and the last one ends exactly where "8.12" itself
+  // ends (matches the adjacent "last section terminates correctly" test
+  // above, re-verified here under the corrected shape).
+  const depthOfA = findSectionByReference(tree, '8.12(a)').depth;
+  for (const ref of ['8.12(z)', '8.12(aa)', '8.12(zz)', '8.12(aaa)', '8.12(uuu)']) {
+    assert.equal(findSectionByReference(tree, ref).depth, depthOfA, `${ref} is at the same depth as 8.12(a)`);
+  }
+  assert.equal(findSectionByReference(tree, '8.12(uuu)').end, section812.end, 'the last definition ends exactly where 8.12 itself ends');
+
+  assertSiblingsTileExactly(tree, sourceText, 'modiv-8.12-post-z');
+  assertNoReferenceCollisions(tree, 'modiv-8.12-post-z');
+});
+
+// The Modiv regression above isolates the simple case: nothing genuinely
+// nested happens to fall inside the misparented run. Skechers Section 1.1
+// exercises the harder case: "(vv)" ("Material Contract") has its OWN
+// genuine roman-numeral sub-list, (i) through (xiii), sitting INSIDE the
+// same collision. Pre-fix, that sub-list's last member, "(xiii)", ended up
+// as the misparented run's deepest frame, so the outer list's next entry,
+// "(ww)", attached as ITS child (28 levels deep) instead of resuming as
+// "(vv)"'s sibling. The fix must close the genuine inner list correctly AND
+// resume the outer list correctly at the same marker.
+test('regression: Skechers 1.1(vv) "Material Contract" keeps its own genuine roman-numeral sub-list, and the outer lettered list still resumes correctly at 1.1(ww) afterward', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm');
+  const buf = Buffer.from(sourceText, 'utf8');
+  const section11 = findSectionByReference(tree, '1.1');
+  assert.ok(section11);
+
+  const vv = findSectionByReference(tree, '1.1(vv)');
+  assert.ok(vv);
+  assert.equal(vv.parent_section_id, section11.section_id, '1.1(vv) is a direct child of 1.1');
+  assert.match(buf.subarray(vv.start, vv.start + 40).toString('utf8'), /^\(vv\) .Material Contract. means any/);
+
+  const vvI = findSectionByReference(tree, '1.1(vv)(i)');
+  const vvXiii = findSectionByReference(tree, '1.1(vv)(xiii)');
+  assert.ok(vvI && vvXiii);
+  assert.equal(vvI.parent_section_id, vv.section_id, '1.1(vv)(i) is a genuine child of 1.1(vv)');
+  assert.equal(vvXiii.parent_section_id, vv.section_id);
+  assert.ok(vv.start <= vvI.start && vvXiii.end <= vv.end, 'the roman sub-list is fully inside (vv)');
+
+  // The outer letter list resumes correctly at "(ww)" as a SIBLING of
+  // "(vv)", not a 28th-level descendant of "(vv)(xiii)", which is where it
+  // landed pre-fix.
+  const ww = findSectionByReference(tree, '1.1(ww)');
+  assert.ok(ww);
+  assert.equal(ww.parent_section_id, section11.section_id, '1.1(ww) is a direct child of 1.1, a sibling of 1.1(vv), not a descendant of its roman sub-list');
+  assert.equal(vv.end, ww.start, '1.1(vv) must end exactly where 1.1(ww) begins');
+  assert.equal(ww.depth, vv.depth, '1.1(ww) sits at the same depth as 1.1(vv), not 27 levels deeper');
+  assert.match(buf.subarray(ww.start, ww.start + 40).toString('utf8'), /^\(ww\) .Maximum Equity Election Cap/);
+
+  for (const phantom of [
+    '1.1(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)(hh)(ii)(jj)(kk)(ll)(mm)(nn)(oo)(pp)(qq)(rr)(ss)(tt)(uu)(vv)(xiii)(ww)',
+    '1.1(z)(aaa)',
+  ]) {
+    assert.equal(findSectionByReference(tree, phantom), null, `${phantom} must no longer resolve`);
+  }
+
+  assertSiblingsTileExactly(tree, sourceText, 'skechers-1.1-post-z');
+  assertParentageIsConsistent(tree, 'skechers-1.1-post-z');
+  assertNoReferenceCollisions(tree, 'skechers-1.1-post-z');
 });
 
 test('a reference that cannot be resolved fails rather than approximating', () => {

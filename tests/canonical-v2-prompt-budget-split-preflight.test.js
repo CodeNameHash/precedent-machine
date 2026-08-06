@@ -182,10 +182,27 @@ test('Modiv 8.12 passes the real aggregate preflight with complete MAE anchor co
   assert.equal(result.status, 'PASS');
   assert.equal(result.resolutions[0].status, 'SPLIT');
   assert.deepEqual(result.tree_integrity_blockers, []);
+  // Corrected on 2026-08-06 from 8.12(z) to 8.12(ll), because the old value
+  // was an artefact of a defect rather than a fact about the agreement.
+  //
+  // The marker sequencer had no successor for a single "z" and advanced
+  // repeated letters by length rather than value, so "aa" went to "aaa"
+  // instead of "bb". Every entry past the twenty-sixth in Section 8.12's
+  // lettered list was therefore misparented, and the "(z)" node swelled to
+  // absorb the definitions that followed it, the Parent MAE clause among
+  // them. The preflight was picking "(z)" because the Parent MAE text
+  // happened to be inside it, not because "(z)" is a MAE definition.
+  //
+  // Verified directly against the agreement's own text at the corrected
+  // offsets: 8.12(g) is "Company Material Adverse Effect", 8.12(ll) is
+  // "Parent Material Adverse Effect", and 8.12(z) is "Intellectual
+  // Property", now correctly 1,356 bytes rather than swallowing its
+  // successors. So the MAE family now targets the two real MAE definitions,
+  // which is what this assertion was always trying to express.
   assert.deepEqual(
     result.work_items.filter((item) => item.family_id === 'MAE_DEFINITION')
       .map((item) => item.section_reference),
-    ['8.12(g)', '8.12(z)'],
+    ['8.12(g)', '8.12(ll)'],
   );
   const maeCoverage = result.resolutions[0].coverage.find((item) => item.family_id === 'MAE_DEFINITION');
   assert.equal(maeCoverage.relevant_fact_count, 2);

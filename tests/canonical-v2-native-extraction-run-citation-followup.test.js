@@ -142,9 +142,23 @@ test('section-addressing re-verification: every distinct reference the real prom
     assert.ok(node, `${ref} must resolve against the current tree`);
     assert.equal(refCounts.get(ref), 1, `${ref} must resolve to exactly one node`);
   }
+  // Inverted on 2026-08-06. This used to require 8.12(gg) and 8.12(vv) to
+  // resolve to nothing, recording that the nested-lettering defect was still
+  // open and, correctly, that it was not on this feature's path. That defect
+  // is now fixed: the marker sequencer had no successor for a single "z" and
+  // grew repeated letters by length rather than value, so "aa" advanced to
+  // "aaa" instead of "bb" and every entry past the twenty-sixth in a lettered
+  // list was misparented as an ever-deeper child. Both references now resolve,
+  // along with 110 others across Modiv and Skechers.
+  //
+  // The pin is inverted rather than deleted because the property it guards is
+  // still the one that matters here: these two references must resolve to
+  // exactly one node each, since citation-following must never chase an
+  // ambiguous reference.
   for (const ref of ['8.12(gg)', '8.12(vv)']) {
-    assert.equal(findSectionByReference(tree, ref), null, `${ref} must still fail to resolve (SEC2, unfixed, confirmed not on this feature's path)`);
-    assert.equal(refCounts.get(ref) || 0, 0);
+    const node = findSectionByReference(tree, ref);
+    assert.ok(node, `${ref} must resolve now that the nested-lettering defect is fixed`);
+    assert.equal(refCounts.get(ref), 1, `${ref} must resolve to exactly one node, never an ambiguous match`);
   }
 });
 
