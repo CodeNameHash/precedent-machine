@@ -215,6 +215,18 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: the 2026-08-05 parseUsdAmount regression suite (and its
+  // later-that-day consolidation onto lib/parse-money.js) drives
+  // executeMarketRange() with real registry field_paths -- feePctOfDealValue
+  // and reverseFeePctOfDealValue (the derived percentage fields) and
+  // companyTerminationFee (the raw "usd"-typed field) -- all routing through
+  // the same ambiguity-rejecting parse path, to prove the row-inclusion guard
+  // behaves correctly for each. Literal payloads are the executor's real
+  // request shape; production query code stays covered.
+  'tests/derived-fields.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   // Same class as the tests/query/* fixture exemptions above: the canonical-v2
   // Query UI slice tests must carry the EXACT legacy ad hoc payload
   // ({provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue'})
@@ -311,6 +323,16 @@ const FILE_PATTERN_EXEMPTIONS = {
   // Genuine fixture, not the duplicated-label regression this pattern
   // fingerprints.
   'tests/fb3-section-tables.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Merge note, 2026-08-06: main carried a per-file entry here for
+  // evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/
+  // adapter-result.json against 'QUALIFICATION.*litigation'. It is deliberately
+  // NOT reinstated. The LIVE_RUN_ADAPTER_RESULT rule at the application site
+  // now covers every live-run adapter result for the PROSE-class fingerprints,
+  // which is the same exemption for the same reason, arrived at after the
+  // fourth identical per-file entry in two days. Its verification reasoning,
+  // that the file reuses already-committed hash-pinned source and embeds real
+  // merger prose rather than a code regression, still stands and is recorded
+  // at that rule.
 };
 
 const failures = [];

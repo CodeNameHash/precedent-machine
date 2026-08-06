@@ -215,6 +215,39 @@ test('executeMarketRange: a Modiv-shaped conditional fee is skipped from the com
   assert.deepEqual(result.deal_points.map((point) => point.value).sort(), [3, 3]);
 });
 
+test('executeMarketRange: companyTerminationFee is registered "usd"-typed, so a Modiv-shaped raw query is also excluded, not merely amount-nulled', () => {
+  const deals = [
+    { id: 'clean-1', acquirer: 'Buyer One', target: 'Target One', value_usd: 1000000000 },
+    { id: 'modiv-like', acquirer: 'Modiv Buyer', target: 'Modiv Target', value_usd: 500000000 },
+  ];
+  const provisions = [
+    feeProvision({ id: 'p1', dealId: 'clean-1', companyAmount: '$30,000,000' }),
+    feeProvision({ id: 'p3', dealId: 'modiv-like', companyAmount: MODIV_COMPANY_FEE_HEADLINE }),
+  ];
+  const result = executeMarketRange(
+    { provision_type: 'TERMINATION_FEE', field_path: 'companyTerminationFee', deal_filter: {} },
+    { deals, provisions },
+  );
+  const byDeal = new Map(result.deal_points.map((point) => [point.deal_id, point]));
+  // companyTerminationFee is registered "usd" in docs/schema-shape/
+  // normalized-v1.json (lib/query/executors/market-range.js's own
+  // isMoneyFieldType comment names it as the worked example), not a text/
+  // object field -- so its raw value goes through the SAME numeric-typed
+  // branch of valueFromRaw() (lib/query/types.js), which falls back to
+  // amountObjectValue() to pull the amount out of the { amount, triggers[],
+  // ... } shape and re-parses THAT through numericValue()
+  // (lib/feature-compare.js) -- the same ambiguity-rejecting function
+  // feeDetails()/parseUsdAmount() use. A Modiv-shaped raw amount is
+  // therefore ambiguous at the level of provisionFieldValue()'s own
+  // `result.value`, not only at feeDetails()'s enrichment layer -- so
+  // executeMarketRange's `if (result.value === null) continue;` guard drops
+  // the point entirely, exactly like the feePctOfDealValue test above. Only
+  // the clean deal appears.
+  assert.equal(result.deal_points.length, 1);
+  assert.equal(byDeal.get('clean-1').amount_usd, 30000000);
+  assert.ok(!byDeal.has('modiv-like'));
+});
+
 test('executeMarketRange: reverseFeePctOfDealValue includes the Modiv-shaped deal (single figure + citation resolves), still skips a genuinely two-figure deal', () => {
   // Three deals: a plain clean figure, the real Modiv-shaped reverse fee
   // (one dollar figure + an unrelated citation -- resolves), and a
