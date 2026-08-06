@@ -160,7 +160,10 @@ test('a proven adapter and consumer pair from elsewhere cannot clear an unrelate
       );
     }
   }
-  assert.ok(attacked >= 100, `expected the whole blocker inventory to be attacked, got ${attacked}`);
+  // >= 99, not >= 100: termination-fee-query-fields left the NATIVE_UNVERIFIED/NOT_VISIBLE
+  // pool on 2026-08-05 (docs/codex-program/notes/compare-locator-fix.md), a real, attributed
+  // movement, not a loosening of this loose lower bound.
+  assert.ok(attacked >= 99, `expected the whole blocker inventory to be attacked, got ${attacked}`);
 });
 
 test('a page behind the design route guard is not a served entry point', () => {
@@ -384,9 +387,18 @@ test('hostile: Termination Fee and Termination Rights NATIVE_COMPLETE claims omi
     'termination-fee-rendered-rows',
     'tail-fee-rendered-rows',
     'termination-fee-market-fields',
-    'termination-fee-query-fields',
     'termination-rights-rendered-rows',
     'termination-rights-market-fields',
+    // termination-rights-query-fields stays in this hostile list deliberately: its evidence
+    // is the same empty-consumer shape termination-fee-query-fields used to have, AND
+    // termination-rights.config.js has no canonical-serving switch anywhere (grep for
+    // CANONICAL_V2_*_CARDS_FIELD/isCanonical*ServingEnabled across components/review/
+    // table-configs/ and lib/canonical-v2/ finds only termination-fees.config.js and
+    // termination-fee-serving-source.js). Repointing this locator the same way would
+    // mechanically clear it (see docs/codex-program/notes/compare-locator-fix.md) but would
+    // be a hollow pass: no V2 termination-rights data reaches any user through any path
+    // today, so it must not read as visible. See "termination-fee-query-fields" below for
+    // the sibling surface where the same repoint IS honest.
     'termination-rights-query-fields',
   ]) {
     const entry = surface(surfaceId);
@@ -395,6 +407,33 @@ test('hostile: Termination Fee and Termination Rights NATIVE_COMPLETE claims omi
     assert.equal(liveProductVisibility(entry), 'NATIVE_UNVERIFIED', surfaceId);
     assert.equal(isNativeSemanticCompletion(entry), false, surfaceId);
   }
+});
+
+// 2026-08-05 (docs/codex-program/notes/compare-locator-fix.md): CompareSectionColumn, the
+// locator termination-fee-query-fields used to name, is dead code -- superseded by
+// UnifiedCompareSection in the r14 unified-compare-table redesign and never called again
+// (its own file's default export, never imported or invoked anywhere else in the
+// repository). No locator value could ever have proven this surface while it named a
+// symbol nothing reachable evaluates. Repointed to UnifiedCompareSection -- the component
+// pages/review/[id].js actually imports and renders for every section, compare mode
+// included -- and pages/review/[id].js named as the real, served consumer, the same
+// naming-gap fix already accepted for this family's sibling termination-fee-rendered-rows/
+// tail-fee-rendered-rows surfaces above. This proves compare mode's rendering machinery
+// reaches a live page, reusing the exact config.selectRows()/renderCell() dispatch the
+// primary (non-compare) review page already uses for every deal in the comparison,
+// including termination fee's own genuine, if server-flag-gated, canonical switch
+// (isCanonicalTerminationFeeServingEnabled, termination-fees.config.js). It does NOT prove
+// that a canonical V2 value is what a user sees on any given render: that still depends on
+// attachCanonicalTerminationFeeServing (lib/canonical-v2/termination-fee-serving-source.js),
+// reached only through the separate pages/api/review/[id]/cards.js module graph and joined
+// to this one solely by an HTTP wire payload, a boundary no static import walk can cross.
+// Same caveat Part 5's rendered-rows/market-fields fix already carries; not a new gap.
+test('termination-fee-query-fields: a repointed locator plus a named real consumer clears native serving proof', () => {
+  const entry = surface('termination-fee-query-fields');
+  assert.equal(entry.source_locator, 'UnifiedCompareSection');
+  assert.ok(entry.evidence_paths.includes('pages/review/[id].js'));
+  assert.equal(liveProductVisibility(entry), 'NATIVE_VISIBLE');
+  assert.equal(isNativeSemanticCompletion(entry), true);
 });
 
 test('hostile: a legacy transaction_steps side table with a matching string code is not native serving proof', () => {

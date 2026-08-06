@@ -306,12 +306,18 @@ test('the locator gate runs last and never promotes an unserved or unproven row'
   ];
   // The gate is additive: the only rows it can answer on are rows that had already cleared
   // the consumer proof and the served-entry-point walk, and every one of them proves.
+  // termination-fee-query-fields joined this list on 2026-08-05
+  // (docs/codex-program/notes/compare-locator-fix.md): its dead CompareSectionColumn locator
+  // was repointed to UnifiedCompareSection, the component pages/review/[id].js (its newly
+  // named real consumer) actually renders, and the FUNCTION_CALL_PATH rule proves it -- the
+  // first NATIVE_COMPLETE (as opposed to APPROVED_DERIVED) surface to clear this exact gate.
   const visible = everySurface
     .filter((entry) => ['DERIVED_VISIBLE', 'NATIVE_VISIBLE'].includes(liveProductVisibility(entry)))
     .map((entry) => entry.surface_id)
     .sort();
   assert.deepEqual(visible, [
     'proxy-render-derived-deadlines',
+    'termination-fee-query-fields',
     'termination-fee-render-derived-values',
   ]);
 
@@ -352,7 +358,7 @@ test('JSX product files are parsed rather than skipped', () => {
   ).proven, true);
 });
 
-test('the register-wide blocker inventory is unchanged by the strict locator rule', () => {
+test('the register-wide blocker inventory reflects only real, attributed movement', () => {
   // 104 blockers and 6 review holds were the pinned counts before ruling 3. The strict
   // rule demoted nothing, because every currently-visible row proves a complete path.
   // Back to 104 as of 2026-08-05, after two movements the same day that happen to cancel.
@@ -362,12 +368,20 @@ test('the register-wide blocker inventory is unchanged by the strict locator rul
   // claim keys and concepts having never existed in the contract bundle, and the
   // structure-market-fields surface went with it because that module was its source_path.
   // The other four structure surfaces stayed blockers; only their false PASS labels changed.
-  // Do not read 104 as "unchanged" and do not collapse this comment: the number is the same
-  // by coincidence, and a future reader who assumes stability will draw the wrong conclusion.
-  // Review holds fell from 6 to 2 the same day (the four owner-approved no-shop concepts
-  // were promoted out of review hold into the NO_SHOP family's product_surfaces), which is a
-  // distinct count this test does not assert.
-  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
+  // Down one more, same day (docs/codex-program/notes/compare-locator-fix.md):
+  // termination-fee-query-fields' locator, CompareSectionColumn, was dead code (superseded
+  // by UnifiedCompareSection, never called again). Repointed to UnifiedCompareSection with
+  // pages/review/[id].js named as its real consumer -- the same naming-gap shape already
+  // accepted for its rendered-rows/market-fields siblings -- it clears to NATIVE_VISIBLE.
+  // 104 - 1 = 103. The other 13 surfaces sharing that same dead locator were investigated
+  // and left blocked: 12 fail earlier, at provingProductConsumers, because CompareColumn.jsx
+  // itself never imports the lib/canonical-v2/*-product-projection.js file each names as its
+  // adapter, so no locator value could clear them; termination-rights-query-fields would
+  // mechanically clear the same way termination-fee-query-fields did but was left blocked on
+  // purpose because it would be hollow (see the hostile test in
+  // tests/programme-gates/m3-family-parity-register.spec.js). Do not read 103 as evidence of
+  // more than this one attributed movement.
+  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 103);
 });
 
 // ---------------------------------------------------------------------------------------
@@ -469,6 +483,23 @@ test('contained routes and design-guarded pages stay outside the real served set
   // A design-guarded page answers notFound in production and lends serving proof to nothing.
   assert.equal(served.has('pages/design/canonical-v2.js'), false);
   assert.deepEqual([...served].filter((file) => file.startsWith('pages/design/')), []);
+
+  // Two more containment shapes outside QUERY_CONTAINED_ROUTE_FILES
+  // (docs/codex-program/notes/family-rollout-mechanics.md, Part 1; fixed
+  // docs/codex-program/notes/compare-locator-fix.md, 2026-08-05). Neither corrupted any of
+  // the 143 tracked surfaces before this fix -- confirmed again here, not just asserted --
+  // but both were live, unexcluded entry points a future surface's evidence could have named.
+  //
+  // pages/api/market-stats.js's whole body is marketStatsContainedHandler, an unconditional
+  // 503 responder (lib/market-stats-containment.js).
+  assert.equal(served.has('pages/api/market-stats.js'), false);
+  // pages/query/whats-market/adhoc.js's entire getServerSideProps is an unconditional
+  // server-side redirect to '/'; no request ever renders the component or reaches what it
+  // imports.
+  assert.equal(served.has('pages/query/whats-market/adhoc.js'), false);
+  // Neither exclusion is a phantom edge in disguise: the real market-metrics code stays
+  // served through its own genuine, uncontained page.
+  assert.equal(served.has('lib/market-metrics/index.js'), true);
 
   // The walk still reaches a genuine chain: a live page, its table config, and the adapter
   // the config imports. Without this the exclusions above would be trivially satisfied.
