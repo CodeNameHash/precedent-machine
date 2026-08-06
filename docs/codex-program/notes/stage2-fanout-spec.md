@@ -1,5 +1,36 @@
 # Spec: correct the record, unblock onboarding, rebuild Stage 2 as a fan-out ladder
 
+**STATUS as of 2026-08-06: partly implemented and partly superseded. Read this
+box before anything below it.**
+
+| | |
+|---|---|
+| **Part D (the ladder)** | **Superseded.** Landed in `docs/core/PLAN.md` Stage 2, in a different and better shape than this document describes. PLAN.md is authoritative; Part D below is kept only as the reasoning that produced it. |
+| **Part B (false claims)** | Partly done. The four claims Stage 2 rested on are corrected in PLAN.md. The broader sweep of PLAN.md's remaining claims is not done. |
+| **Parts A, C, E, F** | Not started. Consolidation, the ~110 findings, onboarding, and the capability rulings are all still outstanding, and this document remains the plan for them. |
+| **B-zero (test glob)** | **Not done.** `package.json`'s `.test.js` glob is still non-recursive and 29 test files still do not run. Every "proves it is done" in PLAN.md Stage 2 is checked by that instrument. |
+
+**How Part D changed when it landed, and why.** This document specified an
+extraction-only ladder: prove extraction across families, then across
+documents. That was wrong in the same way the plan it replaced was wrong, one
+layer down. Proving extraction generalises across 15 documents while the write
+path is proven on two hand-built per-deal slices (QXO F28, Metsera) is a sample
+of one, twice — the exact error the ladder exists to prevent.
+
+So Stage 2 as implemented is **vertical**: every rung runs
+`extract -> validate -> write -> serve -> confirm it renders`. It gained a new
+Step 2B that builds the bridge in both directions, because a run's output was
+terminal — nothing functional read it — and no serving source read from the
+database at all. Steps 4B and 5A were rescoped from construction to hardening
+as a result.
+
+Four systems traces since this document was written also changed its factual
+basis. See `docs/core/CODEBASE-GUIDE.md` section 12, which is now the record of
+how the system actually works, and section 9, which corrects the claim that the
+schema had never been executed.
+
+---
+
 Status: draft for adversarial audit, not yet approved.
 Scope: all six parts (A–F). C and F were originally deferred; they are
 folded in here because several of their findings change what gets built,

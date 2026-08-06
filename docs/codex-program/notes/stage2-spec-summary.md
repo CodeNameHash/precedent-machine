@@ -110,8 +110,30 @@ documents as claims to check, not a record of what's true.
 
 ## Status
 
-- Written, audited twice, corrected twice.
-- Audit verdict: **B-zero, B, C and F are executable now.** Part A needs
-  the amendment item re-scoped to whatever residue is actually missing.
-  Part D is blocked on the replay/tolerance decision and the runner change.
-- Next: your approval, then I write the files.
+**Stage 2 is implemented.** `docs/core/PLAN.md` Stage 2 is rewritten, and
+PLAN.md, COMPLETED.md and CODEBASE-GUIDE.md are corrected to agree with it.
+
+What changed between this summary and what landed: the ladder became
+**vertical**. Four code traces established that a run's output is terminal —
+nothing functional reads the evidence directories — and that no serving source
+reads from the database at all. So proving extraction across 15 documents would
+have proved nothing consumable, and proving the write path once would have
+repeated the sample-of-one error one layer down. Every rung now runs
+`extract -> validate -> write -> serve -> confirm it renders`, and a new Step 2B
+builds the bridge in both directions. Steps 4B and 5A are rescoped from
+construction to hardening.
+
+`docs/core/CODEBASE-GUIDE.md` section 12 is the new record of how the system
+actually works, with the commands to re-derive it.
+
+**Still outstanding, and none of it is started:**
+
+- **The test glob.** 29 test files still do not run. Every Stage 2 gate is
+  checked by that instrument.
+- **Parts A, C, E, F** — consolidation, the ~110 findings, onboarding, the
+  capability rulings.
+- **The two prerequisites Stage 2 names for itself:** the replay-or-tolerance
+  decision for a nondeterministic gate, and the runner change that records a
+  commit hash and resolved model ID so change-triggered re-runs are possible.
+
+Next: Fable's adversarial pass on the implemented documents.
