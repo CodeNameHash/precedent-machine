@@ -1391,8 +1391,9 @@ it per-family.
    is a genuine `pg` `Pool` client (line 2, `createPostgresServingClient` at
    198) against a staging Supabase project, with import scripts under
    `scripts/canonical-v2-staging-*.mjs` and SQL under `sql/optionA/`. So
-   `PLAN.md:152`'s "There is no persistent repository" is **false at the
-   tree level**. It is a separate, hand-built, per-deal pipeline (QXO), fed
+   `PLAN.md`'s former "There is no persistent repository" claim, on the write
+   orchestrator row, was **false at the tree level** — corrected there since,
+   and cited here by content rather than line number because the line moved. It is a separate, hand-built, per-deal pipeline (QXO), fed
    by manual fixtures and SQL runbooks, gated to a staging env flag — so the
    claim is *effectively* true for the general 25-family runner while being
    *literally* false about the codebase. Both halves matter.
@@ -1436,18 +1437,22 @@ do not file it as a V2 problem.
 
 ### 12.4 Measured cost of a family run
 
-From 25 committed telemetry files under `evidence/canonical-v2/modiv-*-20260806/`:
+From the 20 of 24 `evidence/canonical-v2/modiv-*-20260806/` directories whose
+`run-manifest.json` carries `extraction_wall_clock_ms` (four have no manifest;
+the glob matches 24 directories, not 25):
 
 | Measure | Value |
 |---|---|
-| Mean wall-clock per family-run | ~290,900 ms (~4.85 min) |
-| Median | ~205,900 ms |
-| Max | ~1,130,000 ms (and that run still timed out) |
+| Mean wall-clock per family-run | ~255,200 ms (~4.25 min) |
+| Median | ~204,500 ms |
+| Max | ~1,100,100 ms (and that run still timed out) |
 | Model calls | `projected_model_call_count` = `config.sectionRefs.length`; ~2 actual mean |
 | Parallelism | none — fully serial, no `Promise.all` (`native-extraction-run.js:635`) |
 
-A 1→4→12→25 ladder is 42 family-runs per document: roughly 3.4 hours per
-document, ~51 hours serial for a 15-document campaign.
+A 1→4→12→25 ladder is 42 family-runs per document: about **3 hours per
+document serially, ~25 minutes at eight-way parallelism**. A 15-document
+campaign is roughly 45 hours serial, or about 6 hours at eight-way. An earlier
+version of this section quoted the campaign figure as if it were per-document.
 
 **Re-measure** rather than trusting these:
 `node -e "const fs=require('fs');const d=fs.readdirSync('evidence/canonical-v2').filter(x=>/^modiv-.*20260806/.test(x));..."`

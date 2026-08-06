@@ -5,7 +5,7 @@ box before anything below it.**
 
 | | |
 |---|---|
-| **Part D (the ladder)** | **Superseded.** Landed in `docs/core/PLAN.md` Stage 2, in a different and better shape than this document describes. PLAN.md is authoritative; Part D below is kept only as the reasoning that produced it. |
+| **Part D (the ladder)** | **Superseded — do not implement from it.** Landed in `docs/core/PLAN.md` Stage 2, in a different and better shape. The Part D text far below still describes the old extraction-only ladder under its old step letters (2A–2E), and those letters no longer match PLAN.md's 2A–2H. It is kept as the reasoning that produced the design, not as an instruction. PLAN.md is authoritative. |
 | **Part B (false claims)** | Partly done. The four claims Stage 2 rested on are corrected in PLAN.md. The broader sweep of PLAN.md's remaining claims is not done. |
 | **Parts A, C, E, F** | Not started. Consolidation, the ~110 findings, onboarding, and the capability rulings are all still outstanding, and this document remains the plan for them. |
 | **B-zero (test glob)** | **Not done.** `package.json`'s `.test.js` glob is still non-recursive and 29 test files still do not run. Every "proves it is done" in PLAN.md Stage 2 is checked by that instrument. |

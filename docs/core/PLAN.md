@@ -140,10 +140,10 @@ below was opened and confirmed, not inferred from its name.
 
 | What | Where | Note |
 |---|---|---|
-| Which families exist | `lib/canonical-v2/native-producer/producer-prompt-registry.js` | `listRegisteredSectionFamilies()` line 162, `getProducerPromptModule()` line 153, the `REGISTRY` map line 114. A family not in here cannot be dispatched. |
+| Which families exist | `lib/canonical-v2/native-producer/producer-prompt-registry.js` | `listRegisteredSectionFamilies()` line 162, `getProducerPromptModule()` line 153, the `REGISTRY` map line 117. A family not in here cannot be dispatched. |
 | What the model is asked, per family | `lib/canonical-v2/native-producer/*-producer-prompt.js` | 28 files (`ls lib/canonical-v2/native-producer/*-producer-prompt.js \| wc -l`). Only 25 are wired into the registry. `employee-dno-`, `financing-guaranty-`, `key-terms-mae-follow-on-` and `tax-dividend-appraisal-` are not, and editing them changes nothing. |
 | The resolver: what turns a model answer into a governed claim, or refuses to | `lib/canonical-v2/native-producer/candidate-resolution.js` | One file, 10,126 lines. There is no per-family resolver file. Entry point `resolveCandidates`. |
-| **Corroboration vocabularies**, the word lists that decide whether a claim is proven by its own quote | `candidate-resolution.js`, 13 frozen tables | `PARTY_CAPACITY_LEXICON` (1008), `MATERIALITY_TABLE` (1070), `SHARE_COUNT_KIND_CORROBORATION_TABLE` (1819), `FEE_SIDE_CORROBORATION_TABLE` (1895), `FEE_TRIGGER_CORROBORATION_TABLE` (1978), `TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE` (2644), four `NO_SHOP_*` tables (2988, 3029, 3055, 3155), `MAE_CARVEOUT_CORROBORATION_TABLE` (3253), `MAE_DEFINITION_PRONG_CORROBORATION_TABLE` (3302), `GENERIC_CLAIM_KEY_RESOLUTION_TABLE` (605). |
+| **Corroboration vocabularies**, the word lists that decide whether a claim is proven by its own quote | `candidate-resolution.js`, 13 frozen tables | `PARTY_CAPACITY_LEXICON` (1032), `MATERIALITY_TABLE` (1094), `SHARE_COUNT_KIND_CORROBORATION_TABLE` (1843), `FEE_SIDE_CORROBORATION_TABLE` (1919), `FEE_TRIGGER_CORROBORATION_TABLE` (2002), `TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE` (2668), four `NO_SHOP_*` tables (3012, 3053, 3079, 3179), `MAE_CARVEOUT_CORROBORATION_TABLE` (3277), `MAE_DEFINITION_PRONG_CORROBORATION_TABLE` (3326), `GENERIC_CLAIM_KEY_RESOLUTION_TABLE` (629). Re-derive rather than trusting these: `grep -nE 'const [A-Z_]+ *=' lib/canonical-v2/native-producer/candidate-resolution.js`. A 24-line insertion had silently invalidated every number in this row. |
 | Concept synonym lists, the other place a vocabulary widening lands | `lib/taxonomy.js` | `synonyms:` arrays on concept entries. This is where the material-contracts widening in commit `34059a2f` went: 88 lines changed, seven lists. |
 | Family-level marker words | `lib/canonical-v2/native-producer/lexical-disagreement-net.js` | `LEXICAL_FAMILY_LEXICON` line 686. |
 | Qualifier marker words (knowledge, materiality, temporal, accuracy) | `lib/canonical-v2/native-producer/qualifier-kind-lexicon.js` | `KNOWLEDGE_PATTERNS` 131, `TEMPORAL_SYMBOLIC_DATES` 146, `ACCURACY_PATTERNS` 171, `THRESHOLD_PATTERNS` 178. |
@@ -161,7 +161,7 @@ below was opened and confirmed, not inferred from its name.
 | The write-set validator | `lib/canonical-v2/validate-write-set.js` | Splits a write-set into `publishableWriteSet`, `residuals`, `quarantines`. Only the first is importable. |
 | The write orchestrator | `lib/canonical-v2/canonical-writer.js` | `WRITE_ORDER`, `OBJECT_ID_FIELDS`, and `InMemoryCanonicalRepository` at line 787. |
 | A real Postgres client | `lib/canonical-v2/serving-client.js` | A genuine `pg` `Pool` client (`createPostgresServingClient`, line 198) against staging, with import scripts under `scripts/canonical-v2-staging-*.mjs` and SQL under `sql/optionA/`. A previous version of the row above ended "There is no persistent repository", which is false. It is accurate only in the narrow sense that this client is a separate hand-built per-deal pipeline (QXO), not something the general 25-family runner reaches — which is what Step 2B builds. |
-| The database schema and SQL writer | `supabase/canonical-v2-foundation.sql` | 8,686 lines. `public.canonical_v2_write` at line 1167. Never executed. |
+| The database schema and SQL writer | `supabase/canonical-v2-foundation.sql` | 8,686 lines. `public.canonical_v2_write` at line 1167. Executed against isolated staging and rolled back (`EXECUTION-LEDGER.md`, P8); never durably. A previous version of this row said "Never executed", contradicting the corrected row above. |
 | The one family that serves V2 today | `lib/canonical-v2/termination-fee-serving-source.js` | Server side. Hand-typed fixture for QXO/TopBuild, hash verified. |
 | The client-side switch for that family | `components/review/table-configs/termination-fees.config.js` | `selectRows()`, `isCanonicalTerminationFeeServingEnabled()`, `partitionTerminationFeeCards()`. |
 | The route the data crosses on | `pages/api/review/[id]/cards.js` | Imports `attachCanonicalTerminationFeeServing`. This HTTP boundary is why static analysis cannot prove a user sees anything. |
@@ -341,6 +341,34 @@ served, has not passed. This finds a writer defect at family 1 rather than
 after fifteen documents of extraction, and it costs almost nothing extra:
 extraction is the expensive part, and the other four steps are fast.
 
+## Prerequisite. Wire Ben's two M3 auto-pass conditions before rung 1
+
+**Ben ruled this on 2026-08-06 and an earlier draft of this stage dropped it.**
+It is restored here as a blocking prerequisite, not an aside.
+
+`scripts/canonical-v2-live-extraction-run.mjs` supplies neither
+`v1v2_comparison` nor `lexical_disagreement` to its `resolveCandidates(...)`
+call — both grep to zero occurrences in that file — so every gate below
+currently reports green without evaluating either condition. A rung that
+skipped them looks identical, in its evidence directory, to a rung that ran
+them. That is the specific failure this stage exists to prevent, so it cannot
+be tolerated inside the stage itself.
+
+**Change.** Rule on `lib/canonical-v2/v1v2-comparator.js` and
+`lib/canonical-v2/lexical-disagreement-net.js` — both built, merged as
+#471/#472, seven test files, and near-invisible in these documents — then
+supply both conditions at the runner's `resolveCandidates(...)` call, and fix
+`scripts/nets-eligibility-report.mjs`, broken since `0d17ad00`.
+
+**Proves it is done.** A test asserts both condition names appear in the
+runner's resolve call, so this cannot silently regress to the state that made
+this prerequisite necessary. Every rung's evidence then records whether each
+condition passed.
+
+**If this is released rather than done, Ben releases it explicitly**, and every
+rung below states in writing that the conditions were not evaluated. It does
+not lapse by being forgotten a second time.
+
 **What this stage does not do.** It does not turn Canonical V2 on in
 production. Production is hard-off by construction and deliberately so — see
 `CODEBASE-GUIDE.md` section 12.2. "Serve" below means a preview or local
@@ -374,7 +402,8 @@ hand what is already committed.
 
 - **CONSIDERATION was pointed at 2.1, 2.2 and 2.3.** Modiv's statement that
   appraisal rights are not available is in section **2.6**, which was never
-  requested. This is why Appraisal looks like a taxonomy gap and is not one. The
+  requested *for this family* — the appraisal run did request `["2.6"]`, and
+  its own prompt correctly declined to assert a negative from it. This is why Appraisal looks like a taxonomy gap and is not one. The
   Appraisal family's own prompt
   (`lib/canonical-v2/native-producer/appraisal-producer-prompt.js`) says in
   terms "Never assert a negative" and "Availability... remain with
@@ -427,8 +456,10 @@ cross-checked, and the two corrections above applied.
 
 **Proves it is done.** A test asserting every registered family has a pinned
 section list for `modiv`, and that invoking the runner with only `--deal`,
-`--family` and `--out-dir` reproduces the manifest's own `section_references`
-for each. Twenty-five entries, checked against the artefacts, not typed from
+`--family` and `--out-dir` reproduces the **corrected** list for each — which
+for CONSIDERATION and KEY_DEFINED_TERMS deliberately differs from the manifest,
+because correcting those two is the point of this step. Every other family must
+match its manifest exactly. Twenty-five entries, checked against the artefacts, not typed from
 memory. The generator and its raw pre-correction output are both committed as
 `docs/codex-program/notes/family-section-refs-modiv-<date>-generated.json`, so a
 reader can see what was proposed against what a human corrected, and why.
@@ -527,9 +558,19 @@ list, so anything that fails here is a defect in the chain rather than in the
 mapping. Everything after this is fan-out; this is the rung that establishes
 the chain exists at all.
 
-**Change.** No new code beyond 2A and 2B. Run it, diff the extraction against
+**Change.** Run it, diff the extraction against
 `all-families-baseline-20260806.json`'s `TERMINATION_FEE` entry, write, serve
 in a preview or local runtime, and look at it.
+
+**One piece of wiring this needs, which 2B does not supply.** The only path
+that attaches Canonical V2 as the served source is
+`attachCanonicalTerminationFeeServing`, called from
+`pages/api/review/[id]/cards.js:55`, and its registry is hardcoded to a single
+deal id reading the committed fixture. 2B builds the database-backed reader as
+a module; this step is where it is actually attached to that route, behind the
+same server-only env var and the same production denial. An earlier draft said
+"no new code beyond 2A and 2B", which was false: without this wiring there is
+nothing to look at.
 
 **Proves it is done.** The extraction matches the baseline; staging holds the
 rows; the review surface renders the family for that deal in a permitted
@@ -546,10 +587,11 @@ breaks an earlier family is caught by the rung that introduced it.
 
 **Change.** Same runner. One process per family, six to ten in parallel — the
 runner is serial within a run (`native-extraction-run.js:635`) but the
-processes are independent. Measured from the 25 committed telemetry files, a
-family-run averages ~4.85 minutes (median ~3.4, max ~19), so a 42-run ladder is
-roughly 6-7 hours per document at eight-way parallelism, not the days it would
-take serially.
+processes are independent. Measured from the 20 committed `run-manifest.json` files that carry
+`extraction_wall_clock_ms`, a family-run averages ~4.25 minutes (median ~3.4,
+max ~18.3). A 42-run ladder is therefore about **3 hours per document run
+serially, or roughly 25 minutes at eight-way**. Re-measure rather than trusting
+these — the command is in `CODEBASE-GUIDE.md` section 12.4.
 
 - **Rung 1 — one family.** `TERMINATION_FEE`, already done as 2C.
 - **Rung 2 — four.** Add `CONSIDERATION` and `KEY_DEFINED_TERMS` — the two
@@ -581,7 +623,16 @@ else with `UNREGISTERED_FAMILY`.
    never attempted. If it fails again, that is expected, and the finding is
    what the model returned.
 2. No family's `resolved` count falls against its own most recent prior rung.
-3. Every family run so far still writes and still serves.
+3. Every family run so far still writes. **And still serves, for those
+   families that can be served at all** — there are 16
+   `lib/canonical-v2/*-product-projection.js` modules against 25 families, so
+   roughly nine have no product surface to render onto, and building those is
+   Stage 5's job, not this one. For a family with a projection, the rung is not
+   passed until it renders. For a family without one, the rung is passed at the
+   write-and-read-back step, and the missing projection is **recorded by name**
+   in that rung's regression table. Do not let "serves" quietly mean "returned
+   a 200", and do not let a family with no surface silently count as one that
+   serves.
 
 A failed gate is a stop, not a note to fix at the end. Eleven of the twenty
 complete Modiv runs currently resolve zero, so note that condition 2 is
@@ -637,6 +688,17 @@ zero model calls made. Any family resolving to zero sections is a finding to
 record, not a family to skip — and specifically,
 `GUARANTY_FINANCING_PARTY` resolving to zero *here* would mean the mapping is
 wrong, before 2F ever runs. Check that by name.
+
+**Decide what a correct-empty family looks like, here, before 2F needs it.**
+`resolveRunConfig` throws on an empty section list (~357-363), and 2A's own
+proof demands every registered family have a pinned list. So a TopBuild family
+that genuinely has no matching sections can be recorded in the mapping and then
+cannot be run, and the two requirements collide. Pick one and write it down: a
+sentinel pinned value, an explicit `expected_empty` flag the runner honours, or
+a runner escape hatch. Modiv papered over this by pinning `5.11` for guaranty
+(resolved 0, COMPLETE); on a document where no such section exists there is
+nothing to pin. This is a design decision, it is small, and leaving it to
+whoever hits it first is how a gate gets quietly weakened.
 
 ## Step 2F. Fan out the families on TopBuild
 
@@ -748,7 +810,7 @@ queue for human review instead of resolving.
 a different gate. Six of the twelve candidates it unblocked now stop here.
 
 **Change.** `TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE`,
-`lib/canonical-v2/native-producer/candidate-resolution.js` line 2644. The four
+`lib/canonical-v2/native-producer/candidate-resolution.js` line 2668. The four
 gaps, each recorded verbatim in `notes/resolver-reference-fixes.md`:
 
 - `VOTE_FAILURE` wants a literal `(?:stock|share)holder approval`. Modiv says
@@ -861,7 +923,7 @@ five parties at once, where a single capacity is simply the wrong shape.
 **Why.** It silently mis-attributes obligations, and mis-attribution reads as
 correct.
 
-**Change.** `PARTY_CAPACITY_LEXICON`, `candidate-resolution.js` line 1008. Two
+**Change.** `PARTY_CAPACITY_LEXICON`, `candidate-resolution.js` line 1032. Two
 traps recorded in commit `34059a2f` and both must survive the fix:
 
 - The list is scanned in order and first match wins. Modiv has a Parent OpCo
