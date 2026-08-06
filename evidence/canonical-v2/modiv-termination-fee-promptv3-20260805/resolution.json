@@ -1,0 +1,1494 @@
+{
+  "resolved": [
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "citation_context": {
+        "parent_section_reference": "8.12",
+        "child_section_reference": "8.12",
+        "parent_chapeau_quote": "Section 8.12 Definitions.\nTerm\nSection\nAcceptable Confidentiality Agreement\nAdverse Recommendation Change\n5.6",
+        "child_clause_quote": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "party": {
+        "role": "FEE_PAYER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 360030,
+        "absolute_end": 414712,
+        "concept_key": "TERMF-TARGET",
+        "party": {
+          "role": "FEE_PAYER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "5cb28d0a631059bd6141a0136f2f7f13a433bd8137d6628dc46656c7f392abdb",
+        "provision_instance_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "closure_id": "a12d477cf562e63b9dcb6a6dbca2ef9b4b1f8b660686e9d843a76ba0192cd2f5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "22725de8b9614cc60b4f3180d93f6f861558930b7f5e32c4151b1141595e0eba",
+        "claim_occurrence_id": "7aab909ec7ae69a55deae6aa3bee2ab0caead9e6a116baae4e9e246b540b0fd2",
+        "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+        "canonical_value": "10000000",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "0888cb06b07e9f3b11c08869ed5124ffd7a920b63f7e7d756baee9dfd14aa336"
+        ],
+        "attributes": {
+          "section_reference": "8.12",
+          "fee_side": "SELLER",
+          "payer_party": "the Company",
+          "fee_term_ref": "Company Base Amount",
+          "limb_amount_quote": "$10,000,000",
+          "limb_amount_disambiguated": true,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "fee_side": "SELLER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "0888cb06b07e9f3b11c08869ed5124ffd7a920b63f7e7d756baee9dfd14aa336",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2fc1c8d7a34a3d6275cf88af9504c2cdbcf87c8d54350888f3444739206a3b68",
+            "document_ordinal": 0,
+            "absolute_start": 7560,
+            "absolute_end": 7780,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "b60cfec500a8995407800c7177e3e08d976452307da45bca1cb186db15dd6e9a"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "22725de8b9614cc60b4f3180d93f6f861558930b7f5e32c4151b1141595e0eba",
+            "claim_occurrence_id": "7aab909ec7ae69a55deae6aa3bee2ab0caead9e6a116baae4e9e246b540b0fd2",
+            "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+            "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+            "canonical_value": "10000000",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "0888cb06b07e9f3b11c08869ed5124ffd7a920b63f7e7d756baee9dfd14aa336"
+            ],
+            "attributes": {
+              "section_reference": "8.12",
+              "fee_side": "SELLER",
+              "payer_party": "the Company",
+              "fee_term_ref": "Company Base Amount",
+              "limb_amount_quote": "$10,000,000",
+              "limb_amount_disambiguated": true,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "fee_side": "SELLER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "0888cb06b07e9f3b11c08869ed5124ffd7a920b63f7e7d756baee9dfd14aa336",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2fc1c8d7a34a3d6275cf88af9504c2cdbcf87c8d54350888f3444739206a3b68",
+                "document_ordinal": 0,
+                "absolute_start": 7560,
+                "absolute_end": 7780,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "b60cfec500a8995407800c7177e3e08d976452307da45bca1cb186db15dd6e9a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "FEE_AMOUNT",
+            "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+            "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+            "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+            "extraction_provenance_id": "9930ce8e99c779171828f1a22ff0bb870201f2f98899c8c0b02f105b3fc5c616"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 20,
+        "materiality_label": "FEES",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12(f)"
+        }
+      }
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "citation_context": {
+        "parent_section_reference": "8.12",
+        "child_section_reference": "8.12",
+        "parent_chapeau_quote": "Section 8.12 Definitions.\nTerm\nSection\nAcceptable Confidentiality Agreement\nAdverse Recommendation Change\n5.6",
+        "child_clause_quote": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "party": {
+        "role": "FEE_PAYER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 360030,
+        "absolute_end": 414712,
+        "concept_key": "TERMF-TARGET",
+        "party": {
+          "role": "FEE_PAYER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "5cb28d0a631059bd6141a0136f2f7f13a433bd8137d6628dc46656c7f392abdb",
+        "provision_instance_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "closure_id": "a12d477cf562e63b9dcb6a6dbca2ef9b4b1f8b660686e9d843a76ba0192cd2f5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "512ccc46be35601d23cb945b838210b1b70f8b70b2def2080e7092446ba09725",
+        "claim_occurrence_id": "90177767b3cdd8cf068abf3c4589d9e0e23a6fdae4de313957f37f84b8f91352",
+        "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+        "canonical_value": "15000000.00",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8dbd545e4f0304bf8ccf2fff70a3b6fc92506a23a57ccbe7697b98eeaee94021"
+        ],
+        "attributes": {
+          "section_reference": "8.12",
+          "fee_side": "SELLER",
+          "payer_party": "the Company",
+          "fee_term_ref": "Company Base Amount",
+          "limb_amount_quote": "$15,000,000.00",
+          "limb_amount_disambiguated": true,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "fee_side": "SELLER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8dbd545e4f0304bf8ccf2fff70a3b6fc92506a23a57ccbe7697b98eeaee94021",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2fc1c8d7a34a3d6275cf88af9504c2cdbcf87c8d54350888f3444739206a3b68",
+            "document_ordinal": 0,
+            "absolute_start": 7560,
+            "absolute_end": 7780,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "36b9c32caab0a11deed2c651e9dbb38671e7f2509db57ec4dcca292c8de17fc9"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "512ccc46be35601d23cb945b838210b1b70f8b70b2def2080e7092446ba09725",
+            "claim_occurrence_id": "90177767b3cdd8cf068abf3c4589d9e0e23a6fdae4de313957f37f84b8f91352",
+            "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+            "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+            "canonical_value": "15000000.00",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8dbd545e4f0304bf8ccf2fff70a3b6fc92506a23a57ccbe7697b98eeaee94021"
+            ],
+            "attributes": {
+              "section_reference": "8.12",
+              "fee_side": "SELLER",
+              "payer_party": "the Company",
+              "fee_term_ref": "Company Base Amount",
+              "limb_amount_quote": "$15,000,000.00",
+              "limb_amount_disambiguated": true,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "fee_side": "SELLER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8dbd545e4f0304bf8ccf2fff70a3b6fc92506a23a57ccbe7697b98eeaee94021",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2fc1c8d7a34a3d6275cf88af9504c2cdbcf87c8d54350888f3444739206a3b68",
+                "document_ordinal": 0,
+                "absolute_start": 7560,
+                "absolute_end": 7780,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "36b9c32caab0a11deed2c651e9dbb38671e7f2509db57ec4dcca292c8de17fc9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "FEE_AMOUNT",
+            "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+            "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+            "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+            "extraction_provenance_id": "9930ce8e99c779171828f1a22ff0bb870201f2f98899c8c0b02f105b3fc5c616"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 20,
+        "materiality_label": "FEES",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12(f)"
+        }
+      }
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)",
+      "citation_context": {
+        "parent_section_reference": "8.12",
+        "child_section_reference": "8.12",
+        "parent_chapeau_quote": "Section 8.12 Definitions.\nTerm\nSection\nAcceptable Confidentiality Agreement\nAdverse Recommendation Change\n5.6",
+        "child_clause_quote": "“Parent Base Amount” means $15,000,000.00."
+      },
+      "governing_context_quote": "(gg) “Parent Base Amount” means $15,000,000.00.",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-REVERSE",
+      "party": {
+        "role": "FEE_PAYER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 360030,
+        "absolute_end": 414712,
+        "concept_key": "TERMF-REVERSE",
+        "party": {
+          "role": "FEE_PAYER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "5cb28d0a631059bd6141a0136f2f7f13a433bd8137d6628dc46656c7f392abdb",
+        "provision_instance_id": "486edd137465c0c61cb02237eeb474f184a63ddc0e47be511e3a3e2b235b3d63",
+        "closure_id": "f2d1048855ccab41e4be490f5252b62865c78a5f2ddcd3bb3065a2abcd41bb35"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "9a7a21a105fb30b1c2255757fdd5926b6df6fc43c5c4f3899be0e0230ac3d800",
+        "claim_occurrence_id": "debb026c58f67297d8a8c00d7d40659f5994cb4fb0e48c12854b94311c57a6e7",
+        "subject_occurrence_id": "486edd137465c0c61cb02237eeb474f184a63ddc0e47be511e3a3e2b235b3d63",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "“Parent Base Amount” means $15,000,000.00.",
+        "canonical_value": "15000000.00",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7ed975f7892dab421498e419f2551d86b9703940a841896341a8374fb3824bd8"
+        ],
+        "attributes": {
+          "section_reference": "8.12",
+          "fee_side": "BUYER",
+          "payer_party": "Parent",
+          "fee_term_ref": "Parent Base Amount",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "fee_side": "BUYER"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7ed975f7892dab421498e419f2551d86b9703940a841896341a8374fb3824bd8",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "107af2d6f4f1f3e7ccb57a4cfb322a5ff8560cd948bd5f7ca5c12c16c5f245ce",
+            "document_ordinal": 0,
+            "absolute_start": 26519,
+            "absolute_end": 26565,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "dc84a1bbd8a01090dbf1e7b66d56f9126d2ac98fea3f538d2a5ce68c17623e58"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "9a7a21a105fb30b1c2255757fdd5926b6df6fc43c5c4f3899be0e0230ac3d800",
+            "claim_occurrence_id": "debb026c58f67297d8a8c00d7d40659f5994cb4fb0e48c12854b94311c57a6e7",
+            "subject_occurrence_id": "486edd137465c0c61cb02237eeb474f184a63ddc0e47be511e3a3e2b235b3d63",
+            "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "“Parent Base Amount” means $15,000,000.00.",
+            "canonical_value": "15000000.00",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7ed975f7892dab421498e419f2551d86b9703940a841896341a8374fb3824bd8"
+            ],
+            "attributes": {
+              "section_reference": "8.12",
+              "fee_side": "BUYER",
+              "payer_party": "Parent",
+              "fee_term_ref": "Parent Base Amount",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "fee_side": "BUYER"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7ed975f7892dab421498e419f2551d86b9703940a841896341a8374fb3824bd8",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "107af2d6f4f1f3e7ccb57a4cfb322a5ff8560cd948bd5f7ca5c12c16c5f245ce",
+                "document_ordinal": 0,
+                "absolute_start": 26519,
+                "absolute_end": 26565,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "dc84a1bbd8a01090dbf1e7b66d56f9126d2ac98fea3f538d2a5ce68c17623e58"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "FEE_AMOUNT",
+            "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+            "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+            "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+            "extraction_provenance_id": "9930ce8e99c779171828f1a22ff0bb870201f2f98899c8c0b02f105b3fc5c616"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 20,
+        "materiality_label": "FEES",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "8.12",
+          "normalized_citation": "8.12",
+          "derived_citation": "8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(c)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a6839fa87f3b180dac87620fc64f715afb02434c7165f8e55c2f376b5f31906f",
+      "closure_id": "4909e692daf6098b83fbb8ca4c68c3fd2213457e56da14e7feb1f5ed4d24b050",
+      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-REVERSE",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by the Company pursuant to Section 7.1(c)(ii) or Section 7.1(c)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d45318117dde097c08a1b79eef0c42fddaeb8492d687d31fddd0ada9016c5452",
+      "closure_id": "0ffbf6373050b7818ab1551cc6590f9fa82933ad7d3ee62af9707ca48367ca6e",
+      "normalised_phrase": "by the Company pursuant to Section 7.1(c)(ii) or Section 7.1(c)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-REVERSE"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(ii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "95212708be7cb11c75d49f2b7af784147b674d7641b42ba8702adb7a0e399d4d",
+      "closure_id": "248fe7404de9feb803766b35fb5b38a2f0646f7bb914b5a11325f559a668e114",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(ii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(v)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "97b9d635deba0c67c691699755b50d9ba5da83d799ff7c977c2c0b5f83a987c8",
+      "closure_id": "445488fbb23ca8b040896fd9115ce9fa266fe1e099a3ea66a310f05185888e5b",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by the Company pursuant to Section 7.1(c)(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "de26d6668519f9eaa286335cd28afe228108a3f58293a2955b13693edf053ed0",
+      "closure_id": "7a8c193a852be29c5c1fb7f76b9848541b7b6af45aabc36b74133958360d1f13",
+      "normalised_phrase": "by the Company pursuant to Section 7.1(c)(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(iv)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "283f3ddf4b8d32ec7ebd0bc64da1f711f2de619e4be238251c6d60fa8b2eca05",
+      "closure_id": "8bf476c2be80c2404dcf1bdb6d0d691e3daf1e8b3cff4c5dc190521b1e662416",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "512ccc46be35601d23cb945b838210b1b70f8b70b2def2080e7092446ba09725",
+      "closure_id": "36b9c32caab0a11deed2c651e9dbb38671e7f2509db57ec4dcca292c8de17fc9",
+      "normalised_phrase": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "22725de8b9614cc60b4f3180d93f6f861558930b7f5e32c4151b1141595e0eba",
+      "closure_id": "b60cfec500a8995407800c7177e3e08d976452307da45bca1cb186db15dd6e9a",
+      "normalised_phrase": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-REVERSE",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9a7a21a105fb30b1c2255757fdd5926b6df6fc43c5c4f3899be0e0230ac3d800",
+      "closure_id": "dc84a1bbd8a01090dbf1e7b66d56f9126d2ac98fea3f538d2a5ce68c17623e58",
+      "normalised_phrase": "“Parent Base Amount” means $15,000,000.00.",
+      "attachment_position": null,
+      "concept_family": "TERMF-REVERSE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "36790eb9656a5940c494c206d1190b5b3237c4b02169e6670835c8cf224cca31",
+      "closure_id": "9f15bce3f28d3abb11dc8c982a0bd0f67d69c9fbe8c6dcec5879d96b4b988325",
+      "normalised_phrase": "if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "869673667cf265e154613af67f576a8d232279b0a1c7ce5988f4326c408c2d5a",
+      "closure_id": "ed476cb16c23b96f5b20579d06c69c1cfe33745054613126e70775ab0ed375da",
+      "normalised_phrase": "if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company shall have previously paid or substantially concurrently pays (or causes to be paid) the Company Termination Fee in accordance with Section 7.3(b) (and such termination shall not be effective until the Company has paid such Company Termination Fee in accordance with Section 7.3(b))",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States that termination under this clause is not effective until the Company Termination Fee is paid, a payment-timing condition-precedent mechanism rather than a fee amount, a trigger ground, a tail period, or any of the five WAVE_B surfaces",
+        "nearest_concept": "TAIL_FEE_STRUCTURE arming_event or SOLE_REMEDY payment_context, but neither fits precisely"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ed86e33721e63fd0525aab34f6f5d4622ef1552d5a9911debde953d8a5aedf22",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f35a8da3b0611dbbfcc4457e0006a14cbecc893536ec942267417db0c144edd6",
+          "document_ordinal": 0,
+          "absolute_start": 2541,
+          "absolute_end": 2835,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a7b8e1546de4c13b48bfe0d9012d0b49040d9531ffe5ef230539b85d95de680b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "09144bf648fc13a022f3de26ed914d3194a3d0325486a6d91c406ab5427dd521",
+        "producer_receipt_id": "7340f169b6b4fa25688b3e1e6c594eec6f7617f91622e8ab7cb024cead294565",
+        "governed_scope_digest": "8a1c7c4383a6f2c8720f0391aa2191945d089a17c57ac8481cbc322cb164f6a8",
+        "extraction_provenance_id": "2c49a2df52b2a8eb879e6798edd8f736b9dfee38fa26a4d8d8bb77b9bc24595f"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(iii) (A) (1) by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date of this Agreement or (2) by the Company or Parent pursuant to Section 7.1(b)(iii) and a Person shall have publicly proposed or publicly announced, after the date hereof and prior to the Company Common Stockholders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal and (B) within twelve (12) months after a termination referred to in this Section 7.3(b)(iii) the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal (with, for purposes of this clause (B), the references to “15%” in the definition of “Company Acquisition Proposal” being deemed to be references to “50%”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "TAIL_FEE_STRUCTURE: If the Agreement is terminated pursuant to Section 7.1(b)(ii) after a Company Acquisition Proposal was received, and within 12 months of that termination the Company signs a definitive agreement for, or consummates, any Company Acquisition Proposal (with the 15% threshold in that definition deemed raised to 50%), the Company Termination Fee is payable.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "TAIL_FEE_STRUCTURE",
+          "section_reference": "7.3",
+          "period_quote": "twelve (12) months",
+          "arming_event_quote": "by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date of this Agreement",
+          "qualifying_transaction_quote": "the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal",
+          "threshold_quote": "the references to “15%” in the definition of “Company Acquisition Proposal” being deemed to be references to “50%”",
+          "same_proposal_requirement_quote": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "336a39b6e13f491df86d03095a1d5e04bf14e0e43f3fe29098f0ff25945e419b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "93a3860112c291e1f46c3c969d6a891c5f13b89e95ead3b1405cac5adbe7bdc7",
+          "document_ordinal": 0,
+          "absolute_start": 412,
+          "absolute_end": 1272,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0eb73a7926356ca592ba9ffa3033d7e3c2af1c386a086796a29750459340e28f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(iii) (A) (1) by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date of this Agreement or (2) by the Company or Parent pursuant to Section 7.1(b)(iii) and a Person shall have publicly proposed or publicly announced, after the date hereof and prior to the Company Common Stockholders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal and (B) within twelve (12) months after a termination referred to in this Section 7.3(b)(iii) the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal (with, for purposes of this clause (B), the references to “15%” in the definition of “Company Acquisition Proposal” being deemed to be references to “50%”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "TAIL_FEE_STRUCTURE: If the Agreement is terminated pursuant to Section 7.1(b)(iii) after a Person publicly proposed or announced an intention to make a Company Acquisition Proposal, and within 12 months of that termination the Company signs a definitive agreement for, or consummates, any Company Acquisition Proposal (with the 15% threshold in that definition deemed raised to 50%), the Company Termination Fee is payable.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "TAIL_FEE_STRUCTURE",
+          "section_reference": "7.3",
+          "period_quote": "twelve (12) months",
+          "arming_event_quote": "by the Company or Parent pursuant to Section 7.1(b)(iii) and a Person shall have publicly proposed or publicly announced, after the date hereof and prior to the Company Common Stockholders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal",
+          "qualifying_transaction_quote": "the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal",
+          "threshold_quote": "the references to “15%” in the definition of “Company Acquisition Proposal” being deemed to be references to “50%”",
+          "same_proposal_requirement_quote": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b5c95b226e11005bbb5b73c159bd5aaf7c39507a27a17b74931b4558ea393982",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "93a3860112c291e1f46c3c969d6a891c5f13b89e95ead3b1405cac5adbe7bdc7",
+          "document_ordinal": 0,
+          "absolute_start": 412,
+          "absolute_end": 1272,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5c43b9360772d7d28b5d42f40ea80304c5c5a36b70f0ba624b8d3205a4eb5db2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If Parent or the Company receives the full payment of the applicable Company Termination Fee or the Parent Termination Fee (as applicable), together with any applicable Enforcement Costs and, in the case of the Company, any applicable amounts pursuant to the indemnification, payment and reimbursement provisions contained in the last sentence of, and the proviso contained in the second sentence of, Section 5.11, from (or on behalf of) the Company or Parent (as applicable), the receipt by Parent of the applicable Company Termination Fee and any applicable Enforcement Costs or by the Company of the Parent Termination Fee, any applicable Enforcement Costs and any applicable amounts pursuant to the indemnification, payment and reimbursement provisions contained in the last sentence of, and the proviso contained in the second sentence of, Section 5.11 shall be the sole and exclusive remedy (other than in the event of fraud or Willful and Intentional Breach, which shall be subject to the proviso in clause (c) of Section 7.2) for any and all losses, liabilities, costs, expenses or damages suffered by Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, on the one hand, or by the Company and the Partnership, on the other hand (or any of their respective affiliates or Representatives) in connection with this Agreement (and the breach or termination hereof), the Mergers and the other Transactions (and the failure to consummate or abandonment thereof), any claims or actions under applicable Law arising out of any such breach, termination, failure or abandonment or any matter forming the basis therefor.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "SOLE_REMEDY_EVIDENCE: Receipt of the full applicable termination fee (plus Enforcement Costs and, for the Company, certain Section 5.11 amounts) is the sole and exclusive remedy for losses arising from the Agreement, its breach or termination, and the failed Transactions, except in cases of fraud or Willful and Intentional Breach.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "SOLE_REMEDY_EVIDENCE",
+          "section_reference": "7.3",
+          "owner_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "payment_context_quote": "receives the full payment of the applicable Company Termination Fee or the Parent Termination Fee (as applicable)",
+          "remedy_effect_quote": "shall be the sole and exclusive remedy",
+          "carve_outs": [
+            {
+              "kind": "FRAUD",
+              "quote": "fraud"
+            },
+            {
+              "kind": "WILLFUL_BREACH",
+              "quote": "Willful and Intentional Breach"
+            }
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "081eadcc0f765cb2ac43c456c0b9ba18c07474b47cfc33e4fe1fb5056459b632",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8bed7d4dde0762a22bd605b561a587c9d4a297ec3a37323aff894a15dc333735",
+          "document_ordinal": 0,
+          "absolute_start": 3393,
+          "absolute_end": 5015,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a28c3a7313252e1b7f0cfcf6ce8c464d9343c9bdeab9ceb0447e38b7f182acc8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that the Company or Parent fails to timely pay the other the Company Termination Fee or Parent Termination Fee (as applicable) when due pursuant to Section 7.3(b) and Section 7.3(c) (as applicable) and Parent or the Company (as applicable) is required to commence a litigation to seek all or a portion of the amounts payable under this Section 7.3, and it prevails in such litigation, it shall be entitled to receive, in addition to all amounts that it is otherwise entitled to receive under this Section 7.3, all reasonable, documented and out-of-pocket expenses (including documented and reasonable out-of-pocket attorneys’ fees of one outside counsel) which it has incurred in enforcing its rights hereunder, together with interest on the amount of the applicable Company Termination Fee or Parent Termination Fee (as applicable) from the date payment such amount was due to the date of actual payment at the prime lending rate as published in The Wall Street Journal, in effect on the date such payment was required to be made (“Enforcement Costs”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LATE_PAYMENT_INTEREST: A party that fails to timely pay its termination fee, and is sued to recover it, owes the prevailing payee interest on the unpaid fee plus reasonable out-of-pocket enforcement expenses (including one outside counsel's fees), together defined as \"Enforcement Costs\".",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "LATE_PAYMENT_INTEREST",
+          "section_reference": "7.3",
+          "interest_present": true,
+          "benchmark_quote": "the prime lending rate as published in The Wall Street Journal",
+          "due_date_reference_quote": "from the date payment such amount was due to the date of actual payment"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "35d2d3cd06fa62524d4409a892b80b3ce396ff0b47a33c199ea11f5e403c4177",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "345d60c65ed7b0a16fd5a12d073c6e4f7e15b0ca75aafe83eaaa32ee2b2515f0",
+          "document_ordinal": 0,
+          "absolute_start": 5219,
+          "absolute_end": 6291,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4c0c8a6dee8f99af080663b0c716e8e663701cea7b620bd2c7b754e65f6053d2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In no event shall Parent or the Company be entitled to receive both specific performance to cause the Closing to occur and payment of a Company Termination Fee or Parent Termination Fee (as applicable).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a bar on combining specific performance with termination-fee payment; it is adjacent to the sole-remedy mechanism but is a distinct election-of-remedies rule, not the fee-as-sole-remedy statement itself.",
+        "nearest_concept": "SOLE_REMEDY"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "53abf5520cd4c434531e5adecfd8c3a80ab8de484b28ba2061f1cc8bda8368f3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "642417ad68a579eba2b79f71d6f7dc86a713e1bc00b7da109d24fb43bdd72d9d",
+          "document_ordinal": 0,
+          "absolute_start": 5016,
+          "absolute_end": 5218,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d4acab3dda2742668051b238f6c4e3fac65b86b532db4584425ae53ceafed835",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The parties agree that in no event shall the Company be required to pay the Company Termination Fee or Parent be required to pay the Parent Termination Fee (as applicable) on more than one occasion.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a cap limiting the fee to a single payment across all triggering circumstances; no controlled surface captures a payment-frequency cap.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "82b8b6c464487f8bc691d327ed55144b8f83de5f4261005cd9a165f050b9b02e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4ed11d19d0f623de7458287e622754d5f99a604f51eba561701150613ed475ab",
+          "document_ordinal": 0,
+          "absolute_start": 6292,
+          "absolute_end": 6490,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7b64fb2ba6334b82919566a37bec3cad30472e9a2cdb3a528a7b466e237ddcd5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17b630a49c3104f599f60e20f52f1448f7f0d74b8eb08da40f73570478a933c0",
+        "producer_receipt_id": "a95755e489c5d65a235a79e64a3210007c93e62bef745d342f3afd6b24f2bfb6",
+        "governed_scope_digest": "b55e9d5c4e2ab1dd417a9bc35f8d8c280ba847db40da3c25dc387a9c901262f7",
+        "extraction_provenance_id": "8573e5548495f991498f9e21d49192b193c107d4d21ab4a04339c63c648cdbb0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "“Company Termination Fee” means an amount equal to the lesser of (i) the Company Base Amount and (ii) the maximum amount, if any, that can be paid to Parent without causing Parent to fail to meet the requirements of Sections 856(c)(2) and (3) of the Code (the “REIT Requirements”) for such year determined as if the payment of such amount did not constitute Qualifying Income, as determined by independent accountants engaged by Parent (taking into account any known or anticipated income of Parent which is not Qualifying Income and any appropriate “cushion” as determined by such independent accountants). Notwithstanding the foregoing, in the event Parent receives Tax Guidance, the Company Termination Fee shall be an amount equal to the applicable Company Base Amount and the Company shall, upon receiving notice that Parent has received the Tax Guidance, pay to Parent the unpaid Company Base Amount within five (5) Business Days.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Defines the actually-payable Company Termination Fee as the lesser of the Company Base Amount and a variable REIT-income-test cap, restored to the full Base Amount once Parent obtains Tax Guidance -- a conditional/variable figure, not a stated dollar sum",
+        "nearest_concept": "fee_amount_assertions"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7ff6c4206de98c42e0e07cef981e04bb890b355157d040992739b1df047300af",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d97b01fee0483ca5200f6a8f422d5562493176d7f918283afbb9d4a116da171e",
+          "document_ordinal": 0,
+          "absolute_start": 15092,
+          "absolute_end": 16040,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e52d8334755a58147fdf4bb2dbcddd96393d87252353f3f621dfa0b674fd713f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that Parent is not able to receive the full applicable Company Base Amount due to the above limitations, the Company shall place the unpaid amount in escrow by wire transfer within three (3) days of the date when the Company Termination Fee would otherwise be due but for the above limitations and shall not release any portion thereof to Parent unless and until Parent receives either one or a combination of the following once or more often: (x) a letter from Parent’s independent accountants indicating the maximum amount that can be paid at that time to Parent without causing Parent to fail to meet the REIT Requirements (calculated as described above), in which event the Company shall pay to Parent the lesser of the unpaid Company Base Amount or the maximum amount stated in the letter within five (5) Business Days after the Company has been notified thereof, or (y) a letter from Parent’s counsel indicating that Parent has received the Tax Guidance, in which event the Company shall pay to Parent the unpaid Company Base Amount within five (5) Business Days after the Company has been notified thereof.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Describes an escrow-and-release mechanism for the unpaid portion of the Company Termination Fee pending REIT-compliance confirmation; not a sole-remedy, expense-reimbursement, late-payment-interest or tail-fee-structure surface, and not itself a fixed amount or trigger",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "af3c203be234f35e0dae0bda173ac683c01f1c9def0a50ff9151306457dc5f65",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fd6fade5ce0e24c06a23dbd369cb0435cfb8f8cab1e2a783b3f6be447b598c83",
+          "document_ordinal": 0,
+          "absolute_start": 16041,
+          "absolute_end": 17171,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8cacc9fcb5641595ba3f62f0fe3864603dc70bcc7e89e6545c6146239071e8cf",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The obligation of the Company to pay any unpaid portion of the Company Termination Fee shall terminate on the December 31 following the date which is five (5) years from the date the Company Termination Fee first becomes payable under Section 7.3(b). Amounts remaining in escrow after the obligation of the Company to pay the Company Termination Fee terminates shall be released to the Company.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a sunset date after which the Company's obligation to pay any unpaid escrowed portion of the fee lapses and escrowed funds revert to the Company; resembles a tail period but caps the payer's payment duration rather than arming a post-termination fee obligation",
+        "nearest_concept": "tail_period_assertions"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "519725dd91dea8a9175a64995a9183af084cfc6f9ca454abbcebfe6425e547e7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "221d73fda383f3e7c2feb4d8d2876431a6435a9ab5dfcd379ff4e33282b027ff",
+          "document_ordinal": 0,
+          "absolute_start": 17172,
+          "absolute_end": 17566,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "767d928456e884627858c0bb3788bb795d318fd19d3c19f0bed515e09a0c3d08",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "“Parent Termination Fee” means an amount equal to the lesser of (i) the Parent Base Amount and (ii) the maximum amount, if any, that can be paid to the Company without causing the Company to fail to meet the REIT Requirements for such year determined as if the payment of such amount did not constitute Qualifying Income, as determined by independent accountants engaged by the Company (taking into account any known or anticipated income of the Company which is not Qualifying Income and any appropriate “cushion” as determined by such independent accountants). Notwithstanding the foregoing, in the event the Company receives Tax Guidance, the Parent Termination Fee shall be an amount equal to the Parent Base Amount and Parent shall, upon receiving notice that the Company has received the Tax Guidance, pay to the Company the unpaid Parent Base Amount within five (5) Business Days.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Defines the actually-payable Parent Termination Fee as the lesser of the Parent Base Amount and a variable REIT-income-test cap, restored to the full Base Amount once the Company obtains Tax Guidance -- a conditional/variable figure, not a stated dollar sum",
+        "nearest_concept": "fee_amount_assertions"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e898d0e3d9f4516fe9697d73bc19a25da732d12e17ad0bf5dd2f6f1c85d241cf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "97a5b5ed6314a04411b1c8c8ad12dd12636797e892ef2b15142f95836ffc424e",
+          "document_ordinal": 0,
+          "absolute_start": 39685,
+          "absolute_end": 40580,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "08dcf3650082017bb3349678a846f25c56070193786395115d16607584df694f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that the Company is not able to receive the full Parent Base Amount due to the above limitations, Parent shall place the unpaid amount in escrow by wire transfer within three (3) days of the date when the Parent Termination Fee would otherwise be due but for the above limitations and shall not release any portion thereof to the Company unless and until the Company receives either one or a combination of the following once or more often: (x) a letter from the Company’s independent accountants indicating the maximum amount that can be paid at that time to the Company without causing the Company to fail to meet the REIT Requirements (calculated as described above), in which event Parent shall pay to the Company the lesser of the unpaid Parent Base Amount or the maximum amount stated in the letter within five (5) Business Days after Parent has been notified thereof, or (y) a letter from the Company’s counsel indicating that the Company has received the Tax Guidance, in which event Parent shall pay to the Company the unpaid Parent Base Amount within five (5) Business Days after Parent has been notified thereof.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Describes an escrow-and-release mechanism for the unpaid portion of the Parent Termination Fee pending REIT-compliance confirmation; not a sole-remedy, expense-reimbursement, late-payment-interest or tail-fee-structure surface, and not itself a fixed amount or trigger",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e00bdbc64d62e914734049a4dd134521fded49d090023874be7e1d56baa0d872",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7a8662757aed359c1f3440392565c4c8a999393e4fa9c777e9fedd67f1817142",
+          "document_ordinal": 0,
+          "absolute_start": 40581,
+          "absolute_end": 41721,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b65dafe53400ecbfd25529c317ac15ab5652879d0ae1d8b174822731e7eaf26e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The obligation of Parent to pay any unpaid portion of the Parent Termination Fee shall terminate on the December 31 following the date which is five (5) years from the date the Parent Termination Fee first becomes payable under Section 7.3(c). Amounts remaining in escrow after the obligation of Parent to pay the Parent Termination Fee terminates shall be released to Parent.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a sunset date after which Parent's obligation to pay any unpaid escrowed portion of the fee lapses and escrowed funds revert to Parent; resembles a tail period but caps the payer's payment duration rather than arming a post-termination fee obligation",
+        "nearest_concept": "tail_period_assertions"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8f557e7d8c04f24b94d1e51d09466d6f885674a9cb983fadfd801d7652739e35",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2178c5302f5ba81bfbd43e300736ac518ca9730b014f4cfc3d14b6ece6427b8f",
+          "document_ordinal": 0,
+          "absolute_start": 41722,
+          "absolute_end": 42098,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "adcee286f1a8b9d2d650b7b0df794a2636b3089e2e13472b3a6475bc064f4923",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ae83f1af24053ca2188d87a8a5d05b619127a210f3fe975b75fdd12d9c4e5b1a",
+        "producer_receipt_id": "86f7c31f3aa05bf8d463c2440e2ec43312b394fbd8131d93a2df91f938d78b89",
+        "governed_scope_digest": "a053399f68aaeb58abcbc929dd06bc0aedcc10bb26a77101b96ebc1dfe1b6995",
+        "extraction_provenance_id": "1ada945aa746c8c66d486be53d9e8e6eef2a95f6bb5d87e8c7356974e8d13712"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "fa6267e7769eca696a1c9d3d1d9ada55e9d1676c5f2c4f0c564976a26d137721",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "85ee29f08d8bbd8553122f54298f63a8823689cb64c37c435a2730df49cdd0b0",
+    "counts": {
+      "compiled_candidates": 24,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 11,
+      "open_world": 13,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "a720a13c8b4bb42c27adbeb09b8a32669967140f4b78e293df6f2ba58a53d21f"
+  }
+}

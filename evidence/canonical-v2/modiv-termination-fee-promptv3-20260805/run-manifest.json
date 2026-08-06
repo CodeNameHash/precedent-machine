@@ -1,0 +1,40 @@
+{
+  "schema_version": "MODIV_TERMFEE_SCOPE_FIX_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "purpose": "Scope-corrected re-run of TERMINATION_FEE family for Modiv/Global Net Lease: 7.1 + 7.3 + 8.12 pinned together (prior run pinned 7.3 only).",
+  "prior_run_compared_against": {
+    "file": "evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json",
+    "work_item_id": "modiv-termination-fee-7-3"
+  },
+  "section_references": [
+    "7.1",
+    "7.3",
+    "8.12"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "7.1",
+      "family_id": "TERMINATION_FEE"
+    },
+    {
+      "section_reference": "7.3",
+      "family_id": "TERMINATION_FEE"
+    },
+    {
+      "section_reference": "8.12",
+      "family_id": "TERMINATION_FEE"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "termination_fee_prompt_version": 3,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "max_retries": 0,
+  "run_started_at": "2026-08-06T01:58:50.621Z",
+  "total_elapsed_ms": 412839,
+  "extraction_wall_clock_ms": 410684,
+  "model_call_count": 3,
+  "run_receipt_id": "fa6267e7769eca696a1c9d3d1d9ada55e9d1676c5f2c4f0c564976a26d137721",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}
