@@ -62,6 +62,34 @@
  * measured state, not a shortfall of this test: it would be wrong for this file
  * to assert Part 7's "mixed outcome" prediction, because that outcome belongs to
  * a feature that has not been built yet.
+ *
+ * UPDATE 2026-08-05 (docs/codex-program/notes/fee-side-scope-fix.md).
+ * P1-PLAN.md Part 2.3/RES1 names Section 7.1(c)(i)'s Superior Proposal ground
+ * as a residual this file's counts previously left unresolved on purpose:
+ * `feeSideFromFullPaymentContext` scanned only a candidate's own dispatched
+ * section, and 7.1(c)(i) names no citation and no defined fee term at all, so
+ * its only possible corroboration (the wire-transfer sentence) sits in 7.3,
+ * outside its own section. That gap is now closed: `handleFeeTriggerCandidate`
+ * falls back to a section-family-scoped scan (every OTHER section dispatched
+ * under the same `section_family` in this run) once the same-section scan has
+ * already come back empty. The counts below were RE-MEASURED against this
+ * exact fixture after that fix landed, not adjusted to keep the file passing:
+ * resolved claims went 3 -> 4 (the Superior Proposal trigger, SELLER,
+ * SUPERIOR_PROPOSAL_TERMINATION), and five near-duplicate 8.12 trigger
+ * fragments moved from `FEE_SIDE_UNCORROBORATED` to the more precise
+ * `TRIGGER_UNCORROBORATED` (their fee side now also resolves via the same
+ * widened scan, but none of the five carries any trigger-ground language of
+ * its own, so none of them resolves) -- review_queue's total stays 16, only
+ * its composition shifts. This is unrelated to, and does not touch, either
+ * trap described above: citation-following for TRIGGER codes still has not
+ * landed, and the five bare "by Parent pursuant to Section 7.1(d)(ii))"-shaped
+ * 7.3 triggers plus the sixth "Stockholders' Meeting" one are untouched by
+ * this fix (their OWN section, 7.3, already states both sides' payment
+ * sentences side by side, so their fee side already corroborated from their
+ * own section before this fix existed). See the dedicated resolution test
+ * below for the new claim's full shape, including the
+ * `fee_side_corroboration_scope` marker that distinguishes this section-
+ * family corroboration from an ordinary same-section one.
  */
 
 const test = require('node:test');
@@ -344,15 +372,35 @@ test('extraction receipt: compiled-candidate and residual counts match the origi
 // against the identical fixture, measured today.
 // ─────────────────────────────────────────────────────────────────────────
 
-test('resolution: exactly 3 claims resolve -- the tail period and both fee amounts, never a trigger', async () => {
+test('resolution: exactly 4 claims resolve -- the tail period, both fee amounts, and (fee-side-scope-fix.md) the Section 7.1(c)(i) Superior Proposal trigger', async () => {
   const { resolution } = await runReplay();
 
-  assert.equal(resolution.resolved.length, 3);
+  assert.equal(resolution.resolved.length, 4);
+  const triggerClaims = resolution.resolved.filter((e) => e.generic_claim_key === 'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE');
   assert.equal(
-    resolution.resolved.filter((e) => e.generic_claim_key === 'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE').length,
-    0,
-    'no trigger claim may resolve against this fixture -- the pre-fix code resolved exactly one '
-    + '(STOCKHOLDER_APPROVAL_FAILURE_TERMINATION, the published-wrong-answer bug), and this is the regression pin for its absence',
+    triggerClaims.length, 1,
+    'exactly one trigger claim may resolve against this fixture. The pre-fix code resolved a DIFFERENT trigger '
+    + 'claim here (STOCKHOLDER_APPROVAL_FAILURE_TERMINATION on the 7.3(b)(iii) topping-fee quote, the '
+    + 'published-wrong-answer bug fixed separately, see docs/codex-program/notes/trigger-override-fix.md and its '
+    + 'own regression pin in tests/canonical-v2-termination-fee-resolution.test.js). This assertion is the joint '
+    + 'regression pin for both fixes at once: that bug must stay fixed (still not 2 resolved triggers), and the '
+    + 'fee-side-scope fix below must land (1, not 0).',
+  );
+  assert.equal(triggerClaims[0].source_citation, '7.1(c)(i)');
+  assert.equal(triggerClaims[0].claim.canonical_value, 'SUPERIOR_PROPOSAL_TERMINATION');
+  assert.equal(triggerClaims[0].concept_key, 'TERMF-TARGET');
+  assert.equal(triggerClaims[0].claim.attributes.fee_side, 'SELLER');
+  assert.equal(
+    triggerClaims[0].claim.attributes.fee_side_corroboration_scope, 'SECTION_FAMILY',
+    'docs/codex-program/notes/fee-side-scope-fix.md: this claim resolves ONLY via the widened, section-family '
+    + 'fallback -- its own section (7.1) carries no payment-direction language of its own -- so the marker must '
+    + 'be present, letting a reviewer tell this apart from an ordinary same-section corroboration',
+  );
+  assert.equal(triggerClaims[0].claim.attributes.fee_side_corroboration_section_reference, '7.3');
+  assert.equal(
+    triggerClaims[0].claim.attributes.fee_side_corroboration_quote,
+    'the Company shall pay (or cause to be paid) as directed by Parent the Company Termination Fee by wire '
+    + 'transfer of same day funds to an account designated by Parent.',
   );
 
   const tailClaim = resolution.resolved.find((e) => e.generic_claim_key === 'NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE');
@@ -394,39 +442,64 @@ test('resolution: review_queue is 16 items, with the exact reason-code x concept
 
   const tally = tallyReviewQueueByClaimConceptAndReasons(resolution.review_queue);
   assert.deepEqual(tally, {
-    // Six FEE_SIDE_UNCORROBORATED trigger candidates: the five bare
-    // "Section 7.3(b)(x)" cross-reference fragments from 8.12, PLUS Section
-    // 7.1(c)(i)'s Superior Proposal ground (P1-PLAN.md Part 2.3's
-    // "fourteenth" residual, confirmed here by its own source_citation:
-    // "7.1(c)(i)"). All six share the same underlying cause:
-    // feeSideFromFullPaymentContext scans only the candidate's own
-    // dispatched section, and none of these six quotes carries
-    // payment-direction language of its own.
-    'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-PENDING|["FEE_SIDE_UNCORROBORATED"]': 6,
-    // Mirrors of the 3 resolved claims: review_queue carries every resolved
+    // BEFORE fee-side-scope-fix.md landed, this bucket read
+    // 'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-PENDING|["FEE_SIDE_UNCORROBORATED"]': 6
+    // -- the five bare "Section 7.3(b)(x)" cross-reference fragments from
+    // 8.12, PLUS Section 7.1(c)(i)'s Superior Proposal ground (P1-PLAN.md
+    // Part 2.3's "fourteenth" residual). All six shared the same underlying
+    // cause: feeSideFromFullPaymentContext scanned only the candidate's own
+    // dispatched section, and none of these six quotes carries payment-
+    // direction language of its own. The fix widens that scan to the
+    // candidate's whole section_family (7.1, 7.3 and 8.12 here, all
+    // TERMINATION_FEE), which now resolves all six candidates' FEE SIDE
+    // (SELLER, corroborated from 7.3's own payment sentence) -- but only
+    // ONE of the six (the Superior Proposal ground) also clears the
+    // SEPARATE, unrelated trigger-code gate; see its 1-item resolved mirror
+    // below. The other five carry no trigger-ground language at all (a
+    // bare citation fragment) and now correctly land here instead, in
+    // TRIGGER_UNCORROBORATED -- a MORE precise rejection reason than
+    // before (their real defect was always "no trigger ground stated", not
+    // "no fee-side evidence"), not a resolution: 4 pre-existing + 5 moved
+    // from the FEE_SIDE_UNCORROBORATED bucket above = 9.
+    'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-TARGET|["TRIGGER_UNCORROBORATED"]': 9,
+    // Mirrors of the 4 resolved claims: review_queue carries every resolved
     // claim too (has_resolution: true, reasons: []), not just rejections --
-    // see the header comment's own note on this shape.
+    // see the header comment's own note on this shape. The trigger mirror
+    // is new (Section 7.1(c)(i)'s Superior Proposal ground); see the
+    // dedicated resolution test above for its full shape, including the
+    // fee_side_corroboration_scope marker.
     'NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE|TERMF-TAIL|[]': 1,
     'NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE|TERMF-REVERSE|[]': 1,
     'NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE|TERMF-TARGET|[]': 1,
-    // The five genuinely bare "by Parent pursuant to Section 7.1(d)(ii)"-shaped
-    // quotes from 7.3: zero trigger-code patterns match their own text at all
-    // (citation-following, which would look up 7.1's own text, has not landed
-    // -- see the header comment's second trap note). Split TERMF-TARGET/
-    // TERMF-REVERSE by the fee_side the model asserted on each.
-    'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-TARGET|["TRIGGER_UNCORROBORATED"]': 4,
+    'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-TARGET|[]': 1,
+    // Unaffected by the fee-side-scope fix: these five genuinely bare "by
+    // Parent pursuant to Section 7.1(d)(ii)"-shaped quotes from 7.3 already
+    // corroborated their fee side directly from their OWN dispatched
+    // section (7.3 itself states both parties' complete payment sentences
+    // side by side, so the pre-existing, unchanged feeSideFromFullPayment
+    // Context already found each one's claimed side there) before this fix
+    // existed. Zero trigger-code patterns match their own text at all
+    // (citation-following, which would look up 7.1's own text, has not
+    // landed -- see the header comment's second trap note). Split TERMF-
+    // TARGET/TERMF-REVERSE by the fee_side the model asserted on each.
     'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-REVERSE|["TRIGGER_UNCORROBORATED"]': 1,
     // The sixth 7.3 trigger quote (the compound "Stockholders' Meeting" one):
     // model asserted trigger_code: null, exactly one pattern matches
     // incidentally -- this is the live bug docs/codex-program/notes/
     // trigger-override-fix.md fixed. Must route to review, never resolve.
+    // Unaffected by the fee-side-scope fix, for the same reason as the five
+    // above (its own section, 7.3, already corroborated its fee side).
     'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE|TERMF-TARGET|["TRIGGER_NOT_ASSERTED"]': 1,
     // The 8.12 (y)-limb amount ($15,000,000.00 "if payable pursuant to
-    // Section 7.3(b)(iv) or Section 7.3(b)(v)"): now correctly corroborates
-    // SELLER via the new fee_term_ref fallback (concept TERMF-TARGET, not
+    // Section 7.3(b)(iv) or Section 7.3(b)(v)"): correctly corroborates
+    // SELLER via the fee_term_ref fallback (concept TERMF-TARGET, not
     // TERMF-PENDING), then honestly fails the separate, unchanged
     // claim.raw_value.includes(feeTermRef) gate, because "Company Base
     // Amount" never appears in this limb's own quote, only its sibling's.
+    // Unaffected by the fee-side-scope fix: this is an AMOUNT candidate
+    // (handleFeeAmountCandidate), which never calls the widened
+    // section-family scan -- only handleFeeTriggerCandidate does (see
+    // docs/codex-program/notes/fee-side-scope-fix.md).
     'NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE|TERMF-TARGET|["FEE_TERM_NOT_IN_QUOTE"]': 1,
   });
 });
@@ -452,14 +525,14 @@ test('resolution: open_world and the Modiv REIT-cap side channel are unaffected 
 // cleanly, with zero residuals and zero quarantines.
 // ─────────────────────────────────────────────────────────────────────────
 
-test('validation: all 3 resolved claims publish clean, zero residuals, zero quarantines', async () => {
+test('validation: all 4 resolved claims publish clean, zero residuals, zero quarantines', async () => {
   const { validation, adapterResult } = await runReplay();
 
-  assert.equal(adapterResult.write_set.claims.length, 3);
+  assert.equal(adapterResult.write_set.claims.length, 4);
   assert.equal(adapterResult.residuals.length, 0);
   assert.equal(validation.accepted, true);
   assert.equal(validation.residuals.length, 0);
   assert.equal(validation.quarantines.length, 0);
   assert.ok(validation.publishableWriteSet);
-  assert.equal(validation.publishableWriteSet.claims.length, 3);
+  assert.equal(validation.publishableWriteSet.claims.length, 4);
 });

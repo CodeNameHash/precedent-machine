@@ -290,6 +290,301 @@ function tailPeriodAssertion({ sectionReference = SECTION_REFERENCE, quote }) {
 }
 
 // ---------------------------------------------------------------------------
+// Multi-section fixture (docs/codex-program/notes/fee-side-scope-fix.md):
+// the fallback this section tests only fires when a candidate's own
+// dispatched section is silent, so it structurally cannot be exercised by
+// the single-section harness above (SECTION_REFERENCE, resolveTermination
+// FeeAssertions). Three lettered sub-clauses under ONE "Section 3.1"
+// heading, each independently dispatchable as "3.1(a)"/"3.1(b)"/"3.1(c)" --
+// mirroring how the single-section harness above already dispatches
+// "3.1(b)" alone -- so each can carry its own section_family assignment and
+// its own (possibly empty) set of proposals. This stands in for Modiv's
+// real, separate Sections 7.1/7.3/8.12: resolveCandidates reads
+// section_reference/start/end/section_family/section_family_provenance off
+// run_receipt.resolved_sections and does not care whether the underlying
+// text used sub-clause letters or full "Section N.N" headings to get there.
+// ---------------------------------------------------------------------------
+
+function wrapMultiClauseAgreementShell(clauseBodiesByLetter) {
+  const clauseText = Object.entries(clauseBodiesByLetter)
+    .map(([letter, body]) => `(${letter})${body}\n\n`)
+    .join('');
+  return [
+    'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
+    'Buyer, Inc. and the Company.\n\n',
+    'ARTICLE III\n\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\n\n',
+    'Section 3.1 Representations Concerning the Company.\n\n',
+    clauseText,
+  ].join('');
+}
+
+// `familyByReference`: { "3.1(a)": "TERMINATION_FEE", ... } -- omit entirely
+// (pass {}) to leave EVERY dispatched section at native-extraction-run.js's
+// own backward-compatible default (family CAPITALISATION, provenance null,
+// the "no manifest, no classifier" case): `section_family_assignments`
+// itself must cover every requested reference or none at all
+// (requireSectionFamilyAssignments), so this helper only sends it when at
+// least one entry is supplied, matching how the single-section harness
+// above never sends it.
+// `responsesByReference`: { "3.1(a)": { fee_trigger_assertions: [...] } }
+// -- a section named here with no entry gets an all-empty response (real
+// text, no candidates of its own), standing in for a sibling section
+// dispatched only so its BODY TEXT is available to the widened scan.
+async function resolveMultiSectionTerminationFeeAssertions(dealKey, clauseBodiesByLetter, {
+  familyByReference = {}, responsesByReference = {},
+} = {}) {
+  const sourceText = wrapMultiClauseAgreementShell(clauseBodiesByLetter);
+  const documentHash = sha256Hex(Buffer.from(sourceText, 'utf8'));
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(sourceText, {
+    dealKey, dealAdmissionId: sha256Hex(`deal-admission:${dealKey}`), sourceOrdinal: 0,
+  });
+  const sectionReferences = Object.keys(clauseBodiesByLetter).map((letter) => `3.1(${letter})`);
+  const familyEntries = Object.keys(familyByReference);
+  const sectionFamilyAssignments = familyEntries.length === 0
+    ? undefined
+    : sectionReferences.map((ref) => ({ section_reference: ref, family_id: familyByReference[ref] }));
+
+  let callIndex = 0;
+  const receipt = await runNativeExtraction({
+    source_text: sourceText,
+    document_hash: documentHash,
+    section_references: sectionReferences,
+    ...(sectionFamilyAssignments ? { section_family_assignments: sectionFamilyAssignments } : {}),
+    contract_bundle: CONTRACT_BUNDLE_V15,
+    definitions: Object.freeze({ known_definitions: [] }),
+    provider: async ({ governed_scope: governedScope }) => {
+      // Sequential, in section_references order (native-extraction-run.js
+      // dispatches its `resolved` list, itself `references.map(...)`, in
+      // request order) -- mirrors the real replay harness's own
+      // callIndex-based makeReplayClient rather than trying to recover the
+      // current section identity from governed_scope's own shape.
+      const sectionReference = sectionReferences[callIndex];
+      callIndex += 1;
+      const response = responsesByReference[sectionReference] || {};
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeTerminationFeeProposals(
+        {
+          fee_amount_assertions: response.fee_amount_assertions || [],
+          fee_trigger_assertions: response.fee_trigger_assertions || [],
+          tail_period_assertions: response.tail_period_assertions || [],
+          open_world_candidates: response.open_world_candidates || [],
+        },
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'termination-fee-test/v1',
+        model_id: 'stub-model',
+        prompt: 'termination-fee-test-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE_V15,
+    admitted_source_context: admittedSourceContext,
+  });
+  return {
+    receipt, resolution, sourceText, documentHash, admittedSourceContext,
+  };
+}
+
+// Real, byte-identical recorded bytes (docs/codex-program/notes/fee-side-
+// scope-fix.md; evidence/canonical-v2/modiv-termination-fee-promptv3-
+// 20260805/resolution.json review_queue[0].raw_value AND
+// native-producer-recorded-response-7.1.json fee_trigger_assertions[0].quote
+// -- both files carry this identical string). The model coded this
+// correctly, unprompted, with no citation and no defined fee term in its
+// own quote: SUPERIOR_PROPOSAL_TERMINATION, SELLER. It was rejected
+// FEE_SIDE_UNCORROBORATED live because feeSideFromFullPaymentContext scans
+// only the candidate's own dispatched section, and Modiv's payment-
+// direction sentence sits in a DIFFERENT section (7.3), not this one (7.1).
+const MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE = 'the Company Board has approved, and substantially concurrently with '
+  + 'the termination of this Agreement, the Company enters into, a definitive agreement providing for the '
+  + 'implementation of a Superior Proposal';
+
+// Copied verbatim from FEE_SIDE_FULL_PAYMENT_CONTEXT_PATTERNS in
+// candidate-resolution.js (the exact, already-committed, already-tested
+// production regex this fallback reads through, not a new phrase invented
+// for this test) -- independently confirmed, this session, to match
+// Modiv's real Section 7.3 text byte-for-byte via a direct read of the
+// committed HTML fixture through the real sectionizer.
+const SELLER_FULL_PAYMENT_SENTENCE = 'the Company shall pay (or cause to be paid) as directed by Parent the '
+  + 'Company Termination Fee by wire transfer of same day funds to an account designated by Parent.';
+const BUYER_FULL_PAYMENT_SENTENCE = 'Parent shall pay (or cause to be paid) as directed by the Company the '
+  + 'Parent Termination Fee by wire transfer of same day funds to an account designated by the Company.';
+
+test('fee-side-scope-fix: the real Section 7.1(c)(i) Superior Proposal trigger resolves SELLER via the section-family fallback when its OWN section is silent and a sibling section in the same family carries the payment sentence', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-superior-proposal', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ` Termination Fees. ${SELLER_FULL_PAYMENT_SENTENCE}`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 1, `expected exactly one resolved trigger claim, got ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal(resolved[0].claim.canonical_value, 'SUPERIOR_PROPOSAL_TERMINATION');
+  assert.equal(resolved[0].concept_key, 'TERMF-TARGET');
+  assert.equal(resolved[0].claim.attributes.fee_side, 'SELLER');
+  assert.equal(
+    resolved[0].claim.attributes.fee_side_corroboration_scope, 'SECTION_FAMILY',
+    'must be distinguishable from a same-section corroboration in the resolved claim\'s own output',
+  );
+  assert.equal(resolved[0].claim.attributes.fee_side_corroboration_section_reference, '3.1(b)');
+  assert.equal(resolved[0].claim.attributes.fee_side_corroboration_quote, SELLER_FULL_PAYMENT_SENTENCE);
+});
+
+test('fee-side-scope-fix: distinguishability -- a same-section corroboration (direct quote) never carries fee_side_corroboration_scope', async () => {
+  const quote = 'the Company shall pay Parent the Company Termination Fee if the Company terminates for a Superior Proposal';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:fee-side-scope-same-section-direct', quote, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal('fee_side_corroboration_scope' in resolved[0].claim.attributes, false);
+  assert.equal('fee_side_corroboration_section_reference' in resolved[0].claim.attributes, false);
+});
+
+test('fee-side-scope-fix: distinguishability -- a same-section corroboration (whole-section fallback, today\'s pre-existing feeSideFromFullPaymentContext path) never carries fee_side_corroboration_scope either', async () => {
+  const bareQuote = 'by the Company pursuant to Section 3.1(c) for a Superior Proposal';
+  const sectionBody = `${bareQuote}\n\n${SELLER_FULL_PAYMENT_SENTENCE}`;
+  const { resolution } = await resolveTerminationFeeAssertions('deal:fee-side-scope-same-section-fallback', sectionBody, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: bareQuote })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 1, `expected the pre-existing same-section fallback to resolve this, got ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal('fee_side_corroboration_scope' in resolved[0].claim.attributes, false);
+});
+
+test('fee-side-scope-fix hostile: a fee-side phrase in an UNRELATED section_family must NOT corroborate', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-hostile-unrelated-family', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ` Material Adverse Effect. ${SELLER_FULL_PAYMENT_SENTENCE}`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'MAE_DEFINITION' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'a sibling section in a DIFFERENT family must never corroborate, even though it shares this run and carries the matching sentence');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+});
+
+test('fee-side-scope-fix hostile: evidence for both sides, in TWO DIFFERENT sibling sections, gives AMBIGUOUS_FEE_SIDE -- never a coin flip', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-hostile-both-sides', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ` Company Fee Payment. ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    c: ` Parent Fee Payment. ${BUYER_FULL_PAYMENT_SENTENCE}`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE', '3.1(c)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'clean, single-sided support for each side in two SEPARATE sections must never resolve to either side by default');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['AMBIGUOUS_FEE_SIDE']);
+});
+
+test('fee-side-scope-fix: both sides\' sentences in the SAME sibling section is NOT ambiguous -- each is its own complete, self-attributing sentence, exactly the shape Modiv\'s real Section 7.3 has', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-same-section-both-sides', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ` Termination Fees. ${SELLER_FULL_PAYMENT_SENTENCE} ${BUYER_FULL_PAYMENT_SENTENCE}`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 1, `Section 7.3's real shape (both sentences, one section) must still let the claimed side resolve, got ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal(resolved[0].claim.attributes.fee_side, 'SELLER');
+  assert.equal(resolved[0].claim.attributes.fee_side_corroboration_scope, 'SECTION_FAMILY');
+});
+
+test('fee-side-scope-fix hostile: a candidate with no corroboration anywhere in the family still rejects FEE_SIDE_UNCORROBORATED, exactly as today', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-hostile-no-corroboration', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ' Definitions. "Material Adverse Effect" means any change that is materially adverse to the business of the Company.',
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0);
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+});
+
+test('fee-side-scope-fix hostile: with NO section_family_assignments supplied at all (every section defaults to CAPITALISATION, provenance null), the fallback must NOT fire even though a sibling section carries the payment sentence', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:fee-side-scope-hostile-default-family', {
+    a: ` Termination Rights. ${MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE}.`,
+    b: ` Termination Fees. ${SELLER_FULL_PAYMENT_SENTENCE}`,
+  }, {
+    // familyByReference deliberately omitted: resolveMultiSectionTerminationFeeAssertions
+    // then never sends section_family_assignments at all, leaving both
+    // sections at native-extraction-run.js's own DEFAULT_SECTION_FAMILY
+    // (CAPITALISATION, provenance null) -- the exact bucket
+    // SECTION_FAMILY_REAL_PROVENANCES exists to keep out.
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION',
+          quote: MODIV_SUPERIOR_PROPOSAL_TRIGGER_QUOTE,
+        })],
+      },
+    },
+  });
+
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'an unclassified (CAPITALISATION-default) section family must never be trusted as a real grouping, even when every section in the run shares the same default label');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+});
+
+// ---------------------------------------------------------------------------
 // Materiality rank pin (spec section 4/6): rank 20, via the existing
 // TERMF- prefix -- BOTH on a resolved claim AND on a pre-concept review
 // item carrying conceptFamily TERMF-PENDING (audit M-3 refactor-proof pin).
