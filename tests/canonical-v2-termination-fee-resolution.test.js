@@ -517,6 +517,87 @@ test('an out-of-enum trigger_code routes to open world, typed TRIGGER_CODE_OUT_O
 });
 
 // ---------------------------------------------------------------------------
+// Trigger-code / corroboration cross-check. A single corroborated code used
+// to publish unconditionally (matchedCodes[0]) the instant exactly one code
+// matched, with `triggerCode` (what the model actually asserted) consulted
+// nowhere except the out-of-enum gate above. Two live failure modes: the
+// model abstains (`trigger_code: null`) and one code matches incidentally,
+// or the model asserts code A and exactly one code B != A matches -- both
+// used to resolve and publish a fact the model never claimed. Fixed by
+// binding the single match to `triggerCode`, mirroring the fee_side gate
+// above (which already checks `corroboratedSides.includes(feeSide)`): only
+// when the model's own registered code IS the single matched code does this
+// resolve; a null triggerCode routes to review typed TRIGGER_NOT_ASSERTED,
+// a disagreeing registered triggerCode routes to review typed
+// TRIGGER_CORROBORATION_DISAGREES. TRIGGER_UNCORROBORATED (zero matches) and
+// AMBIGUOUS_TRIGGER_CORROBORATION (>=2 matches), pinned above, are
+// unaffected -- this block only reaches the exactly-one-match case.
+//
+// The quote below is copied verbatim (`JSON.stringify` round-tripped, not
+// retyped) from the real recorded defect: evidence/canonical-v2/modiv-
+// termination-fee-scope-correction-20260805/native-producer-recorded-
+// response-7.3.json `fee_trigger_assertions[2]` records the model returning
+// `trigger_code: null` for this exact quote; the companion resolution.json
+// shows the PRE-FIX resolver published it as canonical_value
+// STOCKHOLDER_APPROVAL_FAILURE_TERMINATION anyway -- a code the model never
+// asserted, minted from one incidental match: the quote's subordinate
+// timing clause names the "Company Common Stockholders' Meeting", but the
+// clause's own operative subject is a topping-fee condition (a Company
+// Acquisition Proposal received/announced, then a definitive agreement
+// signed within twelve months), not a stockholder-vote-failure ground.
+// ---------------------------------------------------------------------------
+
+const MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE = '(A) (1) by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date of this Agreement or (2) by the Company or Parent pursuant to Section 7.1(b)(iii) and a Person shall have publicly proposed or publicly announced, after the date hereof and prior to the Company Common Stockholders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal and (B) within twelve (12) months after a termination referred to in this Section 7.3(b)(iii) the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal';
+
+test('regression pin (real recorded bytes): the Modiv 7.3(b)(iii) topping-fee quote matches exactly one trigger code, STOCKHOLDER_APPROVAL_FAILURE_TERMINATION, incidentally via its subordinate "Stockholders’ Meeting" timing clause', () => {
+  assert.deepEqual(
+    feeTriggerCorroboratedCodes(MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE),
+    ['STOCKHOLDER_APPROVAL_FAILURE_TERMINATION'],
+    'pins the real recorded quote\'s single-match shape so a future pattern-table edit cannot silently change what this fixture exercises',
+  );
+});
+
+test('acceptance 1 / regression (real recorded Modiv bytes, the live wrong-answer bug): model asserts null trigger_code, patterns match exactly one code -> routes to review typed TRIGGER_NOT_ASSERTED, never resolves', async () => {
+  const wrapped = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const { resolution } = await resolveTerminationFeeAssertions('deal:modiv-trigger-not-asserted', wrapped, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: null, quote: wrapped })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'must never publish a trigger code the model did not assert -- this exact shape published live pre-fix');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['TRIGGER_NOT_ASSERTED']);
+  assert.equal(item.concept_key, 'TERMF-TARGET');
+  assert.equal(item.materiality_rank, 20);
+});
+
+test('acceptance 2: model asserts a registered code that disagrees with the single matched code -> routes to review typed TRIGGER_CORROBORATION_DISAGREES, distinct from TRIGGER_NOT_ASSERTED', async () => {
+  const wrapped = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const { resolution } = await resolveTerminationFeeAssertions('deal:trigger-corroboration-disagrees', wrapped, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'OUTSIDE_DATE_TERMINATION', quote: wrapped })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'must not publish the model\'s disagreeing code, and must not publish the text\'s matched code either');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['TRIGGER_CORROBORATION_DISAGREES']);
+  assert.equal(item.concept_key, 'TERMF-TARGET');
+  assert.equal(item.materiality_rank, 20);
+});
+
+test('acceptance 3 (no regression): model asserts a registered code that equals the single matched code -> resolves exactly as before', async () => {
+  const wrapped = `the Company shall pay Parent the Company Termination Fee if ${MODIV_TOPPING_FEE_NULL_TRIGGER_QUOTE}`;
+  const { resolution } = await resolveTerminationFeeAssertions('deal:trigger-corroboration-agrees', wrapped, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION', quote: wrapped })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.canonical_value, 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION');
+  assert.equal(resolved[0].concept_key, 'TERMF-TARGET');
+  assert.equal(resolved[0].claim.attributes.trigger_code, 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION');
+});
+
+// ---------------------------------------------------------------------------
 // End-to-end resolution: tail-period claims.
 // ---------------------------------------------------------------------------
 
