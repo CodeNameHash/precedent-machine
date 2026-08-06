@@ -1,0 +1,503 @@
+{
+  "baseline_taken_at_commit": "4788860bf4f6e8c937dd3ab704b0555d30b2fe12",
+  "runs": 25,
+  "crashed": 3,
+  "totals": {
+    "resolved": 111,
+    "queued": 206,
+    "open_world": 193
+  },
+  "review_queue_reasons_ranked": [
+    {
+      "reason": "TERMINATING_PARTY_REF_NOT_IN_QUOTE",
+      "count": 12
+    },
+    {
+      "reason": "CLAUSE_LABEL_NOT_IN_QUOTE",
+      "count": 12
+    },
+    {
+      "reason": "TRIGGER_UNCORROBORATED",
+      "count": 10
+    },
+    {
+      "reason": "PROXY_MEETING_KIND_UNCORROBORATED",
+      "count": 6
+    },
+    {
+      "reason": "CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE",
+      "count": 5
+    },
+    {
+      "reason": "CONSULTATION_RIGHT_UNCORROBORATED",
+      "count": 4
+    },
+    {
+      "reason": "DNO_KIND_UNCORROBORATED",
+      "count": 4
+    },
+    {
+      "reason": "MEETING_REF_NOT_IN_QUOTE",
+      "count": 4
+    },
+    {
+      "reason": "ASSERTION_KIND_UNCORROBORATED",
+      "count": 3
+    },
+    {
+      "reason": "NO_SHOP_PREREQUISITE_UNCORROBORATED",
+      "count": 3
+    },
+    {
+      "reason": "FILING_REGIME_NOT_SINGLE_NAMED_REGIME",
+      "count": 2
+    },
+    {
+      "reason": "OBLIGOR_SCOPE_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "OBLIGOR_REF_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "NO_SHOP_ACTION_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "TERMINATING_PARTY_REF_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "AMBIGUOUS_TRIGGER_CORROBORATION",
+      "count": 2
+    },
+    {
+      "reason": "MAE_CARVEOUT_UNCORROBORATED",
+      "count": 2
+    },
+    {
+      "reason": "FILING_TIMING_STANDARD_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "STRATEGY_CONTROL_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "NO_MONEY_LITERAL",
+      "count": 1
+    },
+    {
+      "reason": "RATIO_CONTEXT_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "PER_SHARE_CONTEXT_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "YEAR_COUNT_UNRESOLVED",
+      "count": 1
+    },
+    {
+      "reason": "PERCENT_UNRESOLVED",
+      "count": 1
+    },
+    {
+      "reason": "NO_SHOP_PERIOD_ROLE_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "STANDSTILL_ACTION_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "AMBIGUOUS_PROXY_MEETING_KIND",
+      "count": 1
+    },
+    {
+      "reason": "NO_DAY_COUNT",
+      "count": 1
+    },
+    {
+      "reason": "CONTROL_PARTY_REF_NOT_IN_QUOTE",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_KIND_UNCORROBORATED",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_CORROBORATION_DISAGREES",
+      "count": 1
+    },
+    {
+      "reason": "TRIGGER_NOT_ASSERTED",
+      "count": 1
+    }
+  ],
+  "per_family": [
+    {
+      "dir": "modiv-antitrust-20260806",
+      "family": "ANTITRUST_REGULATORY",
+      "sections": [
+        "5.5"
+      ],
+      "status": "OK",
+      "resolved": 10,
+      "queued": 22,
+      "open_world": 11,
+      "reasons": {
+        "CONSULTATION_RIGHT_UNCORROBORATED": 4,
+        "FILING_REGIME_NOT_SINGLE_NAMED_REGIME": 2,
+        "OBLIGOR_SCOPE_UNCORROBORATED": 2,
+        "OBLIGOR_REF_UNCORROBORATED": 2,
+        "FILING_TIMING_STANDARD_UNCORROBORATED": 1,
+        "STRATEGY_CONTROL_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-appraisal-20260806",
+      "family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "sections": [
+        "2.6"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-capitalisation-20260806",
+      "family": null,
+      "sections": null,
+      "status": "CRASHED",
+      "resolved": null,
+      "queued": null,
+      "open_world": null
+    },
+    {
+      "dir": "modiv-closing-conditions-20260806",
+      "family": null,
+      "sections": null,
+      "status": "CRASHED",
+      "resolved": null,
+      "queued": null,
+      "open_world": null
+    },
+    {
+      "dir": "modiv-consideration-20260806",
+      "family": "CONSIDERATION",
+      "sections": [
+        "2.1",
+        "2.2",
+        "2.3"
+      ],
+      "status": "OK",
+      "resolved": 1,
+      "queued": 4,
+      "open_world": 20,
+      "reasons": {
+        "NO_MONEY_LITERAL": 1,
+        "RATIO_CONTEXT_UNCORROBORATED": 1,
+        "PER_SHARE_CONTEXT_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-dividends-20260806",
+      "family": "DIVIDENDS",
+      "sections": [
+        "5.10"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-dno-20260806",
+      "family": "DNO_INDEMNIFICATION",
+      "sections": [
+        "5.8"
+      ],
+      "status": "OK",
+      "resolved": 4,
+      "queued": 10,
+      "open_world": 7,
+      "reasons": {
+        "DNO_KIND_UNCORROBORATED": 4,
+        "YEAR_COUNT_UNRESOLVED": 1,
+        "PERCENT_UNRESOLVED": 1
+      }
+    },
+    {
+      "dir": "modiv-employee-matters-20260806",
+      "family": "EMPLOYEE_MATTERS",
+      "sections": [
+        "3.11",
+        "3.12"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-financing-covenants-20260806",
+      "family": "FINANCING_COVENANTS",
+      "sections": [
+        "4.13",
+        "5.20"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 3,
+      "open_world": 2,
+      "reasons": {
+        "ASSERTION_KIND_UNCORROBORATED": 3
+      }
+    },
+    {
+      "dir": "modiv-general-covenants-20260806",
+      "family": "GENERAL_COVENANTS",
+      "sections": [
+        "5.3",
+        "5.7",
+        "5.9"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 12,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-guaranty-20260806",
+      "family": "GUARANTY_FINANCING_PARTY",
+      "sections": [
+        "5.11"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-interim-operating-20260806",
+      "family": null,
+      "sections": null,
+      "status": "CRASHED",
+      "resolved": null,
+      "queued": null,
+      "open_world": null
+    },
+    {
+      "dir": "modiv-key-defined-terms-20260806",
+      "family": "KEY_DEFINED_TERMS",
+      "sections": [
+        "8.5"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 15,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-material-contracts-20260806",
+      "family": "MATERIAL_CONTRACTS",
+      "sections": [
+        "3.17"
+      ],
+      "status": "OK",
+      "resolved": 5,
+      "queued": 5,
+      "open_world": 26,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-merger-structure-20260806",
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "sections": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "1.6"
+      ],
+      "status": "OK",
+      "resolved": 20,
+      "queued": 20,
+      "open_world": 3,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-misc-boilerplate-20260806",
+      "family": "MISC_BOILERPLATE",
+      "sections": [
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.7",
+        "8.9",
+        "8.10"
+      ],
+      "status": "OK",
+      "resolved": 14,
+      "queued": 14,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-no-other-reps-20260806",
+      "family": null,
+      "sections": null,
+      "status": "OK",
+      "resolved": 3,
+      "queued": 3,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-no-shop-20260806",
+      "family": "NO_SHOP",
+      "sections": [
+        "5.6"
+      ],
+      "status": "OK",
+      "resolved": 42,
+      "queued": 52,
+      "open_world": 9,
+      "reasons": {
+        "NO_SHOP_ACTION_UNCORROBORATED": 2,
+        "NO_SHOP_PREREQUISITE_UNCORROBORATED": 3,
+        "NO_SHOP_PERIOD_ROLE_UNCORROBORATED": 1,
+        "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD_UNCORROBORATED": 2,
+        "RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED": 1,
+        "STANDSTILL_ACTION_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-proxy-meeting-20260806",
+      "family": "PROXY_MEETING",
+      "sections": [
+        "5.4"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 13,
+      "open_world": 8,
+      "reasons": {
+        "AMBIGUOUS_PROXY_MEETING_KIND": 1,
+        "PROXY_MEETING_KIND_UNCORROBORATED": 6,
+        "MEETING_REF_NOT_IN_QUOTE": 4,
+        "NO_DAY_COUNT": 1,
+        "CONTROL_PARTY_REF_NOT_IN_QUOTE": 1
+      }
+    },
+    {
+      "dir": "modiv-representations-20260806",
+      "family": "REPRESENTATIONS",
+      "sections": [
+        "3.1",
+        "3.3",
+        "3.4"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 28,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-specific-performance-20260806",
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "sections": [
+        "8.8"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 0,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-tax-matters-20260806",
+      "family": "TAX_MATTERS",
+      "sections": [
+        "3.13",
+        "4.15",
+        "5.12"
+      ],
+      "status": "OK",
+      "resolved": 0,
+      "queued": 0,
+      "open_world": 11,
+      "reasons": {}
+    },
+    {
+      "dir": "modiv-termination-20260806",
+      "family": "TERMINATION",
+      "sections": [
+        "7.1",
+        "7.2"
+      ],
+      "status": "OK",
+      "resolved": 1,
+      "queued": 16,
+      "open_world": 13,
+      "reasons": {
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE": 12,
+        "TERMINATING_PARTY_REF_UNCORROBORATED": 2,
+        "TRIGGER_KIND_UNCORROBORATED": 1
+      }
+    },
+    {
+      "dir": "modiv-termination-fee-citation-following-20260806",
+      "family": null,
+      "sections": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "status": "OK",
+      "resolved": 9,
+      "queued": 23,
+      "open_world": 20,
+      "reasons": {
+        "AMBIGUOUS_TRIGGER_CORROBORATION": 2,
+        "TRIGGER_CORROBORATION_DISAGREES": 1,
+        "TRIGGER_UNCORROBORATED": 10,
+        "TRIGGER_NOT_ASSERTED": 1
+      }
+    },
+    {
+      "dir": "topbuild-mae-definition-20260806",
+      "family": "MAE_DEFINITION",
+      "sections": [
+        "3.1(a)"
+      ],
+      "status": "OK",
+      "resolved": 2,
+      "queued": 21,
+      "open_world": 2,
+      "reasons": {
+        "CLAUSE_LABEL_NOT_IN_QUOTE": 12,
+        "MAE_CARVEOUT_UNCORROBORATED": 2,
+        "CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE": 5
+      }
+    }
+  ]
+}
