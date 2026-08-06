@@ -25,6 +25,36 @@ reproducing exactly that.
 
 ---
 
+## Standing rulings (Ben, this session)
+
+These four answers are decisions, not suggestions. Everything below is
+written to them.
+
+1. **Process Intelligence is parked, not subsumed and not parallel.**
+   "We'll rebuild process intelligence at some point — just stick all of
+   that stuff in a folder for later." So `EXECUTION-LEDGER.md` and the
+   P0–P12 material move to a dedicated parked folder with an intent-to-
+   rebuild note. It does not get PLAN.md steps, and it is not archived as
+   dead. PLAN.md's supersession claim is still wrong and still gets
+   deleted — parked is not superseded.
+2. **Ben's two M3 auto-pass conditions get wired before the ladder runs.**
+   Part F rules on `v1v2-comparator.js`, the conditions go into the runner,
+   `nets-eligibility-report.mjs` gets fixed. Part D does not start until
+   they do.
+3. **Nothing old or arbitrary is binding unless it does better.** Given
+   against the contained-routes question, and applied as a general
+   principle throughout: an existing constraint has to justify itself on
+   present merit. Containment, pin conventions, step numbering, and the
+   shape of any inherited process are all in scope. Where this spec keeps
+   an old thing, it says why.
+4. **The document ladder targets 10–15 documents, then hands off to
+   corpus certification.** Not all 40 in the ladder — the per-round re-run
+   cost grows quadratically, and 10–15 drafters is enough to make a
+   generalisation claim credible. Part A move 2's certification step covers
+   the remainder.
+
+---
+
 ## Findings that change the build
 
 Most of the ~110 findings are documentation staleness. These are not. Each
@@ -74,11 +104,19 @@ to supersede it** (`F-OLD-07`, the registers' headline). PLAN.md line 8
 says it supersedes `EXECUTION-LEDGER.md`. That ledger is live, was touched
 2026-08-05/06, and governs a separate ~200+ team-hour "Process
 Intelligence" programme (P0–P12, Ben-ruled) with a named OPEN blocker (P8).
-PLAN.md engages with none of it beyond one bare file-path mention. Part A
-was scoped as "consolidate ROADMAP.md"; it is actually at least two live
-documents, and a third programme — open-world promotion P1–P4, a quarter
-finished, with an unexecuted "Ben ruled: design now" sitting in the spec
-text (`F-OLD-11`) — that PLAN.md never mentions at all.
+PLAN.md engages with none of it beyond one bare file-path mention.
+
+**Ruled (standing ruling 1):** parked. The ledger and its programme move to
+a folder to be rebuilt later. But the supersession claim is still false and
+still gets deleted — a parked programme is not a superseded one, and
+leaving the line in means the next reader concludes the work was absorbed
+somewhere when it was set aside. Separately, open-world promotion P1–P4
+(`F-OLD-11`) is a *different* programme, a quarter finished, carrying an
+unexecuted "Ben ruled: design now" in its own spec text, which PLAN.md
+never mentions. That one is **not** covered by the parking ruling — it
+holds a live ruling of Ben's — so it keeps a named PLAN.md entry. If it
+should be parked alongside Process Intelligence, say so; this spec does not
+assume it.
 
 **5. The runner the ladder depends on does not apply Ben's two M3 auto-pass
 conditions** (`F-AA-02`). PLAN.md line 142 names
@@ -198,16 +236,18 @@ Not the alphabetical order. Each stage's output is the next one's input.
 1. **B-zero: fix the test glob** (build-impact 1). Everything else is
    verified with this instrument.
 2. **B: correct the false claims** in PLAN.md and in live module headers.
-3. **A: consolidate** ROADMAP.md *and* EXECUTION-LEDGER.md into PLAN.md,
-   re-anchor DECISIONS.md's cross-references, then archive.
+3. **A: consolidate** ROADMAP.md into PLAN.md, park Process Intelligence,
+   re-anchor DECISIONS.md's cross-references, then archive ROADMAP.md.
 4. **C: fold in the remaining findings**, now that the documents they land
    in have been corrected and consolidated — doing C before A/B would mean
    editing the same passages twice.
 5. **F: dispose of the found capabilities**, which needs C's register to
-   decide keep/delete/revive per item.
+   decide keep/delete/revive per item. `v1v2-comparator.js` is on F's
+   critical path, because D cannot start until it is ruled on and wired.
 6. **E: unblock onboarding**, which needs F's rulings (the search backend,
    the comparator) and A's amendment-detection step.
-7. **D: run the ladder**, which needs all of the above.
+7. **D: run the ladder**, which needs all of the above *plus* the auto-pass
+   conditions wired and `nets-eligibility-report.mjs` fixed.
 
 D is what was asked for. It is last because it is the only part that spends
 real money on model calls, and every part before it is a reason a round
@@ -340,19 +380,30 @@ document points at one of them.
    resolve cleanly to a PLAN.md or GRAVEYARD.md step and are safe to
    redirect once the prose names the new destination.
 
-**Change — EXECUTION-LEDGER.md.** Do not archive it in this pass. Decide
-and record one of: it is a second programme that legitimately runs
-alongside PLAN.md, in which case PLAN.md line 8's supersession claim is
-deleted and both documents are named current in `CLAUDE.md`; or it is
-subsumed, in which case P0–P12 including the OPEN P8 blocker get PLAN.md
-steps first, by the same six-move discipline as ROADMAP.md. Ruling which
-one is a decision for Ben, not for the implementer — this spec's job is to
-stop PLAN.md asserting the second while the first is true.
+**Change — EXECUTION-LEDGER.md and Process Intelligence.** Park, per
+standing ruling 1. Create `docs/parked/process-intelligence/`, move
+`EXECUTION-LEDGER.md` and the P0–P12 material into it, and write a README
+there stating: this is a real ~200-hour programme, intentionally set aside
+on 2026-08-06 to be rebuilt later, not abandoned and not superseded;
+P8 was OPEN when it was parked; here is what a reviver needs to read first.
 
-**Change — open-world promotion (P1–P4).** Gets at minimum a named entry in
-PLAN.md, including P4's unexecuted "Ben ruled: design now" (`F-OLD-11`).
-A ruled-and-unexecuted decision sitting only in spec prose is the same
-failure shape as amendment detection.
+Deliberately **not** `archive/`, whose stated meaning in `CLAUDE.md` is
+"historical and none of it is current". Parked work is neither current nor
+historical, and collapsing the two is how a live programme becomes
+invisible. If `docs/parked/` proves to be one folder too many, the
+alternative is an `archive/` subfolder with an explicit intent-to-rebuild
+note — but the distinction must survive somewhere.
+
+Then delete PLAN.md line 8's supersession claim about the ledger. The claim
+is false in both directions now: it did not supersede the ledger, and the
+ledger is no longer live. Replace it with a pointer to the parked folder.
+
+**Change — open-world promotion (P1–P4).** Keeps a named PLAN.md entry,
+including P4's unexecuted "Ben ruled: design now" (`F-OLD-11`). Not parked
+with Process Intelligence: it carries a live ruling, and a
+ruled-and-unexecuted decision sitting only in spec prose is the same
+failure shape as amendment detection. Flag it for Ben rather than deciding
+it here.
 
 **Change — DECISIONS.md.** Rewrite the header and every "Blocks:" field to
 cite PLAN.md stages. The mapping is in `plan-vs-roadmap.md` (e.g. P9 →
@@ -502,12 +553,28 @@ currently stop that being routine, not the two the first draft named.
    the same containment root cause and will be discovered by anyone
    following the runbook.
 
-**Change.** Fix 1 via Step 2A. Fix 2 via Part A move 1. For 3, 4 and 5,
-disposition the 17 undocumented contained routes first — that is one
-decision that resolves three symptoms — then fix or document each. Then
-write the onboarding runbook into `docs/core/CODEBASE-GUIDE.md`: fetch the
-exhibit, run the ambiguity guard, generate section refs, human-review them,
-commit the pins, materialise the cards, run the family ladder.
+**Change.** Fix 1 via Step 2A. Fix 2 via Part A move 1.
+
+For 3, 4 and 5: disposition all 17 undocumented contained routes — one
+decision that resolves three symptoms. Per standing ruling 3, containment
+does not get to persist because it is already there. Each route is
+uncontained unless its containment is defended on present merit, in
+writing, in the same pass. The defensible cases are real (a route that
+would serve wrong data from an unfinished subsystem should stay 503), but
+"it was contained in July and nobody revisited it" is not one of them, and
+that is the status of all 17 today — none has a disposition anywhere in
+PLAN, GRAVEYARD, OPERATING-RULES or CODEBASE-GUIDE.
+
+Apply the same test to the rest of the inherited process this part touches:
+the three-mode add-a-deal UI, the hand-pinned `DEAL_PINS` convention, and
+the manual backfill step all predate the current plan and none was designed
+for onboarding 10–15 documents. Keep what earns its place; replace what
+does not; say which in the runbook.
+
+Then write the onboarding runbook into `docs/core/CODEBASE-GUIDE.md`:
+fetch the exhibit, run the ambiguity guard, generate section refs,
+human-review them, commit the pins, materialise the cards, run the family
+ladder.
 
 **Proves it is done.** A third document is onboarded end to end using only
 the runbook, by someone who did not write it, with no manual section
@@ -533,13 +600,24 @@ differently drafted document, so a family that worked on Modiv and breaks
 on TopBuild was caught only by manual comparison after the fact. Nothing
 enforced "still works on what came before".
 
-**Gate caveat, standing across every round.** Per build-impact 5, this
-runner does not supply `v1v2_comparison` or `lexical_disagreement`. The
-gates below therefore do **not** check Ben's two M3 auto-pass conditions.
-Either wire them in before the ladder runs — Part F's ruling on
-`v1v2-comparator.js` is the likely route — or state in the evidence for
-every round that those conditions were not evaluated. Do not let a green
-round imply a check that did not happen.
+**Prerequisite, not a caveat.** Per build-impact 5 and standing ruling 2,
+the runner does not supply `v1v2_comparison` or `lexical_disagreement`, so
+its rounds cannot check Ben's two M3 auto-pass conditions. **The ladder
+does not start until they are wired.** Concretely, all three of these land
+first: Part F rules on `v1v2-comparator.js` / `lexical-disagreement-net.js`
+(built, merged as #471/#472, 7 test files, near-invisible in the core
+docs — the likely existing answer); the conditions are supplied at the
+`resolveCandidates(...)` call in
+`scripts/canonical-v2-live-extraction-run.mjs`; and
+`scripts/nets-eligibility-report.mjs`, broken since `0d17ad00`, is fixed
+so the reporting side works. A test asserts both condition names appear in
+the runner's resolve call, so this cannot silently regress back to the
+state that made the caveat necessary.
+
+Rationale for making this blocking rather than a recorded gap: a green
+round that did not evaluate the conditions looks identical, in the
+evidence directory, to one that did. This programme's expensive failure
+mode is exactly that — a claim that reads stronger than what was checked.
 
 ### Step 2A. Generate the per-family section lists
 
@@ -675,12 +753,20 @@ dedicated financing sections — at whichever round includes it.
   document proven so far, together, as the regression check. Record every
   issue and fix or explicitly defer each — no "needs more analysis", same
   discipline as Step 3H.
-- **Doc round D — five to ten more again.** Same shape. Repeat until the
-  document set reaches whatever corpus size the programme has decided is
-  enough. That number is not decided here: pull it from DECISIONS.md, or
-  flag it as an open decision if unrecorded. Part A move 2's certification
-  step is where the full 40 gets certified; this ladder is how the corpus
-  gets there.
+- **Doc round D — the remainder, to 10–15 total.** Same shape as C. Per
+  standing ruling 4, the ladder stops at 10–15 documents, not 40. Beyond
+  that the per-round re-run cost grows quadratically for diminishing
+  evidence: the point of the ladder is to catch a fix that was tuned to one
+  drafter's vocabulary, and 10–15 drafters establishes that as well as 40
+  does at a fraction of the model spend. Part A move 2's certification step
+  covers the remaining deals — the ladder proves the mechanism generalises,
+  certification proves the corpus is clean. They are different claims and
+  this is the boundary between them.
+
+  Record the target as a decision in DECISIONS.md when it lands: it is
+  currently recorded nowhere (grepped DECISIONS.md and PLAN.md for
+  "40 deal", "all 40", "corpus size" — zero hits), which is why it was an
+  open question at all.
 
 On both axes, every round: real re-execution, and the gate must pass — or
 be understood and explicitly fixed or recorded — before the next round
@@ -717,10 +803,12 @@ undetermined, not as a pass.
 
 Each is a place this spec could be wrong.
 
-1. **Is `EXECUTION-LEDGER.md` a live parallel programme or subsumed?**
-   Part A refuses to guess and routes it to Ben. If it is live and parallel,
-   this spec's whole sequencing may be competing with ~200 team-hours of
-   other work, including an OPEN P8 blocker nobody here has read.
+1. ~~Is `EXECUTION-LEDGER.md` live or subsumed?~~ **Closed by standing
+   ruling 1: parked.** Residual risk worth naming — nobody in this session
+   read P8, the blocker that was open when it was parked. If P8 turns out
+   to block something in Stages 2–9 rather than only Process Intelligence,
+   parking it hides that. The parked README should record what P8 was, not
+   just that it existed.
 2. **Does fixing the test glob surface a large number of failures?** 29
    files, unrun for an unknown period. If many fail, B-zero stops being a
    one-line package.json change and becomes the largest part of this spec.
@@ -737,10 +825,13 @@ Each is a place this spec could be wrong.
    and cost grows quadratically as the document ladder extends. A sampling
    scheme might buy most of the guarantee for much less — or reintroduce
    exactly the blind spot the ladder exists to close.
-6. **Does Part D's ladder mean anything without Ben's auto-pass
-   conditions?** The gate caveat is honest but unsatisfying. If those
-   conditions are what makes a round trustworthy, the ladder should not run
-   until they are wired.
+6. ~~Does Part D's ladder mean anything without Ben's auto-pass
+   conditions?~~ **Closed by standing ruling 2: wire them first.** The new
+   risk this creates is schedule, not correctness — D now depends on
+   F ruling correctly on `v1v2-comparator.js` and on a broken script being
+   fixed. If wiring the conditions turns out to be a large piece of work
+   rather than a call-site change, that discovery lands on D's critical
+   path. Nobody has scoped it.
 7. **Does this silently drop or weaken anything in the original 2A–2E?**
    Checked against the original text once, by the author of the draft — the
    weakest kind of check, and the one most likely to err toward
