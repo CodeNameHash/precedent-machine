@@ -763,3 +763,438 @@ test('Company-MAE and Parent-MAE claims from one section mint distinct stable id
   const partyCapacities = resolved.map((e) => e.party.capacity).sort();
   assert.deepEqual(partyCapacities, ['BUYER', 'TARGET']);
 });
+
+// ═══════════════════════════════════════════════════════════════════════
+// CLAUSE_LABEL_NOT_IN_QUOTE / CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE fix
+// (docs/codex-program/notes/mae-clause-label.md). REPLAY of the real,
+// committed, first live MAE_DEFINITION run: evidence/canonical-v2/topbuild-
+// mae-definition-20260806/native-producer-recorded-response-3.1_a_.json's
+// `mae_definition_instances[0]`, reproduced here field-for-field (not
+// paraphrased, not re-derived) as this test's own `response` argument, run
+// through the REAL, unmodified shapeMaeDefinitionProposals / resolveCandidates
+// pipeline over the real committed TOPBUILD_COMPANY_MAE_TEXT fixture. That
+// run compiled 23 candidates and resolved only 2: the BUSINESS_EFFECTS prong
+// and the (C) carveout (which self-references "this clause (C)" in its own
+// proviso). The other 21 queued -- 12 CLAUSE_LABEL_NOT_IN_QUOTE, 5
+// CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE, 2 MAE_CARVEOUT_UNCORROBORATED, 2
+// open_world. The model's own recorded output already carries a correctly-
+// populated, separate clause_label field for every one of the 17
+// label-blocked candidates -- nothing below asks the model for anything new.
+// ═══════════════════════════════════════════════════════════════════════
+
+const TOPBUILD_REPLAY_RESPONSE = {
+  mae_definition_instances: [{
+    section_reference: SECTION_REFERENCE,
+    defined_term: 'Company Material Adverse Effect',
+    definition_subject: 'the Company and its Subsidiaries, taken as a whole',
+    prong_assertions: [
+      {
+        prong_code: 'BUSINESS_EFFECTS',
+        prong_label: null,
+        quote: 'any event, change, effect, development, circumstance, state of facts, condition or occurrence '
+          + '(each, an “Effect”) that, when considered individually or in the aggregate with all other Effects, is '
+          + 'or would reasonably be expected to have a material adverse effect on the business, condition '
+          + '(financial or otherwise) or results of operations of the Company and its Subsidiaries, taken as a whole',
+        limb_path: [],
+      },
+    ],
+    carveout_assertions: [
+      {
+        carveout_code: 'ECONOMY_GENERAL', clause_label: '(A)',
+        quote: 'changes or developments in economic, business or labor conditions generally in the United States '
+          + 'or other countries in which the Company or any of its Subsidiaries conduct operations',
+        limb_path: ['(A)'],
+      },
+      {
+        carveout_code: 'FINANCIAL_MARKETS', clause_label: '(1)',
+        quote: 'any changes or developments in or affecting the securities, credit or financial markets',
+        limb_path: ['(A)', '(1)'],
+      },
+      {
+        carveout_code: 'TARIFFS', clause_label: '(2)',
+        quote: 'any changes or developments in or affecting interest, currency or exchange rates, commodity '
+          + 'prices, tariffs, anti-dumping or countervailing duties, surtaxes or any trade wars',
+        limb_path: ['(A)', '(2)'],
+      },
+      {
+        carveout_code: 'GOVERNMENT_SHUTDOWNS', clause_label: '(3)',
+        quote: 'the effect of any potential or actual government shutdown',
+        limb_path: ['(A)', '(3)'],
+      },
+      {
+        carveout_code: 'INDUSTRY_GENERAL', clause_label: '(B)',
+        quote: 'changes or developments in or affecting the industry or industries in which the Company or any of '
+          + 'its Subsidiaries operate (including such changes or developments resulting from general economic conditions)',
+        limb_path: ['(B)'],
+      },
+      {
+        carveout_code: 'ANNOUNCEMENT_OR_PENDENCY', clause_label: '(C)',
+        quote: 'the announcement of this Agreement and the Transactions, including Effects as a result of the '
+          + 'identification of Parent or any of its Affiliates as the acquirer of the Company, provided that this '
+          + 'clause (C) shall not apply to any representation or warranty set forth in Section ‎3.1(d)(ii) (or any '
+          + 'condition to any party’s obligation to consummate the Mergers relating to such representation or '
+          + 'warranty) to the extent that such representation or warranty addresses the consequences of any Effect '
+          + 'arising out of, relating to or resulting from the execution and delivery of this Agreement or the '
+          + 'consummation of the Mergers',
+        limb_path: ['(C)'],
+      },
+      {
+        carveout_code: 'ACTS_OF_WAR_TERRORISM', clause_label: '(D)',
+        quote: 'acts of terrorism or sabotage, civil disturbances or unrest, war (whether or not declared), the '
+          + 'commencement, continuation or escalation of a war or military action, acts of hostility',
+        limb_path: ['(D)'],
+      },
+      {
+        carveout_code: 'NATURAL_DISASTERS', clause_label: '(D)',
+        quote: 'storms, earthquakes, floods or other natural disasters',
+        limb_path: ['(D)'],
+      },
+      {
+        carveout_code: 'PANDEMIC', clause_label: '(D)',
+        quote: 'the outbreak or continuation of any epidemic, pandemic or other health crisis',
+        limb_path: ['(D)'],
+      },
+      {
+        carveout_code: 'COMPLIANCE_WITH_AGREEMENT', clause_label: '(E)',
+        quote: 'actions expressly required of the Company under this Agreement; provided that, for the avoidance '
+          + 'of doubt, the exception in this clause (E) shall not apply to the substance or content of any '
+          + 'information, in and of itself, received by Parent, its officers or its authorized Representatives '
+          + 'pursuant to this Agreement, including Section ‎4.7)',
+        limb_path: ['(E)'],
+      },
+      {
+        carveout_code: null, clause_label: '(F)',
+        quote: 'any Action alleging breach of fiduciary duty or violation of Law relating to this Agreement or the '
+          + 'Transactions (it being understood and agreed that the exception in this clause (F) shall apply to the '
+          + 'Effects arising out of, relating to or resulting from the bringing of such Action and not those '
+          + 'arising out of, relating to or resulting from an actual breach or violation of law)',
+        limb_path: ['(F)'],
+      },
+      {
+        carveout_code: 'CHANGE_IN_LAW', clause_label: '(G)',
+        quote: 'changes or developments after the date hereof in applicable Laws, regulatory policies or the '
+          + 'definitive interpretations thereof',
+        limb_path: ['(G)'],
+      },
+      {
+        carveout_code: 'CHANGE_IN_GAAP', clause_label: '(H)',
+        quote: 'changes or developments after the date hereof in generally accepted accounting principles in the '
+          + 'United States (“GAAP”) or any foreign equivalents thereof or the interpretations thereof',
+        limb_path: ['(H)'],
+      },
+      {
+        carveout_code: 'FAILURE_TO_MEET_PROJECTIONS', clause_label: '(I)',
+        quote: 'any failure by the Company to meet any internal or public projections, forecasts or estimates of '
+          + 'revenues or earnings for any period; provided that the exception in this clause shall not prevent or '
+          + 'otherwise affect a determination that any change or development underlying such failure constitutes, '
+          + 'has resulted in, or contributed to, a Company Material Adverse Effect',
+        limb_path: ['(I)'],
+      },
+      {
+        carveout_code: 'STOCK_PRICE_CHANGES', clause_label: '(J)',
+        quote: 'a decline in the price or trading volume of the Company’s common stock or any change in the '
+          + 'ratings or ratings outlook for the Company or any of its Subsidiaries; provided that the exception in '
+          + 'this clause shall not prevent or otherwise affect a determination that any change or development '
+          + 'underlying such decline or change constitutes, has resulted in, or contributed to, a Company Material '
+          + 'Adverse Effect',
+        limb_path: ['(J)'],
+      },
+    ],
+    limb_local_disproportionality_assertions: [
+      {
+        clause_label: '(A)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote: 'changes or developments in economic, business or labor conditions generally in the United States '
+          + 'or other countries in which the Company or any of its Subsidiaries conduct operations, including (1) '
+          + 'any changes or developments in or affecting the securities, credit or financial markets, (2) any '
+          + 'changes or developments in or affecting interest, currency or exchange rates, commodity prices, '
+          + 'tariffs, anti-dumping or countervailing duties, surtaxes or any trade wars or (3) the effect of any '
+          + 'potential or actual government shutdown, except to the extent such changes or developments have a '
+          + 'disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in '
+          + 'the industry or industries in which the Company and its Subsidiaries operate',
+        limb_path: ['(A)'],
+      },
+      {
+        clause_label: '(B)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote: 'changes or developments in or affecting the industry or industries in which the Company or any of '
+          + 'its Subsidiaries operate (including such changes or developments resulting from general economic '
+          + 'conditions), except to the extent that such changes or developments have a disproportionate effect on '
+          + 'the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries '
+          + 'in which the Company and its Subsidiaries operate',
+        limb_path: ['(B)'],
+      },
+      {
+        clause_label: '(D)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote: 'changes or developments arising out of acts of terrorism or sabotage, civil disturbances or '
+          + 'unrest, war (whether or not declared), the commencement, continuation or escalation of a war or '
+          + 'military action, acts of hostility, weather conditions or other acts of God (including storms, '
+          + 'earthquakes, floods or other natural disasters or changes due to the outbreak or continuation of any '
+          + 'epidemic, pandemic or other health crisis), including any actual or threatened material worsening of '
+          + 'such conditions, except to the extent that they have a disproportionate effect on the Company and its '
+          + 'Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company '
+          + 'and its Subsidiaries operate',
+        limb_path: ['(D)'],
+      },
+      {
+        clause_label: '(G)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote: 'changes or developments after the date hereof in applicable Laws, regulatory policies or the '
+          + 'definitive interpretations thereof, except to the extent that such changes or developments have a '
+          + 'disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in '
+          + 'the industry or industries in which the Company and its Subsidiaries operate',
+        limb_path: ['(G)'],
+      },
+      {
+        clause_label: '(H)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote: 'changes or developments after the date hereof in generally accepted accounting principles in the '
+          + 'United States (“GAAP”) or any foreign equivalents thereof or the interpretations thereof, except to '
+          + 'the extent that such changes or developments have a disproportionate effect on the Company and its '
+          + 'Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company '
+          + 'and its Subsidiaries operate',
+        limb_path: ['(H)'],
+      },
+    ],
+    disproportionality_assertions: [],
+  }],
+  // The real recorded response's own open_world_candidates (two "except
+  // where the failure to be so [organized/qualified] ... Material Adverse
+  // Effect" cross-reference mentions) are deliberately OMITTED here: both
+  // are drawn from the ORGANIZATIONAL-representation prose that precedes the
+  // MAE definition within the same real section 3.1(a) (real absolute_start
+  // 576/1465, near the very start of that section's full text) -- text this
+  // repo's own committed TOPBUILD_COMPANY_MAE_TEXT fixture does not include
+  // at all (it starts directly at the defined-term sentence). They are
+  // unrelated to clause_label verification (a DIFFERENT gate,
+  // NATIVE_OPEN_WORLD_PROPOSAL, entirely untouched by this fix) and would
+  // only fail to byte-verify against this narrower fixture, adding noise
+  // with no bearing on what this test proves.
+};
+
+test('REPLAY (evidence/canonical-v2/topbuild-mae-definition-20260806/): 17 of the 19 real label-blocked/out-of-scope queued candidates now resolve -- 12 CLAUSE_LABEL_NOT_IN_QUOTE and all 5 CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE -- with no model/prompt change', async () => {
+  const { resolution } = await resolveMaeAssertions('deal:topbuild-mae-clause-label-replay', TOPBUILD_COMPANY_MAE_TEXT, TOPBUILD_REPLAY_RESPONSE);
+
+  const carveoutResolved = resolution.resolved.filter((e) => e.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY);
+  const disproportionalityResolved = resolution.resolved.filter((e) => e.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY);
+  const prongResolved = resolution.resolved.filter((e) => e.generic_claim_key === MAE_DEFINITION_PRONG_CLAIM_KEY);
+
+  // This replay's own mae_definition_instances-derived total (1 prong + 15
+  // carveout + 5 limb-local disproportionality = 21) matches the real run's
+  // own 21 mae-derived compiled candidates exactly (the real run's receipt
+  // counts 23 compiled_candidates only because it ALSO compiles the 2
+  // open_world_candidates omitted above -- resolved(2) + review_queue's own
+  // 19 has_resolution:false rows + open_world(2) = 23). This fix touches
+  // nothing about compilation/validation -- same 21 candidates in, same 21 out.
+  assert.equal(resolution.resolution_receipt.counts.compiled_candidates, 21);
+
+  // 13 of 15 carveout_assertions resolve: (C) (already resolved today) plus
+  // the 12 that were CLAUSE_LABEL_NOT_IN_QUOTE. (E) and (F) still queue --
+  // MAE_CARVEOUT_UNCORROBORATED, an untouched, out-of-scope gate.
+  assert.equal(carveoutResolved.length, 13);
+  // All 5 limb_local_disproportionality_assertions resolve: previously all 5
+  // were CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE.
+  assert.equal(disproportionalityResolved.length, 5);
+  // The BUSINESS_EFFECTS prong is untouched by this fix and still resolves.
+  assert.equal(prongResolved.length, 1);
+
+  assert.equal(resolution.resolved.length, 13 + 5 + 1, 'total resolved: 19 of 21 compiled candidates');
+
+  // Every CLAUSE_LABEL_NOT_IN_QUOTE / CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE
+  // entry is gone from review_queue.
+  assert.equal(resolution.review_queue.filter((e) => e.reasons.includes('CLAUSE_LABEL_NOT_IN_QUOTE')).length, 0);
+  assert.equal(resolution.review_queue.filter((e) => e.reasons.includes('CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE')).length, 0);
+
+  // The two MAE_CARVEOUT_UNCORROBORATED queue entries -- (E) and (F) -- are
+  // UNTOUCHED: still exactly 2, unaffected by this fix, out of scope.
+  const uncorroborated = resolution.review_queue.filter((e) => e.reasons.includes('MAE_CARVEOUT_UNCORROBORATED'));
+  assert.equal(uncorroborated.length, 2);
+  assert.deepEqual(uncorroborated.map((e) => e.raw_value).sort(), [
+    'actions expressly required of the Company under this Agreement; provided that, for the avoidance of doubt, '
+      + 'the exception in this clause (E) shall not apply to the substance or content of any information, in and '
+      + 'of itself, received by Parent, its officers or its authorized Representatives pursuant to this Agreement, '
+      + 'including Section ‎4.7)',
+    'any Action alleging breach of fiduciary duty or violation of Law relating to this Agreement or the '
+      + 'Transactions (it being understood and agreed that the exception in this clause (F) shall apply to the '
+      + 'Effects arising out of, relating to or resulting from the bringing of such Action and not those arising '
+      + 'out of, relating to or resulting from an actual breach or violation of law)',
+  ].sort());
+
+  // Nothing NEW queues without a reason: every review_queue row with
+  // has_resolution:false still carries exactly one of the two untouched,
+  // out-of-scope MAE_CARVEOUT_UNCORROBORATED reasons above -- confirmed by
+  // the exact-length assertion on `uncorroborated` already made.
+  assert.equal(resolution.review_queue.filter((e) => e.has_resolution === false).length, 2);
+
+  // All twelve newly-resolved carveout codes are exactly right (no
+  // corroboration drift introduced by this change).
+  const carveoutCodes = carveoutResolved.map((e) => e.claim.canonical_value).sort();
+  assert.deepEqual(carveoutCodes, [
+    'ACTS_OF_WAR_TERRORISM', 'ANNOUNCEMENT_OR_PENDENCY', 'CHANGE_IN_GAAP', 'CHANGE_IN_LAW', 'ECONOMY_GENERAL',
+    'FAILURE_TO_MEET_PROJECTIONS', 'FINANCIAL_MARKETS', 'GOVERNMENT_SHUTDOWNS', 'INDUSTRY_GENERAL', 'NATURAL_DISASTERS',
+    'PANDEMIC', 'STOCK_PRICE_CHANGES', 'TARIFFS',
+  ].sort());
+  // Two distinct codes on the same (D) clause_label mint distinct identities
+  // (mirrors the Skechers (vii) dual-code test above) -- three different
+  // carveout_revision_ids all sharing clause_label "(D)", never merged.
+  const dLabelClaims = carveoutResolved.filter((e) => e.claim.attributes.clause_label === '(D)');
+  assert.equal(dLabelClaims.length, 3);
+  assert.equal(new Set(dLabelClaims.map((e) => e.claim.claim_revision_id)).size, 3);
+
+  // ACCEPTANCE 3: the two claims that already resolved before this fix --
+  // the BUSINESS_EFFECTS prong and the (C) carveout -- resolve UNCHANGED.
+  // Both pass tier 1 alone (self-reference / no clause_label narrowing at
+  // all), the ORIGINAL, untouched check, so their code path through
+  // finalizeMaeClaim is byte-identical to before this fix -- proven directly
+  // in canonical-v2-mae-clause-label-parse.test.js ("tier 1 -- self-
+  // referencing quote ... verifies without any sectionText at all").
+  assert.equal(prongResolved[0].claim.canonical_value, 'BUSINESS_EFFECTS');
+  assert.deepEqual(prongResolved[0].claim.attributes.limb_path, []);
+  const cCarveout = carveoutResolved.find((e) => e.claim.attributes.clause_label === '(C)');
+  assert.ok(cCarveout, '(C) must still resolve');
+  assert.equal(cCarveout.claim.canonical_value, 'ANNOUNCEMENT_OR_PENDENCY');
+  assert.deepEqual(cCarveout.claim.attributes.limb_path, ['(C)']);
+});
+
+// ─── Hostile tests (docs/codex-program/notes/mae-clause-label.md
+// acceptance 2): a label absent from the source, a label whose location is
+// ambiguous, and a carve-out with no label at all -- each must behave
+// EXACTLY as it does today. ───
+
+test('HOSTILE: a clause_label absent from the source entirely still queues CLAUSE_LABEL_NOT_IN_QUOTE, even with a real sibling present in the same section', async () => {
+  const { resolution } = await resolveMaeAssertions('deal:mae-hostile-label-absent', TOPBUILD_COMPANY_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      carveoutAssertions: [
+        // A real TopBuild (D) sub-quote, but asserting a clause_label that
+        // appears NOWHERE in the source -- not adjacent, not self-
+        // referencing, and no sibling anywhere carries this label either.
+        { carveout_code: 'NATURAL_DISASTERS', clause_label: '(Z)', quote: 'storms, earthquakes, floods or other natural disasters', limb_path: ['(Z)'] },
+      ],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('CLAUSE_LABEL_NOT_IN_QUOTE'));
+  assert.ok(queued, 'an absent label queues, typed, never silently resolves');
+});
+
+test('HOSTILE: a quote whose location in the section is ambiguous (the identical sentence drafted twice) still queues CLAUSE_LABEL_NOT_IN_QUOTE, never guesses which occurrence the label belongs to', async () => {
+  const duplicatedSentence = 'a duplicated carve-out sentence with no clause label anywhere near it';
+  const sectionBody = `(g) "Company Material Adverse Effect" means... (X) ${duplicatedSentence}. Unrelated intervening prose. Restated verbatim elsewhere in the same section: ${duplicatedSentence}.`;
+  const { resolution } = await resolveMaeAssertions('deal:mae-hostile-label-ambiguous', sectionBody, {
+    mae_definition_instances: [instance({
+      carveoutAssertions: [
+        { carveout_code: 'NATURAL_DISASTERS', clause_label: '(X)', quote: duplicatedSentence, limb_path: ['(X)'] },
+      ],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('CLAUSE_LABEL_NOT_IN_QUOTE'));
+  assert.ok(queued, 'an ambiguously-located quote queues, typed, never guesses an occurrence');
+});
+
+test('HOSTILE: a carve-out with no clause_label at all still queues CLAUSE_LABEL_NOT_IN_QUOTE, identical to today (this code path is untouched by the fix)', async () => {
+  const { resolution } = await resolveMaeAssertions('deal:mae-hostile-no-label', TOPBUILD_COMPANY_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      carveoutAssertions: [
+        { carveout_code: 'NATURAL_DISASTERS', clause_label: null, quote: 'storms, earthquakes, floods or other natural disasters', limb_path: [] },
+      ],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('CLAUSE_LABEL_NOT_IN_QUOTE'));
+  assert.ok(queued, 'no label at all queues, typed, exactly as before');
+});
+
+test('HOSTILE (disproportionality/PER_LIMB): an absent clause_label on a limb-local carveback still queues CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE', async () => {
+  const quote = 'storms, earthquakes, floods or other natural disasters, except to the extent disproportionate';
+  const sectionBody = `(g) "Company Material Adverse Effect" means... (D) ${quote}.`;
+  const { resolution } = await resolveMaeAssertions('deal:mae-hostile-disprop-label-absent', sectionBody, {
+    mae_definition_instances: [instance({
+      limbLocalDisproportionalityAssertions: [{
+        clause_label: '(Z)',
+        comparison_baseline_phrase: 'except to the extent disproportionate',
+        incremental_impact_phrase: null,
+        quote,
+        limb_path: ['(Z)'],
+      }],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE'));
+  assert.ok(queued, 'an absent label on a PER_LIMB carveback queues, typed, never silently resolves');
+});
+
+test('HOSTILE (disproportionality/TRAILING_LIST): the ORIGINAL substring-of-quote check is deliberately UNCHANGED for the trailing-list source form', async () => {
+  // A trailing proviso's own quote legitimately recites its covered labels
+  // INLINE (content, not a structural prefix) -- verified directly against
+  // the real, committed Skechers trailing-list clause already used above
+  // (SKECHERS_DISPROPORTIONALITY_CLAUSE), which contains every one of its
+  // own applies_to_clause_labels as a literal substring. This test proves a
+  // label genuinely ABSENT from a trailing quote still queues -- the
+  // PER_LIMB adjacency/sibling upgrade is never consulted for this source
+  // form (see handleMaeDisproportionalityCandidate's own comment).
+  const { resolution } = await resolveMaeAssertions('deal:mae-hostile-disprop-trailing-absent', SKECHERS_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      disproportionalityAssertions: [{
+        applies_to_clause_labels: ['(i)', '(zz)'], // '(zz)' does not exist in this agreement at all
+        comparison_baseline_phrase: 'other companies of a similar size operating in the industries in which the Company Group conducts business',
+        incremental_impact_phrase: null,
+        quote: SKECHERS_DISPROPORTIONALITY_CLAUSE,
+      }],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE'));
+  assert.ok(queued, 'a label absent from a trailing proviso\'s own text still queues, unchanged behaviour');
+});
+
+// ─── prong_label: the SAME defect shape, same fix, found by structural
+// analogy rather than replay (docs/codex-program/notes/mae-clause-label.md)
+// -- prong_assertions carries the identical "narrow the quote to this single
+// prong's own text" design as carveout_assertions, so a correctly narrowed,
+// LABELLED prong (a genuine two-prong definition, e.g. Modiv's own "(i)"/
+// "(ii)") is exposed to the identical false refusal. No committed live run
+// has exercised this yet -- TopBuild's own prong is unlabelled -- so this is
+// NOT replay-proven the way the carveout/disproportionality fix above is;
+// the quote below is the REAL Modiv prong text with its own label prefix
+// removed, matching exactly how the real carveout narrowing was observed to
+// behave (mae-definition-producer-prompt.js's own instruction: quote "only
+// that prong's own text"). ───
+
+test('prong_label (proactive, same defect shape, not replay-proven): a correctly narrowed, labelled prong quote (real Modiv wording, label prefix removed) now verifies via source adjacency', async () => {
+  const narrowedProngQuote = 'has resulted in, or would reasonably be expected to have, a material adverse effect '
+    + 'on the business, properties, condition (financial or otherwise), results of operations of the Company and '
+    + 'the Company Subsidiaries, taken as a whole';
+  assert.ok(MODIV_MAE_TEXT.includes(narrowedProngQuote), 'must be real Modiv wording, not invented');
+  assert.ok(!narrowedProngQuote.includes('(i)'), 'must be genuinely narrowed -- no self-reference to lean on');
+
+  const { resolution } = await resolveMaeAssertions('deal:mae-prong-label-narrowed', MODIV_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      prongAssertions: [{ prong_code: 'BUSINESS_EFFECTS', prong_label: '(i)', quote: narrowedProngQuote, limb_path: ['(i)'] }],
+    })],
+  });
+  const resolved = resolution.resolved.filter((e) => e.generic_claim_key === MAE_DEFINITION_PRONG_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.canonical_value, 'BUSINESS_EFFECTS');
+  assert.equal(resolution.review_queue.filter((e) => e.reasons.includes('PRONG_LABEL_NOT_IN_QUOTE')).length, 0);
+});
+
+test('prong_label HOSTILE: a label absent from the source entirely still queues PRONG_LABEL_NOT_IN_QUOTE, unchanged', async () => {
+  const narrowedProngQuote = 'has resulted in, or would reasonably be expected to have, a material adverse effect '
+    + 'on the business, properties, condition (financial or otherwise), results of operations of the Company and '
+    + 'the Company Subsidiaries, taken as a whole';
+  const { resolution } = await resolveMaeAssertions('deal:mae-prong-label-hostile-absent', MODIV_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      prongAssertions: [{ prong_code: 'BUSINESS_EFFECTS', prong_label: '(zz)', quote: narrowedProngQuote, limb_path: ['(zz)'] }],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((e) => e.generic_claim_key === MAE_DEFINITION_PRONG_CLAIM_KEY).length, 0);
+  const queued = resolution.review_queue.find((e) => e.reasons.includes('PRONG_LABEL_NOT_IN_QUOTE'));
+  assert.ok(queued, 'a label absent from the source still queues a labelled prong, exactly as before');
+});

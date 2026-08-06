@@ -1,0 +1,314 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "42c621334870dc745322791e50f974284c819b138aea0325e420c4e04d7eb542",
+      "deal_key": "deal:modiv-termfee-scope-fix:32065211e4688625",
+      "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 367810,
+        "absolute_start": 367590,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "bfa71c6beee3a235b783e6d55e491418570ba24b633477e2f66f4c66ff6fc794",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "exact_bytes_digest": "c9be556c28e50f023a0875b9e166609211f291be254dc6b64cdd210d8d56ebe2",
+        "exact_text": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "94044d86b74c7d7f3be336f8848bf41924074b0ffadf440e60b9842b584a2fc9",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "f3bfbd2f2430782aef3a4f64bb0038f78760f9fa3be993b36da434ecd396cc25"
+          }
+        ],
+        "output_text_hash": "c9be556c28e50f023a0875b9e166609211f291be254dc6b64cdd210d8d56ebe2",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "0174701fd4c2d921098954888d530a00efabc017434a5bcd0c7b2ff91bc96a77",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      },
+      {
+        "absolute_end": 386595,
+        "absolute_start": 386549,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "3c6048e194a61a195b36b95b0e83c037a7921d75c324e5198f6bfa456ccf09d1",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "exact_bytes_digest": "07283fe2306941669690be5a74528d82d8c670b2561d4b1fb8bc3d1243c8faa8",
+        "exact_text": "“Parent Base Amount” means $15,000,000.00.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "c247e76f566e86bb25a0d5c95308caeb688d6baf547bf9678b500db9d3abe049",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "8c3b268d4e4f6e470e22a2883b1b90bab34d5ef882bbe8628a6324458581f5bb"
+          }
+        ],
+        "output_text_hash": "07283fe2306941669690be5a74528d82d8c670b2561d4b1fb8bc3d1243c8faa8",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "0174701fd4c2d921098954888d530a00efabc017434a5bcd0c7b2ff91bc96a77",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 414712,
+        "absolute_start": 360030,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "a12d477cf562e63b9dcb6a6dbca2ef9b4b1f8b660686e9d843a76ba0192cd2f5",
+        "concept_key": "TERMF-TARGET",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "ordinal": 1,
+        "party": {
+          "capacity": "TARGET",
+          "role": "FEE_PAYER",
+          "value": "the Company"
+        },
+        "provision_instance_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "5cb28d0a631059bd6141a0136f2f7f13a433bd8137d6628dc46656c7f392abdb",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802"
+      },
+      {
+        "absolute_end": 414712,
+        "absolute_start": 360030,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "f2d1048855ccab41e4be490f5252b62865c78a5f2ddcd3bb3065a2abcd41bb35",
+        "concept_key": "TERMF-REVERSE",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "ordinal": 2,
+        "party": {
+          "capacity": "BUYER",
+          "role": "FEE_PAYER",
+          "value": "Parent"
+        },
+        "provision_instance_id": "486edd137465c0c61cb02237eeb474f184a63ddc0e47be511e3a3e2b235b3d63",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "5cb28d0a631059bd6141a0136f2f7f13a433bd8137d6628dc46656c7f392abdb",
+        "source_occurrence_id": "1f1c061760d6e167d6bde4834b3dd407034134cc07e74555314ed124671b1802"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "fee_side": "SELLER",
+          "fee_term_ref": "Company Base Amount",
+          "limb_amount_disambiguated": true,
+          "limb_amount_quote": "$10,000,000",
+          "payer_party": "the Company",
+          "section_reference": "8.12"
+        },
+        "canonical_value": "10000000",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "7aab909ec7ae69a55deae6aa3bee2ab0caead9e6a116baae4e9e246b540b0fd2",
+        "claim_revision_id": "19903e33846b1ea0a31c6e934152ff9da0e5d373ccf5dc15bee59634b8d4b200",
+        "closure_id": "b60cfec500a8995407800c7177e3e08d976452307da45bca1cb186db15dd6e9a",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 367810,
+            "absolute_start": 367590,
+            "claim_evidence_id": "fce8b8ed01597a8664027e2f494c573f869b7cbf050417a40a9a512d906dab6c",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "94044d86b74c7d7f3be336f8848bf41924074b0ffadf440e60b9842b584a2fc9",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "fce8b8ed01597a8664027e2f494c573f869b7cbf050417a40a9a512d906dab6c"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "taxonomy_codes": {
+          "fee_side": "SELLER"
+        },
+        "unit": null
+      },
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "fee_side": "SELLER",
+          "fee_term_ref": "Company Base Amount",
+          "limb_amount_disambiguated": true,
+          "limb_amount_quote": "$15,000,000.00",
+          "payer_party": "the Company",
+          "section_reference": "8.12"
+        },
+        "canonical_value": "15000000.00",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "90177767b3cdd8cf068abf3c4589d9e0e23a6fdae4de313957f37f84b8f91352",
+        "claim_revision_id": "0b403f48ea94ca2d58dfef5662a1ed60b4836d234cc4cc5ad56a2a608508c651",
+        "closure_id": "36b9c32caab0a11deed2c651e9dbb38671e7f2509db57ec4dcca292c8de17fc9",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 367810,
+            "absolute_start": 367590,
+            "claim_evidence_id": "e9297c3fb55e9a11c2b46ad6660167a66a86f2ce11595d40c9f9d4afbacad0a9",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "94044d86b74c7d7f3be336f8848bf41924074b0ffadf440e60b9842b584a2fc9",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "e9297c3fb55e9a11c2b46ad6660167a66a86f2ce11595d40c9f9d4afbacad0a9"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 1,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "18e6593f317f4f6ef0557906bff6f4f878b2a71d8df98b7fded099205f20d53f",
+        "taxonomy_codes": {
+          "fee_side": "SELLER"
+        },
+        "unit": null
+      },
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "fee_side": "BUYER",
+          "fee_term_ref": "Parent Base Amount",
+          "payer_party": "Parent",
+          "section_reference": "8.12"
+        },
+        "canonical_value": "15000000.00",
+        "claim_definition_key": "TERMINATION_FEE_AMOUNT",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "debb026c58f67297d8a8c00d7d40659f5994cb4fb0e48c12854b94311c57a6e7",
+        "claim_revision_id": "050cc2848398bad087d4f954c2ecef3a4b09e884a6be52dedcaacf1f2746edbf",
+        "closure_id": "dc84a1bbd8a01090dbf1e7b66d56f9126d2ac98fea3f538d2a5ce68c17623e58",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 386595,
+            "absolute_start": 386549,
+            "claim_evidence_id": "bfc337ca07dae02fa881aa7c491dd243cdc4c72c17ece7fb0a11d9d23439d2ab",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c247e76f566e86bb25a0d5c95308caeb688d6baf547bf9678b500db9d3abe049",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "bfc337ca07dae02fa881aa7c491dd243cdc4c72c17ece7fb0a11d9d23439d2ab"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "“Parent Base Amount” means $15,000,000.00.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "486edd137465c0c61cb02237eeb474f184a63ddc0e47be511e3a3e2b235b3d63",
+        "taxonomy_codes": {
+          "fee_side": "BUYER"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "deal_admission_id": "42c621334870dc745322791e50f974284c819b138aea0325e420c4e04d7eb542",
+        "governed_deal_key": "deal:modiv-termfee-scope-fix:32065211e4688625",
+        "immutable_source_document_id": "87279579cf644990235b1ec60a7495877504552fda32b20ec8ccf8ac53be8897",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "001227270dd132004cb04e7db5d7b9a9f1e7f06f729619ac6891770dbb4fa784",
+        "source_admission_manifest_id": "57dc8e8dd12d4953728135b410f6f44e83917dc4de01b29aa34dbffb759375f7",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 7,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

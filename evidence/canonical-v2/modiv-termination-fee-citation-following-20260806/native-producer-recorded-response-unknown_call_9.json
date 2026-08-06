@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-06T04:56:47.157Z",
+  "section_reference": "unknown-call-9",
+  "note": "Modiv TERMINATION_FEE scope-correction run (7.1 + 7.3 + 8.12 pinned together, all dispatched as TERMINATION_FEE via section_family_assignments), PROMPT_VERSION 3. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\n  \"fee_amount_assertions\": [],\n  \"fee_trigger_assertions\": [],\n  \"tail_period_assertions\": [],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"(i) by Parent pursuant to Section 7.1(d)(ii),\",\n      \"why_unmapped\": \"Names a termination ground only by cross-reference to another section, with no descriptive language of the ground itself and no payment-direction verb ('shall pay') to establish which side's fee this trigger governs\",\n      \"nearest_concept\": \"fee_trigger_assertions\"\n    }\n  ]\n}"
+}

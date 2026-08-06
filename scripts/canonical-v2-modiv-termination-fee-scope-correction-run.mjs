@@ -2,13 +2,39 @@
 /**
  * scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs
  *
- * SCOPE-CORRECTED re-run of the Modiv / Global Net Lease TERMINATION_FEE
- * family extraction. The prior run (evidence/canonical-v2/
- * m3-pilot-20260804-fresh/final-output/execution-result.json, work item
- * `modiv-termination-fee-7-3`) pinned ONLY Section 7.3 ("Fees and
- * Expenses"). That run found all six/seven fee-trigger candidates but
- * rejected every one of them TRIGGER_UNCORROBORATED, because Section 7.3
- * states every trigger as a BARE cross-reference to Section 7.1
+ * GENERAL LIVE-EXTRACTION RUNNER: any registered section family, against any
+ * deal whose source is committed and pinned. Originally written narrowly for
+ * one scope-corrected Modiv/Global Net Lease TERMINATION_FEE re-run (see the
+ * "ORIGINAL MODIV RUN" section below for the history that name still
+ * reflects); generalised because almost nothing about it actually was
+ * Modiv- or TERMINATION_FEE-specific. The extraction engine underneath
+ * (`runNativeExtraction`) already resolves its producer prompt through
+ * `getProducerPromptModule(section_family)` against a registry of 25
+ * families (`listRegisteredSectionFamilies()`); the only things that were
+ * ever hard-pinned to Modiv/TERMINATION_FEE in THIS script were: two source
+ * hashes, a default section-reference list, a default family constant, log
+ * prefixes, and a hard-coded import of the termination-fee prompt module
+ * used only to report its PROMPT_VERSION.
+ *
+ * PER-DEAL PINNED LOOKUP, NOT A TRUST-WHATEVER-YOU-COMPUTE CHECK. This
+ * script re-derives both the raw-bytes SHA-256 and the canonical-text
+ * SHA-256 of whatever source file it reads and refuses to run on any
+ * mismatch -- that check is what makes its evidence trustworthy, and
+ * generalising to more deals must not weaken it. `DEAL_PINS` below is a
+ * table from deal identifier to that deal's expected digests (plus its
+ * committed source path, retrieval URL, and a few optional per-deal
+ * defaults). A deal with no entry in `DEAL_PINS` is refused outright
+ * (`UNPINNED_DEAL`) -- adding a deal means adding a pin, deliberately, in
+ * its own reviewed diff, never inferring one from whatever bytes happen to
+ * be on disk.
+ *
+ * ORIGINAL MODIV RUN. The scope-corrected Modiv/Global Net Lease
+ * TERMINATION_FEE re-run this script was first written for: the prior run
+ * (evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-
+ * result.json, work item `modiv-termination-fee-7-3`) pinned ONLY Section
+ * 7.3 ("Fees and Expenses"). That run found all six/seven fee-trigger
+ * candidates but rejected every one of them TRIGGER_UNCORROBORATED, because
+ * Section 7.3 states every trigger as a BARE cross-reference to Section 7.1
  * ("Termination") -- e.g. "by the Company pursuant to Section 7.1(c)(i)" --
  * with no operative description of the ground itself, and Section 7.1 was
  * not in the governed scope. Separately, zero TERMINATION_FEE_AMOUNT
@@ -16,14 +42,13 @@
  * "Company Termination Fee" / "Company Base Amount" / "Parent Termination
  * Fee" / "Parent Base Amount" live in Section 8.12 ("Definitions"),
  * specifically sub-clauses (f), (m), (gg) and (vv) as PRINTED in the
- * agreement -- also not in scope.
- *
- * THIS RUN pins Section 7.1 and Section 8.12 alongside Section 7.3, all
- * three dispatched under the SAME `TERMINATION_FEE` section family (one
- * family, per the run's own brief: this is a scope correction, not a
- * family expansion), via explicit `section_family_assignments` -- matching
- * `SECTION_FAMILY_MANIFEST_ASSIGNED` provenance the prior run's own receipt
- * already carried for 7.3, never the classifier.
+ * agreement -- also not in scope. The scope-corrected run pins Section 7.1
+ * and Section 8.12 alongside Section 7.3, all three dispatched under the
+ * SAME TERMINATION_FEE family (one family, not a family expansion), via
+ * explicit `section_family_assignments`. `DEAL_PINS.modiv`'s
+ * `default_section_refs_by_family.TERMINATION_FEE` below is exactly that
+ * three-section list, preserved verbatim, so the plain invocation (only
+ * `--out-dir` given) still reproduces this run's defaults unchanged.
  *
  * WHY "8.12" AS ONE WHOLE SECTION, NOT "8.12(gg)"/"8.12(vv)" DIRECTLY. The
  * printed labels "(gg)" and "(vv)" are real (the agreement's own Section
@@ -37,40 +62,64 @@
  * "(aa)" as a CHILD of that inner enumeration rather than the outer list's
  * next sibling. The result: `findSectionByReference` resolves "8.12(f)" and
  * "8.12(m)" cleanly (they sit before the "(z)" collision) but returns
- * nothing for "8.12(gg)" or "8.12(vv)" -- confirmed empirically against
- * this exact filing before this script was written (see the run's own
- * companion evidence directory). Pinning the whole "8.12" node sidesteps
- * the addressing bug entirely rather than guessing a nested-chain
- * reference string, and costs nothing extra in call count (one section
- * reference, one producer call, same as pinning any single sub-clause
- * would have been).
+ * nothing for "8.12(gg)" or "8.12(vv)". Pinning the whole "8.12" node
+ * sidesteps the addressing bug entirely rather than guessing a
+ * nested-chain reference string.
  *
- * SOURCE. Reuses Modiv's ALREADY-ADMITTED, already-committed raw HTML at
- * tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm
- * (no live fetch: this is a re-run against the same admitted source, not a
- * new pinning fetch). This script independently re-derives and asserts
- * both the raw-bytes SHA-256 and the canonical-text SHA-256 against the
- * values already committed in tests/fixtures/canonical-v2/
- * modiv-first-live-run/intake-pin.json AND against the prior termination-
- * fee run's own `run_receipt.source_sha256` / `document_hash` -- refusing
- * to proceed on any mismatch, rather than trusting either committed value
+ * SECTION REFERENCES ARE ALWAYS EXPLICIT, NEVER GUESSED ACROSS FAMILIES.
+ * Which sections carry a family differs by agreement, so `--section-refs`
+ * is the one thing this script will not infer for an unfamiliar deal or
+ * family combination: a default section list exists ONLY for the exact
+ * (deal, family) pairs recorded in `DEAL_PINS`, and any other combination
+ * must name its sections explicitly or the run refuses before touching the
+ * source file.
+ *
+ * DRY RUN. `--dry-run` resolves the pinned source, verifies both hashes,
+ * sectionizes, resolves every requested section reference, and resolves
+ * the chosen family's producer-prompt version -- then stops, reporting what
+ * a live run would dispatch and how many model calls it would cost, without
+ * calling a model or a CLI subprocess. Useful for learning about a run
+ * before paying for it; several defects in earlier live runs of this script
+ * (a wrong section reference, an unregistered family) would have been
+ * visible for free this way.
+ *
+ * SOURCE. Reuses a deal's ALREADY-ADMITTED, already-committed raw HTML (no
+ * live fetch: this is a re-run against an admitted source, never a new
+ * pinning fetch). Independently re-derives and asserts both the raw-bytes
+ * SHA-256 and the canonical-text SHA-256 against `DEAL_PINS[deal]`, refusing
+ * to proceed on any mismatch, rather than trusting a committed value
  * blindly.
  *
  * MODEL BACKEND. No ANTHROPIC_API_KEY is assumed. Drives the model via the
  * Claude Code subscription CLI (`claude -p`), injected through
  * createAnthropicProvider's `client` seam, capturing full usage/cost/
- * duration telemetry from `--output-format json`. `maxRetries: 0` (matching
- * every prior real Modiv/F28 live-run script): a failed call fails the run,
- * it does not silently retry and blur the call count this run exists partly
- * to report.
+ * duration telemetry from `--output-format json`. `maxRetries: 0`: a failed
+ * call fails the run, it does not silently retry and blur the call count
+ * this run exists partly to report.
  *
  * Usage:
  *   node scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs \
- *     [--raw-html <path, default tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm>] \
- *     [--section-refs <comma-separated, default "7.1,7.3,8.12">] \
- *     [--out-dir <default evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805>] \
- *     [--agreement-date <default 2026-05-03, read from the agreement's own "Dated as of" preamble>] \
- *     [--model <claude CLI model alias, default "sonnet">]
+ *     [--deal <deal id registered in DEAL_PINS, default "modiv">] \
+ *     [--family <registered section_family, default "TERMINATION_FEE">] \
+ *     [--raw-html <path, default: the deal's own pinned source path>] \
+ *     [--section-refs <comma-separated, default: only exists for deal=modiv \
+ *        + family=TERMINATION_FEE, "7.1,7.3,8.12" -- every other combination \
+ *        must name its sections explicitly>] \
+ *     [--out-dir <path, required unless --dry-run>] \
+ *     [--agreement-date <default: the deal's own pinned date, if any>] \
+ *     [--model <claude CLI model alias, default "sonnet">] \
+ *     [--no-follow-citations] \
+ *     [--dry-run]
+ *
+ * --follow-citations dispatches an extra single-section call for each
+ * section a fee trigger cites by bare cross-reference, so the model can
+ * read the ground it is being asked to name. One hop only, and -- by
+ * native-extraction-run-citation-followup.js's own design -- scoped to
+ * TERMINATION_FEE bare-citation fee triggers specifically: for every other
+ * family this flag dispatches zero extra calls (documented as INERT by that
+ * module) rather than doing something family-specific silently. Off by
+ * default because on the Modiv filing it takes three model calls to
+ * roughly fourteen.
  */
 
 import {
@@ -93,8 +142,19 @@ const {
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
 const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
-const { PROMPT_VERSION: TERMINATION_FEE_PROMPT_VERSION } = require('../lib/canonical-v2/native-producer/termination-fee-producer-prompt');
+const {
+  getProducerPromptModule, listRegisteredSectionFamilies,
+} = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const { runNativeExtraction, NativeExtractionRunError } = require('../lib/canonical-v2/native-producer/native-extraction-run');
+// Opt-in only, via --follow-citations. The wrapper takes the same arguments and
+// is inert when nothing cites anything, but it is NOT free: on the Modiv
+// filing it turns three model calls into roughly fourteen, because Section
+// 7.3 states every fee trigger as a bare cross-reference into Section 7.1.
+// Left off by default so an ordinary re-run stays comparable with every
+// earlier one. It is also, by its own module header, scoped to
+// TERMINATION_FEE bare-citation fee triggers specifically -- inert for every
+// other family (see this file's own header note above).
+const { runNativeExtractionWithCitationFollowup } = require('../lib/canonical-v2/native-producer/native-extraction-run-citation-followup');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
@@ -102,55 +162,403 @@ const {
   buildReviewQueueArtifact, serialiseReviewQueueArtifact,
 } = require('../lib/canonical-v2/native-producer/review-queue-artifact');
 
-const MODIV_RETRIEVAL_URL = 'https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex2-1.htm';
-const DEFAULT_RAW_HTML_PATH = 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm';
+const DEFAULT_DEAL = 'modiv';
+const DEFAULT_FAMILY = 'TERMINATION_FEE';
 
-// Pinned independently, ahead of this run, against BOTH
-// tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json AND the
-// prior termination-fee run's own run_receipt (evidence/canonical-v2/
-// m3-pilot-20260804-fresh/final-output/execution-result.json, work item
-// modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash).
-// This script re-verifies both below rather than trusting either blindly.
-const EXPECTED_RAW_BYTES_SHA256 = '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968';
-const EXPECTED_CANONICAL_TEXT_SHA256 = '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e';
-
-const DEFAULT_SECTION_REFS = ['7.1', '7.3', '8.12'];
-const TERMINATION_FEE_FAMILY = 'TERMINATION_FEE';
-
-// Expected heading per pinned section reference -- asserted against the
-// real sectionizer tree before any model call is made, so a numbering
-// drift fails loudly instead of silently extracting the wrong text. (Verified
-// empirically against this exact filing before this script was written:
-// "7.1" -> SECTION heading "Termination" [321761,331500]; "7.3" -> SECTION
-// heading "Fees and Expenses" [333615,340109]; "8.12" -> SECTION heading
-// "Definitions" [360030,414712].)
-const EXPECTED_HEADINGS = {
-  '7.1': /Termination/i,
-  '7.3': /Fees/i,
-  '8.12': /Definitions/i,
-};
+// ─────────────────────────────────────────────────────────────────────────
+// DEAL_PINS -- the ONE place a deal identifier is mapped to its expected
+// source digests. A deal absent from this table is refused
+// (`UNPINNED_DEAL`), never inferred from whatever bytes happen to sit at a
+// path. Adding a deal means adding an entry here, deliberately.
+//
+// `modiv`'s three pinned values (`raw_bytes_sha256`, `canonical_text_sha256`,
+// `default_section_refs_by_family.TERMINATION_FEE`) are copied verbatim from
+// this script's own pre-generalisation constants -- never recomputed --
+// which is what keeps the plain `--out-dir`-only invocation's defaults
+// unchanged. `section_expectations` carries the same per-section
+// kind/heading assertions the original script hard-coded inline, moved here
+// so they apply only to the deal (and sections) they were ever actually
+// verified against; a section reference with no entry here is still
+// required to resolve against the sectionizer's tree (that check is
+// universal, see `sectionizeAndResolve` below), it just is not held to a
+// specific kind or heading.
+//
+// `topbuild`'s two hashes were independently re-derived the same way this
+// script derives Modiv's (read the committed raw HTML, sha256 it, convert
+// to canonical text via sec-html-canonical-text.js, sha256 that, verify
+// PASS via sec-html-canonical-text-verifier.js) and cross-checked against
+// the already-committed
+// tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json
+// -- both hashes and both byte lengths match that pin exactly. No pin below
+// is invented without that kind of corroboration from something already
+// committed.
+const DEAL_PINS = Object.freeze({
+  modiv: Object.freeze({
+    label: 'Modiv, Inc. / Global Net Lease, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex2-1.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm',
+    raw_bytes_sha256: '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968',
+    canonical_text_sha256: '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e',
+    agreement_date: '2026-05-03',
+    pin_corroboration: 'tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json, and the prior '
+      + 'TERMINATION_FEE run receipt at evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/'
+      + 'execution-result.json (work_item_id modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash)',
+    default_section_refs_by_family: Object.freeze({
+      TERMINATION_FEE: Object.freeze(['7.1', '7.3', '8.12']),
+    }),
+    // Verified empirically against this exact filing before this script was
+    // first written: "7.1" -> SECTION heading "Termination"; "7.3" ->
+    // SECTION heading "Fees and Expenses"; "8.12" -> SECTION heading
+    // "Definitions".
+    section_expectations: Object.freeze({
+      '7.1': Object.freeze({ kind: 'SECTION', heading: /Termination/i }),
+      '7.3': Object.freeze({ kind: 'SECTION', heading: /Fees/i }),
+      '8.12': Object.freeze({ kind: 'SECTION', heading: /Definitions/i }),
+    }),
+    // Purely a debugging aid carried over from the original script's
+    // section-location-scan.json (`all_7x_and_8_12_nodes`): every node whose
+    // reference falls in Article 7 or under 8.12, so a reviewer can see
+    // neighbouring sections without re-running the sectionizer by hand.
+    // Optional; only meaningful for a deal a reviewer is this familiar with.
+    debug_related_node_pattern: /^7\.[0-9]|^8\.12/,
+  }),
+  topbuild: Object.freeze({
+    label: 'QXO, Inc. / TopBuild Corp.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1236275/000110465926045111/tm2612209d1_ex2-1.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm',
+    raw_bytes_sha256: '146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f',
+    canonical_text_sha256: '7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d',
+    // Not pinned in this repo yet: pass --agreement-date explicitly for a
+    // TopBuild run that needs it (e.g. for deadline/date resolution).
+    agreement_date: null,
+    pin_corroboration: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json -- both '
+      + 'raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed '
+      + 'raw HTML and match that pin file exactly (raw_bytes_length 732686, canonical_text_byte_length '
+      + '412860, verification_status PASS)',
+    default_section_refs_by_family: Object.freeze({}),
+    section_expectations: Object.freeze({}),
+    debug_related_node_pattern: null,
+  }),
+});
 
 function parseArgs(argv) {
   const out = {
+    deal: DEFAULT_DEAL,
+    family: DEFAULT_FAMILY,
     model: 'sonnet',
-    rawHtml: DEFAULT_RAW_HTML_PATH,
-    sectionRefs: DEFAULT_SECTION_REFS.slice(),
-    agreementDate: '2026-05-03',
+    rawHtml: null,
+    sectionRefs: null,
+    agreementDate: null,
+    agreementDateGiven: false,
+    followCitations: true,
+    dryRun: false,
+    outDir: null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     switch (arg) {
+      case '--deal': out.deal = argv[++i]; break;
+      case '--family': out.family = argv[++i]; break;
       case '--raw-html': out.rawHtml = argv[++i]; break;
       case '--section-refs': out.sectionRefs = argv[++i].split(',').map((s) => s.trim()).filter(Boolean); break;
       case '--out-dir': out.outDir = argv[++i]; break;
-      case '--agreement-date': out.agreementDate = argv[++i]; break;
+      case '--agreement-date': out.agreementDate = argv[++i]; out.agreementDateGiven = true; break;
       case '--model': out.model = argv[++i]; break;
+      case '--follow-citations': out.followCitations = true; break;
+      case '--no-follow-citations': out.followCitations = false; break;
+      case '--dry-run': out.dryRun = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
-  if (!out.outDir) throw new Error('--out-dir is required');
-  if (out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
+  if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
+  if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   return out;
+}
+
+/**
+ * Pure semantic resolution over already-parsed CLI args: which deal, which
+ * family, which section references, which source path, which agreement
+ * date. Zero filesystem/network access -- everything here is either a
+ * lookup into `DEAL_PINS` or the registry's own `listRegisteredSectionFamilies()`
+ * introspection, so this function is unit-testable with no I/O at all.
+ *
+ * Throws three independently-distinguishable, loudly-labelled errors for
+ * the three ways a run must refuse rather than proceed:
+ *   - `UNREGISTERED_FAMILY` -- `--family` names something
+ *     producer-prompt-registry.js has never heard of.
+ *   - `UNPINNED_DEAL` -- `--deal` names something absent from `DEAL_PINS`.
+ *   - a plain `Error` when the (deal, family) combination has no pinned
+ *     default section references AND `--section-refs` was not given
+ *     explicitly -- section references are never guessed across families.
+ */
+function resolveRunConfig(args) {
+  const registeredFamilies = listRegisteredSectionFamilies();
+  if (typeof args.family !== 'string' || !args.family || !registeredFamilies.includes(args.family)) {
+    throw new Error(
+      `UNREGISTERED_FAMILY: "${args.family}" is not a registered section family. `
+      + `Registered families: ${registeredFamilies.join(', ')}.`,
+    );
+  }
+
+  const dealPin = DEAL_PINS[args.deal];
+  if (!dealPin) {
+    throw new Error(
+      `UNPINNED_DEAL: no committed pin for deal "${args.deal}". `
+      + `Registered deals: ${Object.keys(DEAL_PINS).sort().join(', ')}. `
+      + 'Add a pin to DEAL_PINS deliberately before running this deal -- an unpinned deal is a reason to '
+      + 'stop and ask, not to proceed.',
+    );
+  }
+
+  const rawHtmlPath = args.rawHtml || dealPin.raw_html_path;
+
+  const defaultRefs = dealPin.default_section_refs_by_family
+    && dealPin.default_section_refs_by_family[args.family];
+  const sectionRefs = (args.sectionRefs && args.sectionRefs.length > 0) ? args.sectionRefs : defaultRefs;
+  if (!sectionRefs || sectionRefs.length === 0) {
+    throw new Error(
+      `--section-refs is required for deal "${args.deal}" + family "${args.family}": no default section `
+      + 'references are pinned for this combination. Which sections carry a family differs by agreement -- '
+      + 'name them explicitly.',
+    );
+  }
+
+  const agreementDate = args.agreementDateGiven ? args.agreementDate : (dealPin.agreement_date || null);
+
+  return Object.freeze({
+    deal: args.deal,
+    dealPin,
+    family: args.family,
+    rawHtmlPath,
+    sectionRefs: Object.freeze([...sectionRefs]),
+    agreementDate,
+    model: args.model,
+    followCitations: args.followCitations,
+    dryRun: args.dryRun,
+    outDir: args.outDir,
+  });
+}
+
+/**
+ * Resolves the producer prompt module registered for `family` and reports
+ * its `{prompt_id, prompt_version}` -- WITHOUT a model call. Every
+ * registered producer prompt builder is a pure, synchronous function that
+ * takes `{source_text, governed_scope, known_definitions}` and returns
+ * `{prompt_id, prompt_version, messages}`; probing it with a throwaway
+ * string and an empty governed_scope object is how `native-extraction-run.js`
+ * itself learns a prompt's id/version (see its own `prompt.prompt_id` /
+ * `prompt.prompt_version` read after calling the SAME builder function this
+ * resolves), so this is not a parallel or approximate mechanism, it is the
+ * real one, called early and standalone.
+ *
+ * Fails loudly for an unregistered family rather than silently reporting
+ * nothing -- this replaces the previous hard-coded
+ * `require('./termination-fee-producer-prompt').PROMPT_VERSION` import.
+ */
+function resolvePromptVersionInfo(family) {
+  const registeredFamilies = listRegisteredSectionFamilies();
+  if (!registeredFamilies.includes(family)) {
+    throw new Error(
+      `UNREGISTERED_FAMILY: "${family}" is not a registered section family. `
+      + `Registered families: ${registeredFamilies.join(', ')}.`,
+    );
+  }
+  const builder = getProducerPromptModule(family);
+  if (typeof builder !== 'function') {
+    throw new Error(
+      `UNREGISTERED_FAMILY: "${family}" reports as registered but producer-prompt-registry.js resolved no `
+      + 'builder function for it. This should be unreachable; treat it as a registry bug.',
+    );
+  }
+  const probe = builder({
+    source_text: 'PROBE TEXT: used only to read prompt_id/prompt_version, never sent to a model.',
+    governed_scope: Object.freeze({}),
+    known_definitions: [],
+  });
+  if (!probe || typeof probe.prompt_version === 'undefined') {
+    throw new Error(`PROMPT_VERSION_UNAVAILABLE: producer prompt module for family "${family}" did not report a prompt_version.`);
+  }
+  return Object.freeze({ prompt_id: probe.prompt_id, prompt_version: probe.prompt_version });
+}
+
+/**
+ * Reads the deal's committed raw HTML (from `rawHtmlPath`, which defaults
+ * to but need not equal `dealPin.raw_html_path` -- see the file header's
+ * "PER-DEAL PINNED LOOKUP" note: whatever bytes are read are ALWAYS checked
+ * against `dealPin`'s own digests, never against wherever they came from),
+ * independently re-derives its raw-bytes and canonical-text SHA-256, and
+ * refuses to proceed on any mismatch. Never falls back to a live fetch.
+ */
+function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
+  const absoluteRawHtmlPath = resolve(rawHtmlPath);
+  if (!existsSync(absoluteRawHtmlPath)) {
+    throw new Error(`SOURCE_FILE_NOT_FOUND: committed raw HTML not found at ${absoluteRawHtmlPath} for deal "${deal}" -- refusing to fall back to a live fetch`);
+  }
+  const rawBytes = readFileSync(absoluteRawHtmlPath);
+  const rawBytesSha256 = sha256Hex(rawBytes);
+  if (rawBytesSha256 !== dealPin.raw_bytes_sha256) {
+    throw new Error(
+      `RAW_BYTES_HASH_MISMATCH: raw HTML at ${absoluteRawHtmlPath} does not match the pin for deal "${deal}": `
+      + `expected ${dealPin.raw_bytes_sha256}, got ${rawBytesSha256}`,
+    );
+  }
+
+  const retrievalPolicyDigest = sha256Hex(
+    `General extraction runner: reuse of the already-admitted, already-committed raw HTML for deal "${deal}"; no new network fetch performed.`,
+  );
+  const capture = buildSecEdgarIntakeCapture({
+    retrieval_url: dealPin.retrieval_url,
+    final_url: dealPin.retrieval_url,
+    status_code: 200,
+    content_type: 'text/html; charset=UTF-8',
+    retrieved_at: new Date().toISOString(),
+    retrieval_policy_digest: retrievalPolicyDigest,
+    redirect_count: 0,
+    response_bytes: rawBytes,
+  });
+
+  const conversion = convertSecHtmlToCanonicalText(capture);
+  if (conversion.canonical_text_sha256 !== dealPin.canonical_text_sha256) {
+    throw new Error(
+      `CANONICAL_TEXT_HASH_MISMATCH: canonical text sha256 mismatch for deal "${deal}": `
+      + `expected ${dealPin.canonical_text_sha256}, got ${conversion.canonical_text_sha256}`,
+    );
+  }
+  const verification = verifySecHtmlCanonicalText({ capture, conversion });
+  if (verification.verification_status !== 'PASS') {
+    throw new Error(`SOURCE_VERIFICATION_FAILED: independent canonical-text verification did not PASS for deal "${deal}": ${verification.verification_status}`);
+  }
+
+  return {
+    rawHtmlPath: absoluteRawHtmlPath, rawBytes, rawBytesSha256, capture, conversion, verification,
+  };
+}
+
+/**
+ * Builds the admitted semantic source context a resolved run needs, keyed
+ * by a deal+family-scoped deal key/admission id (so two different families
+ * run against the same underlying document get independently addressable
+ * admissions, rather than colliding). Pure content-derivation over already
+ * loaded/verified source data -- no I/O of its own.
+ */
+function buildAdmittedContext({
+  deal, family, dealPin, verified,
+}) {
+  const { capture, conversion, verification } = verified;
+  const admissionBundle = buildVerifiedSecSourceAdmission({ capture, conversion, verification });
+  const dealKeySlug = `${deal}-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const dealKey = `deal:${dealKeySlug}:${sha256Hex(dealPin.retrieval_url).slice(0, 16)}`;
+  const dealAdmissionId = sha256Hex(`deal-admission-${dealKeySlug}:${dealPin.retrieval_url}`);
+  const admittedSourceContext = buildAdmittedSemanticSourceContext({
+    immutable_source_document: admissionBundle.immutable_source_document,
+    source_admission_manifest: admissionBundle.source_admission_manifest,
+    semantic_extraction_input_envelope: admissionBundle.semantic_extraction_input_envelope,
+    conversion,
+    governed_deal_key: dealKey,
+    deal_admission_id: dealAdmissionId,
+    source_ordinal: 0,
+  });
+  return {
+    admissionBundle, admittedSourceContext, dealKey, dealAdmissionId,
+  };
+}
+
+/**
+ * Sectionizes the admitted source and resolves every requested section
+ * reference against the tree BEFORE any model call is made, exactly as
+ * `native-extraction-run.js` itself will (this is a friendlier, earlier
+ * failure of the same fail-closed check, not a parallel one). When the
+ * deal pin carries a `section_expectations` entry for a given reference,
+ * asserts the resolved node's kind/heading match it -- a numbering drift
+ * on a deal this well-characterised fails loudly instead of silently
+ * extracting the wrong text. A reference with no entry (any deal/family
+ * combination this script has not been specifically pinned against before)
+ * is still required to resolve against the tree; it is just not held to a
+ * specific kind or heading, since that cannot be known in advance for an
+ * unfamiliar combination.
+ */
+function sectionizeAndResolve({
+  sourceText, documentHash, sectionRefs, sectionExpectations = {},
+}) {
+  const tree = sectionizeAdmittedSource({ source_text: sourceText, document_hash: documentHash });
+  const kindCounts = {};
+  for (const n of tree.nodes) kindCounts[n.kind] = (kindCounts[n.kind] || 0) + 1;
+
+  const resolvedNodesByRef = {};
+  const resolutions = [];
+  for (const ref of sectionRefs) {
+    const node = findSectionByReference(tree, ref);
+    if (!node) {
+      throw new Error(
+        `SECTION_REFERENCE_UNRESOLVED: section reference "${ref}" could not be resolved against the tree `
+        + `(node count=${tree.nodes.length}). Aborting per instruction: do not guess a section.`,
+      );
+    }
+    const expectation = sectionExpectations[ref];
+    if (expectation) {
+      if (expectation.kind && node.kind !== expectation.kind) {
+        throw new Error(
+          `SECTION_KIND_MISMATCH: section "${ref}" resolved to kind=${node.kind}, expected ${expectation.kind}. `
+          + `heading=${JSON.stringify(node.heading)} start=${node.start} end=${node.end}. Aborting.`,
+        );
+      }
+      if (expectation.heading && !expectation.heading.test(node.heading || '')) {
+        throw new Error(
+          `SECTION_HEADING_MISMATCH: section "${ref}" resolved to heading=${JSON.stringify(node.heading)}, `
+          + `expected to match ${expectation.heading}. kind=${node.kind} start=${node.start} end=${node.end}. Aborting.`,
+        );
+      }
+    }
+    resolvedNodesByRef[ref] = node;
+    resolutions.push(Object.freeze({
+      section_reference: ref,
+      kind: node.kind,
+      heading: node.heading || null,
+      start: node.start,
+      end: node.end,
+      byte_length: node.end - node.start,
+    }));
+  }
+  return {
+    tree, kindCounts, resolvedNodesByRef, resolutions,
+  };
+}
+
+/**
+ * The dry-run report: everything a caller would want to know before paying
+ * for a live run, computed with zero model calls.
+ */
+function buildDryRunReport({
+  config, verified, resolutions, promptInfo, documentHash,
+}) {
+  return {
+    schema_version: 'GENERAL_EXTRACTION_RUN_DRY_RUN_REPORT/V1',
+    deal: config.deal,
+    deal_label: config.dealPin.label || null,
+    family: config.family,
+    section_references: config.sectionRefs,
+    raw_html_path: verified.rawHtmlPath,
+    retrieval_url: config.dealPin.retrieval_url,
+    agreement_date: config.agreementDate,
+    model_cli_alias: config.model,
+    follow_citations: config.followCitations,
+    source: {
+      raw_bytes_length: verified.rawBytes.length,
+      raw_bytes_sha256: verified.rawBytesSha256,
+      canonical_text_byte_length: verified.conversion.canonical_text_byte_length,
+      canonical_text_sha256: verified.conversion.canonical_text_sha256,
+      verification_status: verified.verification.verification_status,
+      document_hash: documentHash,
+    },
+    prompt: promptInfo,
+    sections_resolved: resolutions,
+    projected_model_call_count: config.sectionRefs.length,
+    projected_model_call_note: 'One model call per pinned section reference under runNativeExtraction. '
+      + '--follow-citations may dispatch additional single-section calls, but only for TERMINATION_FEE '
+      + 'bare-citation triggers (native-extraction-run-citation-followup.js is scoped to that one family '
+      + 'today) -- it is inert for every other family. The exact extra count cannot be known without a live call.',
+    would_call_model: false,
+  };
 }
 
 function childEnv() {
@@ -203,10 +611,11 @@ function flattenMessages(params) {
 // This client relies on that documented ordering -- never on parsing the
 // prompt text -- to label each recorded call/fixture with the section
 // reference it belongs to, and writes ONE recorded-response fixture PER
-// CALL (the single-section example scripts this is based on write to one
-// fixed path, which would silently overwrite itself across multiple calls
+// CALL (a fixed path would silently overwrite itself across multiple calls
 // in a multi-section run).
-function makeMeasuredCliClient(model, telemetry, orderedSectionRefs, fixtureOutDir) {
+function makeMeasuredCliClient({
+  model, telemetry, orderedSectionRefs, fixtureOutDir, config, promptInfo,
+}) {
   return {
     messages: {
       async create(params) {
@@ -237,8 +646,9 @@ function makeMeasuredCliClient(model, telemetry, orderedSectionRefs, fixtureOutD
           model: `claude-sonnet-5 (served via Claude Code subscription CLI, \`claude -p --model ${model}\`, no ANTHROPIC_API_KEY available in this environment)`,
           recorded_at: new Date().toISOString(),
           section_reference: sectionReference,
-          note: 'Modiv TERMINATION_FEE scope-correction run (7.1 + 7.3 + 8.12 pinned together, all dispatched as '
-            + `TERMINATION_FEE via section_family_assignments), PROMPT_VERSION ${TERMINATION_FEE_PROMPT_VERSION}. `
+          note: `General extraction run: deal=${config.deal}, family=${config.family}, `
+            + `section_references=${JSON.stringify(config.sectionRefs)} (all dispatched as ${config.family} via `
+            + `section_family_assignments), prompt_id=${promptInfo.prompt_id}, prompt_version=${promptInfo.prompt_version}. `
             + 'request_messages omitted here; raw_response_text is the model\'s literal output including its '
             + '```json fence, byte-for-byte as returned.',
           raw_response_text: rawResponseText,
@@ -251,155 +661,123 @@ function makeMeasuredCliClient(model, telemetry, orderedSectionRefs, fixtureOutD
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const outDir = resolve(args.outDir);
-  mkdirSync(outDir, { recursive: true });
+  const config = resolveRunConfig(args);
+  const promptInfo = resolvePromptVersionInfo(config.family);
+  const logPrefix = `[extraction:${config.deal}:${config.family}]`;
+
+  process.stderr.write(`${logPrefix} prompt_id=${promptInfo.prompt_id} prompt_version=${promptInfo.prompt_version}\n`);
+  process.stderr.write(`${logPrefix} deal=${config.deal} (${config.dealPin.label || 'no label'}) section_references=${JSON.stringify(config.sectionRefs)}\n`);
+  if (config.dryRun) process.stderr.write(`${logPrefix} --dry-run: resolving pins and sections, will not call a model\n`);
+
+  const outDir = config.outDir ? resolve(config.outDir) : null;
+  if (outDir) mkdirSync(outDir, { recursive: true });
 
   const runStartedAt = Date.now();
-  process.stderr.write(`[modiv-termfee-scope-fix] TERMINATION_FEE PROMPT_VERSION = ${TERMINATION_FEE_PROMPT_VERSION}\n`);
-  process.stderr.write(`[modiv-termfee-scope-fix] section_references = ${JSON.stringify(args.sectionRefs)}\n`);
 
   // ─── Step 1: reuse the ALREADY-ADMITTED committed source (no live fetch) ───
 
-  const rawHtmlPath = resolve(args.rawHtml);
-  if (!existsSync(rawHtmlPath)) {
-    throw new Error(`committed raw HTML not found at ${rawHtmlPath} -- refusing to fall back to a live fetch`);
-  }
-  const rawBytes = readFileSync(rawHtmlPath);
-  const rawBytesSha256 = sha256Hex(rawBytes);
-  if (rawBytesSha256 !== EXPECTED_RAW_BYTES_SHA256) {
-    throw new Error(`raw HTML at ${rawHtmlPath} does not match the pinned hash: expected ${EXPECTED_RAW_BYTES_SHA256}, got ${rawBytesSha256}`);
-  }
-  process.stderr.write(`[modiv-termfee-scope-fix] reused committed raw HTML at ${rawHtmlPath}, sha256=${rawBytesSha256} (MATCHES pin)\n`);
+  const verified = loadAndVerifySource({ dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath });
+  process.stderr.write(`${logPrefix} reused committed raw HTML at ${verified.rawHtmlPath}, sha256=${verified.rawBytesSha256} (MATCHES pin)\n`);
 
-  const retrievalPolicyDigest = sha256Hex(
-    'Modiv TERMINATION_FEE scope-correction run: reuse of the already-admitted, already-committed raw HTML; no new network fetch performed.',
-  );
-  const capture = buildSecEdgarIntakeCapture({
-    retrieval_url: MODIV_RETRIEVAL_URL,
-    final_url: MODIV_RETRIEVAL_URL,
-    status_code: 200,
-    content_type: 'text/html; charset=UTF-8',
-    retrieved_at: new Date().toISOString(),
-    retrieval_policy_digest: retrievalPolicyDigest,
-    redirect_count: 0,
-    response_bytes: rawBytes,
+  const { admittedSourceContext } = buildAdmittedContext({
+    deal: config.deal, family: config.family, dealPin: config.dealPin, verified,
   });
-
-  const conversion = convertSecHtmlToCanonicalText(capture);
-  if (conversion.canonical_text_sha256 !== EXPECTED_CANONICAL_TEXT_SHA256) {
-    throw new Error(`canonical text sha256 mismatch: expected ${EXPECTED_CANONICAL_TEXT_SHA256}, got ${conversion.canonical_text_sha256}`);
-  }
-  const verification = verifySecHtmlCanonicalText({ capture, conversion });
-  if (verification.verification_status !== 'PASS') {
-    throw new Error(`independent canonical-text verification did not PASS: ${verification.verification_status}`);
-  }
-  const admissionBundle = buildVerifiedSecSourceAdmission({ capture, conversion, verification });
-
-  const dealKey = `deal:modiv-termfee-scope-fix:${sha256Hex(MODIV_RETRIEVAL_URL).slice(0, 16)}`;
-  const dealAdmissionId = sha256Hex(`deal-admission-modiv-termfee-scope-fix:${MODIV_RETRIEVAL_URL}`);
-
-  const admittedSourceContext = buildAdmittedSemanticSourceContext({
-    immutable_source_document: admissionBundle.immutable_source_document,
-    source_admission_manifest: admissionBundle.source_admission_manifest,
-    semantic_extraction_input_envelope: admissionBundle.semantic_extraction_input_envelope,
-    conversion,
-    governed_deal_key: dealKey,
-    deal_admission_id: dealAdmissionId,
-    source_ordinal: 0,
-  });
-
   const documentHash = admittedSourceContext.document_hash; // = raw HTML sha256
-  const fullText = conversion.canonical_text;
+  const fullText = verified.conversion.canonical_text;
 
-  process.stderr.write(`[modiv-termfee-scope-fix] document_hash = ${documentHash}\n`);
-  process.stderr.write(`[modiv-termfee-scope-fix] canonical_text_sha256 = ${conversion.canonical_text_sha256} (MATCHES prior run's source_sha256)\n`);
+  process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
+  process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
 
-  writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
-    schema_version: 'MODIV_TERMFEE_SCOPE_FIX_SOURCE_REFERENCE/V1',
-    reused_committed_raw_html: rawHtmlPath.includes(process.cwd()) ? rawHtmlPath.slice(process.cwd().length + 1) : rawHtmlPath,
-    retrieval_url: MODIV_RETRIEVAL_URL,
-    raw_bytes_length: rawBytes.length,
-    raw_bytes_sha256: rawBytesSha256,
-    canonical_text_byte_length: conversion.canonical_text_byte_length,
-    canonical_text_sha256: conversion.canonical_text_sha256,
-    verification_status: verification.verification_status,
-    document_hash: documentHash,
-    matches_pin_at: 'tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json',
-    matches_prior_termination_fee_run_receipt: 'evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json (work_item_id modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash)',
-    note: 'REUSE, not a pinning fetch. No network call was made by this script.',
-  }, null, 2));
+  if (outDir) {
+    writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
+      schema_version: 'GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1',
+      deal: config.deal,
+      reused_committed_raw_html: verified.rawHtmlPath.includes(process.cwd()) ? verified.rawHtmlPath.slice(process.cwd().length + 1) : verified.rawHtmlPath,
+      retrieval_url: config.dealPin.retrieval_url,
+      raw_bytes_length: verified.rawBytes.length,
+      raw_bytes_sha256: verified.rawBytesSha256,
+      canonical_text_byte_length: verified.conversion.canonical_text_byte_length,
+      canonical_text_sha256: verified.conversion.canonical_text_sha256,
+      verification_status: verified.verification.verification_status,
+      document_hash: documentHash,
+      pin_corroboration: config.dealPin.pin_corroboration || null,
+      note: 'REUSE, not a pinning fetch. No network call was made by this script.',
+    }, null, 2));
+  }
 
   // ─── Step 2: sectionize + locate + assert every requested section BEFORE any model call ───
 
-  const tree = sectionizeAdmittedSource({ source_text: fullText, document_hash: documentHash });
-  const kindCounts = {};
-  for (const n of tree.nodes) kindCounts[n.kind] = (kindCounts[n.kind] || 0) + 1;
-  process.stderr.write(`[modiv-termfee-scope-fix] sectionizer node count = ${tree.nodes.length}, by kind = ${JSON.stringify(kindCounts)}\n`);
-
-  const resolvedNodesByRef = {};
-  for (const ref of args.sectionRefs) {
-    const node = findSectionByReference(tree, ref);
-    if (!node) {
-      throw new Error(
-        `section reference "${ref}" could not be resolved against the tree `
-        + `(node count=${tree.nodes.length}). Aborting per instruction: do not guess a section.`,
-      );
-    }
-    const expectedHeading = EXPECTED_HEADINGS[ref];
-    if (node.kind !== 'SECTION' || (expectedHeading && !expectedHeading.test(node.heading || ''))) {
-      throw new Error(
-        `section "${ref}" resolved to an unexpected node: kind=${node.kind}, heading=${JSON.stringify(node.heading)}, `
-        + `start=${node.start}, end=${node.end}. Expected a SECTION node${expectedHeading ? ` with heading matching ${expectedHeading}` : ''}. Aborting.`,
-      );
-    }
-    resolvedNodesByRef[ref] = node;
-    process.stderr.write(`[modiv-termfee-scope-fix] resolved ${ref}: heading=${JSON.stringify(node.heading)} start=${node.start} end=${node.end} bytes=${node.end - node.start}\n`);
+  const {
+    tree, kindCounts, resolutions,
+  } = sectionizeAndResolve({
+    sourceText: fullText,
+    documentHash,
+    sectionRefs: config.sectionRefs,
+    sectionExpectations: config.dealPin.section_expectations || {},
+  });
+  process.stderr.write(`${logPrefix} sectionizer node count = ${tree.nodes.length}, by kind = ${JSON.stringify(kindCounts)}\n`);
+  for (const r of resolutions) {
+    process.stderr.write(`${logPrefix} resolved ${r.section_reference}: heading=${JSON.stringify(r.heading)} start=${r.start} end=${r.end} bytes=${r.byte_length}\n`);
   }
 
-  writeFileSync(resolve(outDir, 'section-location-scan.json'), JSON.stringify({
-    node_count: tree.nodes.length,
-    kind_counts: kindCounts,
-    requested_section_references: args.sectionRefs,
-    resolved: args.sectionRefs.map((ref) => ({
-      section_reference: ref,
-      heading: resolvedNodesByRef[ref].heading,
-      start: resolvedNodesByRef[ref].start,
-      end: resolvedNodesByRef[ref].end,
-      byte_length: resolvedNodesByRef[ref].end - resolvedNodesByRef[ref].start,
-    })),
-    all_7x_and_8_12_nodes: tree.nodes
-      .filter((n) => /^7\.[0-9]|^8\.12/.test(n.reference || ''))
-      .map((n) => ({
-        kind: n.kind, reference: n.reference, heading: n.heading, start: n.start, end: n.end,
-      })),
-  }, null, 2));
+  if (outDir) {
+    const debugPattern = config.dealPin.debug_related_node_pattern;
+    writeFileSync(resolve(outDir, 'section-location-scan.json'), JSON.stringify({
+      node_count: tree.nodes.length,
+      kind_counts: kindCounts,
+      requested_section_references: config.sectionRefs,
+      resolved: resolutions,
+      ...(debugPattern ? {
+        debug_related_nodes: tree.nodes
+          .filter((n) => debugPattern.test(n.reference || ''))
+          .map((n) => ({
+            kind: n.kind, reference: n.reference, heading: n.heading, start: n.start, end: n.end,
+          })),
+      } : {}),
+    }, null, 2));
+  }
 
-  // ─── Step 3: LIVE model calls, one per pinned section, all dispatched TERMINATION_FEE ───
+  if (config.dryRun) {
+    const report = buildDryRunReport({
+      config, verified, resolutions, promptInfo, documentHash,
+    });
+    process.stderr.write(`${logPrefix} DRY RUN complete: projected_model_call_count=${report.projected_model_call_count}. Stopping before any model call.\n`);
+    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+    if (outDir) writeFileSync(resolve(outDir, 'dry-run-report.json'), JSON.stringify(report, null, 2));
+    return;
+  }
+
+  // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
   const contractBundle = compileFixtureContractV34();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
-  const sectionFamilyAssignments = args.sectionRefs.map((section_reference) => ({
+  const sectionFamilyAssignments = config.sectionRefs.map((section_reference) => ({
     section_reference,
-    family_id: TERMINATION_FEE_FAMILY,
+    family_id: config.family,
   }));
 
   const providerOptions = {
-    model: `claude-sonnet-5-via-claude-code-cli(${args.model})`,
-    client: makeMeasuredCliClient(args.model, telemetry, args.sectionRefs, outDir),
+    model: `claude-sonnet-5-via-claude-code-cli(${config.model})`,
+    client: makeMeasuredCliClient({
+      model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
+    }),
     maxRetries: 0,
   };
   const provider = createAnthropicProvider(providerOptions);
 
-  process.stderr.write(`[modiv-termfee-scope-fix] starting ${args.sectionRefs.length} LIVE extraction call(s)...\n`);
+  process.stderr.write(`${logPrefix} starting ${config.sectionRefs.length} LIVE extraction call(s)...\n`);
   const extractionStart = Date.now();
   let receipt;
   try {
-    receipt = await runNativeExtraction({
+    const runExtraction = config.followCitations
+      ? runNativeExtractionWithCitationFollowup
+      : runNativeExtraction;
+    receipt = await runExtraction({
       source_text: fullText,
       document_hash: documentHash,
-      section_references: args.sectionRefs,
+      section_references: config.sectionRefs,
       section_family_assignments: sectionFamilyAssignments,
       contract_bundle: contractBundle,
       definitions,
@@ -407,14 +785,16 @@ async function main() {
     });
   } catch (err) {
     const elapsedMs = Date.now() - runStartedAt;
-    process.stderr.write(`[modiv-termfee-scope-fix] EXTRACTION FAILED after ${elapsedMs}ms, ${telemetry.calls.length} call(s) completed: ${err && err.stack ? err.stack : err}\n`);
-    writeFileSync(resolve(outDir, 'call-telemetry.json'), JSON.stringify({
-      run_wall_clock_ms: Date.now() - extractionStart, calls: telemetry.calls, failed: true, error: String(err && err.message ? err.message : err),
-    }, null, 2));
+    process.stderr.write(`${logPrefix} EXTRACTION FAILED after ${elapsedMs}ms, ${telemetry.calls.length} call(s) completed: ${err && err.stack ? err.stack : err}\n`);
+    if (outDir) {
+      writeFileSync(resolve(outDir, 'call-telemetry.json'), JSON.stringify({
+        run_wall_clock_ms: Date.now() - extractionStart, calls: telemetry.calls, failed: true, error: String(err && err.message ? err.message : err),
+      }, null, 2));
+    }
     throw err;
   }
   const extractionWallClockMs = Date.now() - extractionStart;
-  process.stderr.write(`[modiv-termfee-scope-fix] extraction complete in ${extractionWallClockMs}ms, ${telemetry.calls.length} model call(s)\n`);
+  process.stderr.write(`${logPrefix} extraction complete in ${extractionWallClockMs}ms, ${telemetry.calls.length} model call(s)\n`);
 
   writeFileSync(resolve(outDir, 'run-receipt.json'), JSON.stringify(receipt, null, 2));
   writeFileSync(resolve(outDir, 'call-telemetry.json'), JSON.stringify({ run_wall_clock_ms: extractionWallClockMs, calls: telemetry.calls }, null, 2));
@@ -425,7 +805,7 @@ async function main() {
     run_receipt: receipt,
     contract_vocabulary: contractBundle,
     admitted_source_context: admittedSourceContext,
-    agreement_date: args.agreementDate || null,
+    agreement_date: config.agreementDate,
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 
@@ -467,19 +847,22 @@ async function main() {
   const totalElapsedMs = Date.now() - runStartedAt;
 
   writeFileSync(resolve(outDir, 'run-manifest.json'), JSON.stringify({
-    schema_version: 'MODIV_TERMFEE_SCOPE_FIX_RUN_MANIFEST/V1',
+    schema_version: 'GENERAL_EXTRACTION_RUN_MANIFEST/V1',
     script: 'scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs',
-    purpose: 'Scope-corrected re-run of TERMINATION_FEE family for Modiv/Global Net Lease: 7.1 + 7.3 + 8.12 pinned together (prior run pinned 7.3 only).',
-    prior_run_compared_against: {
-      file: 'evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json',
-      work_item_id: 'modiv-termination-fee-7-3',
-    },
-    section_references: args.sectionRefs,
+    deal: config.deal,
+    deal_label: config.dealPin.label || null,
+    section_family: config.family,
+    purpose: (config.deal === DEFAULT_DEAL && config.family === DEFAULT_FAMILY)
+      ? 'Scope-corrected re-run of TERMINATION_FEE family for Modiv/Global Net Lease: 7.1 + 7.3 + 8.12 pinned together (prior run pinned 7.3 only).'
+      : `General extraction run: family ${config.family} on deal ${config.deal}.`,
+    section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
     contract_bundle_version: 'compileFixtureContractV34',
-    termination_fee_prompt_version: TERMINATION_FEE_PROMPT_VERSION,
-    agreement_date: args.agreementDate,
-    model_cli_alias: args.model,
+    prompt_id: promptInfo.prompt_id,
+    prompt_version: promptInfo.prompt_version,
+    agreement_date: config.agreementDate,
+    model_cli_alias: config.model,
+    follow_citations: config.followCitations,
     max_retries: 0,
     run_started_at: new Date(runStartedAt).toISOString(),
     total_elapsed_ms: totalElapsedMs,
@@ -487,10 +870,10 @@ async function main() {
     model_call_count: telemetry.calls.length,
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,
-    source_sha256: conversion.canonical_text_sha256,
+    source_sha256: verified.conversion.canonical_text_sha256,
   }, null, 2));
 
-  process.stderr.write('[modiv-termfee-scope-fix] === SUMMARY ===\n');
+  process.stderr.write(`${logPrefix} === SUMMARY ===\n`);
   process.stderr.write(`total_elapsed_ms: ${totalElapsedMs}, model_call_count: ${telemetry.calls.length}\n`);
   process.stderr.write(`compiled_candidates: ${receipt.compiled_candidate_count} ok / ${receipt.rejected_candidate_count} rejected\n`);
   process.stderr.write(`evidence_residuals (producer): ${receipt.evidence_residual_count}\n`);
@@ -505,7 +888,24 @@ async function main() {
   process.stderr.write(`publishable claims: ${validation.publishableWriteSet ? validation.publishableWriteSet.claims.length : 'n/a'}\n`);
 }
 
-main().catch((err) => {
-  process.stderr.write(`[modiv-termfee-scope-fix] FAILED: ${err && err.stack ? err.stack : err}\n`);
-  process.exitCode = 1;
-});
+const isMainModule = process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
+  main().catch((err) => {
+    process.stderr.write(`[extraction-run] FAILED: ${err && err.stack ? err.stack : err}\n`);
+    process.exitCode = 1;
+  });
+}
+
+export {
+  DEAL_PINS,
+  DEFAULT_DEAL,
+  DEFAULT_FAMILY,
+  parseArgs,
+  resolveRunConfig,
+  resolvePromptVersionInfo,
+  loadAndVerifySource,
+  buildAdmittedContext,
+  sectionizeAndResolve,
+  buildDryRunReport,
+  main,
+};

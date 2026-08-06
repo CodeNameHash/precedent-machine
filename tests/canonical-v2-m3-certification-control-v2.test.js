@@ -143,14 +143,17 @@ function assertControlError(code) {
 
 test('V2 records the real serving block before it tests downstream fences', () => {
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
-  // 104 after two movements on 2026-08-05 that happen to cancel out. Up one:
-  // CAPITALISATION was added to the register (previously untracked despite
-  // being the only component with real recorded model output) with one
-  // honest, unproven FOLLOW_ON_REQUIRED product surface. Down one:
-  // merger-structure-product-projection.js was deleted as dead code, taking
-  // the structure-market-fields surface with it, since that module was its
-  // source_path. Do not read the unchanged number as nothing having happened.
-  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
+  // 104 after two movements on 2026-08-05 that happen to cancel out (see
+  // tests/canonical-v2-parity-serving-path.test.js for the detail), then 103 the same day:
+  // termination-fee-query-fields' dead CompareSectionColumn locator was repointed to the
+  // component it actually renders through, UnifiedCompareSection, with a real served
+  // consumer named (docs/codex-program/notes/compare-locator-fix.md). Then 102 on 2026-08-06
+  // (docs/codex-program/notes/serving-path-proof.md): termination-fee-rendered-rows' real
+  // consumer (sectionList.js) was named AND it now carries server_stamped_field evidence
+  // proving the HTTP-boundary crossing to canonical_v2_termination_fee_cards -- see
+  // tests/canonical-v2-parity-serving-boundary.test.js. Do not read any movement as nothing
+  // having happened.
+  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 102);
   // 2, not 6: the owner approved the four retained no-shop concepts
   // (2026-08-05), promoting NOSOL-CEASE/RECOMMEND/ENFORCE/WAIVER out of
   // review hold into the NO_SHOP family's product_surfaces. Only the two

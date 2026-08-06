@@ -142,13 +142,30 @@ test('replaying the Skechers recorded raw response through the FIXED citation-de
   assert.ok(node37, 'section "3.7" must resolve against the real Skechers tree');
   assert.equal(node37.kind, 'SECTION');
 
-  // Reproduce the defect's own precondition directly against the REAL tree
-  // (not the excerpt fixture): a legacy, non-decimal node whose span
-  // straddles/contains "3.7" and is DEEPER than it -- the exact shape the
-  // old depth-only tie-break got wrong.
+  // This assertion inverted on 2026-08-05, and the reason matters more than
+  // the change. It used to require the straddling "III-INTRO(d)" node to be
+  // PRESENT, as the precondition for the citation-derivation tie-break this
+  // test exercises. That node was the live run's actual defect: an article
+  // chapeau swallowing the sections after it, so a deeper legacy node
+  // contained "3.7" and the old depth-only tie-break preferred it, producing
+  // 37 of 39 CITATION_DISAGREEMENT results.
+  //
+  // The tie-break fixed the symptom downstream. The cause is now fixed at
+  // source: reconcileStaleArticleChildren in deterministic-sectionizer.js
+  // clips a straddling article child at the first accepted inline section, so
+  // the tree no longer mints the overlapping node at all. Fifteen such
+  // overlaps existed across the committed corpus, nine of them in Skechers.
+  //
+  // So the precondition is gone and the test now pins its absence. The
+  // tie-break itself is unchanged and stays as defence in depth: a filing
+  // shaped differently could still present an ambiguous containment, and the
+  // rest of this test still proves it resolves correctly when one occurs.
   const straddlingLegacyNodes = tree.nodes.filter((n) => n.section_id !== node37.section_id
     && n.start <= node37.start && node37.end <= n.end && n.depth > node37.depth);
-  assert.ok(straddlingLegacyNodes.some((n) => n.reference === 'III-INTRO(d)'), 'sanity: the real Skechers tree still contains the straddling "III-INTRO(d)" node the live run found');
+  assert.ok(
+    !straddlingLegacyNodes.some((n) => n.reference === 'III-INTRO(d)'),
+    'the straddling "III-INTRO(d)" node must no longer exist: the sectionizer now reconciles article chapeaux against the inline sections that follow them, so the live run\'s citation defect cannot recur at source',
+  );
 
   const recordedParsed = loadRecordedResponse();
 

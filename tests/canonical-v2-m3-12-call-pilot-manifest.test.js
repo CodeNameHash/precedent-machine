@@ -87,8 +87,12 @@ test('M3 12-call pilot admits recorded TopBuild context with explicit identity a
     family_id: 'CAPITALISATION',
     disposition: 'EXTRACT',
     section_pin: {
-      section_reference: 'III-INTRO(b)',
-      section_id: '77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7',
+      // Corrected with the manifest's own pin: same bytes, same
+      // section_text_sha256, real reference instead of the phantom lettered
+      // child the old 78-character heading cap produced. See the comment above
+      // the Capital Structure test below for the full reasoning.
+      section_reference: '3.1(b)',
+      section_id: '66f01432485170a2d87fffaf6139e0b7f6c6dd380bfdc0550f76c2bad4dba418',
       section_kind: 'SUBSECTION',
       section_text_sha256: 'ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487',
     },
@@ -120,7 +124,26 @@ test('M3 12-call pilot never turns a caller-modified recorded source reference i
   );
 });
 
-test('M3 TopBuild capitalisation pin is the exact Capital Structure subsection, not Article III', () => {
+// Reference corrected on 2026-08-05, byte range untouched. This test used to
+// address the Capital Structure subsection as "III-INTRO(b)". That label was a
+// phantom: the sectionizer's heading pattern capped section titles at 78
+// characters, TopBuild's Sections 3.1 and 3.2 have longer titles, so neither
+// was ever recognised and the Article III chapeau kept the whole article and
+// minted lettered children of its own. Raising the cap makes the real sections
+// appear and the phantom disappear.
+//
+// The pin moved because the tree was wrong, not because the bytes were. The
+// start and end offsets below are unchanged, and text_sha256 is byte-identical
+// to what this test pinned before, which is the proof that the same span of
+// the agreement is being addressed. Only section_id moves, because it derives
+// from the reference. The manifest work item was already called
+// "topbuild-capitalisation-3-1-b", so 3.1(b) is the name everyone had been
+// using for it anyway.
+//
+// The correction also separates two things the phantom had merged: there are
+// now both a 3.1(b) and a 3.2(b) Capital Structure representation, the
+// Company's and Parent's, which a single III-INTRO(b) could not distinguish.
+test('M3 TopBuild capitalisation pin is the exact Capital Structure subsection, not the whole of Article III', () => {
   const recorded = JSON.parse(fs.readFileSync(path.join(
     ROOT,
     'tests/fixtures/canonical-v2/f28-third-live-run/adapter-result.json',
@@ -130,10 +153,11 @@ test('M3 TopBuild capitalisation pin is the exact Capital Structure subsection, 
     source_text: context.canonical_text.text,
     document_hash: context.document_hash,
   });
-  const capital = findSectionByReference(tree, 'III-INTRO(b)');
-  const article = findSectionByReference(tree, 'III-INTRO');
+  const capital = findSectionByReference(tree, '3.1(b)');
+  const article = findSectionByReference(tree, '3.1');
   assert.ok(capital);
   assert.ok(article);
+  assert.equal(findSectionByReference(tree, 'III-INTRO(b)'), null, 'the phantom lettered child of the Article III chapeau must no longer exist');
   assert.deepEqual({
     start: capital.start,
     end: capital.end,
@@ -142,7 +166,8 @@ test('M3 TopBuild capitalisation pin is the exact Capital Structure subsection, 
   }, {
     start: 57763,
     end: 62446,
-    section_id: '77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7',
+    section_id: '66f01432485170a2d87fffaf6139e0b7f6c6dd380bfdc0550f76c2bad4dba418',
+    // Unchanged from the pre-correction pin: same bytes, new label.
     text_sha256: 'ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487',
   });
   const bytes = Buffer.from(context.canonical_text.text, 'utf8');

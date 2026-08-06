@@ -1,0 +1,31 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "MAE_DEFINITION",
+  "purpose": "General extraction run: family MAE_DEFINITION on deal topbuild.",
+  "section_references": [
+    "3.1(a)"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.1(a)",
+      "family_id": "MAE_DEFINITION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "prompt_id": "mae-definition-producer/v2",
+  "prompt_version": 2,
+  "agreement_date": null,
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-06T07:09:22.231Z",
+  "total_elapsed_ms": 228505,
+  "extraction_wall_clock_ms": 226385,
+  "model_call_count": 1,
+  "run_receipt_id": "f1f8bf77b277f6bfb2e0d615aa6202f0e9a65f96c7bcd6d69ffff150e87a90e9",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d"
+}
