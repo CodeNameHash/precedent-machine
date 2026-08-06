@@ -1114,19 +1114,20 @@ test('adaptProvisionGroupToLegacyCard and adaptOpenWorldRecordToLegacyCard are n
 // is the one this bridge's own threat model documents as reachable by a
 // hand-tampered envelope that never went through the builder at all.
 
-// KNOWN LIMITATION at the BUILD path specifically, documented rather than
-// hidden: when a hostile PROJECTION presents an already-negation-stripped
-// fragment as evidence.quote, adaptProvisionGroupToLegacyCard has no prior,
-// correct value to compare it against -- this IS the first time the bridge
-// ever sees this claim, so it can only ask "does this candidate occur,
-// word-boundary-anchored, in the legacy text", which a fragment like this
-// satisfies by construction. Carrying a build-time-computed span forward
-// (verbatim_span, see the groundedInSource header comment) closes negation-
-// stripping against a POST-build tamper of an otherwise-genuine bridge (see
-// the re-validation-path test directly below, which DOES throw) -- it
-// cannot retroactively invent a "correct" quote for an input that was
-// never legitimate in the first place. This test pins that boundary.
-test('KNOWN LIMITATION (build path): a negation-stripped fragment presented as a FRESH quote is accepted, because build time has no prior value to compare it against', () => {
+// FIXED (was "KNOWN LIMITATION (build path)"; see docs/codex-program/notes/
+// negation-reversal.md): when a hostile PROJECTION presents an already-
+// negation-stripped fragment as evidence.quote, adaptProvisionGroupToLegacyCard
+// has no PRIOR, correct value to compare it against -- this IS the first
+// time the bridge ever sees this claim. It used to ask only "does this
+// candidate occur, word-boundary-anchored, in the legacy text", which a
+// fragment like this satisfies by construction. locateGrounding now also
+// requires lib/negation-boundary-guard.js's hasUnclosedNegationBeforeSpan to
+// clear at the matched position -- a fragment whose immediate governing
+// clause carries a negation it does not itself include is no longer
+// "grounded" at all, at the SAME checkpoint that also computes verbatim_span,
+// so the build path and the re-validation path (test directly below) now
+// share one closed mechanism instead of the build path being the open half.
+test('FIXED (build path): a negation-stripped fragment presented as a FRESH quote is rejected', () => {
   const legacyReviewDeal = buildLegacyReviewDeal();
   const baseProjection = buildProjection({ includeKnowledge: false, includeParent: false, includeOpenWorld: false });
 
@@ -1134,17 +1135,17 @@ test('KNOWN LIMITATION (build path): a negation-stripped fragment presented as a
   // FULL region_full_text verbatim (see representations-dark-review.json),
   // so the fragment below is a genuine, word-boundary-aligned substring of
   // region_full_text (it starts right after "would not ", a real space
-  // boundary, and ends right before a comma).
+  // boundary, and ends right before a comma) -- word-boundary anchoring
+  // alone would still accept it; only the negation guard closes this.
   const fragment = 'have a Company Material Adverse Effect';
   assert.ok(FIXTURE.legacy_cards[0].region_full_text.includes(fragment));
   const negationStripped = structuredClone(baseProjection);
   negationStripped.records[0].evidence = { ...negationStripped.records[0].evidence, quote: fragment };
   resealRecordAt(negationStripped, 0);
   resealProjection(negationStripped);
-  // Documented as NOT throwing today -- this assertion records the residual
-  // gap; it is not a claim that this input is safe.
-  assert.doesNotThrow(
+  assert.throws(
     () => bridgeRepresentationRecordsToLegacyShape(negationStripped, legacyReviewDeal, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_GROUNDED'),
   );
 });
 
@@ -1293,19 +1294,17 @@ test('quote grounding: the legitimate whole-text accuracy quote and a legitimate
   assert.doesNotThrow(() => validateBridgeEnvelope(bridge, ENABLED_ENV));
 });
 
-// KNOWN LIMITATION, documented rather than hidden (see the groundedInSource
-// header comment in lib/canonical-v2/representations-dark-bridge.js for the
-// full investigation): negation-stripping within a claim whose LEGITIMATE
-// quote is a genuine sub-phrase (shorter than its card's region_full_text --
-// e.g. this fixture's knowledge qualifier) is NOT caught by word-boundary-
-// anchored containment, because dropping a whole preceding word can never
-// itself violate a word boundary. Closing this needs a genuine,
-// independently-verified start/end offset relative to region_full_text,
-// which no stage of this family's pipeline provides today. This test pins
-// the CURRENT, honest behaviour -- it documents a real gap, not a proof of
-// safety -- so a future fix that closes it must touch this test rather than
-// the gap silently reappearing unnoticed.
-test('KNOWN LIMITATION: negation-stripping within a genuine sub-phrase quote is not caught absent a sound offset', () => {
+// FIXED (was "KNOWN LIMITATION"; see docs/codex-program/notes/negation-
+// reversal.md): negation-stripping within a claim whose LEGITIMATE quote is
+// a genuine sub-phrase (shorter than its card's region_full_text -- e.g.
+// this fixture's knowledge qualifier) used to escape word-boundary-anchored
+// containment, because dropping a whole preceding word can never itself
+// violate a word boundary. locateGrounding's hasUnclosedNegationBeforeSpan
+// check does not need an independently-captured start/end offset to catch
+// THIS shape: "no" is the negation cue here (see NEGATION_LEAD_IN_RES's
+// narrow "no <noun>" list, which includes "no fact"), and it sits in the
+// SAME clause as the fragment, well inside the lookback window.
+test('FIXED: negation-stripping within a genuine sub-phrase quote is rejected', () => {
   const legacyReviewDeal = buildLegacyReviewDeal();
   const baseProjection = buildProjection({ includeKnowledge: true, includeParent: false, includeOpenWorld: false });
   const knowledgeIndex = baseProjection.records.findIndex((record) => (
@@ -1327,9 +1326,8 @@ test('KNOWN LIMITATION: negation-stripping within a genuine sub-phrase quote is 
   tampered.records[knowledgeIndex].evidence = { ...tampered.records[knowledgeIndex].evidence, quote: negated };
   resealRecordAt(tampered, knowledgeIndex);
   resealProjection(tampered);
-  // Documented as NOT throwing today -- this assertion records the residual
-  // gap; it is not a claim that this input is safe.
-  assert.doesNotThrow(
+  assert.throws(
     () => bridgeRepresentationRecordsToLegacyShape(tampered, legacyReviewDeal, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_GROUNDED'),
   );
 });
