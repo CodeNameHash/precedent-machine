@@ -1,10 +1,11 @@
 {
-  "baseline_taken_at_commit": "4788860bf4f6e8c937dd3ab704b0555d30b2fe12",
+  "baseline_taken_at_commit": "bff5cd28f4eafa07be52a5f5d0a75a88a00554ae",
+  "correction": "Regenerated 2026-08-06. The first version judged a run complete on resolution.json alone, which wrongly counted NO_OTHER_REPS_FRAUD as healthy: it produces a resolution and then dies inside validation. It also recorded CAPITALISATION as merely lacking a summary when it had in fact timed out at 600 seconds. Completeness is now judged on the last stage, not the first, so the incomplete count is four rather than three.",
   "runs": 25,
-  "crashed": 3,
+  "incomplete": 4,
   "totals": {
-    "resolved": 111,
-    "queued": 206,
+    "resolved": 108,
+    "queued": 203,
     "open_world": 193
   },
   "review_queue_reasons_ranked": [
@@ -148,11 +149,8 @@
   "per_family": [
     {
       "dir": "modiv-antitrust-20260806",
-      "family": "ANTITRUST_REGULATORY",
-      "sections": [
-        "5.5"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 10,
       "queued": 22,
       "open_world": 11,
@@ -167,11 +165,8 @@
     },
     {
       "dir": "modiv-appraisal-20260806",
-      "family": "APPRAISAL_DISSENTERS_RIGHTS",
-      "sections": [
-        "2.6"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 0,
@@ -179,31 +174,18 @@
     },
     {
       "dir": "modiv-capitalisation-20260806",
-      "family": null,
-      "sections": null,
-      "status": "CRASHED",
-      "resolved": null,
-      "queued": null,
-      "open_world": null
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
     },
     {
       "dir": "modiv-closing-conditions-20260806",
-      "family": null,
-      "sections": null,
-      "status": "CRASHED",
-      "resolved": null,
-      "queued": null,
-      "open_world": null
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
     },
     {
       "dir": "modiv-consideration-20260806",
-      "family": "CONSIDERATION",
-      "sections": [
-        "2.1",
-        "2.2",
-        "2.3"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 1,
       "queued": 4,
       "open_world": 20,
@@ -215,11 +197,8 @@
     },
     {
       "dir": "modiv-dividends-20260806",
-      "family": "DIVIDENDS",
-      "sections": [
-        "5.10"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 3,
@@ -227,11 +206,8 @@
     },
     {
       "dir": "modiv-dno-20260806",
-      "family": "DNO_INDEMNIFICATION",
-      "sections": [
-        "5.8"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 4,
       "queued": 10,
       "open_world": 7,
@@ -243,12 +219,8 @@
     },
     {
       "dir": "modiv-employee-matters-20260806",
-      "family": "EMPLOYEE_MATTERS",
-      "sections": [
-        "3.11",
-        "3.12"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 3,
@@ -256,12 +228,8 @@
     },
     {
       "dir": "modiv-financing-covenants-20260806",
-      "family": "FINANCING_COVENANTS",
-      "sections": [
-        "4.13",
-        "5.20"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 3,
       "open_world": 2,
@@ -271,13 +239,8 @@
     },
     {
       "dir": "modiv-general-covenants-20260806",
-      "family": "GENERAL_COVENANTS",
-      "sections": [
-        "5.3",
-        "5.7",
-        "5.9"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 12,
@@ -285,11 +248,8 @@
     },
     {
       "dir": "modiv-guaranty-20260806",
-      "family": "GUARANTY_FINANCING_PARTY",
-      "sections": [
-        "5.11"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 0,
@@ -297,20 +257,13 @@
     },
     {
       "dir": "modiv-interim-operating-20260806",
-      "family": null,
-      "sections": null,
-      "status": "CRASHED",
-      "resolved": null,
-      "queued": null,
-      "open_world": null
+      "status": "INCOMPLETE",
+      "failed_stage": "EXTRACTION_OR_RESOLUTION"
     },
     {
       "dir": "modiv-key-defined-terms-20260806",
-      "family": "KEY_DEFINED_TERMS",
-      "sections": [
-        "8.5"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 15,
@@ -318,11 +271,8 @@
     },
     {
       "dir": "modiv-material-contracts-20260806",
-      "family": "MATERIAL_CONTRACTS",
-      "sections": [
-        "3.17"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 5,
       "queued": 5,
       "open_world": 26,
@@ -330,14 +280,8 @@
     },
     {
       "dir": "modiv-merger-structure-20260806",
-      "family": "MERGER_STRUCTURE_CLOSING",
-      "sections": [
-        "1.1",
-        "1.4",
-        "1.5",
-        "1.6"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 20,
       "queued": 20,
       "open_world": 3,
@@ -345,16 +289,8 @@
     },
     {
       "dir": "modiv-misc-boilerplate-20260806",
-      "family": "MISC_BOILERPLATE",
-      "sections": [
-        "8.2",
-        "8.3",
-        "8.4",
-        "8.7",
-        "8.9",
-        "8.10"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 14,
       "queued": 14,
       "open_world": 0,
@@ -362,21 +298,13 @@
     },
     {
       "dir": "modiv-no-other-reps-20260806",
-      "family": null,
-      "sections": null,
-      "status": "OK",
-      "resolved": 3,
-      "queued": 3,
-      "open_world": 0,
-      "reasons": {}
+      "status": "INCOMPLETE",
+      "failed_stage": "VALIDATION"
     },
     {
       "dir": "modiv-no-shop-20260806",
-      "family": "NO_SHOP",
-      "sections": [
-        "5.6"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 42,
       "queued": 52,
       "open_world": 9,
@@ -391,11 +319,8 @@
     },
     {
       "dir": "modiv-proxy-meeting-20260806",
-      "family": "PROXY_MEETING",
-      "sections": [
-        "5.4"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 13,
       "open_world": 8,
@@ -409,13 +334,8 @@
     },
     {
       "dir": "modiv-representations-20260806",
-      "family": "REPRESENTATIONS",
-      "sections": [
-        "3.1",
-        "3.3",
-        "3.4"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 28,
@@ -423,11 +343,8 @@
     },
     {
       "dir": "modiv-specific-performance-20260806",
-      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
-      "sections": [
-        "8.8"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 0,
@@ -435,13 +352,8 @@
     },
     {
       "dir": "modiv-tax-matters-20260806",
-      "family": "TAX_MATTERS",
-      "sections": [
-        "3.13",
-        "4.15",
-        "5.12"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 0,
       "queued": 0,
       "open_world": 11,
@@ -449,12 +361,8 @@
     },
     {
       "dir": "modiv-termination-20260806",
-      "family": "TERMINATION",
-      "sections": [
-        "7.1",
-        "7.2"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 1,
       "queued": 16,
       "open_world": 13,
@@ -466,13 +374,8 @@
     },
     {
       "dir": "modiv-termination-fee-citation-following-20260806",
-      "family": null,
-      "sections": [
-        "7.1",
-        "7.3",
-        "8.12"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 9,
       "queued": 23,
       "open_world": 20,
@@ -485,11 +388,8 @@
     },
     {
       "dir": "topbuild-mae-definition-20260806",
-      "family": "MAE_DEFINITION",
-      "sections": [
-        "3.1(a)"
-      ],
-      "status": "OK",
+      "status": "COMPLETE",
+      "failed_stage": null,
       "resolved": 2,
       "queued": 21,
       "open_world": 2,
