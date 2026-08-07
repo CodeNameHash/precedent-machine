@@ -1786,6 +1786,53 @@ control accepted; extra-key, missing-key and wrong-enum rows all refused with
 the shape; a duplicate id refused separately. All three digest guards updated
 and the governed extract regenerated.
 
+## Step 2B2. Build the hosted read surface Fable ruled
+
+**Ruled 2026-08-07 by Fable under Ben's delegation.** Full reasoning in
+`DECISIONS.md` decision 1. **Design only — this step builds and proves it
+locally. Deploying it anywhere hosted is a separate act needing its own
+authorisation.**
+
+**What it is.** `SECURITY DEFINER` functions in `public`, in a new additive
+`supabase/canonical-v2-staging-read.sql`, granted solely to a new `NOLOGIN`
+role `canonical_v2_staging_reader`. No table grants, no RLS policies, no
+`FORCE ROW LEVEL SECURITY`. It extends the schema's existing and only access
+idiom — definer function plus dedicated role — to a third role.
+
+**Change, in three parts.**
+
+1. **Factor the local reader behind a query interface.**
+   `local-staging-deal-reader.js` keeps its output shapes, its assertions, its
+   fail-loud guards and all 16 hermetic tests. The local implementation runs
+   raw SQL as today; a hosted implementation calls the new RPCs by whitelisted
+   name with bounded payloads. **Everything above the interface stays
+   verbatim**, so the round-trip and governance tests carry over unchanged.
+2. **Write the SQL** to the ruling's constraints: sole grantee, `EXECUTE`
+   revoked from `PUBLIC`, `anon`, `authenticated`, `service_role`,
+   `canonical_v2_writer` and `canonical_v2_serving`; `search_path` pinned;
+   `canonical_payload` returned verbatim; bounded results; and its own
+   verification block asserting zero policies, zero table grants, and the
+   enumerated functions with their grantee.
+3. **The drift test, which is not optional.** A hermetic test reads the
+   committed SQL and asserts its literals equal the JS constants —
+   `CLAIM_REVISION/V1` and the ungoverned marker string. The functions now
+   carry the same positive check the JS carries, and **two copies of a
+   predicate that can drift apart is exactly what produced the QXO
+   false-"Governed claim" defect**.
+
+**The positive check is the point, not a detail.** Governed claims are
+returned only where `schema_version` is `CLAIM_REVISION/V1`; open-world
+functions return only marker-carrying rows. A QXO-era
+`NOVEL_CONCEPT_CANDIDATE/V1` row matches neither and is returned by neither —
+**invisible rather than mislabelled**.
+
+**Proves it is done.** The new SQL applies to `pm-pg`, and the reader reads
+back **as a non-owner role holding only `canonical_v2_staging_reader`** —
+the first read in this programme that does not depend on the table-owner
+shortcut, which is the loop this ruling was convened to close. The existing
+round-trip and governance tests pass through the new interface unchanged, and
+the drift test fails if either literal moves.
+
 ## Step 2B1. Close what the open-world review found at the serving boundary
 
 **Adversarial review of `899e9bc5`, `9eaaa663` and `73c6627b`, 2026-08-07.

@@ -935,6 +935,90 @@ attached a standing action.
 > there is no `FORCE ROW LEVEL SECURITY` in the schema, which is an absence,
 > not a design.
 
+**RULED 2026-08-07 by Fable, under Ben's delegation. This decision is
+closed.** Hosted read access to `canonical_v2_staging` is by **`SECURITY
+DEFINER` functions granted to a new dedicated read role**. No table grants, no
+RLS policies, no `FORCE ROW LEVEL SECURITY`.
+
+**The mechanism.** Reads go through `SECURITY DEFINER` functions in `public`,
+in a new additive `supabase/canonical-v2-staging-read.sql`, mirroring the six
+reads the local prototype already performs. A new `NOLOGIN` role
+`canonical_v2_staging_reader` is the only grantee; `EXECUTE` is revoked from
+`PUBLIC`, `anon`, `authenticated`, `service_role`, `canonical_v2_writer` and
+`canonical_v2_serving`. `search_path` is pinned on every function.
+`canonical_payload` is returned verbatim, because the byte-identical
+`canonicalJson` round trip is a product requirement. Results are bounded, so a
+too-large read fails loud rather than streaming.
+
+**`canonical_v2_serving` is deliberately not reused.** That role means "may
+read activated corpus releases only" — the Step 5A gate. Granting it staging
+reads would silently widen it to pre-release data. A separate role keeps each
+role's meaning one sentence long, and retiring the surface later is a single
+revoke and drop.
+
+**Why this is the schema's existing law rather than a preference.** Verified
+in the code, not inherited from the brief: **zero** `CREATE POLICY` statements
+in any canonical-v2 SQL file, **zero** occurrences of `FORCE ROW LEVEL
+SECURITY` anywhere in `supabase/`. Definer-function-plus-dedicated-role is
+already the schema's only access idiom, applied twice — the writer, and the
+Step 5A serving layer. This extends it to a third role. Grants plus policies
+would introduce the schema's first-ever policies and first-ever table grants,
+a second idiom for every future audit to police.
+
+**Why grants plus RLS is worse for this product specifically.** Three reasons,
+in order of weight:
+
+1. **It cannot express the boundary that matters.** The governed/ungoverned
+   distinction lives *inside* `canonical_payload` jsonb, not in a column. A
+   `SELECT` grant exposes every row in arbitrary query shapes; a policy narrow
+   enough to matter would reimplement `open-world-evidence-serving.js`'s
+   semantics in the database — the duplicated-predicate drift that produced
+   the QXO false-"Governed claim" defect found the same day.
+2. **It destroys a cheap audit.** Today "is staging locked down?" is a
+   zero-row check. With policies it becomes "read these predicates and reason
+   about them". This project's documented failure mode is confidently
+   misreading its own artefacts, so a mechanical answer is worth more than the
+   flexibility.
+3. **The obvious grantee is the wrong one.** The app's 19 service-key routes
+   hold `service_role`, which is deliberately excluded from everything in
+   `canonical_v2_staging`. Granting it `SELECT` would collapse the isolation
+   that currently makes a leaked service key worthless against canonical data.
+
+**What it exposes.** `anon` and `authenticated`: nothing, unchanged. The
+service key: nothing in `canonical_v2_staging`, unchanged. `canonical_v2_writer`:
+unchanged, gains no read. The new reader credential: deal-scoped,
+`document_hash`-parameterised, bounded reads. An attacker holding it can
+enumerate extracted deal data — the same exposure class decision 1 above
+already accepted — but cannot write, cannot reach `public`-schema tables,
+cannot run DDL.
+
+**`lockdown-rls.sql` does not change and is not weakened.** Both its
+verification queries are `public`-scoped and stay zero-row true. The new file
+carries its own verification block: zero policies for `canonical_v2_staging`,
+zero table grants, and the enumerated definer functions with their sole
+grantee — so the audit stays mechanical.
+
+**The ungoverned-evidence dimension, which is why the mechanism was chosen as
+much as anything.** The functions become the boundary, so they carry the
+**positive** check: governed claims are returned only
+`WHERE canonical_payload->>'schema_version' = 'CLAIM_REVISION/V1'`; open-world
+functions return only rows carrying the marker. **A QXO-era
+`NOVEL_CONCEPT_CANDIDATE/V1` row matches neither predicate and is returned by
+neither function — invisible rather than mislabelled.** That is the two-grammar
+trap that was broken by execution on 2026-08-07, closed in SQL as well as in
+JS. Both sides of the wire enforce it, and **a drift test is mandatory**: a
+hermetic test reads the committed SQL and asserts its literals equal the JS
+constants, so the two boundaries cannot separate silently.
+
+**What this ruling does NOT authorise.** Design only. Not applying the SQL to
+any hosted database, not creating or binding any login, not using any real
+credential, not production activation, and no change to
+`isPermittedCanonicalV2Runtime`'s denial of production. The authority boundary
+stands in full; deploying this surface is a separate act needing its own
+authorisation.
+
+**Implementation is `PLAN.md` Step 2B2.**
+
 **AMENDED 2026-08-07. Ben delegated this decision to Fable.** The original
 form of this action was "stop and give Ben a recommendation". Ben's words:
 *"just do what you and Fable decide is best."*
