@@ -23,6 +23,12 @@ root). Read in this order.
    delete, or still live but obscure. Assumes `CODEBASE-GUIDE.md`'s
    vocabulary, so read that one first.
 
+**Returning after time away?** Read
+`docs/codex-program/notes/handoff-2026-08-07.md` first. It is a dated working
+note, not a seventh core document: it records where things stood on that date
+and what is waiting on a decision. If its date is old, trust the six documents
+above over it.
+
 Everything enumerable (registered families, product-projection modules,
 review table configs, dark bridges, serving sources, live-run scripts) is
 generated, not hand-maintained here: run `npm run generate:codebase-inventory`

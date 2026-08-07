@@ -1,5 +1,11 @@
 # The plan
 
+> **Picking this up after time away?** Start with
+> `docs/codex-program/notes/handoff-2026-08-07.md`, which says what changed on
+> that date, what is waiting on Ben, and what to do first. It is dated and will
+> go stale; this document does not.
+
+
 This document and `COMPLETED.md` are the whole picture. Nothing is in both.
 A step lives here until it is closed, then it moves to `COMPLETED.md` carrying
 the evidence that closed it. If a step is in neither file, it is not planned
@@ -57,15 +63,16 @@ Run these yourself. They take seconds.
 | Fact | Value | Command |
 |---|---|---|
 | Registered section families | 25 | `node -e "console.log(require('./lib/canonical-v2/native-producer/producer-prompt-registry.js').listRegisteredSectionFamilies().length)"` |
-| Live extraction runs on disk | 25 directories | `ls -d evidence/canonical-v2/*20260806* \| wc -l` |
-| Of those, run against Modiv | 24 | see section 3, run-provenance |
-| Of those, run against TopBuild | 1 (MAE_DEFINITION only) | same |
-| Claims resolved across all 25 runs | 108 | `docs/codex-program/notes/all-families-baseline-20260806.json`, `totals.resolved` |
-| Claims queued for human review | 203 | same, `totals.queued` |
-| Candidates with no governed slot at all | 193 | same, `totals.open_world` |
-| Runs that did not finish | 4 | same, `incomplete` |
-| Families that resolved zero claims | 11 of the 21 that finished | see section 3 |
-| Rows of V2 data written to any database | 0 | `grep -rniE "INSERT INTO\|UPDATE .* SET" lib/canonical-v2/` returns nothing |
+| Live extraction run directories on disk | 50 | `ls -d evidence/canonical-v2/*-2026* \| wc -l` |
+| **Of those, importable** | **25** | `evidence/canonical-v2/baseline-manifest.json`, `importable_run_count` |
+| Registered families with an importable run | 25 of 25 | same, `families_with_an_importable_run` |
+| **Families whose importable run publishes claims** | **15 of 25** | same; ten publish zero, each triaged in Step 2B |
+| Claims / provisions / excerpts across the importable baseline | 170 / 67 / 159 | same, `totals` |
+| Candidates with no governed slot, in the evidence directories | 275 | `resolution.open_world` summed across importable runs |
+| Candidates with no governed slot, written to any database | **0** | the adapter lists all five open-world collections in `EMPTY_COLLECTION_KEYS`; see Step 2B |
+| Runs that did not finish | 0 among the importable set | three were recovered by replay on 2026-08-07; see Step 2B |
+| Model calls spent producing the current baseline | 0 | every importable run is a replay of already-recorded responses |
+| Rows of V2 data written to a real database | 0 | the write half is proven against `InMemoryCanonicalRepository` only — see the note below |
 | Product surfaces the parity register still blocks | 102 of 143 | `node -e "const {CURRENT_M3_FAMILY_PARITY_REGISTER,listM3ProductParityBlockers}=require('./lib/canonical-v2/native-producer/m3-family-parity-register.js');console.log(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length)"` |
 | Pre-production gates declared | 25, all OPEN | `node -e "const Y=require('yaml'),f=require('fs');console.log(Y.parse(f.readFileSync('docs/codex-program/programme-gates.yaml','utf8')).programme_gate_registry.preproduction_gates.length)"` |
 | Of those, with any acceptance criteria | 5 | section 5 below |
@@ -76,20 +83,29 @@ Run these yourself. They take seconds.
 | Authentication | built, enforced, 101 real-request tests pass | `CI=true node --test tests/auth-route-enforcement.test.js` |
 
 **Read this before you read anything else.** The extraction pipeline is proven
-across 25 families on essentially one agreement — and four of those 25 runs did
-not complete. Nothing has been imported durably into the product's database.
-Nothing V2 renders on the live site, and that is by construction rather than by
-oversight: `isPermittedCanonicalV2Runtime` (`lib/canonical-v2/feature-flags.js`)
-permits a preview or local runtime and denies production outright. The import
-schema has been executed against isolated staging and rolled back, never
-durably. One family, termination fees, serves V2 data on a preview deployment,
-and it does so from a hand-typed fixture file, not from a database.
+across 25 families on essentially one agreement. Nothing has been imported
+durably into the product's database. Nothing V2 renders on the live site, and
+that is by construction rather than by oversight: `isPermittedCanonicalV2Runtime`
+(`lib/canonical-v2/feature-flags.js`) permits a preview or local runtime and
+denies production outright. One family, termination fees, serves V2 data on a
+preview deployment, and it does so from a hand-typed fixture file, not from a
+database.
 
-A run's output is also, today, terminal: it is written to
-`evidence/canonical-v2/<deal>-<family>-<date>/` and nothing functional reads it
-back. Step 2B builds the bridge that changes this. Until it exists, a
-successful extraction campaign of any size changes nothing a user can see —
-see `CODEBASE-GUIDE.md` section 12.
+**"The write half is done" means in memory.** Step 2B's write half is closed
+and a run does pass the canonical writer end to end — but against
+`InMemoryCanonicalRepository`, in process. `canonical_v2_write`, the 8,686-line
+SQL reimplementation of the same contract, **has never received the general
+runner's output**. The JS writer and the SQL writer have not been shown to
+agree on this data. Step 4A is where that is settled, and it needs no decision
+from anyone: a local Postgres container and `psql`.
+
+Two numbers in the table above are the ones to hold on to. **25 families have
+an importable run; 15 publish claims.** And of the ten cards a termination-fee
+run projects onto a product surface, **four survive a round trip through the
+database** as things stand — the rest are open-world evidence the adapter never
+writes, or conditional-fee values with no table to write to. The headline
+number and the honest number differ by a factor the headline invites you to
+miss.
 
 The volume of work behind this is large and it has not yet reached a user.
 
@@ -410,9 +426,17 @@ hand what is already committed.
 
 **Two lists are wrong, both found by reading them.**
 
-- **CONSIDERATION was pointed at 2.1, 2.2 and 2.3.** Modiv's statement that
-  appraisal rights are not available is in section **2.6**, which was never
-  requested *for this family* — the appraisal run did request `["2.6"]`, and
+- **CONSIDERATION was pointed at 2.1, 2.2 and 2.3. CORRECTED 2026-08-07 to
+  include 2.6**, which no previous sweep did — §2.6 reads, in full, *"No
+  dissenters' or appraisal rights shall be available with respect to the
+  Mergers."* (119 bytes, verified against the document and pinned by
+  `tests/canonical-v2-mae-definition-pin-review.test.js`). **Not yet run:**
+  there are no recorded responses for 2.6 under this family, so the corrected
+  pin needs a live call before it produces anything, and the committed
+  baseline entry still reflects the 2.1/2.2/2.3 run. The original diagnosis
+  follows, because it is what makes the correction right. Modiv's statement
+  that appraisal rights are not available is in section **2.6**, which was
+  never requested *for this family* — the appraisal run did request `["2.6"]`, and
   its own prompt correctly declined to assert a negative from it. This is why Appraisal looks like a taxonomy gap and is not one. The
   Appraisal family's own prompt
   (`lib/canonical-v2/native-producer/appraisal-producer-prompt.js`) says in
@@ -430,8 +454,16 @@ hand what is already committed.
   into open world. The harvest will return 8.5 for this family: that is the
   error being corrected, not evidence against the correction.
 
-**A generator, as a cross-check and for every document after this one.** Write
-`scripts/canonical-v2-generate-family-section-refs.mjs`: sectionize with
+**A generator, as a cross-check and for every document after this one. BUILT
+2026-08-07 — do not write it again.** `scripts/canonical-v2-generate-family-section-refs.mjs`
+exists, and its raw output is committed for **both** pinned deals:
+`docs/codex-program/notes/family-section-refs-modiv-20260807-generated.json`
+and `...-topbuild-20260807-generated.json`. The TopBuild file is half of Step
+2E, which was written before it existed and does not know. Run it with
+`--compare` to see only the disagreements.
+
+What it does, recorded because the construction constraints still matter:
+sectionize with
 `sectionizeAdmittedSource`, label each node with
 `classifyDeterministicSectionFamilies`
 (`lib/canonical-v2/native-producer/section-family-classifier.js:410`, stage 1
@@ -661,7 +693,9 @@ capture input under `admitted_source_capture_inputs`.
 
 ### Defect 2: `IMMUTABLE_SOURCE_DOCUMENT/V2` is not content-addressed
 
-**This is the more serious finding, and it is open.**
+**This was the more serious finding. RESOLVED the same day — see the end of
+this section — but read it, because the shape of the defect explains why every
+pre-2026-08-07 run is refused.**
 
 That schema includes `source_map_compressed_sha256` — a digest of *DEFLATE
 output* (`sec-html-canonical-text.js:390`, carried into the identity by
@@ -858,51 +892,67 @@ import that would publish fewer rows than the run itself did.
 Found by a test asserting the import publishes *something*, not by anything
 failing. Keep that assertion.
 
-**Superseded note, kept for the reasoning it records.**
-With validation passing, the writer refuses a `DEAL_SCOPE_RUN`:
-"writeSet must match the closed reference-only semantic contract"
-(`canonical-writer.js`, `assertDealScopeWriteSetShape`, ~293-314). That check
-demands the key set **exactly equal** its list, permitting only
-`persisted_object_references` as an extra.
+**Superseded note. HISTORY ONLY — nothing below this line until the next
+heading is an instruction.** It is kept because it records a real reasoning
+trap, and because deleting a question that was asked and answered invites it
+being asked again. Every question it poses has since been settled; the answers
+are in the RESOLVED and closed-layer sections above, which were written later
+despite appearing earlier.
 
-Diffed: a run's write-set contains all 18 required keys **plus
-`write_set_origin`**, and nothing else. That single key is the whole
-difference.
+> With validation passing, the writer refused a `DEAL_SCOPE_RUN`: "writeSet
+> must match the closed reference-only semantic contract"
+> (`canonical-writer.js`, `assertDealScopeWriteSetShape`). That check demanded
+> the key set **exactly equal** its list, permitting only
+> `persisted_object_references` as an extra.
+>
+> Diffed: a run's write-set contains all 18 required keys **plus
+> `write_set_origin`**, and nothing else. That single key was the whole
+> difference.
+>
+> **Three lists in three files disagreed about it, and the writer was the
+> outlier.** `validate-write-set.js`'s deal-scope list permits it.
+> `m3-staging-candidate-preflight.js` has its own 19-key list that **requires**
+> it. `canonical-writer.js`'s list was the only one that excluded it.
+>
+> The question then open was which of three things to change, and the note
+> warned against picking by majority, since two lists agreeing is not evidence
+> when all three were written at different times for different callers.
+>
+> **Answered.** Fable adjudicated: extend the writer's permitted extras. No
+> stripper exists; the validator does not merely tolerate the key but *uses*
+> it (`answer_provenance` is required for claims only when
+> `write_set_origin === 'NATIVE_PRODUCER'`); and the validator already listed
+> it beside `persisted_object_references` in an optional-key powerset. The
+> writer had simply never learned the key. Implemented; see the RESOLVED
+> section above.
 
-**Three lists in three files disagree about it, and the writer is the
-outlier.** `validate-write-set.js`'s deal-scope list permits it — which is
-why 23 of 24 runs validate. `m3-staging-candidate-preflight.js` has its own
-19-key list that **requires** it, and additionally asserts
-`write_set_origin === 'NATIVE_PRODUCER'`. `canonical-writer.js`'s list is the
-only one that excludes it.
+One thing that note established and which is still live guidance: **reading
+the write-set from `validation.json`'s `publishableWriteSet` does not work.**
+It is the post-split publishable subset and lacks the five source-admission
+keys the validator requires. `adapter-result.json` carries the complete
+`write_set` plus `admitted_source_contexts` — though see Defect 3 above, since
+it is *also* not the write-set the run validated.
 
-**What is NOT established, and must be before anything changes.** The
-plausible reading is that some step between preflight and write strips the
-key, and that the M3 staging path therefore never hits this. Searched for it
-and did not find it — but "I did not find it" is not "it does not exist",
-and this document has already been wrong once this week by treating those as
-the same. Establish which of these is true before touching any of the three
-lists:
+**Proves the write half is done — DISCHARGED 2026-08-07, with one part
+outstanding.**
 
-1. Something strips `write_set_origin` before the write, and the bridge
-   should do the same. Cheapest, if it exists.
-2. The writer's list should include it, matching the other two.
-3. The producer should stop emitting it, and the preflight's requirement is
-   the stale one.
+| Criterion | State |
+|---|---|
+| A committed evidence directory goes in and the writer accepts it | **Done.** `modiv-antitrust-20260807-replay`, 10 excerpts / 13 provisions / 13 claims |
+| A second identical invocation is a no-op | **Done.** `tests/canonical-v2-evidence-to-write-set-bridge.test.js`, real write then replay |
+| Proved by test, not by a screenshot | **Done.** 15 tests across two files |
+| **Rows come out in *staging*** | **NOT done.** Everything above is against `InMemoryCanonicalRepository` |
 
-Do not pick by majority. Two lists agreeing is not evidence when all three
-were written at different times for different callers.
+**That last row is the honest gap and it is not small.** `canonical_v2_write`
+is an 8,686-line SQL reimplementation of the same contract, and it has never
+received the general runner's output. The JS writer and the SQL writer have
+not been shown to agree on this data.
 
-One thing this already proves: reading the write-set from
-`validation.json`'s `publishableWriteSet` does not work. That is the
-post-split publishable subset, and it lacks the five source-admission keys
-the validator requires. `adapter-result.json` carries the complete
-`write_set` plus `admitted_source_contexts`, and is the file to read.
-
-**Proves it is done (write half).** One family's committed evidence directory
-goes in, rows come out in staging, and a second identical invocation is a
-no-op. Both proved by test, not by a screenshot. Blocked on the
-closed-reference-only-semantic-contract refusal above.
+Closing it is **Step 4A**, which needs no decision, no credential and no
+production access — a local Postgres container and `psql`. Consider running
+4A before Step 2C rather than after: it is the difference between "the writer
+accepts this" and "the database accepts this", and everything downstream
+assumes the second.
 
 ### The read half
 
@@ -1048,9 +1098,23 @@ list, so anything that fails here is a defect in the chain rather than in the
 mapping. Everything after this is fan-out; this is the rung that establishes
 the chain exists at all.
 
-**Change.** Run it, diff the extraction against
-`all-families-baseline-20260806.json`'s `TERMINATION_FEE` entry, write, serve
-in a preview or local runtime, and look at it.
+**Change.** Run it, diff the extraction against the baseline, write, serve in
+a preview or local runtime, and look at it.
+
+**The baseline moved on 2026-08-07.** It is
+`evidence/canonical-v2/baseline-manifest.json`, regenerated with
+`npm run generate:baseline` and checked with `npm run gate:baseline` (a
+required gate, see `OPERATING-RULES.md`). It records what each run *would
+publish if imported*, which is not what the run claimed — a run whose
+`validation.json` says thirteen claims and which imports zero is exactly the
+defect that yardstick exists to catch. The older
+`notes/all-families-baseline-20260806.json` describes the pre-replay world;
+do not diff against it.
+
+**And read Step 2B's caveat on TERMINATION_FEE before using its entry.** Its
+importable baseline is the `--no-follow-citations` replay, not the stronger
+citation-following run, so the count is anchored low. A rung-1 pass for this
+family is permissive, not evidence of parity.
 
 **One piece of wiring this needs, which 2B does not supply.** The only path
 that attaches Canonical V2 as the served source is
@@ -1103,11 +1167,13 @@ else with `UNREGISTERED_FAMILY`.
 
 **Proves it is done.** Checked after **every** rung, not only the last:
 
-1. `incomplete` is 0 among families run so far. **It is 4 today** —
-   capitalisation, closing conditions and interim operating failed at
-   extraction or resolution, no-other-reps at validation. Commit `d261df30`
-   fixed three crash causes and `ae8b12de` made the timeout configurable; this
-   is the test of those claims. Closing conditions is only partly addressed:
+1. `incomplete` is 0 among families run so far. **It is 0 today, as of
+   2026-08-07** — it was 4, and three of those (capitalisation, closing
+   conditions, interim operating) were recovered by replaying the responses
+   they had already recorded, with no-other-reps recovered earlier the same
+   way. Commit `d261df30` fixed three crash causes and `ae8b12de` made the
+   timeout configurable; the recoveries are the test of those claims, and they
+   passed. Closing conditions is only partly addressed:
    what was fixed is that a partial receipt is now kept, and the underlying
    unparseable response on call 2 of 4 persists, with sections 6.3 and 6.4
    never attempted. If it fails again, that is expected, and the finding is
@@ -1124,16 +1190,24 @@ else with `UNREGISTERED_FAMILY`.
    a 200", and do not let a family with no surface silently count as one that
    serves.
 
-A failed gate is a stop, not a note to fix at the end. Eleven of the twenty
-complete Modiv runs currently resolve zero, so note that condition 2 is
-**vacuously satisfied** by 0 -> 0: for every zero-resolving family, state why
-zero is correct and what would make it wrong, or the gate is checking nothing.
-`GUARANTY_FINANCING_PARTY` is the standing example of correct zero;
-`REPRESENTATIONS`, `PROXY_MEETING` and `KEY_DEFINED_TERMS` show candidates
-present with zero resolved, which looks like a resolver gap rather than absence.
+A failed gate is a stop, not a note to fix at the end. **Ten of the 25
+importable runs publish zero claims**, so note that condition 2 is **vacuously
+satisfied** by 0 -> 0: for every zero-publishing family, state why zero is
+correct and what would make it wrong, or the gate is checking nothing. Step 2B
+now carries a triage table doing exactly that for all ten — two proven correct,
+one a pin defect, one a located adapter defect, the rest vocabulary gaps. Start
+from it rather than re-deriving it.
+`GUARANTY_FINANCING_PARTY` is the standing example of correct zero, and
+`APPRAISAL_DISSENTERS_RIGHTS` was proved to be a second one on 2026-08-07
+(§2.6 is a 119-byte denial). `KEY_DEFINED_TERMS` turned out to be a *pin*
+defect, not a resolver one. Do not re-derive any of this: Step 2B's triage
+table has the cause for all ten zero-publishing families.
 
-Regenerate the baseline as `notes/all-families-baseline-<date>.json`, keep the
-old one, and diff. This step also discharges `P9_SHADOW_REEXTRACTION` and
+Regenerate with `npm run generate:baseline` and diff — the file is
+`evidence/canonical-v2/baseline-manifest.json`, and `npm run gate:baseline`
+does the diff for you, naming the run that moved rather than emitting a
+two-thousand-line diff. Keep the previous committed version in git history
+rather than beside it. This step also discharges `P9_SHADOW_REEXTRACTION` and
 `P9_STRUCTURED_CLAIMS`.
 
 **Re-runs are change-triggered, not blanket.** Re-run a (deal, family) pair
@@ -1158,13 +1232,24 @@ defaulting it to "any commit" would degrade this straight back to blanket
 re-running. Accepted loss, stated rather than hidden: blanket re-running would
 surface flakiness that a single receipt hides.
 
-**Nondeterminism.** The runner makes live model calls with no `--replay` and no
-pinned seed (a replay path exists only on the sibling
-`canonical-v2-native-extract.mjs:70`). Two identical runs can differ. Before
-rung 1, either build a replay path or write down the tolerance: what size of
-`resolved` delta is noise, how many confirmations a red gate needs, and who
-decides. Without that, the first flaky rung is resolved by whoever is at the
-keyboard, which is the gate erosion this ladder exists to prevent.
+**Nondeterminism — RESOLVED 2026-08-07, and this paragraph used to say the
+opposite.** It read: *"The runner makes live model calls with no `--replay` and
+no pinned seed (a replay path exists only on the sibling
+`canonical-v2-native-extract.mjs`)."* That is false at HEAD and was the
+prerequisite this step named.
+
+The live runner has `--record`, `--replay` and `--replay-from-run`
+(`scripts/canonical-v2-live-extraction-run.mjs`, argument parsing ~430), keyed
+by request hash for fresh recordings and by section reference for the legacy
+per-section fixtures. **The entire current baseline was produced through it,
+with zero model calls.** Ben's ruling of 2026-08-06 was to build the replay
+path rather than write a tolerance policy; it is built.
+
+What still holds: a *live* re-run can still differ from a recorded one, and
+replay proves the resolver, validator and write-set builder changed or did
+not — it says nothing about whether the model would answer the same way today.
+Use replay for the rung-to-rung diffs, and treat a live re-run as a separate
+question.
 
 ## Step 2E. Map the families to TopBuild's sections, for nothing
 
@@ -1297,7 +1382,10 @@ pass.
 # Stage 3. Close the extraction gaps that are already named and located
 
 Each of these was found, diagnosed and deliberately left. They are the reason
-11 of the 21 finished runs resolved zero claims.
+**ten of the 25 importable runs publish zero claims** — see Step 2B's triage
+table, which names the cause for each of the ten and says which of the steps
+below addresses it. An earlier version of this line said "11 of the 21 finished
+runs", which was the pre-replay count.
 
 ## Step 3A. Widen the termination trigger-kind vocabulary for the four phrasings that miss
 
@@ -1382,12 +1470,59 @@ remedy`. So the real condition is a quote that grants the remedy while omitting
 premises the surrounding source does contain — a quote-scope problem, not a
 wording problem.
 
-That points at the quote boundary rather than the predicate. Establish first
-whether Modiv's zero-zero-zero is caused by this function at all: instrument or
-replay one committed run and confirm the drop happens here before changing
-anything. If it does, the fix is likely to be how much text the quote spans, or
-allowing the premise to be satisfied from the source when the quote is a
-faithful subset of it — not loosening the premise patterns.
+That pointed at the quote boundary rather than the predicate.
+
+**MEASURED 2026-08-07. The drop does happen here, and the quote-scope
+hypothesis above is wrong.** This step asked for exactly that check before
+anything changed; here is the result.
+
+`modiv-specific-performance-20260807-replay` records `proposal_count: 0` and
+`evidence_residual_count: 1`, and the residual reason is
+`SPECIFIC_PERFORMANCE_OPERATIVE_PREMISE_UNVERIFIED` — so this function is the
+drop. The model's recorded response for §8.8 is a well-formed
+`remedy_assertions` array with `assertion_kind: SPECIFIC_PERFORMANCE` and the
+full verbatim grant. **The extraction was correct and the adapter discarded
+it.**
+
+But the quote is not too short. It reads:
+
+> *"The parties hereto agree that irreparable harm, **for which monetary
+> damages (even if available) would not be an adequate remedy**, would occur
+> in the event that any party hereto does not perform..."*
+
+The premise is present, in the quote, twice over. It fails the predicate for
+two reasons that are both about wording:
+
+- an intervening clause splits `irreparable harm ... would occur`, and the
+  regex demands those words contiguous;
+- the drafter wrote **monetary** damages where the regex demands **money**.
+
+Compare `sourceHasSpecificPerformanceOperativePremise` twelve lines above
+(1182-1186), which tests the *same premise* and accepts `harm|damage`,
+`money|monetary`, and up to 180 characters between "damages" and "not be an
+adequate remedy". It matches Modiv fine. **Two predicates for one premise,
+written at two strictnesses, and the strict one rejects a quote the tolerant
+one accepts from the same text.**
+
+So the strict predicate is not testing whether the quote carries the premise.
+It is testing whether the quote is drafted in one house style, and silently
+discarding every agreement that is not. "Monetary damages" is at least as
+common as "money damages"; on this corpus the loss is not an edge case.
+
+**Revised change.** Make the quote-side predicate as tolerant as the
+source-side one directly above it. That is a smaller change than the quote-
+boundary work this step originally proposed, and it is what the evidence
+supports.
+
+**Still required, and not softened:** the hostile test below. Loosening a
+premise pattern is exactly the change that trades a false negative for a false
+positive, so a non-operative acknowledgement must still be excluded, and that
+must be demonstrated rather than assumed.
+
+**Why this was not just done.** It changes what the pipeline extracts from
+every deal, which `OPERATING-RULES.md` places with Ben. It is listed in
+`DECISIONS.md` under "Waiting on Ben" as decision 2 — which is *this step*,
+not a new finding.
 
 **Proves it is done.** A replay of the committed Modiv run through the corrected
 provider yields at least one candidate reaching the resolver, and a hostile test
@@ -1475,18 +1610,36 @@ and was outside the permitted scope of the work that found them.
   `/\bany\b[\s\S]{0,80}\bcontracts?\b/i` and the value is literally "any". Real
   drafting separates the two. Same shape as the synonym widening already done in
   `lib/taxonomy.js`.
-- **General Covenants, 11 items, line 4057.** `generalCovenantGroundingFailure`
+- **General Covenants, 11 items, line 4057.** **Corroborated against the
+  regenerated baseline, 2026-08-07:** `modiv-general-covenants-20260807-replay`
+  publishes zero claims with exactly 12 open-world entries, 11 of them
+  `GENERAL_COVENANT_CODE_UNCORROBORATED` — the count and the symptom this step
+  predicted, unchanged after regeneration.
+  `generalCovenantGroundingFailure`
   corroborates a covenant code against `lib/rubric.js`'s display labels and
   aliases, which are the old system's *presentation* strings, not a corroboration
   vocabulary. It needs its own lexicon, in the shape of
   `ioc-corroboration.js`. This is why the family resolved zero and put all 12 of
   its findings in open world.
-- **Representations, 9 items, lines 8644 to 8648.** For `ACCURACY` qualifiers,
+- **Representations, 9 items, lines 8644 to 8648.** **Baseline check,
+  2026-08-07: the real loss is larger than 9.**
+  `modiv-representations-20260807-replay` publishes zero claims with 28
+  open-world entries — 10 `REPRESENTATION_QUALIFIER_KIND_NOT_EXACT`, 9
+  `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, and 9 prose declines where the
+  model itself said the text is not a qualifier. The 9 prose declines are
+  correct and should stay. The other 19 are this defect, so fixing it should
+  move roughly nineteen items, not nine.
+  For `ACCURACY` qualifiers,
   every outcome other than `CLASSIFIED` is pushed to open world as
   `REPRESENTATION_QUALIFIER_KIND_NOT_EXACT`, including `REVIEW`, which means the
   classifier deliberately declined to decide. Refusing and asking for review are
   different answers and must route differently.
-- **Tax Matters, 5 items, lines 9386 to 9388.** `TAX_OPINION_COOPERATION` and
+- **Tax Matters, 5 items, lines 9386 to 9388.** **Baseline check, 2026-08-07:**
+  `modiv-tax-matters-20260807-replay` publishes zero claims with 11 open-world
+  entries, of which 3 are `TAX_TREATMENT_KIND_UNCORROBORATED` and 7 are
+  `TAX_ASSERTION_OPEN_WORLD`. Only the first group is this defect; the second
+  is Step 3H's territory. Do not expect this fix to clear the family.
+  `TAX_OPINION_COOPERATION` and
   `TRANSFER_COOPERATION` corroborate against regular expressions hardcoded in
   the resolver, including a literal `/tax opinion/i` bigram, rather than against
   a vocabulary file anyone can widen. Move them out to a lexicon in the same
@@ -1782,9 +1935,14 @@ without that, nothing has been shown to scale past one.
 
 **Change.** `components/review/table-configs/termination-fees.config.js`
 `selectRows()` reads from the new reader.
-`evidence/canonical-v2/modiv-termination-fee-citation-following-20260806` is
-real extracted data already in the repository; confirm its exact shape before
-relying on it.
+**Do not use `modiv-termination-fee-citation-following-20260806`**, which an
+earlier version of this step named. Every pre-2026-08-07 run directory is
+refused by the writer, permanently and by design — it records neither its
+retrieval timestamp nor its compressed source map, so its identity cannot be
+rebuilt. The importable data is
+`evidence/canonical-v2/modiv-termination-fee-20260807-replay`, with the
+anchored-low caveat in Step 2B. Confirm its exact shape before relying on
+it.
 
 **Proves it is done.** Two deals render V2 termination-fee rows on the review
 page, from the database, with no per-deal file. `scripts/review-parity-check.js`

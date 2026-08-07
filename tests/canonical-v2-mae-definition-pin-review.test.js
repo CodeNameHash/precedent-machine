@@ -202,3 +202,21 @@ test('APPRAISAL_DISSENTERS_RIGHTS finding nothing is the document, not the pipel
   const body = Buffer.from(text, 'utf8').slice(node.start, node.end).toString('utf8');
   assert.match(body, /No dissenters’ or appraisal rights shall be available/);
 });
+
+test('CONSIDERATION is pinned to the section carrying the appraisal negative', () => {
+  // PLAN.md Step 2A's other named pin correction, and the reason
+  // APPRAISAL_DISSENTERS_RIGHTS' zero is correct rather than a gap. The
+  // statement that appraisal rights are unavailable lives in 2.6, and the
+  // appraisal producer prompt refuses to assert a negative and says
+  // availability belongs to Consideration. So 2.6 has to be requested for
+  // THIS family or the fact is in the document and in no run's output.
+  const source = fs.readFileSync(path.join(REPO, 'scripts/canonical-v2-live-extraction-run.mjs'), 'utf8');
+  const match = source.match(/CONSIDERATION: Object\.freeze\((\[[^\]]*\])\)/);
+  assert.ok(match, 'could not locate the CONSIDERATION pin');
+  const pinned = JSON.parse(match[1].replace(/'/g, '"'));
+  assert.ok(pinned.includes('2.6'), 'CONSIDERATION must request the section carrying the negative');
+  // The three the committed baseline run actually used must survive.
+  for (const ref of ['2.1', '2.2', '2.3']) {
+    assert.ok(pinned.includes(ref), `${ref} was used by the baseline run and must stay`);
+  }
+});

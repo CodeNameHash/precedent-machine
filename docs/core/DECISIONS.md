@@ -730,31 +730,75 @@ now decided, 2026-08-05.
 
 # Waiting on Ben
 
-Five questions found on 2026-08-07 while closing Step 2B's write half. All
-are diagnosed with evidence and none is started, because each changes either
-what the pipeline extracts, what it writes, or the database's security
-surface. Ordered by what they block.
+**Three questions**, found on 2026-08-07 while closing Step 2B's write half.
+Each is diagnosed with evidence and none is started, because each changes
+either what the pipeline writes or the database's security surface. Ordered by
+what they block.
 
-**1. Grants or a reader function for `canonical_v2_staging`. Blocks the read
-half, and therefore every rung of the ladder.** Nothing can `SELECT` from
-`excerpts`, `provision_instances`, `provision_components` or
-`claim_revisions` — `foundation.sql:8662-8665` revokes all table privileges
-from every role including `canonical_v2_writer`, and RLS is enabled with zero
-policies. The read half needs either a `SECURITY DEFINER` function or grants
-plus policies. That is a change to the surface `lockdown-rls.sql` exists to
-police, so it is yours. See PLAN.md Step 2B, read half.
+**Five were listed. Two were withdrawn the same day, on review.** Both were
+work I had promoted to a decision — the specific-performance regex (item 2
+below, already PLAN.md Step 3C) and the representation and covenant
+vocabularies (already PLAN.md Step 3G, which locates them to a line, calls
+them *"ordinary bugs, not design questions"*, and even predicts the symptom:
+*"This is why the family resolved zero and put all 12 of its findings in open
+world"*).
 
-**2. The specific-performance premise regex. Costs real extractions today.**
-`native-producer/anthropic-provider.js:1193-1194` requires the literal strings
-`irreparable harm would occur` and `money damages would not be an adequate
-remedy`. Modiv §8.8 says *"irreparable harm, for which monetary damages (even
-if available) would not be an adequate remedy, would occur"* — the premise is
-plainly there, and the assertion is discarded. The source-side check twelve
-lines above accepts `harm|damage`, `money|monetary` and an intervening clause;
-the quote-side check accepts neither. Every agreement drafted with "monetary
-damages" loses its specific-performance grant. Rubric semantics, so yours —
-but the two predicates exist to test the same thing and disagree, which reads
-more like an oversight than a judgement.
+Both withdrawals are recorded rather than deleted. Promoting settled work to a
+decision is the same failure as declaring built work missing — it stops the
+work and costs a round trip — and it happened twice in one night, so it is
+worth leaving visible.
+
+**Numbering note:** items keep their original numbers so anything referring to
+"decision 3" still resolves. Item 2 is the withdrawal.
+
+**1. How the read half gets access to `canonical_v2_staging` in a HOSTED
+environment.** `foundation.sql:8661-8665` revokes all table privileges from
+every role including `canonical_v2_writer`, and RLS is enabled with zero
+policies, so no hosted role can `SELECT` from `excerpts`,
+`provision_instances`, `provision_components` or `claim_revisions`. Closing
+that needs either a `SECURITY DEFINER` function or grants plus policies — a
+change to the surface `lockdown-rls.sql` exists to police, which is why it is
+yours.
+
+**Corrected 2026-08-07, and it makes this less urgent than first written.**
+An earlier version said this "blocks every rung of the ladder". It does not.
+There is **no `FORCE ROW LEVEL SECURITY`** anywhere in the schema (zero
+occurrences), so a **table-owner connection** — which is what Step 4A's local
+Postgres container gives you — can `SELECT` freely. A local read-half
+prototype was never blocked and is ordinary work.
+
+So the better sequence is: build the read half locally against a container,
+then bring you a working shape to decide the hosted access design against,
+rather than a blank page. What is genuinely yours is the hosted design, and it
+is not needed until something is served from a deployment.
+
+**2. WITHDRAWN 2026-08-07 — this was mine, not yours.** The
+specific-performance premise regex was listed here as a decision. It is not.
+
+`anthropic-provider.js:1193-1194` demands the literal strings `irreparable
+harm would occur` and `money damages would not be an adequate remedy`. Modiv
+§8.8 says *"irreparable harm, for which monetary damages (even if available)
+would not be an adequate remedy, would occur"*, and the grant is discarded —
+so every agreement drafted with "monetary damages" silently loses its
+specific-performance grant. The source-side check twelve lines above tests the
+**same premise** and accepts `harm|damage`, `money|monetary` and an
+intervening clause.
+
+Two predicates written to test one premise, where the tolerant one already
+encodes the accepted reading, is a **defect**. `OPERATING-RULES.md` reserves
+taxonomy values and codebook vocabularies to you; a matching predicate is
+neither. And PLAN.md **Step 3C already exists as the engineering step for
+exactly this fix** — I promoted a planned step to a decision, which is the
+same failure as declaring built work missing, and costs the same time.
+
+It is ready work. Step 3C now carries the measurement it asked for, and its
+original quote-scope hypothesis is refuted there. Two conditions on doing it,
+both from Step 3C and neither softened: the fix is a loosening, so it ships
+with a hostile test proving a non-operative acknowledgement is still excluded,
+and the diff goes through adversarial review before it reaches you.
+
+You may still want to see the diff, because it changes what the pipeline
+extracts from every deal. That is a review, not a gate.
 
 **3. Whether open-world evidence is written at all.** 275 open-world entries
 across the committed baseline, zero rows written: the adapter lists all five
@@ -764,12 +808,7 @@ whose output is entirely open-world write nothing at all. Either emit the
 rows, or accept a database-backed render of governed claims only and say so on
 the page. Defensible either way; not defensible to inherit it from a constant.
 
-**4. The representation and covenant vocabularies.** `REPRESENTATIONS` (19 of
-28 candidates) and `GENERAL_COVENANTS` (11 of 12) fail on corroboration tables
-in `candidate-resolution.js` being narrower than what the producers
-legitimately emit. Material taxonomy, explicitly yours.
-
-**5. `conditional_termination_fee_values` has no table.** Two more of the ten
+**4. `conditional_termination_fee_values` has no table.** Two more of the ten
 cards come from it, including the Modiv headline. It needs a home or an
 explicit omission.
 

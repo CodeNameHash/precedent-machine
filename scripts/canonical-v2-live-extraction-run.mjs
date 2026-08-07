@@ -285,7 +285,22 @@ const DEAL_PINS = Object.freeze({
       APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(["2.6"]),
       CAPITALISATION: Object.freeze(["3.2","4.2"]),
       CLOSING_CONDITIONS: Object.freeze(["6.1","6.2","6.3","6.4"]),
-      CONSIDERATION: Object.freeze(["2.1","2.2","2.3"]),
+      // 2.6 CORRECTED IN 2026-08-07, as PLAN.md Step 2A required and as no
+      // previous sweep did. Section 2.6 "Dissenters' Rights" reads in full:
+      // "No dissenters' or appraisal rights shall be available with respect to
+      // the Mergers." 119 bytes, verified against the document.
+      //
+      // It belongs to THIS family, not to Appraisal. The appraisal producer
+      // prompt (native-producer/appraisal-producer-prompt.js) says in terms
+      // "Never assert a negative" and that availability "remain[s] with
+      // Consideration", so the appraisal run requesting 2.6 and declining to
+      // assert anything from it was correct by design -- which is why that
+      // family's zero is a correct zero and not a taxonomy gap.
+      //
+      // NOT YET RUN: there are no recorded responses for 2.6 under this
+      // family, so this needs a live call before it produces anything. The
+      // committed baseline entry still reflects the 2.1/2.2/2.3 run.
+      CONSIDERATION: Object.freeze(["2.1","2.2","2.3","2.6"]),
       DIVIDENDS: Object.freeze(["5.10"]),
       DNO_INDEMNIFICATION: Object.freeze(["5.8"]),
       EMPLOYEE_MATTERS: Object.freeze(["3.11","3.12"]),
