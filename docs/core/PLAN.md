@@ -386,28 +386,40 @@ widen, and never a reason to run the next rung anyway. Widening a gate to make
 it pass is the specific erosion this ladder exists to prevent, and it is
 indistinguishable in the evidence from the ladder having worked.
 
-**1. Load Fable and iterate.** Give it the failing rung's evidence directory,
-the last green rung for the same pair, and the diff between them — code,
-`prompt_version`, `contract_bundle_version`, `section_references`. Fable
-diagnoses and iterates toward a fix. This is the same escalation `CLAUDE.md`
-already applies to delegated work, moved earlier: a gate failure is exactly
-the case where iterating cheap wastes the most time.
+**1. Diagnose it where you are, first.** The agent running the rung attempts
+the fix itself. Most gate failures are ordinary: a pin pointing at the wrong
+section, a crash with a recorded response to replay, a count that moved for a
+reason the diff explains. Reach for the evidence you already have — the
+failing rung's directory, the last green rung for the same pair, and the diff
+between them across code, `prompt_version`, `contract_bundle_version` and
+`section_references`.
 
-**2. Bound the iteration, and bound it by information rather than by clock.**
-Three rounds, where a round only counts if it produced a **new, testable
+**2. Escalate to Fable on two strikes, not on the first sign of trouble.**
+This is `CLAUDE.md`'s standing rule and it applies here unchanged: if two
+attempts fail review, stop iterating cheap and put it on a stronger model.
+Jumping straight to Fable is its own waste — most of these do not need it, and
+an auditor spending rounds on a mis-pinned section reaches the same answer more
+expensively.
+
+Hand it the same three things, plus what the first two attempts tried and why
+each failed. Fable then iterates.
+
+**3. Bound the iteration, and bound it by information rather than by clock.**
+Three Fable rounds, where a round only counts if it produced a **new, testable
 hypothesis**. A round that restates a hypothesis an earlier round already
-refuted is not a fourth round; it is the stop condition. In practice this
-lands somewhere between twenty minutes and a couple of hours, but the number
-of hours is not the test — whether the last round told you something the one
-before it did not, is.
+refuted is not a fourth round; it is the stop condition. In practice this lands
+somewhere between twenty minutes and a couple of hours, but the number of hours
+is not the test — whether the last round told you something the one before it
+did not, is.
 
-**Stop immediately, without spending the three rounds, if the fix would need
-a decision reserved to Ben**: taxonomy values or codebook vocabularies, the
-database security surface, a schema change to a closed contract, or anything
-that changes what the pipeline extracts across every deal. Those are not
-failures to iterate on. They are questions, and the answer is item 3.
+**Skip straight to Ben, spending neither the strikes nor the rounds, if the
+fix would need a decision reserved to him**: taxonomy values or codebook
+vocabularies, the database security surface, a schema change to a closed
+contract, or anything that changes what the pipeline extracts across every
+deal. Those are not failures to iterate on. They are questions, and the answer
+is item 4.
 
-**3. Escalate to Ben, with the diagnosis rather than the problem.** Say:
+**4. Escalate to Ben, with the diagnosis rather than the problem.** Say:
 
 - which rung, which deal, which family, and which of the three gate
   conditions failed;
@@ -417,10 +429,11 @@ failures to iterate on. They are questions, and the answer is item 3.
 - two or three options with a recommendation, and the cost of each.
 
 **"Needs more analysis" is not an escalation**, the same way it is not a
-disposition in Step 3H. If three rounds produced no fix, they produced a
-bounded description of what the failure is not, and that is what to bring.
+disposition in Step 3H. If two attempts and three rounds produced no fix, they
+produced a bounded description of what the failure is not, and that is what to
+bring.
 
-**4. Record the outcome either way.** A rung that failed and was fixed, and a
+**5. Record the outcome either way.** A rung that failed and was fixed, and a
 rung that failed and was escalated, both belong in that round's regression
 table and in Step 2H's generalisation note. A failure that was fixed and left
 unrecorded reads afterwards exactly like a rung that never failed.
@@ -1298,9 +1311,10 @@ else with `UNREGISTERED_FAMILY`.
    serves.
 
 A failed gate is a stop, not a note to fix at the end — see **"What to do
-when a rung fails"** at the top of this stage for the escalation: load Fable,
-bound the iteration at three rounds that each produce a new testable
-hypothesis, and escalate to Ben with the refutations rather than the problem.
+when a rung fails"** at the top of this stage for the escalation: fix it
+yourself first, escalate to Fable on two strikes, bound its iteration at three
+rounds that each produce a new testable hypothesis, then go to Ben with the
+refutations rather than the problem.
 **Ten of the 25 importable runs publish zero claims**, so note that condition 2 is **vacuously
 satisfied** by 0 -> 0: for every zero-publishing family, state why zero is
 correct and what would make it wrong, or the gate is checking nothing. Step 2B
@@ -1478,9 +1492,10 @@ and they mean different things:
   gap. Fix, re-run it alone, then re-run the accumulated set alongside it.
 - **The new document is clean but the accumulated set regresses.** Serious, and
   the paragraph above says why: a fix for document N changed behaviour on 1
-  through N-1, which should be structurally impossible. Do not iterate past
-  one round on this shape — escalate, because the finding is about coupling
-  between fixes rather than about the document.
+  through N-1, which should be structurally impossible. **This shape skips the
+  two strikes**: go to Fable on the first failure, because the finding is about
+  coupling between fixes rather than about the document, and a local fix
+  attempt is the wrong instrument for it.
 
 The regression table records the failure and its outcome either way. A
 document that failed and was fixed must not read afterwards like one that
