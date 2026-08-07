@@ -549,11 +549,40 @@ committed and reported, and because it is the same failure this programme
 keeps repeating: a confident structural claim built on one unchecked
 assumption, here that there was only one validator.
 
-**The real remaining blocker, one layer deeper.** With validation passing, the
-writer refuses a `DEAL_SCOPE_RUN` with "writeSet must match the closed
-reference-only semantic contract". That is a genuine gap between what a run
-produces and what the writer's deal-scope path expects, and it is the next
-thing to work out. It is smaller and better-defined than the retracted claim.
+**The real remaining blocker, one layer deeper, and it is one key wide.**
+With validation passing, the writer refuses a `DEAL_SCOPE_RUN`:
+"writeSet must match the closed reference-only semantic contract"
+(`canonical-writer.js`, `assertDealScopeWriteSetShape`, ~293-314). That check
+demands the key set **exactly equal** its list, permitting only
+`persisted_object_references` as an extra.
+
+Diffed: a run's write-set contains all 18 required keys **plus
+`write_set_origin`**, and nothing else. That single key is the whole
+difference.
+
+**Three lists in three files disagree about it, and the writer is the
+outlier.** `validate-write-set.js`'s deal-scope list permits it — which is
+why 23 of 24 runs validate. `m3-staging-candidate-preflight.js` has its own
+19-key list that **requires** it, and additionally asserts
+`write_set_origin === 'NATIVE_PRODUCER'`. `canonical-writer.js`'s list is the
+only one that excludes it.
+
+**What is NOT established, and must be before anything changes.** The
+plausible reading is that some step between preflight and write strips the
+key, and that the M3 staging path therefore never hits this. Searched for it
+and did not find it — but "I did not find it" is not "it does not exist",
+and this document has already been wrong once this week by treating those as
+the same. Establish which of these is true before touching any of the three
+lists:
+
+1. Something strips `write_set_origin` before the write, and the bridge
+   should do the same. Cheapest, if it exists.
+2. The writer's list should include it, matching the other two.
+3. The producer should stop emitting it, and the preflight's requirement is
+   the stale one.
+
+Do not pick by majority. Two lists agreeing is not evidence when all three
+were written at different times for different callers.
 
 One thing this already proves: reading the write-set from
 `validation.json`'s `publishableWriteSet` does not work. That is the
