@@ -776,6 +776,73 @@ way the existing serving gate does: `isPermittedCanonicalV2Runtime`
 module must not become the exception that quietly changes that. Preview and
 local only, deliberately.
 
+**Reconnaissance, 2026-08-07. Three findings, and one of them blocks.**
+
+**1. It is reassembly, not translation — the mapping layer this step assumed
+is not needed.** `project()` in `termination-product-projection.js` (439-557)
+reads exactly ten fields off a resolved entry, and the runner's
+`resolution.json` entries are a **strict superset** of them: same names, same
+paths, nothing to rename. The four tables the writer populates
+(`excerpts`, `provision_instances`, `provision_components`, `claim_revisions`,
+foundation.sql 402-450) are identically shaped — `id`, `closure_id`,
+`canonical_payload jsonb`, digest — and `canonical_payload` is the write-set
+item **verbatim**. So the rows coming back out are the same objects that went
+in, and the reader reassembles the wrapper rather than converting anything.
+
+Proven, not assumed: `tests/canonical-v2-run-projects-to-product-cards.test.js`
+projects every importable run through both termination projections, and
+`modiv-termination-fee-20260807-replay` yields ten real cards. That seam had
+never been exercised — the one family serving V2 builds its cards from a
+hand-encoded packet, so the runner's output and the projection's input had
+never met.
+
+**2. `document_hash` is the deal key, not `deal_key`.** `deal_key` is
+per-(deal, family): the 21 committed Modiv runs carry 21 distinct ones
+(`deal:modiv-termination-fee:...`, `deal:modiv-antitrust-regulatory:...`)
+over a single `document_hash` (`659bcfaa…729968`). Nothing in the schema says
+so; it was derived from the evidence. **Code that groups by `deal_key` will
+silently render one family and look correct.** None of the four tables has a
+deal column at all — the hash lives inside the jsonb, and `claim_revisions`
+does not carry it, joining instead via
+`claim.subject_occurrence_id = provision_instance.provision_instance_id`.
+
+**3. THE BLOCKER: nothing can read those tables. Not even the writer.**
+`foundation.sql:8662-8663` revokes all table privileges from `PUBLIC`, `anon`,
+`authenticated`, `service_role` **and `canonical_v2_writer`**; RLS is enabled
+on every table with **zero policies defined** anywhere in
+`canonical-v2-foundation.sql`, `canonical-v2-serving.sql`, `lockdown-rls.sql`
+or `rls-lockdown-2026-07.sql`. The only granted access is `EXECUTE` on
+`canonical_v2_write` and two candidate-input functions. No view, RPC or
+function joins claims to provisions to excerpts: grep every
+`FROM canonical_v2_staging.{excerpts,claim_revisions,provision_instances,provision_components}`
+and the only hits are idempotency-digest checks inside `canonical_v2_write`
+itself (8200-8318).
+
+So the read half is not "add a query". It needs either a new
+`SECURITY DEFINER` function or explicit grants plus RLS policies — **a
+deliberate change to the security surface those lockdown files exist to
+police.** That is Ben's call, not a thing to slip in. It is the one piece of
+Step 2B that is specified and not built.
+
+**Do not build it against the wrong pipeline.** `serving-client.js`'s
+`RPC_SPECS` (55-123) look like the answer and are not: every
+`canonical_v2_active_*` RPC reads `shared_serving_rows` /
+`deal_serving_directory` / `exact_detail_serving_packages`, populated only by
+`canonical_v2_import_candidate_release` and gated on
+`active_corpus_release_pointers` — which has **zero rows**. That is the Step
+5A corpus-release layer, downstream of and separate from what the writer
+populates. Building the read half there would produce a module that reads
+nothing and blames the pointer.
+
+**Two inputs the projection wants that the schema does not store**, so they
+cannot come back out of the database at all as things stand:
+`resolution.open_world[]` (the open-world tables exist but their payload shape
+against `resolution.json`'s entries is unverified — read them before
+assuming) and `resolution.conditional_termination_fee_values[]`, which has no
+table anywhere. The second matters: Modiv's §7.3 conditional fee drives the
+card headline through `conditionalFeeExtraGroups`. Either it gets a home or
+the database-backed render omits that feature, deliberately and in writing.
+
 **Proves it is done (read half).** The rows written by the write half come
 back out through this module for the same deal and family, in the shape the
 projection expects, and a request in a production-shaped environment is

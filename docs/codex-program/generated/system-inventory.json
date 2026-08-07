@@ -588,6 +588,7 @@
           ],
           "scripts": [],
           "tests": [
+            "tests/canonical-v2-run-projects-to-product-cards.test.js",
             "tests/canonical-v2-sole-remedy-resolution.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
             "tests/canonical-v2-termination-product-parity.test.js",
@@ -895,6 +896,7 @@
           ],
           "tests": [
             "tests/canonical-v2-parity-serving-boundary.test.js",
+            "tests/canonical-v2-run-projects-to-product-cards.test.js",
             "tests/canonical-v2-termination-fee-both-sources.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
             "tests/canonical-v2-termination-fee-serving-switch.test.js",
@@ -902,7 +904,7 @@
           ],
           "other": []
         },
-        "reference_count": 11
+        "reference_count": 12
       }
     ],
     "generic_serving_infrastructure": [
