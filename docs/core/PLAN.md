@@ -1416,6 +1416,96 @@ not — it says nothing about whether the model would answer the same way today.
 Use replay for the rung-to-rung diffs, and treat a live re-run as a separate
 question.
 
+## Step 2D1. Five defects the Modiv fan-out found
+
+**Found by Step 2D, 2026-08-07, each independently root-caused.** Ordered by
+consequence. The first two blocked a family outright; the middle two are
+silent, which makes them worse.
+
+### 1. `--call-timeout-ms` is dead code past argument parsing
+
+`resolveRunConfig` (`scripts/canonical-v2-live-extraction-run.mjs:549`) returns
+a frozen config of **ten fields, and `timeoutMs` is not one of them.** The
+parser sets `out.timeoutMs` at line 477 and it is dropped there; line 936 reads
+`config.timeoutMs`, which is always `undefined`, so every run falls back to the
+hardcoded 600,000ms.
+
+**So every extraction in this programme has been silently capped at ten
+minutes regardless of the flag.** Proven live: `--call-timeout-ms 1200000`
+failed at **606,899ms**. `CAPITALISATION` is incomplete as a direct result, and
+could never have succeeded.
+
+**`PLAN.md` claimed commit `ae8b12de` "made the timeout configurable". That was
+false**, and it was believed for a day. Verified against the code, not the
+commit message.
+
+**Change.** Carry `timeoutMs` into the frozen config. **Proves it is done.**
+`CAPITALISATION` completes on section 4.2, which has never been attempted, at a
+timeout above ten minutes — and a test asserts the flag reaches the client.
+
+### 2. The excerpt identity guard compares the wrong thing
+
+`canonical_v2_write` (`supabase/canonical-v2-foundation.sql:8546`) compares a
+**whole-payload digest** where it should compare the fields that define
+`excerpt_id`. `TERMINATION` and `TERMINATION_FEE` legitimately quote the same
+sentence — same `excerpt_id` **by design, per ADR-001** — while their
+`source_occurrence_id` differs, also legitimately. The guard reads that as a
+conflict and **rolled TERMINATION's entire write back.** 12 of the 211 resolved
+claims are unwritten, and they are exactly TERMINATION's.
+
+**Secondary, and it wasted real time:** `scripts/canonical-v2-local-durable-write.js`
+**hangs forever on any SQL error** — its catch path never closes the connection.
+Each occurrence had to be killed by hand.
+
+**Change.** Compare the identity-defining fields. Close the connection in the
+catch path. **Proves it is done.** All 25 families write; `TERMINATION` and
+`TERMINATION_FEE` coexist; a forced SQL error exits rather than hanging.
+
+### 3. A projection matches neither family it claims to cover
+
+`lib/canonical-v2/remedies-misc-product-projection.js` covers
+`SPECIFIC_PERFORMANCE_REMEDIES` and `MISC_BOILERPLATE`. Both write correctly
+and then **drop silently to zero cards**, because the real claim-definition
+keys — `SPECIFIC_PERFORMANCE_REMEDY_PRESENT`,
+`MISC_BOILERPLATE_MECHANIC_PRESENT` — are not in the module's membership sets.
+
+**No error, no signal, no zero-count warning. This is the most dangerous
+failure shape in the product**: work that succeeds all the way to the surface
+and then renders nothing, indistinguishable from a family that genuinely found
+nothing.
+
+**Change.** Fix the membership sets, and **make a projection that matches no
+claim say so** rather than returning an empty list.
+
+### 4. Four projections check a schema version that no longer exists
+
+They test `provision.schema_version === 'PROVISION_INSTANCE/V1'` where the real
+value is `'STRUCTURAL_PROVISION_INSTANCE/V1'` — the partyless kind Step 4A1
+taught the SQL writer about. Confirmed live on `TAX_MATTERS`; **latent on
+`FINANCING_COVENANTS`, `GUARANTY_FINANCING_PARTY`, `REPRESENTATIONS`,
+`DIVIDENDS`, `APPRAISAL_DISSENTERS_RIGHTS` and `INTERIM_OPERATING`** until each
+resolves a provision-bound claim.
+
+This is Step 4A1's change arriving somewhere nobody looked. **Grep every
+`schema_version ===` in the projection layer**, not only these four.
+
+### 5. The reader's reconstructed shape is incomplete, found five times
+
+`local-staging-deal-reader.js` does not reproduce the original `resolution.json`
+shape: `CONSIDERATION`'s `party`, `REPRESENTATIONS`'s open-world fields,
+`NO_OTHER_REPS_FRAUD`, `MAE_DEFINITION`'s MAE path, and `INTERIM_OPERATING`'s
+entire missing `ioc_restriction_components` collection.
+
+**Five independent discoveries of one cause makes it systemic, and that is the
+good news** — the reader is one file. Step 2B3 already fixed one instance of
+this shape (claims whose subject is a component). This is the same defect class
+recurring, which says the reader needs a **contract test against a real
+`resolution.json`**, not another field-by-field patch.
+
+**Proves it is done.** A committed run's `resolution.json` and the same deal
+read back are compared field by field through `canonicalJson`, and the test
+names every field that does not round-trip. Fix what that test finds.
+
 ## Step 2E. Map the families to TopBuild's sections, for nothing
 
 **What it is.** Work out which sections of the TopBuild agreement each family

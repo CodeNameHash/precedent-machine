@@ -1,0 +1,344 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "dd9c521298c7f039b250c34d12764bbbfe09df0012c621569e22e2efda11dc65",
+  "review_queue": [
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_DEFINITION",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "52c5375eb9e8913ef2fc359b1e2ac72ca486f9463d0b35218c1b1d7f66d88bc5",
+      "closure_id": "61de160933db3cd94c8e7f0ddce9f1af4e4994f6288158e10ae318b67978a718",
+      "normalised_phrase": "that the breaching party intentionally takes (or fails to take)",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8ac372c7059855aa0bec7983a24fa89fd8292e68813ec8c008dbd91c364b1223",
+      "closure_id": "fd0ad501c20797146f666d65f49ffbfde9a729b3b94e663a83c94e658122ec66",
+      "normalised_phrase": "and actually knows that it would, or would reasonably be expected to, be or cause a material breach of this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(e)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any issue, sale or other disposition (including by way of merger, consolidation, sale of equity interests, share exchange, joint venture, business combination or otherwise) of securities (or options, rights or warrants to purchase, or securities convertible into, such securities) representing 15% or more of the voting power of the Company or 15% or more of the equity interests or general partner interests in the Partnership;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c853e44e0b8daa6089f38d63554fd62c8e572c238d3f23fa24714f1a335a54d2",
+      "closure_id": "3837e9881f1c1e61fa218109b1df54dbf6058afa6f81ed9399043efdd9be1bf7",
+      "normalised_phrase": "any issue, sale or other disposition (including by way of merger, consolidation, sale of equity interests, share exchange, joint venture, business combination or otherwise) of securities (or options, rights or warrants to purchase, or securities convertible into, such securities) representing 15% or more of the voting power of the Company or 15% or more of the equity interests or general partner interests in the Partnership;",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(nnn)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "NO_SUBSTITUTION_GRAMMAR"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "references in clause (i) of the definition of such term to “15%” being deemed to be replaced with references to “75%”",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "174fcec0a1cf8e6aeef16e9882b3f6faf68f5fda4e436d090da4256e95c76d30",
+      "closure_id": "471d3bd6ba0cc82a1897277062e9696d0d23fdc539c6d9a3994924d65820d6f6",
+      "normalised_phrase": "references in clause (i) of the definition of such term to “15%” being deemed to be replaced with references to “75%”",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(aa)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "which (a) was unknown to, nor reasonably foreseeable by, the Company Board as of or prior to the date of this Agreement (nor the consequences thereof) and (b) first becomes known to or by the Company Board prior to the receipt of the Company Requisite Vote",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9e9e28e0c7149cbfa4f3af78f9a57d9db1245d197b594719c379b84e8c9e45be",
+      "closure_id": "6a6a44e57bf273175f3fe6529d8e6cba68447189c0e92a65a8330fd84ac554ed",
+      "normalised_phrase": "which (a) was unknown to, nor reasonably foreseeable by, the Company Board as of or prior to the date of this Agreement (nor the consequences thereof) and (b) first becomes known to or by the Company Board prior to the receipt of the Company Requisite Vote",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(e)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any tender offer or exchange offer for beneficial ownership (as such term is defined in Rule 13d-3 under the Exchange Act) of 15% or more of the voting power of the Company or beneficial ownership of 15% or more of the equity interests or general partner interests in the Partnership;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ce39bfac247956c4e5b9ddf366cbc36d6bdb31283ef32310f446a1ae426bfbf6",
+      "closure_id": "79bd54aaa56919f016932ac8d9752255d4c76fe3479bf00fe14b46a52dc910eb",
+      "normalised_phrase": "any tender offer or exchange offer for beneficial ownership (as such term is defined in Rule 13d-3 under the Exchange Act) of 15% or more of the voting power of the Company or beneficial ownership of 15% or more of the equity interests or general partner interests in the Partnership;",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e83c97612c6a83a810a43f74700af1a3db0b1e286e342aa0cffc8fe716cb369",
+      "closure_id": "7e1347ba2ef5cf0feed25cb6582c7f1c27e2cb0ad7d9fa0896e26f5af51740f3",
+      "normalised_phrase": "the receipt, existence of or terms of an Inquiry or Company Acquisition Proposal or any matter relating thereto or consequence thereof",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(nnn)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "NO_SUBSTITUTION_GRAMMAR"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "all other references in the definition of such term to “15%” being deemed to be replaced with references to “50.1%”",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a77030d2b8caac79e48646c795f3a25f71a5c1c2eb2ab14080516731dcc9d508",
+      "closure_id": "9b1467c64160a03ef85e3e8817b95311c2e3001408a95f4ab00d78bbcff14ee5",
+      "normalised_phrase": "all other references in the definition of such term to “15%” being deemed to be replaced with references to “50.1%”",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(e)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any other transaction or series of related transactions pursuant to which any third party (other than Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their affiliates) proposes to acquire control of assets of the Company or the Partnership and any other Company Subsidiary having a fair market value equal to or greater than 15% of the fair market value of all of the assets of the Company and the Partnership and the other Company Subsidiaries, taken as a whole, immediately prior to such transaction.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bd985794491a6c53bd2254f7d9a1222ba42245c883058b037f2668e43e6439b9",
+      "closure_id": "a3454e95b47479df0f5802d473192b75ed0eab589cfaaf96528ee46d26792b0a",
+      "normalised_phrase": "any other transaction or series of related transactions pursuant to which any third party (other than Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their affiliates) proposes to acquire control of assets of the Company or the Partnership and any other Company Subsidiary having a fair market value equal to or greater than 15% of the fair market value of all of the assets of the Company and the Partnership and the other Company Subsidiaries, taken as a whole, immediately prior to such transaction.",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "558250841e71e41b7fc40bead1710b33ebd83ecea5152c58cd4f1fc20642426b",
+      "closure_id": "b961deed7d9b311171d9980c06155bf67bea8cd8369c48bfda2e5a5980c28b40",
+      "normalised_phrase": "changes in the market price or trading volume of the Company Common Shares or any other securities of the Company, or any change in credit rating of the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial results for any period",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(e)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any sale, lease, exchange, mortgage, pledge, transfer or other disposition, directly or indirectly, by merger, consolidation, sale of equity interests, share exchange, joint venture, business combination or otherwise, of 15% or more of the consolidated assets of the Company and the Partnership and the other Company Subsidiaries, taken as a whole (as determined on a book-value basis (including Indebtedness secured solely by such assets)), in a single transaction or series of related transactions;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "119dde5994ea505a8b41eac227d1135fb6838bb381743a0699db3e846e6a3510",
+      "closure_id": "cc0e6dee1bdf99cdbac70077766405eec0caa1088faa89a07fc9a7359ea9a1cc",
+      "normalised_phrase": "any sale, lease, exchange, mortgage, pledge, transfer or other disposition, directly or indirectly, by merger, consolidation, sale of equity interests, share exchange, joint venture, business combination or otherwise, of 15% or more of the consolidated assets of the Company and the Partnership and the other Company Subsidiaries, taken as a whole (as determined on a book-value basis (including Indebtedness secured solely by such assets)), in a single transaction or series of related transactions;",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a9d9dacea03bc16c4205b91b4fdfba8e72506fc01cce658b6c3ee5455427ddc",
+      "closure_id": "daad6e740c402690aae168c30c377d42ea7fce1cc096aa296ff09cf4c1d76944",
+      "normalised_phrase": "would result in a transaction that is more favorable to the Company and its stockholders than the Company Merger",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "70e8c3d90c1133bfe90cb6a49cac25d8ee6ba18ffcd054154ab787ec37830c2d",
+      "closure_id": "24e645f5a812baccc2dbcb6e68f6394df4201aac4ec89aab8300e11629bbf4b5",
+      "normalised_phrase": "the persons listed in Schedule A hereto",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "20c5a8fac231f48bf9409b192bf58cd157ff7e9252f51a4caf4141458819990b",
+      "closure_id": "42cd97db713ab6036d0a7e12ac4b522bc6ca65c7357f9815d9a3c862b20d1c05",
+      "normalised_phrase": "such persons listed in Section 8.12(cc) of the Company Disclosure Letter",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "257d144843554b79492f675e12ac5a45ebd069ed1d665276dc1b7c9a9176c3e9",
+      "closure_id": "b65dc92c618dc191ff2e168516343bff0477b2c45ca2d3d1c226946c607f132f",
+      "normalised_phrase": "the actual knowledge, after due inquiry of direct reports, of the persons listed in Schedule A hereto",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5a9d4430ca0c5836357c500bf5c1ade6c86a164a85154f12f3331862439146ee",
+      "closure_id": "d22d322e042871990bd38a47152df774b4cdcf199c3cf4f60c5637f08d7c83d1",
+      "normalised_phrase": "the actual knowledge of such persons listed in Section 8.12(cc) of the Company Disclosure Letter",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_RETURN_DEFINITION_RECORDED",
+      "concept_key": "DEF-TAX-RETURN",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d175b9c645bfef05bf6d376ea07122bc25e489164c464a3a3f5bc62eb51b1435",
+      "closure_id": "e4829a5de35a43b3b8b6289bc07cf845457b7d2b47c55a790cf2be5bdc83c69c",
+      "normalised_phrase": "including any information return, claim for refund, amended return or declaration of estimated Tax and including any schedule or attachment.",
+      "attachment_position": null,
+      "concept_family": "DEF-TAX-RETURN"
+    }
+  ],
+  "review_queue_artifact_id": "902ab0c2bc83b028736f4f754a00b12fa21aafd4077a3ae61cf94915ac1b3c34"
+}

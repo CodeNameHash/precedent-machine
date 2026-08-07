@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 52,
-  "importable_run_count": 28,
+  "run_count": 56,
+  "importable_run_count": 32,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,9 +31,9 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 430,
-    "provisions": 86,
-    "claims": 213,
+    "excerpts": 519,
+    "provisions": 105,
+    "claims": 251,
     "relationships": 0,
     "components": 10,
     "definition_occurrences": 0,
@@ -186,6 +186,32 @@
       }
     },
     {
+      "run": "modiv-closing-conditions-fullpin-20260807-live",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "6.1",
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 16,
+      "review_queue": 23,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 21,
+        "provisions": 10,
+        "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-consideration-2.6-20260807-live",
       "section_family": "CONSIDERATION",
       "section_references": [
@@ -244,6 +270,32 @@
         "excerpts": 21,
         "provisions": 1,
         "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-consideration-fullpin-20260807-replay",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.6"
+      ],
+      "model_call_count": 0,
+      "resolved": 2,
+      "review_queue": 5,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 2,
+        "claims": 2,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -563,6 +615,53 @@
       "published": {
         "excerpts": 17,
         "provisions": 5,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-key-defined-terms-fullpin-20260807-replay",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "8.5",
+        "8.12"
+      ],
+      "model_call_count": 0,
+      "resolved": 10,
+      "review_queue": 17,
+      "open_world": 17,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 32,
+        "provisions": 5,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-mae-definition-20260807-live",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "8.12"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 34,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 2,
         "claims": 10,
         "relationships": 0,
         "components": 0,
