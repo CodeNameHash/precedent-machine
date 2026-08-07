@@ -72,13 +72,14 @@ Run these yourself. They take seconds.
 | Candidates with no governed slot, written to any database | **0** | the adapter lists all five open-world collections in `EMPTY_COLLECTION_KEYS`; see Step 2B |
 | Runs that did not finish | 0 among the importable set | three were recovered by replay on 2026-08-07; see Step 2B |
 | Model calls spent producing the current baseline | 0 | every importable run is a replay of already-recorded responses |
-| Rows of V2 data written to a real database | 0 | the write half is proven against `InMemoryCanonicalRepository` only — see the note below |
+| Rows of V2 data written to a real database, durably | **3 claim revisions**, one family, local container | Step 4A, 2026-08-07. `modiv-no-other-reps-20260807-replay` through `public.canonical_v2_write`, receipt `b3332c4d…5717baf` status `COMMITTED`, never rolled back, JS and SQL receipt identities identical, reproduced on a second fresh container. Commands in `docs/codex-program/notes/step-4a-durable-write.md`. The row above previously read **0** |
+| Claim-publishing families the SQL writer can actually accept | **9 of 15** | Step 4A1. Six are rejected outright because `STRUCTURAL_PROVISION_INSTANCE/V1` appears **zero** times in the 8,686-line schema while four `lib/` files build it. This is the largest single blocker on the import path and it was invisible until the schema was executed |
 | Product surfaces the parity register still blocks | 102 of 143 | `node -e "const {CURRENT_M3_FAMILY_PARITY_REGISTER,listM3ProductParityBlockers}=require('./lib/canonical-v2/native-producer/m3-family-parity-register.js');console.log(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length)"` |
 | Pre-production gates declared | 25, all OPEN | `node -e "const Y=require('yaml'),f=require('fs');console.log(Y.parse(f.readFileSync('docs/codex-program/programme-gates.yaml','utf8')).programme_gate_registry.preproduction_gates.length)"` |
 | Of those, with any acceptance criteria | 5 | section 5 below |
 | Mandatory adversarial tests, implemented | 7 of 289 | `node -e "const {MANDATORY_ADVERSARIAL_TEST_IDS,testExecutableState}=require('./lib/programme-gates/test-executable-registry.js');console.log(MANDATORY_ADVERSARIAL_TEST_IDS.filter(id=>testExecutableState(id)==='IMPLEMENTED').length)"` |
 | Lines of database schema written | 8,686 | `wc -l supabase/canonical-v2-foundation.sql` |
-| Times that schema has been executed | at least several, against isolated staging, all rolled back | `docs/parked/process-intelligence/EXECUTION-LEDGER.md` P8 rows: `PM-METSERA-PERSISTENCE-01` used the existing `canonical_v2_write` entry point, `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic writer against isolated staging, both COMPLETE. A previous version of this row said **0**, citing `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` — which shows only that those tests pattern-match source text, and cannot show the schema was never executed anywhere. What is still unproven is a **durable, non-rolled-back** write. |
+| Times that schema has been executed | at least several, against isolated staging, all rolled back | `docs/parked/process-intelligence/EXECUTION-LEDGER.md` P8 rows: `PM-METSERA-PERSISTENCE-01` used the existing `canonical_v2_write` entry point, `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic writer against isolated staging, both COMPLETE. A previous version of this row said **0**, citing `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` — which shows only that those tests pattern-match source text, and cannot show the schema was never executed anywhere. What is still unproven is a **durable, non-rolled-back** write. **Closed 2026-08-07 by Step 4A**: applied to `postgres:16-alpine` with no errors and written to durably. The schema needs scaffolding a vanilla Postgres lacks — an `extensions` schema with `pgcrypto`, and the `anon`/`authenticated`/`service_role` roles its REVOKE/GRANT block names — captured in `scripts/lib/canonical-v2-local-setup.sql`. |
 | API routes using the service key | 19 | `grep -rl getServiceSupabase pages/api/ \| wc -l` |
 | Authentication | built, enforced, 101 real-request tests pass | `CI=true node --test tests/auth-route-enforcement.test.js` |
 
@@ -108,6 +109,40 @@ number and the honest number differ by a factor the headline invites you to
 miss.
 
 The volume of work behind this is large and it has not yet reached a user.
+
+**The lesson of 2026-08-07, which is one lesson and not two.** Both of that
+day's significant findings were green gates that had never run, and neither was
+visible to any amount of reading.
+
+- The lexical disagreement condition reported nothing wrong on
+  `modiv-no-shop`'s 42 resolved claims. It had examined none of them: all 42
+  carried `LEXICAL_DISAGREEMENT_NET_ABSENT`. Wiring it changed no headline
+  count and changed the triage of every single claim.
+- The SQL writer was believed to agree with the JS writer. Executing it showed
+  it rejects six of the fifteen claim-publishing families outright, on an
+  object kind it has never heard of, with an error message naming the wrong
+  cause.
+
+Neither was a subtle bug. Both were large, and both survived because the thing
+in question had never been executed against real data — one because a
+parameter was not passed, one because a schema had never been applied. This
+programme's documented failure is forgetting what it has built; this is its
+twin, **believing something works because it has never been run**. A count of
+zero problems from a check that did not execute is indistinguishable, in every
+artefact, from a clean run.
+
+The practical rule: **before trusting any gate, prove it ran.** Not that it
+passed — that it evaluated something. Every rung's evidence now records which
+conditions were evaluated, for exactly this reason.
+
+**Consequence for the numbers above and below: the committed baseline is now
+stale.** Steps 3B, 3C and 3G all changed what the resolver publishes, and the
+`evidence/canonical-v2/*-20260807-replay/` directories still record pre-fix
+behaviour. `npm run gate:baseline` must be regenerated once Stage 3's fixes
+land — by replay, at zero model cost — and until it is, any count in this
+document sourced from `baseline-manifest.json` is a pre-Stage-3 number. An
+evidence directory recording 0 next to code producing 1 is exactly the stale
+artefact this programme keeps being caught by.
 
 ---
 
@@ -1498,6 +1533,15 @@ Each of these was found, diagnosed and deliberately left. They are the reason
 table, which names the cause for each of the ten and says which of the steps
 below addresses it. An earlier version of this line said "11 of the 21 finished
 runs", which was the pre-replay count.
+
+**"Ten" is now stale and is deliberately not being guessed at.** Steps 3B, 3C
+and 3G landed on 2026-08-07 and at least General Covenants no longer resolves
+zero, so the figure has fallen. It is left uncorrected rather than estimated,
+because the honest way to move it is to regenerate the baseline by replay and
+read the new number off `baseline-manifest.json`. Do that once Stage 3's
+remaining steps land, then correct this line and section 2's table together.
+Writing a number here that no command produces is how this document has gone
+wrong before.
 
 ## Step 3A. Widen the termination trigger-kind vocabulary for the four phrasings that miss
 
