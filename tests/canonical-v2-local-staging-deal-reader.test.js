@@ -27,6 +27,8 @@ const {
   readDealFromLocalCanonicalV2Staging,
   readGovernedClaimsForDeal,
   readOpenWorldEvidenceForDeal,
+  readFlatOpenWorldEntriesForDeal,
+  readIocRestrictionComponentsForDeal,
   readRelationshipsForDeal,
   readConditionalTerminationFeeValuesForDeal,
   LocalStagingReadError,
@@ -111,9 +113,40 @@ test('readGovernedClaimsForDeal reassembles resolution.json-shaped resolved[] en
   assert.equal(entry.concept_key, fixture.writeSet.provisions[0].concept_key);
   assert.equal(entry.provision_instance.provision_instance_id, fixture.writeSet.claims[0].subject_occurrence_id);
   assert.equal(canonicalJson(entry.claim), canonicalJson(fixture.writeSet.claims[0]));
-  // Known gap, documented on the module: section_reference does not survive
-  // the persisted write-set, so it must come back null, not fabricated.
+  // PLAN.md Step 2D1 defect 5. section_reference reconstructs from
+  // claim.attributes.section_reference when the claim kind's own attribute
+  // schema carries it. This fixture's governed claim does not (its
+  // `attributes` carries only `answer_provenance`), so it must still come
+  // back null -- honestly, not fabricated -- exactly as before this fix.
   assert.equal(entry.section_reference, null);
+  // PLAN.md Step 2D1 defect 5 (the CONSIDERATION instance). party must be
+  // reconstructed from the claim's own provision_instance.party, not
+  // silently dropped (this fixture's provision is party-bearing).
+  assert.deepEqual(entry.party, fixture.writeSet.provisions[0].party);
+  assert.deepEqual(entry.party, { role: 'REPRESENTATION_MAKER', value: 'COMPANY', capacity: 'TARGET' });
+});
+
+test('readGovernedClaimsForDeal reconstructs section_reference from claim.attributes.section_reference when the claim kind carries it', async () => {
+  const tables = tablesFromFixture();
+  const claimWithSectionReference = {
+    ...tables.claim_revisions[0],
+    attributes: { ...tables.claim_revisions[0].attributes, section_reference: '3.1(b)' },
+  };
+  const client = fakeClient({ ...tables, claim_revisions: [claimWithSectionReference] });
+  const [entry] = await readGovernedClaimsForDeal({ client, documentHash: fixture.documentHash });
+  assert.equal(entry.section_reference, '3.1(b)');
+});
+
+test('readGovernedClaimsForDeal reconstructs party: null for a partyless structural provision', async () => {
+  const tables = tablesFromFixture();
+  const { party: _party, ...structuralProvision } = tables.provision_instances[0];
+  const client = fakeClient({
+    ...tables,
+    provision_instances: [structuralProvision],
+  });
+  const [entry] = await readGovernedClaimsForDeal({ client, documentHash: fixture.documentHash });
+  assert.equal(entry.party, null);
+  assert.equal(Object.hasOwn(entry.provision_instance, 'party'), false);
 });
 
 test('readGovernedClaimsForDeal round-trips byte-identical through canonicalJson', async () => {
@@ -132,6 +165,89 @@ test('readOpenWorldEvidenceForDeal returns the {candidate, occurrence, evidenceR
   assert.equal(bundle.occurrence.candidate_id, bundle.candidate.candidate_id);
   assert.equal(bundle.evidenceReferences.length, fixture.writeSet.open_world_evidence_references.length);
   assert.ok(bundle.evidenceReferences.length > 0);
+});
+
+// ── PLAN.md Step 2D1 defect 5: readFlatOpenWorldEntriesForDeal, the flat
+// resolution.json shape every *-product-projection.js module that reads
+// open-world data actually expects (representations-product-projection.js's
+// REPRESENTATIONS instance named by the plan). ──
+
+test('readFlatOpenWorldEntriesForDeal reshapes bundles into resolution.json\'s flat open_world[] entry shape', async () => {
+  const client = fakeClient(tablesFromFixture());
+  const [bundle] = await readOpenWorldEvidenceForDeal({ client, documentHash: fixture.documentHash });
+  const [entry] = await readFlatOpenWorldEntriesForDeal({ client, documentHash: fixture.documentHash });
+  assert.equal(entry.section_reference, bundle.candidate.section_reference);
+  assert.equal(entry.claim_definition_key, bundle.candidate.attempted_claim_definition_key);
+  assert.equal(entry.reason, bundle.candidate.reason_code);
+  assert.equal(entry.raw_value, bundle.candidate.raw_value);
+  assert.equal(entry.canonical_value, bundle.candidate.canonical_value);
+  assert.equal(canonicalJson(entry.attributes), canonicalJson(bundle.occurrence.attributes));
+  assert.equal(entry.closure_id, bundle.candidate.closure_id);
+  assert.ok(Array.isArray(entry.evidence) && entry.evidence.length > 0);
+  // OPEN_WORLD_ENTRY_ALLOWLISTED_GAPS -- never written, so never here.
+  assert.equal(entry.source_citation, null);
+  assert.equal(entry.extraction_provenance, null);
+  assert.equal(entry.citation_validation, null);
+  assert.equal(entry.answer_provenance, null);
+  assert.equal(entry.section_family_ai_unverified, null);
+});
+
+// ── PLAN.md Step 2D1 defect 5: readIocRestrictionComponentsForDeal, the
+// missing collection named for INTERIM_OPERATING. ioc-wave-a-product-
+// projection.js's projectIocWaveAClaims takes this as its own required,
+// top-level input. ──
+
+test('readIocRestrictionComponentsForDeal returns the RESTRICTED_ACTION components for the deal, filtering out other component kinds', async () => {
+  const tables = tablesFromFixture();
+  const parentProvisionInstanceId = tables.provision_instances[0].provision_instance_id;
+  const restrictedActionComponent = {
+    schema_version: 'PROVISION_COMPONENT/V1',
+    parent_provision_instance_id: parentProvisionInstanceId,
+    canonical_text_id: tables.provision_instances[0].canonical_text_id,
+    absolute_start: 0,
+    absolute_end: 10,
+    component_key: 'RESTRICTED_ACTION',
+    ordinal: 1,
+    source_anchor_id: 'synthetic-anchor-1',
+    provision_component_id: 'synthetic-restricted-action-component-1',
+    closure_id: 'synthetic-restricted-action-closure-1',
+  };
+  // A different component kind sharing the same table (see
+  // native-write-set-adapter.js's COMPONENT_KEY_REPRESENTATION_LIMB) must
+  // NOT leak into ioc_restriction_components -- resolution.json's own field
+  // never mixes them in.
+  const representationLimbComponent = {
+    ...restrictedActionComponent,
+    component_key: 'REPRESENTATION_LIMB',
+    provision_component_id: 'synthetic-representation-limb-component-1',
+  };
+  const client = fakeClient({
+    ...tables,
+    provision_components: [restrictedActionComponent, representationLimbComponent],
+  });
+  const components = await readIocRestrictionComponentsForDeal({ client, documentHash: fixture.documentHash });
+  assert.equal(components.length, 1);
+  assert.equal(components[0].provision_component_id, 'synthetic-restricted-action-component-1');
+  assert.equal(components[0].component_key, 'RESTRICTED_ACTION');
+});
+
+test('readIocRestrictionComponentsForDeal returns [] when the deal has no provisions', async () => {
+  const client = fakeClient({
+    provision_instances: [], claim_revisions: [], open_world_candidates: [],
+    open_world_candidate_occurrences: [], open_world_evidence_references: [], relationship_revisions: [],
+  });
+  const components = await readIocRestrictionComponentsForDeal({ client, documentHash: 'no-such-document' });
+  assert.deepEqual(components, []);
+});
+
+test('readDealFromLocalCanonicalV2Staging carries open_world_entries and ioc_restriction_components alongside the existing collections', async () => {
+  const client = fakeClient(tablesFromFixture());
+  const result = await readDealFromLocalCanonicalV2Staging({
+    client, documentHash: fixture.documentHash, env: { NODE_ENV: 'test' },
+  });
+  assert.equal(result.open_world_entries.length, result.open_world.length);
+  assert.equal(result.open_world_entries[0].section_reference, result.open_world[0].candidate.section_reference);
+  assert.deepEqual(result.ioc_restriction_components, []);
 });
 
 // The open-world-evidence-serving.js module IS the serving-side reader this
