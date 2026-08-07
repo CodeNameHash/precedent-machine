@@ -728,6 +728,53 @@ now decided, 2026-08-05.
 
 ---
 
+# Waiting on Ben
+
+Five questions found on 2026-08-07 while closing Step 2B's write half. All
+are diagnosed with evidence and none is started, because each changes either
+what the pipeline extracts, what it writes, or the database's security
+surface. Ordered by what they block.
+
+**1. Grants or a reader function for `canonical_v2_staging`. Blocks the read
+half, and therefore every rung of the ladder.** Nothing can `SELECT` from
+`excerpts`, `provision_instances`, `provision_components` or
+`claim_revisions` — `foundation.sql:8662-8665` revokes all table privileges
+from every role including `canonical_v2_writer`, and RLS is enabled with zero
+policies. The read half needs either a `SECURITY DEFINER` function or grants
+plus policies. That is a change to the surface `lockdown-rls.sql` exists to
+police, so it is yours. See PLAN.md Step 2B, read half.
+
+**2. The specific-performance premise regex. Costs real extractions today.**
+`native-producer/anthropic-provider.js:1193-1194` requires the literal strings
+`irreparable harm would occur` and `money damages would not be an adequate
+remedy`. Modiv §8.8 says *"irreparable harm, for which monetary damages (even
+if available) would not be an adequate remedy, would occur"* — the premise is
+plainly there, and the assertion is discarded. The source-side check twelve
+lines above accepts `harm|damage`, `money|monetary` and an intervening clause;
+the quote-side check accepts neither. Every agreement drafted with "monetary
+damages" loses its specific-performance grant. Rubric semantics, so yours —
+but the two predicates exist to test the same thing and disagree, which reads
+more like an oversight than a judgement.
+
+**3. Whether open-world evidence is written at all.** 275 open-world entries
+across the committed baseline, zero rows written: the adapter lists all five
+open-world collections as always-empty. Consequence: four of the ten cards a
+termination-fee run projects have no database-backed equivalent, and families
+whose output is entirely open-world write nothing at all. Either emit the
+rows, or accept a database-backed render of governed claims only and say so on
+the page. Defensible either way; not defensible to inherit it from a constant.
+
+**4. The representation and covenant vocabularies.** `REPRESENTATIONS` (19 of
+28 candidates) and `GENERAL_COVENANTS` (11 of 12) fail on corroboration tables
+in `candidate-resolution.js` being narrower than what the producers
+legitimately emit. Material taxonomy, explicitly yours.
+
+**5. `conditional_termination_fee_values` has no table.** Two more of the ten
+cards come from it, including the Modiv headline. It needs a home or an
+explicit omission.
+
+---
+
 # Recently decided
 
 - **The admitted-source identity stays as it is. The compressed source map
