@@ -12,6 +12,7 @@ const {
   shapeMiscBoilerplateProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { classifyQualifierQuote } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 const {
   AUTHORITY_STATE: REPRESENTATIONS_AUTHORITY_STATE,
   projectRepresentationClaims,
@@ -68,8 +69,23 @@ test('V31 read-only production corpus excerpts replay each M3 carrier across two
     assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.id);
     if (item.family === 'REPRESENTATIONS') {
       assert.equal(resolution.resolved.length, 0, item.id);
-      assert.equal(resolution.open_world.length, 1, item.id);
-      assert.equal(resolution.open_world[0].reason, 'REPRESENTATION_QUALIFIER_KIND_NOT_EXACT', item.id);
+      // PLAN.md Step 3G, defect 3: an ACCURACY-tagged qualifier whose
+      // deterministic classification is REVIEW (the classifier recognised
+      // marker text and deliberately declined to pick a family, e.g.
+      // QUALIFIER_KIND_UNCLASSIFIED or QUALIFIER_KIND_DISAGREEMENT) now
+      // routes to review_queue, never open_world -- refusing and asking for
+      // review are different answers. Every other non-CLASSIFIED outcome
+      // (SPLIT, or CLASSIFIED with the wrong kind) is unaffected and still
+      // lands in open_world with REPRESENTATION_QUALIFIER_KIND_NOT_EXACT.
+      const classification = classifyQualifierQuote({ quote: item.source_excerpt, modelKind: 'ACCURACY' });
+      if (classification.outcome === 'REVIEW') {
+        assert.equal(resolution.open_world.length, 0, item.id);
+        assert.equal(resolution.review_queue.length, 1, item.id);
+        assert.ok(['REP-T-QUALIFIER', 'REP-B-QUALIFIER'].includes(resolution.review_queue[0].concept_key), item.id);
+      } else {
+        assert.equal(resolution.open_world.length, 1, item.id);
+        assert.equal(resolution.open_world[0].reason, 'REPRESENTATION_QUALIFIER_KIND_NOT_EXACT', item.id);
+      }
       byFamily.set(item.family, (byFamily.get(item.family) || 0) + 1);
       continue;
     }
