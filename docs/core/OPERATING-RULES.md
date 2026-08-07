@@ -138,8 +138,10 @@ required; it stops being the only evidence.
 Ben corrected the sequencing of an earlier draft of the plan, which had put
 all display work at the end, after the search and market tools, and had
 treated amendment handling as a single undifferentiated, fully-deferred
-item. Two corrections followed, both now reflected in the roadmap's
-display-switchover step and its amendment-detection step:
+item. Two corrections followed, now reflected in `PLAN.md` Stage 5 (the
+display work, formerly "display-switchover") and `PLAN.md` Step 6D (the
+amendment residue). Both previously cited steps of `ROADMAP.md`, which is
+archived:
 
 - Displaying the 73 provisions whose analysis is already finished moves to
   immediately after improving the comparison view, because only 1 of the
@@ -275,8 +277,12 @@ schema migration asserts the same. Two cards sharing an excerpt reference
 are therefore the same card. The collision the ordering constraint protected
 against is unreachable by construction, and the index change it forbade
 would be refused by Postgres anyway, because a foreign key depends on the
-index. The full retraction, with code and schema references, is in the
-roadmap's step 10 and its known risks.
+index. This previously cited "the roadmap's step 10 and its known risks",
+which never existed — `ROADMAP.md` has no step 10, and it separately records
+the same class of dangling citation happening before. The substance is stated
+here and needs no pointer: the corruption path the index was said to prevent is
+unreachable by construction, and a foreign key in
+`supabase/schema-05-claims.sql` depends on the index in any case.
 
 What survives: do not design new identity on excerpt alone, and do not
 assume the current one-to-one relationship is a guarantee rather than an
@@ -389,7 +395,10 @@ not build a new verifier for two rows.
 
 ### Amendment handling: the shape, and what ships before launch (2026-08-05)
 
-Covered in full under the roadmap's amendment-detection step. Ben's
+Covered in full under `PLAN.md` Step 6D, which scopes it to the residue: the
+classifier itself already exists and is wired into `selectAgreementExhibit`;
+what is missing is that its `needs_human_review` signal reaches no user, and
+that the live ingest path bypasses it. Ben's
 original instruction on the full design was to think it through, add it to
 the plan, and not build it yet; that full design (the "parsing" half)
 remains deferred to after launch. Ben has since carved out a smaller,
@@ -416,8 +425,9 @@ engineering lane, which resolved them and recorded the reasoning:
 - **Leave the excerpt unique-index alone.** The conclusion holds; the
   reasoning recorded with it did not. It was justified on the ground that
   the index is the only thing preventing a live corruption path. **That
-  justification was false** (see the excerpt-identity ruling above, and the
-  roadmap's step 10): there is no such corruption path, and a foreign key
+  justification was false** (see the excerpt-identity ruling above; its former
+  citation to "the roadmap's step 10" was dangling and has been removed): there
+  is no such corruption path, and a foreign key
   in `supabase/schema-05-claims.sql` depends on the index, so it could not
   be dropped even deliberately. The index stays because it is production
   schema, outside current authority to change, and because nothing needs it

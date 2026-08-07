@@ -1422,6 +1422,50 @@ produced and shown to Ben before any delete runs.
 
 ---
 
+## Step 6D. Make the amendment warning reach a human, and close the bypass
+
+**What it is.** The residue of amendment/restatement handling — the part that
+is genuinely missing, as opposed to the part that already exists.
+
+**What already exists, so nobody rebuilds it.**
+`lib/agreement-revision-classifier.js` classifies `ORIGINAL` /
+`AMENDED_AND_RESTATED` / `AMENDMENT` / `AMBIGUOUS`, and its stated design is
+that "what it cannot place is AMBIGUOUS for a human, never a guess". It is
+wired into `selectAgreementExhibit` (`lib/edgar-catalog.js:334`, `:514`), which
+excludes amendments and stops on ambiguity. A previous version of this plan
+proposed building this from scratch as its highest-priority item; that was
+false, and it was the third capability this programme has asserted out of
+existence.
+
+**What is actually missing, both verified.**
+
+1. **The warning reaches no human.** `needs_human_review` is set correctly
+   (`edgar-catalog.js:341`, `:374`) and consumed by nothing a user sees: its
+   only UI consumer, `pages/api/admin/candidates.js`, is a
+   `createBroadCorpusContainedHandler(['GET','PATCH'])` — a 503.
+2. **The live ingest path bypasses the classifier entirely.**
+   `scripts/ingest-local.js`, which self-documents as the only live path to
+   ingest a new deal, has **zero** references to `edgar-catalog` and therefore
+   never calls `selectAgreementExhibit`. Whoever runs it must already know
+   their URL is the original agreement.
+
+**Why this gates launch.** `DECISIONS.md` rules that detection plus a visible
+warning ships before go-live. Detection ships. The visible warning does not,
+and the path most likely to be used skips detection altogether. Full amendment
+*parsing* remains deferred to after launch, unchanged.
+
+**Change.** Route `ingest-local.js` through `selectAgreementExhibit`, or give
+it an explicit, logged override for the case where the caller has already
+identified the exhibit. Then surface `needs_human_review` somewhere a person
+looks — which depends on Step 7C's disposition of
+`pages/api/admin/candidates.js`, so sequence it after that.
+
+**Proves it is done.** Ingesting a known amended-and-restated agreement through
+the live path produces a visible warning rather than silently proceeding, and
+ingesting a known original does not. Both by test, plus one real run.
+
+---
+
 # Stage 7. Security
 
 Independent of everything above. Nothing in Stages 2 to 6 waits on it. It gates
