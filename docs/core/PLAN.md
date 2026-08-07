@@ -530,25 +530,30 @@ it. Note also that `PLAN.md`'s own former claim that the schema had "never been
 executed" rested on a command that only shows some tests pattern-match source
 text — see `CODEBASE-GUIDE.md` section 9.
 
-**BLOCKER FOUND 2026-08-07, and it must be fixed before this step can pass.**
-The bridge is built (`lib/canonical-v2/evidence-to-write-set-bridge.js`) and
-reads a run correctly, but **no committed run can currently be imported**.
-Measured across all 24 evidence directories carrying an `adapter-result.json`:
-**24 of 24 are rejected** by `validateCanonicalWriteSet`, every one on the
-same two keys.
+**RETRACTED 2026-08-07, same day.** An earlier version of this step recorded a
+blocker here: that all 24 committed runs were rejected by the validator on
+`definition_occurrences` and `source_references`, and that the producer and
+validator had diverged. **That was wrong, and the error was in the bridge, not
+in the system.**
 
-The runner emits `definition_occurrences` and `source_references` in its
-write-set. `validate-write-set.js`'s `WRITE_SET_KEYS` contains neither —
-though `CANONICAL_COLLECTION_KEYS`, in the same file, does list
-`definition_occurrences`. So the validator disagrees with itself and with the
-producer, and has done for as long as these runs have existed. Nobody saw it
-because nothing ever tried to import a run.
+`validate-write-set.js` enforces two different allow-lists for two different
+write-set shapes: `WRITE_SET_KEYS` for the generic form, and
+`DEAL_SCOPE_WRITE_SET_KEYS` for a `DEAL_SCOPE_RUN`. An extraction run is the
+latter. The bridge called the generic validator, which correctly rejects a
+deal-scope write-set. Called correctly — `validateResolvedCanonicalWriteSet`
+with the run's `admitted_source_contexts` — **23 of 24 committed runs pass**.
+The one failure is a specific claim in one run, not a structural divergence.
 
-Fixing it is a decision, not a typo: either the two keys join `WRITE_SET_KEYS`
-(the producer is right), or the runner stops emitting them (the validator is
-right). That determines whether 24 committed runs are importable evidence or
-have to be re-run. Do not "fix" it by stripping the keys in the bridge — that
-would hide a producer/validator divergence behind a green import.
+Recorded rather than quietly deleted because the retracted version was
+committed and reported, and because it is the same failure this programme
+keeps repeating: a confident structural claim built on one unchecked
+assumption, here that there was only one validator.
+
+**The real remaining blocker, one layer deeper.** With validation passing, the
+writer refuses a `DEAL_SCOPE_RUN` with "writeSet must match the closed
+reference-only semantic contract". That is a genuine gap between what a run
+produces and what the writer's deal-scope path expects, and it is the next
+thing to work out. It is smaller and better-defined than the retracted claim.
 
 One thing this already proves: reading the write-set from
 `validation.json`'s `publishableWriteSet` does not work. That is the
@@ -558,8 +563,8 @@ the validator requires. `adapter-result.json` carries the complete
 
 **Proves it is done (write half).** One family's committed evidence directory
 goes in, rows come out in staging, and a second identical invocation is a
-no-op. Both proved by test, not by a screenshot. Blocked on the key
-divergence above.
+no-op. Both proved by test, not by a screenshot. Blocked on the
+closed-reference-only-semantic-contract refusal above.
 
 ### The read half
 

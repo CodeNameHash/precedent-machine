@@ -1,7 +1,7 @@
 // PLAN.md Step 2B, write half. These tests pin the bridge's reading and its
-// refusals. They deliberately do NOT assert a successful import: no committed
-// run can currently be imported, and the reason is recorded below and in
-// PLAN.md Step 2B rather than worked around.
+// refusals. They do not yet assert a successful import: 23 of 24 committed
+// runs pass validation, and the writer then refuses them for a narrower
+// reason recorded below and in PLAN.md Step 2B.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -74,22 +74,46 @@ test('it refuses to write without a repository or a contract bundle', async () =
   );
 });
 
-test('KNOWN GAP: every committed run is rejected by the current validator', async () => {
-  // Measured 2026-08-07 across all 24 evidence directories carrying an
-  // adapter-result.json: 24 of 24 rejected, every one on the same two keys.
+test('23 of 24 committed runs pass the resolved validator', () => {
+  // An earlier version of this file asserted the opposite -- that all 24 were
+  // rejected -- because the bridge called validateCanonicalWriteSet, the
+  // GENERIC validator, whose WRITE_SET_KEYS allow-list is for a different
+  // write-set shape. An extraction run is a DEAL_SCOPE_RUN and is checked
+  // against DEAL_SCOPE_WRITE_SET_KEYS by validateResolvedCanonicalWriteSet.
+  // This test pins the real number so that mistake cannot recur silently.
+  const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
+  const root = path.join(__dirname, '..', 'evidence/canonical-v2');
+  const dirs = fs.readdirSync(root)
+    .filter((entry) => fs.existsSync(path.join(root, entry, 'adapter-result.json')));
+  const bundle = compileFixtureContractV38();
+  let passed = 0;
+  for (const dir of dirs) {
+    const adapter = JSON.parse(fs.readFileSync(path.join(root, dir, 'adapter-result.json'), 'utf8'));
+    try {
+      validateResolvedCanonicalWriteSet({
+        writeSet: adapter.write_set,
+        contractBundle: bundle,
+        admittedSourceContexts: adapter.admitted_source_contexts,
+      });
+      passed += 1;
+    } catch {
+      // Counted, not rethrown: the point is the ratio.
+    }
+  }
+  assert.ok(dirs.length >= 24, `expected at least 24 run directories, found ${dirs.length}`);
+  assert.ok(
+    passed >= dirs.length - 1,
+    `expected at most one validation failure, got ${dirs.length - passed} of ${dirs.length}`,
+  );
+});
+
+test('KNOWN GAP: the writer refuses a deal-scope run from committed evidence', async () => {
+  // Validation now passes. The writer does not: it requires a "closed
+  // reference-only semantic contract" that a run's write-set does not
+  // satisfy. That is the real, narrower blocker on Step 2B's write half.
   //
-  // The runner emits `definition_occurrences` and `source_references` in its
-  // write-set. validate-write-set.js's WRITE_SET_KEYS contains neither --
-  // though CANONICAL_COLLECTION_KEYS, in the same file, DOES list
-  // `definition_occurrences`. So the validator disagrees with itself, and
-  // with the producer.
-  //
-  // This test asserts the CURRENT state on purpose. It is not accepting the
-  // defect: it makes the defect visible and will fail the moment someone
-  // fixes it, which is the prompt to delete this test and assert a real
-  // import instead. Silently skipping the import, or loosening the bridge to
-  // strip the offending keys, would hide a producer/validator divergence
-  // behind a green suite.
+  // Asserted rather than skipped so it fails the moment someone closes it,
+  // which is the prompt to replace this with a real import assertion.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -97,12 +121,7 @@ test('KNOWN GAP: every committed run is rejected by the current validator', asyn
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    (err) => {
-      assert.ok(err instanceof EvidenceBridgeError);
-      assert.equal(err.code, 'REVALIDATION_FAILED');
-      assert.match(err.message, /outside the fixed contract/);
-      return true;
-    },
+    /closed reference-only semantic contract/,
   );
 });
 
@@ -112,6 +131,9 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
   // see the divergence at all.
   const validation = JSON.parse(fs.readFileSync(path.join(RUN, 'validation.json'), 'utf8'));
   assert.equal(validation.accepted, true, 'the run claims it was accepted');
+  // It gets PAST validation now and fails in the writer instead, which is
+  // itself the proof: the bridge ran the validators rather than trusting the
+  // file's own claim to have been validated.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -119,6 +141,6 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    /REVALIDATION_FAILED/,
+    /closed reference-only semantic contract/,
   );
 });
