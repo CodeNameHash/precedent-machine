@@ -13,6 +13,7 @@ const {
   READ_ONLY_GIT_INSPECTORS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
+  LOCAL_DATABASE_PROOF_SOURCES,
   LIVE_REQUEST_AUTHORIZATION_SOURCES,
   LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES,
   LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES,
@@ -220,6 +221,15 @@ const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDE
 // and nothing that would give it database, network, signing, or deployment
 // authority.
 const LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'external_process', 'filesystem_write'].includes(name)));
+// Step 4A's local durable-write proof harness: the first source in this
+// programme carrying `database` at all. It is allowed exactly `database`
+// (it connects to a local Postgres container with `pg`) and
+// `filesystem_write` (it reads committed evidence and writes its receipts),
+// and nothing else -- in particular no `provider`, because it never calls a
+// model: it replays already-committed evidence. What keeps `database`
+// honest here is that no production credential exists in this repository;
+// the class is deliberately narrow and holds one script for that reason.
+const LOCAL_DATABASE_PROOF_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['database', 'filesystem_write'].includes(name)));
 // The session/credential mechanism: genuinely live, but the same full
 // zero-capability boundary as PURE_PROPOSAL -- see the class's own comment
 // in phase1-authority-boundary-inventory.js for why it is recorded as live
@@ -654,6 +664,7 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'READ_ONLY_GIT_INSPECTOR',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
+    'LOCAL_DATABASE_PROOF',
     'LIVE_REQUEST_AUTHORIZATION',
     'LIVE_REQUEST_AUTHORIZATION_SESSION',
     'LIVE_REQUEST_AUTHORIZATION_CLIENT',
@@ -951,7 +962,12 @@ test('hostile inventory and capability changes fail closed', () => {
     () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
     /network/,
   );
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 11);
+  // Moved 11 -> 12 on 2026-08-07 by PLAN.md Step 4A, which added
+  // LOCAL_DATABASE_PROOF: the first class in this programme permitting the
+  // `database` capability. This assertion exists precisely so that adding an
+  // authority class cannot happen quietly, so the number is meant to be
+  // edited by hand, in the same change, with the reason recorded here.
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 12);
 });
 
 // ---------------------------------------------------------------------------------------
