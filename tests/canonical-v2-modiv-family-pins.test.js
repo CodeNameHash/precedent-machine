@@ -79,17 +79,28 @@ test('the pins match what the committed runs actually used', () => {
   assert.ok(compared >= 15, `expected to compare at least 15 committed runs, compared ${compared}`);
 });
 
-test('MAE_DEFINITION is pinned but flagged as generator-proposed', () => {
-  // It is the one family never run against Modiv, so its list is the stage-1
-  // generator's proposal rather than harvested human judgement. PLAN.md
-  // Step 2A requires it be read against the document before its result is
-  // trusted. This test exists so that requirement cannot be quietly lost.
+test('MAE_DEFINITION records that its generator proposal was reviewed', () => {
+  // It is the one family never run against Modiv, so its list began as the
+  // stage-1 generator's proposal rather than harvested human judgement, and
+  // PLAN.md Step 2A required it be read against the document before its
+  // result is trusted.
+  //
+  // That read was done on 2026-08-07 and the proposal held: Section 8.12
+  // contains both MAE definition sites. An earlier version of this test
+  // asserted the pin still carried a comment saying it was UNREVIEWED, which
+  // was right until the review happened and would now be pinning a stale
+  // warning in place. What has to survive instead is the record of what was
+  // checked -- and the mechanical version of it.
   const pins = modivPins();
   assert.ok(Array.isArray(pins.MAE_DEFINITION) && pins.MAE_DEFINITION.length > 0);
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(
     source,
-    /Never run against Modiv[\s\S]{0,400}MAE_DEFINITION/,
-    'the MAE_DEFINITION pin must keep the comment recording that it is unreviewed',
+    /REVIEWED AGAINST THE DOCUMENT[\s\S]{0,1400}MAE_DEFINITION: Object\.freeze/,
+    'the MAE_DEFINITION pin must keep the record of the document review beside it',
+  );
+  assert.ok(
+    fs.existsSync(path.join(__dirname, 'canonical-v2-mae-definition-pin-review.test.js')),
+    'the review is mechanical, not just a comment; its test must stay',
   );
 });

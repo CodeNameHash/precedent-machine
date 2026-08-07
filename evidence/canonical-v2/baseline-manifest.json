@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 48,
-  "importable_run_count": 24,
+  "run_count": 49,
+  "importable_run_count": 25,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -17,6 +17,7 @@
     "GUARANTY_FINANCING_PARTY",
     "INTERIM_OPERATING",
     "KEY_DEFINED_TERMS",
+    "MAE_DEFINITION",
     "MATERIAL_CONTRACTS",
     "MERGER_STRUCTURE_CLOSING",
     "MISC_BOILERPLATE",
@@ -30,9 +31,9 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 140,
-    "provisions": 66,
-    "claims": 151,
+    "excerpts": 159,
+    "provisions": 67,
+    "claims": 170,
     "relationships": 0,
     "components": 10,
     "definition_occurrences": 0,
@@ -994,6 +995,29 @@
       "importable": false,
       "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
       "published": null
+    },
+    {
+      "run": "topbuild-mae-definition-20260807-replay",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "3.1(a)"
+      ],
+      "model_call_count": 0,
+      "resolved": 19,
+      "review_queue": 21,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 19,
+        "provisions": 1,
+        "claims": 19,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
     }
   ]
 }

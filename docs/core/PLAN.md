@@ -464,6 +464,24 @@ Note `article_context` is `null` in every live path today; do not rely on it.
 `MAE_DEFINITION` has no Modiv run to harvest from, so it gets a full human read
 regardless of whether the generator disagrees with anything.
 
+**DONE 2026-08-07, and the generator was right.** Section 8.12 "Definitions"
+spans bytes 360,030–414,712 of the Modiv canonical text and contains **both**
+definition sites: `"Company Material Adverse Effect" means` at 366,186 and
+`"Parent Material Adverse Effect" means` at 385,847. Each appears exactly
+once — the document's 77 other mentions of the phrase are uses, not
+definitions — so the pin `['8.12']` is complete, not merely non-empty.
+
+Pinned mechanically by `tests/canonical-v2-mae-definition-pin-review.test.js`,
+which re-derives the canonical text and re-locates both definitions rather
+than trusting these numbers, so a sectionizer change that moved the boundary
+fails loudly instead of silently narrowing the run.
+
+One cost fact, recorded so it is not later mistaken for a mis-pin: 8.12 is the
+whole definitions article at roughly 55 KB, so this family's run is a single
+expensive call over a section mostly not about MAE. Narrowing needs evidence
+about the producer's behaviour on a narrower anchor, and that does not exist
+until the family has run once.
+
 **Change.** `scripts/canonical-v2-live-extraction-run.mjs`,
 `DEAL_PINS.modiv.default_section_refs_by_family`: all 25 families, harvested,
 cross-checked, and the two corrections above applied.
@@ -665,16 +683,39 @@ which is precisely what the writer's comparison exists to prevent.
 Recovery costs nothing: replay regenerates a run in the current environment
 with zero model calls, and the regenerated directory rebuilds.
 
-**The whole baseline is regenerated.** All 21 Modiv families replayed through
-the current runner with zero model calls, committed as
-`evidence/canonical-v2/modiv-*-20260807-replay/`, and **all 21 import**: 126
-claims, 52 provisions, 117 excerpts. Four families gained rows against the
-2026-08-06 originals — V38 gives candidates a governed home V34 did not —
-and none lost any. The originals are kept: they are the record of what was
-actually run.
+**The whole baseline is regenerated.** Every committed run with usable
+recorded responses was replayed through the current runner with **zero model
+calls**, and **all 25 import**: 170 claims, 67 provisions, 159 excerpts. Four
+families gained rows against the 2026-08-06 originals — V38 gives candidates a
+governed home V34 did not — and none lost any. The originals are kept: they
+are the record of what was actually run.
 
-So rungs 1 through 4 of the ladder have an importable baseline to compare
-against, which they did not have this morning.
+**All 25 registered families now have an importable run. Read that precisely.**
+
+- **24 are Modiv**, under `evidence/canonical-v2/modiv-*-20260807-replay/`.
+  Three of those (`capitalisation`, `closing-conditions`, `interim-operating`)
+  came from runs that crashed on 2026-08-06 leaving their recorded responses
+  behind; replaying those responses through the current code completed them.
+- **`MAE_DEFINITION` is TopBuild, not Modiv**
+  (`topbuild-mae-definition-20260807-replay`, 19 claims). It has still never
+  run against Modiv, so it has no Modiv baseline and rung 4 remains its first
+  Modiv run — creating a baseline rather than checking one. The pin is now
+  reviewed (above), which is the part that was blocking.
+- **`CLOSING_CONDITIONS` is partial and says so in its name.**
+  `modiv-closing-conditions-6.1-only-20260807-replay` covers section 6.1
+  alone. Its 6.2 recorded response is not a model response at all — it is a
+  captured CLI status message beginning "Written to evidence/..." — so 6.2
+  needs a live call. The directory is named `-6.1-only-` so the partial
+  coverage cannot be read as the family's baseline.
+- **`TERMINATION_FEE` was replayed with `--no-follow-citations`**, matching the
+  2026-08-05 run it replays, because the runner now follows citations by
+  default and would otherwise issue calls that were never recorded. Its
+  `run-manifest.json` records `follow_citations: false`. A rung-1 comparison
+  against a citation-following run is therefore not like-for-like.
+
+So rungs 1 through 4 have an importable baseline to compare against, which
+they did not have this morning — with those four caveats attached to it rather
+than lost.
 
 **RESOLVED 2026-08-07 in `636dd11`, and not the way this step first proposed.**
 Rekeying the identity onto `source_map_digest` was rejected on blast radius:

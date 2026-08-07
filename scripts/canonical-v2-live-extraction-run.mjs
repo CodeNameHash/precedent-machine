@@ -294,11 +294,26 @@ const DEAL_PINS = Object.freeze({
       GUARANTY_FINANCING_PARTY: Object.freeze(["5.11"]),
       INTERIM_OPERATING: Object.freeze(["5.1"]),
       KEY_DEFINED_TERMS: Object.freeze(["8.5"]),
-      // Never run against Modiv: the only 2026-08-06 MAE run is TopBuild.
-      // This list is the stage-1 generator proposal, NOT harvested human
-      // judgement like the other 24, and PLAN.md Step 2A requires it be read
-      // against the document before its result is trusted. Rung 4 is where it
-      // first runs, creating a baseline rather than checking one.
+      // Never run against Modiv: the only 2026-08-06 MAE run is TopBuild, so
+      // this list began as the stage-1 generator's PROPOSAL rather than
+      // judgement harvested from a run that happened.
+      //
+      // REVIEWED AGAINST THE DOCUMENT 2026-08-07, as PLAN.md Step 2A required,
+      // and the proposal is correct. Section 8.12 "Definitions" spans bytes
+      // 360,030-414,712 of the Modiv canonical text and contains BOTH
+      // definition sites: "Company Material Adverse Effect" means at 366,186
+      // and "Parent Material Adverse Effect" means at 385,847. Each appears
+      // exactly once; the document's 77 other mentions of the phrase are uses.
+      // Pinned by tests/canonical-v2-mae-definition-pin-review.test.js, so a
+      // sectionizer change that moved the boundary would fail rather than
+      // silently narrow the run.
+      //
+      // Cost note, not a defect: 8.12 is the whole definitions article at
+      // ~55 KB, so this is one expensive call over a section mostly not about
+      // MAE. Narrowing needs evidence about the producer's behaviour on a
+      // narrower anchor, which does not exist until the family runs once.
+      // Rung 4 is where it first runs, creating a baseline rather than
+      // checking one.
       MAE_DEFINITION: Object.freeze(['8.12']),
       MATERIAL_CONTRACTS: Object.freeze(["3.17"]),
       MERGER_STRUCTURE_CLOSING: Object.freeze(["1.1","1.4","1.5","1.6"]),
