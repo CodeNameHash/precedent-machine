@@ -375,6 +375,62 @@ served, has not passed. This finds a writer defect at family 1 rather than
 after fifteen documents of extraction, and it costs almost nothing extra:
 extraction is the expensive part, and the other four steps are fast.
 
+## What to do when a rung fails
+
+**Ben's ruling, 2026-08-07.** Every rung in this stage has a gate, and every
+gate can fail. The rule below governs all of them — 2C through 2G — and is
+stated once here rather than repeated per step.
+
+**A failed gate is a stop.** Not a note to fix at the end, not a tolerance to
+widen, and never a reason to run the next rung anyway. Widening a gate to make
+it pass is the specific erosion this ladder exists to prevent, and it is
+indistinguishable in the evidence from the ladder having worked.
+
+**1. Load Fable and iterate.** Give it the failing rung's evidence directory,
+the last green rung for the same pair, and the diff between them — code,
+`prompt_version`, `contract_bundle_version`, `section_references`. Fable
+diagnoses and iterates toward a fix. This is the same escalation `CLAUDE.md`
+already applies to delegated work, moved earlier: a gate failure is exactly
+the case where iterating cheap wastes the most time.
+
+**2. Bound the iteration, and bound it by information rather than by clock.**
+Three rounds, where a round only counts if it produced a **new, testable
+hypothesis**. A round that restates a hypothesis an earlier round already
+refuted is not a fourth round; it is the stop condition. In practice this
+lands somewhere between twenty minutes and a couple of hours, but the number
+of hours is not the test — whether the last round told you something the one
+before it did not, is.
+
+**Stop immediately, without spending the three rounds, if the fix would need
+a decision reserved to Ben**: taxonomy values or codebook vocabularies, the
+database security surface, a schema change to a closed contract, or anything
+that changes what the pipeline extracts across every deal. Those are not
+failures to iterate on. They are questions, and the answer is item 3.
+
+**3. Escalate to Ben, with the diagnosis rather than the problem.** Say:
+
+- which rung, which deal, which family, and which of the three gate
+  conditions failed;
+- what the last green state was, so the regression is bounded;
+- what was tried and what each round **refuted** — the refutations are the
+  valuable part and the thing nobody reconstructs later;
+- two or three options with a recommendation, and the cost of each.
+
+**"Needs more analysis" is not an escalation**, the same way it is not a
+disposition in Step 3H. If three rounds produced no fix, they produced a
+bounded description of what the failure is not, and that is what to bring.
+
+**4. Record the outcome either way.** A rung that failed and was fixed, and a
+rung that failed and was escalated, both belong in that round's regression
+table and in Step 2H's generalisation note. A failure that was fixed and left
+unrecorded reads afterwards exactly like a rung that never failed.
+
+**What this deliberately does not say.** It does not say when to abandon a
+document, or when enough failures mean the ladder itself is the wrong shape.
+Those are judgement calls for Ben at the point they arise, informed by the
+escalation above, and inventing a threshold here would be inventing false
+precision about a situation nobody has seen yet.
+
 ## Prerequisite. Wire Ben's two M3 auto-pass conditions before rung 1
 
 **Ben ruled this on 2026-08-06 and an earlier draft of this stage dropped it.**
@@ -1241,8 +1297,11 @@ else with `UNREGISTERED_FAMILY`.
    a 200", and do not let a family with no surface silently count as one that
    serves.
 
-A failed gate is a stop, not a note to fix at the end. **Ten of the 25
-importable runs publish zero claims**, so note that condition 2 is **vacuously
+A failed gate is a stop, not a note to fix at the end — see **"What to do
+when a rung fails"** at the top of this stage for the escalation: load Fable,
+bound the iteration at three rounds that each produce a new testable
+hypothesis, and escalate to Ben with the refutations rather than the problem.
+**Ten of the 25 importable runs publish zero claims**, so note that condition 2 is **vacuously
 satisfied** by 0 -> 0: for every zero-publishing family, state why zero is
 correct and what would make it wrong, or the gate is checking nothing. Step 2B
 now carries a triage table doing exactly that for all ten: two proven correct
@@ -1410,6 +1469,22 @@ round kept rather than only the last, so the ladder is auditable afterwards. A
 regression table per round: which families, which documents, incomplete count,
 resolved deltas against the previous round for that pair. And each document
 reaching the serving check, not only the extraction one.
+
+**When a document fails — which, across ten to fifteen drafters, one will.**
+Follow "What to do when a rung fails" at the top of this stage. Two shapes,
+and they mean different things:
+
+- **The new document fails on its own run.** Ordinary. A new drafter exposed a
+  gap. Fix, re-run it alone, then re-run the accumulated set alongside it.
+- **The new document is clean but the accumulated set regresses.** Serious, and
+  the paragraph above says why: a fix for document N changed behaviour on 1
+  through N-1, which should be structurally impossible. Do not iterate past
+  one round on this shape — escalate, because the finding is about coupling
+  between fixes rather than about the document.
+
+The regression table records the failure and its outcome either way. A
+document that failed and was fixed must not read afterwards like one that
+passed first time.
 
 ## Step 2H. Say which fixes generalised and which were Modiv-only
 
