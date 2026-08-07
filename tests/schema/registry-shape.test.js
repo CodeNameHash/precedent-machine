@@ -47,26 +47,11 @@ test('enum and list-tag features carry the required schema fields', () => {
       assert.ok(Array.isArray(feature.enumSet) && feature.enumSet.length > 0, `${feature.key} needs enumSet`);
     }
     if (feature.listItemType === 'tag') {
-      // QUARANTINED 2026-08-06, owner: Ben, review by: 2026-08-20.
-      // Two features declare a listItemTagFamily that no TAGS entry carries:
-      // secFilingsExcludedSections -> SEC_FILING_EXCLUSION, and
-      // interveningEventExceptions -> INTERVENING_EVENT_EXCEPTION_CODES.
-      // lib/taxonomy.js defines the underlying code sets, but neither
-      // lib/schema/tags.js nor scripts/generate-registry.js knows either
-      // family. These are real taxonomy gaps,
-      // not a test defect, and it was invisible until the recursive test
-      // glob landed (PLAN.md Stage 2's B-zero). Fixing it means teaching
-      // generate-registry.js the family and regenerating -- hand-editing
-      // tags.js would be reinstated away by the next regeneration, the same
-      // trap PLAN.md Step 8B documents. Do not delete this exception to make
-      // the suite green; fix the registry or record the decision not to.
-      const KNOWN_MISSING_TAG_FAMILIES = new Set([
-        'SEC_FILING_EXCLUSION',           // secFilingsExcludedSections
-        'INTERVENING_EVENT_EXCEPTION_CODES', // interveningEventExceptions
-      ]);
-      if (!KNOWN_MISSING_TAG_FAMILIES.has(feature.listItemTagFamily)) {
-        assert.ok(tagFamilies.has(feature.listItemTagFamily), `${feature.key} references unknown tag family`);
-      }
+      // Quarantined 2026-08-06 when the recursive test glob first ran this
+      // file and two features pointed at families no TAGS entry carried.
+      // Un-quarantined 2026-08-07: the generator now emits both
+      // (SEC_FILING_EXCLUSION_CODES, INTERVENING_EVENT_EXCEPTION_CODES).
+      assert.ok(tagFamilies.has(feature.listItemTagFamily), `${feature.key} references unknown tag family`);
     }
   }
 });
