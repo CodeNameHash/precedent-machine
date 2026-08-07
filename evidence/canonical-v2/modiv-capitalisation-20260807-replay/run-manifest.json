@@ -1,0 +1,44 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "CAPITALISATION",
+  "purpose": "General extraction run: family CAPITALISATION on deal modiv.",
+  "section_references": [
+    "3.2"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.2",
+      "family_id": "CAPITALISATION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+  "prompt_version": 5,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-07T07:59:56.713Z",
+  "total_elapsed_ms": 5505,
+  "extraction_wall_clock_ms": 214,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
+  "recorded_to": null,
+  "code_provenance": {
+    "commit": "016d42b3bd006b6f6f4c84582a9fa1b21106046c",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 0,
+  "run_receipt_id": "d881921493745bd3495a27c5a5032b2252e8e566cebf68444dc246357e839a8f",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

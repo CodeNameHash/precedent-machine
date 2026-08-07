@@ -1,0 +1,999 @@
+{
+  "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
+  "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
+  "run_count": 48,
+  "importable_run_count": 24,
+  "families_with_an_importable_run": [
+    "ANTITRUST_REGULATORY",
+    "APPRAISAL_DISSENTERS_RIGHTS",
+    "CAPITALISATION",
+    "CLOSING_CONDITIONS",
+    "CONSIDERATION",
+    "DIVIDENDS",
+    "DNO_INDEMNIFICATION",
+    "EMPLOYEE_MATTERS",
+    "FINANCING_COVENANTS",
+    "GENERAL_COVENANTS",
+    "GUARANTY_FINANCING_PARTY",
+    "INTERIM_OPERATING",
+    "KEY_DEFINED_TERMS",
+    "MATERIAL_CONTRACTS",
+    "MERGER_STRUCTURE_CLOSING",
+    "MISC_BOILERPLATE",
+    "NO_OTHER_REPS_FRAUD",
+    "NO_SHOP",
+    "PROXY_MEETING",
+    "REPRESENTATIONS",
+    "SPECIFIC_PERFORMANCE_REMEDIES",
+    "TAX_MATTERS",
+    "TERMINATION",
+    "TERMINATION_FEE"
+  ],
+  "totals": {
+    "excerpts": 140,
+    "provisions": 66,
+    "claims": 151,
+    "relationships": 0,
+    "components": 10,
+    "definition_occurrences": 0,
+    "condition_groups": 0
+  },
+  "runs": [
+    {
+      "run": "modiv-antitrust-20260806",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "5.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 22,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-antitrust-20260807-replay",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "5.5"
+      ],
+      "model_call_count": 0,
+      "resolved": 13,
+      "review_queue": 33,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 13,
+        "claims": 13,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-appraisal-20260806",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-appraisal-20260807-replay",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.6"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-capitalisation-20260807-replay",
+      "section_family": "CAPITALISATION",
+      "section_references": [
+        "3.2"
+      ],
+      "model_call_count": 0,
+      "resolved": 9,
+      "review_queue": 15,
+      "open_world": 61,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 1,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-closing-conditions-6.1-only-20260807-replay",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "6.1"
+      ],
+      "model_call_count": 0,
+      "resolved": 6,
+      "review_queue": 6,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 4,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-consideration-20260806",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 1,
+      "review_queue": 4,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-consideration-20260807-replay",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3"
+      ],
+      "model_call_count": 0,
+      "resolved": 1,
+      "review_queue": 4,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-dividends-20260806",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-dividends-20260807-replay",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.10"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-dno-20260806",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "5.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 10,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-dno-20260807-replay",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "5.8"
+      ],
+      "model_call_count": 0,
+      "resolved": 4,
+      "review_queue": 10,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 2,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-employee-matters-20260806",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-employee-matters-20260807-replay",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-financing-covenants-20260806",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "4.13",
+        "5.20"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 3,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-financing-covenants-20260807-replay",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "4.13",
+        "5.20"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 3,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-general-covenants-20260806",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.3",
+        "5.7",
+        "5.9"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 12,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-general-covenants-20260807-replay",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.3",
+        "5.7",
+        "5.9"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 12,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-guaranty-20260806",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "5.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-guaranty-20260807-replay",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "5.11"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-interim-operating-20260807-replay",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "5.1"
+      ],
+      "model_call_count": 0,
+      "resolved": 10,
+      "review_queue": 54,
+      "open_world": 46,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 9,
+        "claims": 10,
+        "relationships": 0,
+        "components": 10,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-key-defined-terms-20260806",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "8.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 15,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-key-defined-terms-20260807-replay",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "8.5"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 15,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-material-contracts-20260806",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 5,
+      "open_world": 26,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-material-contracts-20260807-replay",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.17"
+      ],
+      "model_call_count": 0,
+      "resolved": 15,
+      "review_queue": 15,
+      "open_world": 16,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 3,
+        "claims": 15,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-merger-structure-20260806",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "1.6"
+      ],
+      "model_call_count": 4,
+      "resolved": 20,
+      "review_queue": 20,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-merger-structure-20260807-replay",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "1.6"
+      ],
+      "model_call_count": 0,
+      "resolved": 20,
+      "review_queue": 20,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 20,
+        "provisions": 4,
+        "claims": 20,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-misc-boilerplate-20260806",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.7",
+        "8.9",
+        "8.10"
+      ],
+      "model_call_count": 6,
+      "resolved": 14,
+      "review_queue": 14,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-misc-boilerplate-20260807-replay",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.7",
+        "8.9",
+        "8.10"
+      ],
+      "model_call_count": 0,
+      "resolved": 14,
+      "review_queue": 14,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 5,
+        "claims": 14,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-no-other-reps-20260806",
+      "section_family": null,
+      "section_references": null,
+      "model_call_count": null,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "REVALIDATION_FAILED",
+      "published": null
+    },
+    {
+      "run": "modiv-no-other-reps-20260807-replay",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.25"
+      ],
+      "model_call_count": 0,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-no-shop-20260806",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 42,
+      "review_queue": 52,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-no-shop-20260807-replay",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.6"
+      ],
+      "model_call_count": 0,
+      "resolved": 42,
+      "review_queue": 52,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 39,
+        "provisions": 9,
+        "claims": 42,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-proxy-meeting-20260806",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "5.4"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 13,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-proxy-meeting-20260807-replay",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "5.4"
+      ],
+      "model_call_count": 0,
+      "resolved": 2,
+      "review_queue": 13,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 2,
+        "provisions": 1,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-representations-20260806",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.3",
+        "3.4"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 28,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-representations-20260807-replay",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.3",
+        "3.4"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 28,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-specific-performance-20260806",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "8.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-specific-performance-20260807-replay",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "8.8"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-tax-matters-20260806",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "3.13",
+        "4.15",
+        "5.12"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-tax-matters-20260807-replay",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "3.13",
+        "4.15",
+        "5.12"
+      ],
+      "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-termination-20260806",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "7.1",
+        "7.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 1,
+      "review_queue": 16,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-termination-20260807-replay",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "7.1",
+        "7.2"
+      ],
+      "model_call_count": 0,
+      "resolved": 8,
+      "review_queue": 16,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 7,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-termination-fee-20260807-replay",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "model_call_count": 0,
+      "resolved": 7,
+      "review_queue": 19,
+      "open_world": 16,
+      "residuals": 1,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 5,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-termination-fee-citation-following-20260806",
+      "section_family": null,
+      "section_references": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "model_call_count": 14,
+      "resolved": 9,
+      "review_queue": 23,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-termination-fee-promptv3-20260805",
+      "section_family": null,
+      "section_references": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "model_call_count": 3,
+      "resolved": 3,
+      "review_queue": 11,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "modiv-termination-fee-scope-correction-20260805",
+      "section_family": null,
+      "section_references": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "model_call_count": 3,
+      "resolved": 2,
+      "review_queue": 16,
+      "open_world": 16,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    },
+    {
+      "run": "topbuild-mae-definition-20260806",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "3.1(a)"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 21,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": false,
+      "import_refusal": "NO_RECORDED_RETRIEVAL_TIMESTAMP",
+      "published": null
+    }
+  ]
+}
