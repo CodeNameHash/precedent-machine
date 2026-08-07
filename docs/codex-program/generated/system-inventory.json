@@ -247,7 +247,9 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
             "tests/canonical-v2-consideration-wave-a.test.js"
           ],
@@ -300,7 +302,8 @@
           "lib": [],
           "scripts": [],
           "tests": [
-            "tests/canonical-v2-financing-guaranty-product-projection.test.js"
+            "tests/canonical-v2-financing-guaranty-product-projection.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -351,9 +354,12 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
-            "tests/canonical-v2-ioc-parent-child-resolution.test.js"
+            "tests/canonical-v2-ioc-parent-child-resolution.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -380,7 +386,9 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
             "tests/canonical-v2-defined-terms-family-seam.test.js",
             "tests/canonical-v2-defined-terms-later-slices.test.js",
@@ -478,11 +486,13 @@
         "path": "lib/canonical-v2/remedies-misc-product-projection.js",
         "exports": [
           "EVIDENCE_SOURCE",
+          "MISC_CONCEPT_KEY",
           "MISC_DEFINITIONS",
           "NATIVE_SOURCE",
           "PROJECTION_SCHEMA",
           "REMEDIES_CONCEPTS",
           "REMEDIES_DEFINITIONS",
+          "RemediesMiscProjectionError",
           "projectRemediesMiscProductSurfaces"
         ],
         "projection_entry_points": [
@@ -496,6 +506,7 @@
           "tests": [
             "tests/canonical-v2-remedies-misc-product-parity.test.js",
             "tests/canonical-v2-sole-remedy-resolution.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js",
             "tests/termination-fee-card-selection.test.js"
           ],
           "other": []
@@ -530,7 +541,8 @@
             "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js",
             "tests/canonical-v2-representations-dark-bridge.test.js",
             "tests/canonical-v2-representations-product-projection.test.js",
-            "tests/canonical-v2-review-preview-end-to-end.test.js"
+            "tests/canonical-v2-review-preview-end-to-end.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -557,6 +569,7 @@
           "lib": [],
           "scripts": [],
           "tests": [
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js",
             "tests/canonical-v2-tax-dividends-appraisal-product-projection.test.js"
           ],
           "other": []
@@ -918,8 +931,7 @@
           "scripts": [
             "scripts/canonical-v2-conditional-fee-two-deal-isolation-proof.js",
             "scripts/canonical-v2-modiv-termination-fee-serving-proof.js",
-            "scripts/generate-qxo-termination-fee-excerpt-module.js",
-            "scripts/zz-step2d-render-check.js"
+            "scripts/generate-qxo-termination-fee-excerpt-module.js"
           ],
           "tests": [
             "tests/canonical-v2-parity-serving-boundary.test.js",
@@ -932,7 +944,7 @@
           ],
           "other": []
         },
-        "reference_count": 17
+        "reference_count": 16
       }
     ],
     "generic_serving_infrastructure": [

@@ -16,7 +16,31 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    // Repinned again 2026-08-07 for PLAN.md Step 2C1, found by Step 2C:
+    // Repinned again 2026-08-07 for PLAN.md Step 2D1 defect 2: the excerpt
+    // identity guard compared a whole-payload digest where it should
+    // compare only the fields that define excerpt_id (excerpt_definition_
+    // key, excerpt_definition_version, excerpt_definition_payload_digest,
+    // ordered_component_assignments, excerpt_purpose,
+    // transformation_or_redaction_version, output_text_hash -- exactly the
+    // `identity` object lib/canonical-v2/source-structure.js's
+    // buildExcerpt() hashes into EXCERPT/V1's content id). TERMINATION and
+    // TERMINATION_FEE legitimately quote the same sentence and therefore
+    // share excerpt_id by design, per ADR-001, while their
+    // source_occurrence_id legitimately differs between the two families'
+    // independent runs; the whole-payload comparison read that difference
+    // as a conflict and rolled back whichever family's write reached the
+    // excerpt loop second, silently dropping 12 of 211 resolved claims
+    // (TERMINATION's). Adds one new declaration (`existing_payload jsonb;`)
+    // and replaces both the pre-INSERT and post-INSERT excerpt comparisons
+    // with a jsonb_build_object(...) extraction of just those seven
+    // identity fields, hashed with the existing payload_digest() function.
+    // No RAISE EXCEPTION message text changed. Verified before repinning,
+    // by diffing the extracted body against the pre-edit extraction: the
+    // only changes are the new declaration and the excerpt loop's two
+    // comparisons, nothing else in this ~370k-character function moved.
+    // See docs/codex-program/notes/step-2d1-runner-and-writer.md.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 2C1, found by Step 2C:
     // conditional_termination_fee_values had no deal-scoping column, so
     // Step 2C's serving read the whole table -- correct only because Modiv
     // was the only deal that had ever written to it. This adds a
@@ -58,7 +82,7 @@ const FUNCTIONS = Object.freeze([
     // function body rather than the file and only the full suite runs it. A
     // schema edit therefore has three separate places to update, and nothing
     // tells you that at edit time.
-    digest: 'bb6e01a0a8686d9676e65b8208b90ae82241941a73d02ddce45fb640dce70283',
+    digest: 'e7fc80609686a00338cdbb68eabfe332a419ecb3411114ebcda93ddd7297e354',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',

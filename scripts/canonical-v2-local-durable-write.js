@@ -161,6 +161,26 @@ async function main() {
   const client = new Client({ connectionString: dbUrl });
   await client.connect();
 
+  // Everything from here on is wrapped in try/finally so the connection is
+  // always closed, success or failure. Before this fix, only the success
+  // path (the very end of main(), after every step returned) called
+  // client.end() -- any error thrown by writeOperation() or by step 3's own
+  // BEGIN/COMMIT block propagated straight past it to main().catch() below,
+  // which logs and sets process.exitCode but never closes the client. A
+  // live TCP socket keeps Node's event loop alive, so the process never
+  // exited: every SQL error had to be killed by hand. Each inner
+  // BEGIN/COMMIT block still does its own ROLLBACK-then-rethrow (necessary
+  // so a partial transaction is never left open on the server), but that is
+  // a different concern from closing the client connection itself, which
+  // this try/finally now guarantees regardless of how far execution got.
+  try {
+    await runDealScopeWrite({ client, runDirectory });
+  } finally {
+    await client.end();
+  }
+}
+
+async function runDealScopeWrite({ client, runDirectory }) {
   // --- Step 1: persist the source chain (INTAKE_CAPTURE ->
   // STAGE_SOURCE_ARTIFACT_CHUNK* -> PREPARE_SOURCE_ADMISSION), which the SQL
   // DEAL_SCOPE_RUN branch requires to already exist.
@@ -293,8 +313,6 @@ async function main() {
     sql_receipt_id: sqlResult && sqlResult.receiptId,
     receipt_ids_match: sqlResult && sqlResult.receiptId === jsWrite.receipt.receiptId,
   }, null, 2));
-
-  await client.end();
 }
 
 main().catch((err) => {

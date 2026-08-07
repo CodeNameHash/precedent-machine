@@ -1335,9 +1335,13 @@ else with `UNREGISTERED_FAMILY`.
    2026-08-07** — it was 4, and three of those (capitalisation, closing
    conditions, interim operating) were recovered by replaying the responses
    they had already recorded, with no-other-reps recovered earlier the same
-   way. Commit `d261df30` fixed three crash causes and `ae8b12de` made the
-   timeout configurable; the recoveries are the test of those claims, and they
-   passed. Closing conditions is only partly addressed:
+   way. Commit `d261df30` fixed three crash causes and `ae8b12de` added
+   `--call-timeout-ms` argument parsing, but did not make the timeout
+   configurable end to end: `resolveRunConfig` dropped `timeoutMs` from the
+   frozen config it returned, so every run still fell back to the hardcoded
+   600,000ms regardless of the flag, until Step 2D1 defect 1 fixed it. The
+   recoveries recorded here predate that fix and were not evidence the flag
+   worked. Closing conditions is only partly addressed:
    what was fixed is that a partial receipt is now kept, and the underlying
    unparseable response on call 2 of 4 persists, with sections 6.3 and 6.4
    never attempted. If it fails again, that is expected, and the finding is
@@ -1505,6 +1509,43 @@ recurring, which says the reader needs a **contract test against a real
 **Proves it is done.** A committed run's `resolution.json` and the same deal
 read back are compared field by field through `canonicalJson`, and the test
 names every field that does not round-trip. Fix what that test finds.
+
+## Step 2D2. Capitalisation section 4.2 returns dozens of JSON objects
+
+**Found by Step 2D1's own proof run, 2026-08-07, and it is a different defect
+from the one that run was built to prove.**
+
+**What it is.** Fixing the dead `--call-timeout-ms` flag let section 4.2 run to
+completion for the first time — 633,833ms and 652,899ms across two independent
+runs, both well past the 600,000ms ceiling that had been killing it. The
+section then failed to parse: **its model response contains dozens of
+independent JSON objects — 58 in one run, 52 in the other** — and
+`anthropic-provider.js`'s parser expects a single object and cannot
+disambiguate them.
+
+**So `CAPITALISATION` is still `incomplete`, for a reason nobody could have
+seen before.** The timeout defect hid this one completely: the call never
+finished, so its response was never parsed. Fixing one defect revealed the next
+in the same path, which is the normal shape of this work and must not be
+recorded as "the timeout fix did not work". It did; twice; measurably.
+
+**Why it is plausible rather than surprising.** Capitalisation is the corpus's
+densest section — 58,867 output tokens from 8.2KB of input, the highest
+output-per-input-byte measured. A model asked to enumerate share counts across
+many instruments has a natural reason to emit many objects rather than one.
+
+**Change.** Decide what a multi-object response means before writing a parser
+for it. Two readings, and they are not equivalent: either the model is emitting
+one object per instrument and the response should be **accumulated**, or it is
+retrying itself mid-response and later objects **supersede** earlier ones.
+Accumulating a retry double-counts; superseding an enumeration loses most of
+the answer. **Read the actual recorded responses in the two committed proof
+directories before choosing** — both are on disk, so this needs no live call.
+
+**Proves it is done.** `CAPITALISATION` completes both sections and is no
+longer `incomplete`, with the resolved share counts checked against the filed
+document by hand rather than by count. A hostile test pins whichever reading
+was chosen, so the other cannot silently creep back in.
 
 ## Step 2E. Map the families to TopBuild's sections, for nothing
 

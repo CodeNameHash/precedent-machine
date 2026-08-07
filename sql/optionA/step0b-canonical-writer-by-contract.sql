@@ -472,7 +472,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: bb6e01a0a8686d9676e65b8208b90ae82241941a73d02ddce45fb640dce70283
+-- Governed function SHA-256: e7fc80609686a00338cdbb68eabfe332a419ecb3411114ebcda93ddd7297e354
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -499,6 +499,7 @@ DECLARE
   correction_discharge_map jsonb;
   item_id text;
   existing_digest text;
+  existing_payload jsonb;
   existing_document_hash text;
   previous_application_id text;
   item_ordinal integer;
@@ -7805,13 +7806,64 @@ BEGIN
     ORDER BY ordered_item.value->>'excerpt_id'
   LOOP
     item_id := item->>'excerpt_id';
-    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
-    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505'; END IF;
+    -- The identity guard below compares only the fields that define
+    -- excerpt_id itself -- exactly the `identity` object
+    -- lib/canonical-v2/source-structure.js's buildExcerpt() hashes into
+    -- EXCERPT/V1's content id: excerpt_definition_key,
+    -- excerpt_definition_version, excerpt_definition_payload_digest,
+    -- ordered_component_assignments, excerpt_purpose,
+    -- transformation_or_redaction_version, output_text_hash. It never
+    -- compares the whole payload. Two siblings that legitimately quote the
+    -- identical sentence -- TERMINATION and TERMINATION_FEE, by design, per
+    -- ADR-001 in docs/core/OPERATING-RULES.md -- share excerpt_id by
+    -- construction while their source_occurrence_id (which is NOT part of
+    -- excerpt_id's identity: it names which admitted source occurrence
+    -- produced this write, not what the excerpt is) legitimately differs
+    -- between the two families' independent runs. Comparing the whole
+    -- payload treated that difference as a conflict and rolled back
+    -- whichever family's write reached this loop second in its entire
+    -- transaction. See docs/codex-program/notes/step-2d1-runner-and-writer.md.
+    SELECT canonical_payload INTO existing_payload FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
+    IF FOUND AND canonical_v2_staging.payload_digest(jsonb_build_object(
+          'excerpt_definition_key', existing_payload->'excerpt_definition_key',
+          'excerpt_definition_version', existing_payload->'excerpt_definition_version',
+          'excerpt_definition_payload_digest', existing_payload->'excerpt_definition_payload_digest',
+          'ordered_component_assignments', existing_payload->'ordered_component_assignments',
+          'excerpt_purpose', existing_payload->'excerpt_purpose',
+          'transformation_or_redaction_version', existing_payload->'transformation_or_redaction_version',
+          'output_text_hash', existing_payload->'output_text_hash'
+        )) <> canonical_v2_staging.payload_digest(jsonb_build_object(
+          'excerpt_definition_key', item->'excerpt_definition_key',
+          'excerpt_definition_version', item->'excerpt_definition_version',
+          'excerpt_definition_payload_digest', item->'excerpt_definition_payload_digest',
+          'ordered_component_assignments', item->'ordered_component_assignments',
+          'excerpt_purpose', item->'excerpt_purpose',
+          'transformation_or_redaction_version', item->'transformation_or_redaction_version',
+          'output_text_hash', item->'output_text_hash'
+        )) THEN
+      RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505';
+    END IF;
     INSERT INTO canonical_v2_staging.excerpts(excerpt_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (excerpt_id) DO NOTHING;
-    SELECT canonical_payload_digest INTO existing_digest
+    SELECT canonical_payload INTO existing_payload
     FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
-    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+    IF canonical_v2_staging.payload_digest(jsonb_build_object(
+          'excerpt_definition_key', existing_payload->'excerpt_definition_key',
+          'excerpt_definition_version', existing_payload->'excerpt_definition_version',
+          'excerpt_definition_payload_digest', existing_payload->'excerpt_definition_payload_digest',
+          'ordered_component_assignments', existing_payload->'ordered_component_assignments',
+          'excerpt_purpose', existing_payload->'excerpt_purpose',
+          'transformation_or_redaction_version', existing_payload->'transformation_or_redaction_version',
+          'output_text_hash', existing_payload->'output_text_hash'
+        )) IS DISTINCT FROM canonical_v2_staging.payload_digest(jsonb_build_object(
+          'excerpt_definition_key', item->'excerpt_definition_key',
+          'excerpt_definition_version', item->'excerpt_definition_version',
+          'excerpt_definition_payload_digest', item->'excerpt_definition_payload_digest',
+          'ordered_component_assignments', item->'ordered_component_assignments',
+          'excerpt_purpose', item->'excerpt_purpose',
+          'transformation_or_redaction_version', item->'transformation_or_redaction_version',
+          'output_text_hash', item->'output_text_hash'
+        )) THEN
       RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505';
     END IF;
   END LOOP;

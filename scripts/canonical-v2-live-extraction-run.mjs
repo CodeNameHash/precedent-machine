@@ -555,6 +555,7 @@ function resolveRunConfig(args) {
     agreementDate,
     model: args.model,
     followCitations: args.followCitations,
+    timeoutMs: args.timeoutMs,
     dryRun: args.dryRun,
     outDir: args.outDir,
     recordPath: args.recordPath || null,
