@@ -918,7 +918,8 @@
           "scripts": [
             "scripts/canonical-v2-conditional-fee-two-deal-isolation-proof.js",
             "scripts/canonical-v2-modiv-termination-fee-serving-proof.js",
-            "scripts/generate-qxo-termination-fee-excerpt-module.js"
+            "scripts/generate-qxo-termination-fee-excerpt-module.js",
+            "scripts/zz-step2d-render-check.js"
           ],
           "tests": [
             "tests/canonical-v2-parity-serving-boundary.test.js",
@@ -931,7 +932,7 @@
           ],
           "other": []
         },
-        "reference_count": 16
+        "reference_count": 17
       }
     ],
     "generic_serving_infrastructure": [
