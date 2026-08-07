@@ -636,3 +636,48 @@ outright by `isPermittedCanonicalV2Runtime`. One family serves V2 data on a
 preview deployment, from a hand-typed fixture file.
 
 The volume of work here is real and it has not reached a user.
+
+---
+
+## Step 6A. Tables no longer steal each other's cards
+
+**Closed 2026-08-07 by moving it here, not by implementing it.** The work was
+already done on 2026-08-05 in commit `7042085`, which added
+`isClaimedByAnotherFamily` guards to all four review-table configs Step 6A
+listed as "Remaining" — `misc-boilerplate`, `antitrust-regulatory`,
+`termination-rights`, `mae-definitions` — plus `advisers-fees-expenses`, a
+sixth the step never named.
+
+**What it was for.** Five review tables decided which cards belonged to them
+partly by searching the card's text for a phrase, which pulled other families'
+cards into the wrong table. One real corpus card leaked: a buyer financing
+representation appearing as the evidence behind a termination-fee row. The
+worse reachable case was a sole-remedy card landing in the fee table and
+flipping "Sole and exclusive remedy" from No to Yes depending on card order.
+
+**Evidence.** Commit `7042085`, plus the per-table tests that already assert
+the criteria: `tests/misc-boilerplate-card-selection.test.js`,
+`tests/termination-fee-card-selection.test.js` and siblings. Each asserts both
+halves — a card another family owns is refused, and a genuine subtype-less
+card is still caught.
+
+**Why it is worth recording rather than quietly deleting.** The step was
+written into a plan dated 2026-08-06 describing the state of 2026-08-05, and
+would have "gone green" with zero work done. That is this project's documented
+failure mode occurring inside the document that warns about it.
+
+## Step 8B. The search field registry was already correct
+
+**Closed 2026-08-07 by moving it here, not by implementing it.** Same commit,
+`7042085`.
+
+**What it was for.** The step asserted 104 of the search registry's entries
+were shadowed — that `resolveKey(entry.key)` did not return `entry.key`.
+**Measured at HEAD: 0 of 699 shadowed, not 104.** The test passes, 8
+assertions.
+
+**The constraint that outlived the step**, carried into
+`CODEBASE-GUIDE.md` rather than lost with it: the registry must be fixed
+through its generator. Hand-editing `lib/query/serving-registry-v1.json`
+passes a naive test and the next regeneration reinstates every error. That is
+a live constraint on anyone touching it, not a fact about a closed step.

@@ -936,6 +936,15 @@ per-family serving-source pattern DECISIONS.md item 13 chose instead.
 
 ### 5.8 Section 8: Governed query compiler and fast result delivery
 
+**Never hand-edit `lib/query/serving-registry-v1.json`. Fix it through its
+generator.** A hand edit passes a naive test and the next regeneration
+reinstates every error, so the fix looks done, ships, and silently reverts.
+This was the whole reason the retired Step 8B insisted on the generator route,
+and it is recorded here because it is a live constraint on anyone touching the
+registry rather than a fact about a closed step. The registry itself is
+currently correct: **0 of 699 entries shadowed**, measured 2026-08-07, against
+that step's claim of 104.
+
 **Specification** (`canonical-contracts.md:9265-9976`): a `QueryDefinitionSetRoot`
 inventories the complete closed query contract; a `QueryGoldenSuiteManifest`
 of human-reviewed golden fixtures (`DATABASE_API` and

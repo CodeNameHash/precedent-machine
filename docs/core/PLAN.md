@@ -2868,34 +2868,6 @@ those two lists is 25.
 
 These are live in V1 today and will be inherited by V2 unless fixed.
 
-## Step 6A. Stop tables stealing each other's cards
-
-**What it is.** Five review tables decide which cards belong to them partly by
-searching the card's text for a phrase, which pulls other families' cards into
-the wrong table.
-
-**Why.** One real corpus card leaks today: a buyer financing representation
-appears as the evidence behind a termination-fee row. A worse case is reachable:
-a sole-remedy card landing in the fee table flips "Sole and exclusive remedy"
-from No to Yes depending on card order.
-
-**DONE — delete this step, it describes yesterday.** Commit `7042085`
-(2026-08-05) added `isClaimedByAnotherFamily` guards to all four configs this
-step lists as "Remaining" — `misc-boilerplate`, `antitrust-regulatory`,
-`termination-rights`, `mae-definitions` — plus `advisers-fees-expenses`, a
-sixth this step never named. The acceptance criteria below are already met by
-per-table tests (`tests/misc-boilerplate-card-selection.test.js`,
-`tests/termination-fee-card-selection.test.js`, and siblings).
-
-This step was written into a plan dated 2026-08-06 describing the state of
-2026-08-05. It is the house failure mode occurring inside the document that
-warns about it, and it would have gone green with zero work done. Move it to
-`COMPLETED.md` with commit `7042085` as its evidence; do not implement it.
-
-**Original acceptance criteria, retained so the move can be checked:** a test
-per table that a card another family owns is refused, and a test per table that
-a genuine subtype-less card is still caught.
-
 ## Step 6B. Record where every quotation came from
 
 **What it is.** Store the exact byte position of every quote, not just its text.
@@ -3188,33 +3160,6 @@ the tests inject an empty object as the client. Instrument the first real run.
 **Proves it is done.** Market statistics render on a preview deployment for a
 real deal, under both scopes, and the cohort reader has a test against real
 shaped data rather than an empty object.
-
-## Step 8B. Fix the search field registry through its generator
-
-**What it is.** 104 of 699 fields in the query registry resolve to a *different*
-field than the one named, because an earlier entry's alias list shadows a later
-entry's own key. Verified examples: the parent's public-statements carve-out
-returns the company's, which is a party inversion; the fiduciary-out standard
-returns the engagement standard, which is a different legal test; a
-months-valued field is typed as US dollars.
-
-**Why.** Latent while search is off. Live the moment it is on. One in seven.
-
-**DONE — delete this step, same commit as Step 6A.** `7042085` fixed the
-shadowing through the generator, which is the method this step itself requires,
-and added `tests/query/serving-registry-alias-shadowing.spec.js` asserting
-`resolveKey(entry.key) === entry.key` across all entries — this step's exact
-acceptance criterion. Measured at HEAD: **0 of 699 shadowed, not 104.** The test
-passes (8 assertions).
-
-Like Step 6A, this would have gone green with no work done. Move it to
-`COMPLETED.md` citing `7042085`.
-
-**One thing worth carrying forward rather than losing with the step:** the
-reason it insisted on fixing through the generator — hand-editing
-`lib/query/serving-registry-v1.json` passes a naive test and the next
-regeneration reinstates every error — is a live constraint on anyone touching
-that registry, and belongs in `CODEBASE-GUIDE.md` rather than in a deleted step.
 
 ## Step 8C. Search, in preview
 
