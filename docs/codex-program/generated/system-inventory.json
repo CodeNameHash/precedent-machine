@@ -571,13 +571,20 @@
           "LEGACY_PAYMENT_TIMING_MIGRATION_V1",
           "NATIVE_SOURCE",
           "PAYMENT_TIMING_QUOTE_CLASSIFICATION_V1",
+          "PAYMENT_TRIGGER_EVENT_QUOTE_CLASSIFICATION_V2",
           "PROJECTION_SCHEMA",
           "RIGHT_EVIDENCE_SURFACES",
+          "SUPERIOR_PROPOSAL_TRIGGER_CODE",
           "assertPaymentTriggerEventAgreesWithFeeRequired",
+          "classifyFeeRequiredProse",
           "classifyPaymentTimingQuote",
+          "classifyPaymentTimingQuoteV4",
+          "classifyPaymentTriggerEventQuoteV4",
           "conditionalFeeHeadline",
+          "feeRequiredStatus",
           "formatBranchCitations",
           "migrateLegacyPaymentTiming",
+          "parsePaymentDelayQuote",
           "paymentTriggerEventAgreesWithFeeRequired",
           "projectTerminationFeeProductSurfaces",
           "projectTerminationRightsProductSurfaces",
@@ -595,8 +602,11 @@
           ],
           "scripts": [],
           "tests": [
+            "tests/canonical-v2-fee-required-prose-classification.test.js",
+            "tests/canonical-v2-payment-timing-guard-wiring.test.js",
             "tests/canonical-v2-payment-timing-split.test.js",
             "tests/canonical-v2-run-projects-to-product-cards.test.js",
+            "tests/canonical-v2-skechers-payment-timing-v4.test.js",
             "tests/canonical-v2-sole-remedy-resolution.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
             "tests/canonical-v2-termination-product-parity.test.js",
@@ -900,6 +910,7 @@
             "pages/api/review/[id]/cards.js"
           ],
           "lib": [
+            "lib/canonical-v2/local-staging-deal-reader.js",
             "lib/canonical-v2/native-producer/m3-family-parity-register.js",
             "lib/canonical-v2/phase1-authority-boundary-inventory.js",
             "lib/queries/review-deal-wire.js"
@@ -917,11 +928,12 @@
           ],
           "other": []
         },
-        "reference_count": 12
+        "reference_count": 13
       }
     ],
     "generic_serving_infrastructure": [
       "lib/canonical-v2/metric-serving-admission.js",
+      "lib/canonical-v2/open-world-evidence-serving.js",
       "lib/canonical-v2/process-serving-contract-input-validator.js",
       "lib/canonical-v2/product-query-result-active-serving.js",
       "lib/canonical-v2/product-query-result-serving-record.js",

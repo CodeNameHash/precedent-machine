@@ -944,7 +944,7 @@ metric-operation binding declaring `trigger_path_schema_version: 4` and
 registration in the three fingerprint structures are both inside
 `contract-bundle.js` (owned) but deliberately not done, for the same reason
 -- no producer emits a V4-shaped effect (Skechers' real CONSUMMATION pattern
-and structured delays are classified by `termination-product-projection.js`'s
+and structured delays are classified by `lib/canonical-v2/termination-product-projection.js`'s
 `classifyPaymentTimingQuoteV4` / `parsePaymentDelayQuote`, proven against the
 real, filed Skechers text in `tests/canonical-v2-skechers-payment-timing-v4
 .test.js`, but nothing calls that classifier from inside the resolution/
