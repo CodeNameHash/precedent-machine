@@ -549,7 +549,38 @@ committed and reported, and because it is the same failure this programme
 keeps repeating: a confident structural claim built on one unchecked
 assumption, here that there was only one validator.
 
-**The real remaining blocker, one layer deeper, and it is one key wide.**
+**RESOLVED 2026-08-07, and two more layers behind it were opened and closed.**
+Fable adjudicated the `write_set_origin` question: extend the writer's
+permitted extras. The evidence is decisive. No stripper exists and none is
+needed — the M3 staging path emits SQL calling `public.canonical_v2_write`
+directly and never touches `canonical-writer.js` (zero references). The
+validator does not merely tolerate the key, it **uses** it: at ~2102,
+`answer_provenance` is required for claims only when
+`write_set_origin === 'NATIVE_PRODUCER'`, so removing it upstream would
+weaken validation rather than simplify anything. And the validator already
+lists it beside `persisted_object_references` in an `optionalKeys` powerset
+(line 507) — the writer simply never learned the key. Staleness, not a third
+policy.
+
+The writer's check now builds the same powerset instead of hand-listing one
+optional key.
+
+**Second layer, also closed.** The writer asks the *repository* to resolve
+source references. Correct for a database-backed repository; wrong for an
+import, because the repository has not seen this run yet — that is what
+importing means. The bridge now decorates the repository with a resolver
+backed by the run's own `admitted_source_contexts`, which are the authority
+for that run and the ones the validator just checked.
+
+**Third layer, open, and the remaining work on this step.** The writer
+validates the full admitted-source chain, and
+`admitted-semantic-source.js:199` requires a `conversion` object matching
+`SEC_HTML_CANONICAL_TEXT_CONVERSION/V2`. A run directory does not carry one.
+It can be rebuilt from the pinned raw HTML — the same conversion
+`scripts/canonical-v2-generate-family-section-refs.mjs` already performs —
+so this is tractable, and it is the next thing to build here.
+
+**Superseded note, kept for the reasoning it records.**
 With validation passing, the writer refuses a `DEAL_SCOPE_RUN`:
 "writeSet must match the closed reference-only semantic contract"
 (`canonical-writer.js`, `assertDealScopeWriteSetShape`, ~293-314). That check

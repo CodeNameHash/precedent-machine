@@ -107,13 +107,20 @@ test('23 of 24 committed runs pass the resolved validator', () => {
   );
 });
 
-test('KNOWN GAP: the writer refuses a deal-scope run from committed evidence', async () => {
-  // Validation now passes. The writer does not: it requires a "closed
-  // reference-only semantic contract" that a run's write-set does not
-  // satisfy. That is the real, narrower blocker on Step 2B's write half.
+test('KNOWN GAP: import needs the admitted-source chain rebuilt', async () => {
+  // Two earlier blockers are CLOSED. The writer's deal-scope key check now
+  // accepts write_set_origin (canonical-writer.js, optional-key powerset,
+  // matching validate-write-set.js:507), and the bridge supplies a source
+  // reference resolver from the run's own admitted_source_contexts.
   //
-  // Asserted rather than skipped so it fails the moment someone closes it,
-  // which is the prompt to replace this with a real import assertion.
+  // What remains: the writer validates the full admitted-source chain, and
+  // `admitted-semantic-source.js:199` requires a `conversion` object matching
+  // SEC_HTML_CANONICAL_TEXT_CONVERSION/V2. A run directory does not carry
+  // one. It can be rebuilt from the pinned raw HTML -- the same conversion
+  // scripts/canonical-v2-generate-family-section-refs.mjs already performs --
+  // and that is the remaining work on Step 2B's write half.
+  //
+  // Asserted rather than skipped so it fails the moment someone closes it.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -121,7 +128,7 @@ test('KNOWN GAP: the writer refuses a deal-scope run from committed evidence', a
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    /closed reference-only semantic contract/,
+    /closed conversion-only V2 contract/,
   );
 });
 
@@ -131,9 +138,9 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
   // see the divergence at all.
   const validation = JSON.parse(fs.readFileSync(path.join(RUN, 'validation.json'), 'utf8'));
   assert.equal(validation.accepted, true, 'the run claims it was accepted');
-  // It gets PAST validation now and fails in the writer instead, which is
-  // itself the proof: the bridge ran the validators rather than trusting the
-  // file's own claim to have been validated.
+  // It gets PAST validation and past the write-set shape check, and fails
+  // deeper in the admitted-source chain -- which is itself the proof: the
+  // bridge ran the validators rather than trusting the file's own claim.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -141,6 +148,6 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    /closed reference-only semantic contract/,
+    /closed conversion-only V2 contract/,
   );
 });
