@@ -681,3 +681,195 @@ assertions.
 through its generator. Hand-editing `lib/query/serving-registry-v1.json`
 passes a naive test and the next regeneration reinstates every error. That is
 a live constraint on anyone touching it, not a fact about a closed step.
+
+---
+
+# Stage 1, the Stage 2 prerequisite, Stage 3 and the first of Stage 4
+
+All closed on 2026-08-07. Each moved here when its own proof passed, per this
+document's rule. Steps 4A2 and 4A3 are closed too but stay in `PLAN.md` until
+their adversarial review returns.
+
+## Step 1A. Every gate is bound to a step, mechanically
+
+`tests/programme-gates/gates-bound-to-plan.test.js` reads
+`programme-gates.yaml` and fails unless each gate identifier appears next to a
+step label or "Retired" in `PLAN.md` or `COMPLETED.md`, on one line. The YAML
+stays frozen and is bound from outside, because `governing-registry.js:422`
+throws unless it deep-equals a hardcoded contract and 14 files read it.
+
+**Evidence.** Exit 0, and **deleting any one disposition row makes it fail** —
+run, not reasoned about, then restored.
+
+**It found something.** The first implementation bound 25 of 32 identifiers and
+disclosed the gap. The seven omitted were `phase_12_security_gates`: bare ids
+with a state, no acceptance criteria, mentioned nowhere in either document.
+Step 7D dispositions them; the test now binds all 32 with its matching rule
+unchanged, because loosening it to admit a bare "Deferred" would have reopened
+the hole from the other side.
+
+## Prerequisite. Both M3 auto-pass conditions are wired
+
+`lexical_disagreement` evaluates. `v1v2_comparison` is wired and cannot be
+evaluated — all three committed V1 snapshot fixtures lack
+`snapshot_identity_evidence`, which `v1v2-comparator.js:557` requires — so
+**Ben released it explicitly on 2026-08-07** (`DECISIONS.md` decision 4). Every
+run records `m3_auto_pass_conditions` naming each condition `EVALUATED` or
+`NOT_EVALUATED`; a rung whose evidence lacks that record is incomplete.
+
+**What wiring it proved.** Replaying `modiv-no-shop` left the counts unchanged
+at 42 resolved and replaced `LEXICAL_DISAGREEMENT_NET_ABSENT` on **all 42**
+claims with real outcomes. **The gate had been green on 42 claims it had never
+examined.**
+
+`PLAN.md` named both modules at paths that do not exist, missing
+`native-producer/`. Corrected.
+
+## Steps 3A and 3A1. Termination trigger vocabulary, widened then made safe
+
+Four real Modiv phrasings matched nothing, so six legitimate grounds queued.
+Replay through the real resolver: **resolved 8 to 12**, the step's exact
+target, with the two null-`trigger_kind` candidates still queuing rather than
+forced.
+
+**3A opened a wrong-answer path, and 3A1 closed it.** `enters?` also matches
+"enter", so `NO_SOLICITATION_BREACH` corroborated the Company's own
+fiduciary-out — the adjacent ground in every Article VII. A mislabel that used
+to queue *resolved* as a no-shop breach by the target. **Not hypothetical: the
+same false positive was found live in Skechers' filed agreement, §5.3(d).**
+Closed by excluding quotes carrying "Superior Proposal", which is always the
+fiduciary-out ground. Replay still resolves 12.
+
+**The transferable lesson.** All eight original hostile tests were
+*quote-fixed, kind-varied* against vocabulary disjoint across kinds, so they
+passed by construction. **A hostile test that varies the label rather than the
+text tests the wrong axis.**
+
+## Step 3B. The number parser reads hyphenated compounds
+
+The preceding-word scan stopped at hyphens, so "forty-five (45)" read back
+"five" and compared 5 against 45. `SPELLED_DIGIT_MISMATCH` on the Modiv replay
+goes 1 to 0.
+
+**Not a pure widening, and the header says so.** "twenty-five (5) days" used to
+resolve and now abstains — the genuine contradiction the table exists to
+detect, which reading only the last component was hiding. Checked by running
+both strings, not by reading the code. No compound above one hundred exists in
+the corpus; searched, not assumed, so none was invented.
+
+## Step 3C. Specific Performance's grant is no longer discarded
+
+`isIncompleteSpecificPerformanceGrant` tested the quote for the operative
+premise with a stricter regex than the source-side check twelve lines above
+tested the source for the same premise. Modiv §8.8 splits the clause and writes
+"monetary" for "money", so a verbatim grant was discarded. Replay: **0
+proposals and 1 residual before, 1 proposal and 0 residuals after.**
+
+**Adversarial review: merge**, having found the old predicate failed **two of
+the three real premise drafts in the corpus** — it was testing house style, not
+the premise.
+
+## Step 3D. A trimmed governing negation is refused at the resolver
+
+`claimGoverningNegationTrimmed` uses a claim's byte-verified evidence span plus
+its section's absolute start to locate it in the filed document, then checks
+the negation guard against a bounded byte window before it. Wired into
+`BRING_DOWN_TIER_CLAIM_KEY`, the one path with no check tying `raw_value` to
+`canonical_value`.
+
+Measured against the pre-fix resolver on real TopBuild text: the attack
+resolved clean with no review flag, and is now refused.
+
+**Deliberately partial.** Not wired into the other ACCURACY path, because
+Modiv's "(y) that are not qualified by materiality" legitimately trips the
+guard on the only quote shape that path resolves. Recorded at the function.
+
+## Step 3E. Stopped, deliberately, and found more than it fixed
+
+Re-running the rejected negation fix reproduced the known false positive **and
+found a second one the design note did not have**. The blocker is broader than
+recorded, so nothing shipped half-right and the measurements are pinned as
+runnable tests. The step's own escape hatch, used as written.
+
+## Steps 3F and 3F1. Joint obligations, and the trap that escaped quarantine
+
+`resolvePartyCapacity` took the first match on a string naming five parties. It
+now segments on the string's own conjunctions and returns
+`JOINT_MULTI_PARTY_CAPACITY` when segments span more than one **side**. Keying
+on side rather than capacity is load-bearing: a capacity-keyed version wrongly
+flagged "Each of Parent and Merger Sub".
+
+**The step's own named safety net did not exist.** Before this change **no test
+file referenced `resolvePartyCapacity` at all** — checked with `git grep`
+against the parent commit. The Parent OpCo ordering trap lived in a commit
+message and in prose, enforced by nothing, so any reordering would have
+silently attributed the buyer's representations to the target.
+
+**3F1 closed what 3F opened.** Per-segment scanning sent "Company Merger Sub"
+to TARGET, so **Modiv's real buyer group read as spanning both sides**. The
+merger-sub trap's quarantine — "not currently reached by any single-party
+candidate" — was true when written and stopped being true the moment 3F built
+a path reaching it on every multi-party string. Also gave
+`JOINT_MULTI_PARTY_CAPACITY` a downstream contract: projections refuse it
+explicitly rather than dropping or leaking it to a page.
+
+## Step 3G. Four located resolver defects
+
+Open-world across the four families **67 to 32, a fall of 35** against a bar of
+30, by replaying committed evidence through the real resolver.
+
+**Adversarial review re-derived all four counts independently and returned
+merge with four conditions, all closed.** The conditions mattered more than the
+counts: the Material Contracts contradiction gate caught only digits, so "ten
+largest customers" and "two hundred fifty thousand dollars" slipped through; a
+Transaction Litigation quote corroborated as **both** `COV-NOTIFY` and
+`COV-LITNOTIFY`, which route to different owners, with nothing detecting the
+double fire; the transfer-tax gate had silently dropped its mandatory
+cooperation conjunction, so a unilateral filing clause read as a cooperation
+covenant; and a comment stated the classifier's contract wrongly.
+
+**None of the four moved a count.** The shapes do not appear in this evidence
+pack, so no measurement could have surfaced them. That is why the review
+checked predicates rather than numbers.
+
+## Step 3I. Payment timing and grounds naming
+
+**The grounds-naming half was already built** — committed 6 August in
+`c42ceae7`, the day before, while the plan listed it as open. Verified by
+replaying real Modiv evidence.
+
+Payment timing needed real work, and the coded form needed a codebook decision
+reserved to Ben. A Modiv-only sidecar emits each of the six fee-trigger
+branches' payment-timing text verbatim and cited. Ben later ruled the coded
+form (`DECISIONS.md` decision 5); that is Steps 3J, 3J1 and 3J2.
+
+## Step 4A. The schema executes durably, and the two writers disagreed
+
+`foundation.sql` applied to `postgres:16-alpine` with **no errors**. A real
+bridge-composed write-set went through `canonical_v2_write` **committed, never
+rolled back**: 3 claims in, 3 rows in `claim_revisions`, JS and SQL receipt
+identities identical, reproduced on a second fresh container.
+
+**The finding it existed to produce:** `STRUCTURAL_PROVISION_INSTANCE/V1`
+appeared **zero times** in all 8,686 lines of schema while four `lib/` files
+build it. Six of fifteen claim-publishing families could not be imported at
+all. That is Step 4A1.
+
+Also learned: a `DEAL_SCOPE_RUN` call needs its source chain persisted by three
+prior writes. The JS bridge never needed this because it rebuilds in memory.
+
+## Step 4A1. The SQL writer learned that a provision can have no party
+
+Two strict branches keyed on `schema_version`, not one relaxed branch. An
+unrecognised version falls to the party-bearing branch and fails, so the split
+is fail-closed. All six previously rejected families import durably with
+matching JS and SQL receipt identities: `CONSIDERATION` 1, `PROXY_MEETING` 2,
+`DNO_INDEMNIFICATION` 4, `TERMINATION_FEE` 4, `MISC_BOILERPLATE` 14,
+`MERGER_STRUCTURE_CLOSING` 20. **Fifteen of fifteen now importable, up from
+nine.**
+
+**Adversarial review: merge with one condition**, having stood up its own
+container, re-derived two families, and failed to find an extra-key hole. The
+condition was a real miss — a staging script pinned the *old* error message for
+two probes that now hit the new shape check, and **no CI test exercises it
+because it needs a live database.**
