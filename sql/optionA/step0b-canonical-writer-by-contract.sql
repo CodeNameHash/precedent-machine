@@ -472,7 +472,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 22421fa8be103e97ec60dde72fb102e00938a0db5771d23f71dc68bd91883950
+-- Governed function SHA-256: 945399824244e3f2285dd98f86f2def18223cd54a7290f754e9f889e4baad784
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -3042,6 +3042,118 @@ BEGIN
     END IF;
 
     IF EXISTS (
+      WITH supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      -- Two provision object kinds are legitimate on the JS side
+      -- (lib/canonical-v2/source-structure.js buildProvisionInstance /
+      -- buildStructuralProvisionInstance, both validated by
+      -- lib/canonical-v2/validate-write-set.js): PROVISION_INSTANCE/V1 names
+      -- a party; STRUCTURAL_PROVISION_INSTANCE/V1 is the same shape with
+      -- `party` absent, for provisions that are not party-attributed. This
+      -- shape check is evaluated and raised on *before* any lineage check
+      -- below, so a shape rejection and a lineage rejection are always
+      -- reported with distinct messages.
+      typed_provision_shapes AS (
+        SELECT
+          supplied.provision,
+          CASE
+            WHEN jsonb_typeof(supplied.provision) <> 'object' THEN false
+            WHEN supplied.provision->>'schema_version' = 'STRUCTURAL_PROVISION_INSTANCE/V1'
+            THEN (
+              supplied.provision ?& ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]
+              AND supplied.provision - ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]::text[] = '{}'::jsonb
+              AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
+              AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
+              AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'concept_key' ~ '^[A-Z0-9][A-Z0-9_-]*$'
+            )
+            ELSE (
+              supplied.provision ?& ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]
+              AND supplied.provision - ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]::text[] = '{}'::jsonb
+              AND supplied.provision->>'schema_version' = 'PROVISION_INSTANCE/V1'
+              AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
+              AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
+              AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'concept_key' ~ '^[A-Z0-9][A-Z0-9_-]*$'
+              AND jsonb_typeof(supplied.provision->'party') = 'object'
+              AND supplied.provision->'party' ?& ARRAY['role', 'value', 'capacity']
+              AND (supplied.provision->'party')
+                - ARRAY['role', 'value', 'capacity']::text[] = '{}'::jsonb
+              AND jsonb_typeof(supplied.provision->'party'->'role') = 'string'
+              AND jsonb_typeof(supplied.provision->'party'->'value') = 'string'
+              AND jsonb_typeof(supplied.provision->'party'->'capacity') = 'string'
+              AND coalesce(length(supplied.provision->'party'->>'role'), 0) > 0
+              AND coalesce(length(supplied.provision->'party'->>'value'), 0) > 0
+              AND coalesce(length(supplied.provision->'party'->>'capacity'), 0) > 0
+            )
+          END AS shape_valid
+        FROM supplied_provisions supplied
+      )
+      SELECT 1
+      FROM typed_provision_shapes
+      WHERE NOT shape_valid
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN provision shape is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
       WITH source_lineage AS (
         SELECT
           reference.value AS reference,
@@ -3119,48 +3231,88 @@ BEGIN
               AND supplied.provision->>'ordinal' ~ '^[1-9][0-9]{0,15}$'
             THEN (supplied.provision->>'ordinal')::bigint
           END AS governed_ordinal,
-          (
-            jsonb_typeof(supplied.provision) = 'object'
-            AND supplied.provision ?& ARRAY[
-              'schema_version', 'source_occurrence_id', 'canonical_text_id',
-              'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
-              'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
-              'closure_id'
-            ]
-            AND supplied.provision - ARRAY[
-              'schema_version', 'source_occurrence_id', 'canonical_text_id',
-              'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
-              'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
-              'closure_id'
-            ]::text[] = '{}'::jsonb
-            AND supplied.provision->>'schema_version' = 'PROVISION_INSTANCE/V1'
-            AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
-            AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
-            AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
-            AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
-            AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
-            AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
-            AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
-            AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
-            AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
-            AND supplied.provision->>'concept_key'
-              ~ '^[A-Z0-9][A-Z0-9_-]*$'
-            AND jsonb_typeof(supplied.provision->'party') = 'object'
-            AND supplied.provision->'party' ?& ARRAY['role', 'value', 'capacity']
-            AND (supplied.provision->'party')
-              - ARRAY['role', 'value', 'capacity']::text[] = '{}'::jsonb
-            AND jsonb_typeof(supplied.provision->'party'->'role') = 'string'
-            AND jsonb_typeof(supplied.provision->'party'->'value') = 'string'
-            AND jsonb_typeof(supplied.provision->'party'->'capacity') = 'string'
-            AND coalesce(length(supplied.provision->'party'->>'role'), 0) > 0
-            AND coalesce(length(supplied.provision->'party'->>'value'), 0) > 0
-            AND coalesce(length(supplied.provision->'party'->>'capacity'), 0) > 0
-          ) AS shape_valid
+          (supplied.provision->>'schema_version' = 'STRUCTURAL_PROVISION_INSTANCE/V1')
+            AS is_structural,
+          -- Mirrors typed_provision_shapes.shape_valid above; recomputed
+          -- here (rather than reused) because the lineage check runs in an
+          -- independent IF EXISTS/WITH statement, and this repository's
+          -- convention throughout this function is that every WHERE CASE
+          -- gates its own downstream checks on its own shape_valid. The two
+          -- can never disagree: both read the same p_write_set within the
+          -- same statement.
+          CASE
+            WHEN jsonb_typeof(supplied.provision) <> 'object' THEN false
+            WHEN supplied.provision->>'schema_version' = 'STRUCTURAL_PROVISION_INSTANCE/V1'
+            THEN (
+              supplied.provision ?& ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]
+              AND supplied.provision - ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]::text[] = '{}'::jsonb
+              AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
+              AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
+              AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'concept_key' ~ '^[A-Z0-9][A-Z0-9_-]*$'
+            )
+            ELSE (
+              supplied.provision ?& ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]
+              AND supplied.provision - ARRAY[
+                'schema_version', 'source_occurrence_id', 'canonical_text_id',
+                'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+                'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+                'closure_id'
+              ]::text[] = '{}'::jsonb
+              AND supplied.provision->>'schema_version' = 'PROVISION_INSTANCE/V1'
+              AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
+              AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
+              AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
+              AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
+              AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
+              AND supplied.provision->>'concept_key' ~ '^[A-Z0-9][A-Z0-9_-]*$'
+              AND jsonb_typeof(supplied.provision->'party') = 'object'
+              AND supplied.provision->'party' ?& ARRAY['role', 'value', 'capacity']
+              AND (supplied.provision->'party')
+                - ARRAY['role', 'value', 'capacity']::text[] = '{}'::jsonb
+              AND jsonb_typeof(supplied.provision->'party'->'role') = 'string'
+              AND jsonb_typeof(supplied.provision->'party'->'value') = 'string'
+              AND jsonb_typeof(supplied.provision->'party'->'capacity') = 'string'
+              AND coalesce(length(supplied.provision->'party'->>'role'), 0) > 0
+              AND coalesce(length(supplied.provision->'party'->>'value'), 0) > 0
+              AND coalesce(length(supplied.provision->'party'->>'capacity'), 0) > 0
+            )
+          END AS shape_valid
         FROM supplied_provisions supplied
       )
       SELECT 1
@@ -3212,19 +3364,35 @@ BEGIN
                 )
               OR supplied.provision->>'provision_instance_id' IS DISTINCT FROM
                 canonical_v2_staging.content_id(
-                  'PROVISION_INSTANCE/V1',
-                  jsonb_build_object(
-                    'schema_version', supplied.provision->'schema_version',
-                    'source_occurrence_id',
-                      supplied.provision->'source_occurrence_id',
-                    'canonical_text_id', supplied.provision->'canonical_text_id',
-                    'document_hash', supplied.provision->'document_hash',
-                    'absolute_start', supplied.provision->'absolute_start',
-                    'absolute_end', supplied.provision->'absolute_end',
-                    'concept_key', supplied.provision->'concept_key',
-                    'party', supplied.provision->'party',
-                    'ordinal', supplied.provision->'ordinal'
-                  )
+                  CASE
+                    WHEN supplied.is_structural THEN 'STRUCTURAL_PROVISION_INSTANCE/V1'
+                    ELSE 'PROVISION_INSTANCE/V1'
+                  END,
+                  CASE
+                    WHEN supplied.is_structural THEN jsonb_build_object(
+                      'schema_version', supplied.provision->'schema_version',
+                      'source_occurrence_id',
+                        supplied.provision->'source_occurrence_id',
+                      'canonical_text_id', supplied.provision->'canonical_text_id',
+                      'document_hash', supplied.provision->'document_hash',
+                      'absolute_start', supplied.provision->'absolute_start',
+                      'absolute_end', supplied.provision->'absolute_end',
+                      'concept_key', supplied.provision->'concept_key',
+                      'ordinal', supplied.provision->'ordinal'
+                    )
+                    ELSE jsonb_build_object(
+                      'schema_version', supplied.provision->'schema_version',
+                      'source_occurrence_id',
+                        supplied.provision->'source_occurrence_id',
+                      'canonical_text_id', supplied.provision->'canonical_text_id',
+                      'document_hash', supplied.provision->'document_hash',
+                      'absolute_start', supplied.provision->'absolute_start',
+                      'absolute_end', supplied.provision->'absolute_end',
+                      'concept_key', supplied.provision->'concept_key',
+                      'party', supplied.provision->'party',
+                      'ordinal', supplied.provision->'ordinal'
+                    )
+                  END
                 )
           END
         ELSE true

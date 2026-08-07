@@ -16,7 +16,22 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: '22421fa8be103e97ec60dde72fb102e00938a0db5771d23f71dc68bd91883950',
+    // Repinned 2026-08-07 for PLAN.md Step 4A1, which split DEAL_SCOPE_RUN's
+    // provision check into shape then lineage so a partyless
+    // STRUCTURAL_PROVISION_INSTANCE/V1 stops being rejected as malformed --
+    // six of fifteen claim-publishing families could not be imported at all
+    // before it. Verified before repinning that the extracted body carries
+    // that change and nothing else: it contains both the structural branch
+    // and the new 'provision shape is invalid' message.
+    //
+    // This is the SECOND digest guard over the same edit. Step 4A1 updated
+    // scripts/canonical-v2-staging-schema.mjs, which pins the whole schema
+    // file, and adversarial review caught a third consumer that pinned the
+    // old error message. Neither pass found this one, because it hashes the
+    // function body rather than the file and only the full suite runs it. A
+    // schema edit therefore has three separate places to update, and nothing
+    // tells you that at edit time.
+    digest: '945399824244e3f2285dd98f86f2def18223cd54a7290f754e9f889e4baad784',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',

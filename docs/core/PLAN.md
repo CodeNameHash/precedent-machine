@@ -2108,6 +2108,77 @@ test that fails if they diverge; and no stored QXO value remains in the old
 single-field form. The Step 3I sidecar stays as the cited-text record — check
 every branch's quote is still reachable before removing anything.
 
+**BUILT 2026-08-07, NOT COMPLETE, and this step does not move to
+`COMPLETED.md` until Step 3J1 closes.** V3 is additive beside a byte-identical
+frozen V2 (verified by extracting the constant's text region from both
+commits), the migration is derived rather than retyped, and all five real
+patterns encode correctly against filed text — including the QXO "upon"
+reading, which is not an assumption: QXO's filed 6.5(b) uses the word "upon"
+where its sibling clauses say "within two (2) business days", so zero delay is
+the faithful reading.
+
+**Two corrections to this programme's own record, both mine.**
+
+**The cross-check is tested, not enforced.** The commit that built this said
+"enforced rather than assumed". That is false.
+`assertPaymentTriggerEventAgreesWithFeeRequired` is defined at
+`termination-product-projection.js:162` and exported at 754, and **called
+nowhere outside its own test** — verified by grep across `lib/`, `pages/`,
+`scripts/` and `tests/`. It cannot fire on any real path: every metric binding
+pins `trigger_path_schema_version: 2`, V39 is unregistered in the fingerprint
+maps, nothing emits a V3 effect, and `feeRequired` exists only in the live V1
+database. **This step's own proof above is therefore not satisfied and cannot
+be satisfied in-repo.** A guard that reads as protection and cannot fire is
+worse than no guard, and this programme has now produced five of them in one
+day.
+
+**The delay axis is narrower than Ben ruled.** Decision 5 says
+`payment_delay` is "zero, two business days, **or whatever the agreement
+says**". The implementation froze `[NONE, TWO_BUSINESS_DAYS]` and dropped the
+third limb.
+
+## Step 3J1. Wire the cross-check, and widen what Step 3J narrowed
+
+**Conditions 3, 4 and 5 of the adversarial review of `5bd831d4`.** Two further
+conditions are codebook decisions and are recorded in `DECISIONS.md` for Ben.
+
+**What it is.** Step 3J built a schema nothing can reach and a guard nothing
+calls. This wires both, and fixes the one place the guard would be wrong if
+called naively.
+
+**Change.**
+
+- **Wire the guard.** Call it on the fiduciary-out path against the real
+  `feeRequired`, at import or serving time. Today it is unreachable.
+- **Scope the pairing.** The function takes `(event, feeRequired)` with no
+  path scoping, so applied naively to Modiv branch (iii)'s
+  `EARLIER_OF_SIGNING_OR_CONSUMMATION` against the same deal's truthy
+  `TERMR-SUPERIOR` `feeRequired`, it throws a **false** disagreement. The
+  pairing discipline currently lives only in a comment.
+- **Stop auto-truthing prose.** `feeRequiredIsTruthy` counts every non-empty
+  string as "required". Decision 6 records that **5 of 28 stored values are
+  prose**. A prose value meaning "no, the fee is payable after termination,
+  not as a condition", paired with a miscoded concurrent event, passes
+  **silently** — the one quadrant where this guard's failure is invisible
+  rather than loud. Classify prose values or route them to review; never
+  auto-truthy them.
+- **Make V3 reachable, or record that it is not.** Three things must happen
+  for V3 to serve: a binding declaring version 3, registration in
+  `FIXTURE_CONTRACT_FINGERPRINTS` and `FIXTURE_CONTRACTS_BY_FINGERPRINT`, and
+  a producer emitting V3-shaped effects. Withholding registration was the
+  right call at build time — those sets define what serving code trusts, and
+  the alternative was editing an unowned, exhaustively pinned test to smuggle
+  scope. But **an unreachable schema that has been built is exactly the shape
+  of thing this project forgets it built**, which is the failure `CLAUDE.md`
+  opens with.
+
+**Proves it is done.** The guard fires on a real path with a real
+`feeRequired`, proven by a test that makes it throw on a genuine disagreement
+rather than a synthetic one; Modiv branch (iii) does not throw a false
+disagreement; a prose `feeRequired` that means "not a condition" is refused or
+queued rather than read as agreement; and V3 either serves or its
+unreachability is recorded in `GRAVEYARD.md` with what would make it serve.
+
 ## Step 3H. Decide the open-world items that are not defects
 
 **What it is.** The remainder of the 193 are not bugs. They are facts the
