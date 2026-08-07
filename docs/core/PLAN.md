@@ -63,7 +63,7 @@ Run these yourself. They take seconds.
 | Fact | Value | Command |
 |---|---|---|
 | Registered section families | 25 | `node -e "console.log(require('./lib/canonical-v2/native-producer/producer-prompt-registry.js').listRegisteredSectionFamilies().length)"` |
-| Live extraction run directories on disk | 50 | `ls -d evidence/canonical-v2/*-2026* \| wc -l` |
+| Extraction run directories carrying output | 49 | `evidence/canonical-v2/baseline-manifest.json`, `run_count` (directories with an `adapter-result.json`. The folder holds 54 entries: these 49, the three 2026-08-06 runs that crashed before writing one — capitalisation, closing-conditions, interim-operating, all since recovered by replay into separate directories — plus `m3-pilot-20260804-fresh` and the `_admitted-source-map-payloads` store) |
 | **Of those, importable** | **25** | `evidence/canonical-v2/baseline-manifest.json`, `importable_run_count` |
 | Registered families with an importable run | 25 of 25 | same, `families_with_an_importable_run` |
 | **Families whose importable run publishes claims** | **15 of 25** | same; ten publish zero, each triaged in Step 2B |
@@ -120,7 +120,10 @@ commits.
 Modiv and MAE_DEFINITION against TopBuild. `ROADMAP.md` says "Every registered
 section family... was dispatched against Modiv in a single sweep". It was not.
 MAE_DEFINITION has no Modiv baseline at all, so it has no controlled comparison
-to re-run against.
+to re-run against. **Still true on 2026-08-07**: that family now has an
+importable run, but it is `topbuild-mae-definition-20260807-replay`. It has
+never run against Modiv, and its Modiv pin — reviewed against the document in
+Step 2A — has never been exercised.
 
 ```
 node -e "const b=require('./docs/codex-program/notes/all-families-baseline-20260806.json');
@@ -144,15 +147,20 @@ What is genuinely unknown is whether the deployed site has `AUTH_PASSWORD` and
 `SESSION_SECRET` set, which is what makes the gate real rather than dormant.
 That is Step 7A, and only Ben can answer it.
 
-**A third figure worth having.** Of the 108 resolved claims, 34 belong to
-Merger Structure (20) and Miscellaneous Boilerplate (14), the two families whose
-projection modules `ROADMAP.md` section 2.3 calls dead code. Just under a third
-of everything the sweep resolved cannot currently render anywhere.
+**A third figure worth having.** 34 published claims belong to Merger
+Structure (20) and Miscellaneous Boilerplate (14), the two families whose
+projection modules `ROADMAP.md` section 2.3 calls dead code — so that much of
+what the pipeline produces cannot currently render anywhere.
+
+Re-derived against the current baseline on 2026-08-07: the two counts are
+unchanged at 20 and 14, but the denominator moved from 108 to 170, so this is
+**a fifth of what publishes, not a third**. The older phrasing came from the
+pre-replay baseline.
 
 ```
-node -e "const b=require('./docs/codex-program/notes/all-families-baseline-20260806.json');
-const p=b.per_family.filter(f=>/merger-structure|misc-boilerplate/.test(f.dir));
-console.log(p.map(f=>f.dir+'='+f.resolved).join(' '))"
+node -e "const m=require('./evidence/canonical-v2/baseline-manifest.json');
+const p=m.runs.filter(r=>r.importable && /MERGER_STRUCTURE|MISC_BOILERPLATE/.test(r.section_family||''));
+console.log(p.map(r=>r.section_family+'='+r.published.claims).join(' '), 'of', m.totals.claims)"
 ```
 
 ---
@@ -1519,10 +1527,17 @@ premise pattern is exactly the change that trades a false negative for a false
 positive, so a non-operative acknowledgement must still be excluded, and that
 must be demonstrated rather than assumed.
 
-**Why this was not just done.** It changes what the pipeline extracts from
-every deal, which `OPERATING-RULES.md` places with Ben. It is listed in
-`DECISIONS.md` under "Waiting on Ben" as decision 2 — which is *this step*,
-not a new finding.
+**Why this was not done on the spot, and why that reasoning was wrong.** It
+was briefly listed in `DECISIONS.md` under "Waiting on Ben", on the grounds
+that it changes what the pipeline extracts from every deal. **Withdrawn the
+same day.** `OPERATING-RULES.md` reserves *taxonomy values and codebook
+vocabularies* to Ben; a matching predicate is neither, the tolerant sibling
+twelve lines above already encodes the accepted reading, and this step existed
+as ordinary engineering work before any of it came up.
+
+So: **this is ready to implement.** Ben may want to see the diff because it
+changes extracted output — that is a review, not a gate. The hostile test
+above is a gate.
 
 **Proves it is done.** A replay of the committed Modiv run through the corrected
 provider yields at least one candidate reaching the resolver, and a hostile test
