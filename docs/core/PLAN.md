@@ -2039,6 +2039,47 @@ hostile test proving the widened path still refuses a genuinely wrong candidate,
 because every one of these is a loosening and a loosening with no hostile test is
 how a false positive gets shipped.
 
+## Step 3J. Split payment timing into event and delay
+
+**Ruled by Ben on 2026-08-07**, option B of the codebook question Step 3I
+raised. Full reasoning in `DECISIONS.md` under decision 5.
+
+**What it is.** `allowed_payment_timings` is a two-value enum
+(`TWO_BUSINESS_DAYS_AFTER_TERMINATION`,
+`UPON_EARLIER_OF_SIGNING_OR_CONSUMMATION`) hand-curated from QXO. It becomes
+two fields: **`payment_trigger_event`** (what starts the clock) and
+**`payment_delay`** (how long after).
+
+**Why.** The two codes conflate event and delay — the first encodes both, the
+second encodes an event and implies zero. Modiv's real drafting has three
+patterns and the middle one, "prior to or substantially concurrently with such
+termination", is the same event as the second code with a different delay, so
+it cannot be expressed at all. Adding a third code would leave the next novel
+delay to reopen the question; splitting does not.
+
+**Change.** `lib/canonical-v2/contract-bundle.js` (watch the dual numbering,
+input at V38 and concept keys at V24 — a schema change costs several
+coordinated edits) and `lib/canonical-v2/termination-fee-trigger-path.js:85`,
+which enforces the enum. **Migrate QXO's two stored values into the new pair**
+rather than leaving them as legacy strings beside it.
+
+**The cross-check, which is the part not to skip.** Modiv's `7.3(b)(ii)` fee
+is payable when the Company terminates under `7.1(c)(i)`, the superior-proposal
+fiduciary out, concurrently with terminating. **That is decision 6's concept**,
+already modelled on the termination-rights side as `feeRequired` on
+`TERMR-SUPERIOR` — payment as a condition precedent to the fiduciary out,
+which decision 6 records as a materially different negotiating position from
+"a fee is payable". `payment_trigger_event = CONCURRENT_WITH_TERMINATION` and
+`feeRequired` must agree, and a disagreement is a defect to surface, not a
+preference to resolve quietly.
+
+**Proves it is done.** All three Modiv patterns and both QXO patterns encode
+without inventing a code beyond the ruled set; the Modiv branch (ii) row and
+its `TERMR-SUPERIOR` `feeRequired` counterpart are asserted to agree, with a
+test that fails if they diverge; and no stored QXO value remains in the old
+single-field form. The Step 3I sidecar stays as the cited-text record — check
+every branch's quote is still reachable before removing anything.
+
 ## Step 3H. Decide the open-world items that are not defects
 
 **What it is.** The remainder of the 193 are not bugs. They are facts the

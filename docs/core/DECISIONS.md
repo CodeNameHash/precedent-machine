@@ -271,6 +271,53 @@ the reading-the-agreement work this decision calls "real work, not
 reformatting" is not yet done: the shape is built, the extraction that would
 populate it from a live model call is not.
 
+**RULED 2026-08-07: split the field. Option B.** Ben's decision on the
+codebook question the update below raised.
+
+`payment_timing` becomes **two fields**, not one enum:
+
+- **`payment_trigger_event`** — what starts the clock: termination, the
+  earlier of signing or consummation, or **concurrent with termination**.
+- **`payment_delay`** — how long after it: zero, two business days, or
+  whatever the agreement says.
+
+**The defect this fixes.** The existing two codes conflate the two.
+`TWO_BUSINESS_DAYS_AFTER_TERMINATION` encodes an event *and* a delay;
+`UPON_EARLIER_OF_SIGNING_OR_CONSUMMATION` encodes an event and implies zero
+delay. So Modiv's third pattern — the same event as the second code with a
+different delay — has nowhere to go. A two-value enum curated from one
+agreement was always going to break on the second, and adding a third code
+would have left the next novel delay to reopen the question. Splitting is the
+only option where the third agreement does not.
+
+**The concurrency case is cross-checked, not merely added.** Modiv's
+`7.3(b)(ii)` fee is payable when the Company terminates under `7.1(c)(i)`, the
+superior-proposal fiduciary out, "prior to or substantially concurrently with
+such termination". **That is decision 6's concept**, already ruled and already
+modelled on the other side of the taxonomy as `feeRequired` on
+`TERMR-SUPERIOR`: payment as a condition precedent to exercising the fiduciary
+out, which decision 6 records as a materially different negotiating position
+from "a fee is payable".
+
+So the same fact is expressible in two families, and only one of them could
+express it. **`payment_trigger_event = CONCURRENT_WITH_TERMINATION` and
+`feeRequired` on the matching termination-rights row must agree**, and a
+disagreement is a defect to surface rather than a preference to resolve
+silently. Two sources of truth for one deal point is how a wrong reading
+becomes invisible.
+
+**Migration.** QXO's two stored values must be split into the new pair, not
+left as legacy strings beside it. `allowed_payment_timings` is enforced at
+`termination-fee-trigger-path.js:85`, and `contract-bundle.js` carries dual
+numbering — input at V38, concept keys at V24 — so a genuine schema change
+costs multiple coordinated edits there. See `CODEBASE-GUIDE.md` before
+starting.
+
+**What this supersedes.** The Modiv-only verbatim sidecar built under Step 3I
+stays as the cited-text record, but it is no longer the eventual answer: the
+coded fields are. Do not delete the sidecar when the coded path lands without
+first checking that every branch's quote is still reachable.
+
 **Update, 2026-08-07 (`PLAN.md` Step 3I).** The coded, general, per-family
 `payment_timing` extraction this decision asks for still needs a live model
 call and, separately, a codebook decision this task does not own:
