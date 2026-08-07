@@ -132,14 +132,20 @@ construction to hardening.
 `docs/core/CODEBASE-GUIDE.md` section 12 is the new record of how the system
 actually works, with the commands to re-derive it.
 
-**Still outstanding, and none of it is started:**
+**Done since:** B-zero — the glob is recursive, the suite runs 832 files and
+7,908 tests (up 184), and the two failures it exposed are handled: a live-DB
+test now skips loudly instead of failing, and two features referencing tag
+families that no `TAGS` entry carries are quarantined with an owner and a
+review date. Both adversarial passes are closed and their findings landed,
+including two plan steps that were already done and one diagnosed backwards.
 
-- **The test glob.** 29 test files still do not run. Every Stage 2 gate is
-  checked by that instrument.
+**Still outstanding:**
+
 - **Parts A, C, E, F** — consolidation, the ~110 findings, onboarding, the
   capability rulings.
-- **The two prerequisites Stage 2 names for itself:** the replay-or-tolerance
-  decision for a nondeterministic gate, and the runner change that records a
-  commit hash and resolved model ID so change-triggered re-runs are possible.
-
-Next: Fable's adversarial pass on the implemented documents.
+- **Stage 2's own two prerequisites:** the replay-or-tolerance decision for a
+  nondeterministic gate, and the runner change recording a commit hash and
+  resolved model ID.
+- **The taxonomy gap**, quarantined not fixed: `SEC_FILING_EXCLUSION` and
+  `INTERVENING_EVENT_EXCEPTION_CODES` are defined in `lib/taxonomy.js` and
+  known to no tag registry or generator.
