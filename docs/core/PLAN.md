@@ -2521,6 +2521,59 @@ Modiv headline number specifically survives a round trip: written, read back,
 byte-identical to what the run produced. The count proves the table works; the
 headline proves it holds the thing it was added for.
 
+**DONE 2026-08-07 on the database side, and half of Ben's decision 3 remains.
+See Step 4A3.**
+
+Six real Modiv conditional fee values went through `canonical_v2_write`
+durably; `SELECT count(*)` returned 6 from a fresh connection after the writer
+exited; JS and SQL receipt identities matched. **The headline `$10,000,000`
+SELLER 7.3(b)(i) row survived the round trip byte-identical**, compared
+through this codebase's own `canonicalJson` rather than `JSON.stringify` — a
+naive comparison first reported a false mismatch because Postgres `jsonb`
+reorders object keys on output. That is documented `jsonb` behaviour, not
+corruption, and it is written down so nobody later reads it as one.
+
+Four hostile probes against the real committed write-set: a well-formed
+control accepted; extra-key, missing-key and wrong-enum rows all refused with
+`DEAL_SCOPE_RUN conditional termination fee value shape is invalid`, naming
+the shape; a duplicate id refused separately. All three digest guards updated
+and the governed extract regenerated.
+
+## Step 4A3. Carry conditional fee values into the write-set
+
+**Found by Step 4A2 itself, and disclosed rather than left to be discovered.**
+
+**What it is.** The table exists and is proven. **Nothing sends it data.**
+`lib/canonical-v2/native-producer/native-write-set-adapter.js` and
+`lib/canonical-v2/validate-write-set.js` contain **zero** references to
+`conditional_termination_fee_values` — checked by grep, not inferred — while
+`termination-product-projection.js` reads
+`resolution.conditional_termination_fee_values` and
+`lib/four-deal-local-demo-preview.js` iterates it. So the resolver produces
+these values and the projection consumes them, and the write-set never carries
+them.
+
+**Why this is the whole point of the step.** Ben's decision 3 was taken
+because two of the ten cards a termination-fee run projects come from this
+kind, **including the Modiv headline number**. A table nothing writes to
+delivers none of that. Until this step lands, the honest statement is "the
+database can hold the headline number", not "the headline number reaches the
+database".
+
+**Change.** Teach the adapter to carry the kind into a real `DEAL_SCOPE_RUN`
+write-set, and `validate-write-set.js` to validate it. Follow the open-world
+emission that landed the same day (`buildOpenWorldWriteRows`) as the pattern
+for adding a kind the adapter did not previously emit.
+
+**Proves it is done.** A real extraction run's own write-set — not a
+hand-built harness input — carries conditional fee values through the bridge
+into `canonical_v2_write`, and the Modiv headline arrives in the table. Step
+4A2's harness proved the SQL; this proves the pipeline.
+
+**Do not mark decision 3 satisfied before this.** A built-but-unreachable
+mechanism is the exact shape of thing this programme forgets it built, and
+this is the second one found today: Step 3J's cross-check guard is the other.
+
 ## Step 4B. Harden the import driver
 
 **Moved, not deleted.** Step 2B's write half now builds this driver, for the

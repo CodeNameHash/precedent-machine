@@ -19,7 +19,17 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '0bbff0843530f598d847ad139d94650f979642822881e9de1d6fad846a94e83a',
+  // Repinned 2026-08-07 for PLAN.md Step 4A2, which added the
+  // canonical_v2_staging.conditional_termination_fee_values table and taught
+  // public.canonical_v2_write's DEAL_SCOPE_RUN branch to accept, shape-check,
+  // recompute the identity of, and durably write that write-set object kind.
+  // This is one of three digest guards a schema edit must update --
+  // scripts/canonical-v2-optiona-authority-partition.mjs pins the
+  // canonical_v2_write function body separately, and
+  // scripts/canonical-v2-staging-writer-structure-identity.mjs pins exact
+  // error message strings its probes assert on. See docs/codex-program/
+  // notes/step-4a2-conditional-fee-table.md for the local-container proof.
+  'canonical-v2-foundation.sql': '3f72f34cc238dfd9343cf4905e5800433fa01d54eb83bf2abd7a2bc387efec50',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.

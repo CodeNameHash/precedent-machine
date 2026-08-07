@@ -472,7 +472,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 945399824244e3f2285dd98f86f2def18223cd54a7290f754e9f889e4baad784
+-- Governed function SHA-256: ea375cd49b170c6ecd504241d9d28a5db2bbb43f2782518c6c2ef3f40e808a28
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -2328,7 +2328,7 @@ BEGIN
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
         'reviewed_source_specific_rows', 'incomplete_canonical_result_rows',
-        'persisted_object_references'
+        'persisted_object_references', 'conditional_termination_fee_values'
       ]::text[] <> '{}'::jsonb
       OR jsonb_typeof(p_write_set->'source_references') IS DISTINCT FROM 'array'
       OR jsonb_typeof(p_write_set->'deal') IS DISTINCT FROM 'object'
@@ -2336,6 +2336,18 @@ BEGIN
         p_write_set ? 'persisted_object_references'
         AND jsonb_typeof(p_write_set->'persisted_object_references') IS DISTINCT FROM 'array'
       )
+      -- conditional_termination_fee_values (PLAN.md Step 4A2) is OPTIONAL,
+      -- like persisted_object_references above: most deals have no Modiv-
+      -- style formula fee (lib/canonical-v2/native-producer/modiv-
+      -- termination-fee-source-parser.js resolveModivConditionalFees is the
+      -- only producer today), so the key is entirely absent rather than an
+      -- empty array for every other deal -- the same "OMITTED, not zero"
+      -- convention candidate-resolution.js uses for this field. It is
+      -- excluded from the required ?& list above but included in the
+      -- subtraction list, exactly like persisted_object_references. When
+      -- present it must be an array; the generic EXISTS check just below
+      -- already enforces that for every key outside ('source_references',
+      -- 'deal'), so no bespoke typeof check is needed here.
       OR EXISTS (
         SELECT 1 FROM jsonb_each(p_write_set) AS write_field(key, value)
         WHERE write_field.key NOT IN ('source_references', 'deal')
@@ -6617,12 +6629,130 @@ BEGIN
         USING ERRCODE = '23514';
     END IF;
 
+    -- PLAN.md Step 4A2. conditional_termination_fee_values carries no
+    -- closure_id (see the table's own comment above), so it is checked in
+    -- its own self-contained block rather than folded into the generic
+    -- closure-keyed loops that follow: those loops assume every collection
+    -- object has a closure_id field, and this kind genuinely does not have
+    -- one -- silently including it there would make every one of those
+    -- checks pass vacuously (NULL, not TRUE) for this collection instead of
+    -- validating it, which is worse than a missing check because it reads
+    -- as covered. The exact 11-key contract and every field constraint below
+    -- mirror lib/canonical-v2/native-producer/conditional-termination-fee-
+    -- value.js's buildConditionalTerminationFeeValue exactly: SIDES,
+    -- BRANCHES, the base_amount regex, currency/operator literals, and the
+    -- >=2-length lineage/citation arrays it requires. Fails closed: an
+    -- unrecognised schema_version, an extra key, a wrong-shaped array
+    -- element or a mismatched content-addressed id are all rejected by the
+    -- same single message, which names the shape rather than any lineage --
+    -- this kind has no lineage to name.
+    IF EXISTS (
+      WITH supplied_conditional_termination_fee_values AS (
+        SELECT conditional_fee.value AS conditional_fee
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'conditional_termination_fee_values', '[]'::jsonb)
+        ) conditional_fee(value)
+      ),
+      typed_conditional_termination_fee_values AS (
+        SELECT
+          supplied.conditional_fee,
+          (
+            jsonb_typeof(supplied.conditional_fee) = 'object'
+            AND supplied.conditional_fee ?& ARRAY[
+              'schema_version', 'fee_side', 'triggering_branch', 'base_amount',
+              'currency', 'operator', 'reit_limit_cap_term_ref',
+              'defined_term_lineage', 'source_citations', 'raw_formula',
+              'conditional_termination_fee_value_id'
+            ]
+            AND supplied.conditional_fee - ARRAY[
+              'schema_version', 'fee_side', 'triggering_branch', 'base_amount',
+              'currency', 'operator', 'reit_limit_cap_term_ref',
+              'defined_term_lineage', 'source_citations', 'raw_formula',
+              'conditional_termination_fee_value_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.conditional_fee->>'schema_version'
+              = 'CONDITIONAL_TERMINATION_FEE_VALUE/V1'
+            AND supplied.conditional_fee->>'fee_side' IN ('SELLER', 'BUYER')
+            AND supplied.conditional_fee->>'triggering_branch' IN (
+              '7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)', '7.3(b)(iv)',
+              '7.3(b)(v)', '7.3(c)'
+            )
+            AND jsonb_typeof(supplied.conditional_fee->'base_amount') = 'string'
+            AND supplied.conditional_fee->>'base_amount' ~ '^[0-9]+(\.[0-9]+)?$'
+            AND supplied.conditional_fee->>'currency' = 'USD'
+            AND supplied.conditional_fee->>'operator' = 'LOWER_OF'
+            AND jsonb_typeof(supplied.conditional_fee->'reit_limit_cap_term_ref')
+              = 'string'
+            AND coalesce(
+              length(supplied.conditional_fee->>'reit_limit_cap_term_ref'), 0
+            ) > 0
+            AND jsonb_typeof(supplied.conditional_fee->'raw_formula') = 'string'
+            AND coalesce(length(supplied.conditional_fee->>'raw_formula'), 0) > 0
+            AND jsonb_typeof(supplied.conditional_fee->'defined_term_lineage')
+              = 'array'
+            AND jsonb_array_length(
+              supplied.conditional_fee->'defined_term_lineage'
+            ) >= 2
+            AND NOT EXISTS (
+              SELECT 1
+              FROM jsonb_array_elements(
+                supplied.conditional_fee->'defined_term_lineage'
+              ) lineage_entry(value)
+              WHERE jsonb_typeof(lineage_entry.value) <> 'string'
+            )
+            AND jsonb_typeof(supplied.conditional_fee->'source_citations')
+              = 'array'
+            AND jsonb_array_length(supplied.conditional_fee->'source_citations')
+              >= 2
+            AND NOT EXISTS (
+              SELECT 1
+              FROM jsonb_array_elements(
+                supplied.conditional_fee->'source_citations'
+              ) citation_entry(value)
+              WHERE jsonb_typeof(citation_entry.value) <> 'string'
+            )
+            AND jsonb_typeof(
+              supplied.conditional_fee->'conditional_termination_fee_value_id'
+            ) = 'string'
+            AND supplied.conditional_fee->>'conditional_termination_fee_value_id'
+              ~ '^[0-9a-f]{64}$'
+          ) AS shape_valid
+        FROM supplied_conditional_termination_fee_values supplied
+      )
+      SELECT 1
+      FROM typed_conditional_termination_fee_values supplied
+      WHERE CASE
+        WHEN supplied.shape_valid THEN
+          supplied.conditional_fee->>'conditional_termination_fee_value_id'
+            IS DISTINCT FROM canonical_v2_staging.content_id(
+              'CONDITIONAL_TERMINATION_FEE_VALUE/V1',
+              supplied.conditional_fee - 'conditional_termination_fee_value_id'
+            )
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN conditional termination fee value shape is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      SELECT 1
+      FROM jsonb_array_elements(
+        coalesce(p_write_set->'conditional_termination_fee_values', '[]'::jsonb)
+      ) conditional_fee(value)
+      GROUP BY conditional_fee.value->>'conditional_termination_fee_value_id'
+      HAVING count(*) > 1
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN contains duplicate conditional termination fee values'
+        USING ERRCODE = '23514';
+    END IF;
+
     IF EXISTS (
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
         WHEN collection.key NOT IN (
-          'source_references', 'deal', 'persisted_object_references'
+          'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
         ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
@@ -6662,7 +6792,7 @@ BEGIN
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
         WHEN collection.key NOT IN (
-          'source_references', 'deal', 'persisted_object_references'
+          'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
         ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
@@ -6693,7 +6823,7 @@ BEGIN
         FROM jsonb_each(p_write_set) AS collection(key, value)
         CROSS JOIN LATERAL jsonb_array_elements(CASE
           WHEN collection.key NOT IN (
-            'source_references', 'deal', 'persisted_object_references'
+            'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
           ) THEN collection.value
           ELSE '[]'::jsonb
         END) object(value)
@@ -6722,12 +6852,12 @@ BEGIN
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
         WHEN collection.key NOT IN (
-          'source_references', 'deal', 'persisted_object_references'
+          'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
         ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
       WHERE collection.key NOT IN (
-        'source_references', 'deal', 'persisted_object_references'
+        'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
       )
         AND (
           jsonb_typeof(object.value) <> 'object'
@@ -6760,12 +6890,12 @@ BEGIN
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
         WHEN collection.key NOT IN (
-          'source_references', 'deal', 'persisted_object_references'
+          'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
         ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
       WHERE collection.key NOT IN (
-        'source_references', 'deal', 'persisted_object_references'
+        'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
       )
       GROUP BY collection.key, CASE collection.key
         WHEN 'excerpts' THEN object.value->>'excerpt_id'
@@ -6859,14 +6989,14 @@ BEGIN
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
         WHEN collection.key NOT IN (
-          'source_references', 'deal', 'persisted_object_references'
+          'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
         ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
       JOIN jsonb_array_elements(p_quarantines) AS quarantine(value)
         ON quarantine.value->>'closure_id' = object.value->>'closure_id'
       WHERE collection.key NOT IN (
-        'source_references', 'deal', 'persisted_object_references'
+        'source_references', 'deal', 'persisted_object_references', 'conditional_termination_fee_values'
       )
     ) THEN
       RAISE EXCEPTION 'DEAL_SCOPE_RUN residual and quarantine outputs do not close exactly'
@@ -7809,6 +7939,35 @@ BEGIN
     FROM canonical_v2_staging.relationship_revisions WHERE relationship_revision_id = item_id;
     IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
       RAISE EXCEPTION 'canonical relationship identity conflict' USING ERRCODE = '23505';
+    END IF;
+  END LOOP;
+
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'conditional_termination_fee_values', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'conditional_termination_fee_value_id'
+  LOOP
+    item_id := item->>'conditional_termination_fee_value_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.conditional_termination_fee_values
+    WHERE conditional_termination_fee_value_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical conditional termination fee value identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.conditional_termination_fee_values(
+      conditional_termination_fee_value_id, fee_side, triggering_branch, canonical_payload
+    ) VALUES (
+      item_id, item->>'fee_side', item->>'triggering_branch', item
+    ) ON CONFLICT (conditional_termination_fee_value_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.conditional_termination_fee_values
+    WHERE conditional_termination_fee_value_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical conditional termination fee value identity conflict'
+        USING ERRCODE = '23505';
     END IF;
   END LOOP;
 

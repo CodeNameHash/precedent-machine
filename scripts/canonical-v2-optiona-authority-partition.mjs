@@ -16,13 +16,23 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    // Repinned 2026-08-07 for PLAN.md Step 4A1, which split DEAL_SCOPE_RUN's
-    // provision check into shape then lineage so a partyless
-    // STRUCTURAL_PROVISION_INSTANCE/V1 stops being rejected as malformed --
-    // six of fifteen claim-publishing families could not be imported at all
-    // before it. Verified before repinning that the extracted body carries
-    // that change and nothing else: it contains both the structural branch
-    // and the new 'provision shape is invalid' message.
+    // Repinned again 2026-08-07 for PLAN.md Step 4A2, which added
+    // canonical_v2_staging.conditional_termination_fee_values and taught
+    // DEAL_SCOPE_RUN to shape-check, recompute the identity of and durably
+    // write it -- verified before repinning that the extracted body carries
+    // that change and nothing else: it contains
+    // 'conditional_termination_fee_values', the new
+    // 'DEAL_SCOPE_RUN conditional termination fee value shape is invalid'
+    // and 'DEAL_SCOPE_RUN contains duplicate conditional termination fee
+    // values' messages, and still contains Step 4A1's STRUCTURAL_PROVISION_
+    // INSTANCE branch and 'DEAL_SCOPE_RUN provision shape is invalid'
+    // message, unchanged.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 4A1, which split
+    // DEAL_SCOPE_RUN's provision check into shape then lineage so a
+    // partyless STRUCTURAL_PROVISION_INSTANCE/V1 stops being rejected as
+    // malformed -- six of fifteen claim-publishing families could not be
+    // imported at all before it.
     //
     // This is the SECOND digest guard over the same edit. Step 4A1 updated
     // scripts/canonical-v2-staging-schema.mjs, which pins the whole schema
@@ -31,7 +41,7 @@ const FUNCTIONS = Object.freeze([
     // function body rather than the file and only the full suite runs it. A
     // schema edit therefore has three separate places to update, and nothing
     // tells you that at edit time.
-    digest: '945399824244e3f2285dd98f86f2def18223cd54a7290f754e9f889e4baad784',
+    digest: 'ea375cd49b170c6ecd504241d9d28a5db2bbb43f2782518c6c2ef3f40e808a28',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
