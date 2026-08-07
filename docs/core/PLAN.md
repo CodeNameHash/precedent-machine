@@ -564,7 +564,39 @@ written when both halves were missing.**
 | Half | State |
 |---|---|
 | Write: a run's output into the database | **Done, in memory.** Proven against `InMemoryCanonicalRepository` only; `canonical_v2_write` has never received the runner's output. Closing that is Step 4A, which needs no decision — consider running it before 2C |
-| Read: back out to a surface | **Not built.** Locally unblocked (no `FORCE ROW LEVEL SECURITY`, so a table-owner connection reads freely); the *hosted* access design is Ben's |
+| Read: back out to a surface | **Not built.** Locally unblocked (no `FORCE ROW LEVEL SECURITY`, so a table-owner connection reads freely); the *hosted* access design is deferred, see the standing action below |
+
+**RULED 2026-08-07, and it adds work to this step: open-world evidence is
+written, with a flag.** Ben ruled on the question this step raised. 275
+open-world entries across the baseline currently write zero rows, because the
+adapter lists all five open-world collections in `EMPTY_COLLECTION_KEYS`. That
+constant is no longer the answer.
+
+**Added to the write half.** Emit the open-world rows, each carrying an
+explicit marker that it is ungoverned evidence, not a governed claim. Three
+constraints, from `DECISIONS.md` decision 2, none optional:
+
+- The marker sits **on the row**, not inferred from the collection it arrived
+  in. A reader must be able to tell what it is holding without knowing where it
+  came from.
+- **The projection and serving layers honour it.** Emitting these rows and then
+  rendering them indistinguishably from claims is worse than not emitting them
+  at all: it launders ungoverned model output into apparent findings. A card
+  built from open-world evidence says so on the page.
+- **A test proves the two cannot be confused**, at the write boundary and again
+  at the serving boundary. Same risk class as negation reversal: confidently
+  wrong, correct-looking, no visible signal to the reader.
+
+**Effect.** Of the ten cards a termination-fee run projects, four survived a
+round trip before this ruling. Four of the remaining six were open-world
+evidence cards; this ruling recovers them. The last two are Step 4A2's table.
+
+**STANDING ACTION, hosted read access.** When the read half reads rows out of a
+local container, **stop and give Ben a recommendation** on the hosted design —
+`SECURITY DEFINER` function versus grants plus policies — with the local shape
+as evidence. Do not pick one and carry on. The local table-owner shortcut works
+only because the schema has no `FORCE ROW LEVEL SECURITY`, which is an absence,
+not a design. Full terms in `DECISIONS.md` decision 1.
 
 Everything below is the original statement of the problem plus the record of
 how each layer was closed. A rung of this ladder still cannot be climbed
@@ -1825,6 +1857,41 @@ convention exists in this repository today; this establishes one.
 claims in the write-set. If it fails, that is the finding this step exists to
 produce, and the fallback is written into Step 4B.
 
+## Step 4A2. Give conditional termination fee values a table
+
+**Ruled by Ben on 2026-08-07**, on the question raised in `DECISIONS.md`
+decision 3. Numbered 4A2 rather than inserted as a new letter because it must
+run immediately after Step 4A and renumbering the rest of the stage would
+break every reference to it elsewhere in this document.
+
+**What it is.** `conditional_termination_fee_values` is a write-set object kind
+with no table in `supabase/canonical-v2-foundation.sql`. Two of the ten cards a
+termination-fee run projects come from it, **including the Modiv headline
+number** — the figure a user looks at first.
+
+**Why.** A schema that cannot hold the headline number is not finished. Ben's
+words: give it a table. The alternative on offer was an explicit omission, and
+it was rejected.
+
+**Change.** Add the table to `supabase/canonical-v2-foundation.sql` in the
+shape the existing per-object-kind tables use, and teach
+`public.canonical_v2_write` (line 1167) to write it, **with its identity
+recomputed inside the database** like every other object kind. Do not special-
+case it into the JS writer alone; the point of Step 4A is that the two writers
+agree, and a kind only one of them knows about breaks that.
+
+**Sequenced strictly after Step 4A**, and this is not a preference. Extending a
+schema that has never been proven to execute durably means debugging two
+unknowns at once: whether the extension is wrong, or whether the thing it
+extends was already wrong. 4A is what makes this step's failures legible.
+
+**Proves it is done.** A termination-fee write-set containing conditional fee
+values goes through `canonical_v2_write` against the local container, and
+`SELECT count(*)` on the new table equals the count in the write-set. Then the
+Modiv headline number specifically survives a round trip: written, read back,
+byte-identical to what the run produced. The count proves the table works; the
+headline proves it holds the thing it was added for.
+
 ## Step 4B. Harden the import driver
 
 **Moved, not deleted.** Step 2B's write half now builds this driver, for the
@@ -2316,6 +2383,56 @@ declaration in the same change.
 authenticated request and 401 for an unauthenticated one, proven by
 `tests/auth-route-enforcement.test.js` extended to cover them, plus
 `tests/auth-critical-routes-repair.test.js` still green.
+
+## Step 7D. Disposition the seven deferred security gates, so they cannot be closed quietly
+
+**Found by Step 1A, 2026-08-07.** `programme-gates.yaml` carries a second gate
+list besides the 25 pre-production ones: `phase_12_security_gates`, seven
+identifiers, every one of them `DEFERRED_POST_CUTOVER` with `blocks_cutover:
+false`. **None of the seven appeared anywhere in `PLAN.md` or `COMPLETED.md`**
+before this step, and each is a bare id and a state with **no acceptance
+criteria of any kind**. That is exactly the condition Step 1A exists to
+destroy: a gate anybody can close by feeling finished.
+
+Step 1A's first implementation bound the 25 and disclosed that it had left
+these seven out, on the ground that section 5 only ever claimed to disposition
+25. The disclosure was right and the scope was too narrow — Step 1A says
+*every* gate identifier. This step is the missing half, and it is written as a
+step rather than a footnote so that the seven ids sit on lines carrying a step
+label and bind under Step 1A's existing rule, **with no loosening of the
+matching rule**. Loosening the rule to admit a bare "Deferred" would have
+reopened the hole from the other side.
+
+**What it is.** A disposition for each of the seven, recorded here.
+
+| Gate | Disposition |
+|---|---|
+| `P10_SECURITY_01` | Deferred post-cutover. Step 7D holds it. Blocks nothing before Stage 9 |
+| `ROUTE_ACTION_THREE_WAY_INVENTORY` | Deferred post-cutover. Step 7D. Overlaps Step 7C's route work; close it there if 7C's inventory turns out to satisfy it |
+| `DEFAULT_DENY_FULL_PROBE_SUITE` | Deferred post-cutover. Step 7D. Related to Step 7B's outside proof |
+| `EGRESS_DENY_BY_DEFAULT_CERTIFICATION` | Deferred post-cutover. Step 7D. No code in this programme addresses it today |
+| `ACTION_AUTH_MATRIX_AND_WHOLE_TUPLE_REVOCATION` | Deferred post-cutover. Step 7D |
+| `MALICIOUS_SOURCE_AND_SUBSTITUTION_SECURITY_SUITE` | Deferred post-cutover. Step 7D. Nearest live work is the admitted-source identity chain, which is a correctness mechanism and **must not be mistaken for a security control** |
+| `SNAPSHOT_SECURITY_ATTESTATIONS` | Deferred post-cutover. Step 7D. An attestation, which `OPERATING-RULES.md` reserves to Ben |
+
+**Why.** Not to do the security work — it is deferred, and Ben deferred it.
+Purely so that the deferral is written down where the gate registry can be
+checked against it, and so that closing one becomes a visible act rather than
+an assumption. A deferred gate and a forgotten gate look identical from the
+YAML.
+
+**Change.** This table, and extending Step 1A's test to bind both gate lists
+rather than only `preproduction_gates`.
+
+**Proves it is done.**
+`CI=true node --test tests/programme-gates/gates-bound-to-plan.test.js` passes
+while checking **all 32** identifiers, and deleting any one row from either
+this table or section 5's makes it fail. The matching rule is unchanged from
+Step 1A: the identifier and a step label or "Retired", on one line.
+
+**What this step does not do.** It does not certify, probe, or attest anything.
+None of the seven is closed by this step; they are recorded as open and
+deferred, which is what they are.
 
 ---
 

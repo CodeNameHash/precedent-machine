@@ -730,10 +730,23 @@ now decided, 2026-08-05.
 
 # Waiting on Ben
 
-**Three questions**, found on 2026-08-07 while closing Step 2B's write half.
-Each is diagnosed with evidence and none is started, because each changes
-either what the pipeline writes or the database's security surface. Ordered by
-what they block.
+**All three were ruled on 2026-08-07.** They are kept here, in place, with the
+ruling written against each, rather than moved to "Recently decided" — the
+diagnosis and the answer belong together, and this section is where anyone
+picking the work up will look for them. Nothing in this section is open.
+
+| Question | Ruling |
+|---|---|
+| 1. Hosted read access to `canonical_v2_staging` | **Deferred.** Build the read half locally first, then bring Ben a recommendation. Standing action on the agent, below |
+| 2. Whether open-world evidence is written at all | **Emit it, flagged.** Rows are written and carried as ungoverned evidence, distinguishable from governed claims |
+| 3. `conditional_termination_fee_values` has no table | **Give it a table** |
+
+Decisions 2 and 3 together set the ceiling on the read half. Before the ruling,
+four of the ten cards a termination-fee run projects survived a round trip
+through the database. **With both rulings implemented, all ten do.**
+
+The three questions were found on 2026-08-07 while closing Step 2B's write
+half. Each is diagnosed with evidence below. Ordered by what they block.
 
 **Five were listed. Two were withdrawn the same day, on review.** Both were
 work I had promoted to a decision — the specific-performance regex (item 2
@@ -777,6 +790,25 @@ then bring you a working shape to decide the hosted access design against,
 rather than a blank page. What is genuinely yours is the hosted design, and it
 is not needed until something is served from a deployment.
 
+**RULED 2026-08-07: deferred, on that sequence.** Ben accepted the deferral and
+attached a standing action.
+
+> **STANDING ACTION ON WHOEVER IS WORKING.** When the local read half is built
+> and reading rows out of a container, **stop and give Ben a recommendation on
+> the hosted access design** — `SECURITY DEFINER` function versus grants plus
+> RLS policies — with the working local shape as the evidence. Do not pick one
+> and proceed. Do not carry the local table-owner shortcut into a hosted
+> environment by default: it works locally only because there is no
+> `FORCE ROW LEVEL SECURITY` in the schema, which is an absence, not a design.
+>
+> This is the one item in this section that still needs Ben, and it is easy to
+> walk past, because everything built before it will appear to work.
+
+The trigger is concrete: the first time something reads
+`canonical_v2_staging` from anywhere that is not a local container. That is
+Step 5A's territory, and Step 2B's read half is where the prototype comes
+from.
+
 **WITHDRAWN 2026-08-07 — the specific-performance premise regex. This was
 mine, not yours.** It was listed here as a decision. It is not.
 
@@ -813,9 +845,43 @@ whose output is entirely open-world write nothing at all. Either emit the
 rows, or accept a database-backed render of governed claims only and say so on
 the page. Defensible either way; not defensible to inherit it from a constant.
 
+**RULED 2026-08-07: emit them, with a flag.** The rows are written, and each
+carries an explicit marker that it is ungoverned evidence rather than a
+governed claim.
+
+What the flag is for: an open-world entry is a fact the model found that the
+taxonomy has no slot for. It has not been corroborated against a vocabulary,
+so it has not earned the standing of a governed claim, and it must never be
+able to arrive at a product surface looking like one. The flag is what keeps
+those two things apart once they share a database.
+
+Three constraints follow, and none of them is optional:
+
+- The marker is **on the row**, not inferred from which table it sits in or
+  from a collection name. Anything that reads a row must be able to tell what
+  it is holding without knowing where it came from.
+- **The projection and serving layers must honour it.** Emitting the rows and
+  then rendering them indistinguishably is worse than not emitting them,
+  because it launders ungoverned output into apparent claims. A card built
+  from open-world evidence says so on the page.
+- **A test proves the two cannot be confused**, at the write boundary and
+  again at the serving boundary. This is the same class of risk as the
+  negation-reversal work: confidently wrong, correct-looking, no visible
+  signal to the reader.
+
 **3. `conditional_termination_fee_values` has no table.** Two more of the ten
 cards come from it, including the Modiv headline. It needs a home or an
 explicit omission.
+
+**RULED 2026-08-07: give it a table.** The headline number is the first thing a
+user looks at, and a schema that cannot hold it is not finished.
+
+The table is added to `supabase/canonical-v2-foundation.sql` in the shape the
+existing per-object-kind tables use, and `public.canonical_v2_write` learns to
+write it, with its identity recomputed in the database like every other object
+kind. **Sequenced after Step 4A**, so the schema is proven to execute durably
+before it is extended: extending an unexecuted schema means debugging two
+unknowns at once.
 
 ---
 
