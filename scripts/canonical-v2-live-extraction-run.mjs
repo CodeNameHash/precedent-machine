@@ -159,6 +159,11 @@ const {
 const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
+  createRecordingClient,
+  createReplayClient,
+  replayCoverage,
+} = require('../lib/canonical-v2/native-producer/provider-record-replay');
+const {
   getProducerPromptModule, listRegisteredSectionFamilies,
 } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const { runNativeExtraction, NativeExtractionRunError } = require('../lib/canonical-v2/native-producer/native-extraction-run');
@@ -306,10 +311,18 @@ function parseArgs(argv) {
         break;
       }
       case '--dry-run': out.dryRun = true; break;
+      case '--record': out.recordPath = argv[++i]; break;
+      case '--replay': out.replayPath = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
   if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
+  if (out.recordPath && out.replayPath) {
+    throw new Error('MUTUALLY_EXCLUSIVE: --record captures live responses, --replay consumes them; pick one');
+  }
+  if (out.dryRun && (out.recordPath || out.replayPath)) {
+    throw new Error('--dry-run never reaches a model, so it cannot --record or --replay');
+  }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   return out;
 }
@@ -375,6 +388,8 @@ function resolveRunConfig(args) {
     followCitations: args.followCitations,
     dryRun: args.dryRun,
     outDir: args.outDir,
+    recordPath: args.recordPath || null,
+    replayPath: args.replayPath || null,
   });
 }
 
@@ -797,11 +812,35 @@ async function main() {
     family_id: config.family,
   }));
 
+  // Record/replay (PLAN.md Stage 2 prerequisite). The ladder's gate compares
+  // resolved counts across rounds; without replay it cannot tell a regression
+  // from a fresh sample of a nondeterministic model.
+  let liveClient = makeMeasuredCliClient({
+    model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
+  });
+  let replayClientRef = null;
+  if (config.replayPath) {
+    const recording = JSON.parse(readFileSync(resolve(config.replayPath), 'utf8'));
+    replayClientRef = createReplayClient({ recording });
+    replayClientRef.recording = recording;
+    liveClient = replayClientRef;
+  } else if (config.recordPath) {
+    liveClient = createRecordingClient({
+      client: liveClient,
+      model: config.model,
+      // Written after every call rather than at the end, so a run that dies
+      // partway still leaves a usable recording of what it did ask.
+      sink: (recording) => {
+        writeFileSync(resolve(config.recordPath), `${JSON.stringify(recording, null, 2)}\n`);
+      },
+    });
+  }
+
   const providerOptions = {
-    model: `claude-sonnet-5-via-claude-code-cli(${config.model})`,
-    client: makeMeasuredCliClient({
-      model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
-    }),
+    model: config.replayPath
+      ? `replay(${config.replayPath})`
+      : `claude-sonnet-5-via-claude-code-cli(${config.model})`,
+    client: liveClient,
     maxRetries: 0,
   };
   const provider = createAnthropicProvider(providerOptions);
@@ -834,6 +873,27 @@ async function main() {
   }
   const extractionWallClockMs = Date.now() - extractionStart;
   process.stderr.write(`${logPrefix} extraction complete in ${extractionWallClockMs}ms, ${telemetry.calls.length} model call(s)\n`);
+
+  // A replay that used fewer recorded calls than were captured means the run
+  // stopped asking something. That is a behaviour change and a finding, not
+  // a pass -- report it loudly rather than letting a green run hide it.
+  let replayReport = null;
+  if (replayClientRef) {
+    replayReport = replayCoverage({
+      recording: replayClientRef.recording,
+      served: replayClientRef.served,
+    });
+    process.stderr.write(
+      `${logPrefix} REPLAY: ${replayReport.replayed_calls}/${replayReport.recorded_calls} recorded call(s) used`
+      + `${replayReport.complete ? '' : `, ${replayReport.unused_recorded_requests} recorded request(s) never asked`}\n`,
+    );
+    if (!replayReport.complete) {
+      process.stderr.write(
+        `${logPrefix} REPLAY INCOMPLETE: this run issued a different set of calls than the recording. `
+        + 'Treat any comparison against the recorded run as invalid until that is explained.\n',
+      );
+    }
+  }
 
   writeFileSync(resolve(outDir, 'run-receipt.json'), JSON.stringify(receipt, null, 2));
   writeFileSync(resolve(outDir, 'call-telemetry.json'), JSON.stringify({ run_wall_clock_ms: extractionWallClockMs, calls: telemetry.calls }, null, 2));
@@ -906,6 +966,8 @@ async function main() {
     run_started_at: new Date(runStartedAt).toISOString(),
     total_elapsed_ms: totalElapsedMs,
     extraction_wall_clock_ms: extractionWallClockMs,
+    replay: replayReport,
+    recorded_to: config.recordPath || null,
     model_call_count: telemetry.calls.length,
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,
