@@ -1931,6 +1931,23 @@ function main() {
 
   const provisionMessage =
     'DEAL_SCOPE_RUN provision identity or source lineage is invalid';
+  // PLAN.md Step 4A1 split DEAL_SCOPE_RUN's single provision check into two:
+  // shape first (two branches, one per schema_version, so a partyless
+  // STRUCTURAL_PROVISION_INSTANCE/V1 is no longer rejected as malformed),
+  // then identity and lineage once shape passes. The two failures now carry
+  // distinct messages, which was half the point -- the old single message
+  // blamed lineage for what was actually a shape rejection, and anyone
+  // hitting it debugged the wrong thing.
+  //
+  // Two probes below mutate SHAPE rather than identity and therefore now
+  // stop at the first check. This script pins the exact message and
+  // re-raises on any mismatch, so leaving them on provisionMessage would
+  // have failed the next staging run for a reason that has nothing to do
+  // with staging. Found by adversarial review of a8da3989, which caught that
+  // the change updated tests/ and the schema digest pin but not this
+  // operational consumer.
+  const provisionShapeMessage =
+    'DEAL_SCOPE_RUN provision shape is invalid';
   const componentMessage =
     'DEAL_SCOPE_RUN component identity or parent lineage is invalid';
   const claimMessage =
@@ -2180,14 +2197,16 @@ function main() {
       label: 'unbound provision field',
       row: extraFieldProvision,
       writeSet: withProvision(fixture.writeSet, extraFieldProvision),
-      expectedMessage: provisionMessage,
+      expectedMessage: provisionShapeMessage,
+      // shape mutation, not identity: stops at Step 4A1's first check
       exists: mutatedProvisionExists,
     },
     {
       label: 'whitespace-only provision concept',
       row: whitespaceConceptProvision,
       writeSet: withProvision(fixture.writeSet, whitespaceConceptProvision),
-      expectedMessage: provisionMessage,
+      expectedMessage: provisionShapeMessage,
+      // shape mutation, not identity: stops at Step 4A1's first check
       exists: mutatedProvisionExists,
     },
     {
