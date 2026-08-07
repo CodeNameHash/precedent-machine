@@ -132,7 +132,7 @@
  */
 
 import {
-  readFileSync, writeFileSync, mkdirSync, existsSync,
+  readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync,
 } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -161,6 +161,8 @@ const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer
 const {
   createRecordingClient,
   createReplayClient,
+  createOrderedReplayClient,
+  buildRecordingFromSectionFixtures,
   replayCoverage,
 } = require('../lib/canonical-v2/native-producer/provider-record-replay');
 const {
@@ -358,14 +360,15 @@ function parseArgs(argv) {
       case '--dry-run': out.dryRun = true; break;
       case '--record': out.recordPath = argv[++i]; break;
       case '--replay': out.replayPath = argv[++i]; break;
+      case '--replay-from-run': out.replayFromRunDir = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
   if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
-  if (out.recordPath && out.replayPath) {
+  if ([out.recordPath, out.replayPath, out.replayFromRunDir].filter(Boolean).length > 1) {
     throw new Error('MUTUALLY_EXCLUSIVE: --record captures live responses, --replay consumes them; pick one');
   }
-  if (out.dryRun && (out.recordPath || out.replayPath)) {
+  if (out.dryRun && (out.recordPath || out.replayPath || out.replayFromRunDir)) {
     throw new Error('--dry-run never reaches a model, so it cannot --record or --replay');
   }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
@@ -435,6 +438,7 @@ function resolveRunConfig(args) {
     outDir: args.outDir,
     recordPath: args.recordPath || null,
     replayPath: args.replayPath || null,
+    replayFromRunDir: args.replayFromRunDir || null,
   });
 }
 
@@ -914,7 +918,22 @@ async function main() {
     model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
   });
   let replayClientRef = null;
-  if (config.replayPath) {
+  if (config.replayFromRunDir) {
+    // Replay a HISTORICAL run from the per-section fixtures it already wrote.
+    // Weaker keying than --replay (ordered, not request-hashed) because those
+    // fixtures carry no request messages -- see the module header.
+    const fixtures = readdirSync(resolve(config.replayFromRunDir))
+      .filter((name) => /^native-producer-recorded-response-.+\.json$/.test(name))
+      .map((name) => JSON.parse(readFileSync(resolve(config.replayFromRunDir, name), 'utf8')));
+    const recording = buildRecordingFromSectionFixtures({
+      fixtures,
+      orderedSectionRefs: config.sectionRefs,
+      model: `legacy-fixtures(${config.replayFromRunDir})`,
+    });
+    replayClientRef = createOrderedReplayClient({ recording });
+    replayClientRef.recording = recording;
+    liveClient = replayClientRef;
+  } else if (config.replayPath) {
     const recording = JSON.parse(readFileSync(resolve(config.replayPath), 'utf8'));
     replayClientRef = createReplayClient({ recording });
     replayClientRef.recording = recording;
@@ -932,8 +951,8 @@ async function main() {
   }
 
   const providerOptions = {
-    model: config.replayPath
-      ? `replay(${config.replayPath})`
+    model: (config.replayPath || config.replayFromRunDir)
+      ? `replay(${config.replayPath || config.replayFromRunDir})`
       : `claude-sonnet-5-via-claude-code-cli(${config.model})`,
     client: liveClient,
     maxRetries: 0,

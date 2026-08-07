@@ -1491,6 +1491,28 @@ and theirs (verified:
 capitalisation → `["3.2","4.2"]`). All 24 are mechanically recoverable.
 Do not re-derive by hand what is already committed.
 
+### 12.9 Replaying a historical run
+
+`scripts/canonical-v2-live-extraction-run.mjs --replay-from-run <dir>` re-runs
+a family against the per-section responses a previous run already recorded,
+with **zero model calls**. Every historical run wrote those fixtures
+(`native-producer-recorded-response-<ref>.json`), so any of them can be
+re-scored through today's resolver.
+
+This is what fixed the one committed run that failed validation.
+`modiv-no-other-reps-20260806` was missing `attributes.answer_provenance` on a
+claim — a real defect from a crash, since fixed in the resolver.
+`modiv-no-other-reps-20260807-replay` is the same run's responses through the
+fixed code, and it passes. The broken run is kept: it is the evidence the
+defect existed.
+
+**The keying is weaker than `--replay`, deliberately.** Those fixtures carry
+`section_reference` and `raw_response_text` but no request messages, so
+replay is served in the order the caller asks rather than matched to each
+request. Sound for one call per pinned section, in order; not sound for a
+citation-following run. Use `--record` for anything you intend to re-run
+repeatedly.
+
 ### 12.8 Call attribution in run telemetry is order-based, and bounded
 
 `makeMeasuredCliClient` in `scripts/canonical-v2-live-extraction-run.mjs`
