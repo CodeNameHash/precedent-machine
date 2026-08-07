@@ -1,0 +1,1163 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "for the absence of a quorum"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "926817aed850683bf177de9b50abe11eb5a88f8468c94cae689c7127c2f5ce6c",
+        "claim_occurrence_id": "523737811dc689a220c959fc85b75cb91ff831f8b6c2e729f74f8a71503c477c",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "for the absence of a quorum",
+        "canonical_value": "QUORUM_ABSENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3c499503f8e4e4d8ee1359842546b1fe71d9fe8f8df7e7287903e7d20d79d5cd"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": "QUORUM_ABSENT",
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3c499503f8e4e4d8ee1359842546b1fe71d9fe8f8df7e7287903e7d20d79d5cd",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b06b2798c2ed5ab62c857bdcc5a652c7b0462bd0cc7ac63dfdf6b99d535c0183",
+            "document_ordinal": 0,
+            "absolute_start": 9259,
+            "absolute_end": 9286,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "075cc703d5a4b7c528b4713c09c6a6a8ff63b261421071a92ec6d8c82194c5aa"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "926817aed850683bf177de9b50abe11eb5a88f8468c94cae689c7127c2f5ce6c",
+            "claim_occurrence_id": "523737811dc689a220c959fc85b75cb91ff831f8b6c2e729f74f8a71503c477c",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "for the absence of a quorum",
+            "canonical_value": "QUORUM_ABSENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3c499503f8e4e4d8ee1359842546b1fe71d9fe8f8df7e7287903e7d20d79d5cd"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": "QUORUM_ABSENT",
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3c499503f8e4e4d8ee1359842546b1fe71d9fe8f8df7e7287903e7d20d79d5cd",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b06b2798c2ed5ab62c857bdcc5a652c7b0462bd0cc7ac63dfdf6b99d535c0183",
+                "document_ordinal": 0,
+                "absolute_start": 9259,
+                "absolute_end": 9286,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "075cc703d5a4b7c528b4713c09c6a6a8ff63b261421071a92ec6d8c82194c5aa"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+            "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "if required by Law"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a1bb561fcd8651373e7539e64c54786c69d4393a6afbae10e62b397dee419826",
+        "claim_occurrence_id": "db6c06ea214551c76a43e52e60f6f9871ed6fec64212df2e4571a65bf7eb97b5",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "if required by Law",
+        "canonical_value": "LEGAL_REQUIREMENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fca1f4d03553867be6020dcd0b92a821d5544a5ba3fab1489da0e4b811501b79"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": "LEGAL_REQUIREMENT",
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fca1f4d03553867be6020dcd0b92a821d5544a5ba3fab1489da0e4b811501b79",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "486658bd23f13e60393643f7a6e2cb3850f015204497020beeb195c16c63aabf",
+            "document_ordinal": 0,
+            "absolute_start": 10121,
+            "absolute_end": 10139,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "eab050b4dda2970578b6851fb685ad22a359daa161e5251ba901565029f303ec"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a1bb561fcd8651373e7539e64c54786c69d4393a6afbae10e62b397dee419826",
+            "claim_occurrence_id": "db6c06ea214551c76a43e52e60f6f9871ed6fec64212df2e4571a65bf7eb97b5",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "if required by Law",
+            "canonical_value": "LEGAL_REQUIREMENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fca1f4d03553867be6020dcd0b92a821d5544a5ba3fab1489da0e4b811501b79"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": "LEGAL_REQUIREMENT",
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fca1f4d03553867be6020dcd0b92a821d5544a5ba3fab1489da0e4b811501b79",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "486658bd23f13e60393643f7a6e2cb3850f015204497020beeb195c16c63aabf",
+                "document_ordinal": 0,
+                "absolute_start": 10121,
+                "absolute_end": 10139,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "eab050b4dda2970578b6851fb685ad22a359daa161e5251ba901565029f303ec"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+            "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "926817aed850683bf177de9b50abe11eb5a88f8468c94cae689c7127c2f5ce6c",
+      "closure_id": "075cc703d5a4b7c528b4713c09c6a6a8ff63b261421071a92ec6d8c82194c5aa",
+      "normalised_phrase": "for the absence of a quorum",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "99959a65cfa07053305a78646372c1fd2bafd6df67ce69e43696459eb93d57cc",
+      "closure_id": "0d40dbd6f592667249bf8c23cbc82bb8e88b85b9551c36fb407158262938a551",
+      "normalised_phrase": "within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "NO_DAY_COUNT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1f78d8d4a5ec323ec2e0afe87cb2bf0b1b960af95fed534daafcd030fc14fd3d",
+      "closure_id": "10bbe0490019b6db0474609854c3e29d5689f2d89cab9597b71a0a1aa4022233",
+      "normalised_phrase": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "206f9c2925592dc931abe518eb55279065293e450d9c1c2b02b5b7826f57cdfd",
+      "closure_id": "129f834fdb7abac5bc6ce3567579fd68871e2871a08568f8baf979827e63cf2e",
+      "normalised_phrase": "the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6e9804687b1eadaeac0cb9cd8f20bf41735b587c0bb2b32b4777835d575a8a42",
+      "closure_id": "1e423d3afcf434aade96698d3203f398d020f226dfa74f402e1a513c4fe4b2a9",
+      "normalised_phrase": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "solicit additional proxies for the purpose of obtaining the Company Requisite Vote",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e629705ef0ec469046b5784cf8d9c0add009c09768d9c5fa56cbbeeb5f8df703",
+      "closure_id": "36434f53433c5646ac677a97f48f618ef04dcf1cbcf25fd302f7682c303a9da5",
+      "normalised_phrase": "solicit additional proxies for the purpose of obtaining the Company Requisite Vote",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure which the Company Board has determined in good faith (after consultation with its outside legal counsel) is necessary under applicable Laws or the duties of the Company’s directors",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b5c6bb701fbd1130cc7ac65318479f11533068fc0bcfca2ff7e5ff8470811a70",
+      "closure_id": "3830af29d80019ce080caca9f1af5f9c67c946e323f62abfd3ac4c72df026e58",
+      "normalised_phrase": "allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure which the Company Board has determined in good faith (after consultation with its outside legal counsel) is necessary under applicable Laws or the duties of the Company’s directors",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "using commercially reasonable efforts to do so within thirty (30) calendar days following the date of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "09e620fa70895424a927e5be8630d57efce67d4c3525d57430b0300c54b1037c",
+      "closure_id": "42ac0b73afe77ca3092309115016891368d373cb24268581533f8ba99670c6e3",
+      "normalised_phrase": "using commercially reasonable efforts to do so within thirty (30) calendar days following the date of this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6a32c6f2c9f2ceb7d6b2fb75b372a487d50731675588ca05fbaf7ebdea23ec43",
+      "closure_id": "4ff97d66908e5f02540d6320f3a5c7f46ea6a18fe13c3b1af5a0f8841c99b615",
+      "normalised_phrase": "held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Joint Proxy Statement/Prospectus shall include the Company Recommendation in any iteration of the Joint Proxy Statement/Prospectus filed in preliminary or definitive form",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1e096c9ff0f711c2b4ed4d921b3dbf63495404c53c29888e86541c0a890c1b29",
+      "closure_id": "5cf36d9c55eec2c927cb5dd56aadabac2e240b7d018cd6601c8c76ea88afc388",
+      "normalised_phrase": "the Joint Proxy Statement/Prospectus shall include the Company Recommendation in any iteration of the Joint Proxy Statement/Prospectus filed in preliminary or definitive form",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8f69c635fa272253bc109996eeed70910b956e8720e944ae449471d16578de58",
+      "closure_id": "c97f8193cd71ae9b55107ea06819d2b6a65de881f682386437481156666b0022",
+      "normalised_phrase": "in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "establish a record date for and give notice of a meeting of its stockholders",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "47b45112cbe659d5f4c3580e8e372d5ad94d3a4baf59eac82561342f926b31f1",
+      "closure_id": "cc48a76e6f2dc4dd359f569c518de9a7a20408c298d87a5ef115ecf4fbf1eeff",
+      "normalised_phrase": "establish a record date for and give notice of a meeting of its stockholders",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a1bb561fcd8651373e7539e64c54786c69d4393a6afbae10e62b397dee419826",
+      "closure_id": "eab050b4dda2970578b6851fb685ad22a359daa161e5251ba901565029f303ec",
+      "normalised_phrase": "if required by Law",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "MAILING_DEADLINE",
+        "anchor_kind": "SEC_CLEARANCE",
+        "day_kind": "BUSINESS",
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": "the Joint Proxy Statement/Prospectus",
+        "obligated_party": "the Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5b1345c1d8bd2bc58cbdd3c108b579d7755c9ce4efdaf1416e2925a6a29331af",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c77d8e18a644f122826d52e7b87ea93b788abf42d064b314472ea22d76b2c172",
+          "document_ordinal": 0,
+          "absolute_start": 8685,
+          "absolute_end": 8858,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "17caa6c12f63cc314dd6a2bf7d60912494430a54022eb0abfe6a94615b7dc374",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "ADJOURNMENT_CONTROL",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "the Company",
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "834ffdfa21378de1e466c3acce348b681af629d23957b5833c7eb59ae4150b9d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3a1518873b76277031aa3f08b60ff4fe3fb23637275ee33bb524efb5352db6e4",
+          "document_ordinal": 0,
+          "absolute_start": 9067,
+          "absolute_end": 9153,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "01aa9dd744fef049d869b20c0da1be8b0c4fc5edc5e4663187769706de71c10f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "with the consent of Parent (which shall not be unreasonably withheld, conditioned or delayed)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "ADJOURNMENT_CONSENT_OVERRIDE",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": "Parent",
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3667b8f5adbdd7b5a467fc87664aa5edce249c39ab242a5d53032e8efd4ecc90",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "19b20938bf50002488c8dbd53324f1ce5034bbdf432610acc80aea88b9ae32d1",
+          "document_ordinal": 0,
+          "absolute_start": 9159,
+          "absolute_end": 9252,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "56b7654d42fc0a246f200b70a663cbe74eaf1d00abf22aff5dc7c50e505f1349",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "without the written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "ADJOURNMENT_CONSENT_OVERRIDE",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": "Parent",
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0be771ae547d08e6c68a14386d2c66d02603b39bb387b10ee4a9515761ad7350",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "10fc72ff4264dff77384a3e4d9757dd2349d717ec553754601e4888733e635eb",
+          "document_ordinal": 0,
+          "absolute_start": 10205,
+          "absolute_end": 10309,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b9b45ac058ff4ee5bcea299fda7a393e36ee6084cbd965d6cd572a491712584e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "2067535c92822e5ecc31dfa7bbf825ba2f2bb8c886bda014d7b65933187d7048"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "postponed if doing so would require the setting of a new record date",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "restriction on postponement tied to a new record date; not a positive covenant matching any listed assertion_kind",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "99af1b30b7b156a70a108db4fd55560c3b184c040bca51e43e828c509d1201b9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6c76a3c96d7b6cf5ea385a4a7e3e672561e94f3fe871ab2fbed3586444d3eb08",
+          "document_ordinal": 0,
+          "absolute_start": 10850,
+          "absolute_end": 10918,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0a89bfc67cd4ee49753e43ce717d02b6b4c1cb8f6a0bd227ff3adc0acdf65480",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "3726739ba5d62773497ce3ec86c50b72473040aca9f0fd85a3d1b01a024d1db2"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall provide reasonable updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "proxy solicitation reporting/update obligation has no matching assertion_kind",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ecf5eb4fe866eddac36efae041608521ff3db947279da1b6580bc4b39812510a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5cb7565e0d63c431cbf2512ade7ffabd7bba910448996be133c77898f671f070",
+          "document_ordinal": 0,
+          "absolute_start": 12539,
+          "absolute_end": 12741,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0364b6e2bce3a44ec2a4267173da90af91e17bc4e75989f55a7d86d8e40e77fd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "3726739ba5d62773497ce3ec86c50b72473040aca9f0fd85a3d1b01a024d1db2"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company shall use its commercially reasonable efforts to take, or cause to be taken, all actions, and do or cause to be done all things, necessary, proper or advisable on its part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reasonable efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "general efforts-to-obtain-the-vote and legal-compliance covenant has no matching assertion_kind",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "35104f646646f7b60706dfc26d61f74b4d8274dc88a37054e1918fb4ce301cdf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3625b0d915e0ceaded857df49a748c82a0a70d07c5c59618577d3ba6850d8976",
+          "document_ordinal": 0,
+          "absolute_start": 11355,
+          "absolute_end": 11824,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5365382537fdb934d773ca536fbafb6a698c6836fbacb567837c4b4917278e26",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "3726739ba5d62773497ce3ec86c50b72473040aca9f0fd85a3d1b01a024d1db2"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the matters contemplated by this Agreement shall be the only matters (other than matters of procedure and matters required by applicable Law to be voted on by the Company’s stockholders in connections therewith) that the Company shall propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "restriction limiting the matters submitted to a vote; not a positive covenant matching any listed assertion_kind",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "03162f9a3b1815f3e767eb59de9e74b4bf64307da82a2a27bb5cdbbe5888ee3f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "49865e5c263b352407a9231e7fa0c3577941f786172a00a0634220da4c8f468c",
+          "document_ordinal": 0,
+          "absolute_start": 12200,
+          "absolute_end": 12537,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "373c26fdeb603248d7f6b1a75418f2d440c699fae3fd0b67a04051d2de95685f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7467761be278001b034a0b44292203750c545d6f4a9c5d483aaa42520be3d40b",
+        "producer_receipt_id": "e9b7baeaf8b131d23cb4cabb0400b9f611413224f0d56ff1e6a9c86d014f710b",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "3726739ba5d62773497ce3ec86c50b72473040aca9f0fd85a3d1b01a024d1db2"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "7a47d1e3c9639e40faaeaaaa6ef36cb740b1a05776c383386e0326aea40047d6",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "counts": {
+      "compiled_candidates": 21,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 13,
+      "open_world": 8,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "41d1df89e5b9d0c412430d0152f75f924d78d699df78a069c5453036a41366ec"
+  }
+}

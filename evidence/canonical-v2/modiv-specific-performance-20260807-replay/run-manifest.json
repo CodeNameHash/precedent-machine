@@ -1,0 +1,44 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+  "purpose": "General extraction run: family SPECIFIC_PERFORMANCE_REMEDIES on deal modiv.",
+  "section_references": [
+    "8.8"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "8.8",
+      "family_id": "SPECIFIC_PERFORMANCE_REMEDIES"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-specific-performance-remedies/v1",
+  "prompt_version": 2,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-07T07:24:07.610Z",
+  "total_elapsed_ms": 5344,
+  "extraction_wall_clock_ms": 186,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
+  "recorded_to": null,
+  "code_provenance": {
+    "commit": "bf7c92d7df8cde1b1e862dd0761aea14fb6a1193",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 0,
+  "run_receipt_id": "5ca856057e72c6dcf3b40a60199708cbd62655b60ea91a30ac95b2dc9a9470e4",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

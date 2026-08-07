@@ -15,6 +15,9 @@ const zlib = require('node:zlib');
 
 const {
   AdmittedSourceChainError,
+  SOURCE_MAP_PAYLOAD_STORE,
+  sourceMapPayloadPathFor,
+  adoptPersistedSourceMapPayload,
   retrievalPolicyDigestFor,
   rebuildAdmittedSourcePrimitives,
   explainReferenceDivergence,
@@ -179,4 +182,124 @@ test('the identity contract depends on DEFLATE output, which is why history is u
   }
   assert.equal(reachable, null, 'the historical compressed source map is not reproducible here');
   assert.notEqual(conversion.source_map_compressed_sha256, historical);
+});
+
+// ─── The persisted compressed source map ─────────────────────────────────
+//
+// The fix for the environment dependence above. DEFLATE compression is not
+// deterministic across zlib builds; DEFLATE decompression is. So the run
+// persists its compressed source map and a rebuild adopts those bytes -- but
+// only after proving they inflate to the map it independently derived from
+// the document. These tests pin that "only after".
+
+test('runs share one content-addressed payload rather than a copy each', () => {
+  const store = path.join(REPO, SOURCE_MAP_PAYLOAD_STORE);
+  const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
+  const expected = sourceMapPayloadPathFor(primitives.conversion.canonical_text_id);
+  assert.ok(fs.existsSync(path.join(REPO, expected)), `${expected} must be committed`);
+  // Twenty-one Modiv runs convert the same document. One file, not twenty-one.
+  const payloads = fs.readdirSync(store).filter((name) => name.endsWith('.deflate'));
+  const runs = fs.readdirSync(path.join(REPO, 'evidence/canonical-v2'))
+    .filter((name) => name.endsWith('-replay'));
+  assert.ok(runs.length > payloads.length, 'payloads are shared, not per-run');
+});
+
+test('every regenerated run names a payload that is actually there', () => {
+  const root = path.join(REPO, 'evidence/canonical-v2');
+  const runs = fs.readdirSync(root).filter((name) => name.endsWith('-replay'));
+  assert.ok(runs.length >= 20, `expected the regenerated baseline, found ${runs.length} run(s)`);
+  for (const run of runs) {
+    const reference = JSON.parse(
+      fs.readFileSync(path.join(root, run, 'source-reference.json'), 'utf8'),
+    );
+    const named = reference.admitted_source_capture_inputs.source_map_payload_path;
+    assert.ok(named, `${run} names no persisted source map`);
+    assert.ok(fs.existsSync(path.join(REPO, named)), `${run} names ${named}, which is missing`);
+    // Recorded relative to the repository root, never absolute: an absolute
+    // path is machine-specific and resolves nowhere else.
+    assert.ok(!path.isAbsolute(named), `${run} recorded an absolute payload path`);
+  }
+});
+
+test('a payload that inflates to something else is refused', () => {
+  // The payload is the one input to the chain that does not come from the
+  // source bytes, so it is the only one that has to earn its place. If it
+  // could be adopted unverified, persisting it would be a way to smuggle in a
+  // lineage the document does not support.
+  const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
+  const foreign = zlib.deflateRawSync(Buffer.from('not this document\'s source map', 'utf8'));
+  assert.throws(
+    () => adoptPersistedSourceMapPayload({
+      conversion: primitives.conversion,
+      payloadBytes: foreign,
+      expectedSha256: crypto.createHash('sha256').update(foreign).digest('hex'),
+    }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_DIVERGES',
+  );
+
+  assert.throws(
+    () => adoptPersistedSourceMapPayload({
+      conversion: primitives.conversion,
+      payloadBytes: Buffer.from('not deflate data at all'),
+      expectedSha256: null,
+    }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_UNREADABLE',
+  );
+
+  assert.throws(
+    () => adoptPersistedSourceMapPayload({
+      conversion: primitives.conversion,
+      payloadBytes: foreign,
+      expectedSha256: 'e'.repeat(64),
+    }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_DIGEST_MISMATCH',
+  );
+});
+
+test('a payload compressed differently but identical in content is adopted', () => {
+  // The whole point. Re-compress the same source map at a different level to
+  // stand in for another zlib build, and require the rebuild to take it --
+  // the identity must follow the recorded bytes, not this machine's
+  // compressor. Anything less and the run stays machine-bound.
+  const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
+  const uncompressed = zlib.inflateRawSync(
+    Buffer.from(primitives.conversion.source_map_payload_base64, 'base64'),
+    { maxOutputLength: 1 << 30 },
+  );
+  const otherBuild = zlib.deflateRawSync(uncompressed, { level: 6, windowBits: 15, memLevel: 8 });
+  const otherSha = crypto.createHash('sha256').update(otherBuild).digest('hex');
+  assert.notEqual(otherSha, primitives.conversion.source_map_compressed_sha256);
+
+  const adopted = adoptPersistedSourceMapPayload({
+    conversion: primitives.conversion,
+    payloadBytes: otherBuild,
+    expectedSha256: otherSha,
+  });
+  assert.equal(adopted.source_map_compressed_sha256, otherSha);
+  // And nothing derived from the uncompressed structure moves.
+  assert.equal(adopted.source_map_digest, primitives.conversion.source_map_digest);
+  assert.equal(adopted.canonical_text_id, primitives.conversion.canonical_text_id);
+  assert.equal(
+    adopted.source_map_uncompressed_byte_length,
+    primitives.conversion.source_map_uncompressed_byte_length,
+  );
+});
+
+test('a run naming a payload that is gone is refused, not quietly rebuilt', () => {
+  // Falling back to this machine's compression would look like it worked and
+  // would produce a different identity, which is the failure the payload
+  // exists to prevent.
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'chain-payload-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  const reference = JSON.parse(
+    fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'),
+  );
+  reference.admitted_source_capture_inputs.source_map_payload_path = `${SOURCE_MAP_PAYLOAD_STORE}/gone.deflate`;
+  fs.writeFileSync(path.join(runDirectory, 'source-reference.json'), JSON.stringify(reference));
+  assert.throws(
+    () => rebuildAdmittedSourcePrimitives({ runDirectory }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_NOT_FOUND',
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
 });

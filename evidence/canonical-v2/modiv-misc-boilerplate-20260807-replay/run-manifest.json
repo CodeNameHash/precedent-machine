@@ -1,0 +1,69 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "MISC_BOILERPLATE",
+  "purpose": "General extraction run: family MISC_BOILERPLATE on deal modiv.",
+  "section_references": [
+    "8.2",
+    "8.3",
+    "8.4",
+    "8.7",
+    "8.9",
+    "8.10"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "8.2",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "8.3",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "8.7",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "8.9",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "8.10",
+      "family_id": "MISC_BOILERPLATE"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-remedies-misc/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-07T07:23:43.906Z",
+  "total_elapsed_ms": 5291,
+  "extraction_wall_clock_ms": 198,
+  "replay": {
+    "recorded_calls": 6,
+    "replayed_calls": 6,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
+  "recorded_to": null,
+  "code_provenance": {
+    "commit": "bf7c92d7df8cde1b1e862dd0761aea14fb6a1193",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 0,
+  "run_receipt_id": "d91a8d193b29aa0d6cf7a2ad3384725212da86f836f1c0d48c37e62b984e1034",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}

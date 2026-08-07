@@ -1,0 +1,197 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "DIVIDEND_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_DIVIDENDS_CANDIDATE",
+      "raw_value": "the Company and any Company Subsidiary that is a REIT may make distributions to its stockholders reasonably necessary for the Company or any such Company Subsidiary to maintain its status as a REIT under the Code, or avoid the payment of income or excise tax under Sections 857 or 4981 of the Code (or any other entity-level Tax) and (b) the Company and any Company Subsidiary may make distributions (i) in the case of any Company Subsidiary, to the Company to allow the Company to make distributions to its stockholders",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.10",
+        "assertion_kind": "COORDINATION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f1656eb91b91d61e0d28fc096fa499f6f50a0acf10b4883785d0569bdc869f14",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "88f0ef460691509c40404ed4c82f3783b5f647fd8820e5885af0eb812a38a205",
+          "document_ordinal": 0,
+          "absolute_start": 55,
+          "absolute_end": 575,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ebcd3a42bbab3ff175bd09db1214c2ac1adab56fdd521fa10726f28360f0043e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "DIVIDENDS",
+        "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+        "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "99aecf6fe5c23654bd15f0fdcb16154e6fb03a34617da3f76f3eacf643ddc5d3"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.10",
+        "normalized_citation": "5.10",
+        "derived_citation": "5.10"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(ii) in each case, in accordance with clause (ii) of Section 5.1(c).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DIVIDEND_COORDINATION: The permitted coordination distributions are made in accordance with clause (ii) of Section 5.1(c).",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f181bbad20e0e90a10d83142ee44560330ecd8ba9d55c5a9aac8fa51f612da12",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e0693c9f9135369c3723687b513b9089887c0b3a2f564c4e331303fa17752bc3",
+          "document_ordinal": 0,
+          "absolute_start": 580,
+          "absolute_end": 648,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "98e2f631c0d8d26202e7ef831ac6c14916c464243419e5c380a5892598edb592",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+        "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "669cadb9a76f3c237c4bb652a48341b846af2e0e004fdebcd490368d42ce57a3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that a distribution with respect to the Company Common Shares, Company Preferred Shares or Partnership Units permitted under the terms of this Agreement has a record date prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable, and has not been paid prior to the Closing Date, such distribution shall be paid to the holders of such Company Common Shares, Company Preferred Shares or Partnership Units on the Closing Date immediately prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DIVIDEND_FINAL_PERIOD: A distribution with a record date before the applicable Effective Time that remains unpaid as of the Closing Date is paid to the relevant holders on the Closing Date, immediately prior to the applicable Effective Time.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "23f149e907e34f0d82b6ea5fdbdeba430dbe0d214fe86a009b8ff8d9d44028d3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0d0e426efc38ca30776b4efa4a8f6e34061f6e219fdc633fdf6f978c70497ba0",
+          "document_ordinal": 0,
+          "absolute_start": 649,
+          "absolute_end": 1215,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4637b291d23dc8c4593cc433c0db326058f5f6c27e5f002942b1bdc1ed14af28",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+        "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "669cadb9a76f3c237c4bb652a48341b846af2e0e004fdebcd490368d42ce57a3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "cf67c8383be0607f66e285c73a0941d8d2a6fb6b0653a73cedd940d3121da173",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "e1500c9b71428d956da85631f08b754f0676b225ae5e7d93194431567a91359c"
+  }
+}

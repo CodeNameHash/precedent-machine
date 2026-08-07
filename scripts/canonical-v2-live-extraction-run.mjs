@@ -134,7 +134,7 @@
 import {
   readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync,
 } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -147,7 +147,9 @@ const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
-const { retrievalPolicyDigestFor } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
+  retrievalPolicyDigestFor, sourceMapPayloadPathFor,
+} = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
@@ -199,9 +201,21 @@ const DEFAULT_FAMILY = 'TERMINATION_FEE';
  * it means a future rename of this file keeps every manifest it writes
  * afterwards accurate automatically, with nothing to remember to update.
  */
+// Relative to the repository root, or absolute if it lies outside it.
+//
+// `startsWith`, not `includes`. With `includes`, a path that merely CONTAINS
+// the working directory somewhere in the middle was sliced from the front by
+// the working directory's length, producing a mangled path; and a path under
+// a different root was recorded absolute, which is machine-specific and fails
+// to resolve anywhere else. Both matter now that source-reference.json's
+// recorded paths are read back to rebuild the source chain.
+function repoRelative(absolutePath) {
+  const root = `${process.cwd()}/`;
+  return absolutePath.startsWith(root) ? absolutePath.slice(root.length) : absolutePath;
+}
+
 function scriptRelativePath() {
-  const absolutePath = fileURLToPath(import.meta.url);
-  return absolutePath.includes(process.cwd()) ? absolutePath.slice(process.cwd().length + 1) : absolutePath;
+  return repoRelative(fileURLToPath(import.meta.url));
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -891,11 +905,41 @@ async function main() {
   process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
   process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
 
+  // Persist the compressed source map before writing the reference that names
+  // it, so a run directory never points at a payload that is not there.
+  //
+  // WHY AT ALL. IMMUTABLE_SOURCE_DOCUMENT/V2 includes a digest of DEFLATE
+  // OUTPUT, and DEFLATE output differs between zlib builds for identical
+  // input at identical settings. Without the payload, a run's identity is
+  // reproducible only on the machine that produced it -- including only on
+  // this machine until the next Node upgrade, since zlib ships inside Node.
+  // A rebuild adopts these bytes only after proving they inflate to the map
+  // it independently derived from the document.
+  //
+  // Content-addressed by canonical_text_id, so every run over a given
+  // document shares one file rather than committing a copy each.
+  //
+  // NOT ON A DRY RUN. The store is content-addressed under the repository, so
+  // a dry run -- which makes no model call and produces nothing importable --
+  // was writing a 1.4 MB file into committed evidence every time the test
+  // suite exercised the runner's argument parsing. A dry run needs no
+  // payload, because it has no write-set to import.
+  let sourceMapPayloadPath = null;
+  if (outDir && !config.dryRun) {
+    sourceMapPayloadPath = sourceMapPayloadPathFor(verified.conversion.canonical_text_id);
+    const absolutePayloadPath = resolve(sourceMapPayloadPath);
+    if (!existsSync(absolutePayloadPath)) {
+      mkdirSync(dirname(absolutePayloadPath), { recursive: true });
+      writeFileSync(absolutePayloadPath, Buffer.from(verified.conversion.source_map_payload_base64, 'base64'));
+      process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
+    }
+  }
+
   if (outDir) {
     writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
       schema_version: 'GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1',
       deal: config.deal,
-      reused_committed_raw_html: verified.rawHtmlPath.includes(process.cwd()) ? verified.rawHtmlPath.slice(process.cwd().length + 1) : verified.rawHtmlPath,
+      reused_committed_raw_html: repoRelative(verified.rawHtmlPath),
       retrieval_url: config.dealPin.retrieval_url,
       raw_bytes_length: verified.rawBytes.length,
       raw_bytes_sha256: verified.rawBytesSha256,
@@ -915,7 +959,7 @@ async function main() {
       // lib/canonical-v2/admitted-source-chain-rebuild.js.
       admitted_source_capture_inputs: {
         schema_version: 'ADMITTED_SOURCE_CAPTURE_INPUTS/V1',
-        raw_html_path: verified.rawHtmlPath.includes(process.cwd()) ? verified.rawHtmlPath.slice(process.cwd().length + 1) : verified.rawHtmlPath,
+        raw_html_path: repoRelative(verified.rawHtmlPath),
         raw_bytes_sha256: verified.rawBytesSha256,
         retrieval_url: verified.captureInputs.retrieval_url,
         content_type: verified.captureInputs.content_type,
@@ -924,6 +968,7 @@ async function main() {
         // The identity the rebuild must land on. Recorded so a divergence
         // can be seen here rather than only as a writer refusal.
         immutable_source_document_id: admittedSourceContext.immutable_source_document_id,
+        source_map_payload_path: sourceMapPayloadPath,
         source_map_compressed_sha256: verified.conversion.source_map_compressed_sha256,
         source_map_digest: verified.conversion.source_map_digest,
       },

@@ -21,7 +21,7 @@
       "party_source_span": null,
       "provision_instance": {
         "schema_version": "PROVISION_INSTANCE/V1",
-        "source_occurrence_id": "2515567b09f971f85b869ca2ffcabe414b97121f3d08b7783e75240fe350007a",
+        "source_occurrence_id": "1fcbd3e03dd58d01e716fd23e589e8af3ec0feaab0d0e11254ca69a280541e20",
         "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
         "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
         "absolute_start": 144571,
@@ -34,14 +34,14 @@
         },
         "ordinal": 1,
         "source_anchor_id": "7d63a5432a60f5c64d3491b8e1a1ee4a4ca6c20e1d7ffd21e2fcfabec12fdeb8",
-        "provision_instance_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
-        "closure_id": "bd96d9aa54bafb615fddecba2d42d6101da7a3518e58408de98a24c1ba03d064"
+        "provision_instance_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
+        "closure_id": "30c2179efdce966b54371309ffc42283894a6634179269692c0c8b75eae25a54"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "78607ee66e091e8e3ff47c346e1ac2c772c486c1f717acac0e1f32e5ee70ff6b",
-        "claim_occurrence_id": "635347bb1050c91e1080be362e2debd70fdd7cd7a7490418f6c76e337567b88a",
-        "subject_occurrence_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
+        "claim_revision_id": "6a074907ec63c94809c3099caf68223c33c315b31da1627f6b2f210daefcc113",
+        "claim_occurrence_id": "494cfa007168020747dc988b049761eac4ca2607bbf948f77ddab5a63835a3dd",
+        "subject_occurrence_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
         "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -56,7 +56,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "de6bb5b0d31d805a2da194029c1aae5940a3f0a134b1b5da9b5500f79c2352a4"
+          "7628a027b286454b5db48663cbe3e27ab68bf15da78426815f5ff9afb312f45e"
         ],
         "attributes": {
           "representation_side": "TARGET",
@@ -77,7 +77,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "de6bb5b0d31d805a2da194029c1aae5940a3f0a134b1b5da9b5500f79c2352a4",
+            "claim_evidence_id": "7628a027b286454b5db48663cbe3e27ab68bf15da78426815f5ff9afb312f45e",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "eca22af16ae32f3a95b71997cb1aa1078f78bbe9ee93707ec6ca52e8e850c931",
             "document_ordinal": 0,
@@ -89,7 +89,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "1ef0345e05ea6d23492aa9d801494527f2c723703c0121be35bb33fd53fad097"
+        "closure_id": "9b32e18d1dab46bf2c102c8dc346163848a9d0ef8fd015b6261a9e3068d0f2b8"
       },
       "compiled_candidate": {
         "section_reference": "3.25",
@@ -106,9 +106,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "78607ee66e091e8e3ff47c346e1ac2c772c486c1f717acac0e1f32e5ee70ff6b",
-            "claim_occurrence_id": "635347bb1050c91e1080be362e2debd70fdd7cd7a7490418f6c76e337567b88a",
-            "subject_occurrence_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
+            "claim_revision_id": "6a074907ec63c94809c3099caf68223c33c315b31da1627f6b2f210daefcc113",
+            "claim_occurrence_id": "494cfa007168020747dc988b049761eac4ca2607bbf948f77ddab5a63835a3dd",
+            "subject_occurrence_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
             "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -123,7 +123,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "de6bb5b0d31d805a2da194029c1aae5940a3f0a134b1b5da9b5500f79c2352a4"
+              "7628a027b286454b5db48663cbe3e27ab68bf15da78426815f5ff9afb312f45e"
             ],
             "attributes": {
               "representation_side": "TARGET",
@@ -144,7 +144,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "de6bb5b0d31d805a2da194029c1aae5940a3f0a134b1b5da9b5500f79c2352a4",
+                "claim_evidence_id": "7628a027b286454b5db48663cbe3e27ab68bf15da78426815f5ff9afb312f45e",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "eca22af16ae32f3a95b71997cb1aa1078f78bbe9ee93707ec6ca52e8e850c931",
                 "document_ordinal": 0,
@@ -156,7 +156,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "1ef0345e05ea6d23492aa9d801494527f2c723703c0121be35bb33fd53fad097"
+            "closure_id": "9b32e18d1dab46bf2c102c8dc346163848a9d0ef8fd015b6261a9e3068d0f2b8"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -213,7 +213,7 @@
       "party_source_span": null,
       "provision_instance": {
         "schema_version": "PROVISION_INSTANCE/V1",
-        "source_occurrence_id": "2515567b09f971f85b869ca2ffcabe414b97121f3d08b7783e75240fe350007a",
+        "source_occurrence_id": "1fcbd3e03dd58d01e716fd23e589e8af3ec0feaab0d0e11254ca69a280541e20",
         "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
         "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
         "absolute_start": 144571,
@@ -226,14 +226,14 @@
         },
         "ordinal": 1,
         "source_anchor_id": "7d63a5432a60f5c64d3491b8e1a1ee4a4ca6c20e1d7ffd21e2fcfabec12fdeb8",
-        "provision_instance_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
-        "closure_id": "bd96d9aa54bafb615fddecba2d42d6101da7a3518e58408de98a24c1ba03d064"
+        "provision_instance_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
+        "closure_id": "30c2179efdce966b54371309ffc42283894a6634179269692c0c8b75eae25a54"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "0fec25d0ab5cfa8b39b6d5b9f73ad6c83a1c9caf9d1169dadc106be491fc6b28",
-        "claim_occurrence_id": "a448926680589b055e2d7e2bb00bc470a85f879679b0e4a8c375ed53dd6a1102",
-        "subject_occurrence_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
+        "claim_revision_id": "eaab77f749528fdffd221057afa52f9e58103ee39f7518f456f38d755347c225",
+        "claim_occurrence_id": "1a99d49b15468aac4b93ca2a5704a4ede5ea0bc68dc7b6722aac0cbc65094861",
+        "subject_occurrence_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
         "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
         "claim_definition_version": 1,
         "ordinal": 1,
@@ -248,7 +248,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "d9b23a0cdf3714f9e8e30e5931314e926a16d1a4df274ce594c8d5507ff2ada4"
+          "89098c75db04397ed9e13931c9261893c71fe4d7aa4a4e61f58b530daa015d0c"
         ],
         "attributes": {
           "representation_side": "TARGET",
@@ -269,7 +269,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "d9b23a0cdf3714f9e8e30e5931314e926a16d1a4df274ce594c8d5507ff2ada4",
+            "claim_evidence_id": "89098c75db04397ed9e13931c9261893c71fe4d7aa4a4e61f58b530daa015d0c",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "3f8ef2349ec155eb9925ab8d3f3b708706d88e8faa723d71d5a529f572cc1605",
             "document_ordinal": 0,
@@ -281,7 +281,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "3042b016406a4b2c3a7d1fe132d2db63a3e9e8a53e7131479ccdf4854b6ca9a9"
+        "closure_id": "d293447e79c87e1229fee7ca2c3ca8f5f040a369597ae5e4cd355fc8cc767b2d"
       },
       "compiled_candidate": {
         "section_reference": "3.25",
@@ -298,9 +298,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "0fec25d0ab5cfa8b39b6d5b9f73ad6c83a1c9caf9d1169dadc106be491fc6b28",
-            "claim_occurrence_id": "a448926680589b055e2d7e2bb00bc470a85f879679b0e4a8c375ed53dd6a1102",
-            "subject_occurrence_id": "98edb6e8119ca4743a267409b4b727a5499c965130454ac8af2809fb09d0999f",
+            "claim_revision_id": "eaab77f749528fdffd221057afa52f9e58103ee39f7518f456f38d755347c225",
+            "claim_occurrence_id": "1a99d49b15468aac4b93ca2a5704a4ede5ea0bc68dc7b6722aac0cbc65094861",
+            "subject_occurrence_id": "0cccfa3fcfe142aa9847894ca9315b649e21f8667c79e15d9c6c45e2c91da05c",
             "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
             "claim_definition_version": 1,
             "ordinal": 1,
@@ -315,7 +315,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "d9b23a0cdf3714f9e8e30e5931314e926a16d1a4df274ce594c8d5507ff2ada4"
+              "89098c75db04397ed9e13931c9261893c71fe4d7aa4a4e61f58b530daa015d0c"
             ],
             "attributes": {
               "representation_side": "TARGET",
@@ -336,7 +336,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "d9b23a0cdf3714f9e8e30e5931314e926a16d1a4df274ce594c8d5507ff2ada4",
+                "claim_evidence_id": "89098c75db04397ed9e13931c9261893c71fe4d7aa4a4e61f58b530daa015d0c",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "3f8ef2349ec155eb9925ab8d3f3b708706d88e8faa723d71d5a529f572cc1605",
                 "document_ordinal": 0,
@@ -348,7 +348,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "3042b016406a4b2c3a7d1fe132d2db63a3e9e8a53e7131479ccdf4854b6ca9a9"
+            "closure_id": "d293447e79c87e1229fee7ca2c3ca8f5f040a369597ae5e4cd355fc8cc767b2d"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -405,7 +405,7 @@
       "party_source_span": null,
       "provision_instance": {
         "schema_version": "PROVISION_INSTANCE/V1",
-        "source_occurrence_id": "2515567b09f971f85b869ca2ffcabe414b97121f3d08b7783e75240fe350007a",
+        "source_occurrence_id": "1fcbd3e03dd58d01e716fd23e589e8af3ec0feaab0d0e11254ca69a280541e20",
         "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
         "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
         "absolute_start": 144571,
@@ -418,14 +418,14 @@
         },
         "ordinal": 2,
         "source_anchor_id": "7d63a5432a60f5c64d3491b8e1a1ee4a4ca6c20e1d7ffd21e2fcfabec12fdeb8",
-        "provision_instance_id": "ef78afa5758d3ea4ab12badba996ce1c040702420b48c9d5e187b6bb8352c0d1",
-        "closure_id": "75e337c082b37096149316fdd7f738d8f43f54bb9cf6c8ad96c799d3d509d81a"
+        "provision_instance_id": "136aba5a3aaf6180d32c9b354051cf1401d21ac905f9b8938fa02687240c087c",
+        "closure_id": "b0f383de9dcb6ae2bfb0058fc872c7c96d7d21b49f666caeb7d6ebf4a75bd8b8"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "f4fecbe69ff074acb835d9d4e42a319f3c18a99490c735a9507fc56f33cd0ad7",
-        "claim_occurrence_id": "ddd84bae74a9c1d3c26b7d034b593384370c4750a3bbce2b0a4b0fbc41b72820",
-        "subject_occurrence_id": "ef78afa5758d3ea4ab12badba996ce1c040702420b48c9d5e187b6bb8352c0d1",
+        "claim_revision_id": "08c6670fd00689bb2985ae51d05b167b12a93f7082a9de0c9a7720abf26ee52d",
+        "claim_occurrence_id": "32096ddac34d50173089f7014040c381a39803555d300e2857acf6574b2ce336",
+        "subject_occurrence_id": "136aba5a3aaf6180d32c9b354051cf1401d21ac905f9b8938fa02687240c087c",
         "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -440,7 +440,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "869c18358d178ac470964cf46f9ec8bc95b1646fc6bb89e6932c7aeffbf2da1c"
+          "5811effbe72cf7f795f75c273f94fcfc702e6cdeffde5a59c9824bde05f80f60"
         ],
         "attributes": {
           "representation_side": "BUYER",
@@ -461,7 +461,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "869c18358d178ac470964cf46f9ec8bc95b1646fc6bb89e6932c7aeffbf2da1c",
+            "claim_evidence_id": "5811effbe72cf7f795f75c273f94fcfc702e6cdeffde5a59c9824bde05f80f60",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "7ef799cefbf6f091b875edaba431a27413f205720b0db1f574e542072055c2aa",
             "document_ordinal": 0,
@@ -473,7 +473,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "daa4a44a0e49afde4bac34253a7afd4659f696a76bd058ca0f689106771cb719"
+        "closure_id": "72efaa34115b8947f6a5998ab6b75b24b5c4fce441165deaaaed8d634e867f3e"
       },
       "compiled_candidate": {
         "section_reference": "3.25",
@@ -490,9 +490,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "f4fecbe69ff074acb835d9d4e42a319f3c18a99490c735a9507fc56f33cd0ad7",
-            "claim_occurrence_id": "ddd84bae74a9c1d3c26b7d034b593384370c4750a3bbce2b0a4b0fbc41b72820",
-            "subject_occurrence_id": "ef78afa5758d3ea4ab12badba996ce1c040702420b48c9d5e187b6bb8352c0d1",
+            "claim_revision_id": "08c6670fd00689bb2985ae51d05b167b12a93f7082a9de0c9a7720abf26ee52d",
+            "claim_occurrence_id": "32096ddac34d50173089f7014040c381a39803555d300e2857acf6574b2ce336",
+            "subject_occurrence_id": "136aba5a3aaf6180d32c9b354051cf1401d21ac905f9b8938fa02687240c087c",
             "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -507,7 +507,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "869c18358d178ac470964cf46f9ec8bc95b1646fc6bb89e6932c7aeffbf2da1c"
+              "5811effbe72cf7f795f75c273f94fcfc702e6cdeffde5a59c9824bde05f80f60"
             ],
             "attributes": {
               "representation_side": "BUYER",
@@ -528,7 +528,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "869c18358d178ac470964cf46f9ec8bc95b1646fc6bb89e6932c7aeffbf2da1c",
+                "claim_evidence_id": "5811effbe72cf7f795f75c273f94fcfc702e6cdeffde5a59c9824bde05f80f60",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "7ef799cefbf6f091b875edaba431a27413f205720b0db1f574e542072055c2aa",
                 "document_ordinal": 0,
@@ -540,7 +540,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "daa4a44a0e49afde4bac34253a7afd4659f696a76bd058ca0f689106771cb719"
+            "closure_id": "72efaa34115b8947f6a5998ab6b75b24b5c4fce441165deaaaed8d634e867f3e"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -582,14 +582,30 @@
       "section_reference": "3.25",
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "08c6670fd00689bb2985ae51d05b167b12a93f7082a9de0c9a7720abf26ee52d",
+      "closure_id": "72efaa34115b8947f6a5998ab6b75b24b5c4fce441165deaaaed8d634e867f3e",
+      "normalised_phrase": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS"
+    },
+    {
+      "section_reference": "3.25",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-T-NOOTHERREPS",
       "reasons": [],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "78607ee66e091e8e3ff47c346e1ac2c772c486c1f717acac0e1f32e5ee70ff6b",
-      "closure_id": "1ef0345e05ea6d23492aa9d801494527f2c723703c0121be35bb33fd53fad097",
+      "claim_revision_id": "6a074907ec63c94809c3099caf68223c33c315b31da1627f6b2f210daefcc113",
+      "closure_id": "9b32e18d1dab46bf2c102c8dc346163848a9d0ef8fd015b6261a9e3068d0f2b8",
       "normalised_phrase": "Except for the representations and warranties in this Article III, neither the Company, the Partnership nor any Person on behalf of the Company or the Partnership makes any express or implied representation or warranty with respect to the Company, the Partnership or any other Company Subsidiaries or their respective affiliates, businesses, operations, properties, assets, liabilities, condition (financial or otherwise) or prospects, or any estimates, projections, forecasts and other forward-looking information or business and strategic plan information regarding the Company, the Partnership and the other Company Subsidiaries or with respect to any other information provided or made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in connection with the Mergers or the other Transactions (including any information, documents, projections, forecasts, estimates, predictions or other material made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in “data rooms,” management presentations or due diligence sessions in expectation of the Mergers or the other Transactions), and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
       "attachment_position": null,
       "concept_family": "REP-T-NOOTHERREPS"
@@ -604,27 +620,11 @@
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "0fec25d0ab5cfa8b39b6d5b9f73ad6c83a1c9caf9d1169dadc106be491fc6b28",
-      "closure_id": "3042b016406a4b2c3a7d1fe132d2db63a3e9e8a53e7131479ccdf4854b6ca9a9",
+      "claim_revision_id": "eaab77f749528fdffd221057afa52f9e58103ee39f7518f456f38d755347c225",
+      "closure_id": "d293447e79c87e1229fee7ca2c3ca8f5f040a369597ae5e4cd355fc8cc767b2d",
       "normalised_phrase": "In particular, and without limiting the generality of the foregoing, except for the representations and warranties in this Article III, neither the Company, the Partnership nor any other Person makes or has made any express or implied representation or warranty to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives with respect to (a) any financial projection, forecast, estimate, budget or prospect information relating to the Company, the Partnership, any of the other Company Subsidiaries or their respective businesses or (b) any oral or written information presented to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives in the course of their due diligence investigation of the Company and the Partnership, the negotiation of this Agreement or the course of the Mergers or the other Transactions.",
       "attachment_position": null,
       "concept_family": "REP-T-NOOTHERREPS"
-    },
-    {
-      "section_reference": "3.25",
-      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
-      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
-      "concept_key": "REP-B-NOOTHERREPS",
-      "reasons": [],
-      "materiality_rank": 55,
-      "materiality_label": "REPRESENTATIONS",
-      "auto_pass": false,
-      "has_resolution": true,
-      "claim_revision_id": "f4fecbe69ff074acb835d9d4e42a319f3c18a99490c735a9507fc56f33cd0ad7",
-      "closure_id": "daa4a44a0e49afde4bac34253a7afd4659f696a76bd058ca0f689106771cb719",
-      "normalised_phrase": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
-      "attachment_position": null,
-      "concept_family": "REP-B-NOOTHERREPS"
     }
   ],
   "open_world": [],

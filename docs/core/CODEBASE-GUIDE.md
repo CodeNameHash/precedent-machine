@@ -1393,7 +1393,7 @@ writer rather than asserted by the caller.
 
 Three things about that which will otherwise be rediscovered the hard way:
 
-1. **`adapter-result.json`'s `write_set` is not the write-set the run
+1. **The write-set inside `adapter-result.json` is not the one the run
    validated.** It carries no `provisions`; the runner adds them from
    `resolution.json` at `canonical-v2-live-extraction-run.mjs:1114`. A claim
    with no governing provision is *dropped*, not rejected, so importing the

@@ -7,6 +7,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const os = require('node:os');
 
 const {
   EvidenceBridgeError,
@@ -215,4 +216,107 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
     }),
     /NO_RECORDED_RETRIEVAL_TIMESTAMP/,
   );
+});
+
+// ─── The guards that stop a silent drop coming back ───────────────────────
+//
+// The provisions composition is only half the fix. Both it and the shortfall
+// check read files a run directory might not have, and a missing file must
+// not read as a clean import -- that is exactly how the original defect
+// looked: accepted: true, every claim gone.
+
+test('a run with claims but no resolution.json is refused', async () => {
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'bridge-guard-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  for (const file of ['adapter-result.json', 'validation.json', 'source-reference.json']) {
+    fs.copyFileSync(path.join(REBUILDABLE_RUN, file), path.join(runDirectory, file));
+  }
+  // resolution.json deliberately absent.
+  await assert.rejects(
+    () => importRunEvidence({
+      runDirectory,
+      repository: new InMemoryCanonicalRepository(),
+      contractBundle: compileFixtureContractV38(),
+      dryRun: true,
+    }),
+    /NO_PROVISIONS_TO_GOVERN_CLAIMS/,
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
+});
+
+test('a run with no validation.json is refused, because there is nothing to measure against', async () => {
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'bridge-guard-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  for (const file of ['adapter-result.json', 'resolution.json', 'source-reference.json']) {
+    fs.copyFileSync(path.join(REBUILDABLE_RUN, file), path.join(runDirectory, file));
+  }
+  await assert.rejects(
+    () => importRunEvidence({
+      runDirectory,
+      repository: new InMemoryCanonicalRepository(),
+      contractBundle: compileFixtureContractV38(),
+      dryRun: true,
+    }),
+    /NO_PUBLISHED_COUNTS_TO_CHECK_AGAINST/,
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
+});
+
+test('an import that would publish fewer rows than the run did is refused', async () => {
+  // The backstop itself, exercised. Claim a count the import cannot meet and
+  // require the shortfall to surface rather than the import to succeed
+  // quietly with less.
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'bridge-shortfall-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  for (const file of ['adapter-result.json', 'resolution.json', 'source-reference.json']) {
+    fs.copyFileSync(path.join(REBUILDABLE_RUN, file), path.join(runDirectory, file));
+  }
+  const validation = JSON.parse(
+    fs.readFileSync(path.join(REBUILDABLE_RUN, 'validation.json'), 'utf8'),
+  );
+  validation.publishableWriteSet.claims = [
+    ...validation.publishableWriteSet.claims,
+    ...validation.publishableWriteSet.claims,
+  ];
+  fs.writeFileSync(path.join(runDirectory, 'validation.json'), JSON.stringify(validation));
+
+  await assert.rejects(
+    () => importRunEvidence({
+      runDirectory,
+      repository: new InMemoryCanonicalRepository(),
+      contractBundle: compileFixtureContractV38(),
+      dryRun: true,
+    }),
+    /PUBLISHABLE_SHORTFALL/,
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
+});
+
+test('a real write, not a dry run, reaches the repository', async () => {
+  // Every other import assertion here is dryRun. "Imports end to end" is a
+  // claim about the write path, so at least one test has to take it.
+  const repository = new InMemoryCanonicalRepository();
+  const result = await importRunEvidence({
+    runDirectory: REBUILDABLE_RUN,
+    repository,
+    contractBundle: compileFixtureContractV38(),
+    dryRun: false,
+  });
+  assert.equal(result.dry_run, false);
+  assert.equal(result.receipt.dryRun, false);
+  assert.ok(result.receipt.receipt, 'a real write produces a receipt, a dry run does not');
+
+  // And re-importing the same run is a no-op rather than a duplicate: the
+  // idempotency key is derived from the run's own identity.
+  const again = await importRunEvidence({
+    runDirectory: REBUILDABLE_RUN,
+    repository,
+    contractBundle: compileFixtureContractV38(),
+    dryRun: false,
+  });
+  assert.equal(again.idempotency_key, result.idempotency_key);
+  assert.equal(again.receipt.replayed, true, 'the second import must replay, not write again');
 });
