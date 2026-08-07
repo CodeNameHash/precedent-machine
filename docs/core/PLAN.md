@@ -530,9 +530,36 @@ it. Note also that `PLAN.md`'s own former claim that the schema had "never been
 executed" rested on a command that only shows some tests pattern-match source
 text — see `CODEBASE-GUIDE.md` section 9.
 
+**BLOCKER FOUND 2026-08-07, and it must be fixed before this step can pass.**
+The bridge is built (`lib/canonical-v2/evidence-to-write-set-bridge.js`) and
+reads a run correctly, but **no committed run can currently be imported**.
+Measured across all 24 evidence directories carrying an `adapter-result.json`:
+**24 of 24 are rejected** by `validateCanonicalWriteSet`, every one on the
+same two keys.
+
+The runner emits `definition_occurrences` and `source_references` in its
+write-set. `validate-write-set.js`'s `WRITE_SET_KEYS` contains neither —
+though `CANONICAL_COLLECTION_KEYS`, in the same file, does list
+`definition_occurrences`. So the validator disagrees with itself and with the
+producer, and has done for as long as these runs have existed. Nobody saw it
+because nothing ever tried to import a run.
+
+Fixing it is a decision, not a typo: either the two keys join `WRITE_SET_KEYS`
+(the producer is right), or the runner stops emitting them (the validator is
+right). That determines whether 24 committed runs are importable evidence or
+have to be re-run. Do not "fix" it by stripping the keys in the bridge — that
+would hide a producer/validator divergence behind a green import.
+
+One thing this already proves: reading the write-set from
+`validation.json`'s `publishableWriteSet` does not work. That is the
+post-split publishable subset, and it lacks the five source-admission keys
+the validator requires. `adapter-result.json` carries the complete
+`write_set` plus `admitted_source_contexts`, and is the file to read.
+
 **Proves it is done (write half).** One family's committed evidence directory
 goes in, rows come out in staging, and a second identical invocation is a
-no-op. Both proved by test, not by a screenshot.
+no-op. Both proved by test, not by a screenshot. Blocked on the key
+divergence above.
 
 ### The read half
 
