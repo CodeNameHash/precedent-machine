@@ -16,7 +16,24 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    // Repinned again 2026-08-07 for PLAN.md Step 4A2, which added
+    // Repinned again 2026-08-07 for PLAN.md Step 2C1, found by Step 2C:
+    // conditional_termination_fee_values had no deal-scoping column, so
+    // Step 2C's serving read the whole table -- correct only because Modiv
+    // was the only deal that had ever written to it. This adds a
+    // `document_hash` real column (declared `existing_document_hash text;`
+    // alongside the existing `existing_digest text;`), populates it in the
+    // INSERT from `p_write_set->'deal'->>'document_hash'` rather than from
+    // canonical_payload (this kind's 11-key schema has no document_hash
+    // field to read one from, and adding one would change every existing
+    // row's content-addressed id under the same schema version), and adds a
+    // document_hash equality check to the identity-conflict guard alongside
+    // the existing payload-digest check, both before and after the INSERT.
+    // Verified before repinning, by diffing the extracted body against the
+    // pre-edit extraction: the only changes are the new declaration and the
+    // one INSERT loop above, nothing else in this ~370k-character function
+    // moved.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 4A2, which added
     // canonical_v2_staging.conditional_termination_fee_values and taught
     // DEAL_SCOPE_RUN to shape-check, recompute the identity of and durably
     // write it -- verified before repinning that the extracted body carries
@@ -41,7 +58,7 @@ const FUNCTIONS = Object.freeze([
     // function body rather than the file and only the full suite runs it. A
     // schema edit therefore has three separate places to update, and nothing
     // tells you that at edit time.
-    digest: 'ea375cd49b170c6ecd504241d9d28a5db2bbb43f2782518c6c2ef3f40e808a28',
+    digest: 'bb6e01a0a8686d9676e65b8208b90ae82241941a73d02ddce45fb640dce70283',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',

@@ -916,6 +916,7 @@
             "lib/queries/review-deal-wire.js"
           ],
           "scripts": [
+            "scripts/canonical-v2-conditional-fee-two-deal-isolation-proof.js",
             "scripts/canonical-v2-modiv-termination-fee-serving-proof.js",
             "scripts/generate-qxo-termination-fee-excerpt-module.js"
           ],
@@ -930,7 +931,7 @@
           ],
           "other": []
         },
-        "reference_count": 15
+        "reference_count": 16
       }
     ],
     "generic_serving_infrastructure": [

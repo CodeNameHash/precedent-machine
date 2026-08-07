@@ -200,12 +200,35 @@ async function main() {
 
   // --- Step 2: the JS bridge's base DEAL_SCOPE_RUN write-set (dry run --
   // this run's provisions/claims/etc, exactly as importRunEvidence would
-  // write them). Neither the bridge nor canonical-writer.js knows
-  // conditional_termination_fee_values (that wiring is a different,
-  // explicitly out-of-scope file); this step's own writer -- the SQL
-  // function -- is what is under test, so this script supplies that
-  // missing top-level key itself, from the run's own resolution.json,
-  // rather than editing the bridge to do it.
+  // write them).
+  //
+  // CORRECTED 2026-08-07 (PLAN.md Step 2C1). This comment used to say
+  // "Neither the bridge nor canonical-writer.js knows conditional_
+  // termination_fee_values" and had this script add conditionalFeeValues.
+  // length to basePublishableCount on top of it. That was true when Step
+  // 4A2 wrote it and stopped being true by the time Step 4A3 landed:
+  // evidence-to-write-set-bridge.js's readRunEvidence() builds writeSet as
+  // `{...adapter.write_set, provisions, components}`, and adapter-result.
+  // json's own write_set already carries conditional_termination_fee_values
+  // (native-write-set-adapter.js splices resolution.conditional_
+  // termination_fee_values in verbatim when non-empty). So
+  // dryRunResult.receipt.validation.counts.publishable -- and
+  // baseWriteSet.conditional_termination_fee_values -- ALREADY include the 6
+  // Modiv rows; this comment's own claim was a header rather than the
+  // behaviour, exactly the trap CLAUDE.md names. Adding
+  // conditionalFeeValues.length again double-counted them (93 base + 6
+  // already-included + 6 added again = 105), which public.canonical_v2_
+  // write's own independently-computed publishable_object_count (99, summed
+  // straight off the write-set's own array lengths) then correctly rejected
+  // with 'invalid DEAL_SCOPE_RUN write receipt' -- reproduced against an
+  // unmodified supabase/canonical-v2-foundation.sql (git HEAD) before this
+  // fix, so it predates and is independent of Step 2C1's schema edit.
+  //
+  // conditionalFeeValues below is still read from resolution.json directly
+  // (not from baseWriteSet) so the round-trip check further down is against
+  // the run's own recorded output rather than whatever the bridge happened
+  // to carry -- verified byte-for-byte identical to adapter.write_set's copy
+  // before relying on this.
   const contractBundle = compileFixtureContractV38();
   const dealRepository = new InMemoryCanonicalRepository();
   const dryRunResult = await importRunEvidence({
@@ -225,10 +248,27 @@ async function main() {
   if (conditionalFeeValues.length === 0) {
     throw new Error(`${runDirectory}/resolution.json has no conditional_termination_fee_values -- wrong run directory for this proof.`);
   }
+  // canonicalJson, not JSON.stringify: the bridge's copy has been through
+  // canonicalise() (sorted keys), so a naive JSON.stringify comparison
+  // reports a false mismatch on key order alone even when the values agree
+  // -- the exact trap this file's own headline round-trip check further
+  // down already avoids for the same reason.
+  const bridgeConditionalFeeValues = baseWriteSet.conditional_termination_fee_values || [];
+  const conditionalFeeValuesAgree = bridgeConditionalFeeValues.length === conditionalFeeValues.length
+    && bridgeConditionalFeeValues.every((row, index) => canonicalJson(row) === canonicalJson(conditionalFeeValues[index]));
+  if (!conditionalFeeValuesAgree) {
+    throw new Error(
+      `${runDirectory}: the bridge's own conditional_termination_fee_values disagree with resolution.json's -- `
+      + 'this script assumes they are the same rows and only re-splices resolution.json\'s copy for clarity.',
+    );
+  }
 
   const writeSetForSql = { ...baseWriteSet, conditional_termination_fee_values: conditionalFeeValues };
   const idempotencyKey = `${dryRunResult.idempotency_key}_CONDFEE_20260807`;
-  const publishableObjectCount = basePublishableCount + conditionalFeeValues.length;
+  // basePublishableCount already counts conditional_termination_fee_values
+  // once (see the comment above) -- do not add conditionalFeeValues.length
+  // a second time.
+  const publishableObjectCount = basePublishableCount;
 
   const inputDigest = buildCanonicalWriteInputDigest({
     operation: 'DEAL_SCOPE_RUN',

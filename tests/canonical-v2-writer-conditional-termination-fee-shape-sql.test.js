@@ -48,6 +48,13 @@ test('the table exists, has no closure_id, and matches the JS builder\'s enums',
     table,
     /triggering_branch text NOT NULL CHECK \(triggering_branch IN \(\s*'7\.3\(b\)\(i\)', '7\.3\(b\)\(ii\)', '7\.3\(b\)\(iii\)', '7\.3\(b\)\(iv\)', '7\.3\(b\)\(v\)', '7\.3\(c\)'\s*\)\)/,
   );
+  // PLAN.md Step 2C1: the deal-scoping column this table had none of at
+  // all -- Step 2C's serving read a second-deal-less table with no WHERE
+  // clause, and Step 2D would have made that silently mix deals' fee
+  // amounts. Populated from the write-set's own deal.document_hash, never
+  // from canonical_payload -- this kind's 11-key schema has no document_hash
+  // field to read one from.
+  assert.match(table, /document_hash text NOT NULL CHECK \(document_hash ~ '\^\[0-9a-f\]\{64\}\$'\)/);
   assert.match(table, /canonical_payload jsonb NOT NULL/);
   assert.match(
     table,
@@ -194,7 +201,7 @@ test('the publishable-object-count sum still counts conditional_termination_fee_
   );
 });
 
-test('the INSERT loop denormalises fee_side and triggering_branch and orders by the primary key like its siblings', () => {
+test('the INSERT loop denormalises fee_side, triggering_branch and document_hash and orders by the primary key like its siblings', () => {
   const loopStart = sql.indexOf(
     "FROM jsonb_array_elements(\n      coalesce(p_write_set->'conditional_termination_fee_values', '[]'::jsonb)\n    ) AS ordered_item(value)",
   );
@@ -203,7 +210,33 @@ test('the INSERT loop denormalises fee_side and triggering_branch and orders by 
   const loop = sql.slice(loopStart, loopEnd);
   assert.match(
     loop,
-    /INSERT INTO canonical_v2_staging\.conditional_termination_fee_values\(\s*conditional_termination_fee_value_id, fee_side, triggering_branch, canonical_payload\s*\) VALUES \(\s*item_id, item->>'fee_side', item->>'triggering_branch', item\s*\) ON CONFLICT \(conditional_termination_fee_value_id\) DO NOTHING;/,
+    /INSERT INTO canonical_v2_staging\.conditional_termination_fee_values\(\s*conditional_termination_fee_value_id, fee_side, triggering_branch, document_hash, canonical_payload\s*\) VALUES \(\s*item_id, item->>'fee_side', item->>'triggering_branch',\s*p_write_set->'deal'->>'document_hash', item\s*\) ON CONFLICT \(conditional_termination_fee_value_id\) DO NOTHING;/,
   );
   assert.match(loop, /'canonical conditional termination fee value identity conflict'/);
+});
+
+// PLAN.md Step 2C1. document_hash is not part of this kind's content-
+// addressed id (see the table-definition test above), so two DIFFERENT
+// deals that happened to produce a byte-identical row would otherwise
+// collide on the primary key and ON CONFLICT DO NOTHING would silently
+// keep the FIRST deal's document_hash on a row the second deal also wrote
+// -- exactly the cross-deal leakage this step exists to close, at the
+// write boundary rather than the read one. The identity-conflict guard
+// must therefore check document_hash equality alongside the payload
+// digest, on both the pre-INSERT short-circuit and the post-INSERT
+// verification.
+test('the identity-conflict guard also checks document_hash, not only the payload digest', () => {
+  const loopStart = sql.indexOf(
+    "FROM jsonb_array_elements(\n      coalesce(p_write_set->'conditional_termination_fee_values', '[]'::jsonb)\n    ) AS ordered_item(value)",
+  );
+  assert.notEqual(loopStart, -1);
+  const loopEnd = sql.indexOf('END LOOP;', loopStart);
+  const loop = sql.slice(loopStart, loopEnd);
+  const documentHashChecks = [
+    ...loop.matchAll(/existing_document_hash IS DISTINCT FROM \(p_write_set->'deal'->>'document_hash'\)/g),
+  ];
+  assert.ok(
+    documentHashChecks.length >= 2,
+    'expected the document_hash cross-check both before and after the INSERT, like the payload-digest check it sits beside',
+  );
 });

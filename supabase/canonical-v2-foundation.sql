@@ -476,6 +476,23 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.conditional_termination_fee_valu
   triggering_branch text NOT NULL CHECK (triggering_branch IN (
     '7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)', '7.3(b)(iv)', '7.3(b)(v)', '7.3(c)'
   )),
+  -- PLAN.md Step 2C1, found by Step 2C: this table had NO deal-scoping
+  -- column at all -- a second deal writing conditional fee values would
+  -- have made every deal's serving read (the whole table, unfiltered) mix
+  -- rows from both. UNLIKE fee_side/triggering_branch above, this is NOT
+  -- one of buildConditionalTerminationFeeValue's 11 payload keys and does
+  -- NOT participate in this row's content-addressed id -- adding it to the
+  -- JS-side schema would change every existing row's id under the same
+  -- schema version, exactly what modiv-termination-fee-payment-timing-
+  -- parser.js was split out as its own sidecar to avoid. Instead this is
+  -- populated, in canonical_v2_write's DEAL_SCOPE_RUN branch, from
+  -- p_write_set->'deal'->>'document_hash' -- the write-set's own deal
+  -- identity, already validated and admitted before this table's INSERT
+  -- loop runs -- the same source deal_admission_records already trusts,
+  -- just without a payload copy to cross-check against (this kind has no
+  -- validation-closure identity and no document_hash field of its own to
+  -- check the column against).
+  document_hash text NOT NULL CHECK (document_hash ~ '^[0-9a-f]{64}$'),
   canonical_payload jsonb NOT NULL,
   canonical_payload_digest text GENERATED ALWAYS AS (
     canonical_v2_staging.payload_digest(canonical_payload)
@@ -775,6 +792,8 @@ CREATE INDEX IF NOT EXISTS canonical_v2_claims_closure_idx
   ON canonical_v2_staging.claim_revisions(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_relationships_closure_idx
   ON canonical_v2_staging.relationship_revisions(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_conditional_termination_fee_values_document_hash_idx
+  ON canonical_v2_staging.conditional_termination_fee_values(document_hash);
 CREATE INDEX IF NOT EXISTS canonical_v2_open_world_candidates_closure_idx
   ON canonical_v2_staging.open_world_candidates(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_open_world_occurrences_closure_idx
@@ -1217,6 +1236,7 @@ DECLARE
   correction_discharge_map jsonb;
   item_id text;
   existing_digest text;
+  existing_document_hash text;
   previous_application_id text;
   item_ordinal integer;
   correction_materialisation_count integer;
@@ -8668,22 +8688,36 @@ BEGIN
     ORDER BY ordered_item.value->>'conditional_termination_fee_value_id'
   LOOP
     item_id := item->>'conditional_termination_fee_value_id';
-    SELECT canonical_payload_digest INTO existing_digest
+    SELECT canonical_payload_digest, document_hash INTO existing_digest, existing_document_hash
     FROM canonical_v2_staging.conditional_termination_fee_values
     WHERE conditional_termination_fee_value_id = item_id;
-    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+    -- PLAN.md Step 2C1. document_hash is checked here too, not just the
+    -- payload digest: this kind's id is content-addressed over the payload
+    -- ALONE (fee_side/triggering_branch/base_amount/...), never over
+    -- document_hash, so two different deals that happened to produce a
+    -- byte-identical conditional-fee row would otherwise collide on the
+    -- primary key and the ON CONFLICT DO NOTHING below would silently keep
+    -- the FIRST deal's document_hash on a row that also claims to belong to
+    -- the second -- exactly the cross-deal leakage this step exists to
+    -- close, just at the write boundary instead of the read one.
+    IF FOUND AND (
+      existing_digest <> canonical_v2_staging.payload_digest(item)
+      OR existing_document_hash IS DISTINCT FROM (p_write_set->'deal'->>'document_hash')
+    ) THEN
       RAISE EXCEPTION 'canonical conditional termination fee value identity conflict'
         USING ERRCODE = '23505';
     END IF;
     INSERT INTO canonical_v2_staging.conditional_termination_fee_values(
-      conditional_termination_fee_value_id, fee_side, triggering_branch, canonical_payload
+      conditional_termination_fee_value_id, fee_side, triggering_branch, document_hash, canonical_payload
     ) VALUES (
-      item_id, item->>'fee_side', item->>'triggering_branch', item
+      item_id, item->>'fee_side', item->>'triggering_branch',
+      p_write_set->'deal'->>'document_hash', item
     ) ON CONFLICT (conditional_termination_fee_value_id) DO NOTHING;
-    SELECT canonical_payload_digest INTO existing_digest
+    SELECT canonical_payload_digest, document_hash INTO existing_digest, existing_document_hash
     FROM canonical_v2_staging.conditional_termination_fee_values
     WHERE conditional_termination_fee_value_id = item_id;
-    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item)
+      OR existing_document_hash IS DISTINCT FROM (p_write_set->'deal'->>'document_hash') THEN
       RAISE EXCEPTION 'canonical conditional termination fee value identity conflict'
         USING ERRCODE = '23505';
     END IF;

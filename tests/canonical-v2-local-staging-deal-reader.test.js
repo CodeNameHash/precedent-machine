@@ -10,9 +10,11 @@
 // docs/codex-program/notes/step-2b-read-half.md for its output.
 //
 // The fake client below implements exactly the query shapes this reader
-// issues (WHERE canonical_payload->>'x' = $1, WHERE ... = ANY($1::text[]))
-// against an in-memory table of real rows produced by the real write-
-// boundary code (buildNativeWriteSet, via
+// issues (WHERE canonical_payload->>'x' = $1, WHERE ... = ANY($1::text[]),
+// and -- PLAN.md Step 2C1 -- WHERE document_hash = $1 against a real
+// column, not a jsonb ->> extraction, for conditional_termination_fee_
+// values) against an in-memory table of real rows produced by the real
+// write-boundary code (buildNativeWriteSet, via
 // tests/helpers/local-staging-read-fixture.js) -- so what is faked is the
 // network/Postgres round trip, not the row shapes or the reassembly logic
 // under test.
@@ -26,9 +28,11 @@ const {
   readGovernedClaimsForDeal,
   readOpenWorldEvidenceForDeal,
   readRelationshipsForDeal,
+  readConditionalTerminationFeeValuesForDeal,
   LocalStagingReadError,
   OPEN_WORLD_EVIDENCE_GOVERNANCE_MARKER,
 } = require('../lib/canonical-v2/local-staging-deal-reader');
+const { buildConditionalTerminationFeeValue } = require('../lib/canonical-v2/native-producer/conditional-termination-fee-value');
 const { buildSyntheticMixedFixture } = require('./helpers/local-staging-read-fixture');
 
 // A minimal fake of the one pg surface this reader uses: async
@@ -44,7 +48,12 @@ function fakeClient(tables) {
       const rows = tables[tableMatch[1]] || [];
       let field;
       let mode;
-      if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/parent_provision_instance_id' = ANY/.test(text)) { field = 'parent_provision_instance_id'; mode = 'any'; } else if (/closure_id = ANY/.test(text)) {
+      // Real-column equality (no jsonb ->>' before the '=') must be checked
+      // BEFORE the jsonb ->>'document_hash' = $1 shape below, or a real-
+      // column query would match that regex too and route through the
+      // wrong (payload-based) filter for a table that has no such payload
+      // field to filter on.
+      if (/(?<!')document_hash = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/parent_provision_instance_id' = ANY/.test(text)) { field = 'parent_provision_instance_id'; mode = 'any'; } else if (/closure_id = ANY/.test(text)) {
         // PLAN.md Step 2B3: claims are fetched by closure OR subject so that
         // an unresolvable subject actually reaches ORPHAN_CLAIM_REVISION.
         // The old form selected on the very ids it then checked against,
@@ -60,6 +69,16 @@ function fakeClient(tables) {
       const matched = mode === 'eq'
         ? rows.filter((row) => row[field] === values[0])
         : rows.filter((row) => values[0].includes(row[field]));
+      // conditional_termination_fee_values is the one table where the
+      // routing field (document_hash) is a real COLUMN, not part of
+      // canonical_payload -- unlike every other table faked here, whose
+      // routing field genuinely is inside the real payload. So its fake
+      // rows carry { document_hash, payload } and only `payload` -- never
+      // the wrapper -- is what a real `SELECT canonical_payload` would hand
+      // back.
+      if (tableMatch[1] === 'conditional_termination_fee_values') {
+        return { rows: matched.map((row) => ({ canonical_payload: row.payload })) };
+      }
       return { rows: matched.map((row) => ({ canonical_payload: row })) };
     },
   };
@@ -285,6 +304,114 @@ test('readRelationshipsForDeal joins relationship_revisions onto provision_insta
   assert.equal(relationships.length, 1);
   assert.equal(relationships[0].relationship.relationship_revision_id, 'synthetic-relationship-1');
   assert.equal(relationships[0].provision_instance.provision_instance_id, provisionId);
+});
+
+// ── Conditional termination-fee values (PLAN.md Step 2C1). ──
+//
+// The defect this step closes is invisible with only one deal in the
+// table -- these tests exist specifically to prove isolation with TWO, the
+// same shape as this step's own live proof
+// (scripts/canonical-v2-conditional-fee-two-deal-isolation-proof.js), just
+// hermetic.
+
+const CONDFEE_DEAL_A_DOCUMENT_HASH = 'a'.repeat(64);
+const CONDFEE_DEAL_B_DOCUMENT_HASH = 'b'.repeat(64);
+
+function buildTwoDealConditionalFeeValueTable() {
+  const dealARow = buildConditionalTerminationFeeValue({
+    fee_side: 'SELLER',
+    triggering_branch: '7.3(b)(i)',
+    base_amount: '1000000',
+    currency: 'USD',
+    operator: 'LOWER_OF',
+    reit_limit_cap_term_ref: 'Deal A REIT Requirements',
+    defined_term_lineage: ['Deal A Termination Fee', 'Deal A Base Amount'],
+    source_citations: ['7.3(b)(i)', '8.1'],
+    raw_formula: 'Deal A formula',
+  });
+  const dealBRow = buildConditionalTerminationFeeValue({
+    fee_side: 'BUYER',
+    triggering_branch: '7.3(c)',
+    base_amount: '2000000',
+    currency: 'USD',
+    operator: 'LOWER_OF',
+    reit_limit_cap_term_ref: 'Deal B REIT Requirements',
+    defined_term_lineage: ['Deal B Termination Fee', 'Deal B Base Amount'],
+    source_citations: ['7.3(c)', '8.2'],
+    raw_formula: 'Deal B formula',
+  });
+  return {
+    dealARow,
+    dealBRow,
+    conditional_termination_fee_values: [
+      { document_hash: CONDFEE_DEAL_A_DOCUMENT_HASH, payload: dealARow },
+      { document_hash: CONDFEE_DEAL_B_DOCUMENT_HASH, payload: dealBRow },
+    ],
+  };
+}
+
+test('readConditionalTerminationFeeValuesForDeal scopes by the document_hash COLUMN, not anything in the payload', async () => {
+  const table = buildTwoDealConditionalFeeValueTable();
+  const client = fakeClient({ conditional_termination_fee_values: table.conditional_termination_fee_values });
+
+  const dealARows = await readConditionalTerminationFeeValuesForDeal({ client, documentHash: CONDFEE_DEAL_A_DOCUMENT_HASH });
+  assert.equal(dealARows.length, 1);
+  assert.equal(canonicalJson(dealARows[0]), canonicalJson(table.dealARow));
+
+  const dealBRows = await readConditionalTerminationFeeValuesForDeal({ client, documentHash: CONDFEE_DEAL_B_DOCUMENT_HASH });
+  assert.equal(dealBRows.length, 1);
+  assert.equal(canonicalJson(dealBRows[0]), canonicalJson(table.dealBRow));
+});
+
+test('two-deal isolation: neither deal\'s conditional fee value read carries the other\'s row -- this is the defect Step 2C1 closes', async () => {
+  const table = buildTwoDealConditionalFeeValueTable();
+  const client = fakeClient({ conditional_termination_fee_values: table.conditional_termination_fee_values });
+
+  const dealARows = await readConditionalTerminationFeeValuesForDeal({ client, documentHash: CONDFEE_DEAL_A_DOCUMENT_HASH });
+  const dealBRows = await readConditionalTerminationFeeValuesForDeal({ client, documentHash: CONDFEE_DEAL_B_DOCUMENT_HASH });
+
+  assert.ok(
+    !dealARows.some((row) => row.conditional_termination_fee_value_id === table.dealBRow.conditional_termination_fee_value_id),
+    'Deal A\'s read must not contain Deal B\'s row',
+  );
+  assert.ok(
+    !dealBRows.some((row) => row.conditional_termination_fee_value_id === table.dealARow.conditional_termination_fee_value_id),
+    'Deal B\'s read must not contain Deal A\'s row',
+  );
+});
+
+test('readConditionalTerminationFeeValuesForDeal returns [] for a document_hash with no rows, without throwing', async () => {
+  const table = buildTwoDealConditionalFeeValueTable();
+  const client = fakeClient({ conditional_termination_fee_values: table.conditional_termination_fee_values });
+  const rows = await readConditionalTerminationFeeValuesForDeal({ client, documentHash: 'c'.repeat(64) });
+  assert.deepEqual(rows, []);
+});
+
+test('readDealFromLocalCanonicalV2Staging carries conditional_termination_fee_values scoped to the requested deal, alongside resolved/open_world/relationships', async () => {
+  const table = buildTwoDealConditionalFeeValueTable();
+  const tables = { ...tablesFromFixture(), ...table };
+  const client = fakeClient(tables);
+  const result = await readDealFromLocalCanonicalV2Staging({ client, documentHash: fixture.documentHash, env: { NODE_ENV: 'test' } });
+  // The fixture's own document_hash is neither Deal A's nor Deal B's, so its
+  // read must carry NEITHER synthetic conditional-fee row even though both
+  // are present in the same fake table.
+  assert.deepEqual(result.conditional_termination_fee_values, []);
+});
+
+test('a deal whose ONLY data is a conditional termination fee value is not reported as empty', async () => {
+  const table = buildTwoDealConditionalFeeValueTable();
+  const client = fakeClient({
+    provision_instances: [], claim_revisions: [], open_world_candidates: [],
+    open_world_candidate_occurrences: [], open_world_evidence_references: [], relationship_revisions: [],
+    conditional_termination_fee_values: table.conditional_termination_fee_values,
+  });
+  const result = await readDealFromLocalCanonicalV2Staging({
+    client, documentHash: CONDFEE_DEAL_A_DOCUMENT_HASH, env: { NODE_ENV: 'test' },
+  });
+  assert.deepEqual(result.resolved, []);
+  assert.deepEqual(result.open_world, []);
+  assert.equal(result.conditional_termination_fee_values.length, 1);
+  assert.equal(canonicalJson(result.conditional_termination_fee_values[0]), canonicalJson(table.dealARow));
 });
 
 test('readRelationshipsForDeal refuses a relationship row tampered to carry the open-world marker', async () => {
