@@ -990,14 +990,44 @@ Step 2B that is specified and not built.
 populates. Building the read half there would produce a module that reads
 nothing and blames the pointer.
 
-**Two inputs the projection wants that the schema does not store**, so they
-cannot come back out of the database at all as things stand:
-`resolution.open_world[]` (the open-world tables exist but their payload shape
-against `resolution.json`'s entries is unverified — read them before
-assuming) and `resolution.conditional_termination_fee_values[]`, which has no
-table anywhere. The second matters: Modiv's §7.3 conditional fee drives the
-card headline through `conditionalFeeExtraGroups`. Either it gets a home or
-the database-backed render omits that feature, deliberately and in writing.
+**Two inputs the projection wants that cannot come back out of the database.**
+
+**1. Open-world evidence — and this is worse than "shape unverified".** The
+five open-world tables exist and are correctly shaped. They are empty by
+construction: `native-producer/native-write-set-adapter.js` lists all five in
+`EMPTY_COLLECTION_KEYS` (~134), so the adapter emits none of them. Measured
+across the 25 importable runs: **275 open-world entries in `resolution.json`,
+zero open-world rows in any write-set.**
+
+Every one of those is a model proposal the resolver deliberately kept, with
+`why_unmapped`, `structured_mechanic` and a verbatim quote. They reach the
+evidence directory and stop. So four of the ten cards the termination-fee
+projection produces from a run — the "Deferred Evidence" cards — have **no
+database-backed equivalent, and cannot have one** until the adapter emits
+these rows.
+
+It compounds the zero-claim triage above. Several of those ten families
+produce output that is *entirely* open-world; through the write path they
+write nothing at all, which is indistinguishable from a family that found
+nothing. The adapter's header claimed "nothing here produces that kind of
+row", which was true when written and has not been true for some time. Header
+corrected; the behaviour is left alone, because emitting these rows changes
+what the pipeline writes for every deal.
+
+**Decision needed:** emit open-world rows, or accept that the
+database-backed render shows governed claims only and says so on the page.
+The second is defensible — open-world material is unreviewed by definition —
+but it has to be chosen rather than inherited from an adapter constant.
+
+**2. `resolution.conditional_termination_fee_values[]` has no table anywhere.**
+This matters: Modiv's §7.3 conditional fee drives the card headline through
+`conditionalFeeExtraGroups`, and two of the ten cards come from it. Either it
+gets a home or the database-backed render omits that feature, deliberately and
+in writing.
+
+Between them: of the ten cards a run projects today, **four survive a
+round-trip through the database** as things stand. That is the honest ceiling
+on the read half until one of these two is decided.
 
 **Proves it is done (read half).** The rows written by the write half come
 back out through this module for the same deal and family, in the shape the
