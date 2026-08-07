@@ -182,13 +182,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 20,
         "materiality_label": "FEES",
         "known_defect": null,
@@ -370,13 +371,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 20,
         "materiality_label": "FEES",
         "known_defect": null,
@@ -568,13 +570,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 20,
         "materiality_label": "FEES",
         "known_defect": null,
@@ -766,13 +769,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 20,
         "materiality_label": "FEES",
         "known_defect": null,
@@ -863,8 +867,8 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
-          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
         ],
         "reasons": [],
         "materiality_rank": 99,
@@ -950,8 +954,8 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
-          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
         ],
         "reasons": [],
         "materiality_rank": 99,
@@ -1037,8 +1041,8 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
-          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
         ],
         "reasons": [],
         "materiality_rank": 99,
@@ -1054,7 +1058,9 @@
       "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_FEE_TRIGGER",
       "concept_key": "TERMF-TARGET",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 20,
       "materiality_label": "FEES",
       "auto_pass": false,
@@ -1063,14 +1069,36 @@
       "closure_id": "036d5fc00648c2f3ef04a9579dc6f28c69ca39083d1ebe3fe387207ddaffb5f1",
       "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
       "attachment_position": null,
-      "concept_family": "TERMF-TARGET"
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2650,
+          "end": 2665,
+          "excerpt": "usly paid or substantially concurrently pays (or causes to be paid) the Company Termination Fee in accordance with Section 7.3(b) (and such termination shall not be effective ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2785,
+          "end": 2800,
+          "excerpt": "such termination shall not be effective until the Company has paid such Company Termination Fee in accordance with Section 7.3(b)); or\n(ii) Parent, Company Merger Sub, Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "7.3",
       "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
       "concept_key": "TERMF-TAIL",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 20,
       "materiality_label": "FEES",
       "auto_pass": false,
@@ -1079,7 +1107,72 @@
       "closure_id": "ee7e139338f53b8080bbe29e8543d78b93829e4c191c48307d119d60b0ad28c2",
       "normalised_phrase": "within twelve (12) months after a termination referred to in this Section 7.3(b)(iii)",
       "attachment_position": null,
-      "concept_family": "TERMF-TAIL"
+      "concept_family": "TERMF-TAIL",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 496,
+          "end": 516,
+          "excerpt": ") (A) (1) by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 881,
+          "end": 901,
+          "excerpt": "holders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal and (B) within twelve (12) months after a termination referred to in this Secti",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ENTERS_INTO_A_DEFINITIVE_AGREEMENT",
+          "start": 1008,
+          "end": 1042,
+          "excerpt": " months after a termination referred to in this Section 7.3(b)(iii) the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal (with, for purpos",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 1084,
+          "end": 1104,
+          "excerpt": "any enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal (with, for purposes of this clause (B), the references to “15%” in the defi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 1205,
+          "end": 1225,
+          "excerpt": "of this clause (B), the references to “15%” in the definition of “Company Acquisition Proposal” being deemed to be references to “50%”),\n(iv) by Parent pursuant to Sect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 2084,
+          "end": 2104,
+          "excerpt": " after the earlier of entry into a definitive agreement relating to the Company Acquisition Proposal referred to in clause (B) of Section 7.3(b)(iii) and consummation of such Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 2187,
+          "end": 2207,
+          "excerpt": "ferred to in clause (B) of Section 7.3(b)(iii) and consummation of such Company Acquisition Proposal.\n(c) In the event that this Agreement is terminated by the Company pursuant to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "7.3",
@@ -1233,7 +1326,9 @@
       "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
       "concept_key": "TERMF-TARGET",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 20,
       "materiality_label": "FEES",
       "auto_pass": false,
@@ -1242,14 +1337,126 @@
       "closure_id": "1f304f593afe2dbe4adac53e2106d37177df3409a056289ec7373a318513b0a2",
       "normalised_phrase": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000",
       "attachment_position": null,
-      "concept_family": "TERMF-TARGET"
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 15103,
+          "end": 15118,
+          "excerpt": "is so guarantying or has so assumed liability for any such debt.\n(m) “Company Termination Fee” means an amount equal to the lesser of (i) the Company Base Amount and (ii) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 15798,
+          "end": 15813,
+          "excerpt": "hstanding the foregoing, in the event Parent receives Tax Guidance, the Company Termination Fee shall be an amount equal to the applicable Company Base Amount and the Company ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 16279,
+          "end": 16294,
+          "excerpt": "t in escrow by wire transfer within three (3) days of the date when the Company Termination Fee would otherwise be due but for the above limitations and shall not release any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 17243,
+          "end": 17258,
+          "excerpt": "thereof. The obligation of the Company to pay any unpaid portion of the Company Termination Fee shall terminate on the December 31 following the date which is five (5) years f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 17363,
+          "end": 17378,
+          "excerpt": "ecember 31 following the date which is five (5) years from the date the Company Termination Fee first becomes payable under Section 7.3(b). Amounts remaining in escrow after t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 17506,
+          "end": 17521,
+          "excerpt": "unts remaining in escrow after the obligation of the Company to pay the Company Termination Fee terminates shall be released to the Company.\n104\n(n) “Contract” means any b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 39695,
+          "end": 39710,
+          "excerpt": "is so guarantying or has so assumed liability for any such debt.\n(vv) “Parent Termination Fee” means an amount equal to the lesser of (i) the Parent Base Amount and (ii) t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 40346,
+          "end": 40361,
+          "excerpt": "nding the foregoing, in the event the Company receives Tax Guidance, the Parent Termination Fee shall be an amount equal to the Parent Base Amount and Parent shall, upon recei",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 40806,
+          "end": 40821,
+          "excerpt": "nt in escrow by wire transfer within three (3) days of the date when the Parent Termination Fee would otherwise be due but for the above limitations and shall not release any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 41787,
+          "end": 41802,
+          "excerpt": "ified thereof. The obligation of Parent to pay any unpaid portion of the Parent Termination Fee shall terminate on the December 31 following the date which is five (5) years f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 41906,
+          "end": 41921,
+          "excerpt": "December 31 following the date which is five (5) years from the date the Parent Termination Fee first becomes payable under Section 7.3(c). Amounts remaining in escrow after t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 42043,
+          "end": 42058,
+          "excerpt": "). Amounts remaining in escrow after the obligation of Parent to pay the Parent Termination Fee terminates shall be released to Parent.\n111\n(ww) “Partnership Agreement” me",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "8.12",
       "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
       "concept_key": "TERMF-REVERSE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 20,
       "materiality_label": "FEES",
       "auto_pass": false,
@@ -1258,7 +1465,171 @@
       "closure_id": "7175aef6fbf8f5ca2d0960c7d898c81787cf610db4e00c68e0e9713cf4f77084",
       "normalised_phrase": "“Parent Base Amount” means $15,000,000.00",
       "attachment_position": null,
-      "concept_family": "TERMF-REVERSE"
+      "concept_family": "TERMF-REVERSE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 15103,
+          "end": 15118,
+          "excerpt": "is so guarantying or has so assumed liability for any such debt.\n(m) “Company Termination Fee” means an amount equal to the lesser of (i) the Company Base Amount and (ii) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 15798,
+          "end": 15813,
+          "excerpt": "hstanding the foregoing, in the event Parent receives Tax Guidance, the Company Termination Fee shall be an amount equal to the applicable Company Base Amount and the Company ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 16279,
+          "end": 16294,
+          "excerpt": "t in escrow by wire transfer within three (3) days of the date when the Company Termination Fee would otherwise be due but for the above limitations and shall not release any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 17243,
+          "end": 17258,
+          "excerpt": "thereof. The obligation of the Company to pay any unpaid portion of the Company Termination Fee shall terminate on the December 31 following the date which is five (5) years f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 17363,
+          "end": 17378,
+          "excerpt": "ecember 31 following the date which is five (5) years from the date the Company Termination Fee first becomes payable under Section 7.3(b). Amounts remaining in escrow after t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 17506,
+          "end": 17521,
+          "excerpt": "unts remaining in escrow after the obligation of the Company to pay the Company Termination Fee terminates shall be released to the Company.\n104\n(n) “Contract” means any b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 39688,
+          "end": 39710,
+          "excerpt": "hip or is so guarantying or has so assumed liability for any such debt.\n(vv) “Parent Termination Fee” means an amount equal to the lesser of (i) the Parent Base Amount and (ii) t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 39695,
+          "end": 39710,
+          "excerpt": "is so guarantying or has so assumed liability for any such debt.\n(vv) “Parent Termination Fee” means an amount equal to the lesser of (i) the Parent Base Amount and (ii) t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 40339,
+          "end": 40361,
+          "excerpt": "withstanding the foregoing, in the event the Company receives Tax Guidance, the Parent Termination Fee shall be an amount equal to the Parent Base Amount and Parent shall, upon recei",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 40346,
+          "end": 40361,
+          "excerpt": "nding the foregoing, in the event the Company receives Tax Guidance, the Parent Termination Fee shall be an amount equal to the Parent Base Amount and Parent shall, upon recei",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 40799,
+          "end": 40821,
+          "excerpt": "id amount in escrow by wire transfer within three (3) days of the date when the Parent Termination Fee would otherwise be due but for the above limitations and shall not release any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 40806,
+          "end": 40821,
+          "excerpt": "nt in escrow by wire transfer within three (3) days of the date when the Parent Termination Fee would otherwise be due but for the above limitations and shall not release any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 41780,
+          "end": 41802,
+          "excerpt": "een notified thereof. The obligation of Parent to pay any unpaid portion of the Parent Termination Fee shall terminate on the December 31 following the date which is five (5) years f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 41787,
+          "end": 41802,
+          "excerpt": "ified thereof. The obligation of Parent to pay any unpaid portion of the Parent Termination Fee shall terminate on the December 31 following the date which is five (5) years f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 41899,
+          "end": 41921,
+          "excerpt": "on the December 31 following the date which is five (5) years from the date the Parent Termination Fee first becomes payable under Section 7.3(c). Amounts remaining in escrow after t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 41906,
+          "end": 41921,
+          "excerpt": "December 31 following the date which is five (5) years from the date the Parent Termination Fee first becomes payable under Section 7.3(c). Amounts remaining in escrow after t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 42036,
+          "end": 42058,
+          "excerpt": "n 7.3(c). Amounts remaining in escrow after the obligation of Parent to pay the Parent Termination Fee terminates shall be released to Parent.\n111\n(ww) “Partnership Agreement” me",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 42043,
+          "end": 42058,
+          "excerpt": "). Amounts remaining in escrow after the obligation of Parent to pay the Parent Termination Fee terminates shall be released to Parent.\n111\n(ww) “Partnership Agreement” me",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "8.12",
@@ -2296,6 +2667,68 @@
       "conditional_termination_fee_value_id": "c1b2e1e5216e84ac87758e2c60abd3019c4592ad85b24d2b1ea9400621c2d5a8"
     }
   ],
+  "termination_fee_payment_timings": [
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "SELLER",
+      "triggering_branch": "7.3(b)(i)",
+      "payment_timing_quote": "within two (2) Business Days after the date of such termination by Parent",
+      "source_citations": [
+        "7.3(b)(i)"
+      ],
+      "termination_fee_payment_timing_id": "defe914bc3d6eaddce403c241ee135a186df70de19359e8b5e04b94ad2130fc6"
+    },
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "SELLER",
+      "triggering_branch": "7.3(b)(iv)",
+      "payment_timing_quote": "within two (2) Business Days after the date of such termination by Parent",
+      "source_citations": [
+        "7.3(b)(iv)"
+      ],
+      "termination_fee_payment_timing_id": "2438fc8d5b4fe862fb9010552a228a95f8b9597238e61bc6bc94057f8e1610e2"
+    },
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "SELLER",
+      "triggering_branch": "7.3(b)(v)",
+      "payment_timing_quote": "within two (2) Business Days after the date of such termination by Parent",
+      "source_citations": [
+        "7.3(b)(v)"
+      ],
+      "termination_fee_payment_timing_id": "821851c6f778b16ea614fef21413e76267797530d3c781ac1728009db542708d"
+    },
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "SELLER",
+      "triggering_branch": "7.3(b)(ii)",
+      "payment_timing_quote": "prior to or substantially concurrently with such termination by the Company",
+      "source_citations": [
+        "7.3(b)(ii)"
+      ],
+      "termination_fee_payment_timing_id": "ec3998e43613f1e0ef62bde0fa50e3243f6ace22fde9c5516a25096b62a6d021"
+    },
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "SELLER",
+      "triggering_branch": "7.3(b)(iii)",
+      "payment_timing_quote": "within two (2) Business Days after the earlier of entry into a definitive agreement relating to the Company Acquisition Proposal referred to in clause (B) of Section 7.3(b)(iii) and consummation of such Company Acquisition Proposal",
+      "source_citations": [
+        "7.3(b)(iii)"
+      ],
+      "termination_fee_payment_timing_id": "19e8e072e23f2e889e727edd0a5b52ad645b43024c7c0df9d9ca4c4b10f7d8cb"
+    },
+    {
+      "schema_version": "TERMINATION_FEE_PAYMENT_TIMING/V1",
+      "fee_side": "BUYER",
+      "triggering_branch": "7.3(c)",
+      "payment_timing_quote": "within two (2) Business Days after the date of such termination by the Company",
+      "source_citations": [
+        "7.3(c)"
+      ],
+      "termination_fee_payment_timing_id": "d5bb425355f40ac58ee99961064badfbce3d0d4630dae10ff0405692ea2f114d"
+    }
+  ],
   "resolution_receipt": {
     "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
     "run_receipt_id": "703684bfe063265daaa2b9d6fb9f8be49ecccda2b73575ec749437e6b2a65943",
@@ -2322,6 +2755,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 32,
       "resolved": 7,
@@ -2333,6 +2771,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "a51f5f92c6a0004f83fc7a0247bd083f46ac17b82e88c9ae39e5e4ceb7fedffb"
+    "resolution_receipt_id": "139e830904d2907393795d1adbf3db7c8689a29ff37227a0ca49fb042ffb5ab2"
   }
 }

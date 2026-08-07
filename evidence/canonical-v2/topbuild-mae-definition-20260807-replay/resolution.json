@@ -182,14 +182,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -389,14 +390,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -598,14 +600,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -807,14 +810,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -1016,14 +1020,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -1223,14 +1228,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -1430,14 +1436,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -1637,14 +1644,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -1844,14 +1852,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -2051,14 +2060,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -2258,14 +2268,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -2465,14 +2476,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -2672,14 +2684,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -2879,14 +2892,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3090,14 +3104,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3301,14 +3316,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3512,14 +3528,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3723,14 +3740,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3934,14 +3952,15 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT",
           "MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 30,
         "materiality_label": "MAE",
         "known_defect": null,
@@ -3962,7 +3981,9 @@
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -3971,7 +3992,54 @@
       "closure_id": "0776161744d150b757ac8b6fd72f1d3cb9e752ec359793d16175ebec077fe0a7",
       "normalised_phrase": "changes or developments in or affecting the industry or industries in which the Company or any of its Subsidiaries operate (including such changes or developments resulting from general economic conditions)",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
@@ -3999,7 +4067,9 @@
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4008,14 +4078,63 @@
       "closure_id": "232ba7dc2504d5dfd23a2f88e9d6648d906d7829185eacf9b9ad5c18b218ebae",
       "normalised_phrase": "changes or developments in economic, business or labor conditions generally in the United States or other countries in which the Company or any of its Subsidiaries conduct operations",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4024,14 +4143,63 @@
       "closure_id": "5a004b8b461e5163d9bc87e644000f45d1a25a0cec576d14de886e0f2bfe91a6",
       "normalised_phrase": "a decline in the price or trading volume of the Company’s common stock or any change in the ratings or ratings outlook for the Company or any of its Subsidiaries; provided that the exception in this clause shall not prevent or otherwise affect a determination that any change or development underlying such decline or change constitutes, has resulted in, or contributed to, a Company Material Adverse Effect",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4040,14 +4208,63 @@
       "closure_id": "5b37e699ad29ade551c08150e80ba879ea102118c749b9704dad79dfa2be15fc",
       "normalised_phrase": "the effect of any potential or actual government shutdown",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4056,14 +4273,63 @@
       "closure_id": "5eac0cdc18376bfa55a3f831ee6689232fe1897e790eded68337e5bf4736b788",
       "normalised_phrase": "any failure by the Company to meet any internal or public projections, forecasts or estimates of revenues or earnings for any period; provided that the exception in this clause shall not prevent or otherwise affect a determination that any change or development underlying such failure constitutes, has resulted in, or contributed to, a Company Material Adverse Effect",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4072,14 +4338,63 @@
       "closure_id": "683d8c5c6268b5a1366c48f2efacb29540333e20822205889f59bdb6d61d07fa",
       "normalised_phrase": "the announcement of this Agreement and the Transactions, including Effects as a result of the identification of Parent or any of its Affiliates as the acquirer of the Company, provided that this clause (C) shall not apply to any representation or warranty set forth in Section 3.1(d)(ii) (or any condition to any party’s obligation to consummate the Mergers relating to such representation or warranty) to the extent that such representation or warranty addresses the consequences of any Effect arising out of, relating to or resulting from the execution and delivery of this Agreement or the consummation of the Mergers",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4088,14 +4403,63 @@
       "closure_id": "72d3a8f799d902f3054d29efa231b7727d6e787eafeeadcc17d5d48c0d251b53",
       "normalised_phrase": "storms, earthquakes, floods or other natural disasters",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4104,14 +4468,63 @@
       "closure_id": "797fa480b26a925e781e750ad34be5c1478a8339386bd382dd22a43c486105a7",
       "normalised_phrase": "any changes or developments in or affecting interest, currency or exchange rates, commodity prices, tariffs, anti-dumping or countervailing duties, surtaxes or any trade wars",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4120,7 +4533,54 @@
       "closure_id": "8942e2ff13cc39a700a453ee7d858fc8625cd0a7cfc9e1aa5d8039e8f3f73856",
       "normalised_phrase": "the outbreak or continuation of any epidemic, pandemic or other health crisis",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
@@ -4148,7 +4608,9 @@
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4157,14 +4619,63 @@
       "closure_id": "d4ac39747601e62f45dd74b231fb5b63411cc386277c4ffc6e50295faf5dbe1c",
       "normalised_phrase": "acts of terrorism or sabotage, civil disturbances or unrest, war (whether or not declared), the commencement, continuation or escalation of a war or military action, acts of hostility",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4173,14 +4684,63 @@
       "closure_id": "e5c1e86869916b138fe4c23fcae17e5f40fb7c2b3d77bb10edf3ab20a5ba2da7",
       "normalised_phrase": "changes or developments after the date hereof in generally accepted accounting principles in the United States (“GAAP”) or any foreign equivalents thereof or the interpretations thereof",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4189,14 +4749,63 @@
       "closure_id": "e9304d659f53f35b6e4a3aef6aed60450165f96233eb9346637dbb376945403d",
       "normalised_phrase": "changes or developments after the date hereof in applicable Laws, regulatory policies or the definitive interpretations thereof",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
       "resolved_claim_definition_key": "MAE_CARVEOUT",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4205,14 +4814,63 @@
       "closure_id": "ed14e24557901dede8acc23bb351febafeb68786b2b2f6d0765908c5125281b8",
       "normalised_phrase": "any changes or developments in or affecting the securities, credit or financial markets",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4221,14 +4879,63 @@
       "closure_id": "012620839ccd7070bc7596095bf86589a644e5e77b0e60b51907b99559227a06",
       "normalised_phrase": "any event, change, effect, development, circumstance, state of facts, condition or occurrence (each, an “Effect”) that, when considered individually or in the aggregate with all other Effects, is or would reasonably be expected to have a material adverse effect on the business, condition (financial or otherwise) or results of operations of the Company and its Subsidiaries, taken as a whole",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4237,14 +4944,63 @@
       "closure_id": "0e237ebe2787130f28cd55a2a5dcc3407357a53140c929f4e5fa9fe0127a3653",
       "normalised_phrase": "changes or developments after the date hereof in generally accepted accounting principles in the United States (“GAAP”) or any foreign equivalents thereof or the interpretations thereof, except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4253,14 +5009,63 @@
       "closure_id": "66e4ac8295059d0ad2eb4a5c55fe477130b60c6bf586cce1846d581ef46ae319",
       "normalised_phrase": "changes or developments in or affecting the industry or industries in which the Company or any of its Subsidiaries operate (including such changes or developments resulting from general economic conditions), except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4269,14 +5074,63 @@
       "closure_id": "7c8e55288ba73a35f4f7819698e51a4a3c0e6cbfa73b3c90817b17b351fbe5b6",
       "normalised_phrase": "changes or developments arising out of acts of terrorism or sabotage, civil disturbances or unrest, war (whether or not declared), the commencement, continuation or escalation of a war or military action, acts of hostility, weather conditions or other acts of God (including storms, earthquakes, floods or other natural disasters or changes due to the outbreak or continuation of any epidemic, pandemic or other health crisis), including any actual or threatened material worsening of such conditions, except to the extent that they have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4285,14 +5139,63 @@
       "closure_id": "e095df93db54cb8d12f8eff23420a7de14ef952eb803b38121b10b46fb4ab8ab",
       "normalised_phrase": "changes or developments in economic, business or labor conditions generally in the United States or other countries in which the Company or any of its Subsidiaries conduct operations, including (1) any changes or developments in or affecting the securities, credit or financial markets, (2) any changes or developments in or affecting interest, currency or exchange rates, commodity prices, tariffs, anti-dumping or countervailing duties, surtaxes or any trade wars or (3) the effect of any potential or actual government shutdown, except to the extent such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.1(a)",
       "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
       "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
       "concept_key": "DEF-MAE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 30,
       "materiality_label": "MAE",
       "auto_pass": false,
@@ -4301,7 +5204,54 @@
       "closure_id": "fccb4bc374fa5c4632a731635dc40bf0acf648634aa5a631aa574fbf3fdd33c6",
       "normalised_phrase": "changes or developments after the date hereof in applicable Laws, regulatory policies or the definitive interpretations thereof, except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
       "attachment_position": null,
-      "concept_family": "DEF-MAE"
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 800,
+          "end": 823,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. Each Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1676,
+          "end": 1699,
+          "excerpt": "re not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions. The Compa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 2562,
+          "end": 2585,
+          "excerpt": " Exchange Act of 1934, as amended (the “Exchange Act”) and (iii) “Company Material Adverse Effect” means any event, change, effect, development, circumstance, state of facts, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 3148,
+          "end": 3181,
+          "excerpt": " of the following, alone or in combination, shall be deemed to constitute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or dev",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 3215,
+          "end": 3238,
+          "excerpt": "titute or be taken into account in determining whether there has been a Company Material Adverse Effect:\n13\n(A) changes or developments in economic, business or labor conditions gener",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
   "open_world": [
@@ -4425,6 +5375,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 23,
       "resolved": 19,
@@ -4436,6 +5391,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "ac4e7ce4555bdeda494b987892070bc37abfca1989e1f0f0c2dd7f53ee997797"
+    "resolution_receipt_id": "52ff4ca7ff6cfaca877cadd3cf59c7b29cd3fe53fa5ba1bd3c54eb526f345fd6"
   }
 }

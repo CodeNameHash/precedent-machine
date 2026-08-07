@@ -208,7 +208,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -433,7 +432,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -655,13 +653,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 10,
         "materiality_label": "TERMINATION_RIGHTS",
         "known_defect": null,
@@ -884,10 +883,235 @@
       },
       "triage": {
         "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 10,
+        "materiality_label": "TERMINATION_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(b)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)(iii)",
+      "citation_context": {
+        "parent_section_reference": "7.1",
+        "child_section_reference": "7.1(b)(iii)",
+        "parent_chapeau_quote": "Section 7.1 Termination. This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Closing Date, whether before or after the receipt of the Company Requisite Vote:",
+        "child_clause_quote": "(iii) the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon; or"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "party": {
+        "role": "TERMINATION_RIGHT_HOLDER",
+        "value": "either the Company, on the one hand, or Parent, on the other hand",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": {
+        "schema_version": "SEMANTIC_SPAN/V1",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "absolute_start": 322022,
+        "absolute_end": 322131,
+        "semantic_span_id": "c222a64bcf432d8b8919537034e068d9b37a029e857ecf25d1ea2b544084a40b",
+        "exact_bytes_digest": "738aed96022b29801cbac4341cdddd07cdf69ccbef54046b0a87f727e7d16d76"
+      },
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e69092bbf0cbae0bff1005e369c46d7ca4efad67ffd224a12817199d9bffd6fd",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 321761,
+        "absolute_end": 331500,
+        "concept_key": "TERMR-NOVOTE",
+        "party": {
+          "role": "TERMINATION_RIGHT_HOLDER",
+          "value": "either the Company, on the one hand, or Parent, on the other hand",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 4,
+        "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
+        "provision_instance_id": "8960c1a75111a489da9c44df69c4fa2a2490fa62b26564e3579d2302359e25f9",
+        "closure_id": "5d8380166df1c4662f480b01981fb2caf37a3fba2096e7895a868bb79cae0d25"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0b96e0d19a26f576f96f09a8446e193ed1cd24f296ac793b4ac84e84e090996a",
+        "claim_occurrence_id": "0897a99c023b2b8abb2e31a1b8091d0a3355d82412d86d39401b01a3e4d97d07",
+        "subject_occurrence_id": "8960c1a75111a489da9c44df69c4fa2a2490fa62b26564e3579d2302359e25f9",
+        "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "91be8bccc70e3d0b1a77285cf918c5660c7a0d29a95486da7528268c517f0b44"
+        ],
+        "attributes": {
+          "section_reference": "7.1",
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "VOTE_FAILURE",
+          "terminating_party_scope": "EITHER_PARTY",
+          "terminating_party": "either the Company, on the one hand, or Parent, on the other hand",
+          "deadline_term": null,
+          "day_kind": null,
+          "period_kind": null,
+          "termination_grant_context": {
+            "grant_quote": "(b) by either the Company, on the one hand, or Parent, on the other hand, by written notice to the other, if:",
+            "trigger_limb_quote": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon"
+          },
+          "terminating_party_ref": "either the Company, on the one hand, or Parent, on the other hand",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "VOTE_FAILURE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "91be8bccc70e3d0b1a77285cf918c5660c7a0d29a95486da7528268c517f0b44",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ee43c29af0126a04845686189ff533d2072f8a81eaee53bcfd73659743f7bfd6",
+            "document_ordinal": 0,
+            "absolute_start": 1906,
+            "absolute_end": 2100,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "e18e4bccbe9b35c24f265ac662e5eddb1b2f3ce3f25c9c4b764a70f9bf7d1fdc"
+      },
+      "compiled_candidate": {
+        "section_reference": "7.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(b)(iii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0b96e0d19a26f576f96f09a8446e193ed1cd24f296ac793b4ac84e84e090996a",
+            "claim_occurrence_id": "0897a99c023b2b8abb2e31a1b8091d0a3355d82412d86d39401b01a3e4d97d07",
+            "subject_occurrence_id": "8960c1a75111a489da9c44df69c4fa2a2490fa62b26564e3579d2302359e25f9",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "91be8bccc70e3d0b1a77285cf918c5660c7a0d29a95486da7528268c517f0b44"
+            ],
+            "attributes": {
+              "section_reference": "7.1",
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "VOTE_FAILURE",
+              "terminating_party_scope": "EITHER_PARTY",
+              "terminating_party": "either the Company, on the one hand, or Parent, on the other hand",
+              "deadline_term": null,
+              "day_kind": null,
+              "period_kind": null,
+              "termination_grant_context": {
+                "grant_quote": "(b) by either the Company, on the one hand, or Parent, on the other hand, by written notice to the other, if:",
+                "trigger_limb_quote": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon"
+              },
+              "terminating_party_ref": "either the Company, on the one hand, or Parent, on the other hand",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "VOTE_FAILURE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "91be8bccc70e3d0b1a77285cf918c5660c7a0d29a95486da7528268c517f0b44",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ee43c29af0126a04845686189ff533d2072f8a81eaee53bcfd73659743f7bfd6",
+                "document_ordinal": 0,
+                "absolute_start": 1906,
+                "absolute_end": 2100,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "e18e4bccbe9b35c24f265ac662e5eddb1b2f3ce3f25c9c4b764a70f9bf7d1fdc"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TERMINATION_RIGHT",
+            "prompt_digest": "92370ed7cc7c0f91d3582d854585525c8e10c93470a0006f01227a16ad2c4874",
+            "producer_receipt_id": "9dd75ddaa9765d1acfd9fb010b06925ca434c1a00bcd01720ff5cbb78607adba",
+            "governed_scope_digest": "8a1c7c4383a6f2c8720f0391aa2191945d089a17c57ac8481cbc322cb164f6a8",
+            "extraction_provenance_id": "503a55f12611860c4ab680318455d9c829c9515efce25a25c0e06e05aede2002"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -900,7 +1124,7 @@
           "validation_source": "CONSTRUCTED_FROM_TREE",
           "model_citation": "7.1",
           "normalized_citation": "7.1",
-          "derived_citation": "7.1(b)(ii)"
+          "derived_citation": "7.1(b)(iii)"
         }
       }
     },
@@ -943,16 +1167,16 @@
           "value": "the Company",
           "capacity": "TARGET"
         },
-        "ordinal": 4,
+        "ordinal": 5,
         "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
-        "provision_instance_id": "e31ce339c457b721b98a7265f59dbafc0d2ef62c9a9e1ec705ce7d2eabc399b4",
-        "closure_id": "02783619e1bc0b02825984e8692fce43e851e00276cd83949df008d7bb79a3cd"
+        "provision_instance_id": "55a011b3eb70594ccd2fbde4cb14b60f8f0198f0cad9dbd042eff700a38f1791",
+        "closure_id": "a3a9b73654fea53db77888fb16d1d209e72b8822c69f6676c4c01944ae9b203e"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "0f4db6387bd03fc81af41e6bf36e31562dec2a1fed3a11ad4bcf6d675c8e74f5",
-        "claim_occurrence_id": "07f9b33266bf03710f1e4351c6d91a79079000ba0ed629e0339639983d93903d",
-        "subject_occurrence_id": "e31ce339c457b721b98a7265f59dbafc0d2ef62c9a9e1ec705ce7d2eabc399b4",
+        "claim_revision_id": "86c241dc6bd46b3107543b1035f4646a6611a79b361998800edf5977ea1341d1",
+        "claim_occurrence_id": "2664374eea58f97f38a4f9586ecb9c50be21001b92ed0291d680e4f5567690d4",
+        "subject_occurrence_id": "55a011b3eb70594ccd2fbde4cb14b60f8f0198f0cad9dbd042eff700a38f1791",
         "claim_definition_key": "TERMINATION_RIGHT_GRANT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -967,7 +1191,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "e02fd2d259477084fbfc98d87832ccd6d961f1fae8d12ed14a5a278f16bd698e"
+          "1a74d536906af167e9edc7aad147a29077ad50c46b78b312151efa47d11a7d48"
         ],
         "attributes": {
           "section_reference": "7.1",
@@ -1001,7 +1225,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "e02fd2d259477084fbfc98d87832ccd6d961f1fae8d12ed14a5a278f16bd698e",
+            "claim_evidence_id": "1a74d536906af167e9edc7aad147a29077ad50c46b78b312151efa47d11a7d48",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "dbc58ad308d1acf7056a004d07c221778a9a8a54a55ea757ec167b83bfb00b0c",
             "document_ordinal": 0,
@@ -1013,7 +1237,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "c541f21ecc090713ac2223c3fbd36dc1bce9ec05a04dca1c7db8eff87346e94b"
+        "closure_id": "1e6716d3aef0c521b239a80c0eb9aebd3034ca67f34ba0898742ae0204ea6644"
       },
       "compiled_candidate": {
         "section_reference": "7.1",
@@ -1030,9 +1254,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "0f4db6387bd03fc81af41e6bf36e31562dec2a1fed3a11ad4bcf6d675c8e74f5",
-            "claim_occurrence_id": "07f9b33266bf03710f1e4351c6d91a79079000ba0ed629e0339639983d93903d",
-            "subject_occurrence_id": "e31ce339c457b721b98a7265f59dbafc0d2ef62c9a9e1ec705ce7d2eabc399b4",
+            "claim_revision_id": "86c241dc6bd46b3107543b1035f4646a6611a79b361998800edf5977ea1341d1",
+            "claim_occurrence_id": "2664374eea58f97f38a4f9586ecb9c50be21001b92ed0291d680e4f5567690d4",
+            "subject_occurrence_id": "55a011b3eb70594ccd2fbde4cb14b60f8f0198f0cad9dbd042eff700a38f1791",
             "claim_definition_key": "TERMINATION_RIGHT_GRANT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -1047,7 +1271,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "e02fd2d259477084fbfc98d87832ccd6d961f1fae8d12ed14a5a278f16bd698e"
+              "1a74d536906af167e9edc7aad147a29077ad50c46b78b312151efa47d11a7d48"
             ],
             "attributes": {
               "section_reference": "7.1",
@@ -1081,7 +1305,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "e02fd2d259477084fbfc98d87832ccd6d961f1fae8d12ed14a5a278f16bd698e",
+                "claim_evidence_id": "1a74d536906af167e9edc7aad147a29077ad50c46b78b312151efa47d11a7d48",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "dbc58ad308d1acf7056a004d07c221778a9a8a54a55ea757ec167b83bfb00b0c",
                 "document_ordinal": 0,
@@ -1093,7 +1317,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "c541f21ecc090713ac2223c3fbd36dc1bce9ec05a04dca1c7db8eff87346e94b"
+            "closure_id": "1e6716d3aef0c521b239a80c0eb9aebd3034ca67f34ba0898742ae0204ea6644"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1112,7 +1336,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1168,16 +1391,16 @@
           "value": "the Company",
           "capacity": "TARGET"
         },
-        "ordinal": 5,
+        "ordinal": 6,
         "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
-        "provision_instance_id": "50ce60c95cbdc3e2e549271530f5331908b563f73672bf9c5df2fae57b82f8bc",
-        "closure_id": "2cf1ed9d16e19a49b138ebf5951ddad014e3daf844a1f33313f2e4744b18d088"
+        "provision_instance_id": "5eea88e54f531ea6808cd9f27c0f661fee2cb0ca3b56c13a7f4f6d0e13d74452",
+        "closure_id": "380f7e1685ed131e535c644009adfd61bba346d61c904a5fcc364fb73ee46afc"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "f3e6dcd8790836e5476e5db1ec4c960154b4a97e5e1f69b6075808a6220ef208",
-        "claim_occurrence_id": "8656231510f758eac268c0f3ff1d612768b6edd0de291de4605d04c971c413e9",
-        "subject_occurrence_id": "50ce60c95cbdc3e2e549271530f5331908b563f73672bf9c5df2fae57b82f8bc",
+        "claim_revision_id": "38a6c46fd68d02b7ad9cb7752e253778e7bb49da673700e4e49eb8a2cd6141e5",
+        "claim_occurrence_id": "14fd272adcef8de07cd263b02a06776a9efa349dbbd6a0fe9f50179ba1fcfb7c",
+        "subject_occurrence_id": "5eea88e54f531ea6808cd9f27c0f661fee2cb0ca3b56c13a7f4f6d0e13d74452",
         "claim_definition_key": "TERMINATION_RIGHT_GRANT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -1192,7 +1415,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "8d0b4d528b93d12d298b627651bb5eca6b89b037023ef6e7c27ad08fe92e9df7"
+          "4a5b9b5c9fd1e6702b65b4b427f8b05aa30b82f703b4fc85e16b55d4d3a74f20"
         ],
         "attributes": {
           "section_reference": "7.1",
@@ -1226,7 +1449,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "8d0b4d528b93d12d298b627651bb5eca6b89b037023ef6e7c27ad08fe92e9df7",
+            "claim_evidence_id": "4a5b9b5c9fd1e6702b65b4b427f8b05aa30b82f703b4fc85e16b55d4d3a74f20",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "2ed903c10fedb75fc493681405f31ae782eca4f6fd91231fc2582cbd7fa0b6ce",
             "document_ordinal": 0,
@@ -1238,7 +1461,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "ae5966a20055cf6579e1d4fc7a826375b2ee19c1d53c99bac6742e9b6f6da07b"
+        "closure_id": "15a1c3089bb9f87ee5b20f7e3a4478b84ba8ec8b2c66589485ff9c4e6d6add0e"
       },
       "compiled_candidate": {
         "section_reference": "7.1",
@@ -1255,9 +1478,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "f3e6dcd8790836e5476e5db1ec4c960154b4a97e5e1f69b6075808a6220ef208",
-            "claim_occurrence_id": "8656231510f758eac268c0f3ff1d612768b6edd0de291de4605d04c971c413e9",
-            "subject_occurrence_id": "50ce60c95cbdc3e2e549271530f5331908b563f73672bf9c5df2fae57b82f8bc",
+            "claim_revision_id": "38a6c46fd68d02b7ad9cb7752e253778e7bb49da673700e4e49eb8a2cd6141e5",
+            "claim_occurrence_id": "14fd272adcef8de07cd263b02a06776a9efa349dbbd6a0fe9f50179ba1fcfb7c",
+            "subject_occurrence_id": "5eea88e54f531ea6808cd9f27c0f661fee2cb0ca3b56c13a7f4f6d0e13d74452",
             "claim_definition_key": "TERMINATION_RIGHT_GRANT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -1272,7 +1495,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "8d0b4d528b93d12d298b627651bb5eca6b89b037023ef6e7c27ad08fe92e9df7"
+              "4a5b9b5c9fd1e6702b65b4b427f8b05aa30b82f703b4fc85e16b55d4d3a74f20"
             ],
             "attributes": {
               "section_reference": "7.1",
@@ -1306,7 +1529,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "8d0b4d528b93d12d298b627651bb5eca6b89b037023ef6e7c27ad08fe92e9df7",
+                "claim_evidence_id": "4a5b9b5c9fd1e6702b65b4b427f8b05aa30b82f703b4fc85e16b55d4d3a74f20",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "2ed903c10fedb75fc493681405f31ae782eca4f6fd91231fc2582cbd7fa0b6ce",
                 "document_ordinal": 0,
@@ -1318,7 +1541,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "ae5966a20055cf6579e1d4fc7a826375b2ee19c1d53c99bac6742e9b6f6da07b"
+            "closure_id": "15a1c3089bb9f87ee5b20f7e3a4478b84ba8ec8b2c66589485ff9c4e6d6add0e"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1337,7 +1560,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1393,16 +1615,16 @@
           "value": "Parent",
           "capacity": "BUYER"
         },
-        "ordinal": 6,
+        "ordinal": 7,
         "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
-        "provision_instance_id": "3e92be9476a741322a8048685b247451f157dbe31041884b48bb1040555b0d10",
-        "closure_id": "a77a3843371e31046e5f3e95691a9681100d3630f565e3c7631c4f6fe659986d"
+        "provision_instance_id": "5d277b90bf97415da759758bd45e62da0c2df1bdcee9cee1f8bdb7a80aaa7747",
+        "closure_id": "4cc414f3296417ec5d2d99d889d292d8c4a140afedbae2c9f9f37934eb26fe51"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "216319cd730e07c259fb336693e046495a383b9ebd69a6f997176987f804614c",
-        "claim_occurrence_id": "7e10683913166bfd3bd1accc395a126e3e97da06c31f7097dc275503e8ab2950",
-        "subject_occurrence_id": "3e92be9476a741322a8048685b247451f157dbe31041884b48bb1040555b0d10",
+        "claim_revision_id": "03f5d62c7be4d466c21ab60fbb5c8bcd590c1bfe7b5dc908f93d8bd727ac7ef6",
+        "claim_occurrence_id": "9856502f77d646f83bae44eac7eec4c8787a23bbc81c6fcc4d388dc96fd405b8",
+        "subject_occurrence_id": "5d277b90bf97415da759758bd45e62da0c2df1bdcee9cee1f8bdb7a80aaa7747",
         "claim_definition_key": "TERMINATION_RIGHT_GRANT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -1417,7 +1639,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "5b15188636d41b201da8189b69547881cbb0a91ae5c3c8da98aa9278e57a9977"
+          "292bf13ddf400fb3c5e707b1feba5232e4eb0b5f98033ab81e9883e75620f86a"
         ],
         "attributes": {
           "section_reference": "7.1",
@@ -1451,7 +1673,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "5b15188636d41b201da8189b69547881cbb0a91ae5c3c8da98aa9278e57a9977",
+            "claim_evidence_id": "292bf13ddf400fb3c5e707b1feba5232e4eb0b5f98033ab81e9883e75620f86a",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "d56a9d14a78180b5434b6ba24cc705e55e9f60c8da96bd9371d871daacd73a1d",
             "document_ordinal": 0,
@@ -1463,7 +1685,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "23f680bf03882cf1f5762726f206755dac338623935564fd63a4ac976fe41e86"
+        "closure_id": "ba86daf9e91495fc4318b334ac0997365be9d252a6ce3d6d8c8349f238c809ab"
       },
       "compiled_candidate": {
         "section_reference": "7.1",
@@ -1480,9 +1702,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "216319cd730e07c259fb336693e046495a383b9ebd69a6f997176987f804614c",
-            "claim_occurrence_id": "7e10683913166bfd3bd1accc395a126e3e97da06c31f7097dc275503e8ab2950",
-            "subject_occurrence_id": "3e92be9476a741322a8048685b247451f157dbe31041884b48bb1040555b0d10",
+            "claim_revision_id": "03f5d62c7be4d466c21ab60fbb5c8bcd590c1bfe7b5dc908f93d8bd727ac7ef6",
+            "claim_occurrence_id": "9856502f77d646f83bae44eac7eec4c8787a23bbc81c6fcc4d388dc96fd405b8",
+            "subject_occurrence_id": "5d277b90bf97415da759758bd45e62da0c2df1bdcee9cee1f8bdb7a80aaa7747",
             "claim_definition_key": "TERMINATION_RIGHT_GRANT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -1497,7 +1719,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "5b15188636d41b201da8189b69547881cbb0a91ae5c3c8da98aa9278e57a9977"
+              "292bf13ddf400fb3c5e707b1feba5232e4eb0b5f98033ab81e9883e75620f86a"
             ],
             "attributes": {
               "section_reference": "7.1",
@@ -1531,7 +1753,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "5b15188636d41b201da8189b69547881cbb0a91ae5c3c8da98aa9278e57a9977",
+                "claim_evidence_id": "292bf13ddf400fb3c5e707b1feba5232e4eb0b5f98033ab81e9883e75620f86a",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "d56a9d14a78180b5434b6ba24cc705e55e9f60c8da96bd9371d871daacd73a1d",
                 "document_ordinal": 0,
@@ -1543,7 +1765,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "23f680bf03882cf1f5762726f206755dac338623935564fd63a4ac976fe41e86"
+            "closure_id": "ba86daf9e91495fc4318b334ac0997365be9d252a6ce3d6d8c8349f238c809ab"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1562,7 +1784,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1618,16 +1839,16 @@
           "value": "Parent",
           "capacity": "BUYER"
         },
-        "ordinal": 7,
+        "ordinal": 8,
         "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
-        "provision_instance_id": "3a05cb6557b6f52eca0434e9c1e061db8dd048789bd85c7f770c674f76a165f7",
-        "closure_id": "28b5a6ad3429b4141e77b853c1456311db975f71f6a9f7262eab842ccce2880c"
+        "provision_instance_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+        "closure_id": "7ae807bf1ef1ee0135b5edf7e489d61bfd8993378ad7fa8ee07c4cda65092cfc"
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "91fd8ded1850b046670dc09b577103b7cc6e6c9b7fb8d93de463fcff312108d5",
-        "claim_occurrence_id": "e69d3b2a8aff6c5802f8f1a60c390b949c5d263df036e80e4ba45a3bba217afc",
-        "subject_occurrence_id": "3a05cb6557b6f52eca0434e9c1e061db8dd048789bd85c7f770c674f76a165f7",
+        "claim_revision_id": "73cb55757768a825de481e967f6b46481802132f5949b580e622185f00b80330",
+        "claim_occurrence_id": "0d1239e63e76f612c913ca006ecb66c58dfedaac5b5b99c7d09188a6aa368f09",
+        "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
         "claim_definition_key": "TERMINATION_RIGHT_GRANT",
         "claim_definition_version": 1,
         "ordinal": 0,
@@ -1642,7 +1863,7 @@
         "not_examined": null,
         "failure": null,
         "evidence_ids": [
-          "7c382b57d6148578c4e7e16d8bdb9868ce06624a645c3d9c2373d8acdb064196"
+          "045ea8d48bdafc182055ddc84065342614073e3ce97c79f1b3022b9f9e63b4be"
         ],
         "attributes": {
           "section_reference": "7.1",
@@ -1676,7 +1897,7 @@
         "evidence": [
           {
             "schema_version": "CLAIM_EVIDENCE/V1",
-            "claim_evidence_id": "7c382b57d6148578c4e7e16d8bdb9868ce06624a645c3d9c2373d8acdb064196",
+            "claim_evidence_id": "045ea8d48bdafc182055ddc84065342614073e3ce97c79f1b3022b9f9e63b4be",
             "evidence_role": "OPERATIVE_TEXT",
             "excerpt_id": "3ea38a910845ca99b4cfd5634248d1760647a899716e4333b4ebdae3e5398277",
             "document_ordinal": 0,
@@ -1688,7 +1909,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "899456a8df5af555e9dc8237d3449bb215ecdcc2af3c818bfbead4f30e2f5826"
+        "closure_id": "d2ae464771a49931782085e14251a27c0a3b108908bbd9404b254288bed1dd78"
       },
       "compiled_candidate": {
         "section_reference": "7.1",
@@ -1705,9 +1926,9 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "91fd8ded1850b046670dc09b577103b7cc6e6c9b7fb8d93de463fcff312108d5",
-            "claim_occurrence_id": "e69d3b2a8aff6c5802f8f1a60c390b949c5d263df036e80e4ba45a3bba217afc",
-            "subject_occurrence_id": "3a05cb6557b6f52eca0434e9c1e061db8dd048789bd85c7f770c674f76a165f7",
+            "claim_revision_id": "73cb55757768a825de481e967f6b46481802132f5949b580e622185f00b80330",
+            "claim_occurrence_id": "0d1239e63e76f612c913ca006ecb66c58dfedaac5b5b99c7d09188a6aa368f09",
+            "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
             "claim_definition_key": "TERMINATION_RIGHT_GRANT",
             "claim_definition_version": 1,
             "ordinal": 0,
@@ -1722,7 +1943,7 @@
             "not_examined": null,
             "failure": null,
             "evidence_ids": [
-              "7c382b57d6148578c4e7e16d8bdb9868ce06624a645c3d9c2373d8acdb064196"
+              "045ea8d48bdafc182055ddc84065342614073e3ce97c79f1b3022b9f9e63b4be"
             ],
             "attributes": {
               "section_reference": "7.1",
@@ -1756,7 +1977,7 @@
             "evidence": [
               {
                 "schema_version": "CLAIM_EVIDENCE/V1",
-                "claim_evidence_id": "7c382b57d6148578c4e7e16d8bdb9868ce06624a645c3d9c2373d8acdb064196",
+                "claim_evidence_id": "045ea8d48bdafc182055ddc84065342614073e3ce97c79f1b3022b9f9e63b4be",
                 "evidence_role": "OPERATIVE_TEXT",
                 "excerpt_id": "3ea38a910845ca99b4cfd5634248d1760647a899716e4333b4ebdae3e5398277",
                 "document_ordinal": 0,
@@ -1768,7 +1989,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "899456a8df5af555e9dc8237d3449bb215ecdcc2af3c818bfbead4f30e2f5826"
+            "closure_id": "d2ae464771a49931782085e14251a27c0a3b108908bbd9404b254288bed1dd78"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1787,8 +2008,680 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 10,
+        "materiality_label": "TERMINATION_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(d)(ii)",
+      "citation_context": {
+        "parent_section_reference": "7.1",
+        "child_section_reference": "7.1(d)(ii)",
+        "parent_chapeau_quote": "Section 7.1 Termination. This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Closing Date, whether before or after the receipt of the Company Requisite Vote:",
+        "child_clause_quote": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "party": {
+        "role": "TERMINATION_RIGHT_HOLDER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": {
+        "schema_version": "SEMANTIC_SPAN/V1",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "absolute_start": 326973,
+        "absolute_end": 327026,
+        "semantic_span_id": "dd626d49f4f6db0c49fabf0531913c553ae569665839f56fae0417a7d7da736d",
+        "exact_bytes_digest": "4086ab6c492a316c7b352d1372873de33084c38436630addd76f96fa987a9339"
+      },
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e69092bbf0cbae0bff1005e369c46d7ca4efad67ffd224a12817199d9bffd6fd",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 321761,
+        "absolute_end": 331500,
+        "concept_key": "TERMR-RECOMMEND",
+        "party": {
+          "role": "TERMINATION_RIGHT_HOLDER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 8,
+        "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
+        "provision_instance_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+        "closure_id": "7ae807bf1ef1ee0135b5edf7e489d61bfd8993378ad7fa8ee07c4cda65092cfc"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5c26d05c3d1f1585b32871dedfb743090550464919c5568c8c6d14151807a0b3",
+        "claim_occurrence_id": "10cf209f26bf1fd455105d4ac5274b37dd25bf15502ce93cc8fa8e3cc2fe81d8",
+        "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+        "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "cb4c9815929b9624a6a9e9a0041acdc8c283cb2f413ed4ab287ff4cc73c0a8ef"
+        ],
+        "attributes": {
+          "section_reference": "7.1",
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "RECOMMENDATION_CHANGE",
+          "terminating_party_scope": "ONE_PARTY",
+          "terminating_party": "Parent",
+          "deadline_term": null,
+          "day_kind": null,
+          "period_kind": null,
+          "termination_grant_context": {
+            "grant_quote": "(d) by written notice from Parent to the Company, if:",
+            "trigger_limb_quote": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer"
+          },
+          "terminating_party_ref": "Parent",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "RECOMMENDATION_CHANGE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "cb4c9815929b9624a6a9e9a0041acdc8c283cb2f413ed4ab287ff4cc73c0a8ef",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "d9220393a33a92b8bd3fd6df75dc7711e309a9f903e7f745722c23c147cbc695",
+            "document_ordinal": 0,
+            "absolute_start": 6262,
+            "absolute_end": 6747,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "1d84b3078876d7fc230c3ae275831cb7fed27ad9375b8d16490dd87db7de14ce"
+      },
+      "compiled_candidate": {
+        "section_reference": "7.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5c26d05c3d1f1585b32871dedfb743090550464919c5568c8c6d14151807a0b3",
+            "claim_occurrence_id": "10cf209f26bf1fd455105d4ac5274b37dd25bf15502ce93cc8fa8e3cc2fe81d8",
+            "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "cb4c9815929b9624a6a9e9a0041acdc8c283cb2f413ed4ab287ff4cc73c0a8ef"
+            ],
+            "attributes": {
+              "section_reference": "7.1",
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "RECOMMENDATION_CHANGE",
+              "terminating_party_scope": "ONE_PARTY",
+              "terminating_party": "Parent",
+              "deadline_term": null,
+              "day_kind": null,
+              "period_kind": null,
+              "termination_grant_context": {
+                "grant_quote": "(d) by written notice from Parent to the Company, if:",
+                "trigger_limb_quote": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer"
+              },
+              "terminating_party_ref": "Parent",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "RECOMMENDATION_CHANGE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "cb4c9815929b9624a6a9e9a0041acdc8c283cb2f413ed4ab287ff4cc73c0a8ef",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "d9220393a33a92b8bd3fd6df75dc7711e309a9f903e7f745722c23c147cbc695",
+                "document_ordinal": 0,
+                "absolute_start": 6262,
+                "absolute_end": 6747,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "1d84b3078876d7fc230c3ae275831cb7fed27ad9375b8d16490dd87db7de14ce"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TERMINATION_RIGHT",
+            "prompt_digest": "92370ed7cc7c0f91d3582d854585525c8e10c93470a0006f01227a16ad2c4874",
+            "producer_receipt_id": "9dd75ddaa9765d1acfd9fb010b06925ca434c1a00bcd01720ff5cbb78607adba",
+            "governed_scope_digest": "8a1c7c4383a6f2c8720f0391aa2191945d089a17c57ac8481cbc322cb164f6a8",
+            "extraction_provenance_id": "503a55f12611860c4ab680318455d9c829c9515efce25a25c0e06e05aede2002"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 10,
+        "materiality_label": "TERMINATION_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(d)(ii)",
+      "citation_context": {
+        "parent_section_reference": "7.1",
+        "child_section_reference": "7.1(d)(ii)",
+        "parent_chapeau_quote": "Section 7.1 Termination. This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Closing Date, whether before or after the receipt of the Company Requisite Vote:",
+        "child_clause_quote": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "party": {
+        "role": "TERMINATION_RIGHT_HOLDER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": {
+        "schema_version": "SEMANTIC_SPAN/V1",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "absolute_start": 326973,
+        "absolute_end": 327026,
+        "semantic_span_id": "dd626d49f4f6db0c49fabf0531913c553ae569665839f56fae0417a7d7da736d",
+        "exact_bytes_digest": "4086ab6c492a316c7b352d1372873de33084c38436630addd76f96fa987a9339"
+      },
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e69092bbf0cbae0bff1005e369c46d7ca4efad67ffd224a12817199d9bffd6fd",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 321761,
+        "absolute_end": 331500,
+        "concept_key": "TERMR-RECOMMEND",
+        "party": {
+          "role": "TERMINATION_RIGHT_HOLDER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 8,
+        "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
+        "provision_instance_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+        "closure_id": "7ae807bf1ef1ee0135b5edf7e489d61bfd8993378ad7fa8ee07c4cda65092cfc"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c3e15f16c9c74d477a4ce8a115f7d5e56bdfbe14927e59c3ddfe8dbfb5c94ca1",
+        "claim_occurrence_id": "3bb1acec1f92d06c8d1f33e5f164d1768ff1a4eb550868919b206e70ef171a74",
+        "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+        "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a23131f9517ada104975f21ac0331725fa6efa1a8dde8d31c7d1d1a82f814321"
+        ],
+        "attributes": {
+          "section_reference": "7.1",
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "RECOMMENDATION_CHANGE",
+          "terminating_party_scope": "ONE_PARTY",
+          "terminating_party": "Parent",
+          "deadline_term": null,
+          "day_kind": null,
+          "period_kind": null,
+          "termination_grant_context": {
+            "grant_quote": "(d) by written notice from Parent to the Company, if:",
+            "trigger_limb_quote": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced"
+          },
+          "terminating_party_ref": "Parent",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "RECOMMENDATION_CHANGE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a23131f9517ada104975f21ac0331725fa6efa1a8dde8d31c7d1d1a82f814321",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5e8afa9fad84c4fda4889863982b5054e5193fa58190d70f9421e81a62cd130b",
+            "document_ordinal": 0,
+            "absolute_start": 6753,
+            "absolute_end": 6947,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8f65768d9ae1d1232b66138e30e64d19b4e4b186af13c92e5d936ce66cbd9b0e"
+      },
+      "compiled_candidate": {
+        "section_reference": "7.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c3e15f16c9c74d477a4ce8a115f7d5e56bdfbe14927e59c3ddfe8dbfb5c94ca1",
+            "claim_occurrence_id": "3bb1acec1f92d06c8d1f33e5f164d1768ff1a4eb550868919b206e70ef171a74",
+            "subject_occurrence_id": "2f4304eb2b6fd598cf00c2aef833ca2a13009466ebc75af0a4ea3228dfe7f25a",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a23131f9517ada104975f21ac0331725fa6efa1a8dde8d31c7d1d1a82f814321"
+            ],
+            "attributes": {
+              "section_reference": "7.1",
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "RECOMMENDATION_CHANGE",
+              "terminating_party_scope": "ONE_PARTY",
+              "terminating_party": "Parent",
+              "deadline_term": null,
+              "day_kind": null,
+              "period_kind": null,
+              "termination_grant_context": {
+                "grant_quote": "(d) by written notice from Parent to the Company, if:",
+                "trigger_limb_quote": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced"
+              },
+              "terminating_party_ref": "Parent",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "RECOMMENDATION_CHANGE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a23131f9517ada104975f21ac0331725fa6efa1a8dde8d31c7d1d1a82f814321",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5e8afa9fad84c4fda4889863982b5054e5193fa58190d70f9421e81a62cd130b",
+                "document_ordinal": 0,
+                "absolute_start": 6753,
+                "absolute_end": 6947,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8f65768d9ae1d1232b66138e30e64d19b4e4b186af13c92e5d936ce66cbd9b0e"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TERMINATION_RIGHT",
+            "prompt_digest": "92370ed7cc7c0f91d3582d854585525c8e10c93470a0006f01227a16ad2c4874",
+            "producer_receipt_id": "9dd75ddaa9765d1acfd9fb010b06925ca434c1a00bcd01720ff5cbb78607adba",
+            "governed_scope_digest": "8a1c7c4383a6f2c8720f0391aa2191945d089a17c57ac8481cbc322cb164f6a8",
+            "extraction_provenance_id": "503a55f12611860c4ab680318455d9c829c9515efce25a25c0e06e05aede2002"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 10,
+        "materiality_label": "TERMINATION_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(d)(ii)",
+      "citation_context": {
+        "parent_section_reference": "7.1",
+        "child_section_reference": "7.1(d)(ii)",
+        "parent_chapeau_quote": "Section 7.1 Termination. This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Closing Date, whether before or after the receipt of the Company Requisite Vote:",
+        "child_clause_quote": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOSOL-BREACH",
+      "party": {
+        "role": "TERMINATION_RIGHT_HOLDER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": {
+        "schema_version": "SEMANTIC_SPAN/V1",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "absolute_start": 326973,
+        "absolute_end": 327026,
+        "semantic_span_id": "dd626d49f4f6db0c49fabf0531913c553ae569665839f56fae0417a7d7da736d",
+        "exact_bytes_digest": "4086ab6c492a316c7b352d1372873de33084c38436630addd76f96fa987a9339"
+      },
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e69092bbf0cbae0bff1005e369c46d7ca4efad67ffd224a12817199d9bffd6fd",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 321761,
+        "absolute_end": 331500,
+        "concept_key": "TERMR-NOSOL-BREACH",
+        "party": {
+          "role": "TERMINATION_RIGHT_HOLDER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 9,
+        "source_anchor_id": "e296afe9d28b182004556ef0d493e767ce369f0ae5cd5fee7b7034190cbc2f5d",
+        "provision_instance_id": "1942dffbfdded06db1e307a675513cef9d9aef1bcf7377ed8e6749247c832f44",
+        "closure_id": "b37c96da0e6c9478033d4a72c643f1103c2b77f061cb13759ebaf849947ce477"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "9547faf68d2d60f695b1a226afc9e6380ab072fb8cdbbcfcf0d0cba08f2ab31e",
+        "claim_occurrence_id": "e2c8f3bf6bf734a542bfa163c181cef55449002d310a7c6e357b855ca08734d4",
+        "subject_occurrence_id": "1942dffbfdded06db1e307a675513cef9d9aef1bcf7377ed8e6749247c832f44",
+        "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fed215eec381a4cc567401ba46fd94d302848532be2ee5fbef68a3e7b619e7be"
+        ],
+        "attributes": {
+          "section_reference": "7.1",
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "NO_SOLICITATION_BREACH",
+          "terminating_party_scope": "ONE_PARTY",
+          "terminating_party": "Parent",
+          "deadline_term": null,
+          "day_kind": null,
+          "period_kind": null,
+          "termination_grant_context": {
+            "grant_quote": "(d) by written notice from Parent to the Company, if:",
+            "trigger_limb_quote": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)"
+          },
+          "terminating_party_ref": "Parent",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "NO_SOLICITATION_BREACH"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fed215eec381a4cc567401ba46fd94d302848532be2ee5fbef68a3e7b619e7be",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "fd4be795e63e9ca05001ba3dd13a7acb82b833a8fd88941515cc3e3fecb91432",
+            "document_ordinal": 0,
+            "absolute_start": 7806,
+            "absolute_end": 7963,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9271ccc5a92dc102a075c3efdcbe34ac3cf64ae93671c26c8d9504af3f3c8558"
+      },
+      "compiled_candidate": {
+        "section_reference": "7.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "7.1",
+          "normalized_citation": "7.1",
+          "derived_citation": "7.1(d)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "9547faf68d2d60f695b1a226afc9e6380ab072fb8cdbbcfcf0d0cba08f2ab31e",
+            "claim_occurrence_id": "e2c8f3bf6bf734a542bfa163c181cef55449002d310a7c6e357b855ca08734d4",
+            "subject_occurrence_id": "1942dffbfdded06db1e307a675513cef9d9aef1bcf7377ed8e6749247c832f44",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fed215eec381a4cc567401ba46fd94d302848532be2ee5fbef68a3e7b619e7be"
+            ],
+            "attributes": {
+              "section_reference": "7.1",
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "NO_SOLICITATION_BREACH",
+              "terminating_party_scope": "ONE_PARTY",
+              "terminating_party": "Parent",
+              "deadline_term": null,
+              "day_kind": null,
+              "period_kind": null,
+              "termination_grant_context": {
+                "grant_quote": "(d) by written notice from Parent to the Company, if:",
+                "trigger_limb_quote": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)"
+              },
+              "terminating_party_ref": "Parent",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "NO_SOLICITATION_BREACH"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fed215eec381a4cc567401ba46fd94d302848532be2ee5fbef68a3e7b619e7be",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "fd4be795e63e9ca05001ba3dd13a7acb82b833a8fd88941515cc3e3fecb91432",
+                "document_ordinal": 0,
+                "absolute_start": 7806,
+                "absolute_end": 7963,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9271ccc5a92dc102a075c3efdcbe34ac3cf64ae93671c26c8d9504af3f3c8558"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TERMINATION_RIGHT",
+            "prompt_digest": "92370ed7cc7c0f91d3582d854585525c8e10c93470a0006f01227a16ad2c4874",
+            "producer_receipt_id": "9dd75ddaa9765d1acfd9fb010b06925ca434c1a00bcd01720ff5cbb78607adba",
+            "governed_scope_digest": "8a1c7c4383a6f2c8720f0391aa2191945d089a17c57ac8481cbc322cb164f6a8",
+            "extraction_provenance_id": "503a55f12611860c4ab680318455d9c829c9515efce25a25c0e06e05aede2002"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
         ],
         "reasons": [],
         "materiality_rank": 10,
@@ -1824,27 +2717,6 @@
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "baba501ec3a76063c4addfabac6c4101dd46d35336e3ee44163a33633c3ce45c",
-      "closure_id": "0a764bc636d0d8ef636fb19392bb5ef985bcb3c169ca972a5b7ccd6dc81f4792",
-      "normalised_phrase": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
       "concept_key": "TERMR-BREACH",
@@ -1853,32 +2725,43 @@
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "216319cd730e07c259fb336693e046495a383b9ebd69a6f997176987f804614c",
-      "closure_id": "23f680bf03882cf1f5762726f206755dac338623935564fd63a4ac976fe41e86",
-      "normalised_phrase": "the Company or the Partnership shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
+      "claim_revision_id": "38a6c46fd68d02b7ad9cb7752e253778e7bb49da673700e4e49eb8a2cd6141e5",
+      "closure_id": "15a1c3089bb9f87ee5b20f7e3a4478b84ba8ec8b2c66589485ff9c4e6d6add0e",
+      "normalised_phrase": "Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
       "attachment_position": null,
       "concept_family": "TERMR-BREACH"
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(b)(iii)",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "4e88cc3cd70248e715323b1e5ed00595c8348daae5812f757176307e107605e3",
-      "closure_id": "2a743e28406fd9659fdbb449a8c9f1f336b2ef71dec21eb7877f7d0382fb6abb",
-      "normalised_phrase": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+      "has_resolution": true,
+      "claim_revision_id": "5c26d05c3d1f1585b32871dedfb743090550464919c5568c8c6d14151807a0b3",
+      "closure_id": "1d84b3078876d7fc230c3ae275831cb7fed27ad9375b8d16490dd87db7de14ce",
+      "normalised_phrase": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
       "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
+      "concept_family": "TERMR-RECOMMEND"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-SUPERIOR",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "86c241dc6bd46b3107543b1035f4646a6611a79b361998800edf5977ea1341d1",
+      "closure_id": "1e6716d3aef0c521b239a80c0eb9aebd3034ca67f34ba0898742ae0204ea6644",
+      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMR-SUPERIOR"
     },
     {
       "section_reference": "7.1",
@@ -1898,27 +2781,6 @@
       "original_claim_occurrence_id": "c67238f82b17af620779c02f598ecc9fe15f8d81788752e0a52bd9f8fc3e620f",
       "closure_id": "4a5bc680f55b5432185fb41b850a6fefa87f71a199f5405cb066ed99c54f198b",
       "normalised_phrase": "the Company and the Partnership fail to consummate the Closing on or before the fifth (5th) Business Day after delivery of the notice referenced in clause (B) of this Section 7.1(d)(iii)",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "1d57319033e870d1e4f4aa4345d3f64b2ab0037c56fcf53f0b3ab2a064cac797",
-      "closure_id": "673c30cfc6d3c6c11df24d93ec7690f42814da39f5a7f0c33e372410b1a281f4",
-      "normalised_phrase": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
       "attachment_position": null,
       "concept_family": "TERMR-PENDING"
     },
@@ -1953,11 +2815,27 @@
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "91fd8ded1850b046670dc09b577103b7cc6e6c9b7fb8d93de463fcff312108d5",
-      "closure_id": "899456a8df5af555e9dc8237d3449bb215ecdcc2af3c818bfbead4f30e2f5826",
-      "normalised_phrase": "the Company Board shall have effected an Adverse Recommendation Change",
+      "claim_revision_id": "c3e15f16c9c74d477a4ce8a115f7d5e56bdfbe14927e59c3ddfe8dbfb5c94ca1",
+      "closure_id": "8f65768d9ae1d1232b66138e30e64d19b4e4b186af13c92e5d936ce66cbd9b0e",
+      "normalised_phrase": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
       "attachment_position": null,
       "concept_family": "TERMR-RECOMMEND"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOSOL-BREACH",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9547faf68d2d60f695b1a226afc9e6380ab072fb8cdbbcfcf0d0cba08f2ab31e",
+      "closure_id": "9271ccc5a92dc102a075c3efdcbe34ac3cf64ae93671c26c8d9504af3f3c8558",
+      "normalised_phrase": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOSOL-BREACH"
     },
     {
       "section_reference": "7.1",
@@ -1982,28 +2860,12 @@
     },
     {
       "section_reference": "7.1",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
-      "concept_key": "TERMR-BREACH",
-      "reasons": [],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": true,
-      "claim_revision_id": "f3e6dcd8790836e5476e5db1ec4c960154b4a97e5e1f69b6075808a6220ef208",
-      "closure_id": "ae5966a20055cf6579e1d4fc7a826375b2ee19c1d53c99bac6742e9b6f6da07b",
-      "normalised_phrase": "Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
-      "attachment_position": null,
-      "concept_family": "TERMR-BREACH"
-    },
-    {
-      "section_reference": "7.1",
       "source_citation": "7.1(d)(i)",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": null,
       "concept_key": "TERMR-BREACH",
       "reasons": [
-        "SPELLED_DIGIT_MISMATCH"
+        "PERIOD_KIND_UNCORROBORATED"
       ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
@@ -2019,40 +2881,35 @@
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "fd438dcad176d53c3fecaeb9f65a78811befa9538ffbba44bc4627e410919b00",
-      "closure_id": "c4300c277df4dd79b388ab7a413d86821164ac9800571f45500ff5408d651eff",
-      "normalised_phrase": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
-      "concept_key": "TERMR-SUPERIOR",
+      "concept_key": "TERMR-BREACH",
       "reasons": [],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "0f4db6387bd03fc81af41e6bf36e31562dec2a1fed3a11ad4bcf6d675c8e74f5",
-      "closure_id": "c541f21ecc090713ac2223c3fbd36dc1bce9ec05a04dca1c7db8eff87346e94b",
-      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "claim_revision_id": "03f5d62c7be4d466c21ab60fbb5c8bcd590c1bfe7b5dc908f93d8bd727ac7ef6",
+      "closure_id": "ba86daf9e91495fc4318b334ac0997365be9d252a6ce3d6d8c8349f238c809ab",
+      "normalised_phrase": "the Company or the Partnership shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
       "attachment_position": null,
-      "concept_family": "TERMR-SUPERIOR"
+      "concept_family": "TERMR-BREACH"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "73cb55757768a825de481e967f6b46481802132f5949b580e622185f00b80330",
+      "closure_id": "d2ae464771a49931782085e14251a27c0a3b108908bbd9404b254288bed1dd78",
+      "normalised_phrase": "the Company Board shall have effected an Adverse Recommendation Change",
+      "attachment_position": null,
+      "concept_family": "TERMR-RECOMMEND"
     },
     {
       "section_reference": "7.1",
@@ -2075,7 +2932,9 @@
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_OUTSIDE_DATE",
       "concept_key": "TERMR-OUTSIDE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
@@ -2084,14 +2943,52 @@
       "closure_id": "de2c04d1098357aadf6aa9ccdef3e75f8511c8027626ec7316337489c9fe73cf",
       "normalised_phrase": "the Mergers shall not have been consummated on or before 11:59 p.m. (New York City time) on February 3, 2027 (the “Outside Date”)",
       "attachment_position": null,
-      "concept_family": "TERMR-OUTSIDE"
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 3340,
+          "end": 3352,
+          "excerpt": "llowing notice to Parent from the Company of such breach or failure and (y) the Outside Date; provided, that the Company shall not have the right to terminate this Agreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 5738,
+          "end": 5750,
+          "excerpt": "llowing notice to the Company from Parent of such breach or failure and (y) the Outside Date; provided, that Parent shall not have the right to terminate this Agreement pur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0b96e0d19a26f576f96f09a8446e193ed1cd24f296ac793b4ac84e84e090996a",
+      "closure_id": "e18e4bccbe9b35c24f265ac662e5eddb1b2f3ce3f25c9c4b764a70f9bf7d1fdc",
+      "normalised_phrase": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE"
     },
     {
       "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
       "concept_key": "TERMR-OUTSIDE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
@@ -2100,7 +2997,27 @@
       "closure_id": "fd02c2ea5301decbb759332b73c0a63c4e2969c3a8369cfd719c5489e2f98c2e",
       "normalised_phrase": "the Mergers shall not have been consummated on or before 11:59 p.m. (New York City time) on February 3, 2027",
       "attachment_position": null,
-      "concept_family": "TERMR-OUTSIDE"
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 3340,
+          "end": 3352,
+          "excerpt": "llowing notice to Parent from the Company of such breach or failure and (y) the Outside Date; provided, that the Company shall not have the right to terminate this Agreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 5738,
+          "end": 5750,
+          "excerpt": "llowing notice to the Company from Parent of such breach or failure and (y) the Outside Date; provided, that Parent shall not have the right to terminate this Agreement pur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
   "open_world": [
@@ -2757,17 +3674,22 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 29,
-      "resolved": 8,
+      "resolved": 12,
       "auto_pass": 0,
       "review_queue": 16,
       "open_world": 13,
       "residuals": 0,
-      "provisions": 7,
+      "provisions": 9,
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "9f413a470e07463e2585f6e2962225f5534eecb2b79a6fb92e1d410c6740ac13"
+    "resolution_receipt_id": "fd19ed1d94bb8f330586870822239fddfab761e5b80865b14e2e87dd036dbd88"
   }
 }

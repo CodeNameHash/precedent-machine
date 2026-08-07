@@ -1,0 +1,1256 @@
+{
+  "5.5": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "5.5",
+    "text_sha256": "f4bfedf0cc1ff04f2f458b6b049bef4dfa300d06f68d9444e176eb9f22cf6ffa",
+    "candidate_digest": "830f1a8330f5d6ffe63c9bc2bd2d9a5540db53d7d915f225bbef30a7a9fec31a",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 1,
+        "matched_count": 1,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.11721966577863889
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 1,
+        "matched_count": 1,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.04868006781302979
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.05126342132881247
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 6,
+        "matched_count": 6,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.0666020828287721
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.12884475659966094
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-INFO",
+            "pattern_id": "ANTI-INFO:PHRASE:OUTSIDE_COUNSEL",
+            "start": 4091,
+            "end": 4106,
+            "excerpt": "ided to the other parties pursuant to this Section 5.5 may be provided on an “outside counsel only” basis, if appropriate, and that information or materials may also be re",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 1,
+        "matched_count": 1,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.1144748526681198
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.11237587793654638
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-NOTIFY",
+            "pattern_id": "ANTI-NOTIFY:PHRASE:KEEP_INFORMED",
+            "start": 551,
+            "end": 593,
+            "excerpt": "opies of) any substantive communications to or from any Governmental Entity and keep the other parties reasonably informed regarding any substantive communications to or from a third-party, in each case",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-NOTIFY",
+            "pattern_id": "ANTI-NOTIFY:PHRASE:KEEP_INFORMED",
+            "start": 9821,
+            "end": 9863,
+            "excerpt": "ii) materially delay the consummation of the Transactions.\n(e) Each party shall keep the other parties reasonably informed regarding any Transaction Litigation unless doing so would, in the reasonable j",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-DELIST",
+            "pattern_id": "COV-DELIST:PHRASE:DELIST",
+            "start": 12085,
+            "end": 12094,
+            "excerpt": " its part under applicable Laws and rules and policies of the NYSE to cause the delisting of the Company Common Shares and Company Preferred Shares from the NYSE as prom",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-DELIST",
+            "pattern_id": "COV-DELIST:PHRASE:DELIST",
+            "start": 12376,
+            "end": 12385,
+            "excerpt": "y Preferred Shares under the Exchange Act as promptly as practicable after such delisting.\n",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-LITNOTIFY",
+            "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+            "start": 3277,
+            "end": 3299,
+            "excerpt": "elating to or challenging this Agreement or the consummation of the Mergers (“Transaction Litigation”), and (iii) effecting all necessary or advisable registrations and other fil",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-LITNOTIFY",
+            "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+            "start": 9878,
+            "end": 9900,
+            "excerpt": ".\n(e) Each party shall keep the other parties reasonably informed regarding any Transaction Litigation unless doing so would, in the reasonable judgment of such party, jeopardize any",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-LITNOTIFY",
+            "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+            "start": 10430,
+            "end": 10452,
+            "excerpt": "s applicable, to participate in the defense, negotiations or settlement of, any Transaction Litigation, each at its own expense, and the Company shall give consideration to Parent’",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-LITNOTIFY",
+            "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+            "start": 10626,
+            "end": 10648,
+            "excerpt": "Parent shall give consideration to the Company’s advice, with respect to such Transaction Litigation. The Company shall not, and shall not permit any Company Subsidiaries nor any o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-LITNOTIFY",
+            "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+            "start": 10788,
+            "end": 10810,
+            "excerpt": "bsidiaries nor any of its or their Representatives to, compromise or settle any Transaction Litigation without the prior written consent of Parent (not to be unreasonably withheld, c",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 5,
+        "matched_count": 0,
+        "unmatched_count": 5,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 2437,
+            "end": 2460,
+            "excerpt": "the Mergers as promptly as practicable following the date of the Company Common Stockholders’ Meeting, all documentation to effect all necessary or advisable applications, notices, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 3498,
+            "end": 3508,
+            "excerpt": " any other federal, state or local Law relating to the Mergers. Parent, Company Merger Sub, Parent OpCo, the Company and the Partnership each shall promptly obtain and fu",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 5646,
+            "end": 5656,
+            "excerpt": "Merger Effective Time, from the failure to obtain such consent. Parent, Company Merger Sub, Parent OpCo, the Company and the Partnership acknowledge and agree that if any",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11116,
+            "end": 11126,
+            "excerpt": "cessary so that no Takeover Statute is or becomes applicable to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers or any of the other ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11146,
+            "end": 11156,
+            "excerpt": "atute is or becomes applicable to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers or any of the other Transactions and (ii) if any T",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11290,
+            "end": 11300,
+            "excerpt": "sactions and (ii) if any Takeover Statute becomes applicable to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers or any of the other ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11320,
+            "end": 11330,
+            "excerpt": "ver Statute becomes applicable to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers or any of the other Transactions, take all action ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11649,
+            "end": 11659,
+            "excerpt": "nd otherwise to minimize the effect of such Takeover Statute on Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers and the other Transa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 11679,
+            "end": 11689,
+            "excerpt": "ffect of such Takeover Statute on Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, this Agreement, the Mergers and the other Transactions.\n(g) Prior to the Compa",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 8,
+        "matched_count": 0,
+        "unmatched_count": 8,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "IOC-SETTLE",
+            "pattern_id": "IOC-SETTLE:PHRASE:SETTLE",
+            "start": 10763,
+            "end": 10783,
+            "excerpt": "not permit any Company Subsidiaries nor any of its or their Representatives to, compromise or settle any Transaction Litigation without the prior written consent of Parent (not to ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 5573,
+            "end": 5587,
+            "excerpt": "sulting, or which would reasonably be expected to result, after the OpCo Merger Effective Time, from the failure to obtain such consent. Parent, Company Merger Sub, Parent Op",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 8477,
+            "end": 8491,
+            "excerpt": "rent.\n(d) Between the date of this Agreement and the earlier of the OpCo Merger Effective Time and the termination of this Agreement in accordance with Section 7.1, Parent sh",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 11779,
+            "end": 11793,
+            "excerpt": "eement, the Mergers and the other Transactions.\n(g) Prior to the Company Merger Effective Time, the Company shall cooperate with Parent and use its commercially reasonable ef",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 12219,
+            "end": 12233,
+            "excerpt": "ferred Shares from the NYSE as promptly as practicable after the Company Merger Effective Time and the deregistration of the Company Common Shares and Company Preferred Share",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 4900,
+            "end": 4909,
+            "excerpt": "ry shall pay or commit to pay to such Person whose approval or consent is being solicited any cash or other consideration, make any commitment or incur any liability or ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 5147,
+            "end": 5156,
+            "excerpt": "uired to pay or commit to pay to such Person whose approval or consent is being solicited any cash or other consideration, make any commitment or incur any liability or ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-LEGAL",
+            "pattern_id": "TERMR-LEGAL:PHRASE:PERMANENT_INJUNCTION",
+            "start": 6391,
+            "end": 6411,
+            "excerpt": "inate or remove any actual, anticipated or threatened temporary, preliminary or permanent injunction or other order, decree, decision, determination or judgment entered or issued, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 98,
+      "families_all_matched": 88,
+      "families_unmatched_signals": 10,
+      "families_uncovered": 0,
+      "total_pattern_hits": 36,
+      "total_matched": 9,
+      "total_unmatched": 27,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "03c2a3ed6e7d2c3643dd3ee072f78006292df3dbe921e6cc785b25122e91f9e2"
+  }
+}

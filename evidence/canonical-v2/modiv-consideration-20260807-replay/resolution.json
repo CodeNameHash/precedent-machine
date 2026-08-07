@@ -197,13 +197,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 60,
         "materiality_label": "CONSIDERATION",
         "known_defect": null,
@@ -224,7 +225,9 @@
       "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
       "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
       "concept_key": "CONS-RATIO",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 60,
       "materiality_label": "CONSIDERATION",
       "auto_pass": false,
@@ -233,7 +236,18 @@
       "closure_id": "2722386289471e36564aaf18b60dff5e8cce830b3e4ee2955ced5ac17cee26d2",
       "normalised_phrase": "shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio, without interest",
       "attachment_position": null,
-      "concept_family": "CONS-RATIO"
+      "concept_family": "CONS-RATIO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-RATIO",
+          "pattern_id": "CONS-RATIO:PHRASE:IN_LIEU_OF_FRACTIONAL_SHARES",
+          "start": 1749,
+          "end": 1777,
+          "excerpt": "r Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "2.1",
@@ -1309,6 +1323,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 24,
       "resolved": 1,
@@ -1320,6 +1339,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "8890c82b711bc3ed3d5ca06ca3280b88e8606677f2b3cad72a864798d5045928"
+    "resolution_receipt_id": "2af837ef86245686ec030202c1a979c7a90106ba45a7db9df6a8fb1588bbf050"
   }
 }

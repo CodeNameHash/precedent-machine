@@ -204,13 +204,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -424,13 +425,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -644,13 +646,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -850,13 +853,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1058,13 +1062,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1266,13 +1271,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1472,13 +1478,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1678,13 +1685,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1884,13 +1892,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 52,
         "materiality_label": "CAPITAL_STRUCTURE",
         "known_defect": null,
@@ -1911,7 +1920,9 @@
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -1920,7 +1931,252 @@
       "closure_id": "14d7642904d7ac58a739d6359c35e2eab313199e830a1a54a261ae5f59267ce0",
       "normalised_phrase": "1,677,588 shares of Company Preferred Shares were issued and outstanding",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
@@ -1948,7 +2204,9 @@
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -1957,7 +2215,252 @@
       "closure_id": "2a4a12df092dd1b5ec253029192a21956ef408f95587d6be1957582398ac83ce",
       "normalised_phrase": "450,000,000 shares of stock",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
@@ -1985,7 +2488,9 @@
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -1994,14 +2499,261 @@
       "closure_id": "5293916174cd20af4c5b91f48efdd168f9a5c970bafa8d93f901649d3eeaf500",
       "normalised_phrase": "no Class S Common Shares were issued and outstanding",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -2010,7 +2762,252 @@
       "closure_id": "5e14742ad94d24f8ca9e616796b2878361d942a7923db58d0d3a620dc354a12b",
       "normalised_phrase": "10,323,670 Class C Common Shares were issued and outstanding",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
@@ -2059,7 +3056,9 @@
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -2068,14 +3067,261 @@
       "closure_id": "ca4bcc3b2b33fc735a08f3b22a58077b77b02543141864180691a744e8f64cc3",
       "normalised_phrase": "100,000,000 shares are classified as Class S Common Shares",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
       "generic_claim_key": "NATIVE_CAPITALISATION_SHARE_COUNT_CANDIDATE",
       "resolved_claim_definition_key": "CAPITALIZATION_SHARE_COUNT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 52,
       "materiality_label": "CAPITAL_STRUCTURE",
       "auto_pass": false,
@@ -2084,7 +3330,252 @@
       "closure_id": "cce1918c9f849a512635b9f88773fd7aa7809e1ddece8fe04453c5f242159c5b",
       "normalised_phrase": "300,000,000 shares are classified as Class C Common Shares",
       "attachment_position": null,
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
@@ -2133,7 +3624,9 @@
       "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
       "resolved_claim_definition_key": "DISCLOSURE_SCHEDULE_CARVEOUT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -2142,14 +3635,261 @@
       "closure_id": "5de0f48a633c35c4fe899ed3850d675a5694172275e4fde524d7098048009cb0",
       "normalised_phrase": "except as set forth in Section 3.2(c) of the Company Disclosure Letter",
       "attachment_position": "CHAPEAU",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
       "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
       "resolved_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -2158,14 +3898,261 @@
       "closure_id": "81582bfed2434832d50f1f9e69aa0f1d9c85d35951e2c2652a7135db6463783b",
       "normalised_phrase": "As of the date hereof",
       "attachment_position": "CHAPEAU",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.2",
       "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
       "resolved_claim_definition_key": "DISCLOSURE_SCHEDULE_CARVEOUT",
       "concept_key": "REP-T-CAP",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -2174,7 +4161,252 @@
       "closure_id": "c12395221c240fb4fa5a55558a3bffea0e8966b931706c8406df81eb20c4a3ce",
       "normalised_phrase": "Except as set forth in Section 3.2(e) of the Company Disclosure Letter",
       "attachment_position": "CHAPEAU",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:AUTHORIZED_CAPITAL_STOCK",
+          "start": 36,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 47,
+          "end": 60,
+          "excerpt": "Section 3.2 Capitalization.\n(a) The authorized capital stock of the Company consists of 450,000,000 shares of stock, consisting of (i) 400,0",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 170,
+          "end": 179,
+          "excerpt": "0,000,000 shares of stock, consisting of (i) 400,000,000 Company Common Shares, par value $0.001 per share, of which 300,000,000 shares are classified as Class C Common ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PREFERRED_STOCK",
+          "start": 428,
+          "end": 443,
+          "excerpt": " Common Shares (the “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and desig",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PAR_VALUE",
+          "start": 445,
+          "end": 454,
+          "excerpt": "he “Class S Common Shares”), and (ii) 50,000,000 shares of preferred stock, par value $0.001 per share, of which 1,677,588 shares are classified and designated as Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:RESERVED_FOR_ISSUANCE",
+          "start": 1106,
+          "end": 1127,
+          "excerpt": "tion Date, the Company had no Company Common Shares or Company Preferred Shares reserved for issuance, except as set forth in Section 3.2(b) of the Company Disclosure Letter.\n(c) As",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 1441,
+          "end": 1452,
+          "excerpt": "here are no (i) outstanding securities of the Company or any Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 1500,
+          "end": 1513,
+          "excerpt": "y Company Subsidiary convertible into or exchangeable for one or more shares of capital stock of, or other equity or voting interests in, the Company or any Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 2003,
+          "end": 2016,
+          "excerpt": "y Subsidiary to issue, acquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 2027,
+          "end": 2043,
+          "excerpt": "cquire, sell, redeem, exchange or convert any shares of capital stock, or other equity interests in, the Company or any Company Subsidiary, or (iv) outstanding restricted share",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:PHANTOM",
+          "start": 2266,
+          "end": 2273,
+          "excerpt": "ce shares, performance units, deferred share units, contingent value rights, “phantom” shares or similar rights issued or granted by the Company or any Company Sub",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3237,
+          "end": 3250,
+          "excerpt": "ompany Subsidiaries having the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 3260,
+          "end": 3276,
+          "excerpt": "ing the right to vote on any matters on which holders of capital stock or other equity interests of the Company may vote. None of the Company Subsidiaries owns any Company Comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 3570,
+          "end": 3592,
+          "excerpt": " Company or another Company Subsidiary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 3603,
+          "end": 3616,
+          "excerpt": "diary owns, directly or indirectly, all of the issued and outstanding shares of capital stock or other equity securities of each of the Company Subsidiaries, free and clear ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTEREST",
+          "start": 4430,
+          "end": 4445,
+          "excerpt": "either the Company nor any Company Subsidiary has any obligation to acquire any equity interest in another Person, or to make any investment (in each case, in the form of a lo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+          "start": 5067,
+          "end": 5080,
+          "excerpt": "sfer of or (iii) that provides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:VOTING_SECURITIES",
+          "start": 5090,
+          "end": 5107,
+          "excerpt": "rovides registration rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 5111,
+          "end": 5127,
+          "excerpt": "rights in respect of, any shares of capital stock or other voting securities or equity interests of the Company or any of the Company Subsidiaries.\n16\n(f) The Company is the so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 5530,
+          "end": 5552,
+          "excerpt": "pitalization Date, 1,593,328.33 Class C Units and 895,042.50 Class X Units were issued and outstanding and held by Persons other than the Company. Each such Class C Unit is redeemabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 5664,
+          "end": 5675,
+          "excerpt": "the Company. Each such Class C Unit is redeemable and each such Class X Unit is convertible into a Class C Unit and thereafter redeemable, in each case, in accordance with",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:EQUITY_INTERESTS",
+          "start": 6333,
+          "end": 6349,
+          "excerpt": ", no other Partnership Units (as defined in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 6373,
+          "end": 6395,
+          "excerpt": " in the Partnership Agreement) or other equity interests in the Partnership are issued and outstanding. Since the Capitalization Date through the date hereof, the Partnership has not",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6666,
+          "end": 6677,
+          "excerpt": "sclosure Letter, there are no existing options, warrants, calls, subscriptions, convertible securities or other rights, agreements or commitments which obligate the Partne",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 6853,
+          "end": 6864,
+          "excerpt": "transfer or sell any partnership interests of the Partnership or any securities convertible into or exchangeable for any partnership interests of the Partnership. Except a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+          "start": 7249,
+          "end": 7260,
+          "excerpt": "se acquire any partnership interests in the Partnership or any other securities convertible into or exchangeable for any partnership interest in the Partnership. Except as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CAP",
+          "pattern_id": "REP-T-CAP:PHRASE:ISSUED_AND_OUTSTANDING",
+          "start": 8052,
+          "end": 8074,
+          "excerpt": "ted Class X Units underlying such holder’s Class X Award), (iv) the number of issued and outstanding Class X Units; (v) the grant date; (vi) the vesting schedule; and (vii) any app",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
   "open_world": [
@@ -7882,6 +10114,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 76,
       "resolved": 9,
@@ -7893,6 +10130,6 @@
       "limb_component_trees": 1,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "3a13668b30b7277083e833f84b320a04de86f89a1064fc669b0a353ad752f7b0"
+    "resolution_receipt_id": "df2dfb77f95fa6c430c8b78cc0aa1ca96965aefecb9afb22d85cd65547da22ef"
   }
 }

@@ -1,0 +1,266 @@
+{
+  "resolved": [
+    {
+      "section_reference": "2.6",
+      "source_citation": "2.6",
+      "citation_context": {
+        "parent_section_reference": "2.6",
+        "child_section_reference": "2.6",
+        "parent_chapeau_quote": "Section 2.6 Dissenters’ Rights.",
+        "child_clause_quote": "No dissenters’ or appraisal rights shall be available with respect to the Mergers."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ab62abbd9fa4f3c93f586fd9181ccc9fad36a8256d0f63d18a53615b78cf31ea",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 50293,
+        "absolute_end": 50412,
+        "concept_key": "CONS-DISSENT",
+        "ordinal": 1,
+        "source_anchor_id": "8bfc286c593c47ef1091b33a20db326d478eb3069e213b044752ee4fedbfb558",
+        "provision_instance_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "closure_id": "ba3e97390c2c98ba9f7d89671335e66a9b958cd158054bfe9003b35a9a580926"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4e90cd1cb9e0d5f896984285747f1829efb7252231bed67df3e427790a3a846c",
+        "claim_occurrence_id": "6fff561d1d22fed25434edc8cb592b83e96bcdc424b73422027f10efe4efc14f",
+        "subject_occurrence_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+        "canonical_value": "NOT_AVAILABLE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022"
+        ],
+        "attributes": {
+          "section_reference": "2.6",
+          "assertion_kind": "APPRAISAL_STATUS",
+          "consideration_term_ref": null,
+          "ratio_term_ref": null,
+          "issuer_stock_ref": null,
+          "appraisal_status": "NOT_AVAILABLE",
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "APPRAISAL_STATUS",
+          "appraisal_status": "NOT_AVAILABLE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ba0257c235dfc097ba8a54541d8e5ada2cbe5af59fd09d2f19ec876e77396f6b",
+            "document_ordinal": 0,
+            "absolute_start": 34,
+            "absolute_end": 118,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "67a2c0b87d5614f6bb5749073f2d5c509f9aa563d8bdb5de4a77f5bb002ab0de"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.6",
+          "normalized_citation": "2.6",
+          "derived_citation": "2.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4e90cd1cb9e0d5f896984285747f1829efb7252231bed67df3e427790a3a846c",
+            "claim_occurrence_id": "6fff561d1d22fed25434edc8cb592b83e96bcdc424b73422027f10efe4efc14f",
+            "subject_occurrence_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+            "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+            "canonical_value": "NOT_AVAILABLE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022"
+            ],
+            "attributes": {
+              "section_reference": "2.6",
+              "assertion_kind": "APPRAISAL_STATUS",
+              "consideration_term_ref": null,
+              "ratio_term_ref": null,
+              "issuer_stock_ref": null,
+              "appraisal_status": "NOT_AVAILABLE",
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "APPRAISAL_STATUS",
+              "appraisal_status": "NOT_AVAILABLE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ba0257c235dfc097ba8a54541d8e5ada2cbe5af59fd09d2f19ec876e77396f6b",
+                "document_ordinal": 0,
+                "absolute_start": 34,
+                "absolute_end": 118,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "67a2c0b87d5614f6bb5749073f2d5c509f9aa563d8bdb5de4a77f5bb002ab0de"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CONSIDERATION",
+            "prompt_digest": "8dfa04cfc9c23d44983d4f10b10bd708c2a62e5fbe0a6e15a7cbd4b3b485521b",
+            "producer_receipt_id": "9dd8fb5fcb83e07baf910e3a04de9e57c1f80dd2997b8d7ff597ec70b98064d1",
+            "governed_scope_digest": "b162fe2bd456f18e966dab94c90e33d3115a8f0783841308ae9da08284ed40b0",
+            "extraction_provenance_id": "dc3e873308dc1e512bcfcd5b69b4ccda1311dab87898b4193c4fcc78736ce008"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 60,
+        "materiality_label": "CONSIDERATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.6",
+          "normalized_citation": "2.6",
+          "derived_citation": "2.6"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "2.6",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e90cd1cb9e0d5f896984285747f1829efb7252231bed67df3e427790a3a846c",
+      "closure_id": "67a2c0b87d5614f6bb5749073f2d5c509f9aa563d8bdb5de4a77f5bb002ab0de",
+      "normalised_phrase": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT"
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "4ed5ab72a1a6277a6fd770d15aafb36646c805dd16a26504954f131b9790ffdf",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 1,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 1,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "e4395ca7602ee1baea891947dd0369a288020e8ee70051e995433efb4e9d6421"
+  }
+}

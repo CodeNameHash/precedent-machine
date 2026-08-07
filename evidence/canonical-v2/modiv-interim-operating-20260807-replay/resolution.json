@@ -188,7 +188,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -393,7 +392,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -598,7 +596,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -803,7 +800,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1008,7 +1004,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1213,7 +1208,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1418,7 +1412,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1623,7 +1616,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -1828,7 +1820,6 @@
         "deterministic_gates_passed": true,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
         "reasons": [],
@@ -2030,13 +2021,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 65,
         "materiality_label": "INTERIM_OPERATING_COVENANTS",
         "known_defect": null,
@@ -2263,7 +2255,9 @@
       "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
       "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
       "concept_key": "IOC-CAPEX",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 65,
       "materiality_label": "INTERIM_OPERATING_COVENANTS",
       "auto_pass": false,
@@ -2272,7 +2266,36 @@
       "closure_id": "b5aab1ab5a079cfb9ae69817007c4aa41757a622c6bcb94300f822f9ea7c1f84",
       "normalised_phrase": "make, enter into any Contract for, or otherwise commit to, any capital expenditures in excess of $100,000 in the aggregate on or relating to any Company Real Property",
       "attachment_position": null,
-      "concept_family": "IOC-CAPEX"
+      "concept_family": "IOC-CAPEX",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16129,
+          "end": 16149,
+          "excerpt": "hall be permitted to make, enter into Contracts for or otherwise commit to: (i) capital expenditures as required by Law, (ii) emergency capital expenditures in any amount that the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16185,
+          "end": 16205,
+          "excerpt": "therwise commit to: (i) capital expenditures as required by Law, (ii) emergency capital expenditures in any amount that the Company determines is necessary in its reasonable judgme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16685,
+          "end": 16705,
+          "excerpt": "C) take into account Parent’s recommendations with respect thereto) and (iii) capital expenditures in an aggregate amount up to 105% of the respective amounts specified for each ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "5.1",
@@ -6306,6 +6329,11 @@
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
     "ioc_mechanic_resolution_schema": "NATIVE_IOC_MECHANIC_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 64,
       "resolved": 10,
@@ -6317,6 +6345,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 10
     },
-    "resolution_receipt_id": "4d5ddd2eeef99e74a1655fda57e9c08d379dc281e5e4ac3de9aa29f2e977f6e1"
+    "resolution_receipt_id": "8319b9dafcf2652bc9744ca8827b3b1a8367082b943fa248f8a105eebd05327e"
   }
 }

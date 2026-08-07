@@ -1,0 +1,1762 @@
+{
+  "5.4": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "5.4",
+    "text_sha256": "8d4883da48b9b3bfd9cccb2c7dd281984c4f56071016ee6976988ca6f0020185",
+    "candidate_digest": "026f5751d815d18a46bf6c6521f1bb66a2292a35490bad2e01e4f3b15432473b",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-BURDEN",
+            "pattern_id": "ANTI-BURDEN:PHRASE:NOT_REQUIRED",
+            "start": 11908,
+            "end": 11932,
+            "excerpt": "twithstanding anything to the contrary contained in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 130,
+            "end": 161,
+            "excerpt": "romptly as practicable after the date of this Agreement (with the parties using commercially reasonable efforts to do so within thirty (30) calendar days following the date of this Agreement)",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 853,
+            "end": 884,
+            "excerpt": "nt Proxy Statement/Prospectus”). Each of Parent and the Company shall use its commercially reasonable efforts to cause the Registration Statement to be declared effective under the Securiti",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 2527,
+            "end": 2558,
+            "excerpt": "stration Statement, as applicable, each of Parent and the Company shall use its commercially reasonable efforts to respond as promptly as reasonably practicable to any comments of the SEC (or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 3090,
+            "end": 3121,
+            "excerpt": "Common Stock for offering or sale in any jurisdiction, and Parent shall use its commercially reasonable efforts to have any such stop order or suspension lifted, reversed or otherwise termina",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 7863,
+            "end": 7894,
+            "excerpt": "licable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notic",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 9328,
+            "end": 9359,
+            "excerpt": "yed), (ii) for the absence of a quorum (in which case the Company shall use its commercially reasonable efforts to obtain such quorum as promptly as practicable), (iii) if, after consultation",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 11381,
+            "end": 11412,
+            "excerpt": "Recommendation Change in accordance with Section 5.6, the Company shall use its commercially reasonable efforts to take, or cause to be taken, all actions, and do or cause to be done all thin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:FLAT_ACTIONS",
+            "start": 11416,
+            "end": 11455,
+            "excerpt": " with Section 5.6, the Company shall use its commercially reasonable efforts to take, or cause to be taken, all actions, and do or cause to be done all things, necessary, proper or advisable on its p",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+            "start": 11698,
+            "end": 11729,
+            "excerpt": "olders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reasonable efforts to comply with all legal requirements applicable to the Company Common Stockhol",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 13160,
+            "end": 13183,
+            "excerpt": "r Required Filing”), then the Company or Parent, as applicable, shall use its reasonable best efforts to promptly prepare and file such Other Required Filing to comply as to form in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 13171,
+            "end": 13183,
+            "excerpt": "Filing”), then the Company or Parent, as applicable, shall use its reasonable best efforts to promptly prepare and file such Other Required Filing to comply as to form in",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 11,
+        "matched_count": 0,
+        "unmatched_count": 11,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-NOTIFY",
+            "pattern_id": "ANTI-NOTIFY:PHRASE:PROMPTLY_NOTIFY",
+            "start": 1520,
+            "end": 1535,
+            "excerpt": "s filed in preliminary or definitive form. Each of Parent and the Company shall promptly notify the other party upon the receipt of any comments from the SEC (or the staff of ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 610,
+            "end": 633,
+            "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+            "start": 7944,
+            "end": 7955,
+            "excerpt": "ommercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall b",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+            "start": 8016,
+            "end": 8027,
+            "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8219,
+            "end": 8242,
+            "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+            "start": 8388,
+            "end": 8399,
+            "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+            "start": 8740,
+            "end": 8751,
+            "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8798,
+            "end": 8821,
+            "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8959,
+            "end": 8982,
+            "excerpt": "roxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 9130,
+            "end": 9153,
+            "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 10089,
+            "end": 10112,
+            "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 10348,
+            "end": 10371,
+            "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 10547,
+            "end": 10570,
+            "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+            "start": 10907,
+            "end": 10918,
+            "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 10942,
+            "end": 10965,
+            "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+            "start": 10969,
+            "end": 10991,
+            "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 11067,
+            "end": 11090,
+            "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 11612,
+            "end": 11635,
+            "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 11801,
+            "end": 11824,
+            "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 11957,
+            "end": 11980,
+            "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 12514,
+            "end": 12537,
+            "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 12656,
+            "end": 12679,
+            "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 21,
+        "matched_count": 0,
+        "unmatched_count": 21,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.00167348456675344
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 5633,
+            "end": 5643,
+            "excerpt": "ish to the other all reasonably required information concerning Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub, on the one hand, or the Company, the Partners",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 5666,
+            "end": 5676,
+            "excerpt": "equired information concerning Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub, on the one hand, or the Company, the Partnership and the other Company Subsidi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 6817,
+            "end": 6827,
+            "excerpt": "plicable, confirm and/or supplement the information relating to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub, on the one hand, and the Company, the Partners",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 6849,
+            "end": 6859,
+            "excerpt": "ent the information relating to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub, on the one hand, and the Company, the Partnership, the other Company Subsidiar",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 564,
+            "end": 579,
+            "excerpt": "ments thereof or supplements thereto, the “Parent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendm",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 703,
+            "end": 718,
+            "excerpt": " Meeting (together with any amendments thereof or supplements thereto, the “Proxy Statement” and together with the Parent Prospectus, the “Joint Proxy Statement/Prospe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 776,
+            "end": 791,
+            "excerpt": "the “Proxy Statement” and together with the Parent Prospectus, the “Joint Proxy Statement/Prospectus”). Each of Parent and the Company shall use its commercially reaso",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 986,
+            "end": 1001,
+            "excerpt": "tion Statement to be declared effective under the Securities Act, and the Joint Proxy Statement/Prospectus to be cleared by the SEC and its staff under the Securities Act, as ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 1317,
+            "end": 1332,
+            "excerpt": "e Recommendation Change has been made in accordance with Section 5.6, the Joint Proxy Statement/Prospectus shall include the Company Recommendation in any iteration of the Joi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 1415,
+            "end": 1430,
+            "excerpt": "ospectus shall include the Company Recommendation in any iteration of the Joint Proxy Statement/Prospectus filed in preliminary or definitive form. Each of Parent and the Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 1721,
+            "end": 1736,
+            "excerpt": "om the SEC (or the staff of the SEC) for amendments or supplements to the Joint Proxy Statement/Prospectus or the Registration Statement, as applicable, and shall promptly pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 2047,
+            "end": 2062,
+            "excerpt": "the SEC), on the other hand, and all written comments with respect to the Joint Proxy Statement/Prospectus or the Registration Statement received from the SEC (or the staff of",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 2222,
+            "end": 2237,
+            "excerpt": " the SEC) and advise the other party of any oral comments with respect to Joint Proxy Statement/Prospectus or the Registration Statement received from the SEC (or the staff of",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 2409,
+            "end": 2424,
+            "excerpt": "f a party receives comments from the SEC (or the staff of the SEC) on the Joint Proxy Statement/Prospectus or the Registration Statement, as applicable, each of Parent and the",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 2687,
+            "end": 2702,
+            "excerpt": " to any comments of the SEC (or the staff of the SEC) with respect to the Joint Proxy Statement/Prospectus or the Registration Statement, as applicable. Parent shall advise th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 3838,
+            "end": 3853,
+            "excerpt": "onnection with any such actions. The Company and Parent shall prepare the Joint Proxy Statement/Prospectus, and Parent shall prepare the Registration Statement, in each case, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 4152,
+            "end": 4167,
+            "excerpt": " promulgated thereunder. Without limiting any other provision herein, the Joint Proxy Statement/Prospectus and the Registration Statement will contain such information and dis",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 4423,
+            "end": 4438,
+            "excerpt": "s in form and substance to the requirements of the Securities Act and the Joint Proxy Statement/Prospectus conforms in form and substance to the requirements of the Exchange A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 4559,
+            "end": 4574,
+            "excerpt": "e to the requirements of the Exchange Act. No filing of or mailing of the Joint Proxy Statement/Prospectus or the Registration Statement (or, in each case, any amendment or su",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 5358,
+            "end": 5373,
+            "excerpt": " counsel; provided, however, that the Company may amend or supplement the Joint Proxy Statement/Prospectus without the prior written consent of Parent in the event of an Adver",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 5930,
+            "end": 5945,
+            "excerpt": "requested by the Company or Parent, as applicable, in connection with the Joint Proxy Statement/Prospectus or Registration Statement, as applicable, including such information",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 6166,
+            "end": 6181,
+            "excerpt": "ons promulgated thereunder or other applicable Law to be set forth in the Joint Proxy Statement/Prospectus or Registration Statement, as applicable, and shall otherwise assist",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 6329,
+            "end": 6344,
+            "excerpt": "rwise assist and cooperate with the other party in the preparation of the Joint Proxy Statement/Prospectus, or the Registration Statement, as applicable, and the resolution of",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 6533,
+            "end": 6548,
+            "excerpt": "e staff of the SEC). If the SEC (or the staff of the SEC) comments on the Joint Proxy Statement/Prospectus or the Registration Statement, Parent or the Company, as applicable,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 7085,
+            "end": 7100,
+            "excerpt": "se supplied by Parent or the Company, as applicable, for inclusion in the Joint Proxy Statement/Prospectus or Registration Statement, as applicable, in each case, sufficiently",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 7220,
+            "end": 7235,
+            "excerpt": "s applicable, in each case, sufficiently in advance of the mailing of the Joint Proxy Statement/Prospectus to be included therein. None of the Company, Parent or their respect",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 7514,
+            "end": 7529,
+            "excerpt": "hone) with the SEC, or any member of the staff thereof, in respect of the Joint Proxy Statement/Prospectus, or the Registration Statement, as applicable unless, to the extent ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+            "start": 8263,
+            "end": 8276,
+            "excerpt": "ment thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 8622,
+            "end": 8637,
+            "excerpt": "ess Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company C",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 8832,
+            "end": 8847,
+            "excerpt": "for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, conv",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 12864,
+            "end": 12879,
+            "excerpt": "cable, determines that it is required to file any document other than the Joint Proxy Statement/Prospectus or Registration Statement, as applicable, with the SEC in connection",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 15180,
+            "end": 15195,
+            "excerpt": "to any information supplied by Parent or the Company for inclusion in the Joint Proxy Statement/Prospectus or the Registration Statement, is discovered by the Company or Paren",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 16032,
+            "end": 16047,
+            "excerpt": "ach party agrees to correct any information provided by it for use in the Joint Proxy Statement/Prospectus or the Registration Statement which shall have become false or misle",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 29,
+        "matched_count": 0,
+        "unmatched_count": 29,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 14903,
+            "end": 14917,
+            "excerpt": "by Section 5.6 or thereafter.\n65\n(e) If at any time prior to the Company Merger Effective Time any event, circumstance or information relating to the Company or Parent or any",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 1529,
+            "end": 1535,
+            "excerpt": "n preliminary or definitive form. Each of Parent and the Company shall promptly notify the other party upon the receipt of any comments from the SEC (or the staff of ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 9565,
+            "end": 9572,
+            "excerpt": "th that such postponement, recess or adjournment is reasonably necessary to (A) solicit additional proxies for the purpose of obtaining the Company Requisite Vote, or ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 12620,
+            "end": 12632,
+            "excerpt": "he Company shall provide reasonable updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:COMPANY_ACQUISITION_PROPOSAL",
+            "start": 14350,
+            "end": 14378,
+            "excerpt": "red or filed in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter, and Parent shall not be r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:ACQUISITION_PROPOSAL",
+            "start": 14358,
+            "end": 14378,
+            "excerpt": "iled in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter, and Parent shall not be r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:COMPANY_ACQUISITION_PROPOSAL",
+            "start": 14770,
+            "end": 14798,
+            "excerpt": " the Company in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter.\n65\n(e) If at any time pri",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:ACQUISITION_PROPOSAL",
+            "start": 14778,
+            "end": 14798,
+            "excerpt": "pany in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter.\n65\n(e) If at any time pri",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 6,
+        "matched_count": 0,
+        "unmatched_count": 6,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMF-TAIL",
+            "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+            "start": 14358,
+            "end": 14378,
+            "excerpt": "iled in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter, and Parent shall not be r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMF-TAIL",
+            "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+            "start": 14778,
+            "end": 14798,
+            "excerpt": "pany in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by Section 5.6 or thereafter.\n65\n(e) If at any time pri",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-OUTSIDE",
+            "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+            "start": 10828,
+            "end": 10840,
+            "excerpt": "duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date or (III) postponed if doing so would require the setting of a new record date. ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 1231,
+            "end": 1253,
+            "excerpt": "n Statement effective so long as necessary to consummate the Mergers. Unless an Adverse Recommendation Change has been made in accordance with Section 5.6, the Joint Proxy Statement/",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 5448,
+            "end": 5470,
+            "excerpt": "ement/Prospectus without the prior written consent of Parent in the event of an Adverse Recommendation Change.\n63\n(b) Each of Parent and the Company shall, as promptly as possible, f",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 11293,
+            "end": 11315,
+            "excerpt": "ain the Company Requisite Vote. Unless the Company Board shall have effected an Adverse Recommendation Change in accordance with Section 5.6, the Company shall use its commercially r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 14305,
+            "end": 14327,
+            "excerpt": "spect to any such Other Required Filing prepared or filed in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 14725,
+            "end": 14747,
+            "excerpt": "ponsive to any Other Required Filing filed by the Company in connection with an Adverse Recommendation Change, relating to a Company Acquisition Proposal, as otherwise permitted by S",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 5,
+        "matched_count": 0,
+        "unmatched_count": 5,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 98,
+      "families_all_matched": 86,
+      "families_unmatched_signals": 12,
+      "families_uncovered": 0,
+      "total_pattern_hits": 83,
+      "total_matched": 0,
+      "total_unmatched": 83,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "0b5223b29a0515c1f5d5b73ab59140670f7ddd80fbc98f34255ca027e676a9ad"
+  }
+}

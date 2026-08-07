@@ -7,7 +7,9 @@
       "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
       "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
       "concept_key": "CONS-RATIO",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 60,
       "materiality_label": "CONSIDERATION",
       "auto_pass": false,
@@ -16,7 +18,18 @@
       "closure_id": "2722386289471e36564aaf18b60dff5e8cce830b3e4ee2955ced5ac17cee26d2",
       "normalised_phrase": "shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio, without interest",
       "attachment_position": null,
-      "concept_family": "CONS-RATIO"
+      "concept_family": "CONS-RATIO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-RATIO",
+          "pattern_id": "CONS-RATIO:PHRASE:IN_LIEU_OF_FRACTIONAL_SHARES",
+          "start": 1749,
+          "end": 1777,
+          "excerpt": "r Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "2.1",
@@ -82,5 +95,5 @@
       "concept_family": "CONS-PERSHARE"
     }
   ],
-  "review_queue_artifact_id": "6dadc6cf6e8f2d4762ed305cd73a5e75d955c94ce34615489e84de9df2abe311"
+  "review_queue_artifact_id": "857b072d5933b5ed08b4132ec09194740b3c9a74738d5d24a7f62c6970260d87"
 }

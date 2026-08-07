@@ -20,27 +20,6 @@
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "baba501ec3a76063c4addfabac6c4101dd46d35336e3ee44163a33633c3ce45c",
-      "closure_id": "0a764bc636d0d8ef636fb19392bb5ef985bcb3c169ca972a5b7ccd6dc81f4792",
-      "normalised_phrase": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
       "concept_key": "TERMR-BREACH",
@@ -49,32 +28,43 @@
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "216319cd730e07c259fb336693e046495a383b9ebd69a6f997176987f804614c",
-      "closure_id": "23f680bf03882cf1f5762726f206755dac338623935564fd63a4ac976fe41e86",
-      "normalised_phrase": "the Company or the Partnership shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
+      "claim_revision_id": "38a6c46fd68d02b7ad9cb7752e253778e7bb49da673700e4e49eb8a2cd6141e5",
+      "closure_id": "15a1c3089bb9f87ee5b20f7e3a4478b84ba8ec8b2c66589485ff9c4e6d6add0e",
+      "normalised_phrase": "Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
       "attachment_position": null,
       "concept_family": "TERMR-BREACH"
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(b)(iii)",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "4e88cc3cd70248e715323b1e5ed00595c8348daae5812f757176307e107605e3",
-      "closure_id": "2a743e28406fd9659fdbb449a8c9f1f336b2ef71dec21eb7877f7d0382fb6abb",
-      "normalised_phrase": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+      "has_resolution": true,
+      "claim_revision_id": "5c26d05c3d1f1585b32871dedfb743090550464919c5568c8c6d14151807a0b3",
+      "closure_id": "1d84b3078876d7fc230c3ae275831cb7fed27ad9375b8d16490dd87db7de14ce",
+      "normalised_phrase": "the Company shall have failed to publicly recommend against any tender offer or exchange offer subject to Regulation 14D under the Exchange Act that constitutes a Company Acquisition Proposal (including, for these purposes, by taking no position with respect to the acceptance of such tender offer or exchange offer by the Company’s stockholders) within ten (10) Business Days after the commencement (pursuant to Rule 14d-2 of the Exchange Act) of such tender offer or exchange offer",
       "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
+      "concept_family": "TERMR-RECOMMEND"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-SUPERIOR",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "86c241dc6bd46b3107543b1035f4646a6611a79b361998800edf5977ea1341d1",
+      "closure_id": "1e6716d3aef0c521b239a80c0eb9aebd3034ca67f34ba0898742ae0204ea6644",
+      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMR-SUPERIOR"
     },
     {
       "section_reference": "7.1",
@@ -94,27 +84,6 @@
       "original_claim_occurrence_id": "c67238f82b17af620779c02f598ecc9fe15f8d81788752e0a52bd9f8fc3e620f",
       "closure_id": "4a5bc680f55b5432185fb41b850a6fefa87f71a199f5405cb066ed99c54f198b",
       "normalised_phrase": "the Company and the Partnership fail to consummate the Closing on or before the fifth (5th) Business Day after delivery of the notice referenced in clause (B) of this Section 7.1(d)(iii)",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "1d57319033e870d1e4f4aa4345d3f64b2ab0037c56fcf53f0b3ab2a064cac797",
-      "closure_id": "673c30cfc6d3c6c11df24d93ec7690f42814da39f5a7f0c33e372410b1a281f4",
-      "normalised_phrase": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
       "attachment_position": null,
       "concept_family": "TERMR-PENDING"
     },
@@ -149,11 +118,27 @@
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "91fd8ded1850b046670dc09b577103b7cc6e6c9b7fb8d93de463fcff312108d5",
-      "closure_id": "899456a8df5af555e9dc8237d3449bb215ecdcc2af3c818bfbead4f30e2f5826",
-      "normalised_phrase": "the Company Board shall have effected an Adverse Recommendation Change",
+      "claim_revision_id": "c3e15f16c9c74d477a4ce8a115f7d5e56bdfbe14927e59c3ddfe8dbfb5c94ca1",
+      "closure_id": "8f65768d9ae1d1232b66138e30e64d19b4e4b186af13c92e5d936ce66cbd9b0e",
+      "normalised_phrase": "the Company Board shall have failed to publicly reaffirm the Company Recommendation within ten (10) Business Days after the date a Company Acquisition Proposal shall have been publicly announced",
       "attachment_position": null,
       "concept_family": "TERMR-RECOMMEND"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOSOL-BREACH",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9547faf68d2d60f695b1a226afc9e6380ab072fb8cdbbcfcf0d0cba08f2ab31e",
+      "closure_id": "9271ccc5a92dc102a075c3efdcbe34ac3cf64ae93671c26c8d9504af3f3c8558",
+      "normalised_phrase": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOSOL-BREACH"
     },
     {
       "section_reference": "7.1",
@@ -178,28 +163,12 @@
     },
     {
       "section_reference": "7.1",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
-      "concept_key": "TERMR-BREACH",
-      "reasons": [],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": true,
-      "claim_revision_id": "f3e6dcd8790836e5476e5db1ec4c960154b4a97e5e1f69b6075808a6220ef208",
-      "closure_id": "ae5966a20055cf6579e1d4fc7a826375b2ee19c1d53c99bac6742e9b6f6da07b",
-      "normalised_phrase": "Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
-      "attachment_position": null,
-      "concept_family": "TERMR-BREACH"
-    },
-    {
-      "section_reference": "7.1",
       "source_citation": "7.1(d)(i)",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": null,
       "concept_key": "TERMR-BREACH",
       "reasons": [
-        "SPELLED_DIGIT_MISMATCH"
+        "PERIOD_KIND_UNCORROBORATED"
       ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
@@ -215,40 +184,35 @@
     },
     {
       "section_reference": "7.1",
-      "source_citation": "7.1(d)(ii)",
-      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
-      "resolved_claim_definition_key": null,
-      "concept_key": "TERMR-PENDING",
-      "reasons": [
-        "TRIGGER_KIND_UNCORROBORATED"
-      ],
-      "materiality_rank": 10,
-      "materiality_label": "TERMINATION_RIGHTS",
-      "auto_pass": false,
-      "has_resolution": false,
-      "raw_value": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
-      "canonical_value": null,
-      "original_claim_occurrence_id": "fd438dcad176d53c3fecaeb9f65a78811befa9538ffbba44bc4627e410919b00",
-      "closure_id": "c4300c277df4dd79b388ab7a413d86821164ac9800571f45500ff5408d651eff",
-      "normalised_phrase": "the Company enters into an Alternative Acquisition Agreement (other than an Acceptable Confidentiality Agreement entered into in compliance with Section 5.6)",
-      "attachment_position": null,
-      "concept_family": "TERMR-PENDING"
-    },
-    {
-      "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
-      "concept_key": "TERMR-SUPERIOR",
+      "concept_key": "TERMR-BREACH",
       "reasons": [],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "0f4db6387bd03fc81af41e6bf36e31562dec2a1fed3a11ad4bcf6d675c8e74f5",
-      "closure_id": "c541f21ecc090713ac2223c3fbd36dc1bce9ec05a04dca1c7db8eff87346e94b",
-      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "claim_revision_id": "03f5d62c7be4d466c21ab60fbb5c8bcd590c1bfe7b5dc908f93d8bd727ac7ef6",
+      "closure_id": "ba86daf9e91495fc4318b334ac0997365be9d252a6ce3d6d8c8349f238c809ab",
+      "normalised_phrase": "the Company or the Partnership shall have breached or failed to perform any of its representations, warranties, covenants or other agreements contained in this Agreement",
       "attachment_position": null,
-      "concept_family": "TERMR-SUPERIOR"
+      "concept_family": "TERMR-BREACH"
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "73cb55757768a825de481e967f6b46481802132f5949b580e622185f00b80330",
+      "closure_id": "d2ae464771a49931782085e14251a27c0a3b108908bbd9404b254288bed1dd78",
+      "normalised_phrase": "the Company Board shall have effected an Adverse Recommendation Change",
+      "attachment_position": null,
+      "concept_family": "TERMR-RECOMMEND"
     },
     {
       "section_reference": "7.1",
@@ -271,7 +235,9 @@
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_OUTSIDE_DATE",
       "concept_key": "TERMR-OUTSIDE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
@@ -280,14 +246,52 @@
       "closure_id": "de2c04d1098357aadf6aa9ccdef3e75f8511c8027626ec7316337489c9fe73cf",
       "normalised_phrase": "the Mergers shall not have been consummated on or before 11:59 p.m. (New York City time) on February 3, 2027 (the “Outside Date”)",
       "attachment_position": null,
-      "concept_family": "TERMR-OUTSIDE"
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 3340,
+          "end": 3352,
+          "excerpt": "llowing notice to Parent from the Company of such breach or failure and (y) the Outside Date; provided, that the Company shall not have the right to terminate this Agreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 5738,
+          "end": 5750,
+          "excerpt": "llowing notice to the Company from Parent of such breach or failure and (y) the Outside Date; provided, that Parent shall not have the right to terminate this Agreement pur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0b96e0d19a26f576f96f09a8446e193ed1cd24f296ac793b4ac84e84e090996a",
+      "closure_id": "e18e4bccbe9b35c24f265ac662e5eddb1b2f3ce3f25c9c4b764a70f9bf7d1fdc",
+      "normalised_phrase": "the Company Requisite Vote shall not have been obtained at a duly held Company Common Stockholders’ Meeting or any adjournment or postponement thereof at which the Company Merger is voted upon",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE"
     },
     {
       "section_reference": "7.1",
       "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
       "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
       "concept_key": "TERMR-OUTSIDE",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 10,
       "materiality_label": "TERMINATION_RIGHTS",
       "auto_pass": false,
@@ -296,8 +300,28 @@
       "closure_id": "fd02c2ea5301decbb759332b73c0a63c4e2969c3a8369cfd719c5489e2f98c2e",
       "normalised_phrase": "the Mergers shall not have been consummated on or before 11:59 p.m. (New York City time) on February 3, 2027",
       "attachment_position": null,
-      "concept_family": "TERMR-OUTSIDE"
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 3340,
+          "end": 3352,
+          "excerpt": "llowing notice to Parent from the Company of such breach or failure and (y) the Outside Date; provided, that the Company shall not have the right to terminate this Agreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:OUTSIDE_DATE",
+          "start": 5738,
+          "end": 5750,
+          "excerpt": "llowing notice to the Company from Parent of such breach or failure and (y) the Outside Date; provided, that Parent shall not have the right to terminate this Agreement pur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
-  "review_queue_artifact_id": "409d888f4d7f8db1d00f27668dca1b3a9187c7c5935587527fb6af58c9382b6f"
+  "review_queue_artifact_id": "6f741277b2d953316e8e5bce4b6eca308a100ec478ee8d84005e505c1188a6dc"
 }

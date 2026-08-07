@@ -1,0 +1,200 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b303f09eb503e4f6af51e092bdc76fde49b512e2908b0b1b4db164557978d012",
+  "review_queue": [
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)(i)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "that are qualified by materiality or by Company Material Adverse Effect shall be true and correct in all respects as of the Closing Date as though made on and as of such date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "910637aecbb8374c9b03b0658f71a8f2a50cea9663e1c180db8f72ce303a90e2",
+      "closure_id": "2dc5ec19f07edfe152a22621a5c4e37fa0b0eeb8e53813ed9bd61b1b8f13d2e1",
+      "normalised_phrase": "that are qualified by materiality or by Company Material Adverse Effect shall be true and correct in all respects as of the Closing Date as though made on and as of such date",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING"
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the representations and warranties of the Company and the Partnership contained in Section 3.2(a), Section 3.2(b) and Section 3.2(f) (other than the sixth sentence and the last sentence of Section 3.2(f)) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "de5cda7ef74c89630b611002b7076a09cf66b54fc30ee38d7d9049cd5a723d9a",
+      "closure_id": "49edd9fe189d1c15e91e863d8e086ce6b9814c2a4f5bba1cdc3fa62e1fe4077b",
+      "normalised_phrase": "the representations and warranties of the Company and the Partnership contained in Section 3.2(a), Section 3.2(b) and Section 3.2(f) (other than the sixth sentence and the last sentence of Section 3.2(f)) shall be true and correct in all but de minimis respects as of the Closing Date as though made on and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING"
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "COVENANT_COMPLIANCE_STANDARD",
+      "concept_key": "COND-COV",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d8ef9c803d65bba4b344ec934c1c701463ba3fda7df8dee55bb891a89772ed4c",
+      "closure_id": "4c1aa4433008ef47b1ad15e4bc618a1495b2c7fb68aa01f52bf08cf273ee2351",
+      "normalised_phrase": "Each of the Company and the Partnership shall have performed or complied in all material respects with all obligations, agreements and covenants required by this Agreement to be performed or complied with by it on or prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COND-COV"
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "NO_MAE_CONDITION",
+      "concept_key": "COND-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "48a4e45a5706dd7a32f8774a0c45bd0c54f632ed4d95504c451af150e5d6e427",
+      "closure_id": "717d6a3c04ef1afc223996c8af5d87121c8e1bb58b119b6df05a884b68cdcc20",
+      "normalised_phrase": "From the date of this Agreement through the Closing Date, there shall not have occurred a change, event, state of facts or development that has had or would reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 828,
+          "end": 859,
+          "excerpt": "any Fundamental Representations”) (x) that are qualified by materiality or by Company Material Adverse Effect shall be true and correct in all respects as of the Closing Date as though made",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 1194,
+          "end": 1225,
+          "excerpt": "rrect at and as of such date), and (y) that are not qualified by materiality or Company Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 2893,
+          "end": 2924,
+          "excerpt": "ed without regard to any qualification by any of the terms “material” or “Company Material Adverse Effect” therein) as of the Closing Date as though made on and as of the Closing Date",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 3416,
+          "end": 3447,
+          "excerpt": "r would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n(b) Performance and Obligations of the Company. Each of the Company and the Pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the representations and warranties of the Company and the Partnership contained in Section 3.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "57c57a72e6146604cdbb397920c5988f065604a3dc9d859dfb852a100add105f",
+      "closure_id": "7a134216c2b4aad8231c778bdd91a106c48050bdb80f1e54708ddc8412924b37",
+      "normalised_phrase": "the representations and warranties of the Company and the Partnership contained in Section 3.7(b) shall be true and correct in all respects as of the Closing Date as though made on and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING"
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-B-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d765ef5d7006526f957262cf63923c6e80caaea4fc11f1bf92e29f71068e5250",
+      "closure_id": "84166d4b92a5082a0bce14fc20dace3b96cd36a0834662a77f0d923a8e5e0b62",
+      "normalised_phrase": "Parent shall have received a certificate signed on behalf of the Company, by an executive officer of the Company, dated as of the Closing Date, certifying that the conditions set forth in Section 6.2(a), Section 6.2(b) and Section 6.2(e) are satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-B-CERT"
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)(i)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "that are not qualified by materiality or Company Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on and as of the Closing Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "118b1cd9fffaac1e2b22a3ad4512893d9867e11f4bf0caeee38dd5d16467bdc6",
+      "closure_id": "e044839557d528884e837a83c9b8788f4049969ea810e2e0fe84b082274fe47b",
+      "normalised_phrase": "that are not qualified by materiality or Company Material Adverse Effect shall be true and correct in all material respects as of the Closing Date as if made on and as of the Closing Date",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING"
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)(iv)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "SCRAPE_QUOTE_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each of the representations and warranties of the Company and the Partnership contained in Article III shall be true and correct",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "dfc39ccab926cbe2efeeb5a4e37e2dc2197e7fdb4252c7eb196db86fe9d04ba9",
+      "closure_id": "f0dcfcdc70b764c0e2e3d59736c33432f102b88b57b8f3e1560db68dac7f153f",
+      "normalised_phrase": "each of the representations and warranties of the Company and the Partnership contained in Article III shall be true and correct",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING"
+    }
+  ],
+  "review_queue_artifact_id": "96dd5a3cd641927d06dfd793259ea635789635c8d1740c63898558b908de5087"
+}

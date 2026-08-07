@@ -7,7 +7,9 @@
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-B-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -16,14 +18,27 @@
       "closure_id": "72efaa34115b8947f6a5998ab6b75b24b5c4fce441165deaaaed8d634e867f3e",
       "normalised_phrase": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
       "attachment_position": null,
-      "concept_family": "REP-B-NOOTHERREPS"
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.25",
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-T-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -32,14 +47,27 @@
       "closure_id": "9b32e18d1dab46bf2c102c8dc346163848a9d0ef8fd015b6261a9e3068d0f2b8",
       "normalised_phrase": "Except for the representations and warranties in this Article III, neither the Company, the Partnership nor any Person on behalf of the Company or the Partnership makes any express or implied representation or warranty with respect to the Company, the Partnership or any other Company Subsidiaries or their respective affiliates, businesses, operations, properties, assets, liabilities, condition (financial or otherwise) or prospects, or any estimates, projections, forecasts and other forward-looking information or business and strategic plan information regarding the Company, the Partnership and the other Company Subsidiaries or with respect to any other information provided or made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in connection with the Mergers or the other Transactions (including any information, documents, projections, forecasts, estimates, predictions or other material made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in “data rooms,” management presentations or due diligence sessions in expectation of the Mergers or the other Transactions), and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
       "attachment_position": null,
-      "concept_family": "REP-T-NOOTHERREPS"
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.25",
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-T-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -48,8 +76,19 @@
       "closure_id": "d293447e79c87e1229fee7ca2c3ca8f5f040a369597ae5e4cd355fc8cc767b2d",
       "normalised_phrase": "In particular, and without limiting the generality of the foregoing, except for the representations and warranties in this Article III, neither the Company, the Partnership nor any other Person makes or has made any express or implied representation or warranty to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives with respect to (a) any financial projection, forecast, estimate, budget or prospect information relating to the Company, the Partnership, any of the other Company Subsidiaries or their respective businesses or (b) any oral or written information presented to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives in the course of their due diligence investigation of the Company and the Partnership, the negotiation of this Agreement or the course of the Mergers or the other Transactions.",
       "attachment_position": null,
-      "concept_family": "REP-T-NOOTHERREPS"
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
-  "review_queue_artifact_id": "84a0f324cdf17fb7828a0ec97e462066eae5b95742ed5c1d47bfa9a299bf3046"
+  "review_queue_artifact_id": "223d8e9b5845d741a1ef9f40fce4ddab534b70c6377a06fd162e1b44af30b3ca"
 }

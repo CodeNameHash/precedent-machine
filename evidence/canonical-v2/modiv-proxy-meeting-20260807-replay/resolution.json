@@ -189,13 +189,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 80,
         "materiality_label": "PROXY_MEETING_COVENANTS",
         "known_defect": null,
@@ -398,13 +399,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 80,
         "materiality_label": "PROXY_MEETING_COVENANTS",
         "known_defect": null,
@@ -425,7 +427,9 @@
       "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
       "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
       "concept_key": "COV-MEETING",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 80,
       "materiality_label": "PROXY_MEETING_COVENANTS",
       "auto_pass": false,
@@ -434,7 +438,198 @@
       "closure_id": "075cc703d5a4b7c528b4713c09c6a6a8ff63b261421071a92ec6d8c82194c5aa",
       "normalised_phrase": "for the absence of a quorum",
       "attachment_position": null,
-      "concept_family": "COV-MEETING"
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7944,
+          "end": 7955,
+          "excerpt": "ommercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8959,
+          "end": 8982,
+          "excerpt": "roxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "5.4",
@@ -672,7 +867,9 @@
       "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
       "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
       "concept_key": "COV-MEETING",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 80,
       "materiality_label": "PROXY_MEETING_COVENANTS",
       "auto_pass": false,
@@ -681,7 +878,198 @@
       "closure_id": "eab050b4dda2970578b6851fb685ad22a359daa161e5251ba901565029f303ec",
       "normalised_phrase": "if required by Law",
       "attachment_position": null,
-      "concept_family": "COV-MEETING"
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 7944,
+          "end": 7955,
+          "excerpt": "ommercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8959,
+          "end": 8982,
+          "excerpt": "roxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
   "open_world": [
@@ -1147,6 +1535,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 21,
       "resolved": 2,
@@ -1158,6 +1551,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "41d1df89e5b9d0c412430d0152f75f924d78d699df78a069c5453036a41366ec"
+    "resolution_receipt_id": "0007c2d65f6db2579cefaf3800c15765931fd5a726b6c33b2e336b1a9d553b61"
   }
 }

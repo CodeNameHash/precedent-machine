@@ -21,9 +21,9 @@
   "model_cli_alias": "sonnet",
   "follow_citations": true,
   "max_retries": 0,
-  "run_started_at": "2026-08-07T07:59:56.713Z",
-  "total_elapsed_ms": 5505,
-  "extraction_wall_clock_ms": 214,
+  "run_started_at": "2026-08-07T15:54:16.742Z",
+  "total_elapsed_ms": 6068,
+  "extraction_wall_clock_ms": 221,
   "replay": {
     "recorded_calls": 1,
     "replayed_calls": 1,
@@ -33,12 +33,28 @@
   },
   "recorded_to": null,
   "code_provenance": {
-    "commit": "016d42b3bd006b6f6f4c84582a9fa1b21106046c",
+    "commit": "ff08dd1ee226cf8ff261a2c1da906fd4eafa0faa",
     "working_tree_clean": false
   },
   "resolved_models": [],
   "model_call_count": 0,
   "run_receipt_id": "d881921493745bd3495a27c5a5032b2252e8e566cebf68444dc246357e839a8f",
   "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
-  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
 }

@@ -172,13 +172,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -364,13 +365,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -556,13 +558,14 @@
       },
       "triage": {
         "auto_pass": false,
-        "deterministic_gates_passed": true,
+        "deterministic_gates_passed": false,
         "unevaluated_conditions": [
           "V1_V2_COMPARATOR_ABSENT",
-          "LEXICAL_DISAGREEMENT_NET_ABSENT",
           "SOURCE_SCOPE_CERTIFICATION_ABSENT"
         ],
-        "reasons": [],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
         "materiality_rank": 55,
         "materiality_label": "REPRESENTATIONS",
         "known_defect": null,
@@ -583,7 +586,9 @@
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-B-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -592,14 +597,27 @@
       "closure_id": "72efaa34115b8947f6a5998ab6b75b24b5c4fce441165deaaaed8d634e867f3e",
       "normalised_phrase": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
       "attachment_position": null,
-      "concept_family": "REP-B-NOOTHERREPS"
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.25",
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-T-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -608,14 +626,27 @@
       "closure_id": "9b32e18d1dab46bf2c102c8dc346163848a9d0ef8fd015b6261a9e3068d0f2b8",
       "normalised_phrase": "Except for the representations and warranties in this Article III, neither the Company, the Partnership nor any Person on behalf of the Company or the Partnership makes any express or implied representation or warranty with respect to the Company, the Partnership or any other Company Subsidiaries or their respective affiliates, businesses, operations, properties, assets, liabilities, condition (financial or otherwise) or prospects, or any estimates, projections, forecasts and other forward-looking information or business and strategic plan information regarding the Company, the Partnership and the other Company Subsidiaries or with respect to any other information provided or made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in connection with the Mergers or the other Transactions (including any information, documents, projections, forecasts, estimates, predictions or other material made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in “data rooms,” management presentations or due diligence sessions in expectation of the Mergers or the other Transactions), and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
       "attachment_position": null,
-      "concept_family": "REP-T-NOOTHERREPS"
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "3.25",
       "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
       "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
       "concept_key": "REP-T-NOOTHERREPS",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 55,
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
@@ -624,7 +655,18 @@
       "closure_id": "d293447e79c87e1229fee7ca2c3ca8f5f040a369597ae5e4cd355fc8cc767b2d",
       "normalised_phrase": "In particular, and without limiting the generality of the foregoing, except for the representations and warranties in this Article III, neither the Company, the Partnership nor any other Person makes or has made any express or implied representation or warranty to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives with respect to (a) any financial projection, forecast, estimate, budget or prospect information relating to the Company, the Partnership, any of the other Company Subsidiaries or their respective businesses or (b) any oral or written information presented to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives in the course of their due diligence investigation of the Company and the Partnership, the negotiation of this Agreement or the course of the Mergers or the other Transactions.",
       "attachment_position": null,
-      "concept_family": "REP-T-NOOTHERREPS"
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     }
   ],
   "open_world": [],
@@ -657,6 +699,11 @@
     "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
     "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
     "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
     "counts": {
       "compiled_candidates": 3,
       "resolved": 3,
@@ -668,6 +715,6 @@
       "limb_component_trees": 0,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "61ec6de35614de02c580ce31a703d6394adbf4efd75fbed0667b1afc5338b203"
+    "resolution_receipt_id": "73df8b10e8d09af01e8f563ea88aa02be2a3d18547dfbc3a91fe5aab1cdeae1f"
   }
 }

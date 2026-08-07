@@ -28,20 +28,83 @@
         "model_id": "replay(evidence/canonical-v2/modiv-specific-performance-20260806)",
         "prompt_digest": "6baf48493095bca7789fc569a6d65cfebc84fc9a5b87f84c75bf2ea0005be9d5",
         "input_scope_digest": "3177533a32d98da74234d7f4f6955f6674bcfedef8dc06aa55cd004999474255",
-        "proposal_count": 0,
-        "evidence_residual_count": 1,
-        "producer_receipt_id": "73d6f3da303282dca16c58e56db0939d82b0ba4e10846591d94e63b6678a34c8"
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "d251885ab63571787019ee5f0d75f555a8aba934a0fd4638296bae80a07ee7e4"
       }
     }
   ],
-  "compiled_candidates": [],
-  "evidence_residuals": [
+  "compiled_candidates": [
     {
       "section_reference": "8.8",
-      "reason": "SPECIFIC_PERFORMANCE_OPERATIVE_PREMISE_UNVERIFIED",
-      "quote_preview": "The parties hereto agree that irreparable harm, for which monetary damages (even if available) would not be an adequate "
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3eba16e1b457ff5455f9008bdae1268abb88ca30f5995d6db16ffc0f9c37bbfa",
+          "claim_occurrence_id": "21e1b136400928155ab4010c62c8cb1458c31ca4fb4f0124640b4e966636ea83",
+          "subject_occurrence_id": "c2f63d21c276d7f6b0ee13f40c4ad9efb2252cbc8cae0ae32daca9253872bd63",
+          "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The parties hereto agree that irreparable harm, for which monetary damages (even if available) would not be an adequate remedy, would occur in the event that any party hereto does not perform any of the provisions of this Agreement (including failing to take such actions as are required of them hereunder to consummate the Mergers and the other Transactions) in accordance with this Agreement’s specified terms or otherwise breaches such provisions. Accordingly, the parties acknowledge and agree that the parties hereto shall be entitled to an injunction, specific performance or other equitable relief to prevent and/or remedy a breach of this Agreement by any other party hereto and to enforce specifically the terms and provisions hereof, in addition to any other remedy to which such party is entitled at Law or in equity. Each party hereto agrees that it will not oppose the granting of an injunction, specific performance, or other equitable relief on the basis that there is an adequate remedy at Law or that any award of specific performance is not an appropriate remedy for any reason at Law or in equity. Any party hereto seeking an injunction or injunctions to prevent a breach or breaches of this Agreement or to enforce specifically the terms and provisions of this Agreement shall not be required to provide any bond or other security in connection with the request for or grant of any such order or injunction. Each party hereto agrees not to assert that a remedy of specific performance is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d941edddbb0c2a9823d467059d64e717667e4ccf8f1e868bf4362828d8af30a8"
+          ],
+          "attributes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d941edddbb0c2a9823d467059d64e717667e4ccf8f1e868bf4362828d8af30a8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "741f50aaae5ca54b2ecfb55ff32080b4f7db081e9e8fe29ae4b06ae73d304c06",
+              "document_ordinal": 0,
+              "absolute_start": 38,
+              "absolute_end": 1700,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "683eefebfbd0693f89456919cf2d3c5a586ace18c1696ae3f15f6fa2c3711484"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+          "prompt_digest": "6baf48493095bca7789fc569a6d65cfebc84fc9a5b87f84c75bf2ea0005be9d5",
+          "producer_receipt_id": "d251885ab63571787019ee5f0d75f555a8aba934a0fd4638296bae80a07ee7e4",
+          "governed_scope_digest": "82a36e977465d19ab801052a39062fc969c826b149d914748959f9deb3e97d13",
+          "extraction_provenance_id": "7c2ecac399c6e747437919f25a5123767ee28bca08b9f10e8b567c6d6efa2f81"
+        }
+      }
     }
   ],
+  "evidence_residuals": [],
   "scope_violations": [],
   "citation_residuals": [],
   "coverage_proxies": [
@@ -49,8 +112,8 @@
       "schema_version": "COVERAGE_PROXY_REPORT/V1",
       "section_reference": "8.8",
       "source_byte_length": 3298,
-      "covered_byte_length": 0,
-      "coverage_share": 0,
+      "covered_byte_length": 1662,
+      "coverage_share": 0.5039417828987265,
       "marker_counts": {
         "as of": 0,
         "except": 0,
@@ -61,12 +124,6 @@
       "qualifiers_emitted_count": 0,
       "qualifier_to_marker_ratio": 0,
       "signals": [
-        {
-          "type": "COVERAGE_SUSPECT",
-          "reason": "LOW_SPAN_COVERAGE",
-          "coverage_share": 0,
-          "threshold": 0.5
-        },
         {
           "type": "COVERAGE_SUSPECT",
           "reason": "QUALIFIER_MARKER_GAP",
@@ -185,11 +242,11 @@
     }
   ],
   "undispatched_sections": [],
-  "evidence_residual_count": 1,
+  "evidence_residual_count": 0,
   "scope_violation_count": 0,
   "citation_residual_count": 0,
   "undispatched_section_count": 0,
-  "compiled_candidate_count": 0,
+  "compiled_candidate_count": 1,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "5ca856057e72c6dcf3b40a60199708cbd62655b60ea91a30ac95b2dc9a9470e4"
+  "run_receipt_id": "2cd7e40483669d883d20b81c4804f563ecab4903d7af163fb7ce429bbba05b41"
 }

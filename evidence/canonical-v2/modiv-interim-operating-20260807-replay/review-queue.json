@@ -213,7 +213,9 @@
       "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
       "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
       "concept_key": "IOC-CAPEX",
-      "reasons": [],
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
       "materiality_rank": 65,
       "materiality_label": "INTERIM_OPERATING_COVENANTS",
       "auto_pass": false,
@@ -222,7 +224,36 @@
       "closure_id": "b5aab1ab5a079cfb9ae69817007c4aa41757a622c6bcb94300f822f9ea7c1f84",
       "normalised_phrase": "make, enter into any Contract for, or otherwise commit to, any capital expenditures in excess of $100,000 in the aggregate on or relating to any Company Real Property",
       "attachment_position": null,
-      "concept_family": "IOC-CAPEX"
+      "concept_family": "IOC-CAPEX",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16129,
+          "end": 16149,
+          "excerpt": "hall be permitted to make, enter into Contracts for or otherwise commit to: (i) capital expenditures as required by Law, (ii) emergency capital expenditures in any amount that the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16185,
+          "end": 16205,
+          "excerpt": "therwise commit to: (i) capital expenditures as required by Law, (ii) emergency capital expenditures in any amount that the Company determines is necessary in its reasonable judgme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "IOC-CAPEX",
+          "pattern_id": "IOC-CAPEX:PHRASE:CAPEX",
+          "start": 16685,
+          "end": 16705,
+          "excerpt": "C) take into account Parent’s recommendations with respect thereto) and (iii) capital expenditures in an aggregate amount up to 105% of the respective amounts specified for each ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
     },
     {
       "section_reference": "5.1",
@@ -1022,5 +1053,5 @@
       "concept_family": "IOC-PENDING"
     }
   ],
-  "review_queue_artifact_id": "8a651812b662aba5d091f2c8b0f3757b3b01ec94f3c59bce99505f44e9ddedc7"
+  "review_queue_artifact_id": "9241a9bfab6991a7f5e39d2bf5a88caeb4bf2caa2a60ed6e4d80d9b5fd913080"
 }
