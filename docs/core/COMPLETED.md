@@ -873,3 +873,55 @@ container, re-derived two families, and failed to find an extra-key hole. The
 condition was a real miss — a staging script pinned the *old* error message for
 two probes that now hit the new shape check, and **no CI test exercises it
 because it needs a live database.**
+
+## Steps 4A2 and 4A3. The headline number reaches the database
+
+**Closed 2026-08-07.** Ben's decision 3: `conditional_termination_fee_values`
+gets a table, because two of the ten cards a termination-fee run projects come
+from that kind — **including the Modiv headline number**, the figure a user
+looks at first.
+
+**4A2, the database side.** The table exists, shaped to the JS kind, with
+`DEAL_SCOPE_RUN` shape-checking it, recomputing its identity in the database
+and writing it. Six real Modiv values written durably; `count(*)` returned 6
+from a fresh connection after the writer exited; JS and SQL receipt identities
+matched. Four hostile probes: a well-formed control accepted; extra-key,
+missing-key and wrong-enum rows refused naming the **shape** rather than the
+lineage; a duplicate id refused separately.
+
+**The headline round trip nearly produced a false alarm**, and that is the
+part worth keeping. A naive `JSON.stringify` comparison first reported a
+mismatch, because **Postgres `jsonb` reorders object keys on output**. The
+real comparison uses this codebase's own `canonicalJson`, the same sorted-key
+form `content_id` hashes. Documented so a future session does not read it as
+corruption.
+
+**4A3, the pipeline side, which 4A2 disclosed was missing.** The adapter and
+the write-set validator contained **zero** references to the kind — checked by
+grep. The resolver produced the values and the projection read them, and the
+write-set never carried them. So 4A2 alone meant "the database *can hold* the
+headline number", not "the headline number *reaches* the database".
+
+Closed by carrying the kind through the adapter and both validators. A real
+run's own write-set — re-derived through `buildNativeWriteSet`, **with no
+manual splicing** — put six values in the table, and the `$10,000,000` row
+round-tripped byte-identical with a digest matching 4A2's hand-built harness.
+The harness proved the SQL; this proved the pipeline; the two agree.
+
+**The wiring pin was verified to fail, not merely to exist.** Reverting the
+adapter change alone takes the test from 10 passing to 5 passing and 5
+failing; restoring returns 10.
+
+**A third shape gate had to be widened, and that is the finding.**
+`canonical-writer.js`'s `assertDealScopeWriteSetShape` runs its own
+independent closed-key check **before** the validator runs at all, and
+rejected the new key until widened. Had it been missed, **the real bridge
+would have stayed silently blocked while every targeted test passed.** So an
+optional write-set key needs updating in **three** places, and nothing keeps
+them in sync but tests — the same shape as the three digest guards over a
+schema edit, found the same day.
+
+**Adversarial review: merge**, having re-derived two families on its own fresh
+container and failed to find an extra-key hole. Its one condition — a staging
+script pinning the old error message, which **no CI test exercises because it
+needs a live database** — was fixed at `02ebc588`.
