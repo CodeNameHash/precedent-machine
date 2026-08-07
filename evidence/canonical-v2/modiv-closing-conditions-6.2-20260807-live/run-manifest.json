@@ -21,18 +21,24 @@
   "model_cli_alias": "sonnet",
   "follow_citations": true,
   "max_retries": 0,
-  "run_started_at": "2026-08-07T15:49:25.163Z",
-  "total_elapsed_ms": 136442,
-  "extraction_wall_clock_ms": 130728,
-  "replay": null,
+  "run_started_at": "2026-08-07T18:28:04.091Z",
+  "total_elapsed_ms": 6993,
+  "extraction_wall_clock_ms": 215,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
   "recorded_to": null,
   "code_provenance": {
-    "commit": "ff08dd1ee226cf8ff261a2c1da906fd4eafa0faa",
+    "commit": "12d383c981e8f4d1b50a81e711acfa5d8ec718ef",
     "working_tree_clean": false
   },
   "resolved_models": [],
-  "model_call_count": 1,
-  "run_receipt_id": "b303f09eb503e4f6af51e092bdc76fde49b512e2908b0b1b4db164557978d012",
+  "model_call_count": 0,
+  "run_receipt_id": "8be798c901434094bb132be93377717050cdb452418d0c476a378cbf2b19df37",
   "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
   "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
   "m3_auto_pass_conditions": {

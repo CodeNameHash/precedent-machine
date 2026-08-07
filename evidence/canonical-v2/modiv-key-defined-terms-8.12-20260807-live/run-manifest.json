@@ -21,18 +21,24 @@
   "model_cli_alias": "sonnet",
   "follow_citations": true,
   "max_retries": 0,
-  "run_started_at": "2026-08-07T15:43:39.916Z",
-  "total_elapsed_ms": 284148,
-  "extraction_wall_clock_ms": 278124,
-  "replay": null,
+  "run_started_at": "2026-08-07T18:29:32.125Z",
+  "total_elapsed_ms": 7093,
+  "extraction_wall_clock_ms": 222,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
   "recorded_to": null,
   "code_provenance": {
-    "commit": "ff08dd1ee226cf8ff261a2c1da906fd4eafa0faa",
+    "commit": "2692151d9e5b49f020a9d6fc240653b3ca6da02f",
     "working_tree_clean": false
   },
   "resolved_models": [],
-  "model_call_count": 1,
-  "run_receipt_id": "840d2d6a1856995ba79fca734b288a5a2fef203caf3ab2d2f8c45e5e54acf9be",
+  "model_call_count": 0,
+  "run_receipt_id": "93781fd8f0080aa67f5c2093e991c1ddcbae2c92a071794a494f23df6dcb883d",
   "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
   "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
   "m3_auto_pass_conditions": {

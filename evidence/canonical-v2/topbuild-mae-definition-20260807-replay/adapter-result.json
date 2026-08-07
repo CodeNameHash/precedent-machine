@@ -532,6 +532,60 @@
         "exact_bytes_digest": "6ab5413e23d7817ca9d31f1daf712be6b672a536ca25238aee27bd6db081b247",
         "exact_text": "changes or developments after the date hereof in generally accepted accounting principles in the United States (“GAAP”) or any foreign equivalents thereof or the interpretations thereof, except to the extent that such changes or developments have a disproportionate effect on the Company and its Subsidiaries, taken as a whole, relative to others in the industry or industries in which the Company and its Subsidiaries operate",
         "closure_id": "b237c8899612c82569442471517fa1a9c1eeef0d452a0f524865a74698f2b177"
+      },
+      {
+        "schema_version": "EXCERPT/V1",
+        "excerpt_id": "712c2e2b57fa7fe900065d8c4e0b5c37dd31facbaba9f018c9d15f4404cd9802",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_version": 1,
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "3233f26430af8fda610bccb6842b846421f5e63ccf639209c3a56ae937839e2c"
+          }
+        ],
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1",
+        "output_text_hash": "b75d5586ac2bf19f6061cbbe57f8d8b7ab82729fd7c60ad3108332ca81a2a3d2",
+        "source_content_id": "92f21d175dedbcdb03259899c0b58c6c6cdf5c56e0aa0dedcb8f1d1ebb24c1f8",
+        "source_occurrence_id": "27e6aef92434b703876706153bd81070de8194d7e5ff1521908ce95e53de68db",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 49579,
+        "absolute_end": 49895,
+        "exact_bytes_digest": "b75d5586ac2bf19f6061cbbe57f8d8b7ab82729fd7c60ad3108332ca81a2a3d2",
+        "exact_text": "except where the failure to be so qualified or in good standing as a foreign corporation or similar entity or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "closure_id": "528d93a09ca9d181a428ee0facfe10024f2f909fac08195d11eb1a63f3a615b5"
+      },
+      {
+        "schema_version": "EXCERPT/V1",
+        "excerpt_id": "54f9d61d8a888e330ff9d5dc36622f44bd656cacd5b443e72420258a47309524",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_version": 1,
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "7a4915669cdfaf9f3610d12909dbfeca6113f013b815c34d86640d9e606a1ccf"
+          }
+        ],
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1",
+        "output_text_hash": "849b7f1a4187616fe0420d674335dbc90b4270e06301f40f66a18007ade825ea",
+        "source_content_id": "92f21d175dedbcdb03259899c0b58c6c6cdf5c56e0aa0dedcb8f1d1ebb24c1f8",
+        "source_occurrence_id": "27e6aef92434b703876706153bd81070de8194d7e5ff1521908ce95e53de68db",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 50468,
+        "absolute_end": 50771,
+        "exact_bytes_digest": "849b7f1a4187616fe0420d674335dbc90b4270e06301f40f66a18007ade825ea",
+        "exact_text": "except where the failure to be so organized, validly existing, qualified or in good standing, or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "closure_id": "279fbdc9ebf2d3d6857e496065b390f72c543e864b4d490cc815dc49af07d1a7"
       }
     ],
     "claims": [
@@ -1709,13 +1763,111 @@
     "relationships": [],
     "components": [],
     "provisions": [],
+    "open_world_candidates": [
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "candidate_id": "12cdc037a10002a5657899d5a4743f76369511d4dcc3360229cdd1396a0eaa26",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "section_reference": "3.1(a)",
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "raw_value": "except where the failure to be so qualified or in good standing as a foreign corporation or similar entity or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "canonical_value": null,
+        "closure_id": "8fb960e0e9deca6367dca66ecbcdf9c915784d0531ae238444158145f5ad46da"
+      },
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "candidate_id": "b848e642b11085dbb5805d8b85151b0e55bf8e3de53cfa51888fa7de9d721478",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "section_reference": "3.1(a)",
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "raw_value": "except where the failure to be so organized, validly existing, qualified or in good standing, or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "canonical_value": null,
+        "closure_id": "87dfe02e1825b97494f963eddb2be15245884b145d9cee5cbdf9173eb1142ed7"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1",
+        "open_world_candidate_occurrence_id": "9c7222628d99c04f4f4414c8f489d323713684dba8ce4637006987b15ec91de0",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "candidate_id": "12cdc037a10002a5657899d5a4743f76369511d4dcc3360229cdd1396a0eaa26",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "raw_value": "except where the failure to be so qualified or in good standing as a foreign corporation or similar entity or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "canonical_value": null,
+        "attributes": {
+          "why_unmapped": "uses the defined term by cross-reference to state a qualification standard, not the section stating what the term means",
+          "nearest_concept": "mae_definition_instances prong_assertions (CONSUMMATION_PREVENTION)"
+        },
+        "closure_id": "8fb960e0e9deca6367dca66ecbcdf9c915784d0531ae238444158145f5ad46da"
+      },
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1",
+        "open_world_candidate_occurrence_id": "050bfcfdc145b90ce6d287215d854704f32c2b15a167b311f2378198476cf857",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "candidate_id": "b848e642b11085dbb5805d8b85151b0e55bf8e3de53cfa51888fa7de9d721478",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "raw_value": "except where the failure to be so organized, validly existing, qualified or in good standing, or to have such power or authority, are not, individually or in the aggregate, reasonably expected to have a Company Material Adverse Effect or prevent the ability of the Company to consummate the Transactions",
+        "canonical_value": null,
+        "attributes": {
+          "why_unmapped": "uses the defined term by cross-reference to state a qualification standard for Company Subsidiaries, not the section stating what the term means",
+          "nearest_concept": "mae_definition_instances prong_assertions (CONSUMMATION_PREVENTION)"
+        },
+        "closure_id": "87dfe02e1825b97494f963eddb2be15245884b145d9cee5cbdf9173eb1142ed7"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "evidence_reference_id": "f1b1bead883b4e848ab4f7be1845ae4f8db7c9e41e9e0764e4961ca0764e479f",
+        "open_world_candidate_occurrence_id": "9c7222628d99c04f4f4414c8f489d323713684dba8ce4637006987b15ec91de0",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "712c2e2b57fa7fe900065d8c4e0b5c37dd31facbaba9f018c9d15f4404cd9802",
+        "document_ordinal": 0,
+        "absolute_start": 49579,
+        "absolute_end": 49895,
+        "ordinal": 0,
+        "closure_id": "8fb960e0e9deca6367dca66ecbcdf9c915784d0531ae238444158145f5ad46da"
+      },
+      {
+        "evidence_reference_id": "72499847990ea8c5f945becdd089a3c2acf048cbb7312a5f91cff2ee8222d012",
+        "open_world_candidate_occurrence_id": "050bfcfdc145b90ce6d287215d854704f32c2b15a167b311f2378198476cf857",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "54f9d61d8a888e330ff9d5dc36622f44bd656cacd5b443e72420258a47309524",
+        "document_ordinal": 0,
+        "absolute_start": 50468,
+        "absolute_end": 50771,
+        "ordinal": 0,
+        "closure_id": "87dfe02e1825b97494f963eddb2be15245884b145d9cee5cbdf9173eb1142ed7"
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1",
+        "final_disposition_id": "619864aa72f1b4a2f03981fd8584511e79aac6ce59a6de8713b3a6a4acca0430",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "9c7222628d99c04f4f4414c8f489d323713684dba8ce4637006987b15ec91de0",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "closure_id": "8fb960e0e9deca6367dca66ecbcdf9c915784d0531ae238444158145f5ad46da"
+      },
+      {
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1",
+        "final_disposition_id": "08f89cb921dc993da478e99439170ad65d99f37799f9d4463b891a34774de2d8",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "050bfcfdc145b90ce6d287215d854704f32c2b15a167b311f2378198476cf857",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "closure_id": "87dfe02e1825b97494f963eddb2be15245884b145d9cee5cbdf9173eb1142ed7"
+      }
+    ],
     "definition_occurrences": [],
     "condition_groups": [],
     "validated_semantic_graphs": [],
-    "open_world_candidates": [],
-    "open_world_candidate_occurrences": [],
-    "open_world_evidence_references": [],
-    "open_world_candidate_dispositions": [],
     "open_world_primitives": [],
     "semantic_impact_closures": [],
     "reviewed_source_specific_rows": [],
@@ -1763,8 +1915,12 @@
     "candidates_written": 19,
     "candidates_rejected_by_compiler": 0,
     "candidates_rejected_by_coordinate_shift": 0,
-    "excerpts_written": 19,
+    "excerpts_written": 21,
     "components_written": 0,
-    "residuals": 0
+    "residuals": 0,
+    "open_world_candidates_total": 2,
+    "open_world_candidates_written": 2,
+    "open_world_candidates_rejected_by_coordinate_shift": 0,
+    "conditional_termination_fee_values_written": 0
   }
 }
