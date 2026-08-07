@@ -1,0 +1,26 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "modiv",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex2-1.htm",
+  "raw_bytes_length": 879323,
+  "raw_bytes_sha256": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "canonical_text_byte_length": 428768,
+  "canonical_text_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "verification_status": "PASS",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "pin_corroboration": "tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json, and the prior TERMINATION_FEE run receipt at evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json (work_item_id modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash)",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm",
+    "raw_bytes_sha256": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex2-1.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-01T15:05:49.024Z",
+    "retrieval_policy_digest": "67c3815ed6f5f88b3345d314baa49d9c4dbd984f470d67f1e704bf7ba20367b6",
+    "immutable_source_document_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+    "source_map_compressed_sha256": "5ee11f95783b25370a273902c490b4a43a9ca42977a3f16269df363397e7cdc3",
+    "source_map_digest": "eb14f4244a793d0a0f75bb42c900f136a87ee1d99c34a192ae0c246243c466ac"
+  }
+}

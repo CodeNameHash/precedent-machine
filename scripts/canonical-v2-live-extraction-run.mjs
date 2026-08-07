@@ -147,6 +147,7 @@ const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
+const { retrievalPolicyDigestFor } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
@@ -230,6 +231,10 @@ function scriptRelativePath() {
 // -- both hashes and both byte lengths match that pin exactly. No pin below
 // is invented without that kind of corroboration from something already
 // committed.
+// Every capture this script builds declares the same content type. Named so
+// the rebuilder and the run's own recorded inputs cannot drift from it.
+const CAPTURE_CONTENT_TYPE = 'text/html; charset=UTF-8';
+
 const DEAL_PINS = Object.freeze({
   modiv: Object.freeze({
     label: 'Modiv, Inc. / Global Net Lease, Inc.',
@@ -237,6 +242,10 @@ const DEAL_PINS = Object.freeze({
     raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm',
     raw_bytes_sha256: '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968',
     canonical_text_sha256: '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e',
+    // The PINNING FETCH's timestamp, copied verbatim from
+    // tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json. See
+    // the note on `retrieved_at` below `DEAL_PINS`.
+    retrieved_at: '2026-08-01T15:05:49.024Z',
     agreement_date: '2026-05-03',
     pin_corroboration: 'tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json, and the prior '
       + 'TERMINATION_FEE run receipt at evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/'
@@ -311,6 +320,11 @@ const DEAL_PINS = Object.freeze({
     raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm',
     raw_bytes_sha256: '146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f',
     canonical_text_sha256: '7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d',
+    // The PINNING FETCH's timestamp from
+    // tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json,
+    // normalised to the millisecond form the capture contract requires
+    // (that file records `2026-08-03T02:20:00Z`).
+    retrieved_at: '2026-08-03T02:20:00.000Z',
     // Not pinned in this repo yet: pass --agreement-date explicitly for a
     // TopBuild run that needs it (e.g. for deadline/date resolution).
     agreement_date: null,
@@ -506,15 +520,38 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
     );
   }
 
-  const retrievalPolicyDigest = sha256Hex(
-    `General extraction runner: reuse of the already-admitted, already-committed raw HTML for deal "${deal}"; no new network fetch performed.`,
-  );
+  // Imported, not restated. The digest is of a sentence, so one character's
+  // drift between this script and the rebuilder changes the capture receipt
+  // and every identity below it -- and the failure would surface only as an
+  // unexplained reference mismatch at import time.
+  const retrievalPolicyDigest = retrievalPolicyDigestFor(deal);
+  // PINNED, not wall-clock. This script does not fetch: it reuses raw HTML
+  // that was fetched once and committed, so `new Date()` here recorded the
+  // time of a retrieval that never happened, and recorded it nowhere.
+  //
+  // That cost more than tidiness. `retrieved_at` feeds
+  // `intake_capture_receipt_id`, which feeds `verification_manifest_id`,
+  // which feeds `immutable_source_document_id` -- the identity the canonical
+  // writer rebuilds and compares before it will accept a write. A run that
+  // does not record its own timestamp cannot rebuild its own source chain,
+  // and every run made before 2026-08-07 is in that position.
+  //
+  // The pinned value is the PINNING FETCH's timestamp, which is the one
+  // moment this document actually was retrieved.
+  const retrievedAt = dealPin.retrieved_at;
+  if (!retrievedAt) {
+    throw new Error(
+      `UNPINNED_RETRIEVAL_TIMESTAMP: deal "${deal}" has no pinned retrieved_at. Add the pinning fetch's `
+      + 'timestamp to DEAL_PINS rather than substituting a wall-clock value: an unrecorded timestamp '
+      + 'makes the run\'s admitted-source chain unrebuildable and the run unimportable.',
+    );
+  }
   const capture = buildSecEdgarIntakeCapture({
     retrieval_url: dealPin.retrieval_url,
     final_url: dealPin.retrieval_url,
     status_code: 200,
-    content_type: 'text/html; charset=UTF-8',
-    retrieved_at: new Date().toISOString(),
+    content_type: CAPTURE_CONTENT_TYPE,
+    retrieved_at: retrievedAt,
     retrieval_policy_digest: retrievalPolicyDigest,
     redirect_count: 0,
     response_bytes: rawBytes,
@@ -533,7 +570,20 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
   }
 
   return {
-    rawHtmlPath: absoluteRawHtmlPath, rawBytes, rawBytesSha256, capture, conversion, verification,
+    rawHtmlPath: absoluteRawHtmlPath,
+    rawBytes,
+    rawBytesSha256,
+    capture,
+    conversion,
+    verification,
+    // Every input the capture was built from, so the run can record them and
+    // rebuild its own chain later without re-deriving anything by guess.
+    captureInputs: {
+      retrieval_url: dealPin.retrieval_url,
+      content_type: CAPTURE_CONTENT_TYPE,
+      retrieved_at: retrievedAt,
+      retrieval_policy_digest: retrievalPolicyDigest,
+    },
   };
 }
 
@@ -855,6 +905,28 @@ async function main() {
       document_hash: documentHash,
       pin_corroboration: config.dealPin.pin_corroboration || null,
       note: 'REUSE, not a pinning fetch. No network call was made by this script.',
+      // Everything needed to rebuild this run's admitted-source chain, which
+      // the canonical writer requires before it will accept a write: it
+      // rebuilds the chain from these primitives and refuses unless the
+      // result matches the write-set's own source_references.
+      //
+      // Runs before 2026-08-07 recorded none of this and used a wall-clock
+      // retrieved_at, so they cannot rebuild. See
+      // lib/canonical-v2/admitted-source-chain-rebuild.js.
+      admitted_source_capture_inputs: {
+        schema_version: 'ADMITTED_SOURCE_CAPTURE_INPUTS/V1',
+        raw_html_path: verified.rawHtmlPath.includes(process.cwd()) ? verified.rawHtmlPath.slice(process.cwd().length + 1) : verified.rawHtmlPath,
+        raw_bytes_sha256: verified.rawBytesSha256,
+        retrieval_url: verified.captureInputs.retrieval_url,
+        content_type: verified.captureInputs.content_type,
+        retrieved_at: verified.captureInputs.retrieved_at,
+        retrieval_policy_digest: verified.captureInputs.retrieval_policy_digest,
+        // The identity the rebuild must land on. Recorded so a divergence
+        // can be seen here rather than only as a writer refusal.
+        immutable_source_document_id: admittedSourceContext.immutable_source_document_id,
+        source_map_compressed_sha256: verified.conversion.source_map_compressed_sha256,
+        source_map_digest: verified.conversion.source_map_digest,
+      },
     }, null, 2));
   }
 

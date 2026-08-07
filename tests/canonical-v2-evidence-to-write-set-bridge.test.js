@@ -1,7 +1,7 @@
-// PLAN.md Step 2B, write half. These tests pin the bridge's reading and its
-// refusals. They do not yet assert a successful import: 23 of 24 committed
-// runs pass validation, and the writer then refuses them for a narrower
-// reason recorded below and in PLAN.md Step 2B.
+// PLAN.md Step 2B, write half. These tests pin the bridge's reading, its
+// refusals, and -- since 2026-08-07 -- one successful import all the way
+// through the canonical writer with a rebuilt and verified admitted-source
+// chain.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -17,7 +17,13 @@ const {
 const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
 const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
 
+// A pre-2026-08-07 run: no recorded capture inputs, so its chain cannot be
+// rebuilt and it must be refused.
 const RUN = path.join(__dirname, '..', 'evidence/canonical-v2/modiv-antitrust-20260806');
+// The same family and the same recorded model responses, replayed through the
+// current runner with zero model calls, so the run records its capture inputs
+// and its chain rebuilds.
+const REBUILDABLE_RUN = path.join(__dirname, '..', 'evidence/canonical-v2/modiv-antitrust-20260807-replay');
 
 test('it reads the write-set from adapter-result.json, not validation.json', () => {
   // Both files carry a write-set and reaching for the wrong one is easy.
@@ -25,12 +31,34 @@ test('it reads the write-set from adapter-result.json, not validation.json', () 
   // subset and lacks the source-admission keys the writer needs.
   const evidence = readRunEvidence(RUN);
   const adapter = JSON.parse(fs.readFileSync(path.join(RUN, 'adapter-result.json'), 'utf8'));
-  assert.deepEqual(Object.keys(evidence.write_set).sort(), Object.keys(adapter.write_set).sort());
+  // Every adapter key survives; the bridge adds `provisions`, which the
+  // adapter's write-set does not carry and the run's validated write-set does.
+  for (const key of Object.keys(adapter.write_set)) {
+    assert.ok(key in evidence.write_set, `${key} must survive the composition`);
+  }
   assert.ok(
     Object.prototype.hasOwnProperty.call(evidence.write_set, 'write_set_origin'),
     'the adapter write-set carries write_set_origin; the publishable subset does not',
   );
   assert.ok(evidence.admitted_source_contexts, 'admitted_source_contexts must travel with the write-set');
+});
+
+test('the write-set is composed with the provisions the runner validated against', () => {
+  // The defect this pins: adapter-result.json's write_set carries no
+  // provisions, and a claim whose governing provision is absent is DROPPED
+  // rather than rejected. Importing the adapter's write-set directly wrote 10
+  // excerpts, lost all 13 claims, and reported accepted: true. The provisions
+  // live in resolution.json, which is where the runner reads them from too
+  // (canonical-v2-live-extraction-run.mjs:1114).
+  const evidence = readRunEvidence(RUN);
+  const adapter = JSON.parse(fs.readFileSync(path.join(RUN, 'adapter-result.json'), 'utf8'));
+  assert.equal((adapter.write_set.provisions || []).length, 0, 'the adapter carries no provisions');
+  assert.equal(evidence.provisions_recovered_from_resolution, true);
+  assert.equal(evidence.write_set.provisions.length, evidence.write_set.claims.length);
+
+  // And the counts the shortfall check measures against are the run's own.
+  assert.equal(evidence.published_counts.claims, evidence.write_set.claims.length);
+  assert.equal(evidence.published_counts.provisions, evidence.write_set.provisions.length);
 });
 
 test('provenance travels with the run so an import is traceable', () => {
@@ -125,20 +153,42 @@ test('every family has a passing run, and the one historical failure is supersed
   }), 'the replayed no-other-reps run must pass the validator the original fails');
 });
 
-test('KNOWN GAP: import needs the admitted-source chain rebuilt', async () => {
-  // Two earlier blockers are CLOSED. The writer's deal-scope key check now
-  // accepts write_set_origin (canonical-writer.js, optional-key powerset,
-  // matching validate-write-set.js:507), and the bridge supplies a source
-  // reference resolver from the run's own admitted_source_contexts.
+test('a run that records its capture inputs imports through the writer', async () => {
+  // The end of Step 2B's write half, and the first time an extraction run has
+  // passed the canonical writer at all. Everything before this asserted
+  // refusals.
   //
-  // What remains: the writer validates the full admitted-source chain, and
-  // `admitted-semantic-source.js:199` requires a `conversion` object matching
-  // SEC_HTML_CANONICAL_TEXT_CONVERSION/V2. A run directory does not carry
-  // one. It can be rebuilt from the pinned raw HTML -- the same conversion
-  // scripts/canonical-v2-generate-family-section-refs.mjs already performs --
-  // and that is the remaining work on Step 2B's write half.
+  // REBUILT is the operative word. The writer takes four primitives from the
+  // resolver, rebuilds the admitted-source context from them, and refuses
+  // unless the rebuilt reference is byte-identical to this write-set's own
+  // source_references. So this passing means the chain was demonstrated from
+  // the committed raw HTML, not asserted from the run's own output.
+  const result = await importRunEvidence({
+    runDirectory: REBUILDABLE_RUN,
+    repository: new InMemoryCanonicalRepository(),
+    contractBundle: compileFixtureContractV38(),
+    dryRun: true,
+  });
+  assert.equal(result.dry_run, true);
+  assert.equal(result.receipt.validation.accepted, true);
+  assert.ok(result.receipt.inputDigest, 'a dry run still reports what it would have written');
+  assert.ok(
+    result.receipt.validation.publishableWriteSet.claims.length > 0,
+    'an import that publishes nothing has not demonstrated the path',
+  );
+  assert.match(result.idempotency_key, /^evidence-bridge:ANTITRUST_REGULATORY:/);
+});
+
+test('a run made before capture inputs were recorded is refused, not repaired', async () => {
+  // Every run before 2026-08-07 passed `new Date().toISOString()` as the
+  // capture's retrieved_at and recorded it nowhere. That timestamp feeds
+  // intake_capture_receipt_id -> verification_manifest_id ->
+  // immutable_source_document_id, so the chain cannot be rebuilt and the run
+  // cannot be imported.
   //
-  // Asserted rather than skipped so it fails the moment someone closes it.
+  // The refusal is the correct outcome. The available alternative -- re-derive
+  // the source reference from the rebuild and write that -- would make every
+  // run import cleanly by editing the evidence until it agreed with itself.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -146,19 +196,16 @@ test('KNOWN GAP: import needs the admitted-source chain rebuilt', async () => {
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    /closed conversion-only V2 contract/,
+    /NO_RECORDED_RETRIEVAL_TIMESTAMP/,
   );
 });
 
 test('the bridge re-validates rather than trusting the file it was handed', async () => {
-  // The refusal above is the proof: validation.json already claims the run
-  // was validated. The bridge does not take that claim, which is why it can
-  // see the divergence at all.
+  // validation.json already claims the run was validated. The bridge does not
+  // take that claim: it runs the validators itself, which is why the refusal
+  // above is reachable at all.
   const validation = JSON.parse(fs.readFileSync(path.join(RUN, 'validation.json'), 'utf8'));
   assert.equal(validation.accepted, true, 'the run claims it was accepted');
-  // It gets PAST validation and past the write-set shape check, and fails
-  // deeper in the admitted-source chain -- which is itself the proof: the
-  // bridge ran the validators rather than trusting the file's own claim.
   await assert.rejects(
     () => importRunEvidence({
       runDirectory: RUN,
@@ -166,6 +213,6 @@ test('the bridge re-validates rather than trusting the file it was handed', asyn
       contractBundle: compileFixtureContractV38(),
       dryRun: true,
     }),
-    /closed conversion-only V2 contract/,
+    /NO_RECORDED_RETRIEVAL_TIMESTAMP/,
   );
 });

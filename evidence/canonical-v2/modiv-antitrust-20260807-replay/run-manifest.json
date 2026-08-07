@@ -1,0 +1,43 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "ANTITRUST_REGULATORY",
+  "purpose": "General extraction run: family ANTITRUST_REGULATORY on deal modiv.",
+  "section_references": [
+    "5.5"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.5",
+      "family_id": "ANTITRUST_REGULATORY"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-antitrust-regulatory/v1",
+  "prompt_version": 5,
+  "agreement_date": "2026-05-03",
+  "model_cli_alias": "sonnet",
+  "follow_citations": true,
+  "max_retries": 0,
+  "run_started_at": "2026-08-07T06:56:00.162Z",
+  "total_elapsed_ms": 6045,
+  "extraction_wall_clock_ms": 322,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "unused_recorded_requests": 1,
+    "complete": false
+  },
+  "recorded_to": null,
+  "code_provenance": {
+    "commit": "7d0ecfa08284c7ce675c98bf67f680f73e193887",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 0,
+  "run_receipt_id": "054eec145823255adf1cbe0d09389c730909f95207e8333e5678b5eb7ce0f8f1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e"
+}
