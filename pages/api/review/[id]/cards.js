@@ -52,7 +52,12 @@ export default async function handler(req, res) {
     // the dark-bridge preview above: this one can make Canonical V2 the SERVED
     // source for one family, gated by its own server-only env var, default off
     // and unreachable in production. Off: same reference back, nothing added.
-    const servedReviewDeal = attachCanonicalTerminationFeeServing(previewedReviewDeal, { env: process.env });
+    // Step 2C: the Modiv entry in this switch's registry reads a real
+    // database connection and returns a Promise; every earlier entry
+    // (QXO/TopBuild) still returns synchronously. `await` on a plain,
+    // non-thenable object resolves to that same object on the next
+    // microtask, so this one `await` is correct for both cases.
+    const servedReviewDeal = await attachCanonicalTerminationFeeServing(previewedReviewDeal, { env: process.env });
     // Q6 (perf quick-wins): response is deal_id-scoped provision-card data,
     // identical for every viewer of this deal — no user-specific content —
     // safe to cache at the CDN edge with SWR.

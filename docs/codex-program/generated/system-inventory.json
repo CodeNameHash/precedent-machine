@@ -916,6 +916,7 @@
             "lib/queries/review-deal-wire.js"
           ],
           "scripts": [
+            "scripts/canonical-v2-modiv-termination-fee-serving-proof.js",
             "scripts/generate-qxo-termination-fee-excerpt-module.js"
           ],
           "tests": [
@@ -923,12 +924,13 @@
             "tests/canonical-v2-run-projects-to-product-cards.test.js",
             "tests/canonical-v2-termination-fee-both-sources.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
+            "tests/canonical-v2-termination-fee-modiv-database-source.test.js",
             "tests/canonical-v2-termination-fee-serving-switch.test.js",
             "tests/programme-gates/m3-family-parity-register.spec.js"
           ],
           "other": []
         },
-        "reference_count": 13
+        "reference_count": 15
       }
     ],
     "generic_serving_infrastructure": [

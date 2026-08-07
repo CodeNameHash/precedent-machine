@@ -1261,6 +1261,40 @@ rows; the review surface renders the family for that deal in a permitted
 runtime. A screenshot is not the proof — a test that reads the served payload
 back is. The screenshot is for the human.
 
+## Step 2C1. Give conditional fee values a deal scope before a second deal writes
+
+**Found by Step 2C, 2026-08-07, and confirmed live against the database.**
+
+**What it is.** `canonical_v2_staging.conditional_termination_fee_values` has
+**no deal-scoping column at all** — no `document_hash`, no `deal_id`. Step 2C's
+serving path therefore reads **the whole table**, which is correct today only
+because Modiv is the only deal that has ever written to it.
+
+**Why it cannot wait for the fan-out.** The moment a second deal writes
+conditional fee values, every deal's serving payload silently acquires the
+other's headline numbers. **It will not error.** It will show a lawyer a fee
+amount from a different agreement, which is the worst failure class this
+product has, and Step 2D is the step that writes a second deal.
+
+**Change.** Add the scoping column to the table in
+`supabase/canonical-v2-foundation.sql`, populate it on write, and scope the
+read. Note that a schema edit here moves **three digest guards** plus a
+governed extract — the whole-file pin in `canonical-v2-staging-schema.mjs`, the
+function-body pin in `canonical-v2-optiona-authority-partition.mjs` with its
+`--write` regeneration, and the error-message pins in
+`canonical-v2-staging-writer-structure-identity.mjs`.
+
+**Also generalise the read.** `local-staging-deal-reader.js`'s generic contract
+does not cover conditional fee values; Step 2C reads them with a direct query
+local to the termination-fee source. Once the column exists, that belongs in
+the reader with the rest.
+
+**Proves it is done.** Two deals' conditional fee values in the table at once,
+and each deal's serving payload contains only its own — proven by writing a
+second deal's values and reading both back, not by inspection. **This test is
+the point of the step**, because the defect is invisible until a second deal
+exists.
+
 ## Step 2D. Fan out the families on Modiv
 
 **What it is.** 1 -> 4 -> 12 -> 25, each rung re-running every family proven
