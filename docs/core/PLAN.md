@@ -442,11 +442,15 @@ document wherever they disagree.
 Three things are required by construction, and skipping any of them produces
 wrong output that does not throw:
 
-- **Inherit titles.** Most nodes carry no `heading`
-  (`deterministic-sectionizer.js:327`). Walk `parent_section_id` to the nearest
-  non-empty one. Copy `deriveSectionTitle`
-  (`native-extraction-run.js:330-340`) or `inheritedTitle`
-  (`prompt-budget-split-preflight.js:156-165`).
+- **Inherit titles**, as a fallback rather than a hot path. Measured on
+  Modiv: 362 of 471 referenced nodes carry no `heading`
+  (`deterministic-sectionizer.js:327`), but all 101 *dispatchable* nodes do,
+  because the filter below runs first. So the parent walk changes nothing on
+  either pinned deal. It is kept because nothing guarantees that property
+  holds for the next document and the failure mode is silent
+  under-classification. An earlier version of this step called it required by
+  construction; that is true of the precedent, which classifies a different
+  node set, and not of this composition.
 - **Filter to dispatchable nodes** before classifying, or a matching section
   drags its whole subtree into the family. Copy `dispatchableNodes`
   (`full-corpus-routing-prompt-cost-audit.js:258-276`).
