@@ -300,3 +300,49 @@ test('serving boundary: each card constructor refuses the other kind of row', as
   const tamperedClaim = { ...fixture.governedClaimRow, evidence_governance: OPEN_WORLD_EVIDENCE_GOVERNANCE_MARKER };
   assert.throws(() => buildGovernedClaimSummaryCard(tamperedClaim), UngovernedEvidenceProjectionError);
 });
+
+// Added 2026-08-07 after adversarial review broke the governed-side check by
+// execution. The original test only ever fed buildGovernedClaimSummaryCard a
+// marker-CARRYING row, so it proved the easy half: absence-checking catches
+// what carries the marker. It could not catch the real hole, which is every
+// row that legitimately lacks one.
+test('HOSTILE: a QXO-era open-world row, which never carries the marker, is not a governed claim', () => {
+  // NOVEL_CONCEPT_CANDIDATE/V1 predates the marker and lives in the same five
+  // tables under the heavier grammar. It is not a tampered row -- it is the
+  // legitimate contents of those tables. Before the positive schema check this
+  // rendered as {is_governed_claim: true, display_label: 'Governed claim'},
+  // putting uncorroborated model output in front of a lawyer as a finding.
+  assert.throws(
+    () => buildGovernedClaimSummaryCard({
+      schema_version: 'NOVEL_CONCEPT_CANDIDATE/V1',
+      raw_value: '$50,000,000',
+      canonical_value: 50000000,
+    }),
+    (error) => error.code === 'GOVERNED_CLAIM_CARD_WRONG_ROW_KIND',
+  );
+});
+
+test('HOSTILE: a native open-world row with its marker stripped is still not a governed claim', () => {
+  // The marker sits outside the content hash, so stripping it does not break
+  // identity recomputation -- the hash cannot catch this. Only asking what the
+  // row IS catches it.
+  assert.throws(
+    () => buildGovernedClaimSummaryCard({
+      schema_version: 'NATIVE_OPEN_WORLD_CANDIDATE/V1',
+      raw_value: '$50,000,000',
+      canonical_value: 50000000,
+    }),
+    (error) => error.code === 'GOVERNED_CLAIM_CARD_WRONG_ROW_KIND',
+  );
+});
+
+test('a genuine claim revision still builds a governed card', () => {
+  const card = buildGovernedClaimSummaryCard({
+    schema_version: 'CLAIM_REVISION/V1',
+    claim_definition_key: 'TERMINATION_FEE_AMOUNT',
+    canonical_value: 10000000,
+    raw_value: '$10,000,000',
+  });
+  assert.equal(card.is_governed_claim, true);
+  assert.equal(card.raw_value, '$10,000,000');
+});

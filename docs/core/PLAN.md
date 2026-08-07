@@ -1786,6 +1786,63 @@ control accepted; extra-key, missing-key and wrong-enum rows all refused with
 the shape; a duplicate id refused separately. All three digest guards updated
 and the governed extract regenerated.
 
+## Step 2B1. Close what the open-world review found at the serving boundary
+
+**Adversarial review of `899e9bc5`, `9eaaa663` and `73c6627b`, 2026-08-07.
+Merge on all three with conditions. The first condition was a live defect and
+is already fixed; the rest are open.**
+
+**FIXED, and worth stating plainly because the commit message was wrong.**
+`buildGovernedClaimSummaryCard` asked only whether a row *lacked* the
+ungoverned marker. Review broke it by execution: a QXO-era
+`NOVEL_CONCEPT_CANDIDATE/V1` row — which never carries the marker because it
+predates it, and is the *legitimate* contents of the same five tables — was
+accepted and rendered as **"Governed claim"** with its value. Uncorroborated
+model output presented to a lawyer as a finding.
+
+The commit claimed each constructor "refuses the other kind of row outright".
+That held only for the marker-carrying half of the row universe. **Marker
+absence distinguishes nothing when two grammars share a table.** The
+constructor now asks what the row *is* — `schema_version === 'CLAIM_REVISION/V1'`
+— and both attacks are pinned by tests. Note the marker sits *outside* the
+content hash, so identity recomputation could never have caught a stripped
+marker; only a positive check does.
+
+**Still open, in order of exposure.**
+
+1. **The lighter grammar never re-checks `raw_value` against excerpt text**,
+   while the adapter byte-verifies it. A non-adapter producer could pass a
+   fabricated string through validation, and the card displays it under the
+   field name **`quote`**. Today the adapter is the only producer. Mirror the
+   byte-equality check, or rename the field so it cannot read as verbatim
+   filed text.
+2. **Five provenance fields are silently dropped.** `pushOpenWorld` emits
+   `citation_validation`, `answer_provenance`, `source_citation`,
+   `extraction_provenance` and `section_family_ai_unverified`;
+   `buildOpenWorldWriteRows` carries none of them. The resolver's own comment
+   says an unvalidated citation "stays visibly flagged here too" — **the
+   database row loses that flag**, so a card built from the database can never
+   show whether the model's citation was checked. Carry them or record the
+   decision, before any page renders these cards.
+3. **`canonical_value` is exposed under that name on an ungoverned row.**
+   "Canonical" reads as vocabulary-blessed to a reviewer.
+4. **The fee table's CHECK constraints hard-code Modiv's clause numbers**
+   (`7.3(b)(i)`…`7.3(c)`), `USD` and `LOWER_OF` into the global staging
+   schema. The second deal with a formula fee needs a migration, and that
+   CHECK is a fourth member of the three-place problem Step 4A3 named.
+
+**Already done:** the synthetic probe row 4A2 left in `pm_step4a2_final` was
+deleted, so the container holds 6 rows and matches both notes again. It had
+been 7, indistinguishable at the column level, and 4A3 then reused that
+database for its own proof.
+
+**One scope correction to `899e9bc5`'s own title.** Its evidence stops at
+`validateResolvedCanonicalWriteSet`: "244 rows" are write-set rows in memory.
+No native open-world row went through the SQL writer in that commit. Nothing
+blocks it — the trio was already declared from the QXO chain, verified rather
+than assumed — but "reaches the database" was demonstrated to the validator,
+not to the database.
+
 ## Step 4A3. Carry conditional fee values into the write-set
 
 **Found by Step 4A2 itself, and disclosed rather than left to be discovered.**
