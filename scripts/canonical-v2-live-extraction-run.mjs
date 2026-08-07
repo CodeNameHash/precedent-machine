@@ -135,7 +135,7 @@ import {
   readFileSync, writeFileSync, mkdirSync, existsSync,
 } from 'node:fs';
 import { resolve } from 'node:path';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
@@ -615,6 +615,34 @@ function buildDryRunReport({
   };
 }
 
+// Records what code produced a run, so a later run can answer "did anything
+// this depends on change?" without re-running. PLAN.md Stage 2's
+// change-triggered re-run policy needs this: the manifest previously carried
+// prompt_version, contract_bundle_version and section_references but no
+// commit and no resolved model, so neither "did the code change" nor "did the
+// model change" was answerable from a receipt.
+function runProvenance() {
+  const read = (args) => {
+    try {
+      const out = spawnSync('git', args, { encoding: 'utf8' });
+      return out.status === 0 ? String(out.stdout).trim() : null;
+    } catch {
+      return null;
+    }
+  };
+  const commit = read(['rev-parse', 'HEAD']);
+  const dirty = read(['status', '--porcelain']);
+  return {
+    // Null rather than a guess when git is unavailable. A wrong commit is
+    // worse than a missing one: it would make a changed run look unchanged.
+    commit: commit || null,
+    // A dirty tree means the commit does not describe what actually ran, so
+    // change-detection against it is unsound. Say so rather than imply the
+    // commit is sufficient.
+    working_tree_clean: dirty === null ? null : dirty.length === 0,
+  };
+}
+
 function childEnv() {
   const env = { ...process.env };
   delete env.ANTHROPIC_API_KEY; // force subscription auth, not metered billing
@@ -968,6 +996,17 @@ async function main() {
     extraction_wall_clock_ms: extractionWallClockMs,
     replay: replayReport,
     recorded_to: config.recordPath || null,
+    // Change-detection inputs (PLAN.md Stage 2). With these a later run can
+    // decide whether a (deal, family) pair needs re-running at all, instead
+    // of re-running everything and comparing samples of a nondeterministic
+    // model. `model_cli_alias` above is the alias the operator typed;
+    // `resolved_models` is what the CLI reported actually serving each call,
+    // which is the one that matters -- a model swap behind an unchanged
+    // alias would otherwise trigger no re-run at all.
+    code_provenance: runProvenance(),
+    resolved_models: Object.freeze([...new Set(
+      telemetry.calls.map((call) => call.served_model).filter(Boolean),
+    )]),
     model_call_count: telemetry.calls.length,
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,

@@ -664,12 +664,22 @@ old one, and diff. This step also discharges `P9_SHADOW_REEXTRACTION` and
 only when something it depends on changed since its last green receipt: code,
 `prompt_version`, `contract_bundle_version`, or `section_references`. An
 unchanged-input re-run against a live model is sampling noise, not a regression
-check. **This needs one runner change first:** the manifest records
-`prompt_version`, `contract_bundle_version` and `section_references`, but no
-commit hash and no resolved model ID — only `model_cli_alias` — so today
-neither "did the code change" nor "did the model change" can be answered from a
-receipt. Record both, and write down what counts as a family run's code
-footprint. Accepted loss, stated rather than hidden: blanket re-running would
+check. **The runner change this needed is done** (2026-08-07). The manifest now
+carries `code_provenance` (commit plus whether the working tree was clean, so
+a dirty-tree run cannot be mistaken for one the commit describes) and
+`resolved_models` (what the CLI reported actually serving each call, not the
+alias the operator typed — a model swap behind an unchanged alias would
+otherwise trigger no re-run at all).
+
+One correction to an earlier draft of this step: it said the only model field
+was a CLI alias. That was true of `run-manifest.json` and **false of
+`call-telemetry.json`**, which has recorded `served_model` per call all along.
+The manifest was the gap, not the runner.
+
+**What is still undecided:** what counts as a family run's code footprint —
+which paths, changing, should invalidate it. That is a judgement call, and
+defaulting it to "any commit" would degrade this straight back to blanket
+re-running. Accepted loss, stated rather than hidden: blanket re-running would
 surface flakiness that a single receipt hides.
 
 **Nondeterminism.** The runner makes live model calls with no `--replay` and no
