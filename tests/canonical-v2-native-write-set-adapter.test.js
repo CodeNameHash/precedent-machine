@@ -300,6 +300,91 @@ async function buildSimpleReceipt(options) {
   });
 }
 
+// ─── Fixture: a two-role claim proposal (DEFINITION + OPERATIVE_TEXT), the
+// exact evidence shape defined-term claims carry in production (candidate-
+// resolution.js's `handleDefinedTermCandidate`, `rebuildClaim`) and the
+// shape docs/codex-program/notes/key-defined-terms-zero-claims.md traced
+// KEY_DEFINED_TERMS's zero-publishable-claims defect to: `raw_value` is
+// deliberately the OPERATIVE_TEXT limb's own text, distinct from the
+// DEFINITION edge's `attributes.definition_head_quote` text --
+// `native-extraction-run.js`'s own `checkEvidenceScope` already treats that
+// as the one named exception (checks the DEFINITION edge against
+// `definition_head_quote`, not `raw_value`), so this fixture is accepted at
+// compile time and exercises whether `native-write-set-adapter.js` honours
+// the same exception once the evidence gets shifted to document-absolute
+// coordinates.
+function makeTwoRoleClaimProposal({
+  subjectSeed, ordinal = 0, headQuote, headStart, headEnd, limbQuote, limbStart, limbEnd,
+}) {
+  const subjectOccurrenceId = contentId('NATIVE_WRITE_SET_ADAPTER_TEST_SUBJECT/V1', subjectSeed);
+  const headExcerptId = contentId('NATIVE_WRITE_SET_ADAPTER_TEST_EXCERPT/V1', {
+    quote: headQuote, absoluteStart: headStart, absoluteEnd: headEnd, ordinal, role: 'DEFINITION',
+  });
+  const limbExcerptId = contentId('NATIVE_WRITE_SET_ADAPTER_TEST_EXCERPT/V1', {
+    quote: limbQuote, absoluteStart: limbStart, absoluteEnd: limbEnd, ordinal, role: 'OPERATIVE_TEXT',
+  });
+  return {
+    kind: 'claim',
+    proposal_kind: 'GOVERNED',
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'NATIVE_WRITE_SET_ADAPTER_TEST_CLAIM_CANDIDATE',
+    claim_definition_version: 1,
+    ordinal,
+    state: 'PRESENT',
+    raw_value: limbQuote,
+    canonical_value: null,
+    attributes: { definition_head_quote: headQuote },
+    allowed_attributes: ['definition_head_quote'],
+    taxonomy_codes: {},
+    codebooks: {},
+    evidence: [
+      {
+        evidence_role: 'DEFINITION', excerpt_id: headExcerptId, document_ordinal: 0, absolute_start: headStart, absolute_end: headEnd, ordinal: 0,
+      },
+      {
+        evidence_role: 'OPERATIVE_TEXT', excerpt_id: limbExcerptId, document_ordinal: 0, absolute_start: limbStart, absolute_end: limbEnd, ordinal: 1,
+      },
+    ],
+    extraction_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+    normalisation_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+    derivation_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+  };
+}
+
+function twoRoleProvider() {
+  return async ({ governed_scope: governedScope }) => {
+    const head = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
+    const limb = locateInGovernedScope(governedScope, LIMB_III_QUOTE);
+    return {
+      provider_id: 'native-write-set-adapter-two-role-test-stub/v1',
+      model_id: 'stub-model',
+      prompt: 'native-write-set-adapter-two-role-test-stub-prompt-v1',
+      proposals: [makeTwoRoleClaimProposal({
+        subjectSeed: { section_reference: governedScope.section_reference, kind: 'two-role' },
+        ordinal: 0,
+        headQuote: LIMB_I_QUOTE,
+        headStart: head.start,
+        headEnd: head.end,
+        limbQuote: LIMB_III_QUOTE,
+        limbStart: limb.start,
+        limbEnd: limb.end,
+      })],
+      evidence_residuals: [],
+    };
+  };
+}
+
+async function buildTwoRoleReceipt() {
+  return runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: twoRoleProvider(),
+  });
+}
+
 // ─── Fixture: a "resolvable" provider whose subject_occurrence_id is a
 // REAL PROVISION_INSTANCE/V1 identity (built the same way
 // tests/fixtures/canonical-v2/qxo-native-producer-proposals.js and
@@ -922,6 +1007,100 @@ test('an evidence span that fails to verify after shifting becomes a typed resid
   assert.ok(shiftResidual, 'the failed shift is recorded as a typed residual, never silently omitted');
   assert.equal(shiftResidual.reason_code, 'EVIDENCE_SHIFT_TEXT_MISMATCH');
   assert.equal(shiftResidual.closure_id, receipt.compiled_candidates[0].candidate.claim.closure_id);
+});
+
+// ─── DEFINITION-role evidence: the KEY_DEFINED_TERMS zero-claims defect ───
+//
+// docs/codex-program/notes/key-defined-terms-zero-claims.md: a defined-term
+// claim's DEFINITION edge legitimately carries different text from its own
+// `raw_value` (which is the OPERATIVE_TEXT limb's text) -- confirmed a real,
+// governed defect in this module, not a byte-offset bug: both edges shift
+// to genuinely correct document-absolute text, but the adapter compared
+// EVERY edge to the single `raw_value`, so the DEFINITION edge always
+// failed and the whole claim (all 10 of KEY_DEFINED_TERMS's real, resolved
+// Modiv candidates) was dropped as a residual.
+
+test('a claim with a DEFINITION edge and an OPERATIVE_TEXT edge whose texts genuinely differ is published in full, not dropped', async () => {
+  const receipt = await buildTwoRoleReceipt();
+  const [entry] = receipt.compiled_candidates;
+  assert.equal(entry.ok, true, 'checkEvidenceScope must accept this two-role shape at compile time');
+  const claim = entry.candidate.claim;
+  assert.equal(claim.raw_value, LIMB_III_QUOTE);
+  assert.equal(claim.attributes.definition_head_quote, LIMB_I_QUOTE);
+  assert.notEqual(claim.raw_value, claim.attributes.definition_head_quote, 'the fixture is only meaningful if the two edges genuinely differ');
+
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  assert.equal(result.residuals.length, 0, 'neither edge is dropped as an EVIDENCE_COORDINATE_SHIFT_FAILED residual');
+  assert.equal(result.counts.candidates_rejected_by_coordinate_shift, 0);
+  assert.equal(result.write_set.claims.length, 1, 'the claim is published, not dropped');
+  const [publishedClaim] = result.write_set.claims;
+  assert.equal(publishedClaim.evidence.length, 2, 'both edges survive into the write set');
+
+  const section = findSection(receipt, '3.1(b)');
+  const fullBytes = Buffer.from(qxoRealisticFullText, 'utf8');
+  const headEdge = publishedClaim.evidence.find((edge) => edge.evidence_role === 'DEFINITION');
+  const limbEdge = publishedClaim.evidence.find((edge) => edge.evidence_role === 'OPERATIVE_TEXT');
+  assert.ok(headEdge && limbEdge);
+  // Each shifted edge byte-verifies against ITS OWN role-appropriate text,
+  // at genuinely document-absolute (not section-local) coordinates.
+  assert.equal(
+    fullBytes.subarray(headEdge.absolute_start, headEdge.absolute_end).toString('utf8'),
+    LIMB_I_QUOTE,
+  );
+  assert.equal(
+    fullBytes.subarray(limbEdge.absolute_start, limbEdge.absolute_end).toString('utf8'),
+    LIMB_III_QUOTE,
+  );
+  assert.ok(headEdge.absolute_start >= section.start && headEdge.absolute_end <= section.end);
+  assert.ok(limbEdge.absolute_start >= section.start && limbEdge.absolute_end <= section.end);
+});
+
+test('hostile: a DEFINITION edge that does NOT reproduce its own definition_head_quote is still rejected, not forced through', async () => {
+  // Proves the fix discriminates rather than blanket-accepting every
+  // DEFINITION edge: corrupt the DEFINITION edge's offsets so it shifts to
+  // real document text that is NOT the claim's own definition_head_quote
+  // (point it at the OPERATIVE_TEXT limb's own span instead -- genuine,
+  // in-bounds, real document text, just the wrong text for this edge's
+  // role), and confirm the claim is still excluded and recorded as a typed
+  // residual, exactly as the pre-existing single-edge corruption test above
+  // proves for the OPERATIVE_TEXT case.
+  const receipt = await buildTwoRoleReceipt();
+  const originalClaim = receipt.compiled_candidates[0].candidate.claim;
+  const [headEdge, limbEdge] = originalClaim.evidence;
+  assert.equal(headEdge.evidence_role, 'DEFINITION');
+
+  const corruptHeadEdge = {
+    ...headEdge, absolute_start: limbEdge.absolute_start, absolute_end: limbEdge.absolute_end,
+  };
+  const corruptClaim = { ...originalClaim, evidence: [corruptHeadEdge, limbEdge] };
+  const corruptReceipt = {
+    ...receipt,
+    compiled_candidates: [{
+      ...receipt.compiled_candidates[0],
+      candidate: { ...receipt.compiled_candidates[0].candidate, claim: corruptClaim },
+    }],
+  };
+
+  const result = buildNativeWriteSet({
+    run_receipt: corruptReceipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  assert.equal(result.write_set.claims.length, 0, 'a claim whose DEFINITION edge does not verify is not published');
+  assert.equal(result.counts.candidates_rejected_by_coordinate_shift, 1);
+  const shiftResidual = result.residuals.find((r) => r.residual_type === 'EVIDENCE_COORDINATE_SHIFT_FAILED');
+  assert.ok(shiftResidual, 'the failed DEFINITION-edge verification is a typed residual, never a silent drop');
+  assert.equal(shiftResidual.reason_code, 'EVIDENCE_SHIFT_TEXT_MISMATCH');
+  assert.equal(shiftResidual.expected, LIMB_I_QUOTE, 'checked against definition_head_quote, not raw_value');
+  assert.equal(shiftResidual.actual, LIMB_III_QUOTE);
 });
 
 // ─── Fail closed on structural inconsistency ───
