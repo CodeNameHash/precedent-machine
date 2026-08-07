@@ -1802,6 +1802,41 @@ not implemented because that file was under another agent's edit at the time.
 trimmed is refused at the resolver, not only at `lib/verification.js`. Build the
 test against real filed text, not a synthetic string.
 
+**DONE 2026-08-07, partial by design, and the reason is recorded where the
+next reader will actually see it.** The principled fix
+(`claimGoverningNegationTrimmed`, `candidate-resolution.js`) uses a claim's
+own byte-verified evidence span to check the real document position a quote
+begins at, before anything else touches `raw_value` -- exactly the
+"independently-captured, pre-trim offset" `negation-reversal.md` section 8
+specified. Wired into `BRING_DOWN_TIER_CLAIM_KEY`'s resolution, the one
+`REPRESENTATION_ACCURACY_STANDARD` path with no lexicon or pattern check
+tying `raw_value` to `canonical_value` at all before this fix. Proved against
+real TopBuild filed text, both directions: a negation-trimmed attack quote
+that resolved clean before this fix (re-run directly against `git
+show HEAD`'s own pre-fix copy of the file) is refused after it, routed to
+`review_queue` with reason `REPRESENTATION_ACCURACY_STANDARD_GOVERNING_
+NEGATION_TRIMMED`; the identical real, untrimmed clause still resolves.
+`tests/canonical-v2-negation-boundary-resolver.test.js`, 4/4.
+
+**Investigated for, and deliberately NOT wired into, the OTHER
+`REPRESENTATION_ACCURACY_STANDARD` path**
+(`handleRepresentationQualifierCarrier`'s ACCURACY branch) -- the same wall
+Step 3E hit for a different bridge. That path only ever resolves a quote
+that IS, verbatim, one of five short whitelist phrases (this test suite's
+own long-established fixture for a clean qualifier already models it that
+way), and real Modiv text false-positives on exactly that bare-phrase shape:
+"...(y) that are not qualified by materiality or Company Material Adverse
+Effect shall be true and correct in all material respects..." -- "are not"
+genuinely precedes the phrase within the guard's lookback window but negates
+a different clause three commas back, not the accuracy standard itself.
+Wiring the guard in would refuse a real, correct quote alongside a real
+attack, on a shape that is the ONLY way this path ever produces a resolved
+claim, not a rare edge case. Recorded in `candidate-resolution.js`'s own
+header (new "NEGATION-BOUNDARY GUARD" paragraph) and at that function
+directly, plus a regression test proving the false positive is real
+(`tests/canonical-v2-negation-boundary-resolver.test.js`'s fourth test).
+Full account: `docs/codex-program/notes/step-3d-3i.md`.
+
 ## Step 3E. Close the same negation gap in the third bridge
 
 **What it is.** `lib/canonical-v2/no-other-reps-fraud-dark-bridge.js` rejected
@@ -2062,6 +2097,73 @@ work has turned out to exist.
 **Or defer it explicitly.** If Ben rules these out of scope for launch, that
 ruling goes in `DECISIONS.md` and this step is deleted. What must not happen
 again is the work having no home and no decision.
+
+**DONE 2026-08-07, both fields, neither the way this step's own "Change"
+section predicted.** Both landed as additive resolver work in
+`lib/canonical-v2/native-producer/candidate-resolution.js`; neither touched
+`lib/canonical-v2/contract-bundle.js` or cost the eleven-edit new-claim-
+definition convention this step's text specified. That prediction was wrong
+about the mechanism, not about the fields being real work.
+
+**Grounds-naming field: already done, found already committed.** Checked
+before starting, per this step's own standing warning about work that turns
+out to exist: `resolveFeeAmountGrounds`/`selectFeeAmountGroundsCondition`
+were committed at `c42ceae7` ("feat: say which termination grounds trigger
+which fee amount"), an ancestor of this session's own starting `HEAD`, with
+its own design note (`docs/codex-program/notes/grounds-to-amount-mapping.md`)
+already marked "Status: implemented... full suite green". Independently
+re-verified this session, not just trusted: `resolveTerminationFeeAssertions`'s
+own test suites still pass (150/150, `CI=true node --test tests/canonical-v2-
+termination-fee-parse.test.js tests/canonical-v2-termination-fee-resolution.
+test.js tests/canonical-v2-modiv-termination-fee-citation-following-
+replay.test.js tests/canonical-v2-modiv-termination-fee-scope-correction-
+replay.test.js`), and the specific claim re-checked against the real,
+committed Modiv replay directly: each `TERMINATION_FEE_AMOUNT` limb carries
+its own `grounds_quote`/`grounds_cited_references`, verbatim and cited,
+naming which of Section 7.3(b)(i)-(v) gates which figure. One correction to
+the note's own prose: the stored `evidence/canonical-v2/modiv-termination-
+fee-citation-following-20260806/resolution.json` snapshot predates the fix
+and does not itself carry `grounds_quote` -- the fresh replay does. This was
+tracked nowhere in `PLAN.md`/`COMPLETED.md` until this entry; the same "done
+but not recorded as done" gap this step itself exists to close, one level
+down.
+
+**Payment timing: built as a scoped, cited, Modiv-only sidecar, not the
+general per-family coded field.** Checked before building: no committed
+recorded model response, for Modiv or any other deal, carries payment-timing
+text anywhere (every `evidence/canonical-v2/**` termination-fee response
+grepped for "Business Day"/"simultaneously with"/"substantially concurrently
+with" -- zero hits), so the "derive from data already flowing" approach the
+grounds field used does not apply here: nothing is already flowing to derive
+from, and populating a new producer field needs a live model call this
+session has no access to (no `ANTHROPIC_API_KEY` set, checked directly --
+the identical constraint `grounds-to-amount-mapping.md` section 4 hit and
+rejected the same design for). Also could not reuse the existing two-value
+`allowed_payment_timings` enum (`contract-bundle.js`'s `TERMINATION_FEE_
+TRIGGER_PATH_SCHEMA_V2`, hand-curated for QXO): Modiv's own real drafting has
+three distinct payment-timing patterns and none is an exact reading of
+either existing code, so coining new ones would be a codebook/taxonomy
+decision this task does not own (`OPERATING-RULES.md` reserves that to Ben).
+Built instead, mirroring the pre-existing, sanctioned `resolveModivConditionalFees`
+sidecar exactly: `lib/canonical-v2/native-producer/modiv-termination-fee-
+payment-timing-parser.js` regexes the admitted source text directly against
+Modiv's own real Section 7.3(b) payment sentence, gated on all six expected
+fee-trigger branches being present first, emitting one `payment_timing_quote`
+per branch (verbatim, cited) rather than a coded value -- narrower than
+DECISIONS.md item 5's eventual target ("one claim per limb", fully coded),
+but a real, per-limb, cited fact today. Proved against the real, committed
+Modiv citation-following run (`tests/canonical-v2-modiv-termination-fee-
+citation-following-replay.test.js`'s new "payment timing" test): all six
+branches resolve, each with its own real quote. Hostile tests, all passing
+(`tests/canonical-v2-modiv-termination-fee-payment-timing-parser.test.js`):
+a missing branch, a side-mismatched branch, a differently-worded (non-Modiv)
+agreement, and a duplicated sentence (ambiguous nesting) each refuse cleanly
+rather than guessing. Full existing candidate-resolution.js-adjacent suite
+unaffected (655 tests, 641 pass, 0 fail, 14 pre-existing skips); `bash
+scripts/lint/forbidden-patterns.sh` passes. Full account, including why the
+general per-family, coded version remains open (needs a live model call and
+a Ben-reviewed codebook decision, neither available here):
+`docs/codex-program/notes/step-3d-3i.md`.
 
 ---
 

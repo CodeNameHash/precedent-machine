@@ -271,6 +271,36 @@ the reading-the-agreement work this decision calls "real work, not
 reformatting" is not yet done: the shape is built, the extraction that would
 populate it from a live model call is not.
 
+**Update, 2026-08-07 (`PLAN.md` Step 3I).** The coded, general, per-family
+`payment_timing` extraction this decision asks for still needs a live model
+call and, separately, a codebook decision this task does not own:
+
+> **Correction, same day.** The sentence above originally gave "no
+> `ANTHROPIC_API_KEY` was available" as the reason the live call could not be
+> made. **That is not a blocker and never was.**
+> `scripts/canonical-v2-live-extraction-run.mjs` does not use an API key: its
+> header says "No `ANTHROPIC_API_KEY` is assumed", and line 855 *deletes* the
+> variable to force subscription auth rather than metered billing. It drives
+> the model through the `claude` CLI as an external process, which is present
+> in this environment. The genuine constraint is the codebook decision below,
+> which a live call would not have resolved anyway.
+>
+> Recorded rather than quietly fixed, because "we cannot do X because Y is
+> missing" is how this programme acquires false blockers, and Y here was
+> disproved by reading the runner's own header. Modiv's own real drafting has three
+distinct payment-timing patterns and none is an exact match for either of
+the two existing `allowed_payment_timings` codes, which were hand-curated for
+QXO specifically. What was built instead, scoped and documented as narrower
+than this decision's eventual target: a Modiv-only sidecar
+(`lib/canonical-v2/native-producer/modiv-termination-fee-payment-timing-
+parser.js`, mirroring the pre-existing `resolveModivConditionalFees` sidecar)
+that extracts each of Modiv's six fee-trigger branches' own payment-timing
+text VERBATIM, cited, real, and proven against the real committed Modiv
+replay -- not a coded enum value, and not built for any other deal. This is
+real, per-limb, cited data today; it is not the "each termination-fee trigger
+carries its own [coded] payment_timing field" shape this decision ultimately
+wants. Full account: `docs/codex-program/notes/step-3d-3i.md`.
+
 ---
 
 ## 6. "Fee required to terminate": DECIDED 2026-08-05, moves to Termination Rights
