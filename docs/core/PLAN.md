@@ -163,13 +163,25 @@ on an unfinanced deal because the agreement has no such provisions, and
 Appraisal is correct by design. Treating a correct zero as a bug means
 inventing provisions the deal does not contain.
 
-**A new defect found by the live runs, and not yet investigated.**
-`KEY_DEFINED_TERMS` still publishes zero claims *even though* its corrected
-§8.12 pin now resolves 10 real candidates. The pin defect Step 2A diagnosed is
-genuinely fixed; a second, narrower defect sits behind it — resolved
-candidates are not becoming publishable claims, with 5 provisions carrying no
-attached claim. Fixing one defect revealing another is the normal shape of
-this work, but it must not be recorded as "2A did not work".
+**A defect found by the live runs, and FIXED 2026-08-07 the same day.**
+`KEY_DEFINED_TERMS` published zero claims even though its corrected §8.12 pin
+resolved 10 real candidates. Step 2A's pin defect was genuinely fixed; a
+second, narrower one sat behind it. All ten died in the adapter's post-shift
+evidence re-verification as `EVIDENCE_SHIFT_TEXT_MISMATCH`, leaving five
+provisions with no attached claim.
+
+The cause was a stale header. `checkEvidenceScope` has a documented exception
+— a defined-term claim's `DEFINITION` edge is checked against
+`attributes.definition_head_quote`, not `raw_value`, which carries the
+operative limb's text — and the adapter's `expectedTextForEdge` never carried
+it, while its header asserted a simpler invariant that was silently false for
+exactly this shape. **Publishable claims 0 to 10**, with open world and review
+queue untouched. The shape occurs in exactly one of 52 evidence directories,
+swept rather than assumed.
+
+**So 18 of 25 families publishing claims is now 19**, and the counts in the
+table above predate this fix. They are corrected when the baseline is next
+regenerated, by replay, rather than adjusted by hand here.
 
 ---
 
