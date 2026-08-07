@@ -743,13 +743,18 @@ them *"ordinary bugs, not design questions"*, and even predicts the symptom:
 *"This is why the family resolved zero and put all 12 of its findings in open
 world"*).
 
-Both withdrawals are recorded rather than deleted. Promoting settled work to a
-decision is the same failure as declaring built work missing — it stops the
-work and costs a round trip — and it happened twice in one night, so it is
-worth leaving visible.
+Both withdrawals are recorded rather than silently dropped — the
+specific-performance one in full below, the vocabularies one in the paragraph
+above. Promoting settled work to a decision is the same failure as declaring
+built work missing: it stops the work and costs a round trip. It happened
+twice in one night, so it is worth leaving visible.
 
-**Numbering note:** items keep their original numbers so anything referring to
-"decision 3" still resolves. Item 2 is the withdrawal.
+**Numbering, stated because it has already gone wrong once.** The three live
+items are numbered **1, 2, 3** below and the withdrawals are called out by
+name rather than by number. An intermediate version kept the original numbers
+with gaps, which left the handoff and this file pointing at different items
+under the same label. If you find a reference to "decision 4" or "decision 5"
+anywhere, it predates this note and means one of the two withdrawals.
 
 **1. How the read half gets access to `canonical_v2_staging` in a HOSTED
 environment.** `foundation.sql:8661-8665` revokes all table privileges from
@@ -772,8 +777,8 @@ then bring you a working shape to decide the hosted access design against,
 rather than a blank page. What is genuinely yours is the hosted design, and it
 is not needed until something is served from a deployment.
 
-**2. WITHDRAWN 2026-08-07 — this was mine, not yours.** The
-specific-performance premise regex was listed here as a decision. It is not.
+**WITHDRAWN 2026-08-07 — the specific-performance premise regex. This was
+mine, not yours.** It was listed here as a decision. It is not.
 
 `anthropic-provider.js:1193-1194` demands the literal strings `irreparable
 harm would occur` and `money damages would not be an adequate remedy`. Modiv
@@ -800,7 +805,7 @@ and the diff goes through adversarial review before it reaches you.
 You may still want to see the diff, because it changes what the pipeline
 extracts from every deal. That is a review, not a gate.
 
-**3. Whether open-world evidence is written at all.** 275 open-world entries
+**2. Whether open-world evidence is written at all.** 275 open-world entries
 across the committed baseline, zero rows written: the adapter lists all five
 open-world collections as always-empty. Consequence: four of the ten cards a
 termination-fee run projects have no database-backed equivalent, and families
@@ -808,13 +813,39 @@ whose output is entirely open-world write nothing at all. Either emit the
 rows, or accept a database-backed render of governed claims only and say so on
 the page. Defensible either way; not defensible to inherit it from a constant.
 
-**4. `conditional_termination_fee_values` has no table.** Two more of the ten
+**3. `conditional_termination_fee_values` has no table.** Two more of the ten
 cards come from it, including the Modiv headline. It needs a home or an
 explicit omission.
 
 ---
 
 # Recently decided
+
+- **Nondeterministic extraction gets a replay path, not a tolerance policy.**
+  Ruled 2026-08-06, in conversation, and recorded here on 2026-08-07 because
+  it was cited in two places and written down in none.
+
+  **The problem.** Stage 2's ladder compares `resolved` counts across rounds
+  and stops the line when one falls. Every re-run was a live model call with
+  no pinned seed, so two identical runs could differ and the gate would be
+  measuring sampling noise as regression. The two ways out were a replay path
+  or a written tolerance — what size of delta counts as noise, how many
+  confirmations a red gate needs, who decides.
+
+  **Ben chose the replay path.** Correctly: a tolerance policy is a number
+  someone has to defend every time a gate goes red, and the first flaky rung
+  would have been resolved by whoever was at the keyboard.
+
+  **Code.** `lib/canonical-v2/native-producer/provider-record-replay.js`, and
+  `--record` / `--replay` / `--replay-from-run` in
+  `scripts/canonical-v2-live-extraction-run.mjs`. The entire committed
+  baseline was produced through it with zero model calls, which is also the
+  proof it works.
+
+  **What it does not settle.** Replay re-scores the resolver, validator and
+  write-set builder against fixed model output. It says nothing about whether
+  the model would answer the same way today; that is a live run and a separate
+  question.
 
 - **The admitted-source identity stays as it is. The compressed source map
   is persisted instead.** Decided 2026-08-07 after an adversarial pass.

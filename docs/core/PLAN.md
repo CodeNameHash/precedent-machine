@@ -410,19 +410,33 @@ runtime, which is where `isPermittedCanonicalV2Runtime` permits it.
 
 ## Step 2A. Recover the section lists, which are not lost
 
-**What it is.** Each family is run against a named list of sections. Only one
-of those lists is pinned in code.
+**DONE for Modiv, 2026-08-07. All 25 families are pinned**, and
+`tests/canonical-v2-modiv-family-pins.test.js` asserts it. The two corrections
+this step exists to make — `CONSIDERATION` and `KEY_DEFINED_TERMS` — are both
+applied, and `MAE_DEFINITION`'s generator-proposed list has been read against
+the document. TopBuild is still unpinned; that is Step 2E. What follows is the
+original statement of the problem, kept because it records how the lists were
+recovered and why two of them were wrong.
+
+**What it was.** Each family is run against a named list of sections. When
+this step was written, only one of those lists was pinned in code.
 
 **Why.** Nothing else in this stage can run without it. Worse, two families
 produced almost nothing purely because they were pointed at the wrong sections,
-and nobody could see that, because the lists were invisible.
+and nobody could see that, because the lists were invisible. Both have since
+been confirmed exactly that way: `KEY_DEFINED_TERMS` was aimed at the
+interpretation conventions rather than the definitions, and `CONSIDERATION`
+never requested the section carrying the appraisal negative.
 
 ```
 node -e "const s=require('fs').readFileSync('scripts/canonical-v2-live-extraction-run.mjs','utf8');
 console.log(s.match(/default_section_refs_by_family:\s*Object\.freeze\(\{[\s\S]{0,200}?\}\)/g).join('\n---\n'))"
 ```
-shows `modiv` has exactly one entry, `TERMINATION_FEE: ['7.1','7.3','8.12']`, and
-`topbuild` has none.
+showed, when this was written, that `modiv` had exactly one entry,
+`TERMINATION_FEE: ['7.1','7.3','8.12']`, and `topbuild` had none. **Run today
+it matches only `topbuild`'s still-empty block**, because Modiv's has grown
+past the 200-character window the regex allows — which is the check having
+served its purpose, not a broken command.
 
 **The other 24 exist and are mechanically recoverable.** Twenty are in
 `section_references` in each `evidence/canonical-v2/modiv-*-20260806/run-manifest.json`.
@@ -544,10 +558,17 @@ reader can see what was proposed against what a human corrected, and why.
 
 ## Step 2B. Build the bridge, both halves: run to writer, database to surface
 
-**The bridge has two halves and both are missing.** The write half carries a
-run's output into the database. The read half carries it back out to a
-surface. Neither exists, and a rung of this ladder cannot be climbed without
-both — 2C's "confirm it renders" is unachievable otherwise.
+**STATE, 2026-08-07 — read this before the rest of the step, which was
+written when both halves were missing.**
+
+| Half | State |
+|---|---|
+| Write: a run's output into the database | **Done, in memory.** Proven against `InMemoryCanonicalRepository` only; `canonical_v2_write` has never received the runner's output. Closing that is Step 4A, which needs no decision — consider running it before 2C |
+| Read: back out to a surface | **Not built.** Locally unblocked (no `FORCE ROW LEVEL SECURITY`, so a table-owner connection reads freely); the *hosted* access design is Ben's |
+
+Everything below is the original statement of the problem plus the record of
+how each layer was closed. A rung of this ladder still cannot be climbed
+without both halves — 2C's "confirm it renders" is unachievable otherwise.
 
 **The read half, stated plainly because it is easy to miss.** No serving
 source reads from the database today. Grep every `lib/canonical-v2/*serving*.js`
@@ -701,8 +722,9 @@ capture input under `admitted_source_capture_inputs`.
 
 ### Defect 2: `IMMUTABLE_SOURCE_DOCUMENT/V2` is not content-addressed
 
-**This was the more serious finding. RESOLVED the same day — see the end of
-this section — but read it, because the shape of the defect explains why every
+**This was the more serious finding. RESOLVED the same day — the resolution
+is under "The ten zeros, triaged" below, which is where it landed and not
+where it belongs. Read the defect anyway: its shape is why every
 pre-2026-08-07 run is refused.**
 
 That schema includes `source_map_compressed_sha256` — a digest of *DEFLATE
@@ -852,18 +874,32 @@ it silently discards any deal that is not. Every agreement in the corpus using
 its specific-performance grant, and the loss shows up as a family that found
 nothing.
 
-**Not changed here, deliberately.** It alters what the pipeline extracts from
-every deal, which is rubric semantics; `OPERATING-RULES.md` puts that with
-Ben. The fix is small and the shape is obvious — make the quote predicate as
-tolerant as the source predicate directly above it, which is presumably what
-was intended, since the two exist to check the same thing. Flagged for
-decision, with the evidence, rather than applied overnight.
+**Not changed here — but it is ordinary work, not a decision.** It was
+briefly raised as one and withdrawn the same day. The fix is small and the
+shape is obvious: make the quote predicate as tolerant as the source predicate
+directly above it, which is what the two exist to check. That is **Step 3C**,
+which carries the measurement and the required hostile test.
+`OPERATING-RULES.md` reserves taxonomy values and codebook vocabularies to
+Ben; a matching predicate is neither.
 
-**The vocabulary gaps are not mine to close.** `REPRESENTATIONS` and
-`GENERAL_COVENANTS` fail on corroboration tables in
+**The vocabulary gaps split in two, and only one half is Ben's.**
+`REPRESENTATIONS` and `GENERAL_COVENANTS` fail on corroboration tables in
 `native-producer/candidate-resolution.js` being narrower than what the
-producers legitimately emit. Widening them is a **material taxonomy change**,
-which `OPERATING-RULES.md` reserves to Ben. Diagnosed here, not changed.
+producers legitimately emit.
+
+- **The structure is ordinary work**, and is already **Step 3G**: extract the
+  General Covenants lexicon into its own file in the shape of
+  `ioc-corroboration.js`, move the Tax Matters regexes out of the resolver,
+  and route `REVIEW` separately from `NOT_EXACT` in the Representations
+  classifier. Step 3G calls these "ordinary bugs, not design questions" and
+  locates each to a line.
+- **The words that go in those lexicons are Ben's**, because
+  `OPERATING-RULES.md` puts codebook vocabularies with him. Build the file,
+  then bring him the entries.
+
+An earlier version of this paragraph called the whole thing "a material
+taxonomy change… not mine to close", which parked the structural half that
+Step 3G already owns.
 
 **RESOLVED 2026-08-07 in `636dd11`, and not the way this step first proposed.**
 Rekeying the identity onto `source_map_digest` was rejected on blast radius:
@@ -1019,7 +1055,14 @@ deal column at all — the hash lives inside the jsonb, and `claim_revisions`
 does not carry it, joining instead via
 `claim.subject_occurrence_id = provision_instance.provision_instance_id`.
 
-**3. THE BLOCKER: nothing can read those tables. Not even the writer.**
+**3. Nothing can read those tables in a HOSTED environment. Not even the
+writer.** An earlier version of this called it "THE BLOCKER" and said the read
+half could not start. **That was wrong, and the correction matters for
+sequencing:** there is **no `FORCE ROW LEVEL SECURITY`** anywhere in the
+schema, so a **table-owner connection** — which Step 4A's local Postgres
+container gives you — reads freely. Build the read half locally first; the
+hosted access design is Ben's and is not needed until something is served from
+a deployment. See `DECISIONS.md`, "Waiting on Ben" item 1.
 `foundation.sql:8662-8663` revokes all table privileges from `PUBLIC`, `anon`,
 `authenticated`, `service_role` **and `canonical_v2_writer`**; RLS is enabled
 on every table with **zero policies defined** anywhere in
@@ -1202,9 +1245,10 @@ A failed gate is a stop, not a note to fix at the end. **Ten of the 25
 importable runs publish zero claims**, so note that condition 2 is **vacuously
 satisfied** by 0 -> 0: for every zero-publishing family, state why zero is
 correct and what would make it wrong, or the gate is checking nothing. Step 2B
-now carries a triage table doing exactly that for all ten — two proven correct,
-one a pin defect, one a located adapter defect, the rest vocabulary gaps. Start
-from it rather than re-deriving it.
+now carries a triage table doing exactly that for all ten: two proven correct
+zeros, one pin defect, one located adapter defect, two vocabulary gaps, and
+four mixed cases where part of the output is a designed open-world surface and
+part is a gap. Start from that table rather than re-deriving it.
 `GUARANTY_FINANCING_PARTY` is the standing example of correct zero, and
 `APPRAISAL_DISSENTERS_RIGHTS` was proved to be a second one on 2026-08-07
 (§2.6 is a 119-byte denial). `KEY_DEFINED_TERMS` turned out to be a *pin*
@@ -1250,7 +1294,7 @@ The live runner has `--record`, `--replay` and `--replay-from-run`
 (`scripts/canonical-v2-live-extraction-run.mjs`, argument parsing ~430), keyed
 by request hash for fresh recordings and by section reference for the legacy
 per-section fixtures. **The entire current baseline was produced through it,
-with zero model calls.** Ben's ruling of 2026-08-06 was to build the replay
+with zero model calls.** Ben's ruling of 2026-08-06 (recorded in `DECISIONS.md`, "Recently decided") was to build the replay
 path rather than write a tolerance policy; it is built.
 
 What still holds: a *live* re-run can still differ from a recorded one, and
