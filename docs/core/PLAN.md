@@ -572,13 +572,46 @@ importing means. The bridge now decorates the repository with a resolver
 backed by the run's own `admitted_source_contexts`, which are the authority
 for that run and the ones the validator just checked.
 
-**Third layer, open, and the remaining work on this step.** The writer
-validates the full admitted-source chain, and
-`admitted-semantic-source.js:199` requires a `conversion` object matching
-`SEC_HTML_CANONICAL_TEXT_CONVERSION/V2`. A run directory does not carry one.
-It can be rebuilt from the pinned raw HTML — the same conversion
-`scripts/canonical-v2-generate-family-section-refs.mjs` already performs —
-so this is tractable, and it is the next thing to build here.
+**Third layer, open, fully specified, and the remaining work on this step.**
+The writer rebuilds each admitted-source context from primitives and checks
+it equals the governed reference (`canonical-writer.js:383-397`). That is a
+lineage integrity check, so it **cannot** be short-cut by handing it the
+pre-built `admitted_source_contexts` the run already carries — the bridge's
+current resolver does exactly that, which is why it fails.
+
+The resolver must return, per source reference, an object with four fields:
+
+| Field | Where it comes from |
+|---|---|
+| `immutable_source_document` | `buildVerifiedSecSourceAdmission()` bundle |
+| `source_admission_manifest` | same bundle |
+| `semantic_extraction_input_envelope` | same bundle |
+| `conversion` | `convertSecHtmlToCanonicalText(capture)` |
+
+`buildVerifiedSecSourceAdmission({ capture, conversion, verification })`
+(`lib/canonical-v2/sec-source-admission.js:87`) returns a bundle whose body
+carries the first three by those exact names (~190-195). Its inputs:
+
+- `capture` — `buildSecEdgarIntakeCapture()` over the pinned raw HTML, the
+  same call `scripts/canonical-v2-generate-family-section-refs.mjs` already
+  makes.
+- `conversion` — `convertSecHtmlToCanonicalText(capture)`. **Verified: it
+  emits exactly the 19 keys `CONVERSION_KEYS` requires, with
+  `conversion_stage: CONVERSION_ONLY` and both statuses `NOT_ATTEMPTED`** —
+  precisely what `validateConversion` demands. No adaptation needed.
+- `verification` — `verifySecHtmlCanonicalText`, which
+  `scripts/canonical-v2-live-extraction-run.mjs` already imports.
+
+**One input the run directory does not carry:** the raw HTML path.
+`run-manifest.json` has no `raw_html_path` and `source-reference.json` has
+only `retrieval_url` and hashes. The bridge needs a deal → raw-HTML mapping,
+duplicated minimally the way the generator script already duplicates it, and
+must verify `raw_bytes_sha256` against `source-reference.json` before using
+the file — importing a run against different bytes than it was produced from
+would be silently wrong.
+
+This is a contained build, perhaps 40-60 lines, with every input verified to
+exist. It is the last thing between the ladder and a durable write.
 
 **Superseded note, kept for the reasoning it records.**
 With validation passing, the writer refuses a `DEAL_SCOPE_RUN`:
