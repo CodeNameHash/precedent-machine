@@ -1383,6 +1383,29 @@ green, changes nothing any user can see. That is not a bug in the runner. It
 is a missing stage, and it is worth naming as one rather than rediscovering
 it per-family.
 
+**Updated 2026-08-07 (`0993715`): the write half of that stage now exists.**
+`lib/canonical-v2/evidence-to-write-set-bridge.js` carries a run directory
+into `canonical-writer.js`, and `evidence/canonical-v2/modiv-antitrust-20260807-replay`
+imports end to end — 10 excerpts, 13 provisions, 13 claims — with its
+admitted-source lineage rebuilt from the committed raw HTML by
+`lib/canonical-v2/admitted-source-chain-rebuild.js` and verified by the
+writer rather than asserted by the caller.
+
+Three things about that which will otherwise be rediscovered the hard way:
+
+1. **`adapter-result.json`'s `write_set` is not the write-set the run
+   validated.** It carries no `provisions`; the runner adds them from
+   `resolution.json` at `canonical-v2-live-extraction-run.mjs:1114`. A claim
+   with no governing provision is *dropped*, not rejected, so importing the
+   adapter's write-set directly publishes the excerpts, loses every claim,
+   and reports `accepted: true`.
+2. **Runs made before 2026-08-07 cannot be imported here**, because
+   `IMMUTABLE_SOURCE_DOCUMENT/V2` embeds a DEFLATE-output digest and DEFLATE
+   output is not stable across zlib builds. See PLAN.md Step 2B, Defect 2.
+   Regenerate by replay (zero model calls); do not re-derive the reference.
+3. **The read half is still missing.** Nothing serves this out of the
+   database yet — see 12.2 below, which remains true of the read direction.
+
 ### 12.2 The four things that are separately true
 
 1. **The general runner works and is disconnected.**

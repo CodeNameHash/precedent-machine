@@ -572,14 +572,21 @@ importing means. The bridge now decorates the repository with a resolver
 backed by the run's own `admitted_source_contexts`, which are the authority
 for that run and the ones the validator just checked.
 
-**Third layer, open, fully specified, and the remaining work on this step.**
+**Third layer, CLOSED 2026-08-07 in `0993715`, and two further defects found
+in the closing.** The write half is done: `modiv-antitrust-20260807-replay`
+imports end to end through `canonical-writer.js`, publishing 10 excerpts, 13
+provisions and 13 claims, with its admitted-source lineage rebuilt from the
+committed raw HTML and verified rather than asserted. That is the first time
+an extraction run has passed the writer.
+
 The writer rebuilds each admitted-source context from primitives and checks
 it equals the governed reference (`canonical-writer.js:383-397`). That is a
 lineage integrity check, so it **cannot** be short-cut by handing it the
-pre-built `admitted_source_contexts` the run already carries — the bridge's
-current resolver does exactly that, which is why it fails.
+pre-built `admitted_source_contexts` the run already carries — which is
+exactly what the previous resolver did. `admitted-source-chain-rebuild.js`
+now rebuilds instead.
 
-The resolver must return, per source reference, an object with four fields:
+The resolver returns, per source reference, an object with four fields:
 
 | Field | Where it comes from |
 |---|---|
@@ -602,16 +609,88 @@ carries the first three by those exact names (~190-195). Its inputs:
 - `verification` — `verifySecHtmlCanonicalText`, which
   `scripts/canonical-v2-live-extraction-run.mjs` already imports.
 
-**One input the run directory does not carry:** the raw HTML path.
-`run-manifest.json` has no `raw_html_path` and `source-reference.json` has
-only `retrieval_url` and hashes. The bridge needs a deal → raw-HTML mapping,
-duplicated minimally the way the generator script already duplicates it, and
-must verify `raw_bytes_sha256` against `source-reference.json` before using
-the file — importing a run against different bytes than it was produced from
-would be silently wrong.
+**Correction to a prior version of this step:** it claimed the run directory
+does not carry the raw HTML path and that a deal → raw-HTML map would have to
+be duplicated. False. `source-reference.json` carries
+`reused_committed_raw_html` and `raw_bytes_sha256` in all 25 committed run
+directories. No map was needed. The claim came from reading `run-manifest.json`
+and stopping.
 
-This is a contained build, perhaps 40-60 lines, with every input verified to
-exist. It is the last thing between the ladder and a durable write.
+### Defect 1: the runner did not record its own retrieval timestamp
+
+`loadAndVerifySource` passed `retrieved_at: new Date().toISOString()` while
+reusing bytes fetched days earlier — a timestamp for a retrieval that never
+happened — and wrote it nowhere. It feeds `intake_capture_receipt_id` →
+`verification_manifest_id` → `immutable_source_document_id`, the identity the
+writer compares. So **no run could rebuild its own chain**, and the reason was
+invisible: the failure surfaced as an unexplained reference mismatch.
+
+Fixed. `retrieved_at` is pinned per deal in `DEAL_PINS` to the pinning fetch's
+actual timestamp (`2026-08-01T15:05:49.024Z` for Modiv, from
+`tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json`), the run
+refuses to proceed without one, and `source-reference.json` now records every
+capture input under `admitted_source_capture_inputs`.
+
+### Defect 2: `IMMUTABLE_SOURCE_DOCUMENT/V2` is not content-addressed
+
+**This is the more serious finding, and it is open.**
+
+That schema includes `source_map_compressed_sha256` — a digest of *DEFLATE
+output* (`sec-html-canonical-text.js:390`, carried into the identity by
+`compactSourceMapLineage` at `sec-source-admission.js:76`). The compression
+parameters are pinned; the **zlib build is not part of the contract**, and
+different builds emit different bytes for identical input at identical
+settings.
+
+Measured on `modiv-antitrust-20260806`, not inferred:
+
+| Quantity | Rebuilds? |
+|---|---|
+| Uncompressed source map, 6,902,109 bytes | identical |
+| `source_map_digest` (contentId over the uncompressed structure) | identical |
+| `canonical_text_id` | identical |
+| `source_map_compressed_sha256` | **differs** |
+| `immutable_source_document_id` | **differs, as a consequence** |
+
+None of the 135 available `(level, memLevel, strategy)` combinations on this
+Node's zlib reaches the committed digest. So the pre-2026-08-07 runs are
+unimportable **in this environment by construction** — not for want of
+anything the runs failed to record.
+
+They are **refused, not repaired**. The available alternative — re-derive
+`source_references` from the rebuild so the write-set agrees with itself —
+would make every run import cleanly by editing the evidence until it passed,
+which is precisely what the writer's comparison exists to prevent.
+
+Recovery costs nothing: replay regenerates a run in the current environment
+with zero model calls, and the regenerated directory rebuilds.
+`modiv-antitrust-20260807-replay` is committed as the worked example.
+
+**Open decision.** Keying the identity on `source_map_digest` — already
+computed, already stable, already in the same lineage block — instead of on
+compressor output would make it reproducible across environments and remove
+the whole class of failure. It is a schema change to a closed V2 contract and
+is not made here. Until it is, the operating rule is: **a run must be
+imported by the environment that produced it, or regenerated by replay first.**
+
+### Defect 3: the bridge imported a tenth of each run, and succeeded
+
+`adapter-result.json`'s `write_set` carries **no provisions**. The runner
+composes what it validates at `canonical-v2-live-extraction-run.mjs:1114` as
+`{...adapterResult.write_set, provisions: [...provisionsById.values()]}`,
+reading the provision instances out of `resolution.resolved[]`. A claim whose
+governing provision is absent is **dropped as non-publishable, not rejected**.
+
+So importing `adapter-result.json` directly wrote 10 excerpts, lost all 13
+claims, and reported `accepted: true`. A silent scope narrowing of exactly the
+shape `CLAUDE.md` warns about, and no validator could have caught it.
+
+Fixed twice over: `readRunEvidence` composes the same write-set the runner
+validated, and `importRunEvidence` refuses a `PUBLISHABLE_SHORTFALL` — any
+import that would publish fewer rows than the run itself did.
+
+Found by a test asserting the import publishes *something*, not by anything
+failing. Keep that assertion.
 
 **Superseded note, kept for the reasoning it records.**
 With validation passing, the writer refuses a `DEAL_SCOPE_RUN`:
