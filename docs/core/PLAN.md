@@ -665,12 +665,22 @@ constraints, from `DECISIONS.md` decision 2, none optional:
 round trip before this ruling. Four of the remaining six were open-world
 evidence cards; this ruling recovers them. The last two are Step 4A2's table.
 
-**STANDING ACTION, hosted read access.** When the read half reads rows out of a
-local container, **stop and give Ben a recommendation** on the hosted design —
-`SECURITY DEFINER` function versus grants plus policies — with the local shape
-as evidence. Do not pick one and carry on. The local table-owner shortcut works
-only because the schema has no `FORCE ROW LEVEL SECURITY`, which is an absence,
-not a design. Full terms in `DECISIONS.md` decision 1.
+**STANDING ACTION, hosted read access. Delegated to Fable by Ben on
+2026-08-07.** When the read half reads rows out of a local container, take the
+hosted design — `SECURITY DEFINER` function versus grants plus policies — to
+**Fable as an adversarial design review, with the local shape as evidence.
+Fable's verdict is the ruling.** The work does not stop for Ben.
+
+Two things this does not license. It is not permission to settle the question
+by whoever is at the keyboard: it changed hands from Ben to Fable, not from
+Ben to nobody. And it is not permission to touch a hosted database — the
+design may be decided in advance, but deploying it is a separate act needing
+its own authorisation.
+
+Do not carry the local table-owner shortcut into a hosted environment by
+default. It works locally only because the schema has no `FORCE ROW LEVEL
+SECURITY`, which is an absence, not a design. Full terms in `DECISIONS.md`
+decision 1.
 
 Everything below is the original statement of the problem plus the record of
 how each layer was closed. A rung of this ladder still cannot be climbed

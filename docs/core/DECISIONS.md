@@ -794,15 +794,36 @@ is not needed until something is served from a deployment.
 attached a standing action.
 
 > **STANDING ACTION ON WHOEVER IS WORKING.** When the local read half is built
-> and reading rows out of a container, **stop and give Ben a recommendation on
-> the hosted access design** — `SECURITY DEFINER` function versus grants plus
-> RLS policies — with the working local shape as the evidence. Do not pick one
-> and proceed. Do not carry the local table-owner shortcut into a hosted
-> environment by default: it works locally only because there is no
-> `FORCE ROW LEVEL SECURITY` in the schema, which is an absence, not a design.
->
-> This is the one item in this section that still needs Ben, and it is easy to
-> walk past, because everything built before it will appear to work.
+> and reading rows out of a container, decide the hosted access design —
+> `SECURITY DEFINER` function versus grants plus RLS policies — with the
+> working local shape as the evidence. Do not carry the local table-owner
+> shortcut into a hosted environment by default: it works locally only because
+> there is no `FORCE ROW LEVEL SECURITY` in the schema, which is an absence,
+> not a design.
+
+**AMENDED 2026-08-07. Ben delegated this decision to Fable.** The original
+form of this action was "stop and give Ben a recommendation". Ben's words:
+*"just do what you and Fable decide is best."*
+
+**So the trigger no longer stops the work — it changes who decides.** When the
+read half reads rows out of a container, the hosted design goes to Fable as an
+adversarial design review, and Fable's verdict is the ruling. No pause for
+Ben, no separate approval step.
+
+**What the delegation does not extend to.** It covers the *design* of hosted
+read access — which mechanism, and what surface it exposes. It does not
+authorise touching a real database, using a real credential, or activating
+anything in production; `OPERATING-RULES.md` still prohibits all three, and
+this is a design decision taken in advance of any such act, not permission to
+perform one. A hosted deployment remains a separate act needing its own
+authorisation.
+
+**Why this still gets a real review rather than a quiet choice.** The design
+changes the surface `lockdown-rls.sql` exists to police, which is why it was
+Ben's in the first place. Delegating it to the adversarial reviewer keeps the
+scrutiny and removes the round trip. It does not make it a small decision, and
+it must not be settled by whoever happens to be at the keyboard: it goes to
+Fable, with the local prototype as evidence, and the verdict is recorded here.
 
 The trigger is concrete: the first time something reads
 `canonical_v2_staging` from anywhere that is not a local container. That is
@@ -943,6 +964,39 @@ unknowns at once.
 ---
 
 # Recently decided
+
+- **Live extraction runs no longer need to be asked for, one by one.** Ruled
+  by Ben on 2026-08-07: *"you can run extractions without asking."*
+
+  **What changed.** `OPERATING-RULES.md` has permitted extraction since
+  2026-08-05, but the working convention on top of it was that a live run
+  costs money, so each one should be a deliberate, separately-raised choice.
+  The 2026-08-07 handoff put it plainly: *"any live extraction run — that
+  costs money and should be a deliberate choice, not a warm-up."* That
+  convention is now lifted. Cost is not the binding constraint; judgement is.
+
+  **What it authorises.** Running the extraction pipeline against documents
+  already committed to this repository, including live model calls, without
+  raising each run first. The two families with corrected pins that have been
+  waiting on a live call — `KEY_DEFINED_TERMS` on Modiv §8.12 and
+  `CONSIDERATION` on §2.6 — can simply be run, as can `CLOSING_CONDITIONS`
+  §6.2, whose "recorded response" is not a model response at all but a
+  captured CLI status message.
+
+  **What it does not authorise, because a permission to spend is not a
+  permission to reach.** Not production data, not real credentials, not
+  activating any route, not importing to a production database. All four stay
+  prohibited by the authority boundary at the top of `OPERATING-RULES.md`, and
+  none of them is an extraction run. Running extraction is a model call
+  against a committed document; it touches nothing real.
+
+  **What does not change.** Replay is still the default where a recorded
+  response exists, because it is free and deterministic, and because Ben ruled
+  on 2026-08-06 for a replay path over a tolerance policy precisely so that a
+  gate comparing counts across runs is not measuring sampling noise. A live
+  run is now permitted; it is not therefore preferable. Use one where replay
+  cannot answer the question — a corrected pin with no recorded response, or a
+  genuine question about what the model would say today.
 
 - **Nondeterministic extraction gets a replay path, not a tolerance policy.**
   Ruled 2026-08-06, in conversation, and recorded here on 2026-08-07 because
