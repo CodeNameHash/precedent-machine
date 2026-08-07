@@ -1501,6 +1501,45 @@ never been run against Modiv at all; the only 2026-08-06 MAE run is
 Consequence for any plan gated on "incomplete is 0": **that gate does not
 pass today**, before any new work begins.
 
+**Updated 2026-08-07.** All of the above still describes the 2026-08-06
+directories, which are kept as the record of what was actually run. Beside
+them there is now a regenerated baseline — `*-20260807-replay` — produced by
+replaying those runs' own committed responses through the current code with
+**zero model calls**. Read `evidence/canonical-v2/baseline-manifest.json` for
+the current numbers rather than the paragraphs above; regenerate it with
+`npm run generate:baseline` and check it with `npm run gate:baseline`.
+
+What changed, and what did not:
+
+- **The three incomplete runs completed.** `capitalisation`,
+  `closing-conditions` and `interim-operating` kept their recorded responses,
+  and replaying those responses through the current code finished two of them
+  outright. `closing-conditions` is the exception and it is a finding, not a
+  crash: its section 6.2 recorded response is not a model response at all but
+  a captured CLI status message, so only 6.1 could be replayed and the
+  directory is named `-6.1-only-` to say so. 6.2 needs a live call.
+- **All 25 registered families now have an importable run** — 24 Modiv, plus
+  `MAE_DEFINITION` from `topbuild-mae-definition-20260807-replay`. That family
+  has still never run against Modiv.
+- **The zero-resolved observation still stands, and it is bigger than this
+  section said.** Ten of the 25 importable runs publish **zero claims**:
+  `APPRAISAL_DISSENTERS_RIGHTS`, `DIVIDENDS`, `EMPLOYEE_MATTERS`,
+  `FINANCING_COVENANTS`, `GENERAL_COVENANTS`, `GUARANTY_FINANCING_PARTY`,
+  `KEY_DEFINED_TERMS`, `REPRESENTATIONS`, `SPECIFIC_PERFORMANCE_REMEDIES`,
+  `TAX_MATTERS`. Regeneration moved four families up (V38 gives candidates a
+  governed home V34 did not) and moved none down, so this is not a
+  regeneration artefact.
+
+  Guaranty on an unfinanced deal is the standing example of a correct zero.
+  Ten is not ten instances of that. `REPRESENTATIONS` and `KEY_DEFINED_TERMS`
+  in particular show candidates present with zero resolved, which is a
+  resolver-stage question rather than a documented absence — and until it is
+  answered, **"25 families have an importable run" and "25 families produce
+  data" are different statements.** Fifteen produce claims.
+- **Only the 2026-08-07 runs can be imported.** The originals cannot: they
+  record neither their retrieval timestamp nor their compressed source map,
+  so their identity cannot be rebuilt. See PLAN.md Step 2B, Defect 2.
+
 ### 12.6 Section-reference lists are not lost
 
 `DEAL_PINS` in `scripts/canonical-v2-live-extraction-run.mjs` (226) pins
