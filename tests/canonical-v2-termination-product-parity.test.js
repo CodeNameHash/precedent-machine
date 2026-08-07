@@ -178,6 +178,59 @@ test('governed termination rights retain Wave B evidence and expose direct Query
   assert.equal(rightsMarket.get('extensionMaxExercises'), 2);
 });
 
+// ─────────────────────────────────────────────────────────────────────────
+// Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
+// JOINT_MULTI_PARTY_CAPACITY has no analogue in this projection's
+// TERMINATION_PARTY-shaped fields. Both capacity-reading functions
+// (partyCode, rightCode) must refuse it explicitly rather than either
+// leaking the raw internal marker string or fabricating a one-sided answer.
+// ─────────────────────────────────────────────────────────────────────────
+
+test('JOINT_MULTI_PARTY capacity: partyWhoCanTerminate is omitted, never the raw internal marker string, on a mutual-consent right', () => {
+  const dealId = 'termination-rights-joint-capacity';
+  const resolution = {
+    resolved: [
+      resolved({
+        id: 'right-joint',
+        definition: 'TERMINATION_RIGHT_GRANT',
+        value: true,
+        concept: 'TERMR-MUTUAL',
+        quote: 'Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub, on the one hand, and the Company on the other, may terminate this Agreement.',
+        attributes: { trigger_kind: 'MUTUAL_CONSENT' },
+        capacity: 'JOINT_MULTI_PARTY',
+      }),
+    ],
+    open_world: [],
+  };
+  const projection = projectTerminationRightsProductSurfaces({ resolution, deal_id: dealId });
+  assert.equal(projection.cards.length, 1, 'the row itself must still project -- only the party field is refused');
+  const [card] = projection.cards;
+  assert.equal(Object.hasOwn(card.features, 'partyWhoCanTerminate'), false);
+  assert.equal(JSON.stringify(card.features).includes('JOINT_MULTI_PARTY'), false, 'the raw internal marker must never reach a served field');
+});
+
+test('JOINT_MULTI_PARTY capacity: a TERMR-BREACH right with joint capacity is dropped rather than mislabeled TERMR-BREACH-T/-B', () => {
+  const dealId = 'termination-rights-joint-breach';
+  const resolution = {
+    resolved: [
+      resolved({
+        id: 'right-joint-breach',
+        definition: 'TERMINATION_RIGHT_GRANT',
+        value: true,
+        concept: 'TERMR-BREACH',
+        quote: 'Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub may terminate for a breach.',
+        attributes: { trigger_kind: 'BREACH' },
+        capacity: 'JOINT_MULTI_PARTY',
+      }),
+    ],
+    open_world: [],
+  };
+  const projection = projectTerminationRightsProductSurfaces({ resolution, deal_id: dealId });
+  // Neither fabricated single-side code: the row is dropped from the card
+  // set, not mislabeled as either side's breach.
+  assert.equal(projection.cards.length, 0);
+});
+
 test('governed termination fees retain remedies ownership and expose direct late-interest Query and market fields', async () => {
   const dealId = 'termination-fee-product';
   const sellerQuote = 'The Company shall pay Parent a termination fee of $100,000,000 following a change in recommendation.';

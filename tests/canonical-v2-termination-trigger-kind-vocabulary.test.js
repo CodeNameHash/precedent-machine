@@ -27,7 +27,7 @@
  * trigger_kind from the model itself -- not a vocabulary gap, and this fix
  * must not force them. They are asserted to still queue below.
  *
- * This file proves two things separately:
+ * This file proves three things separately:
  *   1. Unit-level: each widened pattern corroborates the exact real quote it
  *      was added for, AND a hostile check that the SAME quote under a
  *      different (wrong) trigger_kind still fails to corroborate -- proving
@@ -39,6 +39,34 @@
  *      reconstruction) resolves 12 termination-right candidates, up from the
  *      8 the same replay produced before this fix, and the two null-
  *      trigger_kind candidates still queue.
+ *   3. Step 3A1 (docs/core/PLAN.md, "Close the fiduciary-out false positive
+ *      Step 3A opened"): part 1's eight hostile checks are all
+ *      *quote-fixed, kind-varied* -- one real quote, tested against several
+ *      wrong trigger_kinds whose own vocabulary is disjoint from that
+ *      quote's, so they pass by construction and prove only that the
+ *      widening does not leak across unrelated kinds. They do not test
+ *      whether a DIFFERENT ground that happens to share vocabulary with a
+ *      widened pattern is wrongly accepted under the SAME kind. Two such
+ *      false positives existed:
+ *        - NO_SOLICITATION_BREACH's "enters into ... Alternative
+ *          Acquisition Agreement" alternative also matched the Company's own
+ *          fiduciary-out ground (terminating to accept a Superior Proposal),
+ *          the adjacent ground in every Article VII and the one a model
+ *          most plausibly confuses it with.
+ *        - RECOMMENDATION_CHANGE's bare "Company Recommendation" /
+ *          "Company Board Recommendation" alternatives also matched a Board
+ *          *reaffirming* its recommendation, the opposite of a change.
+ *      The tests below are *kind-fixed, quote-varied*: the SAME trigger_kind
+ *      each widening was added for, tested against a quote that is a
+ *      different, adjacent ground, real filed text where the corpus has it
+ *      (Skechers Inc.'s merger agreement, `tests/fixtures/canonical-v2/
+ *      skechers-first-live-run/skechers-raw-fetched.htm`, section 5.3(d),
+ *      for the fiduciary-out ground -- Modiv's own 7.1(c)(i) fiduciary-out
+ *      ground never says the defined term "Alternative Acquisition
+ *      Agreement" and so does not itself expose this defect, "safe only by
+ *      drafting luck" per the plan). No committed corpus text pairs a bare
+ *      (non-"failed to") Board reaffirmation with "Company Recommendation",
+ *      so that probe uses the plan's own illustrative quote instead.
  */
 
 const test = require('node:test');
@@ -126,6 +154,59 @@ test('the original Section-4.4 NO_SOLICITATION_BREACH alternative is untouched b
   // before this fix (audit M-3's original hostile check, still true even
   // though the reason it is true has changed).
   assert.equal(terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH', 'anything at all, even the word breach'), false);
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Step 3A1: kind-fixed, quote-varied hostile tests. Same trigger_kind each
+// widening was added for; the quote is a DIFFERENT, adjacent ground rather
+// than a different kind's disjoint vocabulary. This is the axis part 1's
+// eight hostile checks do not exercise -- see the file header.
+// ─────────────────────────────────────────────────────────────────────────
+
+// Real filed text, Skechers Inc.'s merger agreement (Skechers/3G Capital,
+// 2026), tests/fixtures/canonical-v2/skechers-first-live-run/
+// skechers-raw-fetched.htm, section 5.3(d): the Company's OWN fiduciary-out
+// ground -- the Board authorising termination to enter into an Alternative
+// Acquisition Agreement BECAUSE an Acquisition Proposal has been determined
+// to be a Superior Proposal. This is legally the opposite ground from
+// NO_SOLICITATION_BREACH (Parent's right arising from the Company's breach
+// of the no-shop standstill) even though it shares the "enters into an
+// Alternative Acquisition Agreement" vocabulary the Step 3A widening added.
+const SKECHERS_FIDUCIARY_OUT_QUOTE = 'if the Company has received a bona fide Acquisition Proposal after the date hereof that the Company Board '
+  + 'has concluded in good faith (after consultation with its financial advisor and outside legal counsel) is a Superior Proposal, then the '
+  + 'Company Board may (A) effect a Company Board Recommendation Change with respect to such Acquisition Proposal; or (B) authorize the Company '
+  + 'to terminate this Agreement to enter into an Alternative Acquisition Agreement with respect to such Acquisition Proposal';
+
+test('HOSTILE (kind-fixed, quote-varied): the Company\'s own fiduciary-out ground (real Skechers text) does NOT '
+  + 'corroborate NO_SOLICITATION_BREACH, even though it carries "enters into an Alternative Acquisition Agreement"', () => {
+  assert.equal(terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH', SKECHERS_FIDUCIARY_OUT_QUOTE), false);
+});
+
+// The real Modiv NO_SOLICITATION_BREACH ground (Parent's right, from
+// resolver-reference-fixes.md) must still corroborate: this is the
+// discriminating pair the fix has to get right in both directions.
+test('the real Modiv NO_SOLICITATION_BREACH ground still corroborates after the fiduciary-out exclusion', () => {
+  assert.ok(terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH', NO_SOLICITATION_ENTERS_AGREEMENT_QUOTE));
+});
+
+// No committed corpus text pairs a bare (non-"failed to") Board
+// reaffirmation with the "Company Recommendation" defined term -- both real
+// instances found in the fixture corpus (Modiv 7.1(d)(ii), Skechers 5.3(c))
+// only ever use "failed to publicly reaffirm". This probe is the plan's own
+// illustrative quote (docs/core/PLAN.md, Step 3A1), not corpus text.
+const REAFFIRMED_RECOMMENDATION_INTERVENING_EVENT_QUOTE =
+  'the Company Board shall have publicly reaffirmed the Company Recommendation following an Intervening Event';
+
+test('HOSTILE (kind-fixed, quote-varied): a Board reaffirming (not "failed to reaffirm") the Company Recommendation '
+  + 'does NOT corroborate RECOMMENDATION_CHANGE', () => {
+  assert.equal(terminationTriggerKindCorroborated('RECOMMENDATION_CHANGE', REAFFIRMED_RECOMMENDATION_INTERVENING_EVENT_QUOTE), false);
+});
+
+// The real Modiv "failed to publicly reaffirm" ground must still
+// corroborate: the discriminator is "failed", not the word "reaffirm"
+// itself.
+test('the real Modiv "failed to publicly reaffirm" RECOMMENDATION_CHANGE ground still corroborates after the reaffirm exclusion', () => {
+  assert.ok(terminationTriggerKindCorroborated('RECOMMENDATION_CHANGE', RECOMMENDATION_NO_BOARD_QUOTE));
 });
 
 // ─────────────────────────────────────────────────────────────────────────

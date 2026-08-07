@@ -128,6 +128,51 @@ test('IOC uses the nearest preceding chapeau party on a parent provision and a c
   assert.equal(fieldsForCompareCell('COVENANT_INTERIM_OPERATING')[0], 'iocRestrictionPresent');
 });
 
+// ─────────────────────────────────────────────────────────────────────────
+// Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
+// projectIocWaveAClaims already refuses any party.capacity outside
+// TARGET/BUYER -- including JOINT_MULTI_PARTY_CAPACITY
+// ('JOINT_MULTI_PARTY', lib/canonical-v2/native-producer/candidate-
+// resolution.js) -- with a typed, explicit throw. This is the "refuses it
+// explicitly" side of the plan's acceptance criteria; unlike the
+// termination and proxy-meeting projections, this one needed no code
+// change, only this test proving the behaviour was never actually
+// exercised before.
+// ─────────────────────────────────────────────────────────────────────────
+
+test('JOINT_MULTI_PARTY capacity: projectIocWaveAClaims throws INVALID_INHERITED_PARTY rather than silently accepting it', () => {
+  const provisionInstanceId = 'ioc-joint-capacity-provision';
+  const provisionComponentId = 'ioc-joint-capacity-component';
+  const party = { role: 'IOC_COVENANT_OBLIGOR', value: 'Parent and Company Merger Sub', capacity: 'JOINT_MULTI_PARTY' };
+  const entry = {
+    concept_key: 'IOC-MERGE',
+    resolved_claim_definition_key: 'IOC_RESTRICTION_PRESENT',
+    section_reference: '6.1',
+    party,
+    provision_instance: {
+      schema_version: 'PROVISION_INSTANCE/V1',
+      provision_instance_id: provisionInstanceId,
+      party,
+    },
+    claim: {
+      state: 'PRESENT',
+      canonical_value: true,
+      claim_definition_key: 'IOC_RESTRICTION_PRESENT',
+      subject_occurrence_id: provisionComponentId,
+    },
+  };
+  const iocRestrictionComponents = [{
+    schema_version: 'PROVISION_COMPONENT/V1',
+    provision_component_id: provisionComponentId,
+    component_key: 'RESTRICTED_ACTION',
+    parent_provision_instance_id: provisionInstanceId,
+  }];
+  assert.throws(
+    () => projectIocWaveAClaims({ resolved_entries: [entry], ioc_restriction_components: iocRestrictionComponents }),
+    (error) => error instanceof IocWaveAProjectionError && error.code === 'INVALID_INHERITED_PARTY',
+  );
+});
+
 test('IOC product projection covers only governed presence concepts and rejects long-tail claims', () => {
   assert.deepEqual(Object.keys(CONCEPT_LABELS).sort(), [
     'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',

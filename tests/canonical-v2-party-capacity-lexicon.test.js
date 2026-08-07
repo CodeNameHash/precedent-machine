@@ -71,6 +71,29 @@
  *      reached by any single-party candidate"). Proven unchanged: a bare
  *      "Company Merger Sub" string still resolves TARGET after this fix,
  *      exactly as before it.
+ *
+ * STEP 3F1 (docs/core/PLAN.md, "Stop the joint-capacity fix manufacturing
+ * phantom joints, and give the marker a downstream contract"). Trap 2 above
+ * was recorded as "not currently reached by any single-party candidate", and
+ * that was true when Step 3F landed -- but Step 3F's own per-segment
+ * joint-detection loop scanned each segment through PARTY_CAPACITY_LEXICON
+ * in its WHOLE-STRING order, so `\bcompany\b` matched a "Company Merger Sub"
+ * SEGMENT before `merger\s*sub` did, and trap 2 became reachable on every
+ * multi-party string naming a target-prefixed merger sub, not just a bare
+ * one. Modiv's own real buyer group -- "Parent, Company Merger Sub, Parent
+ * OpCo and OpCo Merger Sub" (7.1(c)(ii)/(c)(iii)'s own quotes) -- read as
+ * spanning both sides before this fix, even though every name in it is
+ * buyer-side.
+ *
+ * THE FIX. A second lexicon, `PARTY_CAPACITY_SEGMENT_LEXICON`, used ONLY by
+ * the per-segment loops (never by the final single-segment whole-string
+ * fallback, so trap 1 and trap 2 stay exactly as recorded above for a bare
+ * single-party string): `merger\s*sub` moved to the front, every other
+ * pattern's relative order unchanged. `resolvePartyCapacity` also now
+ * returns the single side's own capacity directly when segments span only
+ * ONE side, instead of falling through to a fresh whole-string scan that
+ * could re-trigger the same trap (a purely buyer-side list still contains
+ * the substring "Company" inside "Company Merger Sub").
  */
 
 const test = require('node:test');
@@ -165,7 +188,13 @@ test('the joint member capacities are still recoverable from the resolved party\
     mapping: { party_field: 'obligor_party', party_role: 'REGULATORY_COVENANT_OBLIGOR' },
   });
   const members = resolveJointPartyCapacities(party.value);
-  assert.deepEqual([...members].sort(), ['BUYER', 'TARGET']);
+  // Step 3F1: BUYER_AFFILIATE now appears here too -- before that fix,
+  // "Company Merger Sub" (this string's own buyer-side merger sub) was
+  // itself misclassified TARGET by the per-segment scan's whole-string
+  // pattern order, so the member list undercounted at BUYER/TARGET even
+  // though the overall JOINT determination (driven by "the Company"/"the
+  // Partnership" alone) already happened to be correct.
+  assert.deepEqual([...members].sort(), ['BUYER', 'BUYER_AFFILIATE', 'TARGET']);
 });
 
 test('the general-covenants joint obligor also resolves to JOINT_MULTI_PARTY_CAPACITY (second real corpus example)', () => {
@@ -208,6 +237,59 @@ test('a multi-name, single-side list ("the Company, Surviving Company, the Partn
 
 test('trap 2 (commit 34059a2f, unfixed by this step, proven unchanged): a bare "Company Merger Sub" still matches the target `company` pattern, not BUYER_AFFILIATE', () => {
   assert.equal(resolvePartyCapacity('Company Merger Sub'), 'TARGET');
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Step 3F1: the two probe strings from docs/core/PLAN.md, both confirmed
+// live (returned JOINT_MULTI_PARTY_CAPACITY) before this fix. The second is
+// Modiv's own real buyer group, verbatim from 7.1(c)(ii)/(c)(iii)'s quotes
+// -- grounded below by reading it out of the committed termination evidence,
+// not retyped.
+// ─────────────────────────────────────────────────────────────────────────
+
+const MODIV_TERMINATION_EVIDENCE_PATH = path.join(
+  __dirname, '..', 'evidence', 'canonical-v2', 'modiv-termination-20260806', 'run-receipt.json',
+);
+// Verbatim from the committed evidence -- "or", not the plan's illustrative
+// "and" (docs/core/PLAN.md's probe reads "...Parent OpCo and OpCo Merger
+// Sub"; the real filed text at 7.1(c)(ii)/(c)(iii) says "or"). Both
+// conjunctions split identically in segmentPartyListString, so this is a
+// wording difference only, not a behavioural one -- using the real string
+// here rather than the plan's paraphrase.
+const MODIV_BUYER_GROUP_QUOTE = 'Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub';
+
+test('grounding: the four-party buyer-group string is present verbatim in the committed termination evidence (7.1(c)(ii)/(c)(iii))', () => {
+  const receipt = JSON.parse(fs.readFileSync(MODIV_TERMINATION_EVIDENCE_PATH, 'utf8'));
+  const rawValues = receipt.compiled_candidates
+    .map((entry) => entry?.candidate?.claim?.raw_value)
+    .filter((value) => typeof value === 'string');
+  assert.ok(
+    rawValues.some((value) => value.includes(MODIV_BUYER_GROUP_QUOTE)),
+    'the exact buyer-group string must appear inside a real quote in the committed evidence, not be invented for this test',
+  );
+});
+
+test('PLAN probe 1: "Parent and Company Merger Sub" resolves buyer-side, never JOINT_MULTI_PARTY_CAPACITY (was JOINT [BUYER, TARGET] before this fix)', () => {
+  assert.equal(resolvePartyCapacity('Parent and Company Merger Sub'), 'BUYER');
+  assert.notEqual(resolvePartyCapacity('Parent and Company Merger Sub'), JOINT_MULTI_PARTY_CAPACITY);
+  assert.equal(resolveJointPartyCapacities('Parent and Company Merger Sub'), null);
+});
+
+test('PLAN probe 2: Modiv\'s own real buyer group resolves buyer-side, never JOINT_MULTI_PARTY_CAPACITY (was JOINT [BUYER, TARGET, BUYER_AFFILIATE] before this fix)', () => {
+  assert.equal(resolvePartyCapacity(MODIV_BUYER_GROUP_QUOTE), 'BUYER');
+  assert.notEqual(resolvePartyCapacity(MODIV_BUYER_GROUP_QUOTE), JOINT_MULTI_PARTY_CAPACITY);
+  assert.equal(resolveJointPartyCapacities(MODIV_BUYER_GROUP_QUOTE), null);
+});
+
+test('the "Company Merger Sub" segment inside a multi-party buyer list resolves BUYER_AFFILIATE, not TARGET, via the per-segment lexicon', () => {
+  // Direct proof of the mechanism, not just the aggregate outcome: put
+  // "Company Merger Sub" alongside ONE real target-side name so the string
+  // is genuinely joint, and confirm the member breakdown now classifies it
+  // correctly as buyer-side.
+  const mixedSide = 'Company Merger Sub and the Partnership';
+  assert.equal(resolvePartyCapacity(mixedSide), JOINT_MULTI_PARTY_CAPACITY);
+  const members = resolveJointPartyCapacities(mixedSide);
+  assert.deepEqual([...members].sort(), ['BUYER_AFFILIATE', 'TARGET']);
 });
 
 // ─────────────────────────────────────────────────────────────────────────

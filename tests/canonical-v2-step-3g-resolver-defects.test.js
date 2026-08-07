@@ -139,6 +139,30 @@ test('General Covenants: modiv-general-covenants-20260807-replay open-world fall
   assert.ok(result.resolved.length > 0, 'the family must stop resolving zero (PLAN.md Step 3G symptom)');
 });
 
+// Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
+// "Also pin the behaviour change nobody claimed" -- replaying this same
+// committed evidence, the two section 5.7 COV-PUBLICITY provisions resolve
+// with party.capacity JOINT_MULTI_PARTY_CAPACITY, not the pre-Step-3F
+// answer TARGET (the `company` pattern matching first inside "The Company
+// and Parent, and their respective Subsidiaries" via the OLD whole-string
+// scan). That is Step 3F's fix working -- TARGET was the wrong answer, a
+// publicity covenant this text binds BOTH parties to -- but nothing pinned
+// it end to end before this test, and Step 3G's own note above never
+// mentions that committed resolved output for this family includes a
+// joint-capacity party.
+test('Step 3F1 pin: the two general-covenants COV-PUBLICITY provisions resolve JOINT_MULTI_PARTY_CAPACITY, not TARGET, end to end', () => {
+  const result = loadAndResolve('modiv-general-covenants-20260807-replay');
+  const publicityRows = result.resolved.filter((entry) => entry.concept_key === 'COV-PUBLICITY');
+  assert.equal(publicityRows.length, 2, 'both 5.7 publicity provisions must resolve');
+  for (const row of publicityRows) {
+    assert.equal(row.source_citation, '5.7');
+    assert.equal(row.party.role, 'COVENANT_OBLIGOR');
+    assert.equal(row.party.value, 'The Company and Parent, and their respective Subsidiaries');
+    assert.equal(row.party.capacity, 'JOINT_MULTI_PARTY');
+    assert.notEqual(row.party.capacity, 'TARGET', 'the pre-Step-3F wrong answer must not reappear');
+  }
+});
+
 // HOSTILE (review condition 2b). generalCovenantCodeCorroborated answers
 // "does THIS code's vocabulary appear" -- it never checked whether some
 // OTHER, different-owner code's vocabulary also appears in the same quote.

@@ -60,8 +60,28 @@ one, "Adverse Recommendation Change", that already resolved); 7.1(d)(ii)
 `NO_SOLICITATION_BREACH` -> `TERMR-NOSOL-BREACH`. The 3 still queued under
 `TRIGGER_KIND_UNCORROBORATED`: the two `null`-trigger_kind candidates
 (7.1(c)(iii), 7.1(d)(iii), correctly untouched) plus 7.1(c)(ii)'s
-`forty-five (45) days` `CURE_PERIOD` candidate, which is Step 3B's territory
-(`SPELLED_NUMBER_VALUES` in `cure-period-parse.js`), not this step's.
+`forty-five (45) days` `CURE_PERIOD` candidate.
+
+**Correction (Step 3A1, docs/core/PLAN.md, adversarial review of this
+step):** the line above originally called 7.1(c)(ii)'s `CURE_PERIOD`
+candidate "Step 3B's territory (`SPELLED_NUMBER_VALUES` in
+`cure-period-parse.js`)". That was wrong and is corrected here rather than
+silently rewritten, per `docs/core/OPERATING-RULES.md`'s "keep the
+reasoning, correct the specifics". Replaying the real evidence and reading
+`resolution.review_queue` directly: 7.1(c)(ii)'s `CURE_PERIOD` candidate
+queues under `TRIGGER_KIND_UNCORROBORATED`, not a period/number gate --
+its own quote ("...of such breach or failure") matches none of the `BREACH`
+alternatives, so `terminationTriggerKindCorroborated` refuses it before
+`parseCurePeriod` (Step 3B's file) is ever called. `SPELLED_NUMBER_VALUES`
+cannot clear a trigger-kind gate, so handing this candidate to Step 3B would
+never have unblocked it. (Its sibling, 7.1(d)(i)'s `CURE_PERIOD` candidate,
+genuinely is Step 3B's territory: it clears the trigger-kind gate --
+`sourceCitationContext`'s `child_clause_quote` for that citation includes
+the parent clause's "shall have breached" -- and queues under
+`PERIOD_KIND_UNCORROBORATED` instead, which is where Step 3B's
+`SPELLED_NUMBER_VALUES` fix actually applies. The two candidates look
+alike at the raw-value level and are not: only one of them reaches the
+number parser.)
 
 **Hostile tests, one per widened pattern, all built from real Modiv quotes
 copied verbatim from `docs/codex-program/notes/resolver-reference-fixes.md`
