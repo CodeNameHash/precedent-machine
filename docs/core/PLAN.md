@@ -377,6 +377,34 @@ extraction is the expensive part, and the other four steps are fast.
 
 ## Prerequisite. Wire Ben's two M3 auto-pass conditions before rung 1
 
+**STATE, 2026-08-07. Both conditions are wired. One of them cannot be
+evaluated on any data this repository holds, and that half needs Ben.**
+
+| Condition | State |
+|---|---|
+| `lexical_disagreement` | **Done and evaluating.** Self-contained, needs no external evidence file |
+| `v1v2_comparison` | **Wired, and blocked on data.** Every committed `V1_PROVISION_SNAPSHOT/V1` fixture lacks `snapshot_identity_evidence`, which `v1v2-comparator.js:557` strictly requires. It reports `NOT_SUPPLIED` everywhere, honestly, rather than passing vacuously |
+
+Checked on all three fixtures (`modiv`, `skechers`, `topbuild`), not inferred:
+each returns `ABSENT`. Supplying it needs a real identity-issuance chain, so
+it is not something to fabricate — the requirement is a deliberate control.
+
+**This is the case the prerequisite's own last paragraph anticipated.** Wiring
+condition 2 was the work; condition 1 is now released-by-circumstance rather
+than done, and that must be an explicit act by Ben rather than something that
+lapses by being forgotten. Recorded as decision 4 in `DECISIONS.md`. Until it
+is ruled, **every rung below states in writing that `v1v2_comparison` was not
+evaluated**, which the runner now records per run in
+`run-manifest.json.m3_auto_pass_conditions`.
+
+**What wiring condition 2 changed, reported rather than absorbed.** Replaying
+`modiv-no-shop` produced identical routing counts (42 resolved) but different
+per-claim triage: `LEXICAL_DISAGREEMENT_NET_ABSENT` fell from 42 to 0 and was
+replaced by real outcomes — 25 `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE`, 16
+`LEXICAL_LEXICON_UNCOVERED_FAMILY` — and 25 review-queue items gained real
+`lexical_disagreement_excerpts`. The gate was previously green on 42 claims it
+had never examined.
+
 **Ben ruled this on 2026-08-06 and an earlier draft of this stage dropped it.**
 It is restored here as a blocking prerequisite, not an aside.
 
@@ -388,8 +416,8 @@ skipped them looks identical, in its evidence directory, to a rung that ran
 them. That is the specific failure this stage exists to prevent, so it cannot
 be tolerated inside the stage itself.
 
-**Change.** Rule on `lib/canonical-v2/v1v2-comparator.js` and
-`lib/canonical-v2/lexical-disagreement-net.js` — both built, merged as
+**Change.** Rule on `lib/canonical-v2/native-producer/v1v2-comparator.js` and
+`lib/canonical-v2/native-producer/lexical-disagreement-net.js` — both built, merged as
 #471/#472, seven test files, and near-invisible in these documents — then
 supply both conditions at the runner's `resolveCandidates(...)` call, and fix
 `scripts/nets-eligibility-report.mjs`, broken since `0d17ad00`.
@@ -1830,6 +1858,81 @@ cover: idempotency and resume under interruption, refusal of what must never be
 imported, row-level traceability, and backup and restore.
 
 ## Step 4A. Execute the schema against a real database, durably
+
+**DONE 2026-08-07, and it found the disagreement it was built to find.**
+
+The mechanical proof passed. `supabase/canonical-v2-foundation.sql` applied to
+`postgres:16-alpine` with **no errors**. A real bridge-composed write-set from
+`modiv-no-other-reps-20260807-replay` went through `public.canonical_v2_write`
+**durably, committed, never rolled back**: receipt `b3332c4d…5717baf`, status
+`COMMITTED`, **3 claims in the write-set and 3 rows in
+`canonical_v2_staging.claim_revisions`**. The JS-computed and SQL-recomputed
+receipt identities matched exactly. Reproduced from a second fresh container
+following the written commands, with an identical receipt id.
+
+Reproduction commands, the scaffolding a vanilla Postgres needs, and both full
+JSON outputs: `docs/codex-program/notes/step-4a-durable-write.md`,
+`scripts/lib/canonical-v2-local-setup.sql`,
+`scripts/canonical-v2-local-durable-write.js`. No Supabase account, no
+credential, nothing real touched.
+
+**The finding: the two writers do not agree, and it is not a small gap.** See
+Step 4A1, which exists because of this. Step 4A's own question — *does a
+durable write survive* — is answered yes. The generalisation question is
+answered no.
+
+Also learned, and undocumented anywhere before: a `DEAL_SCOPE_RUN` call
+against the SQL writer requires its source chain already persisted by three
+prior `canonical_v2_write` calls (`INTAKE_CAPTURE`,
+`STAGE_SOURCE_ARTIFACT_CHUNK` per chunk, `PREPARE_SOURCE_ADMISSION`). The JS
+bridge never needed this because it rebuilds the chain in memory. Anything
+driving the SQL writer must do it.
+
+## Step 4A1. Teach the SQL writer that provisions can have no party
+
+**Found by Step 4A, 2026-08-07. This blocks most of the import path.**
+
+**What it is.** `lib/canonical-v2/` builds two provision kinds:
+`PROVISION_INSTANCE/V1`, which names a party, and
+`STRUCTURAL_PROVISION_INSTANCE/V1`, which does not.
+`validate-write-set.js` treats both as legitimate. The SQL writer knows only
+the first: **`STRUCTURAL_PROVISION_INSTANCE` appears zero times in all 8,686
+lines of `supabase/canonical-v2-foundation.sql`**, and four files under `lib/`
+build or validate it.
+
+**Why it is worse than a missing branch.** The `DEAL_SCOPE_RUN` provision
+shape check (~3820-3926) requires an exact key set including `party`, so a
+partyless provision's `shape_valid` is always false. Because of how the
+surrounding `WHERE CASE`/`EXISTS` is written, that **rejects the entire
+write-set** with "DEAL_SCOPE_RUN provision identity or source lineage is
+invalid", without ever reaching the lineage check. One partyless provision
+poisons every claim in the run, and the error message points at lineage, which
+is not the problem. Whoever hits this without reading this step will debug the
+wrong thing.
+
+**Measured across all 15 claim-publishing families.** Five publish *only* the
+rejected kind — `CONSIDERATION`, `MERGER_STRUCTURE_CLOSING`,
+`MISC_BOILERPLATE`, `PROXY_MEETING`, `DNO_INDEMNIFICATION` — and
+`TERMINATION_FEE` mixes both, so it fails too. **Six of fifteen cannot be
+imported at all today.** The control is direct: `DNO_INDEMNIFICATION` failed at
+exactly this check while `NO_OTHER_REPS_FRAUD`, same document and same script
+but all party-bearing, committed cleanly.
+
+**Change.** `supabase/canonical-v2-foundation.sql`. Give the shape check a
+branch for `STRUCTURAL_PROVISION_INSTANCE/V1` with its own key set, party
+absent, and make the failure message distinguish a shape rejection from a
+lineage rejection. Do not relax the party-bearing branch to accept a missing
+`party` — that would let a genuinely malformed party-bearing provision through,
+which is the failure this check exists to prevent.
+
+**Proves it is done.** All six affected families import durably against the
+local container, with `SELECT count(*)` on `claim_revisions` equal to each
+run's claim count, and the JS and SQL receipt identities matching per family.
+Plus a hostile test: a party-bearing provision with `party` missing is still
+rejected, and its message names the shape, not the lineage.
+
+**Sequenced before Step 4A2.** Adding a table to a writer that rejects six
+families is optimising the wrong end.
 
 **What it is.** `supabase/canonical-v2-foundation.sql` defines a
 `canonical_v2_staging` schema with one table per write-set object kind, plus

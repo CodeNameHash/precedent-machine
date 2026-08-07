@@ -869,6 +869,37 @@ Three constraints follow, and none of them is optional:
   negation-reversal work: confidently wrong, correct-looking, no visible
   signal to the reader.
 
+**4. NEW, 2026-08-07. `v1v2_comparison` is wired and cannot be evaluated.
+Release it explicitly, or supply the data.**
+
+Ben ruled on 2026-08-06 that two M3 auto-pass conditions must be evaluated
+before Stage 2's first rung. Both are now wired at the runner's
+`resolveCandidates(...)` call. `lexical_disagreement` evaluates. The other
+cannot: `v1v2-comparator.js:557` strictly requires
+`snapshot_identity_evidence` on the V1 snapshot, and **all three committed
+fixtures lack it** — `modiv`, `skechers`, `topbuild`, each checked directly
+rather than inferred. So it reports `NOT_SUPPLIED` everywhere.
+
+That is the honest behaviour and it is why this is a question rather than a
+bug. Supplying the evidence needs a real identity-issuance chain; fabricating
+it is not an option, because the requirement is a deliberate control.
+
+**The prerequisite anticipated exactly this:** *"If this is released rather
+than done, Ben releases it explicitly, and every rung below states in writing
+that the conditions were not evaluated. It does not lapse by being forgotten a
+second time."* It was forgotten once already.
+
+**The choice.** Release condition 1 explicitly, and every rung records that it
+was not evaluated — the runner already writes this per run to
+`run-manifest.json.m3_auto_pass_conditions`. Or issue the identity chain for at
+least one snapshot so it can be exercised on real data.
+
+**Not urgent, and it should not be silent.** Wiring condition 2 alone already
+paid: replaying `modiv-no-shop` left the routing counts unchanged at 42
+resolved but replaced `LEXICAL_DISAGREEMENT_NET_ABSENT` on all 42 claims with
+real outcomes, and gave 25 review-queue items real disagreement excerpts. The
+gate had been green on 42 claims it never examined.
+
 **3. `conditional_termination_fee_values` has no table.** Two more of the ten
 cards come from it, including the Modiv headline. It needs a home or an
 explicit omission.

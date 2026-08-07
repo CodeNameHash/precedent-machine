@@ -118,7 +118,23 @@
  *     [--model <claude CLI model alias, default "sonnet">] \
  *     [--no-follow-citations] \
  *     [--call-timeout-ms <positive integer, default 600000>] \
+ *     [--v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON, \
+ *        default: none -- condition 1 (v1<->v2 comparator) then stays \
+ *        unevaluated for every claim, recorded explicitly in run-manifest.json>] \
  *     [--dry-run]
+ *
+ * M3 AUTO-PASS CONDITIONS. Every resolveCandidates() call below wires both
+ * of Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite."):
+ * condition 2 (lexical-disagreement net, lexical-disagreement-net.js) is
+ * always built, one receipt per resolved section, from this run's own
+ * resolved candidates -- no extra input needed. Condition 1 (v1<->v2
+ * comparator, v1v2-comparator.js) needs a committed V1_PROVISION_SNAPSHOT/V1
+ * for the SAME deal, which this script never fetches on its own (that is
+ * scripts/export-v1-provision-snapshot.mjs's separately-gated job) -- pass
+ * one via --v1-snapshot to evaluate it. Absent, condition 1 stays
+ * unevaluated (`V1_V2_COMPARATOR_ABSENT` on every claim), and this run's
+ * `run-manifest.json.m3_auto_pass_conditions.v1v2_comparison` records that
+ * fact plainly rather than omitting it.
  *
  * --follow-citations dispatches an extra single-section call for each
  * section a fee trigger cites by bare cross-reference, so the model can
@@ -181,7 +197,19 @@ const { runNativeExtraction, NativeExtractionRunError } = require('../lib/canoni
 // TERMINATION_FEE bare-citation fee triggers specifically -- inert for every
 // other family (see this file's own header note above).
 const { runNativeExtractionWithCitationFollowup } = require('../lib/canonical-v2/native-producer/native-extraction-run-citation-followup');
-const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const {
+  resolveCandidates, computeSectionCandidatesForLexicalDigest,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
+// Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite. Wire
+// Ben's two M3 auto-pass conditions before rung 1"). Both are pure,
+// deterministic, no-model-call modules -- see each file's own header.
+// Condition 2 (lexical-disagreement) is ALWAYS built from this run's own
+// data, no extra input needed. Condition 1 (v1<->v2 comparator) needs a
+// committed V1_PROVISION_SNAPSHOT/V1 the caller supplies via --v1-snapshot;
+// absent that, condition 1 stays unevaluated and this run's evidence records
+// that explicitly (see "Step 4" below), never silently.
+const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
+const { buildV1V2ComparisonReceipt } = require('../lib/canonical-v2/native-producer/v1v2-comparator');
 const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
 const {
@@ -216,6 +244,14 @@ function repoRelative(absolutePath) {
 
 function scriptRelativePath() {
   return repoRelative(fileURLToPath(import.meta.url));
+}
+
+// UTF-8 BYTE offsets, never UTF-16 code units (CLAUDE.md's own standing
+// trap note) -- `section.start`/`section.end` on a `resolved_sections` entry
+// are byte offsets into the canonical text, so this slices via `Buffer`,
+// matching scripts/nets-eligibility-report.mjs's own `sectionBodyText`.
+function sectionBodyText(canonicalText, section) {
+  return Buffer.from(canonicalText, 'utf8').slice(section.start, section.end).toString('utf8');
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -420,6 +456,7 @@ function parseArgs(argv) {
     timeoutMs: null,
     dryRun: false,
     outDir: null,
+    v1SnapshotPath: null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -444,6 +481,7 @@ function parseArgs(argv) {
       case '--record': out.recordPath = argv[++i]; break;
       case '--replay': out.replayPath = argv[++i]; break;
       case '--replay-from-run': out.replayFromRunDir = argv[++i]; break;
+      case '--v1-snapshot': out.v1SnapshotPath = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
@@ -522,6 +560,7 @@ function resolveRunConfig(args) {
     recordPath: args.recordPath || null,
     replayPath: args.replayPath || null,
     replayFromRunDir: args.replayFromRunDir || null,
+    v1SnapshotPath: args.v1SnapshotPath || null,
   });
 }
 
@@ -1186,11 +1225,73 @@ async function main() {
 
   // ─── Step 4: resolveCandidates -> buildNativeWriteSet (WITH resolution context) -> validate ───
 
+  // PLAIN PASS (no M3 conditions wired yet): needed as the input BOTH M3
+  // conditions are built from -- the lexical net keys its per-section
+  // candidates off `plainResolution.resolved`, and the comparator's
+  // `attempted_section_scope` is derived the same way. This pass is never
+  // written to disk on its own; `resolution.json` below is always the fully
+  // wired result.
+  const plainResolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: contractBundle,
+    admitted_source_context: admittedSourceContext,
+    agreement_date: config.agreementDate,
+  });
+
+  // Condition 2: lexical-disagreement net (Ben's M3 auto-pass condition 2,
+  // docs/core/PLAN.md prerequisite). ALWAYS built -- one
+  // LEXICAL_DISAGREEMENT_RECEIPT/V1 per resolved section, from THIS run's
+  // own resolved candidates via candidate-resolution.js's own
+  // `computeSectionCandidatesForLexicalDigest` (the exact digest formula
+  // `resolveCandidates`'s wiring itself re-verifies), never an external
+  // input. No model cost, no extra call.
+  const lexicalDisagreement = {};
+  for (const section of receipt.resolved_sections) {
+    const sectionCandidates = computeSectionCandidatesForLexicalDigest(plainResolution.resolved, section.section_reference);
+    const governedSection = {
+      section_ref: section.section_reference,
+      text: sectionBodyText(fullText, section),
+      text_sha256: section.text_sha256,
+    };
+    lexicalDisagreement[section.section_reference] = buildLexicalDisagreementReceipt({
+      governed_section: governedSection, candidates: sectionCandidates,
+    });
+  }
+  writeFileSync(resolve(outDir, 'lexical-disagreement.json'), JSON.stringify(lexicalDisagreement, null, 2));
+
+  // Condition 1: v1<->v2 comparator (Ben's M3 auto-pass condition 1). Only
+  // built when the caller supplies --v1-snapshot; STAYS UNEVALUATED
+  // otherwise (V1_V2_COMPARATOR_ABSENT on every claim), and that fact is
+  // recorded on run-manifest.json below rather than silently omitted.
+  let v1v2Comparison = null;
+  let v1v2ComparisonSkippedReason = null;
+  if (config.v1SnapshotPath) {
+    const v1Snapshot = JSON.parse(readFileSync(resolve(config.v1SnapshotPath), 'utf8'));
+    const attemptedSectionScope = [...new Set(plainResolution.resolved.map((entry) => {
+      const citationValidation = entry.compiled_candidate && entry.compiled_candidate.citation_validation;
+      if (!citationValidation) return null;
+      if (citationValidation.validation_source === 'CORROBORATED_BY_DOCUMENT_TEXT'
+        && typeof citationValidation.normalized_citation === 'string') return citationValidation.normalized_citation;
+      return typeof citationValidation.derived_citation === 'string' ? citationValidation.derived_citation : null;
+    }).filter(Boolean))];
+    v1v2Comparison = buildV1V2ComparisonReceipt({
+      v1_snapshot: v1Snapshot, v2_side: plainResolution, attempted_section_scope: attemptedSectionScope,
+    });
+    writeFileSync(resolve(outDir, 'v1v2-comparison.json'), JSON.stringify(v1v2Comparison, null, 2));
+    process.stderr.write(`${logPrefix} v1v2_comparison: SUPPLIED from ${config.v1SnapshotPath} (${v1v2Comparison.provision_outcomes.length} v1 card outcome(s))\n`);
+  } else {
+    v1v2ComparisonSkippedReason = 'NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> '
+      + 'to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then.';
+    process.stderr.write(`${logPrefix} v1v2_comparison: NOT SUPPLIED -- ${v1v2ComparisonSkippedReason}\n`);
+  }
+
   const resolution = resolveCandidates({
     run_receipt: receipt,
     contract_vocabulary: contractBundle,
     admitted_source_context: admittedSourceContext,
     agreement_date: config.agreementDate,
+    v1v2_comparison: v1v2Comparison,
+    lexical_disagreement: lexicalDisagreement,
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 
@@ -1269,6 +1370,26 @@ async function main() {
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,
     source_sha256: verified.conversion.canonical_text_sha256,
+    // Ben's two M3 auto-pass conditions (docs/core/PLAN.md prerequisite):
+    // whether each condition was evaluated on THIS rung, and its outcome,
+    // recorded here rather than left implicit in resolution.json alone --
+    // "a rung that skipped them looks identical, in its evidence directory,
+    // to a rung that ran them" is exactly the failure this field exists to
+    // rule out.
+    m3_auto_pass_conditions: {
+      v1v2_comparison: v1v2Comparison ? {
+        supplied: true,
+        source: config.v1SnapshotPath,
+        v1v2_comparison_receipt_id: v1v2Comparison.v1v2_comparison_receipt_id,
+        counts: v1v2Comparison.counts,
+      } : { supplied: false, reason: v1v2ComparisonSkippedReason },
+      lexical_disagreement: {
+        supplied: true,
+        sections_covered: Object.keys(lexicalDisagreement).length,
+        resolution_receipt_counts: resolution.resolution_receipt.lexical_disagreement_counts || null,
+      },
+      claims_both_nets_clean: resolution.resolved.filter((entry) => entry.triage.both_nets_clean).length,
+    },
   }, null, 2));
 
   process.stderr.write(`${logPrefix} === SUMMARY ===\n`);
@@ -1279,6 +1400,7 @@ async function main() {
   process.stderr.write(`citation_residuals: ${receipt.citation_residual_count} -- ${JSON.stringify((receipt.citation_residuals || []).map((r) => r.reason))}\n`);
   process.stderr.write(`undispatched_sections: ${receipt.undispatched_section_count}\n`);
   process.stderr.write(`resolution: resolved=${resolution.resolved.length} auto_pass=${resolution.resolved.filter((e) => e.triage.auto_pass).length} review_queue=${resolution.review_queue.length} open_world=${resolution.open_world.length} residuals=${resolution.residuals.length}\n`);
+  process.stderr.write(`m3_auto_pass_conditions: v1v2_comparison=${v1v2Comparison ? 'EVALUATED' : 'NOT_EVALUATED'} lexical_disagreement=EVALUATED (${Object.keys(lexicalDisagreement).length} section(s)) both_nets_clean=${resolution.resolved.filter((e) => e.triage.both_nets_clean).length}\n`);
   process.stderr.write(`conditional_termination_fee_values: ${(resolution.conditional_termination_fee_values || []).length}\n`);
   process.stderr.write(`write_set claims: ${adapterResult.write_set.claims.length}, components: ${(adapterResult.write_set.components || []).length}, adapter residuals: ${adapterResult.residuals.length}\n`);
   process.stderr.write(`validation accepted: ${validation.accepted}, residuals: ${validation.residuals.length}, quarantines: ${validation.quarantines.length}\n`);
