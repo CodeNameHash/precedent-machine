@@ -2574,6 +2574,40 @@ into `canonical_v2_write`, and the Modiv headline arrives in the table. Step
 mechanism is the exact shape of thing this programme forgets it built, and
 this is the second one found today: Step 3J's cross-check guard is the other.
 
+**DONE 2026-08-07. Ben's decision 3 is now satisfied end to end.**
+
+A real extraction run's own write-set — `modiv-termination-fee-20260807-replay`,
+re-derived by calling the real `buildNativeWriteSet` on its committed receipt
+and resolution, **with no manual splicing of the fee values** — carried six
+conditional fee values through both JS validators, through the canonical
+writer, into `canonical_v2_write` on a local container. Six in the write-set,
+six in the table, reconfirmed from a fresh connection. JS and SQL receipt
+identities matched. The headline `$10,000,000` SELLER 7.3(b)(i) row round-trips
+byte-identical, and its stored digest equals the one Step 4A2's hand-spliced
+proof produced for the same content — so the harness and the pipeline agree.
+
+**The wiring pin was verified to fail, not merely to exist.** Reverting the
+adapter change alone takes the new test from 10 passing to 5 passing and 5
+failing, and restoring it returns 10. That check was run rather than reasoned
+about, because six times today this programme found a protection it believed
+in that had never fired.
+
+**A third shape gate had to be widened, and this is the finding worth
+carrying.** `canonical-writer.js`'s `assertDealScopeWriteSetShape` runs its
+own independent closed-key check **before** `validateResolvedCanonicalWriteSet`
+ever runs, and rejected the new key with `INVALID_DEAL_SCOPE_WRITE_SET` until
+it was widened too. Step 4A2's note predicted exactly this. Had it been
+missed, the real bridge would have stayed silently blocked while every
+targeted test passed.
+
+So **an optional write-set key now needs updating in three places** — both JS
+shape gates and the SQL — and **nothing keeps the trio in sync but tests**.
+This is the same shape as the three digest guards over a schema edit, found
+the same day, and it has the same character: the duplication is pre-existing
+and documented in the file's own comment, dating to an earlier
+`write_set_origin` bug, but nothing tells you at edit time that you are in a
+place with three of something.
+
 ## Step 4B. Harden the import driver
 
 **Moved, not deleted.** Step 2B's write half now builds this driver, for the
