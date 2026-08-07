@@ -1200,7 +1200,7 @@ significance into them beyond what this guide states explicitly.
   this repository's usual places.** This entry previously read "no evidence
   found, staging or production", which was true of the sources it checked
   and false of the programme as a whole.
-  `docs/codex-program/EXECUTION-LEDGER.md`'s P8 rows record multiple real
+  `docs/parked/process-intelligence/EXECUTION-LEDGER.md`'s P8 rows record multiple real
   runs against isolated Supabase staging: `PM-METSERA-PERSISTENCE-01` used
   "the existing `canonical_v2_write` entry point" and wrote a real candidate
   record inside a rollback transaction (exact replay a no-op, conflicting

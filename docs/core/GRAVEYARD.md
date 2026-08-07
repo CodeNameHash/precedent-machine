@@ -568,7 +568,7 @@ already governed elsewhere.
 
 **Whether anything still references it.** `grep -rl "P9-ACCEPTANCE-
 DEFINITIONS" docs/codex-program/*.md lib/ scripts/ tests/` finds it cited
-from `docs/codex-program/EXECUTION-LEDGER.md` and `docs/codex-program/
+from `docs/parked/process-intelligence/EXECUTION-LEDGER.md` and `docs/codex-program/
 ROADMAP.md`, both outside this exercise's file constraint to check or
 correct; no code anywhere reads or depends on it.
 

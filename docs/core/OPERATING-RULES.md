@@ -800,7 +800,7 @@ Six documents are declared members of
 byte length and SHA-256:
 
 - `docs/CODEX-PROGRAM.md`
-- `docs/codex-program/EXECUTION-LEDGER.md`
+- `docs/parked/process-intelligence/EXECUTION-LEDGER.md`
 - `docs/codex-program/programme-gates.yaml`
 - `docs/codex-program/m3-family-parity-register.json`
 - `docs/codex-program/canonical-contracts.md`

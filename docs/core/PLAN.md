@@ -5,7 +5,17 @@ A step lives here until it is closed, then it moves to `COMPLETED.md` carrying
 the evidence that closed it. If a step is in neither file, it is not planned
 and it has not happened.
 
-It supersedes `ROADMAP.md`, `WORK-COMPLETED.md` and `EXECUTION-LEDGER.md`.
+It supersedes `ROADMAP.md` and `WORK-COMPLETED.md`.
+
+It does **not** supersede `EXECUTION-LEDGER.md`, and a previous version of this
+line claiming it did was false in both directions. That ledger was live,
+actively maintained, and governed a separate ~200-hour programme (P0–P12) whose
+P8 blocker was `ACTIVE` — and it held the only evidence that this system's
+database write path has ever been executed at all. It is now **parked**, by
+Ben's ruling on 2026-08-06, at
+`docs/parked/process-intelligence/EXECUTION-LEDGER.md`, with a README recording
+what was open when it was set aside. Parked is not superseded: the work was set
+aside to be rebuilt, not absorbed into this document.
 
 **Every number below carries the command that produced it.** This project has
 retracted several confident figures that came from plausible reasoning rather
@@ -61,7 +71,7 @@ Run these yourself. They take seconds.
 | Of those, with any acceptance criteria | 5 | section 5 below |
 | Mandatory adversarial tests, implemented | 7 of 289 | `node -e "const {MANDATORY_ADVERSARIAL_TEST_IDS,testExecutableState}=require('./lib/programme-gates/test-executable-registry.js');console.log(MANDATORY_ADVERSARIAL_TEST_IDS.filter(id=>testExecutableState(id)==='IMPLEMENTED').length)"` |
 | Lines of database schema written | 8,686 | `wc -l supabase/canonical-v2-foundation.sql` |
-| Times that schema has been executed | at least several, against isolated staging, all rolled back | `docs/codex-program/EXECUTION-LEDGER.md` P8 rows: `PM-METSERA-PERSISTENCE-01` used the existing `canonical_v2_write` entry point, `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic writer against isolated staging, both COMPLETE. A previous version of this row said **0**, citing `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` — which shows only that those tests pattern-match source text, and cannot show the schema was never executed anywhere. What is still unproven is a **durable, non-rolled-back** write. |
+| Times that schema has been executed | at least several, against isolated staging, all rolled back | `docs/parked/process-intelligence/EXECUTION-LEDGER.md` P8 rows: `PM-METSERA-PERSISTENCE-01` used the existing `canonical_v2_write` entry point, `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic writer against isolated staging, both COMPLETE. A previous version of this row said **0**, citing `grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js` — which shows only that those tests pattern-match source text, and cannot show the schema was never executed anywhere. What is still unproven is a **durable, non-rolled-back** write. |
 | API routes using the service key | 19 | `grep -rl getServiceSupabase pages/api/ \| wc -l` |
 | Authentication | built, enforced, 101 real-request tests pass | `CI=true node --test tests/auth-route-enforcement.test.js` |
 
@@ -161,7 +171,7 @@ below was opened and confirmed, not inferred from its name.
 | The write-set validator | `lib/canonical-v2/validate-write-set.js` | Splits a write-set into `publishableWriteSet`, `residuals`, `quarantines`. Only the first is importable. |
 | The write orchestrator | `lib/canonical-v2/canonical-writer.js` | `WRITE_ORDER`, `OBJECT_ID_FIELDS`, and `InMemoryCanonicalRepository` at line 787. |
 | A real Postgres client | `lib/canonical-v2/serving-client.js` | A genuine `pg` `Pool` client (`createPostgresServingClient`, line 198) against staging, with import scripts under `scripts/canonical-v2-staging-*.mjs` and SQL under `sql/optionA/`. A previous version of the row above ended "There is no persistent repository", which is false. It is accurate only in the narrow sense that this client is a separate hand-built per-deal pipeline (QXO), not something the general 25-family runner reaches — which is what Step 2B builds. |
-| The database schema and SQL writer | `supabase/canonical-v2-foundation.sql` | 8,686 lines. `public.canonical_v2_write` at line 1167. Executed against isolated staging and rolled back (`EXECUTION-LEDGER.md`, P8); never durably. A previous version of this row said "Never executed", contradicting the corrected row above. |
+| The database schema and SQL writer | `supabase/canonical-v2-foundation.sql` | 8,686 lines. `public.canonical_v2_write` at line 1167. Executed against isolated staging and rolled back (`docs/parked/process-intelligence/EXECUTION-LEDGER.md`, P8); never durably. A previous version of this row said "Never executed", contradicting the corrected row above. |
 | The one family that serves V2 today | `lib/canonical-v2/termination-fee-serving-source.js` | Server side. Hand-typed fixture for QXO/TopBuild, hash verified. |
 | The client-side switch for that family | `components/review/table-configs/termination-fees.config.js` | `selectRows()`, `isCanonicalTerminationFeeServingEnabled()`, `partitionTerminationFeeCards()`. |
 | The route the data crosses on | `pages/api/review/[id]/cards.js` | Imports `attachCanonicalTerminationFeeServing`. This HTTP boundary is why static analysis cannot prove a user sees anything. |
@@ -329,7 +339,7 @@ Second, and more important: **proving extraction generalises while proving the
 write path once is the same mistake one layer down.** A single validated
 write-set proves the writer handles one family's shape from one deal. The
 existing evidence for the write path is exactly that — QXO F28 and Metsera,
-hand-built, per deal (`docs/codex-program/EXECUTION-LEDGER.md`, P8). So each
+hand-built, per deal (`docs/parked/process-intelligence/EXECUTION-LEDGER.md`, P8). So each
 rung here runs the *whole chain*:
 
 ```
@@ -508,7 +518,7 @@ rollback (default) and durable (explicit flag). Rollback-only cannot serve, so
 the rungs below need the durable mode; the flag exists so that proving the
 write and proving the serving stay separable when one of them breaks.
 
-Read P8's rows in `docs/codex-program/EXECUTION-LEDGER.md` before writing this.
+Read P8's rows in `docs/parked/process-intelligence/EXECUTION-LEDGER.md` before writing this.
 They record real runs of this function against isolated staging with replay
 no-op, conflicting-replay rejection and RLS proofs, all COMPLETE. This step is
 not discovering whether the writer works; it is making the general runner reach
@@ -1035,7 +1045,7 @@ than asserted.
 **Rescoped 2026-08-06.** This stage previously opened "This stage is the
 largest single unknown in the programme", on the premise that the schema had
 never been executed. That premise is stale.
-`docs/codex-program/EXECUTION-LEDGER.md`'s P8 rows record real runs against
+`docs/parked/process-intelligence/EXECUTION-LEDGER.md`'s P8 rows record real runs against
 isolated Supabase staging through the existing `canonical_v2_write` entry
 point, with exact-replay no-op, conflicting-replay rejection and RLS proofs,
 all marked COMPLETE. The write path is not an unknown; it is proven on two
