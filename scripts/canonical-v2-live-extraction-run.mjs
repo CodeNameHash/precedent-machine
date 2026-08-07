@@ -239,8 +239,53 @@ const DEAL_PINS = Object.freeze({
     pin_corroboration: 'tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json, and the prior '
       + 'TERMINATION_FEE run receipt at evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/'
       + 'execution-result.json (work_item_id modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash)',
+    // All 25 registered families (PLAN.md Step 2A). Twenty-four are HARVESTED
+    // from the section lists previous sweeps actually used -- twenty from
+    // run-manifest.json's `section_references`, four from
+    // section-location-scan.json's `requested_section_references` for the
+    // directories that have no manifest. That is human judgement already
+    // spent, and it is what the committed baseline was produced against, so
+    // rung 1-4 diffs compare like with like.
+    //
+    // The stage-1 generator
+    // (scripts/canonical-v2-generate-family-section-refs.mjs --compare)
+    // disagrees with the harvest on 17 families. Those disagreements are NOT
+    // resolved here: settling them needs the document read, which is Step 2A's
+    // review pass. Pinning the harvest keeps the ladder runnable and keeps the
+    // baseline comparable; the generator's proposal is committed alongside at
+    // docs/codex-program/notes/family-section-refs-modiv-20260807-generated.json
+    // so the difference stays visible.
     default_section_refs_by_family: Object.freeze({
-      TERMINATION_FEE: Object.freeze(['7.1', '7.3', '8.12']),
+      ANTITRUST_REGULATORY: Object.freeze(["5.5"]),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(["2.6"]),
+      CAPITALISATION: Object.freeze(["3.2","4.2"]),
+      CLOSING_CONDITIONS: Object.freeze(["6.1","6.2","6.3","6.4"]),
+      CONSIDERATION: Object.freeze(["2.1","2.2","2.3"]),
+      DIVIDENDS: Object.freeze(["5.10"]),
+      DNO_INDEMNIFICATION: Object.freeze(["5.8"]),
+      EMPLOYEE_MATTERS: Object.freeze(["3.11","3.12"]),
+      FINANCING_COVENANTS: Object.freeze(["4.13","5.20"]),
+      GENERAL_COVENANTS: Object.freeze(["5.3","5.7","5.9"]),
+      GUARANTY_FINANCING_PARTY: Object.freeze(["5.11"]),
+      INTERIM_OPERATING: Object.freeze(["5.1"]),
+      KEY_DEFINED_TERMS: Object.freeze(["8.5"]),
+      // Never run against Modiv: the only 2026-08-06 MAE run is TopBuild.
+      // This list is the stage-1 generator proposal, NOT harvested human
+      // judgement like the other 24, and PLAN.md Step 2A requires it be read
+      // against the document before its result is trusted. Rung 4 is where it
+      // first runs, creating a baseline rather than checking one.
+      MAE_DEFINITION: Object.freeze(['8.12']),
+      MATERIAL_CONTRACTS: Object.freeze(["3.17"]),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(["1.1","1.4","1.5","1.6"]),
+      MISC_BOILERPLATE: Object.freeze(["8.2","8.3","8.4","8.7","8.9","8.10"]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(["3.25"]),
+      NO_SHOP: Object.freeze(["5.6"]),
+      PROXY_MEETING: Object.freeze(["5.4"]),
+      REPRESENTATIONS: Object.freeze(["3.1","3.3","3.4"]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(["8.8"]),
+      TAX_MATTERS: Object.freeze(["3.13","4.15","5.12"]),
+      TERMINATION: Object.freeze(["7.1","7.2"]),
+      TERMINATION_FEE: Object.freeze(["7.1","7.3","8.12"]),
     }),
     // Verified empirically against this exact filing before this script was
     // first written: "7.1" -> SECTION heading "Termination"; "7.3" ->
