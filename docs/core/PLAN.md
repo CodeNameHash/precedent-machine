@@ -2179,6 +2179,57 @@ disagreement; a prose `feeRequired` that means "not a condition" is refused or
 queued rather than read as agreement; and V3 either serves or its
 unreachability is recorded in `GRAVEYARD.md` with what would make it serve.
 
+## Step 3J2. Add the consummation event, and make the delay axis structured
+
+**Ruled by Ben on 2026-08-07**, after adversarial review found Step 3J's new
+vocabulary already broken by a third agreement sitting in this repository's
+own fixtures. Full reasoning in `DECISIONS.md` decision 5.
+
+**What it is.** Two changes to the payment-timing vocabulary Step 3J built.
+
+**1. `CONSUMMATION` becomes a fourth `payment_trigger_event`.** Skechers
+§8.3(b)(i) pays "concurrently with the consummation of such Acquisition
+Transaction" — consummation alone, matching none of the three ruled codes.
+Encoding it as `EARLIER_OF_SIGNING_OR_CONSUMMATION` inverts the term: under
+QXO's tail the fee is owed at signing even if the later deal never closes,
+under Skechers only at closing. **A signed-but-collapsed deal owes $339.9M
+under one and nothing under the other.**
+
+**2. `payment_delay` becomes `{count, unit, bound_type}` at V4**, not a wider
+enum. `NONE` and `TWO_BUSINESS_DAYS` cannot express "within three Business
+Days", which is in this repository's own financing corpus, and cannot record
+whether a period is an outer bound or an exact term. Skechers writes "promptly
+(and in any event within two Business Days)"; under the enum the promptness
+covenant is silently lost and the outer bound is indistinguishable from an
+exact two days.
+
+**Adding a duration no longer needs Ben.** `OPERATING-RULES.md` reserves
+taxonomy values and codebook vocabularies because they encode legal judgement.
+A duration is a measurement — "three Business Days" requires no reading of the
+agreement beyond counting. **Trigger events stay reserved; delays do not.**
+This is the ruled scope of the pre-authorisation, and it does not extend to
+inventing a new event.
+
+**Change.** `lib/canonical-v2/contract-bundle.js` — a V4 trigger-path schema
+beside the frozen V2 and V3, following V3's own discipline: additive, with
+constraints derived by a named migration rather than retyped, and the dual
+numbering respected. Whatever consumes the pair must handle the structured
+delay.
+
+**Proves it is done.** Skechers §8.3(b)(i) encodes as `CONSUMMATION` **from
+filed text, not a typed string** — it is in
+`tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm`,
+so read it the way Step 3J read Modiv's, through the repository's own
+conversion. "Within three Business Days" encodes without a new ruling.
+Skechers' "promptly (and in any event within two Business Days)" records its
+bound type rather than flattening to an exact period. Every V3 pattern still
+encodes, and V2 and V3 stay byte-identical.
+
+**Do not treat this as the last word either.** The first vocabulary was
+curated from one agreement and broke on the second; the second was curated
+from two and broke on the third. Structuring the mechanical axis is what makes
+the fourth agreement cheap, not a guarantee that the event axis is finished.
+
 ## Step 3H. Decide the open-world items that are not defects
 
 **What it is.** The remainder of the 193 are not bugs. They are facts the

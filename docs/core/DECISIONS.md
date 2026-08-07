@@ -271,6 +271,63 @@ the reading-the-agreement work this decision calls "real work, not
 reformatting" is not yet done: the shape is built, the extraction that would
 populate it from a live model call is not.
 
+**RULED 2026-08-07, later the same day, after adversarial review found the
+split vocabulary already broken by a third agreement. Two further rulings,
+both Ben's, both on his stated agreement with the recommendations.**
+
+**A. `CONSUMMATION` is added as a fourth trigger event.** Skechers §8.3(b)(i),
+filed text in this repository's own fixtures: *"the Company will
+**concurrently with the consummation of such Acquisition Transaction** pay …
+the Company Termination Fee."* That event is consummation alone and fits none
+of the three ruled codes.
+
+**Why the nearest code is not close enough to use.** Encoding it as
+`EARLIER_OF_SIGNING_OR_CONSUMMATION` inverts a real term. Under QXO's tail the
+fee is owed at **signing** of the later deal even if that deal never closes;
+under Skechers it is owed **only at closing**. A signed-but-collapsed second
+deal owes **$339.9M under one pattern and nothing under the other**. That is
+not a rounding of vocabulary, it is a different answer to "does this company
+owe the fee".
+
+**B. Duration additions are pre-authorised, and the delay axis becomes
+structured at V4.** Two parts.
+
+*Pre-authorisation.* Decision 5 already said `payment_delay` is "zero, two
+business days, **or whatever the agreement says**", and the implementation
+froze `[NONE, TWO_BUSINESS_DAYS]`, dropping the third limb. Adding a duration
+token is hereby **not** a codebook decision requiring Ben each time.
+`OPERATING-RULES.md` reserves *taxonomy values and codebook vocabularies*
+because those encode legal judgement. **A duration is a measurement, not a
+concept**: "three Business Days" involves no reading of the agreement beyond
+counting. Event codes stay reserved; delays do not.
+
+*The structure.* `payment_delay` becomes `{count, unit, bound_type}` at V4
+rather than a widened enum. This is what stops the same defect recurring a
+third time:
+
+- **"within three Business Days"** appears in this repository's own financing
+  corpus and is ubiquitous in fee drafting. Under the frozen enum it fits
+  nothing.
+- **`bound_type` records a distinction that is currently invisible.**
+  Skechers writes *"promptly (and in any event within two Business Days)"* and
+  *"promptly, but in no event later than two Business Days"*. Those squeeze
+  into `TWO_BUSINESS_DAYS` only if that code silently means *outer bound* — a
+  semantics documented nowhere — and the promptness covenant is lost either
+  way. An outer bound and an exact period are different obligations.
+
+**The pattern this closes, stated because it has now happened twice.** A
+vocabulary curated from one agreement broke on the second; the replacement was
+curated from two and broke on the third, which was already sitting in the
+fixtures. "All five real patterns encode" meant *adequate for the agreements
+it was built from*. Structuring the axis that is genuinely mechanical, and
+reserving only the axis that is genuinely conceptual, is what stops the fourth
+agreement reopening this.
+
+**Implementation: `PLAN.md` Step 3J2**, and it does not merge without the
+Skechers case encoded from filed text rather than a typed string.
+
+---
+
 **RULED 2026-08-07: split the field. Option B.** Ben's decision on the
 codebook question the update below raised.
 
