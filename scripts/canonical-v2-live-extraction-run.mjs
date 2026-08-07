@@ -293,7 +293,27 @@ const DEAL_PINS = Object.freeze({
       GENERAL_COVENANTS: Object.freeze(["5.3","5.7","5.9"]),
       GUARANTY_FINANCING_PARTY: Object.freeze(["5.11"]),
       INTERIM_OPERATING: Object.freeze(["5.1"]),
-      KEY_DEFINED_TERMS: Object.freeze(["8.5"]),
+      // CORRECTED 2026-08-07, and the correction is the reason this family
+      // produced nothing. The harvested pin was ["8.5"] alone. Section 8.5 is
+      // "Interpretation; Certain Definitions" -- 3,391 bytes of construction
+      // conventions -- while Section 8.12 is "Definitions", 54,682 bytes and
+      // the actual defined terms. So the run was pointed at the wrong section
+      // and correctly found only construction rules: the fifteen terms it
+      // proposed were "include", "hereof", "extent", "dollars", "or",
+      // "shall", "days", "from", "to and until", "through" and five others,
+      // every one of which fell out as an ungoverned DEFINITION_ENVELOPE.
+      //
+      // That is a pin defect, not a resolver defect, and it was invisible
+      // because a family finding nothing looks the same either way. The
+      // stage-1 generator proposed ["8.5","8.12"] and was right; the harvest
+      // from a previous sweep was wrong. 8.5 is kept because the run that
+      // produced the baseline used it and the containment check requires it.
+      //
+      // NOT YET RUN against 8.12: there are no recorded responses for that
+      // section under this family, so the corrected pin needs a live call
+      // before it produces anything. Until then this family's zero is
+      // explained, not fixed.
+      KEY_DEFINED_TERMS: Object.freeze(["8.5", "8.12"]),
       // Never run against Modiv: the only 2026-08-06 MAE run is TopBuild, so
       // this list began as the stage-1 generator's PROPOSAL rather than
       // judgement harvested from a run that happened.
@@ -301,12 +321,17 @@ const DEAL_PINS = Object.freeze({
       // REVIEWED AGAINST THE DOCUMENT 2026-08-07, as PLAN.md Step 2A required,
       // and the proposal is correct. Section 8.12 "Definitions" spans bytes
       // 360,030-414,712 of the Modiv canonical text and contains BOTH
-      // definition sites: "Company Material Adverse Effect" means at 366,186
-      // and "Parent Material Adverse Effect" means at 385,847. Each appears
-      // exactly once; the document's 77 other mentions of the phrase are uses.
-      // Pinned by tests/canonical-v2-mae-definition-pin-review.test.js, so a
-      // sectionizer change that moved the boundary would fail rather than
-      // silently narrow the run.
+      // definition sites: "Company Material Adverse Effect" means at byte
+      // 367,819 and "Parent Material Adverse Effect" means at byte 387,682.
+      // Each appears exactly once; of the document's 77 mentions of the
+      // phrase, 75 are uses. Pinned by
+      // tests/canonical-v2-mae-definition-pin-review.test.js, so a sectionizer
+      // change that moved the boundary would fail rather than silently narrow
+      // the run.
+      //
+      // (Those two offsets were first recorded as 366,186 and 385,847, which
+      // were UTF-16 character indices mislabelled as bytes. The test now
+      // asserts them rather than only stating them.)
       //
       // Cost note, not a defect: 8.12 is the whole definitions article at
       // ~55 KB, so this is one expensive call over a section mostly not about

@@ -466,10 +466,16 @@ regardless of whether the generator disagrees with anything.
 
 **DONE 2026-08-07, and the generator was right.** Section 8.12 "Definitions"
 spans bytes 360,030–414,712 of the Modiv canonical text and contains **both**
-definition sites: `"Company Material Adverse Effect" means` at 366,186 and
-`"Parent Material Adverse Effect" means` at 385,847. Each appears exactly
-once — the document's 77 other mentions of the phrase are uses, not
-definitions — so the pin `['8.12']` is complete, not merely non-empty.
+definition sites: `"Company Material Adverse Effect" means` at byte 367,819
+and `"Parent Material Adverse Effect" means` at byte 387,682. Each appears
+exactly once, and of the document's 77 mentions of the phrase, 75 are uses —
+so the pin `['8.12']` is complete, not merely non-empty.
+
+*(Corrected. Both offsets were first recorded as 366,186 and 385,847, which
+were UTF-16 character indices labelled as bytes — off by 1,642 and 1,843
+because the filing's curly quotes are multi-byte — in a paragraph that claimed
+immunity to exactly that confusion. The verdict never depended on them: the
+test used `Buffer.indexOf` throughout. It now asserts the numbers too.)*
 
 Pinned mechanically by `tests/canonical-v2-mae-definition-pin-review.test.js`,
 which re-derives the canonical text and re-locates both definitions rather
@@ -583,12 +589,16 @@ policy.
 The writer's check now builds the same powerset instead of hand-listing one
 optional key.
 
-**Second layer, also closed.** The writer asks the *repository* to resolve
-source references. Correct for a database-backed repository; wrong for an
-import, because the repository has not seen this run yet — that is what
-importing means. The bridge now decorates the repository with a resolver
-backed by the run's own `admitted_source_contexts`, which are the authority
-for that run and the ones the validator just checked.
+**Second layer, also closed — but SUPERSEDED three paragraphs down, so do not
+implement from this one.** The writer asks the *repository* to resolve source
+references. Correct for a database-backed repository; wrong for an import,
+because the repository has not seen this run yet — that is what importing
+means. The bridge decorates the repository with its own resolver.
+
+The first version of that resolver returned the run's own
+`admitted_source_contexts`. **That was wrong** and is not what ships: the
+writer does not accept a finished context, it rebuilds one from four
+primitives and compares. See the third layer below.
 
 **Third layer, CLOSED 2026-08-07 in `0993715`, and two further defects found
 in the closing.** The write half is done: `modiv-antitrust-20260807-replay`
@@ -711,11 +721,107 @@ are the record of what was actually run.
   2026-08-05 run it replays, because the runner now follows citations by
   default and would otherwise issue calls that were never recorded. Its
   `run-manifest.json` records `follow_citations: false`. A rung-1 comparison
-  against a citation-following run is therefore not like-for-like.
+  against a citation-following run is therefore not like-for-like — and the
+  direction matters: the strongest committed termination-fee output (the
+  citation-following run, 9 resolved) is **not** the baseline entry, so a
+  count gate for this family is anchored low. It is permissive, not strict.
+  Do not read a rung-1 pass for TERMINATION_FEE as evidence of parity.
 
 So rungs 1 through 4 have an importable baseline to compare against, which
 they did not have this morning — with those four caveats attached to it rather
 than lost.
+
+### The ten zeros, triaged
+
+**Ten of the 25 importable runs publish zero claims.** Fifteen produce data.
+That is the number the ladder is actually built on, and "a family returning
+zero can be correct" is true of some of these and not of others. Triaged
+2026-08-07 by reading the resolver's own decline codes and, where the codes
+were not decisive, the document.
+
+| Family | Open-world | Decline codes | Verdict |
+|---|---|---|---|
+| `APPRAISAL_DISSENTERS_RIGHTS` | 0 | — | **Correct zero, proven** |
+| `GUARANTY_FINANCING_PARTY` | 0 | — | **Correct zero**, the standing example |
+| `KEY_DEFINED_TERMS` | 15 | `DEFINITION_ENVELOPE` ×15 | **Pin defect, fixed** |
+| `REPRESENTATIONS` | 28 | `..._NOT_EXACT` ×10, `..._NOT_GOVERNED` ×9, prose ×9 | Vocabulary gap |
+| `GENERAL_COVENANTS` | 12 | `GENERAL_COVENANT_CODE_UNCORROBORATED` ×11 | Vocabulary gap |
+| `TAX_MATTERS` | 11 | `TAX_ASSERTION_OPEN_WORLD` ×7, `TAX_TREATMENT_KIND_UNCORROBORATED` ×3 | Mixed |
+| `DIVIDENDS` | 3 | family-specific surface codes | Mixed |
+| `EMPLOYEE_MATTERS` | 3 | `WARN_OR_CBA` ×2, `RETIREMENT_401K` ×1 | Mixed |
+| `FINANCING_COVENANTS` | 2 | `LENDER_ARRANGEMENT` ×2 | Mixed |
+| `SPECIFIC_PERFORMANCE_REMEDIES` | 0 | — | **Unexplained** |
+
+**`APPRAISAL_DISSENTERS_RIGHTS` is a correct zero and now provably so.**
+Section 2.6 reads, in full: *"No dissenters' or appraisal rights shall be
+available with respect to the Mergers."* One sentence, 119 bytes. Extracting
+anything would be inventing it. Pinned by
+`tests/canonical-v2-mae-definition-pin-review.test.js`.
+
+**`KEY_DEFINED_TERMS` was aimed at the wrong section, and that is why it found
+nothing.** The harvested pin was `["8.5"]`. Section 8.5 is *"Interpretation;
+Certain Definitions"* — 3,391 bytes of construction conventions. Section 8.12
+is *"Definitions"*, 54,682 bytes, the actual defined terms. So the run
+correctly proposed fifteen construction rules — `"include"`, `"hereof"`,
+`"extent"`, `"dollars"`, `"or"`, `"shall"`, `"days"`, `"from"`,
+`"to and until"`, `"through"` and five others — every one of which fell out as
+an ungoverned `DEFINITION_ENVELOPE`.
+
+The stage-1 generator proposed `["8.5","8.12"]` and was right; the harvest from
+a previous sweep was wrong. **Pin corrected**; 8.5 kept because the baseline
+run used it. It has not been re-run: there are no recorded responses for 8.12
+under this family, so the corrected pin needs a live call before it produces
+anything. The zero is explained, not yet fixed.
+
+This one matters beyond itself. A mis-aimed pin and a broken resolver produce
+**the same observable** — a family that finds nothing — and the ladder's gate
+compares counts, so it cannot tell them apart. Every zero needs a reason
+recorded beside it, which is what this table is.
+
+**`SPECIFIC_PERFORMANCE_REMEDIES` was unexplained. It is now a located defect,
+and it is the most product-affecting thing found today.**
+
+The model answered correctly. Its recorded response for 8.8 carries a
+well-formed `remedy_assertions` array with an `assertion_kind:
+SPECIFIC_PERFORMANCE` and the full verbatim grant. The run recorded
+`proposal_count: 0` and `evidence_residual_count: 1`. **The adapter discarded
+it**, as `SPECIFIC_PERFORMANCE_OPERATIVE_PREMISE_UNVERIFIED`.
+
+The cause is two predicates in `native-producer/anthropic-provider.js` that
+test the same legal premise at two different strictnesses and disagree:
+
+- `sourceHasSpecificPerformanceOperativePremise` (1182-1186) is **tolerant**:
+  `harm|damage`, `money|monetary`, and up to 180 characters between "damages"
+  and "not be an adequate remedy". It matches Modiv.
+- `isIncompleteSpecificPerformanceGrant` (1193-1194) is **literal**: it
+  demands the contiguous strings `irreparable harm would occur` **and**
+  `money damages would not be an adequate remedy`.
+
+Modiv §8.8 says: *"irreparable harm, **for which monetary damages (even if
+available) would not be an adequate remedy**, would occur"*. The premise is
+plainly there. It fails the literal test twice over — an intervening clause
+splits "irreparable harm ... would occur", and the drafter wrote "monetary"
+where the regex demands "money".
+
+So the strict predicate is not testing whether the quote carries the premise.
+It is testing whether the quote is drafted in one particular house style, and
+it silently discards any deal that is not. Every agreement in the corpus using
+"monetary damages" — which is at least as common as "money damages" — loses
+its specific-performance grant, and the loss shows up as a family that found
+nothing.
+
+**Not changed here, deliberately.** It alters what the pipeline extracts from
+every deal, which is rubric semantics; `OPERATING-RULES.md` puts that with
+Ben. The fix is small and the shape is obvious — make the quote predicate as
+tolerant as the source predicate directly above it, which is presumably what
+was intended, since the two exist to check the same thing. Flagged for
+decision, with the evidence, rather than applied overnight.
+
+**The vocabulary gaps are not mine to close.** `REPRESENTATIONS` and
+`GENERAL_COVENANTS` fail on corroboration tables in
+`native-producer/candidate-resolution.js` being narrower than what the
+producers legitimately emit. Widening them is a **material taxonomy change**,
+which `OPERATING-RULES.md` reserves to Ben. Diagnosed here, not changed.
 
 **RESOLVED 2026-08-07 in `636dd11`, and not the way this step first proposed.**
 Rekeying the identity onto `source_map_digest` was rejected on blast radius:
@@ -832,13 +938,21 @@ in, and the reader reassembles the wrapper rather than converting anything.
 
 Proven, not assumed: `tests/canonical-v2-run-projects-to-product-cards.test.js`
 projects every importable run through both termination projections, and
-`modiv-termination-fee-20260807-replay` yields ten real cards. That seam had
+`modiv-termination-fee-20260807-replay` yields ten cards.
+
+**Ten, decomposed, because the bare number flatters it.** Four are governed
+cards from resolved claims; two are conditional-fee cards seeded from
+`resolution.conditional_termination_fee_values`; four are open-world
+*evidence* cards, which render as "Deferred Evidence" rather than as extracted
+provisions. So the seam carries all three kinds of output, which is the useful
+finding — but "ten product cards" would read as ten extracted provisions, and
+it is four. That seam had
 never been exercised — the one family serving V2 builds its cards from a
 hand-encoded packet, so the runner's output and the projection's input had
 never met.
 
 **2. `document_hash` is the deal key, not `deal_key`.** `deal_key` is
-per-(deal, family): the 21 committed Modiv runs carry 21 distinct ones
+per-(deal, family): the 24 committed Modiv runs carry 24 distinct ones
 (`deal:modiv-termination-fee:...`, `deal:modiv-antitrust-regulatory:...`)
 over a single `document_hash` (`659bcfaa…729968`). Nothing in the schema says
 so; it was derived from the evidence. **Code that groups by `deal_key` will
@@ -856,8 +970,9 @@ or `rls-lockdown-2026-07.sql`. The only granted access is `EXECUTE` on
 `canonical_v2_write` and two candidate-input functions. No view, RPC or
 function joins claims to provisions to excerpts: grep every
 `FROM canonical_v2_staging.{excerpts,claim_revisions,provision_instances,provision_components}`
-and the only hits are idempotency-digest checks inside `canonical_v2_write`
-itself (8200-8318).
+and the only hits are idempotency and persisted-reference checks inside
+`canonical_v2_write` itself (e.g. 3235, 3514, 3791, 4161), which never return
+rows to a caller.
 
 So the read half is not "add a query". It needs either a new
 `SECURITY DEFINER` function or explicit grants plus RLS policies — **a

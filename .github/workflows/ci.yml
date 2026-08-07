@@ -48,6 +48,19 @@ jobs:
         run: node scripts/lint/closing-condition-scope.js
       - name: Invariant 4 — forbidden-patterns
         run: bash scripts/lint/forbidden-patterns.sh
+      - name: Baseline manifest is current
+        # Re-derives what every committed extraction run WOULD publish if
+        # imported, and diffs it against evidence/canonical-v2/baseline-
+        # manifest.json. Catches the failure no other gate can see: a change
+        # to the runner, resolver, validators, writer or bridge that silently
+        # drops rows. An import that publishes less still reports success, so
+        # only a recorded yardstick notices.
+        #
+        # Roughly two minutes. It sits in this job rather than in npm test
+        # because it is the same kind of check as the invariants around it --
+        # and because a gate that only OPERATING-RULES enforces is a gate that
+        # gets skipped.
+        run: npm run gate:baseline
       - name: Invariant 5 — market-registry-completeness
         run: node scripts/lint/market-registry-completeness.js
       - name: Invariant 6 — component-reuse

@@ -237,11 +237,14 @@ test('a payload that inflates to something else is refused', () => {
     (error) => error.code === 'PERSISTED_SOURCE_MAP_DIVERGES',
   );
 
+  const notDeflate = Buffer.from('not deflate data at all');
   assert.throws(
     () => adoptPersistedSourceMapPayload({
       conversion: primitives.conversion,
-      payloadBytes: Buffer.from('not deflate data at all'),
-      expectedSha256: null,
+      payloadBytes: notDeflate,
+      // Its own digest, so the check that fails is the inflation, not the
+      // digest -- otherwise this would pass for the wrong reason.
+      expectedSha256: crypto.createHash('sha256').update(notDeflate).digest('hex'),
     }),
     (error) => error.code === 'PERSISTED_SOURCE_MAP_UNREADABLE',
   );
@@ -302,4 +305,42 @@ test('a run naming a payload that is gone is refused, not quietly rebuilt', () =
     (error) => error.code === 'PERSISTED_SOURCE_MAP_NOT_FOUND',
   );
   fs.rmSync(scratch, { recursive: true, force: true });
+});
+
+test('a payload with no recorded digest is refused, not adopted on inflation alone', () => {
+  // Inflation equality is not identity. zlib stops at the end of a deflate
+  // stream and ignores trailing bytes, so a payload can carry arbitrary extra
+  // data and still inflate to exactly the right map. The recorded digest is
+  // what pins it, so a missing digest must refuse rather than fall through.
+  const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
+  const payload = Buffer.from(primitives.conversion.source_map_payload_base64, 'base64');
+  assert.throws(
+    () => adoptPersistedSourceMapPayload({
+      conversion: primitives.conversion,
+      payloadBytes: payload,
+      expectedSha256: null,
+    }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_UNVERIFIABLE',
+  );
+});
+
+test('trailing bytes after the deflate stream do not slip through', () => {
+  // The concrete version of the above: zlib inflates this to the correct map
+  // and reports no error. Only the digest check catches it.
+  const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
+  const payload = Buffer.from(primitives.conversion.source_map_payload_base64, 'base64');
+  const withGarbage = Buffer.concat([payload, Buffer.from('smuggled', 'utf8')]);
+
+  // First: prove the premise, so this test fails loudly if zlib ever changes.
+  const inflated = zlib.inflateRawSync(withGarbage, { maxOutputLength: 1 << 30 });
+  assert.equal(inflated.length, primitives.conversion.source_map_uncompressed_byte_length);
+
+  assert.throws(
+    () => adoptPersistedSourceMapPayload({
+      conversion: primitives.conversion,
+      payloadBytes: withGarbage,
+      expectedSha256: primitives.conversion.source_map_compressed_sha256,
+    }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_DIGEST_MISMATCH',
+  );
 });

@@ -919,9 +919,9 @@ change-specific and must not be skipped because the general runbook passed.
 
 `gate:baseline` re-derives what every committed run WOULD publish if imported
 and diffs it against `evidence/canonical-v2/baseline-manifest.json`, naming the
-run that moved. It takes about two minutes, which is why it is a named gate
-rather than part of `npm test` — a two-minute check nobody runs is worth less
-than a two-minute check with a name. Regenerate with
+run that moved. It takes about two minutes, so it is a named gate rather than
+part of `npm test` — but it runs in CI beside the invariants, because a gate
+enforced only by this document is a gate that gets skipped. Regenerate with
 `npm run generate:baseline` and commit the diff, but read it first: a count
 that fell is the finding, not the noise.
 
