@@ -1848,11 +1848,42 @@ claims. Whichever it is, **the reader must report the discrepancy** — a count
 of claims in scope versus claims returned — because a reader that silently
 returns a subset is worse than one that fails.
 
-**Proves it is done.** Writing those same two runs and reading back either
-returns all 19 claims, or throws naming the unreachable ones, or returns 9
-**with an explicit, tested count of what it did not return**. Silence is not
-one of the options. Plus a test that fails if the orphan guard becomes
-unreachable again.
+**ANSWERED 2026-08-07: it is a READER defect, established from the code and
+the composed write-sets rather than inferred from the counts.**
+
+`validate-write-set.js:1467` builds the set of things a claim's
+`subject_occurrence_id` may legitimately name, and it is **five kinds**, not
+one: provisions, **components**, definitions, condition groups and
+relationship occurrences. A claim whose subject resolves to none of them is
+refused as `SEMANTIC_REFERENCE_UNRESOLVED` and never publishes. So a published
+claim always has a resolvable subject — just not necessarily a *provision*.
+
+Measured on the two composed write-sets:
+
+| Run | provisions | claims | subject is a provision | subject is a component |
+|---|---|---|---|---|
+| `modiv-capitalisation` | 1 | 9 | **9** | 0 |
+| `modiv-interim-operating` | 9 | 10 | 0 | **10** |
+
+**Nothing is orphaned. Every claim's subject resolves.** Capitalisation's nine
+claims all hang off its single provision, which is why the reader found them.
+Interim-operating's ten hang off **provision components**, and the reader's
+query (`local-staging-deal-reader.js:171`) joins only against
+`provision_instances`, so it silently returned none of them.
+
+**The writer is correct and the validator is correct.** The reader models a
+claim's subject as always being a provision, and the contract says otherwise.
+
+**Change.** Resolve claim subjects against every occurrence kind the validator
+admits, not just provisions — at minimum provisions and components, since both
+occur in real committed runs today. Then make the orphan guard reachable: it
+can only fire if the query stops pre-filtering to the ids it is checking
+against.
+
+**Proves it is done.** Writing those same two runs and reading back returns
+**all 19 claims**, not 9. Plus a test that fails if the orphan guard becomes
+unreachable again, and a reported count of claims in scope versus returned, so
+a future gap is visible rather than silent.
 
 ## Step 2B2. Build the hosted read surface Fable ruled
 
