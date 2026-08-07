@@ -1239,6 +1239,58 @@ unknowns at once.
   with concurrency rather than by asking for less. An API transport would not
   generate faster.
 
+  **Ruling 2, token cost, same day. There is no lever here, and the money is
+  not real.**
+
+  **The dollar figure is notional.** `childEnv()` in the runner deletes
+  `ANTHROPIC_API_KEY` — "force subscription auth, not metered billing",
+  `canonical-v2-live-extraction-run.mjs:856`, verified. The CLI's self-reported
+  $25.81 across all 69 committed calls **was never invoiced.** The real
+  currencies are wall clock and subscription quota headroom, and every saving
+  below is denominated in those.
+
+  **What a call actually carries**, from a byte-exact prompt reconstruction
+  whose digest matches the committed `prompt_digest` — the real prompt, not an
+  estimate. The extraction prompt is **~6,000 tokens**: binding instructions,
+  family instructions, controlled vocabulary, response shape, section text.
+  The `claude` CLI wrapper around it is **~42,700 tokens**. So the packaging is
+  **85 to 90% of all input tokens**.
+
+  **The prompts are not bloated and not uniform**, which retires an objection
+  raised against ruling 1. Family preambles vary tenfold, 310 to 4,811 tokens,
+  so the regression had real variance — and ANTITRUST, with one of the leanest
+  preambles, produced the corpus's second-largest thinking volume. There are no
+  worked examples, no cross-family taxonomy dump, no prior-call context.
+
+  **A controlled experiment settled it rather than more correlation.** Three
+  live calls, the same byte-verified section prompt, varying only the wrapper:
+  full CLI in the repo, empty working directory, and a stripped system prompt.
+  **Output tokens within 2% and duration within 2% across all three.** Quotes
+  byte-verified in every arm. **Context volume does not drive thinking.**
+
+  **Nor does narrowing the ask help.** NO_SHOP used every assertion kind it was
+  offered — all eight arrays populated, 61 assertions, nothing sent was wasted.
+  CAPITALISATION is the reverse and kills the hypothesis anyway: a large
+  preamble, few kinds, 16 assertions, and 58,867 output tokens that went into
+  share-count arithmetic rather than into kinds that never matched. What you
+  *ask* changes thinking; how many bytes you *send* does not.
+
+  **So the only cuttable thing is the CLI wrapper, and it is worth nothing
+  here**: 85 to 90% of input tokens, **$0 in real money and 0 minutes**, since
+  these runs bill to subscription and the input side is not the latency. Its
+  only value is quota headroom, if that ever binds. Two CLI flags would get
+  most of it. Before ever shipping that, ten same-prompt live pairs across
+  families, compared at the adapter level.
+
+  **The extraction prompt itself: cut nothing.** At 1,500 to 9,000 tokens it is
+  already near the minimum that states the ask and the guardrails — the
+  evidence rule, the never-assert-a-negative rule, and each family's known
+  failure modes. Trimming those trades precisely what this product refuses to
+  trade.
+
+  Experiment cost: 3 live calls, ~8.5 minutes, under Ben's standing
+  authorisation. Nothing in the repository was modified.
+
   **A correction to this programme's own record, made in the same breath.** The
   "18.3 minutes, 14 calls" figure circulated during this investigation as
   belonging to `CAPITALISATION`. It does not. That run is
