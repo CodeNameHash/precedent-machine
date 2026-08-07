@@ -1800,6 +1800,60 @@ control accepted; extra-key, missing-key and wrong-enum rows all refused with
 the shape; a duplicate id refused separately. All three digest guards updated
 and the governed extract regenerated.
 
+## Step 2B3. The reader loses claims silently, and its orphan guard cannot fire
+
+**Found 2026-08-07 by writing two families durably and reading them back.**
+This is the failure Step 2B's own acceptance criteria were written to prevent,
+arriving in the one shape those criteria did not cover.
+
+**Measured, on a live container.** Two Modiv runs written durably and
+committed: `modiv-capitalisation` (9 claims, 1 provision) and
+`modiv-interim-operating` (10 claims, 9 provisions). The database then holds
+**19 claim revisions**. `readDealFromLocalCanonicalV2Staging` returns
+**9**. It does not throw, warn, or report a count. **Ten claims are in the
+database and invisible to the reader.**
+
+    claims matching a provision        9
+    claims with no matching provision  10
+    claims with a null subject id      0
+
+**Why the guard does not catch it.** `local-staging-deal-reader.js:179` has an
+`ORPHAN_CLAIM_REVISION` check that throws when a claim names a
+`subject_occurrence_id` with no matching provision. It is correct and it is
+unreachable: the query at line 171 selects
+`WHERE canonical_payload->>'subject_occurrence_id' = ANY($1)` over the
+provision ids, so **a claim with no matching provision is never fetched, and
+the guard never sees it.** The rows that would trigger it are filtered out
+before it runs.
+
+**This is the seventh guard found today that cannot fire**, and the most
+consequential, because the others failed loudly once wired while this one
+degrades quietly: the reader reports success and returns a subset.
+`expectNonEmpty` does not help — it catches a read of *zero* rows, not a
+*partial* read, and a partial read is what a real deal will produce.
+
+**What is not yet established, and must be before fixing.** Whether the ten
+claims *should* be reachable. Claims and provisions here share **no
+`closure_id` at all** (19 distinct closures on claims, 10 on provisions, zero
+overlap), so `subject_occurrence_id` is the only link, and it is not clear the
+data model intends every claim to have a governing provision row in the same
+deal scope. **Do not "fix" the query until that is answered**, because the
+alternative reading — that these claims are correctly unreachable and the
+writer should not have persisted them — points at the writer, not the reader.
+
+**Change.** Establish which of the two it is, from the write-set and the
+schema rather than by inference. Then either make the reader fetch by a scope
+that lets the orphan guard actually fire, or fix what writes unreachable
+claims. Whichever it is, **the reader must report the discrepancy** — a count
+of claims in scope versus claims returned — because a reader that silently
+returns a subset is worse than one that fails.
+
+**Proves it is done.** Writing those same two runs and reading back either
+returns all 19 claims, or throws naming the unreachable ones, or returns 9
+**with an explicit, tested count of what it did not return**. Silence is not
+one of the options. Plus a test that fails if the orphan guard becomes
+unreachable again.
+
 ## Step 2B2. Build the hosted read surface Fable ruled
 
 **Ruled 2026-08-07 by Fable under Ben's delegation.** Full reasoning in
