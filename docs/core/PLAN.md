@@ -1774,6 +1774,40 @@ the existing ordering test, in which Parent OpCo still resolves buyer-side,
 still passes. Both are needed: the second is what stops the fix creating the
 worse bug.
 
+**DONE 2026-08-07, and the second half of that proof did not exist.** The
+"existing ordering test" this step relies on was never written. Before this
+step, **no test file in the repository referenced `resolvePartyCapacity` at
+all** — checked with `git grep -ln resolvePartyCapacity <commit> -- tests/`,
+which returns nothing. The Parent OpCo ordering trap was recorded in commit
+`34059a2f`'s message and in this step's prose, and pinned by nothing. Anything
+could have reordered `PARTY_CAPACITY_LEXICON` at any point and silently
+attributed the buyer's representations to the target, and no gate would have
+noticed.
+
+It exists now (`tests/canonical-v2-party-capacity-lexicon.test.js`), along
+with the merger-sub trap, which is deliberately left unfixed and now pinned as
+a known-wrong-in-principle behaviour rather than an unrecorded one.
+
+**This is the third instance today of the same failure**, after the lexical
+disagreement condition that had never run and the SQL writer that had never
+been executed: **a protection everyone believed in, that had never actually
+been exercised.** Here the belief was load-bearing enough to be written into a
+step's acceptance criteria.
+
+**What the fix does.** `resolvePartyCapacity` segments a multi-party string on
+its own conjunctions and returns `JOINT_MULTI_PARTY_CAPACITY` when the
+segments span more than one *side* of the deal, rather than taking the first
+match. Keying on side rather than on capacity is load-bearing: a
+capacity-keyed version wrongly flagged the financing-covenant obligor "Each of
+Parent and Merger Sub" as joint, since those are two capacities on one side.
+
+`resolveParty`'s return shape is unchanged, and that was found by running the
+tests rather than by inspection: an earlier version attached `joint_capacities`
+onto the minted party object and broke `source-structure.js`'s `assertParty`,
+which requires exactly `{role, value, capacity}`, the moment a real joint
+candidate reached `mintProvision`. Joint members are recoverable through the
+exported `resolveJointPartyCapacities(party.value)`.
+
 ## Step 3G. Four located resolver defects, each with a line number
 
 **What it is.** An "open-world candidate" is a fact the model found and the

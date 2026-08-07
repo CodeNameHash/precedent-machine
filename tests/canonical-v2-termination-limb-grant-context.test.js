@@ -150,7 +150,13 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   const resolution = runReplay(runReceipt, manifest);
 
   assert.equal(resolution.resolution_receipt.counts.compiled_candidates, 29);
-  assert.equal(resolution.resolved.length, 8, 'resolved rises from the committed 1 to 8 -- measured by replay, not asserted');
+  // 8 at the time this fix landed (fix 2, party-scope corroboration only).
+  // Step 3A (docs/core/PLAN.md; tests/canonical-v2-termination-trigger-kind-
+  // vocabulary.test.js) separately widened
+  // TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE and took the same replay to
+  // 12 -- this assertion tracks that later count since it replays the
+  // CURRENT resolver, not resolver-as-of-fix-2.
+  assert.equal(resolution.resolved.length, 12, 'resolved rises from the committed 1 to 8 by this fix, then to 12 by Step 3A -- measured by replay, not asserted');
   assert.ok(
     resolution.review_queue.every((item) => !item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE')),
     'no candidate anywhere in the review queue may still carry this reason after the fix',
@@ -190,24 +196,39 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   assert.deepEqual(parentBreach[0].party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'Parent', capacity: 'BUYER' });
 
   const adverseRecChange = bySourceCitation.get('7.1(d)(ii)');
-  assert.ok(adverseRecChange && adverseRecChange.length >= 1, 'the Adverse Recommendation Change ground under (d)(ii) resolves (its RECOMMENDATION_CHANGE siblings under the same limb still queue TRIGGER_KIND_UNCORROBORATED for an unrelated, pre-existing reason -- see the design note)');
-  assert.equal(adverseRecChange[0].party.capacity, 'BUYER');
+  // Pre-Step-3A this held only the Adverse Recommendation Change ground; its
+  // three RECOMMENDATION_CHANGE/NO_SOLICITATION_BREACH siblings under the
+  // same (d)(ii) limb queued TRIGGER_KIND_UNCORROBORATED for an unrelated
+  // vocabulary gap (see the design note). Step 3A widened that table
+  // (tests/canonical-v2-termination-trigger-kind-vocabulary.test.js), so all
+  // four now resolve under this same limb and party.
+  assert.equal(adverseRecChange && adverseRecChange.length, 4, 'all four (d)(ii) grounds resolve post-Step-3A');
+  for (const entry of adverseRecChange) {
+    assert.equal(entry.party.capacity, 'BUYER');
+  }
 
   const superiorProposal = bySourceCitation.get('7.1(c)(i)');
   assert.ok(superiorProposal && superiorProposal.length === 1, 'the pre-existing TERMINATING_PARTY_REF_UNCORROBORATED candidate also now resolves');
   assert.deepEqual(superiorProposal[0].party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'the Company', capacity: 'TARGET' });
 });
 
-test('REPLAY: the remaining 6 (b)/(c)/(d) candidates queue for reasons entirely unrelated to the terminating party (TRIGGER_KIND_UNCORROBORATED, SPELLED_DIGIT_MISMATCH), never for the party gate this fix touches', () => {
+test('REPLAY: the remaining candidates among (b)/(c)/(d) queue for reasons entirely unrelated to the terminating party (TRIGGER_KIND_UNCORROBORATED), never for the party gate this fix touches', () => {
   const runReceipt = loadJson('run-receipt.json');
   const manifest = loadJson('run-manifest.json');
   const resolution = runReplay(runReceipt, manifest);
   const stillQueued = resolution.review_queue.filter((item) => item.reasons.length > 0
     && ['7.1(b)(iii)', '7.1(c)(iii)', '7.1(d)(ii)', '7.1(d)(iii)'].includes(item.source_citation));
-  assert.ok(stillQueued.length >= 5);
+  // Pre-Step-3A this was >=5 (a vocabulary gap in
+  // TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE queued 6 real grounds).
+  // Step 3A (tests/canonical-v2-termination-trigger-kind-vocabulary.test.js)
+  // closed that gap for four of them; only the two candidates whose
+  // trigger_kind is `null` from the model itself -- not vocabulary, and
+  // deliberately not forced -- remain: 7.1(c)(iii) and 7.1(d)(iii).
+  assert.equal(stillQueued.length, 2);
+  assert.deepEqual(stillQueued.map((item) => item.source_citation).sort(), ['7.1(c)(iii)', '7.1(d)(iii)']);
   for (const item of stillQueued) {
     assert.ok(!item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE') && !item.reasons.includes('TERMINATING_PARTY_REF_UNCORROBORATED'));
-    assert.ok(item.reasons.every((reason) => reason === 'TRIGGER_KIND_UNCORROBORATED' || reason === 'SPELLED_DIGIT_MISMATCH'), JSON.stringify(item.reasons));
+    assert.deepEqual(item.reasons, ['TRIGGER_KIND_UNCORROBORATED']);
   }
 });
 
