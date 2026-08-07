@@ -1566,6 +1566,76 @@ wrong before.
 
 ## Step 3A. Widen the termination trigger-kind vocabulary for the four phrasings that miss
 
+**DONE 2026-08-07 — resolved 8 to 12, the step's exact target — BUT IT
+INTRODUCED A WRONG-ANSWER PATH, AND STEP 3A1 MUST CLOSE IT BEFORE THIS
+REACHES `main`.**
+
+The four widenings work and the four newly resolved grounds carry legally
+correct trigger kinds, verified quote by quote by adversarial review against
+the receipt's own `raw_value`s. The two candidates with a `null` trigger kind
+from the model still queue and were not forced.
+
+**The defect.** `NO_SOLICITATION_BREACH` gained `enters? into an Alternative
+Acquisition Agreement`. `enters?` also matches "enter", so the pattern cannot
+distinguish Parent's no-shop-breach ground from **the Company's own
+fiduciary-out**, which is the adjacent ground in every Article VII and the one
+a model most plausibly confuses it with. Confirmed by direct probe:
+
+    terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH',
+      'the Company may terminate this Agreement in order to enter into an
+       Alternative Acquisition Agreement with respect to a Superior Proposal')
+    → true
+
+A mislabel that used to queue for review now **resolves** as
+`TERMR-NOSOL-BREACH` with party TARGET. That is a wrong legal answer that
+reads as correct, which `OPERATING-RULES.md` names as the worst failure class
+in this product — and it drags fee analytics with it, because which side
+breached determines who pays.
+
+**Modiv is safe only by drafting luck**: its 7.1(c)(i) says "enters into, a
+definitive agreement", not the defined term. The past-tense fee-tail form
+("shall have entered into") does not match. So no committed evidence exposes
+this, which is exactly why the counts could not surface it.
+
+**Secondary, lower grade.** `Company Recommendation` corroborates a
+*reaffirmation* of the recommendation, which is the opposite of a
+recommendation change: probe-confirmed `true` on "the Company Board shall have
+publicly reaffirmed the Company Recommendation". This weakness existed in the
+old `Company Board Recommendation` literal; the widening enlarges it rather
+than creating it.
+
+**Why the hostile tests missed both.** All eight are *quote-fixed,
+kind-varied* against quotes whose vocabulary is disjoint across kinds, so they
+pass by construction. The discriminating direction is **kind-fixed,
+quote-varied**: assert that `NO_SOLICITATION_BREACH` does *not* corroborate a
+fiduciary-out quote. No committed test exercises that direction, and it fails
+today. This is the general lesson, not a one-off: **a hostile test that varies
+the label rather than the text tests the wrong axis.**
+
+## Step 3A1. Close the fiduciary-out false positive Step 3A opened
+
+**What it is.** Tighten the `NO_SOLICITATION_BREACH` alternative so it cannot
+fire on a Company fiduciary-out, and add the missing hostile direction.
+
+**Change.** `TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE`,
+`lib/canonical-v2/native-producer/candidate-resolution.js`. Options, in
+preference order: exclude quotes carrying "Superior Proposal"; or anchor on
+the no-shop ground's own "other than an Acceptable Confidentiality Agreement"
+parenthetical; or require the breach framing explicitly. Do not simply revert
+the widening — it resolved a real Modiv ground, verified correct.
+
+**Proves it is done.** `terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH',
+<fiduciary-out quote>)` is `false`, with the quote taken from real filed text;
+the replay still resolves 12, not 11, so the legitimate ground is unaffected;
+and a **kind-fixed, quote-varied** hostile test exists for each widened
+pattern, including the reaffirmation case against `RECOMMENDATION_CHANGE`.
+
+**Also fix, found by the same review.** The Step 3A note hands 7.1(c)(ii)'s
+`CURE_PERIOD` candidate to Step 3B. That is wrong: it queues
+`TRIGGER_KIND_UNCORROBORATED` because its quote "...of such breach or failure"
+matches no BREACH pattern, and `SPELLED_NUMBER_VALUES` cannot clear a
+trigger-kind gate. A number-parsing step will never unblock it.
+
 **What it is.** When the resolver decides which event triggers a termination
 right, it checks the model's answer against a table of phrases. Four real Modiv
 phrasings match nothing in the table, so six legitimate termination grounds
@@ -1807,6 +1877,70 @@ onto the minted party object and broke `source-structure.js`'s `assertParty`,
 which requires exactly `{role, value, capacity}`, the moment a real joint
 candidate reached `mintProvision`. Joint members are recoverable through the
 exported `resolveJointPartyCapacities(party.value)`.
+
+**Two conditions from adversarial review, both open. See Step 3F1.**
+
+## Step 3F1. Stop the joint-capacity fix manufacturing phantom joints, and give the marker a downstream contract
+
+**Found by adversarial review of Step 3F, 2026-08-07. Latent, not live —
+which is the only reason this is a step rather than an emergency.**
+
+**Defect 1: a purely buyer-side group reads as joint.** Per-segment scanning
+sends "Company Merger Sub" through the `\bcompany\b` pattern to TARGET, so a
+single-side list acquires a phantom sell-side and the side count exceeds one.
+Probe-confirmed:
+
+    'Parent and Company Merger Sub'                               -> JOINT [BUYER, TARGET]
+    'Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub' -> JOINT [BUYER, TARGET, BUYER_AFFILIATE]
+
+The second is **Modiv's real buyer group, verbatim** — it appears in the
+7.1(c)(ii) and (c)(iii) quotes. No such string is a party *field* in any
+committed run today, so nothing is wrong on screen; every committed receipt
+was scanned to confirm that.
+
+**This is trap 2 escaping its quarantine.** Step 3F records the merger-sub
+trap as "wrong in principle, not currently reached by any single-party
+candidate", and that was true. Step 3F then built a path that reaches it on
+**every multi-party string**, and neither its note nor its tests examine a
+single-side list containing a target-named merger sub. The quarantine was
+written for the old world and silently stopped describing the new one.
+
+**Change.** Order the per-segment scan so the merger-sub pattern is tested
+before `\bcompany\b`, or record the false-joint as known-wrong with a test
+pinning it, as trap 2 itself now is. Do not reorder `PARTY_CAPACITY_LEXICON`
+globally — that is trap 1, and it silently attributes the buyer's
+representations to the target.
+
+**Defect 2: `JOINT_MULTI_PARTY_CAPACITY` has no downstream contract.**
+`supabase/canonical-v2-serving.sql` stores `party_capacity text NOT NULL` with
+no enum, so it imports silently, and the projections disagree about it:
+`termination-product-projection.js:90` maps `EITHER_PRINCIPAL_PARTY` to
+`PARTY_MUTUAL` but sends JOINT to `null`, silently dropping
+`partyWhoCanTerminate`; `proxy-meeting-product-projection.js:61` passes the
+raw string into a COMPANY/PARENT-shaped field, so a user would see
+"JOINT_MULTI_PARTY_CAPACITY" on the page; and
+`ioc-wave-a-product-projection.js:47` **hard-fails** `INVALID_INHERITED_PARTY`
+on any capacity outside TARGET/BUYER.
+
+Only the two COV-PUBLICITY rows mint JOINT today and the general-covenants
+projection ignores capacity, so nothing breaks yet. **The first joint value to
+reach IOC throws, and the first to reach proxy-meeting renders raw.**
+
+**Change.** Define the mapping, as the analogue of `EITHER_PRINCIPAL_PARTY ->
+PARTY_MUTUAL` already established, or put a guard in every projection that
+enumerates capacities. Before any joint-capable family reaches a product
+surface.
+
+**Also pin the behaviour change nobody claimed.** Replaying the committed
+general-covenants evidence, the two section 5.7 COV-PUBLICITY provisions flip
+`TARGET` to `JOINT_MULTI_PARTY_CAPACITY`. That is the fix working — TARGET was
+the wrong answer this step exists to kill — but no test pins it end to end and
+the note never says committed resolved output changed for this family.
+
+**Proves it is done.** The two probe strings above resolve buyer-side, or are
+pinned as known-wrong by a test; every projection that enumerates capacities
+either maps JOINT or refuses it explicitly, proven by a test per projection;
+and the general-covenants replay pins the COV-PUBLICITY capacity end to end.
 
 ## Step 3G. Four located resolver defects, each with a line number
 
