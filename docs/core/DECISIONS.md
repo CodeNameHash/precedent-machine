@@ -900,6 +900,32 @@ resolved but replaced `LEXICAL_DISAGREEMENT_NET_ABSENT` on all 42 claims with
 real outcomes, and gave 25 review-queue items real disagreement excerpts. The
 gate had been green on 42 claims it never examined.
 
+**RULED 2026-08-07: option A. Ben releases `v1v2_comparison` explicitly.**
+
+This is the explicit release the prerequisite required, made as a deliberate
+act on a dated record rather than by omission. Stage 2 proceeds with
+`lexical_disagreement` evaluating and `v1v2_comparison` not evaluated.
+
+**What the release does not mean.** It does not retire the condition, delete
+it, or mark it satisfied. The comparator stays wired and stays strict. The
+moment a V1 snapshot carries real `snapshot_identity_evidence`, it starts
+evaluating with no further decision needed — the release is about proceeding
+without it, not about ceasing to want it.
+
+**What every rung must carry, as the condition of the release.** Each run
+records `m3_auto_pass_conditions` in its `run-manifest.json`, naming each
+condition `EVALUATED` or `NOT_EVALUATED`, and the runner prints the same line
+to stderr. A rung's evidence is not complete without it. This is what makes
+the release visible in the artefacts rather than only in this file, and it is
+the specific protection against a third disappearance.
+
+**What was knowingly given up.** No regression check against the old system
+while the ladder runs. Stage 2 asks whether extraction generalises across
+families and documents; whether the new pipeline agrees with the old one is a
+different question, and no rung depends on it. If a Stage 2 rung produces a
+result that looks wrong in a way v1 comparison would have caught, that is the
+cost of this ruling and it was accepted with the ruling.
+
 **3. `conditional_termination_fee_values` has no table.** Two more of the ten
 cards come from it, including the Modiv headline. It needs a home or an
 explicit omission.

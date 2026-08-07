@@ -412,25 +412,36 @@ extraction is the expensive part, and the other four steps are fast.
 
 ## Prerequisite. Wire Ben's two M3 auto-pass conditions before rung 1
 
-**STATE, 2026-08-07. Both conditions are wired. One of them cannot be
-evaluated on any data this repository holds, and that half needs Ben.**
+**STATE, 2026-08-07. Both conditions are wired, one evaluates, and the other
+was released by Ben explicitly. This prerequisite is DISCHARGED and Stage 2's
+rungs may proceed.**
 
 | Condition | State |
 |---|---|
 | `lexical_disagreement` | **Done and evaluating.** Self-contained, needs no external evidence file |
-| `v1v2_comparison` | **Wired, and blocked on data.** Every committed `V1_PROVISION_SNAPSHOT/V1` fixture lacks `snapshot_identity_evidence`, which `v1v2-comparator.js:557` strictly requires. It reports `NOT_SUPPLIED` everywhere, honestly, rather than passing vacuously |
+| `v1v2_comparison` | **Wired, blocked on data, and RELEASED BY BEN 2026-08-07.** Every committed `V1_PROVISION_SNAPSHOT/V1` fixture lacks `snapshot_identity_evidence`, which `v1v2-comparator.js:557` strictly requires. It reports `NOT_SUPPLIED` everywhere, honestly, rather than passing vacuously. Stage 2 proceeds without it; see `DECISIONS.md` decision 4 |
 
 Checked on all three fixtures (`modiv`, `skechers`, `topbuild`), not inferred:
 each returns `ABSENT`. Supplying it needs a real identity-issuance chain, so
 it is not something to fabricate — the requirement is a deliberate control.
 
-**This is the case the prerequisite's own last paragraph anticipated.** Wiring
-condition 2 was the work; condition 1 is now released-by-circumstance rather
-than done, and that must be an explicit act by Ben rather than something that
-lapses by being forgotten. Recorded as decision 4 in `DECISIONS.md`. Until it
-is ruled, **every rung below states in writing that `v1v2_comparison` was not
-evaluated**, which the runner now records per run in
-`run-manifest.json.m3_auto_pass_conditions`.
+**This is the case the prerequisite's own last paragraph anticipated, and it
+was handled the way that paragraph demanded.** Wiring condition 2 was the
+work. Condition 1 could not be evaluated on any data this repository holds, so
+it was put to Ben as decision 4 rather than allowed to lapse, and **Ben
+released it explicitly on 2026-08-07**.
+
+**The release carries a standing condition, and it is mechanical.** Every rung
+records `m3_auto_pass_conditions` in its `run-manifest.json`, naming each
+condition `EVALUATED` or `NOT_EVALUATED`; the runner prints the same line to
+stderr. **A rung whose evidence lacks that record is incomplete**, regardless
+of what its counts say. That is what keeps this release visible in the
+artefacts rather than only in a decisions file, and it is the protection
+against this condition disappearing a third time.
+
+The release is not a retirement. The comparator stays wired and stays strict:
+the moment a snapshot carries real `snapshot_identity_evidence` it begins
+evaluating, with no further decision needed.
 
 **What wiring condition 2 changed, reported rather than absorbed.** Replaying
 `modiv-no-shop` produced identical routing counts (42 resolved) but different
