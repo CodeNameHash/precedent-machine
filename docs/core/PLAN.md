@@ -145,8 +145,22 @@ added, and `npm run gate:baseline` passes.
 | Importable runs | 25 | **28** |
 | Registered families with an importable run | 25 of 25 | 25 of 25 |
 | **Families whose run publishes claims** | **15 of 25** | **18 of 25** |
-| Claims / provisions / excerpts | 170 / 67 / 159 | **203 / 86 / 181** |
-| Open-world entries | 275 | **244** |
+| Claims / provisions / excerpts | 170 / 67 / 159 | **213 / 86 / 430** |
+| Open-world entries | 275 | **244**, and all 244 now reach an importable run |
+
+**Regenerated again on 2026-08-07, after the day's later fixes, and
+gate-verified.** Claims moved 203 to **213** — the ten `KEY_DEFINED_TERMS`
+claims that had been dying at the write boundary on a stale header. Excerpts
+moved 181 to **430**, because open-world evidence now carries its own
+excerpts into an importable run for the first time: **244 open-world rows
+across 20 runs, up from zero.**
+
+Until that regeneration the 244 rows existed only in memory, proven to the
+write-set validator and never to an importable run — every committed
+`adapter-result.json` predated the emission fix, and the bridge reads that
+file from disk rather than regenerating it. Two independent reviews found
+this from different directions on the same day, which is the argument for
+having both.
 
 The open-world fall is **exactly the 35 Step 3G predicted**, verified against
 the pre-overwrite `resolution.json` for all 25 directories, with four more
