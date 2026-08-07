@@ -44,7 +44,17 @@ function fakeClient(tables) {
       const rows = tables[tableMatch[1]] || [];
       let field;
       let mode;
-      if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/subject_occurrence_id' = ANY/.test(text)) { field = 'subject_occurrence_id'; mode = 'any'; } else if (/candidate_id' = ANY/.test(text)) { field = 'candidate_id'; mode = 'any'; } else if (/open_world_candidate_occurrence_id' = ANY/.test(text)) { field = 'open_world_candidate_occurrence_id'; mode = 'any'; } else if (/source_occurrence_id' = ANY/.test(text)) { field = 'source_occurrence_id'; mode = 'any'; } else {
+      if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/parent_provision_instance_id' = ANY/.test(text)) { field = 'parent_provision_instance_id'; mode = 'any'; } else if (/closure_id = ANY/.test(text)) {
+        // PLAN.md Step 2B3: claims are fetched by closure OR subject so that
+        // an unresolvable subject actually reaches ORPHAN_CLAIM_REVISION.
+        // The old form selected on the very ids it then checked against,
+        // which made that guard structurally unreachable.
+        const closures = values[0] || [];
+        const subjects = values[1] || [];
+        const matched = rows.filter((row) => closures.includes(row.closure_id)
+          || subjects.includes(row.subject_occurrence_id));
+        return { rows: matched.map((row) => ({ canonical_payload: row })) };
+      } else if (/subject_occurrence_id' = ANY/.test(text)) { field = 'subject_occurrence_id'; mode = 'any'; } else if (/candidate_id' = ANY/.test(text)) { field = 'candidate_id'; mode = 'any'; } else if (/open_world_candidate_occurrence_id' = ANY/.test(text)) { field = 'open_world_candidate_occurrence_id'; mode = 'any'; } else if (/source_occurrence_id' = ANY/.test(text)) { field = 'source_occurrence_id'; mode = 'any'; } else {
         throw new Error(`fake client cannot route predicate: ${text}`);
       }
       const matched = mode === 'eq'
