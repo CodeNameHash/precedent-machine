@@ -1183,6 +1183,72 @@ unknowns at once.
 
 # Recently decided
 
+- **Extraction latency is model generation, and is irreducible. Measured
+  2026-08-07 by Fable, at Ben's request.** This is a finding rather than a
+  ruling, recorded here because it governs how the corpus run is scheduled.
+
+  **Where the time goes.** Across all 69 live model calls in committed
+  telemetry, regressing call duration on output tokens gives
+  **duration = 4.3s + 8.23ms per output token, R-squared 0.993** — about 121
+  tokens per second. Prompt size explains almost nothing independently
+  (R-squared 0.385, collinear). Section byte length explains almost nothing
+  (R-squared 0.106): a 54.7KB section produced fewer output tokens than a
+  14.8KB one. Everything outside the model calls — fetch verification,
+  sectioning, parsing, validation, writing receipts — costs **under 0.5
+  seconds per run**. CLI process overhead is ~2.4s per call.
+
+  **About 88% of billed output is invisible thinking.** 959,168 output tokens
+  corpus-wide against roughly 117,000 tokens of visible final JSON. NO_SHOP's
+  single 9.1-minute call: 65,008 output tokens, ~92% reasoning.
+
+  **So per-call cost tracks how densely a provision reasons, not call count,
+  prompt bytes or section length.** That explains the inversion that prompted
+  the question: CONSIDERATION's three calls emit 34k tokens between them,
+  while NO_SHOP's one call emits 65k. Three cheap generations cost less than
+  one enormous one.
+
+  **Two findings that outlive the latency question.**
+
+  **NO_SHOP's 65,008 output tokens exceeded the model's 64,000 ceiling** and
+  required CLI-side continuation. Dense families are brushing a hard limit,
+  and no scheduling change fixes that.
+
+  **Thinking volume is stochastic.** Capitalisation section 3.2 took 525s one
+  day and over 600s the next — same section, same prompt, same model. The
+  observed completed maximum is 542s, so **a 600s cap has no margin over the
+  distribution it is capping.**
+
+  **What is safely reducible, quantified.** Parallelising sections within a
+  family saves **45.8 of 136.6 total call-minutes, 34%** — the section loop at
+  `native-extraction-run.js:635` is sequential and the calls share no state.
+  Parallelising families across the corpus is the lever that matters at 25
+  families times 40 agreements. Eliminating fixed overhead entirely would save
+  5.6%, and is not worth a transport change.
+
+  **What was ruled out, with reasons rather than listed neutrally.** Cutting
+  the thinking budget is the only lever that would make a dense call
+  materially faster, and it is refused: the thinking concentrates on exactly
+  the provisions with the densest legal machinery, and a plausible-but-wrong
+  assertion is worse than none. Trimming requested output changes the product,
+  not the transport. A faster model, same reason. Splitting big sections
+  saves little, since thinking does not scale with input size, and destroys
+  within-section cross-reference context.
+
+  **Consequence for scheduling.** Budget **9 to 11 minutes per dense-section
+  call** as a floor, set per-call timeouts at **1,200s or more**, and buy speed
+  with concurrency rather than by asking for less. An API transport would not
+  generate faster.
+
+  **A correction to this programme's own record, made in the same breath.** The
+  "18.3 minutes, 14 calls" figure circulated during this investigation as
+  belonging to `CAPITALISATION`. It does not. That run is
+  `modiv-termination-fee-citation-following-20260806` — TERMINATION_FEE, where
+  11 of the 14 calls are deliberate citation follow-ups. The manifest carries
+  no family field and the gap was filled by assumption. **No 14-call
+  CAPITALISATION run exists.** Its real record is one completed call at 525s
+  and one killed at 600,300ms with zero calls completed, on the same section.
+
+
 - **Live extraction runs no longer need to be asked for, one by one.** Ruled
   by Ben on 2026-08-07: *"you can run extractions without asking."*
 
