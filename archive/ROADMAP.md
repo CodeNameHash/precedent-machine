@@ -1671,3 +1671,26 @@ reader can re-check rather than trust a typed number.
   (`git log --oneline origin/main..HEAD`; run it fresh, this branch has
   moved twice already while this appendix was being corrected), pushed,
   tree clean.
+
+---
+
+**ARCHIVED 2026-08-06. Superseded by `docs/core/PLAN.md`.**
+
+Before this document was moved here, six things it was the only home for were
+given homes in `PLAN.md`, so archiving it dropped nothing:
+
+1. Amendment/restatement handling → Step 6D, scoped to the residue (the
+   classifier itself already exists and is wired in).
+2. Corpus-wide certification, P6's second half → Step 6E.
+3. Risk 8, no monitoring → the "Risks this plan carries and does not close"
+   section.
+4. The P2 remainder, payment timing and the grounds-naming field → Step 3I.
+5. D1's residual merge state → the same risks section.
+6. The four unanchored `OPERATING-RULES.md` citations that pointed here → two
+   re-anchored to `PLAN.md` Stage 5 and Step 6D; two cited "step 10", which
+   never existed in this document, and were rewritten to stand alone.
+
+`DECISIONS.md`'s cross-references were repointed from this document's step
+labels to `PLAN.md` stages in the same pass. The mapping used was: S2 → Stage 7
+Steps 7A-7B; P1 → Stage 2 Step 2C; P2 → Stage 3; P3 → Stage 5; P6 → Step 6E;
+P7 → Step 8A; P9 → Step 5E; D1/D3 → Stage 1; D2 → Stage 9.

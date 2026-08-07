@@ -1040,6 +1040,36 @@ than asserted.
 
 ---
 
+## Step 3I. The P2 remainder: payment timing and the grounds-naming field
+
+**What it is.** Two claim-definition widenings that `ROADMAP.md`'s P2 carried
+and this plan did not: extracting **payment timing** (when a fee becomes
+payable, as distinct from whether and how much), and a field that **names the
+grounds** on which a right was exercised rather than only recording that it was.
+
+**Why it is here.** `DECISIONS.md` items 4, 5 and 6 all cross-referenced "step
+P2". When `ROADMAP.md` was archived, three live decisions would have pointed at
+nothing. Grepping this plan for `payment timing` and `grounds` returned nothing
+before this step existed — the work was not deferred, it was dropped without
+anybody deciding to drop it.
+
+**Change.** `lib/canonical-v2/contract-bundle.js`, as claim-definition work,
+with the eleven-edit cost per genuine new claim definition that file's own
+convention requires. Watch the dual numbering noted in this plan's knowledge
+table: input at V38, concept keys at V24.
+
+**Proves it is done.** Each of the two fields extracted on at least one real
+agreement with a citation, and a stated reason recorded if either turns out to
+be already covered by an existing definition under a different name — which is
+worth checking before building, given how much of this programme's proposed
+work has turned out to exist.
+
+**Or defer it explicitly.** If Ben rules these out of scope for launch, that
+ruling goes in `DECISIONS.md` and this step is deleted. What must not happen
+again is the work having no home and no decision.
+
+---
+
 # Stage 4. Prove the write path durably, and harden it
 
 **Rescoped 2026-08-06.** This stage previously opened "This stage is the
@@ -1466,6 +1496,38 @@ ingesting a known original does not. Both by test, plus one real run.
 
 ---
 
+## Step 6E. Certify the corpus, once the mechanism is proven
+
+**What it is.** Run all 25 families across all 40 deals and check the result at
+scale, against the ingest-QA gates, quote verification at zero flags, and the
+golden evaluation harness.
+
+**Why it is not Stage 2.** Stage 2's ladder proves the *mechanism* generalises,
+across 10-15 documents chosen for drafter variety. That is a different claim
+from *this corpus is clean*, and conflating them is how a generalisation result
+gets read as a quality result. This step is the second claim, and it can only
+run after Stage 2 has proven the chain and Stage 4 has made import unattended.
+
+**The before-picture, stated as stale.** As of 13 July 2026: 18 of 40 deals
+fully clean, 66 coded provisions across 22 deals with no card, 13 deals failing
+soft gates. Those numbers are a year-quarter old at time of writing, predate
+every fix since, and must be re-measured rather than cited. They are recorded
+only so the direction of travel is checkable.
+
+**Why this step exists at all.** It was the second half of `ROADMAP.md`'s P6,
+and when that document was archived it had no home in this plan. Without it,
+this plan's scope silently stopped at "prove the mechanism twice" and never
+said when the whole corpus gets re-run.
+
+**Change.** No new product code. A run, plus a written result.
+
+**Proves it is done.** A committed corpus report: per-deal pass/fail against
+each named gate, the count of coded provisions with no card, and the deals
+failing soft gates — each figure carrying the command that produced it. A deal
+that cannot be certified is recorded with the reason, not omitted.
+
+---
+
 # Stage 7. Security
 
 Independent of everything above. Nothing in Stages 2 to 6 waits on it. It gates
@@ -1761,6 +1823,27 @@ counts before and after, and evidence that the flag was *not* the mechanism.
 Otherwise the last of Ben's five is discharged by a config change.
 
 ---
+
+## Risks this plan carries and does not close
+
+Named so they are not silently absent. Carried over from `ROADMAP.md` when it
+was archived; that document tracked risks this one did not.
+
+- **Risk 8: there is no monitoring.** Nothing alerts on a failed import, a
+  serving error, a stalled extraction run, or a production regression. Every
+  failure mode in this plan is currently discovered by someone looking. No step
+  below closes this, and it is unscheduled rather than solved.
+- **The nondeterminism the ladder depends on.** Stage 2's gates compare counts
+  across live model runs. The replay path decided on 2026-08-06 is the mitigation;
+  until it exists, every gate result carries sampling noise.
+- **The branch is ahead of `origin/main` again.** `DECISIONS.md`'s D1 entry
+  records that the merge was completed three times and has reopened in
+  miniature since. Carried here from `ROADMAP.md` when it was archived, so it
+  is not rediscovered as a surprise: check with `git log origin/main..HEAD
+  --oneline` rather than against another document's account of it.
+- **Onboarding is a research project, not an operation.** See
+  `CODEBASE-GUIDE.md` section 12.3. Stage 2's document ladder assumes 10-15
+  agreements can be onboarded; nothing in this plan has yet made that routine.
 
 ## When this plan is finished
 

@@ -4,20 +4,22 @@ As at 2026-08-05. Every item below, numbered and smaller alike, has now been
 decided. Each entry keeps the original ask, why it mattered, and the options
 considered, then records the decision and the reasoning behind it.
 
-Cross-references are to steps in `ROADMAP.md`.
+Cross-references are to stages and steps in `docs/core/PLAN.md`. They
+previously pointed at `ROADMAP.md`, which is archived; the mapping used is
+recorded in the commit that changed them.
 
 ---
 
 ## 1. The open site: DECIDED 2026-08-05, risk accepted
 
 **Ben's decision: accept it, and fix it properly with real authentication at
-step S2 rather than paying for a platform stopgap.**
+PLAN Stage 7, Steps 7A-7B rather than paying for a platform stopgap.**
 
 The free Vercel setting ("Standard Protection") only ever protects preview
 deployments; protecting production requires Advanced Deployment Protection at
 $150 per month. That is poor value for a single-user internal tool, and the
 paid toggle would be a detour from the session-cookie authentication that
-step S2 has to build anyway.
+PLAN Stage 7, Steps 7A-7B has to build anyway.
 
 **The reasoning, recorded so a future session does not quietly treat this as
 solved or reopen it.** The exposure is read-only: the mutation surface is
@@ -79,7 +81,7 @@ product work to run in parallel rather than waiting weeks.
 
 ## 2. How the browser authenticates: DECIDED 2026-08-05, session cookie
 
-**Blocks:** shipping authentication (step S2), which in turn gates import and
+**Blocks:** shipping authentication (PLAN Stage 7, Steps 7A-7B), which in turn gates import and
 production activation.
 
 **The problem.** A draft middleware exists on an unmerged branch and is inert
@@ -107,10 +109,10 @@ browser because it is the only one of the three still correct if this
 product ever gets a second user, and no page's code has to change: the
 browser sends the cookie by itself.
 
-**Technical.** This authorises step S2's build: a login page, session storage
+**Technical.** This authorises PLAN Stage 7, Steps 7A-7B's build: a login page, session storage
 and a user model. The existing draft middleware on `wp/api-auth-middleware`,
 inert behind `API_AUTH_ENABLED`, is the enforcement point once the cookie
-exists. See `ROADMAP.md` step S2 for the route inventory and the acceptance
+exists. See `PLAN.md` Stage 7, Steps 7A-7B for the route inventory and the acceptance
 test.
 
 **Code.** Built since the paragraph above was written; the mechanism it
@@ -127,7 +129,7 @@ verification command.
 
 ## 3. Permission to show V2 in place of V1, family by family: DECIDED 2026-08-05, granted
 
-**Blocks:** steps P1 onward. Nothing can move the count without it.
+**Blocks:** PLAN Stage 2, Step 2C onward. Nothing can move the count without it.
 
 **What is being asked.** Permission to switch the review page from the old
 extraction to the new one, one provision family at a time, starting with
@@ -145,8 +147,8 @@ mode stays visible rather than silent: a field V2 has not extracted renders
 amber as "not yet extracted" beside V1's value, never as though the
 agreement were silent.
 
-**Technical.** This authorises the per-family switch-over that steps P1
-onward depend on. The switch, the side-by-side view and the equivalence
+**Technical.** This authorises the per-family switch-over that `PLAN.md`
+Stage 2, Step 2C onward depends on. The switch, the side-by-side view and the equivalence
 harness described above are already built, gated behind a flag that cannot
 evaluate true in production; this decision is the permission to use them,
 family by family, in preview.
@@ -167,7 +169,7 @@ quoted back almost verbatim in the code that implements it.
 
 ## 4. Willful breach: DECIDED 2026-08-05, two rows
 
-**Blocks:** step P2. This is a legal call, not an engineering one.
+**Blocks:** PLAN Stage 3. This is a legal call, not an engineering one.
 
 **The problem.** The termination-fee table shows a single row labelled
 "Willful-breach exception". Underneath, the codebase carries two different
@@ -198,9 +200,9 @@ vocabulary already governs only the sole-remedy variant, so wiring it to the
 existing single row would have silently narrowed what that row means without
 changing its label.
 
-**Technical.** Cross-ref step P2. The sole-remedy row already has governing
+**Technical.** Cross-ref PLAN Stage 3. The sole-remedy row already has governing
 claims, `SOLE_REMEDY_LEGAL_EFFECT_PRESENT` and `SOLE_REMEDY_CARVEOUT_KIND`
-(see `ROADMAP.md` step P2); the effect-of-termination row is the new work.
+(see `PLAN.md` Stage 3); the effect-of-termination row is the new work.
 
 **Code.** Built. `SOLE_REMEDY_LEGAL_EFFECT_PRESENT` and
 `SOLE_REMEDY_CARVEOUT_KIND` are defined in
@@ -218,7 +220,7 @@ entry, including the "Owner ruling (2026-08-05)" citation.
 
 ## 5. Payment deadline: DECIDED 2026-08-05, one claim per limb
 
-**Blocks:** step P2.
+**Blocks:** PLAN Stage 3.
 
 **The problem.** I assumed a payment deadline was a number of days. It is not.
 Real values across 32 deals are branchy prose keyed to which termination limb
@@ -247,7 +249,7 @@ becomes its own governed fact, so a question like "which deals require
 payment simultaneously with termination" is answerable directly, rather than
 staying buried in prose nobody can query.
 
-**Technical.** Cross-ref step P2. This is real work, not reformatting: it
+**Technical.** Cross-ref PLAN Stage 3. This is real work, not reformatting: it
 requires deciding which termination limb governs which payment path for
 every deal, which is a reading of the agreement, not a mechanical split of
 the existing string. Budget it accordingly; do not let an implementation
@@ -273,7 +275,7 @@ populate it from a live model call is not.
 
 ## 6. "Fee required to terminate": DECIDED 2026-08-05, moves to Termination Rights
 
-**Blocks:** step P2.
+**Blocks:** PLAN Stage 3.
 
 **The problem.** The field currently sits in the fee family. It means
 something different from what its position implies: that **payment is a
@@ -294,7 +296,7 @@ drifted. Moving it corrects the reading: this is about whether payment is a
 condition precedent to exercising the fiduciary out, not about whether a fee
 exists.
 
-**Technical.** Cross-ref step P2. 23 of 28 stored values are booleans and 5
+**Technical.** Cross-ref PLAN Stage 3. 23 of 28 stored values are booleans and 5
 are prose; the moved display must handle both.
 
 **Code.** Built. The field is `feeRequired`, defined at
@@ -315,7 +317,7 @@ extraction path, not a V2 resolver.
 
 ## 7. Duplicate claim rows: DECIDED 2026-08-05, approved, identification first
 
-**Blocks:** step P6, the corpus run.
+**Blocks:** PLAN Step 6E, the corpus certification.
 
 **The problem.** Claims were minted two different ways historically. A cleanup
 step removed the older rows for 12,259 of 12,387 cards. **128 cards may still
@@ -332,7 +334,7 @@ shown to you before anything is deleted.
 read-only, and bring the list back to Ben before anything is deleted.
 Nothing is removed on the strength of a count alone.
 
-**Technical.** Cross-ref step P6. Run the read-only identification query
+**Technical.** Cross-ref PLAN Step 6E. Run the read-only identification query
 across production data, confirm whether the 128 at-risk cards actually carry
 duplicates (or how many do), and hold the deletion for a separate,
 specifically-approved step once the list exists.
@@ -352,7 +354,7 @@ statement above.
 
 ## 8. The market statistics route: DECIDED 2026-08-05, un-contain approved
 
-**Blocks:** step P7.
+**Blocks:** PLAN Step 8A.
 
 **The problem.** A rule in the codebase declares the market route permanently
 contained, and it is enforced at module load rather than by convention:
@@ -368,7 +370,7 @@ against real data**, and the module that reads the database has no test
 coverage at all.
 
 **Ben's decision: approved.** The rule may be amended to un-contain the
-route. Apply the change when step P7 actually starts, not before, and treat
+route. Apply the change when PLAN Step 8A actually starts, not before, and treat
 the first live run against real data as the real test of the machinery
 described above, because it is: nothing has proven it against real data yet.
 
@@ -380,13 +382,13 @@ line 236). Amending it means changing the market-statistics route's
 file, from `ZERO_IMPORT` to whatever the un-contained mode is, not editing
 the assertion itself. As of this audit that entry has not been changed: the
 route remains declared `ZERO_IMPORT`, consistent with "apply the change when
-step P7 actually starts, not before".
+PLAN Step 8A actually starts, not before".
 
 ---
 
 ## 9. The cutover: DECIDED 2026-08-05, the five-step path, not the twenty-five
 
-**Blocks:** step D2, going live. This is the largest unscoped item.
+**Blocks:** PLAN Stage 9, going live. This is the largest unscoped item.
 
 **The problem.** The programme documents a 25-step production cutover chain.
 Of the objects that chain requires, most do not exist in code at all: no
@@ -416,7 +418,7 @@ does not have, and building it would be months. Nothing in it is being
 declared unnecessary in principle: the ruling is that these five are the
 proportionate substitute, and none of the five may be dropped to save time.
 
-**Technical.** Cross-ref step D2. None of the objects the twenty-five-step
+**Technical.** Cross-ref PLAN Stage 9. None of the objects the twenty-five-step
 chain requires exist in code (`ReleaseBundleEnvelope`,
 `PostActivationControlHead`, `CandidatePromotionFence`,
 `GeneratedLockPlanRegistry` are zero files each), and there is no import,
@@ -456,7 +458,7 @@ compares its own output to itself and catches nothing. Every defect actually
 caught in this codebase was caught by ordinary engineering, not by that
 layer.
 
-**Technical.** Cross-ref step D3.
+**Technical.** Cross-ref PLAN Stage 1.
 `lib/programme-gates/governing-registry.js:267` is the loader that currently
 throws unless every pre-production gate stays `OPEN`; it needs amending so a
 gate can record a genuine pass. The self-verifying layer to delete is
@@ -527,8 +529,8 @@ corrected here rather than quietly amended, because a plan that grants itself
 production authority is precisely the failure this programme exists to
 prevent.
 
-In any case it is not reachable until step D2 is, which is gated on lane S
-completing and on D1 (see step D1 in `ROADMAP.md`, which Ben did authorise,
+In any case it is not reachable until PLAN Stage 9 is, which is gated on lane S
+completing and on D1 (see `PLAN.md` Stage 1, which Ben did authorise,
 on 2026-08-05: "you can update the roadmap on these points and get things up
 on main, I don't like living in branch land for ever").
 
@@ -551,7 +553,7 @@ work, not the original 287-commit backlog, and D2 remains gated on lane S
 regardless of either one.
 
 **Code.** None; this is a scheduling and authorisation decision, and `D1`/`D2`
-are `ROADMAP.md` step labels, not gate identifiers in
+are labels from the archived `ROADMAP.md`, not gate identifiers in
 `lib/programme-gates/governing-registry.js` (its gates use a different naming
 scheme entirely, for example `P1_CONTRACT_BUNDLE_COMPLETE`). Re-checked for
 this audit: `gh pr view` on 476, 477 and 478 confirms all three `MERGED` with
@@ -563,7 +565,7 @@ run the count fresh rather than trust a figure.
 
 ## 13. How Canonical V2 gets served, and when V1 comes off: DECIDED 2026-08-05, the cheap per-family pattern, gated by the equivalence harness
 
-**Blocks:** step P3 and, through it, every family P9 rolls out afterward.
+**Blocks:** PLAN Stage 5 and, through it, every family Step 5E rolls out afterward.
 
 **The problem.** Two different ways of deciding when a family's new system
 is trustworthy enough to serve had already been built, separately, before
@@ -619,16 +621,16 @@ any output, forced roughly 20 modules and 71 files to be re-pinned and broke
 families are coming. That tax, paid once, is expensive; paid twenty times,
 it is not affordable.
 
-**Technical.** Cross-ref `ROADMAP.md` step P3. The rigorous chain
+**Technical.** Cross-ref `PLAN.md` Stage 5. The rigorous chain
 stays in the repository, real and passing, and is not being deleted: eleven
 components built against
 `docs/superpowers/specs/2026-07-27-metric-scoped-serving-admission-f22-design.md`,
 F16 through F26 inclusive. It is not extended to any other family. The cheap
 pattern's reference implementation is
 `lib/canonical-v2/termination-fee-serving-source.js` and
-`components/review/table-configs/termination-fees.config.js`; P9 repeats it
+`components/review/table-configs/termination-fees.config.js`; Step 5E repeats it
 per family. The equivalence harness is `scripts/review-parity-check.js` (see
-P1). Where it cannot compare a family, that is an absence of committed V1 input, not a fault in it, and it does not gate retiring V1: Ben ruled on 2026-08-05 that the harness is a convenience and not a gate.
+`PLAN.md` Stage 2, Step 2C). Where it cannot compare a family, that is an absence of committed V1 input, not a fault in it, and it does not gate retiring V1: Ben ruled on 2026-08-05 that the harness is a convenience and not a gate.
 
 **Code.** A sample of the eleven F16 to F26 components, confirmed present and
 distinct from the deleted `p9-acceptance-*` layer (`DECISIONS.md` item 10,

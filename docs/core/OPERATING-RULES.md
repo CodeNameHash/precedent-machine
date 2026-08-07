@@ -784,7 +784,7 @@ of them.
 | Document | Owns | Editable |
 | --- | --- | --- |
 | `docs/core/OPERATING-RULES.md` | This file. Authority, rulings, architectural decisions, conventions | Freely |
-| `docs/codex-program/ROADMAP.md` | The sequence to publication, decisions needed, open risks, current state | Freely |
+| `archive/ROADMAP.md` | The sequence to publication, decisions needed, open risks, current state | Freely |
 | `docs/codex-program/WORK-COMPLETED.md` | History. Append-only | Freely |
 | `docs/codex-program/adversarial-tests.md` | The register of adversarial testing and what it found | **Governed, see below** |
 
