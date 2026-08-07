@@ -9,10 +9,19 @@
  *
  * Positive cases are drawn verbatim from
  * evidence/canonical-v2/modiv-general-covenants-20260807-replay's own
- * candidates (real filed Modiv text, not synthetic strings). Hostile cases
- * cross-wire those same real quotes against a DIFFERENT covenant code's
- * patterns, proving the widened lexicon still refuses a genuinely wrong
- * candidate rather than matching on generic contract language.
+ * candidates (real filed Modiv text, not synthetic strings). Most hostile
+ * cases cross-wire those same real quotes against a DIFFERENT covenant
+ * code's patterns, proving the widened lexicon still refuses a genuinely
+ * wrong candidate rather than matching on generic contract language -- those
+ * pairs are textually disjoint and refuse trivially. Two further hostile
+ * cases (review condition 2a) pin the genuinely CONFUSABLE pairs instead:
+ * real drafting shapes where two codes' vocabularies legitimately overlap
+ * and BOTH corroborate on the same quote (COV-NOTIFY/COV-LITNOTIFY on a
+ * litigation-notice clause; COV-PUBLICITY/COV-SECREPORT on a publicity
+ * clause that also mentions SEC filings). Corroborating a code is not the
+ * same question as the resolver CHOOSING between two codes that both
+ * corroborate -- see candidate-resolution.js's `generalCovenantDoubleFire`
+ * for the routing rule that catches the choice, not just the match.
  */
 
 const test = require('node:test');
@@ -85,6 +94,28 @@ test('HOSTILE: real NOTIFY quote does not corroborate as ACCESS, PUBLICITY, or I
   assert.equal(generalCovenantCodeCorroborated({ quote: REAL_NOTIFY_QUOTE, code: 'COV-ACCESS' }), false);
   assert.equal(generalCovenantCodeCorroborated({ quote: REAL_NOTIFY_QUOTE, code: 'COV-PUBLICITY' }), false);
   assert.equal(generalCovenantCodeCorroborated({ quote: REAL_NOTIFY_QUOTE, code: 'COV-INDEMN' }), false);
+});
+
+// HOSTILE (review condition 2a). The pairs above are textually disjoint and
+// refuse trivially. These two pairs are the genuinely confusable ones the
+// review located: real drafting shapes that legitimately fire BOTH codes'
+// patterns at once, because the two codes' vocabularies actually overlap in
+// ordinary usage. generalCovenantCodeCorroborated corroborating a code is a
+// DIFFERENT question from the resolver CHOOSING between two codes that both
+// corroborate -- these tests pin the corroboration-level fact (both fire);
+// the double-fire routing rule below is what stops the resolver from
+// silently trusting the model's pick between them.
+test('HOSTILE (confusable pair): a Transaction-Litigation notice quote fires both COV-NOTIFY and COV-LITNOTIFY', () => {
+  const quote = 'The Company shall promptly notify Parent of any Transaction Litigation of which it becomes aware.';
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-NOTIFY' }), true);
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-LITNOTIFY' }), true);
+});
+
+test('HOSTILE (confusable pair): a publicity covenant mentioning SEC filings fires both COV-PUBLICITY and COV-SECREPORT', () => {
+  const quote = 'The Company shall not issue any press release or other public announcement or SEC filings '
+    + 'without the prior written consent of Parent.';
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-PUBLICITY' }), true);
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-SECREPORT' }), true);
 });
 
 test('HOSTILE: an unknown code never corroborates, whatever the quote', () => {

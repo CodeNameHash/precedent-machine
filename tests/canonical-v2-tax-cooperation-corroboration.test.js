@@ -99,6 +99,27 @@ test('HOSTILE: Transfer Tax vocabulary alone, with no preparation/filing/coopera
   assert.equal(transferCooperationCorroborated(bareAllocation), false);
 });
 
+// HOSTILE (review condition 4). The old gate required cooperate AND
+// (preparation|filing) co-present. An earlier fix folded "cooperat\w*" into
+// the SAME alternation as "prepar\w*"/"fil\w*", turning the AND into an OR --
+// a unilateral allocation-and-filing clause with no cooperation obligation
+// at all now corroborated as TRANSFER_COOPERATION. cooperat\w* is mandatory
+// again: this must still refuse even though it contains "file".
+test('HOSTILE: a unilateral allocation-and-filing clause with no cooperation verb does not corroborate as TRANSFER_COOPERATION', () => {
+  const unilateralFiling = 'All Transfer Taxes shall be borne by Parent when due, and Parent shall file all '
+    + 'necessary Tax Returns with respect to all such Transfer Taxes.';
+  assert.equal(/\bcooperat\w*/i.test(unilateralFiling), false, 'test fixture must NOT contain a cooperation verb');
+  assert.equal(transferCooperationCorroborated(unilateralFiling), false);
+});
+
+// The real Modiv quote contains "cooperation" (as a noun) and "cooperate"
+// (as a verb) both -- confirm the mandatory verb requirement does not
+// regress the genuine candidate this defect fixed defect 4 to resolve.
+test('the real Modiv TRANSFER_COOPERATION quote still corroborates with cooperation mandatory', () => {
+  assert.match(REAL_TRANSFER_COOPERATION_QUOTE, /\bcooperat\w*/i);
+  assert.equal(transferCooperationCorroborated(REAL_TRANSFER_COOPERATION_QUOTE), true);
+});
+
 test('quote must be a non-empty string', () => {
   assert.throws(() => taxOpinionCooperationCorroborated(''), TypeError);
   assert.throws(() => transferCooperationCorroborated(''), TypeError);

@@ -62,7 +62,7 @@ access," "shall consult with each other before issuing any press release,"
 "shall give prompt notice to Parent." None of the 11 real candidates in the
 committed run contained any rubric phrase, so the family resolved zero.
 
-Fix: `general-covenant-corroboration.js`, a 17-code table
+Fix: `general-covenant-corroboration.js`, an 18-code table
 (`GENERAL_COVENANT_CODE_PATTERNS`) of operative-text regexes, in the shape
 of `ioc-corroboration.js`. The three codes with real candidates in this run
 (`COV-ACCESS`, `COV-PUBLICITY`, `COV-NOTIFY`) are grounded and tested

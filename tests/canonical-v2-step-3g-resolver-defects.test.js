@@ -15,9 +15,11 @@
  * below, independently reproducible by checking out the parent commit and
  * rerunning `loadAndResolve`).
  *
- * Also covers the one hostile test that lives inline in
- * candidate-resolution.js rather than in a sibling lexicon file: the
- * Material Contracts ANY-threshold widening (defect 1).
+ * Also covers the hostile tests that live inline in candidate-resolution.js
+ * rather than in a sibling lexicon file: the Material Contracts ANY-
+ * threshold widening (defect 1, plus its word-numeral/superlative markers
+ * from the post-merge review) and the General Covenants cross-code
+ * double-fire routing rule (also from the post-merge review, condition 2b).
  */
 
 const test = require('node:test');
@@ -25,7 +27,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const {
+  resolveCandidates,
+  MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
 
 const EVIDENCE_ROOT = path.join(__dirname, '..', 'evidence', 'canonical-v2');
@@ -107,6 +112,17 @@ test('HOSTILE: a real USD-threshold Material Contract quote does not corroborate
   assert.equal(result.open_world[0].reason, 'MATERIAL_CONTRACT_THRESHOLD_UNCORROBORATED');
 });
 
+// HOSTILE (review condition 1). The first widening of this gate only caught
+// DIGIT contradiction markers. Top-N-customer Material Contract buckets are
+// routinely drafted in word numerals, not digits -- each of these four real
+// drafting shapes must still be caught as a contradiction of "no threshold".
+test('HOSTILE: word-numeral and superlative Material Contract threshold markers still contradict ANY', () => {
+  assert.match('is a Contract with any of the ten largest customers or suppliers', MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION);
+  assert.match('each Contract with a top ten customer', MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION);
+  assert.match('in excess of two hundred fifty thousand dollars', MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION);
+  assert.match('five percent or more of consolidated revenues', MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION);
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Defect 2: General Covenants lexicon (general-covenant-corroboration.js
 // carries its own hostile tests -- tests/canonical-v2-general-covenant-
@@ -121,6 +137,48 @@ test('General Covenants: modiv-general-covenants-20260807-replay open-world fall
   assert.equal(counts.GENERAL_COVENANT_CODE_UNCORROBORATED, undefined, 'the label/alias defect must be fully cleared for this run');
   assert.equal(counts.NATIVE_OPEN_WORLD_PROPOSAL, 1);
   assert.ok(result.resolved.length > 0, 'the family must stop resolving zero (PLAN.md Step 3G symptom)');
+});
+
+// HOSTILE (review condition 2b). generalCovenantCodeCorroborated answers
+// "does THIS code's vocabulary appear" -- it never checked whether some
+// OTHER, different-owner code's vocabulary also appears in the same quote.
+// Forges a real modiv-general-covenants-20260807-replay COV-NOTIFY
+// candidate's raw_value to a genuinely double-fire quote (real drafting
+// shape: a litigation-notice clause that is simultaneously COV-NOTIFY's
+// "promptly notify" and COV-LITNOTIFY's "Transaction Litigation" -- see
+// tests/canonical-v2-general-covenant-corroboration.test.js for the
+// corroboration-level proof both codes fire). The resolver must not
+// silently trust the model's COV-NOTIFY pick: it must route to
+// review_queue, never resolve, never open_world.
+test('HOSTILE: a genuinely double-firing General Covenant quote routes to review_queue, not resolved', () => {
+  const dir = path.join(EVIDENCE_ROOT, 'modiv-general-covenants-20260807-replay');
+  const runReceipt = JSON.parse(fs.readFileSync(path.join(dir, 'run-receipt.json'), 'utf8'));
+  const adapter = JSON.parse(fs.readFileSync(path.join(dir, 'adapter-result.json'), 'utf8'));
+  const admittedSourceContext = adapter.admitted_source_contexts[0];
+
+  const original = runReceipt.compiled_candidates.find((c) => {
+    const claim = c.candidate && c.candidate.claim;
+    return claim && claim.claim_definition_key === 'NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE';
+  });
+  assert.ok(original, 'fixture must still contain a real COV-NOTIFY candidate');
+
+  const forged = JSON.parse(JSON.stringify(original));
+  forged.candidate.claim.raw_value = 'The Company shall promptly notify Parent of any Transaction Litigation '
+    + 'of which it becomes aware.';
+
+  const forgedReceipt = { ...runReceipt, compiled_candidates: [forged] };
+  const result = resolveCandidates({
+    run_receipt: forgedReceipt,
+    contract_vocabulary: compileFixtureContractV38(),
+    admitted_source_context: admittedSourceContext,
+  });
+  assert.equal(result.resolved.length, 0, 'a genuinely double-firing candidate must not resolve');
+  assert.equal(result.open_world.length, 0, 'a genuinely double-firing candidate must not fall to open_world either');
+  assert.equal(result.review_queue.length, 1);
+  assert.equal(result.review_queue[0].concept_key, 'COV-NOTIFY');
+  assert.deepEqual(result.review_queue[0].reasons, ['GENERAL_COVENANT_CODE_DOUBLE_FIRE']);
+  assert.equal(result.review_queue[0].has_resolution, false);
+  assert.equal(result.review_queue[0].auto_pass, false);
 });
 
 // ─────────────────────────────────────────────────────────────────────────
