@@ -1491,6 +1491,31 @@ and theirs (verified:
 capitalisation → `["3.2","4.2"]`). All 24 are mechanically recoverable.
 Do not re-derive by hand what is already committed.
 
+### 12.8 Call attribution in run telemetry is order-based, and bounded
+
+`makeMeasuredCliClient` in `scripts/canonical-v2-live-extraction-run.mjs`
+attributes each model call to a section by **call order** against the pinned
+section list. That is sound only while a run issues exactly one call per
+pinned section.
+
+`--follow-citations` breaks that assumption by design: it dispatches extra
+calls beyond the list. Before 2026-08-07 those were labelled
+`unknown-call-N`, and the committed
+`modiv-termination-fee-citation-following-20260806` run has **11 of its 14
+calls** labelled that way. They were never unknown — they are citation
+follow-ups.
+
+They are now labelled `citation-followup-N`, and every telemetry row carries
+`attribution_basis`: `ORDERED_PINNED_SECTION` or
+`CITATION_FOLLOWUP_UNATTRIBUTED`. The section reference is not recoverable
+from the prompt at that seam (checked), so a consumer needing per-call
+section identity for follow-up calls must get it from the citation-following
+module rather than from telemetry.
+
+Older telemetry files keep the `unknown-call-N` labels and have no
+`attribution_basis` field. Do not read their absence as
+`ORDERED_PINNED_SECTION`.
+
 ### 12.7 Re-deriving this section
 
 Nothing above should be trusted because it is written here. Each claim names

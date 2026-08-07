@@ -702,7 +702,28 @@ function makeMeasuredCliClient({
     messages: {
       async create(params) {
         const callIndex = telemetry.calls.length;
-        const sectionReference = orderedSectionRefs[callIndex] || `unknown-call-${callIndex}`;
+        // Attribution is BY CALL ORDER against the pinned section list, and
+        // that is only sound while the run issues exactly one call per pinned
+        // section. --follow-citations dispatches additional calls beyond that
+        // list, so the index overruns and every extra call used to be labelled
+        // `unknown-call-N`. The committed
+        // modiv-termination-fee-citation-following-20260806 run has 11 of its
+        // 14 calls labelled that way. They are not unknown: they are citation
+        // follow-ups, a known and expected category, and calling them unknown
+        // both loses that information and implies a defect where there is none.
+        //
+        // The section reference is NOT recoverable from the prompt at this
+        // seam -- checked -- so this records the attribution basis alongside
+        // the label rather than pretending to a precision it does not have.
+        // A consumer that needs per-call section identity for follow-up calls
+        // must get it from the citation-following module, not from here.
+        const withinPinnedList = callIndex < orderedSectionRefs.length;
+        const sectionReference = withinPinnedList
+          ? orderedSectionRefs[callIndex]
+          : `citation-followup-${callIndex - orderedSectionRefs.length + 1}`;
+        const attributionBasis = withinPinnedList
+          ? 'ORDERED_PINNED_SECTION'
+          : 'CITATION_FOLLOWUP_UNATTRIBUTED';
         const prompt = flattenMessages(params);
         const startedAt = Date.now();
         const rawCliOutput = await runClaudeCli(prompt, { model, ...(config.timeoutMs ? { timeoutMs: config.timeoutMs } : {}) });
@@ -719,6 +740,7 @@ function makeMeasuredCliClient({
           usage: parsed.usage,
           model_usage: parsed.modelUsage,
           served_model: parsed.model || null,
+          attribution_basis: attributionBasis,
           session_id: parsed.session_id,
         });
         const rawResponseText = parsed.result || '';
