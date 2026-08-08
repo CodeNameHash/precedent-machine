@@ -1,0 +1,36 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "141ec88280e80bd35d24c32ffe1ede001dda572b573a8b5a6f3c6d6c74f5a834",
+  "review_queue": [
+    {
+      "section_reference": "9.11",
+      "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+      "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+      "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 25,
+      "materiality_label": "REMEDIES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0ec2b3e104da165ad88cd6ed9aeb796cfc80ffc54f4e24d201044887afa2d7fd",
+      "closure_id": "eb1eb2c6d9cd820e8ff9da04ce0c3bc05fd87f112f8cdac8aa4cf97473775e97",
+      "normalised_phrase": "The Parties agree that irreparable damage, for which monetary damages would not be an adequate remedy, would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached by the Parties. Prior to the termination of this Agreement pursuant to Section 8.1, it is accordingly agreed that the Parties shall be entitled to an injunction or injunctions, or any other appropriate form of specific performance or equitable relief, to prevent breaches of this Agreement and to enforce specifically the terms and provisions hereof in any court of competent jurisdiction, in each case in accordance with this Section 9.11, this being in addition to any other remedy to which they are entitled under the terms of this Agreement at law or in equity. Each Party accordingly agrees not to raise any objections to the availability of the equitable remedy of specific performance to prevent or restrain breaches or threatened breaches of, or to enforce compliance with, the covenants and obligations of such Party under this Agreement all in accordance with the terms of this Section 9.11. Each Party further agrees that no other Party or any other Person shall be required to obtain, furnish or post any bond or similar instrument in connection with or as a condition to obtaining any remedy referred to in this Section 9.11, and each Party irrevocably waives any right it may have to require the obtaining, furnishing or posting of any such bond or similar instrument.",
+      "attachment_position": null,
+      "concept_family": "REMEDY-SPECIFIC-PERFORMANCE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 5,
+          "end": 25,
+          "excerpt": "9.11 Specific Performance. The Parties agree that irreparable damage, for which monetary damages would no",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "1e84285fe4d8c1957f73de21c8701195639d39b05cb4943b85d0163f7f622f5e"
+}

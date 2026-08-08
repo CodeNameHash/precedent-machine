@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "concho",
+  "deal_label": "ConocoPhillips / Concho Resources Inc.",
+  "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+  "purpose": "General extraction run: family APPRAISAL_DISSENTERS_RIGHTS on deal concho.",
+  "section_references": [
+    "3.4"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.4",
+      "family_id": "APPRAISAL_DISSENTERS_RIGHTS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-appraisal/v1",
+  "prompt_version": 1,
+  "agreement_date": "2020-10-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T08:36:07.694Z",
+  "total_elapsed_ms": 42354,
+  "extraction_wall_clock_ms": 32398,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/concho-appraisal-dissenters-rights-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "ac0f1c2f74c19b332be6bb458f975b36169a4d12",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "35511c9944a58073c8a85fceb2099321045f6d8245b02f08246da54feb11a9ac",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RUN/V2",
+  "model": "sonnet",
+  "provider_model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+  "call_count": 1,
+  "calls": [
+    {
+      "request_key": "853b0cba0fec5d5df31bddadbbb5b7b6989acf453e425d987bf5db017d88fa90",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "GOVERNED SECTION REFERENCE: 3.4\n\nEvery emitted section_reference must equal \"3.4\" exactly. Do not use a relative subsection label and do not add a child reference.\n\nQUOTE FIDELITY: Every quote must be one contiguous byte-identical substring of SOURCE TEXT. Preserve punctuation exactly. Do not complete, shorten, normalise, or re-punctuate a quote. Omit the assertion if you cannot copy its quote exactly.\n\nExtract standalone appraisal settlement-consent and withdrawal-reconversion covenants into appraisal_assertions. Preserve notice, information-right, modality and statute mechanics in mechanics as exact evidence. Never duplicate one fact across the two lists. A mechanics surface label routes evidence only and is not a governed legal code. Availability, conversion and exchange mechanics remain with Consideration. Never assert a negative. Return JSON only.\n{\"appraisal_assertions\":[{\"section_reference\":\"<section>\",\"assertion_kind\":\"SETTLEMENT_CONSENT | WITHDRAWAL_RECONVERSION\",\"quote\":\"<verbatim>\",\"statute_ref\":null}],\"mechanics\":[{\"surface\":\"APPRAISAL_NOTICE | APPRAISAL_INFORMATION_RIGHT | APPRAISAL_MODALITY | APPRAISAL_STATUTE\",\"quote\":\"<one verbatim mechanism>\",\"detail\":\"<factual description only>\"}],\"open_world_candidates\":[]}\nSOURCE TEXT:\n3.4 No Appraisal Rights. In accordance with the DGCL, no appraisal rights shall be available with respect to the Transactions.\n-12-\n"
+        }
+      ],
+      "raw_response_text": "```json\n{\"appraisal_assertions\":[],\"mechanics\":[{\"surface\":\"APPRAISAL_STATUTE\",\"quote\":\"In accordance with the DGCL, no appraisal rights shall be available with respect to the Transactions.\",\"detail\":\"States that no appraisal rights are available under the DGCL for the Transactions.\"}],\"open_world_candidates\":[]}\n```"
+    }
+  ]
+}

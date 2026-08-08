@@ -1,0 +1,152 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "9.11"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "9.11",
+      "section_id": "7fd58146a4a7b5358e05a413666f5c41c3fc2102742328bfbd8082e959b1418d",
+      "parent_section_id": "414a2354bb37e45b82733f02e0e297eea1a0e037f0c3c44425f04268ea421f5d",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 305887,
+      "end": 307740,
+      "text_sha256": "fe13d3e521ac2b3d3bcc7d7e2f37d9fa00c9fd962e81d3e65e738882294a6895",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-specific-performance-remedies/v1",
+      "prompt_version": 2,
+      "prompt_digest": "c6e558cd60ec13f246498ffeaa9bd6a2ffdd12f34e614097b760049895e1fd66",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "fb36780d30ee4b906b43af86024327d41805ca60d72b2d9d9b7958b29cab0c98",
+        "input_scope_digest": "3e34d1be8862fb295c1f44e0f3ad8134d38af23cc7dd15ca85c6c6cc1cff5099",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "6da26170e6bd038e196a3b9f983b72eb75d7ae849fdb081c49d3b06c9c9bc886"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "9.11",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "76372d05acf7415717a57c2e5f8520ceaff55b77e9b4f4e8c63b034aa47f5bef",
+          "claim_occurrence_id": "3fe25aad5f65c08eff80186d69a5536320001aa54ac39c3ecf139385fc6388e7",
+          "subject_occurrence_id": "454ee2ea05d3b9536e8dc2c67379f38d06bf05598358ab5306018ed2444e68f9",
+          "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Parties agree that irreparable damage, for which monetary damages would not be an adequate remedy, would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached by the Parties. Prior to the termination of this Agreement pursuant to Section 8.1, it is accordingly agreed that the Parties shall be entitled to an injunction or injunctions, or any other appropriate form of specific performance or equitable relief, to prevent breaches of this Agreement and to enforce specifically the terms and provisions hereof in any court of competent jurisdiction, in each case in accordance with this Section 9.11, this being in addition to any other remedy to which they are entitled under the terms of this Agreement at law or in equity. Each Party accordingly agrees not to raise any objections to the availability of the equitable remedy of specific performance to prevent or restrain breaches or threatened breaches of, or to enforce compliance with, the covenants and obligations of such Party under this Agreement all in accordance with the terms of this Section 9.11. Each Party further agrees that no other Party or any other Person shall be required to obtain, furnish or post any bond or similar instrument in connection with or as a condition to obtaining any remedy referred to in this Section 9.11, and each Party irrevocably waives any right it may have to require the obtaining, furnishing or posting of any such bond or similar instrument.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a74dab2880a4ea734d61074a3251370f068bff7ff448db5161cdce0366cee386"
+          ],
+          "attributes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a74dab2880a4ea734d61074a3251370f068bff7ff448db5161cdce0366cee386",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e1d88676fbd6668c6347ac7e7c97c0c153f5f490068d40afb3997d8e37104186",
+              "document_ordinal": 0,
+              "absolute_start": 27,
+              "absolute_end": 1568,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d53b5c6e8e4d463e70f70c1077841b0a6a405360a37712bfd2fe3c09aea3782e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+          "prompt_digest": "fb36780d30ee4b906b43af86024327d41805ca60d72b2d9d9b7958b29cab0c98",
+          "producer_receipt_id": "6da26170e6bd038e196a3b9f983b72eb75d7ae849fdb081c49d3b06c9c9bc886",
+          "governed_scope_digest": "0e130b6a4bbe1ec58878af984a08e3a12032a02e5001816968484e0be4e4b04e",
+          "extraction_provenance_id": "db65c3bdd6fc0d5902975d06695a96c7908e8cc0191b76bae32f16d5abdf7ade"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "9.11",
+      "source_byte_length": 1853,
+      "covered_byte_length": 1541,
+      "coverage_share": 0.8316243928764167,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "9.11",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "141ec88280e80bd35d24c32ffe1ede001dda572b573a8b5a6f3c6d6c74f5a834"
+}

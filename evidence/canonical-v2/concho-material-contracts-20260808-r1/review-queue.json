@@ -1,0 +1,852 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "e0aef124ee6094b7766d5e8337d489e031e182f247ec2f9888396700f835b7da",
+  "review_queue": [
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "65f590b84db0f79ddcccbb42b945946100c4593751f9eb322af37c0ae8ad4629",
+      "closure_id": "21a3532fecf21df265c2b4b07b8ffa72e7d3bdd34cfc89535890e7fe12f759cc",
+      "normalised_phrase": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b3733fe0c232cc64fc2e1aac5a72d03262b3b86eada92991c3d5500dd3986654",
+      "closure_id": "24d27680c750dc1ff5faadbd02d35e95bdf813765b6674518a2cac796cdec8d8",
+      "normalised_phrase": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "facfbbe2ac9fede1ee19997293853174c59ac4788d02ef0ab3182a117cd903b8",
+      "closure_id": "376699303ce39732cf85f3faf690ee1bbdbd93974b3bbbf07c6415b4f585aa4c",
+      "normalised_phrase": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "527a639bafb2b910f990271774fea9b945685623a3559173083497219eeadac2",
+      "closure_id": "3ae88e4d5a65b8d38e0d923c5ba932b612dc6ea46be6a56c4bdcdc9d2457a14d",
+      "normalised_phrase": "each material partnership, joint venture or limited liability company agreement",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "94118cee5c29b96a992119e6d2ae2791db2d532057efe242b3b7142d0bde0d72",
+      "closure_id": "6a847d699353275f403473cb0a09ad3ef7b53ec5d0fba5471de6c6ea433625cd",
+      "normalised_phrase": "any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0d516e165cad5ceb9cc23384a673c7a076a6fbe3207052baeaa408d44108a948",
+      "closure_id": "85072af05b618d78d905c448723a22e4876edc6be2e89d147f3a5057ac356696",
+      "normalised_phrase": "each agreement that contains any “most favored nation” or most favored customer provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a267595f9321079340c16afaa037063891a0dc96ef783e0be48cb8a7e7dcae6f",
+      "closure_id": "9612f28c793ce9151218f7dbd5e4a7ddac106d1cfb807a45dc53212934e5bf78",
+      "normalised_phrase": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c3a82c3618bd8d52d34ab9903d6cac23fb67d480fa67661ddfe53bcc822837df",
+      "closure_id": "a5d84f3e40fa7446f842d6b59243f51684fb1696f4269dc8cd5b9e81b9564be0",
+      "normalised_phrase": "“material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K under the Exchange Act)",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2ad36c32d3060a5fc9b838f18085a26c176efd5a8d9a99143e23df51177a8407",
+      "closure_id": "1ee095c8793cd1e7b48d566e58cbe4f263bdf7a3e94aa8cc6bd7f30c69711a36",
+      "normalised_phrase": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6900fa9006614b34528c46d025715d14e08b5fbee03ad78c763d5ff4cd8d1e39",
+      "closure_id": "3b5ca137c58186776535792dfdcc4f9ef2b96afdd561c7fd10fef7297e3fc63d",
+      "normalised_phrase": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "53b8fa1b63afb26cc4240cd6326ae21e9f0cff6b2c93d2c2853e45f6694c584f",
+      "closure_id": "493e3c14a428376ae5b88aa4d8b944f15600becc1b06b4c030f9102b36d21405",
+      "normalised_phrase": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "696c6751eb96c4a4cf146d844fa9279aa67714953b4b438400a1494abf2a6d80",
+      "closure_id": "9cd8c9a4275000ca80f76867517347f7bbe6484aa4d82fd9466b62bdd1796e3a",
+      "normalised_phrase": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8fdc258d672b0fc328ffa5a5b96c4c9aa112122a6643c5d57c5ea7695152b343",
+      "closure_id": "a588599980dcc9b6f78d2fc253d046cbdf7c9dac413b2da9937b4dff4041eed7",
+      "normalised_phrase": "each agreement that contains any “most favored nation” or most favored customer provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "73e1cc5fca51f1ce1290dcfb0a830e19e8f604a4c1e9d6f15df67cd7154e94c4"
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "metsera",
+  "deal_label": "Pfizer Inc. / Metsera, Inc.",
+  "section_family": "MAE_DEFINITION",
+  "purpose": "General extraction run: family MAE_DEFINITION on deal metsera.",
+  "section_references": [
+    "9.03"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "9.03",
+      "family_id": "MAE_DEFINITION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "mae-definition-producer/v2",
+  "prompt_version": 2,
+  "agreement_date": "2025-09-21",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T08:42:55.970Z",
+  "total_elapsed_ms": 202572,
+  "extraction_wall_clock_ms": 196707,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/metsera-mae-definition-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "ac0f1c2f74c19b332be6bb458f975b36169a4d12",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "db6421a341fee0614291dd70effbaf562a85bc5d18506507f59ed476ad036458",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
