@@ -417,7 +417,12 @@ test('unit: findTerminationLimbChapeau bounds a terminal leaf at newline/section
   // section's own end, carrying neither ':' nor ';'.
   const sectionText = '(a) by mutual written consent;\n(f) by Parent upon written notice to the Company.';
   const admittedSourceContext = {
-    canonical_text: { text: sectionText },
+    // canonical_text_id is asserted as a full SHA-256 digest on this branch's
+    // code path (assertDigest), so the fixture carries the REAL digest of its
+    // own text rather than a placeholder — a fabricated digest would pass the
+    // format check while lying about what it identifies.
+    canonical_text: { text: sectionText, canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')) },
+    canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')),
   };
   const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
   const chapeau = findTerminationLimbChapeau({
@@ -440,7 +445,12 @@ test('unit: findTerminationSectionEitherGrantContext returns the section-chapeau
     '\n(b) any Governmental Entity shall have issued an order.',
   ].join('');
   const admittedSourceContext = {
-    canonical_text: { text: sectionText },
+    // canonical_text_id is asserted as a full SHA-256 digest on this branch's
+    // code path (assertDigest), so the fixture carries the REAL digest of its
+    // own text rather than a placeholder — a fabricated digest would pass the
+    // format check while lying about what it identifies.
+    canonical_text: { text: sectionText, canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')) },
+    canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')),
   };
   const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
   // Trigger span starts at limb (a) -- grant must sit entirely before it.

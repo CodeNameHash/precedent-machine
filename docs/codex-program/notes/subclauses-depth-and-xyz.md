@@ -11,8 +11,8 @@ step completes.
 - [x] Change 2 — (x)/(y)/(z) corroborated CHILD-OPEN
 - [x] Re-measure after each change separately and both together
 - [x] New tests written (18 total in tests/subclauses.test.js, up from 8)
-- [ ] Guard proof for each change
-- [ ] Full verification (existing tests, V1 consumers, npm test, npm run build)
+- [x] Guard proof for each change
+- [x] Full verification (existing tests, V1 consumers, npm test, npm run build)
 - [x] Coordinator addendum: limb-marker back-reference shapes (3 tests + corpus scan)
 
 ## 1. Harness
@@ -239,11 +239,90 @@ described in (A) and (B) above"):
 
 ## 7. Guard proof
 
-(filled in below)
+Both required, each done by editing `lib/parser-v2/subclauses.js` in place,
+running `tests/subclauses.test.js`, then reverting (verified byte-identical
+to the pre-neuter file via `diff`).
+
+**Change 1 (MAX_DEPTH).** Neutered `const MAX_DEPTH = 5` back to `3`. Result:
+`not ok 8` and `not ok 9` (the four-level and five-level nest tests) —
+exactly the two tests this change exists for, nothing else. `# tests 18,
+# pass 16, # fail 2, exit=1`. Restored to `5`: `# tests 18, # pass 18, #
+fail 0, exit=0`.
+
+**Change 2 (xyz corroboration).** Neutered `xyzCorroborated` to
+`return true` unconditionally (bypassing the "(y)" lookahead entirely).
+Result: `not ok 11` (the uncorroborated-lone-"(x)"-does-NOT-open test) —
+exactly the one test this specific mechanism exists for. `# tests 18, #
+pass 17, # fail 1, exit=1`. Restored the real scan-and-match body: `# tests
+18, # pass 18, # fail 0, exit=0`.
+
+`diff` against a pre-edit backup of the file confirmed each restore was
+byte-identical, both times.
 
 ## 8. Final verification
 
-(filled in below)
+All commands run with output redirected to a file and the exit code
+captured separately (never piped into `head`/`tail`), per the standing
+convention.
+
+- `CI=true node --test tests/subclauses.test.js` — **18/18 pass, exit 0**
+  (8 original + 10 new: 4-level nest, 5-level nest, real xyz split,
+  uncorroborated-x refusal, alpha-w-to-x-not-stolen, xyz-back-reference
+  hostile, digit-glued-x hostile, plus the 3 coordinator-addendum
+  back-reference-shape tests).
+- `CI=true node --test tests/bring-down-recovery.test.js tests/span-claims.test.js
+  tests/canonical-conditions.test.js tests/feature-compare.test.js` —
+  **56/56 pass, exit 0. No consumer output moved.** Checked why: these
+  fixtures' segmented text never exceeds depth 3 and never contains an
+  `(x)/(y)/(z)` run, so neither change's code path is exercised by them —
+  not "nothing to explain" by omission, but confirmed by inspection that
+  their inputs don't reach the changed branches.
+- `CI=true node --test tests/canonical-v2-mae-clause-label-parse.test.js`
+  (a fifth, not-explicitly-required V1/native-producer consumer of
+  `segmentSubClauses`, run as an extra check since it's in the same call
+  graph) — **26/26 pass, exit 0.**
+- `CI=true npm test` (full suite, `tests/**/*.test.js` + `*.spec.js`) —
+  **8,272 pass / 3 fail / 44 skip of 8,319 total, exit 1.** All three
+  failures confirmed UNRELATED to this change:
+  - `canonical-v2-termination-limb-grant-context.test.js`: 2 failures,
+    both `TypeError: canonical_text_id must be a full SHA-256 hex digest`
+    inside `lib/canonical-v2/source-structure.js` via
+    `lib/canonical-v2/native-producer/candidate-resolution.js`. That
+    module does not import `subclauses.js` (checked: zero references) and
+    the failure is a digest-format assertion in an unrelated fixture, not
+    a segmentation output.
+  - `codex-program-generated-docs.test.js`: 1 failure, `docs/codex-
+    program/generated/system-inventory.json is stale`. This is a whole-
+    repo mechanical inventory scan; the branch carried other, unrelated
+    commits during this session (see the note on the shared branch,
+    below), which is the far more likely cause than this task's two-file
+    change — the inventory contains no reference to `subclauses` at all.
+    Not fixed here, per the instruction to stop and report rather than
+    touch a file outside `lib/parser-v2/subclauses.js`.
+- `npm run build` — **succeeded** (`✓ Compiled successfully`, full route
+  table printed, no error markers).
+
+## 9. Note on the shared branch (observed during this session, not caused
+   by any explicit action of this session)
+
+`git status` shows a clean working tree — HEAD already contains this
+session's complete final state, byte-for-byte. That is because this
+container auto-checkpoints the working tree into WIP-tagged commits
+(`wip(parser-v2): depth raised to 5, xyz lists in progress (UNREVIEWED)`,
+then `wip(tests): back-reference cases from Ben's wrinkle (UNREVIEWED,
+agent working)`) — this session never ran `git commit` itself. Confirmed
+no commit after the second checkpoint touches `lib/parser-v2/subclauses.js`
+or `tests/subclauses.test.js`, so the committed state matches the verified,
+fully-restored, guard-proofed file exactly.
+
+The branch also carried several commits on unrelated topics (2X-L limb
+assertions, a MAE materiality-split revert, Fable review findings) that
+land interleaved, by timestamp, with this session's two checkpoints —
+consistent with another process also committing to this same branch during
+this session's run. This session made no changes outside
+`lib/parser-v2/subclauses.js`, `tests/subclauses.test.js`, and this notes
+file, and verified (via `git log -- <path>`) that none of the unrelated
+commits touch either of the first two.
 
 ## 9. Back-reference contamination: corpus check, and the lexical-guard question
 
