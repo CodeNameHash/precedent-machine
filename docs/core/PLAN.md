@@ -2084,7 +2084,7 @@ before touching this branch.
 
 ---
 
-## Step 2X-A. One structure service, or a written reason there are five
+## Step 2X-A. One structure service, and point it at every family
 
 **What it is.** There are five mechanisms in the tree that answer some version
 of "what governs this span": the termination limb finder in
@@ -2131,11 +2131,74 @@ bytes. Convert at the boundary using `lib/canonical-v2/canonical-bytes.js`
 has 8 passing tests and live V1 callers in `span-claims.js`,
 `span-residual.js`, `consideration-equity.js` and `bring-down-tiers.js`.
 
+**BROADENED 2026-08-08, on Ben's question, after Fable measured it.** The
+first decision scoped the service to the families that already declare limbs.
+Ben asked why a *deterministic* mechanism was not simply pointed at all of them.
+Fable's answer: broadening had **not been considered** — the scope was inherited
+from how the question was posed, not decided on evidence. There was no rejection
+to defend, and on measurement the answer is to broaden.
+
+**The survey that motivates it.** Only 2 of 25 prompts declare a `limbs` array
+(capitalisation, representations); 3 reference `limb_path` (those plus
+mae-definition, which can cite a path but not declare a tree). IOC is a separate
+mechanism — `ioc_restriction_assertions` producing `ioc_restriction_components`,
+105 across six runs, and the only structural output landing anywhere today. The
+remaining **22 families have no sub-clause representation at all**: flat
+assertion lists, one assertion per row, no parent. Two carry narrow
+domain-specific nesting only (termination-fee `carve_outs`, capitalisation
+`tiers`). Those 22 include every family in the 13–26% band.
+
+**Why broadening is safe, and this is the distinction that makes it so.** The
+limb families use model-declared trees to mint **claim identity** — new
+subjects, content-derived ids. Placing an existing flat assertion into a
+text-derived tree adds only **inheritance context** to a claim whose identity
+already exists. It is additive, reversible, and cannot re-mint or regress
+anything. **The derived tree annotates for flat families and never mints for
+them**; identity stays with model-declared limbs (2X-L, 2X-I).
+
+**Reliability, measured rather than assumed.** `segmentSubClauses` was run over
+every resolved section of all 213 evidence runs across all seven deals: 538
+unique sections, 171 of them markerless and trivially safe, 367 carrying 2,360
+markers. The mis-nest signature appears in **45 markers across 6 sections —
+1.1%** (concho Annex-A, modiv 8.12 and 8.3, redhat 3.01, skywater 3.21,
+topbuild 2.1).
+
+**The failure is detectable, which is what converts it from silent to visible.**
+The signature is a **same-style parent-child link** in the segmenter's own
+output paths — a second colon-introduced list's `(a)` landing as `b.a` under the
+first list's `(b)`. Real legal outlining always changes style when it nests
+(`(a)` → `(i)` → `(A)`), so same-style nesting is structurally impossible and
+two lines of code catch it. Verified independently by reproducing the shape.
+
+Note the loop this closes: the two-"shall not"-list section that decided
+`findIocChapeau` must stay separate **is** the same-style signature. The
+broadened service refuses precisely where it was shown to be wrong, and
+`findIocChapeau` still covers that case.
+
+**Change, broadened.** A corpus-wide placement pass: every family's assertions
+gain a `structure_context` — the governing chapeau chain, by containment on
+their existing byte spans. Replay-validated, so it costs no model calls.
+Fail closed on span-crossing quotes, on same-style chains, and on markerless
+sections (which get section context only). Sits in the free replay phase
+immediately after 2X-L.
+
+Three failure modes to handle explicitly. A quote spanning a chapeau plus its
+first limb — whole-sentence quoting is explicit in termination-fee
+PROMPT_VERSION 2 — returns UNDETERMINED. An assertion whose quote **is** the
+chapeau is not a failure: containment correctly returns the chapeau leaf.
+MAX_DEPTH truncation and unfired CHILD-OPEN are conservative — coarser leaves,
+never a wrong parent.
+
 **Proves it is done.** The comparison exists and names, per mechanism, at least
 one input on which it differs from the others or a statement that it does not.
 Where the service is built, `CI=true npm test` stays exit 0 and the four
 existing V1 consumers produce byte-identical output on the pinned fixtures — a
 moved consumer is a regression to explain, not a fixture to regenerate.
+
+For the broadened pass: every assertion in every family carries either a
+`structure_context` or a typed UNDETERMINED, with zero silently absent; the six
+mis-nesting sections become a pinned fixture list; and no claim identity changes
+anywhere, which is checkable because the pass is annotation-only.
 
 ---
 
