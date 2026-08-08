@@ -1,0 +1,59 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skywater",
+  "deal_label": "IonQ, Inc. / SkyWater Technology, Inc.",
+  "section_family": "NO_OTHER_REPS_FRAUD",
+  "purpose": "General extraction run: family NO_OTHER_REPS_FRAUD on deal skywater.",
+  "section_references": [
+    "3.30",
+    "4.16"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.30",
+      "family_id": "NO_OTHER_REPS_FRAUD"
+    },
+    {
+      "section_reference": "4.16",
+      "family_id": "NO_OTHER_REPS_FRAUD"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-no-other-reps-fraud/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-01-25",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T09:14:05.239Z",
+  "total_elapsed_ms": 205548,
+  "extraction_wall_clock_ms": 197022,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/skywater-no-other-reps-fraud-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "56bd70515a27a3aec1a32c051b05f73667cb9afc",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 2,
+  "run_receipt_id": "ff09019a8811f0d5080262d8e814dc1f2c3fb43a1602a1e2109044c5817cbbad",
+  "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "source_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 2,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
