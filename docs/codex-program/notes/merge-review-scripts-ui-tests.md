@@ -190,6 +190,21 @@ weaker/more honest than the old "No X found." wording it replaced.
   diffs are pure ID re-keying from the lexicon version bump (2 -> 4),
   documented inline; no content/value changes.
 
+## Note on the full-suite run
+
+Attempted a full `CI=true node --test "tests/**/*.test.js"` run twice; both
+times it picked up transient failures in `tests/auth-route-enforcement.test.js`
+(6 failures: 500s, 404s, a JSON-parse-on-HTML error) caused by a concurrent
+`next dev -p 3112` / `next build` process another agent was running in this
+same environment at the time (visible in `ps aux`). That file is **not
+touched by this branch's diff** (`git diff origin/main..HEAD -- tests/auth-route-enforcement.test.js`
+is empty) and passes clean in isolation: `CI=true node --test
+tests/auth-route-enforcement.test.js` → `pass 101 fail 0`. Not a branch
+regression — environment interference from concurrent agent activity.
+Every file actually touched by this diff was verified via targeted,
+isolated `node --test` runs (see above), which is a reliable signal
+independent of that interference.
+
 ## Verdict
 
 **One BLOCKS MERGE finding**: two new tests in
