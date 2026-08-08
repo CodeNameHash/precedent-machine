@@ -2086,10 +2086,12 @@ before touching this branch.
 
 ## Step 2X-A. One structure service, and point it at every family
 
-**What it is.** There are five mechanisms in the tree that answer some version
-of "what governs this span": the termination limb finder in
+**What it is.** There are **six** mechanisms in the tree that answer some
+version of "what governs this span": the termination limb finder in
 `candidate-resolution.js`, `findIocChapeau`, `qualifier-attachment.js`,
-`limb-components.js`, and now `segmentSubClauses`. None is aware of the others.
+`limb-components.js`, `segmentSubClauses`, and
+`deterministic-sectionizer.js`'s `buildMarkerTree` — the sixth found only after
+the comparison had been made. None is aware of the others.
 
 **Why.** Each family's inheritance is currently fixed separately and drifts
 separately. But convergence is a hypothesis, not a conclusion — some of the
@@ -2180,6 +2182,56 @@ Note the loop this closes: the two-"shall not"-list section that decided
 `findIocChapeau` must stay separate **is** the same-style signature. The
 broadened service refuses precisely where it was shown to be wrong, and
 `findIocChapeau` still covers that case.
+
+**A SIXTH mechanism, found 2026-08-08 after the five-way comparison, on Ben's
+question.** `lib/canonical-v2/native-producer/deterministic-sectionizer.js`
+already builds a whole-document section tree with exact UTF-8 byte offsets, no
+model calls, and it is **on the live extraction path** — required by
+`native-extraction-run.js` and by `scripts/canonical-v2-live-extraction-run.mjs`.
+It replaced the hand-typed `{start,end}` intervals that used to live in
+per-deal `reviewed-*-slice.js` files.
+
+It also contains its own sub-clause detector. Its header is explicit that
+`structural.js` exports no sub-item tree builder, so `buildMarkerTree` is new
+code written for that module. Fable's five-way comparison did not include it,
+because the brief did not know it existed.
+
+**The two sub-clause detectors make opposite trade-offs, and that is the
+useful part.**
+
+| | `deterministic-sectionizer` `buildMarkerTree` | `segmentSubClauses` |
+|---|---|---|
+| marker pattern | `/(?:^\|\n)[ \t]*\(([A-Za-z]{1,9}\|[0-9]{1,3})\)/g` — **line-start anchored** | eligibility-tested, **not** line-anchored |
+| label width | up to 9 characters | up to 3 |
+| inline enumerations | **misses them** | **catches them** (QXO inline `(A)`–`(D)`, Concho colon lists) |
+| inline references | **immune** — its header says the line-start anchor alone screens out "the items referred to in clauses (B) and (C)" | **vulnerable** — the colon back-reference and the forward-reference holes both live here |
+| scope | whole document | per section |
+| offsets | UTF-8 bytes | UTF-16 string indices |
+
+Neither is better. They fail in opposite directions, which means **their
+disagreement is a signal, not a problem to resolve**:
+
+- **Both find a marker** → high confidence.
+- **Line-anchored only** → a conventionally laid-out list item. Safe.
+- **`segmentSubClauses` only** → an inline enumeration. This is exactly the set
+  that is either a genuine inline list (which is why the permissive rule
+  exists) **or** a cross-reference, back-reference or forward-reference. It is
+  the risky zone, and it is now identifiable rather than diffuse.
+
+That last row is the answer to the reference problem without new machinery: a
+marker seen only by the permissive detector requires corroboration, where a
+line-anchored marker does not. Two mechanisms we already own, used against each
+other.
+
+**Scope: ALL sections, not only extracted ones. Decided 2026-08-08 by Ben.**
+The placement pass as first drafted covered every section that produced claims
+— which is the part we already looked at. That can answer "this section has a
+limb with no claim against it" but **not** "there is a section nobody extracted
+from at all". Since the whole argument for structure is that only structure
+answers absence, restricting it to extracted sections defeats half its purpose.
+The sectionizer already enumerates every section in the document with byte
+offsets whether or not extraction touched it, so document-level absence is a
+join between two things that both exist, not new machinery.
 
 **Identity: decided 2026-08-08, after Fable tested the alternatives.** The pass
 is annotation only, and that is not a permanent answer — see
