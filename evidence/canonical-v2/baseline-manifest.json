@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 56,
-  "importable_run_count": 32,
+  "run_count": 83,
+  "importable_run_count": 59,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,11 +31,11 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 519,
-    "provisions": 105,
-    "claims": 251,
+    "excerpts": 1048,
+    "provisions": 207,
+    "claims": 534,
     "relationships": 0,
-    "components": 10,
+    "components": 39,
     "definition_occurrences": 0,
     "condition_groups": 0
   },
@@ -341,6 +341,29 @@
       }
     },
     {
+      "run": "modiv-dividends-20260808-v2",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-dno-20260806",
       "section_family": "DNO_INDEMNIFICATION",
       "section_references": [
@@ -522,6 +545,29 @@
         "5.11"
       ],
       "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-guaranty-20260808-v2",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "5.11"
+      ],
+      "model_call_count": 1,
       "resolved": 0,
       "review_queue": 0,
       "open_world": 0,
@@ -1150,6 +1196,346 @@
       "published": null
     },
     {
+      "run": "topbuild-antitrust-regulatory-20260808-rung4",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "4.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 25,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 8,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-appraisal-dissenters-rights-20260808-rung2",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-closing-conditions-20260808-rung3",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "5.1",
+        "5.2",
+        "5.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 9,
+      "review_queue": 16,
+      "open_world": 10,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 19,
+        "provisions": 8,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-consideration-20260808-rung2",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5"
+      ],
+      "model_call_count": 5,
+      "resolved": 2,
+      "review_queue": 4,
+      "open_world": 44,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 46,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-dividends-20260808-rung4",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "4.1",
+        "4.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-dividends-20260808-v2",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "4.1",
+        "4.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 2,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-dno-indemnification-20260808-rung4",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "4.13"
+      ],
+      "model_call_count": 1,
+      "resolved": 3,
+      "review_queue": 9,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-employee-matters-20260808-rung4",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "3.1",
+        "4.11"
+      ],
+      "model_call_count": 2,
+      "resolved": 4,
+      "review_queue": 9,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 13,
+        "provisions": 1,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-financing-covenants-20260808-rung4",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "4.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 7,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-general-covenants-20260808-rung3",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "4.8",
+        "4.9",
+        "4.10",
+        "4.18",
+        "4.19",
+        "4.21"
+      ],
+      "model_call_count": 6,
+      "resolved": 7,
+      "review_queue": 8,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 7,
+        "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-guaranty-financing-party-20260808-rung4",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "7.16"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-guaranty-financing-party-20260808-v2",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "7.16"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-interim-operating-20260808-rung3",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "4.1",
+        "4.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 29,
+      "review_queue": 75,
+      "open_world": 49,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 77,
+        "provisions": 14,
+        "claims": 29,
+        "relationships": 0,
+        "components": 29,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-key-defined-terms-20260808-rung2",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "3.1",
+        "4.3",
+        "4.4",
+        "6.5"
+      ],
+      "model_call_count": 4,
+      "resolved": 21,
+      "review_queue": 30,
+      "open_world": 75,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 103,
+        "provisions": 9,
+        "claims": 21,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-mae-definition-20260806",
       "section_family": "MAE_DEFINITION",
       "section_references": [
@@ -1181,6 +1567,282 @@
         "excerpts": 21,
         "provisions": 1,
         "claims": 19,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-mae-definition-20260808-rung4",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "3.1",
+        "3.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 38,
+      "review_queue": 42,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 37,
+        "provisions": 2,
+        "claims": 38,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-material-contracts-20260808-rung3",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 16,
+      "review_queue": 16,
+      "open_world": 19,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 1,
+        "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-merger-structure-closing-20260808-rung4",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "1.5",
+        "1.6",
+        "1.7",
+        "1.8"
+      ],
+      "model_call_count": 8,
+      "resolved": 21,
+      "review_queue": 21,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 8,
+        "claims": 21,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-misc-boilerplate-20260808-rung4",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "7.1",
+        "7.2",
+        "7.3",
+        "7.4",
+        "7.5",
+        "7.7",
+        "7.8",
+        "7.9",
+        "7.13",
+        "7.14",
+        "7.15"
+      ],
+      "model_call_count": 11,
+      "resolved": 31,
+      "review_queue": 31,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 31,
+        "provisions": 9,
+        "claims": 31,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-no-other-reps-fraud-20260808-rung4",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.1",
+        "3.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-no-shop-20260808-ceiling128k",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "4.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 67,
+      "review_queue": 68,
+      "open_world": 10,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 56,
+        "provisions": 13,
+        "claims": 67,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-proxy-meeting-20260808-rung4",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "4.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 17,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 1,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-specific-performance-remedies-20260808-rung3",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "7.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-tax-matters-20260808-rung3",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "4.23",
+        "7.11"
+      ],
+      "model_call_count": 2,
+      "resolved": 5,
+      "review_queue": 5,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 3,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-termination-20260808-rung3",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "6.1",
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 7,
+      "review_queue": 20,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 5,
+        "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-termination-fee-20260808-rung1",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "6.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 18,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 3,
+        "claims": 2,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,

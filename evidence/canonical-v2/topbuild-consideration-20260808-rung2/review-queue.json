@@ -1,0 +1,314 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "26bbb12d716e44b59962b32c62f2d4bfcef804abaa26002762c2a36b082f46e2",
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f10a6f09b476bbac5bad85cca70c8290d3b6d6ff6653d94e7287e44f36d59bef",
+      "closure_id": "17e876fab40f89c5beced9bf61614246565e76bf35a4866918899fd1503d45e4",
+      "normalised_phrase": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section 2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 275,
+          "end": 295,
+          "excerpt": "rger Sub or the Company or the holders of any capital stock of the Company:\n(i) Merger Consideration. Subject to the allocation and election procedures set forth in Section ‎2.1(",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 1656,
+          "end": 1676,
+          "excerpt": "tion or Cash Consideration, in each case, without interest, is the “Per Share Merger Consideration”. At the Titanium Merger Effective Time, all of the Company Shares shall ceas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 2228,
+          "end": 2248,
+          "excerpt": "ting Shares) shall thereafter represent only the right to receive the Per Share Merger Consideration, without interest.\n4\n(ii) Cancellation and Conversion of Cancelled Shares. Each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 3151,
+          "end": 3171,
+          "excerpt": "1 per share, of the Titanium Surviving Corporation.\n(b) Allocation of Per Share Merger Consideration; Election Procedures; Exchange of Company Shares.\n(i) Allocation. Notwithstandi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 3341,
+          "end": 3376,
+          "excerpt": "g in this Agreement to the contrary, the maximum number of Company Shares to be converted into the right to receive Cash Consideration in the Titanium Merger shall be equal to forty-five percent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:RIGHT_TO_RECEIVE_CASH",
+          "start": 3360,
+          "end": 3381,
+          "excerpt": " to the contrary, the maximum number of Company Shares to be converted into the right to receive Cash Consideration in the Titanium Merger shall be equal to forty-five percent (45%)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 3707,
+          "end": 3742,
+          "excerpt": "Maximum Cash Election Number”) and the maximum number of Company Shares to be converted into the right to receive Stock Consideration in the Titanium Merger shall be equal to fifty-five percent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 13429,
+          "end": 13464,
+          "excerpt": "es exceeds the Maximum Cash Election Number, all Stock Election Shares shall be converted into the right to receive Stock Consideration, and all Cash Election Shares shall be converted into the r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 13524,
+          "end": 13559,
+          "excerpt": "the right to receive Stock Consideration, and all Cash Election Shares shall be converted into the right to receive:\n(1) an amount in cash (without interest) equal to the product of (x) the Cash ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 14860,
+          "end": 14895,
+          "excerpt": "es exceeds the Maximum Stock Election Number, all Cash Election Shares shall be converted into the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:RIGHT_TO_RECEIVE_CASH",
+          "start": 14879,
+          "end": 14900,
+          "excerpt": "mum Stock Election Number, all Cash Election Shares shall be converted into the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the right ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 14955,
+          "end": 14990,
+          "excerpt": "the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the right to receive:\n(1) a number of validly issued, fully paid and non-assessable Parent Shares eq",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 18346,
+          "end": 18366,
+          "excerpt": "), shall not be converted into or represent the right to receive the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 18974,
+          "end": 18994,
+          "excerpt": "ive Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(a)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cdbada326ec855ce834fbc7cb8b01a6ec7400cc7d959e5146be24f368cd70981",
+      "closure_id": "2a04e6829aa7f0f96c696748474bea3615a6c660fa575ffd23554c02ab8cbf38",
+      "normalised_phrase": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section 2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO"
+    },
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "53912ea1b661b25821a91d0f5bd50a84c5deeea94518b096ebf013df3783b7ce",
+      "closure_id": "969116e707c312f65623b07494e6e993a0404bb796e07abb292913cebc1a2852",
+      "normalised_phrase": "who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 1176,
+          "end": 1193,
+          "excerpt": " (B), a “Cancelled Share” and collectively, “Cancelled Shares”) and (C) Dissenting Shares) shall be automatically converted into the right to receive, and become exchang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 2142,
+          "end": 2159,
+          "excerpt": "ormerly representing any of the Company Shares (other than Cancelled Shares and Dissenting Shares) shall thereafter represent only the right to receive the Per Share Merger Cons",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 7514,
+          "end": 7531,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) issued and outstanding immediately prior to the Election Deadline shall be ent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 9099,
+          "end": 9116,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares), in such form as the Company shall reasonably specify and as shall be reasonab",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 11154,
+          "end": 11171,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) between the Mailing Date and the Election Deadline. Parent shall determine, in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18242,
+          "end": 18264,
+          "excerpt": "y Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Shar",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18575,
+          "end": 18597,
+          "excerpt": "r thereof to only such rights as are granted by Section 262 of the DGCL. If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or ef",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 18761,
+          "end": 18778,
+          "excerpt": "ively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19194,
+          "end": 19211,
+          "excerpt": "procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares. Notwithstanding anything to the contrary contained in this Agreement, if, prio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19448,
+          "end": 19465,
+          "excerpt": "the right of a Company stockholder to be paid the fair value of such holder’s Dissenting Shares pursuant to Section 262 of the DGCL shall cease. The Company shall give Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 20147,
+          "end": 20164,
+          "excerpt": "ayment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or w",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(b)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "payment of the Per Share Merger Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b220385442ee958c80c4a546e9e7c116ded27650597350428a96392d49babcaa",
+      "closure_id": "0e3a26dbb70322bb9d56f1401dbad696b62c5c42f70d4fb7007aba399646879d",
+      "normalised_phrase": "payment of the Per Share Merger Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    }
+  ],
+  "review_queue_artifact_id": "562d194e9a2f3c34afbb488d2eb79563216f1bbb2c0280f25413164e11c05e52"
+}

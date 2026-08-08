@@ -1,0 +1,98 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "7.16"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "7.16",
+      "section_id": "2e77056fd0c24cba99989b4dac4372e15613a71e44e60c7ff90e367fda993fb4",
+      "parent_section_id": "1c24ef91a0fa2ba30952fc2f82d9d4242a7f724d8dd2b3a6795d7446a1392466",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 403992,
+      "end": 406279,
+      "text_sha256": "4f487a2f10ec7244758dc567247a78ba0575b03048eddffd1c7245f25196ab74",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-guaranty/v1",
+      "prompt_version": 1,
+      "prompt_digest": "3fa4adba44dbb73f727ea145fecdc295f004a791a3c886a46ad244ab100ab351",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "38584d38099e9db9e69288dda10bf84bf0d2848bf68de86c935313cbfaddd2c8",
+        "input_scope_digest": "4cc46663d6eca3aa717a1f28c8f8664ebdddb163a25a8d471fffb91592740bc9",
+        "proposal_count": 0,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "a99b49f44c2eb6e1daf8f73f0fba6f29020d157899e75f798ff84c656ab3adc9"
+      }
+    }
+  ],
+  "compiled_candidates": [],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "7.16",
+      "source_byte_length": 2287,
+      "covered_byte_length": 0,
+      "coverage_share": 0,
+      "marker_counts": {
+        "as of": 1,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 1
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 1,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "7.16",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 0,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "4b8d8d907feffe9ff9e5e1af43134dd9f36d9b35c0b2fadd958c07501f6c814d"
+}

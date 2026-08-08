@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T01:02:18.172Z",
+  "section_reference": "6.1",
+  "note": "General extraction run: deal=topbuild, family=TERMINATION, section_references=[\"6.1\",\"6.2\",\"6.3\",\"6.4\"] (all dispatched as TERMINATION via section_family_assignments), prompt_id=native-producer-termination/v2, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\n  \"termination_right_assertions\": [\n    {\n      \"section_reference\": \"6.1\",\n      \"assertion_kind\": \"RIGHT_GRANT\",\n      \"trigger_kind\": \"MUTUAL_CONSENT\",\n      \"terminating_party_scope\": \"EITHER_PARTY\",\n      \"terminating_party\": \"the Company and Parent\",\n      \"quote\": \"This Agreement may be terminated at any time prior to the Titanium Merger Effective Time by mutual written consent of the Company and Parent by action of their respective boards of directors.\"\n    }\n  ],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": []\n}"
+}

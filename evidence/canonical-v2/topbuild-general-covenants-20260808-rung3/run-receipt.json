@@ -1,0 +1,1541 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "4.8",
+    "4.9",
+    "4.10",
+    "4.18",
+    "4.19",
+    "4.21"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.8",
+      "section_id": "11a9ec7619c4e2e0acc7f1f26dab9f3e74ff4efc1a6f85bce0c34a7c8085f19b",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 280726,
+      "end": 281261,
+      "text_sha256": "9dc9ff9b6d682d4f98bfdcd590ab0b3602687e7c6ca2ed26bb9245069ec7643b",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "73b4d131796f9e5effba23b89b20cd46b7d6569910afd801781bde803abb4b59",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "588f3fcde10a4bef6597663a54842876ef80cc5ea304b0303b37af65a8e2a3fd",
+        "input_scope_digest": "a55d8bafcd111b93802361442cdd5ea20d4acb1c64126bef1c19b7de3ce18054",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "46fa6a5b35eef7a442eba279a97f9478efe41f0271343e254e344ee0e91d1f19"
+      }
+    },
+    {
+      "section_reference": "4.9",
+      "section_id": "2d6d43ece44a7ea49151e7a01c68d428557ec9332212f3e7358a43d96d77dee3",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 281261,
+      "end": 281510,
+      "text_sha256": "7fb80084505c7ef206bbcb72166d6fecd60c0769f679b28b6c269e778b38e3f6",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "88b4c3b3ae0f6cd3c315b0d01bdddafcb5382ad84cdf7228e58f3864285da0bf",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "5651e88b086491199c472ed46e7c71e7fe4a804fb927164f83fbae4f27762cf9",
+        "input_scope_digest": "9e4996cb11f39fb4a3cfffcee9df6ebede4fbe00963e0aa5b1f211960ec91a9f",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "07fd869f4fad0b1430bb465f36811cd0ff02c172b2366dc10a02f5f1096fde58"
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "section_id": "4a062a078519e03449b8b039288a92b674f8c6dd3c8e71a42cec80e2043ebf41",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 281510,
+      "end": 285771,
+      "text_sha256": "565af92bd40980112e5241fa7a928c98fa45bf6b8817dfdc38db9cf731a7a21a",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "fb3d0d08bf406743f97f86f5fd8233916110cba422e850ecfe6ec8ee1109648c",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "0a8d8236bc00fc6a1dbb6d5de4d3a35b3050bdf55a3db4a302ff27345eff3874",
+        "input_scope_digest": "ae0929b6f6f4901a6b70f2cf10d88111eece59a148376347c19f85825333aa99",
+        "proposal_count": 4,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "c962e2e04036c859683056bffa376bc2c776c1a5cba861bdafcef10b110d499f"
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "section_id": "67865a7f6a593ea6b1c27582ec7974946c44a96b81deda2a515be84e2f5d3b43",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 346160,
+      "end": 347167,
+      "text_sha256": "77b2e414e8b130658153c24d517c772fc3cb24418810be9d313404791b393faa",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "a55331beef32294abc380dce43d0c1a71ee076d3d1465d453a94b17a42e7bc6a",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "9d089f13cd7d3aaa6ac36b7a39859aed8e8b63f017007f2c26ab984b162cb53a",
+        "input_scope_digest": "840783671be97f91944cbba8337b23c49ac1e6e613a76b44833e142438b69222",
+        "proposal_count": 3,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "cb057c3a4144903d0aa41a89f74511d038c7dcb751c0365bb53190926c727eb3"
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "section_id": "d1c8210a5cf9386c91efd1bbf7e444b8a99b576cd9dcdeb9acd54f805ee7f33a",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 347167,
+      "end": 347663,
+      "text_sha256": "74883dd7664ac867e58b3ba5811acda14d4b6d299df5e23b52ab4aa7c85fd035",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "fc70131951d3a795b761efce0efae64bc22eda30f58a8412868e206314873cdf",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "48698a08cc6fa1aa5641f6b529456f518c762dc1a6ff1046b86fc5752e1c518b",
+        "input_scope_digest": "504957fb1e7c4a7b954a7e7f2e259b08906e2cb6d011a48e7c7ac37e8f5f11c2",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "0e0865b3c461ec0d91901151b08c754ffe22b51f49f344494b5dac1b0891ad61"
+      }
+    },
+    {
+      "section_reference": "4.21",
+      "section_id": "5afbd10ceb9158a0e104060e40effada71e2f45f5b58f63b0ee566588b65598d",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 348970,
+      "end": 350554,
+      "text_sha256": "a161937894f8187fb2e1baa0207615b248d7cbdc3c33778f30d5d649e5ff244e",
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-general-covenants/v1",
+      "prompt_version": 1,
+      "prompt_digest": "8a3afbd0588b8ea05625805353bd270cb5f33d5748a83463aab44fbcace6c52a",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "51730f5584ac0d99f74f86e75b9efd0e5b11939d90e4a6f74999a3b0d5e8cb32",
+        "input_scope_digest": "9d52d651c0346371d1ce575f0f981b2a468fd1b0d6088037f8502be98dd8e3d2",
+        "proposal_count": 2,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "d1e70bb03c3561f04be78dcef5d691814b629bca20518af06050156641693592"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.8",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.8",
+        "normalized_citation": "4.8",
+        "derived_citation": "4.8"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "54f1e24c45e7f240be7f2b78de706d595d0214cf6db41cc0701cc4084f9b98d9",
+          "claim_occurrence_id": "10fa6cb3c9d1e56549572b3db01bb4bcdd3e340b77600b4e9cb03f04a0369521",
+          "subject_occurrence_id": "c8ae9db350291f9ffe5b8ee74e49085263e076cb77cd8d4c49a5b43ddaf914c4",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company shall cooperate with Parent and use reasonable best efforts to take, or cause to be taken, all actions, and do or cause to be done all things, reasonably necessary, proper or advisable on its part under applicable Laws and rules and policies of NYSE to enable the delisting by the Forward Surviving Company of the Company Shares from NYSE and the deregistration of the Company Shares under the Exchange Act as promptly as practicable after the Forward Merger Effective Time",
+          "canonical_value": "COV-DELIST",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "84c5758f20b23de63c20d00fb77931f0eba011e5a788dc52c56a9e1add346be8"
+          ],
+          "attributes": {
+            "section_reference": "4.8",
+            "covenant_obligor": "the Company",
+            "covenant_code": "COV-DELIST",
+            "owner_id": "LISTING_DELISTING_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-DELIST"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "84c5758f20b23de63c20d00fb77931f0eba011e5a788dc52c56a9e1add346be8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9aa4164abc8805636d9b1b268fa70433cd1b1f02cbe8e71d4275f03705e8e809",
+              "document_ordinal": 0,
+              "absolute_start": 48,
+              "absolute_end": 533,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "65cb4fb885179e6a698e0f90a6a2830a64321668094ec979173941cec8abaff5"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "588f3fcde10a4bef6597663a54842876ef80cc5ea304b0303b37af65a8e2a3fd",
+          "producer_receipt_id": "46fa6a5b35eef7a442eba279a97f9478efe41f0271343e254e344ee0e91d1f19",
+          "governed_scope_digest": "6b6079d9ba27a3872e85bd2fcaaf173935b9e5afc521b212bf5653fe8e583169",
+          "extraction_provenance_id": "e7a1be69a2f725d101f3f0db16e15a9d43158489a7cf4c12bafcfe194304c40f"
+        }
+      }
+    },
+    {
+      "section_reference": "4.9",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.9",
+        "normalized_citation": "4.9",
+        "derived_citation": "4.9"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4338ab251386aa841fffbd75288c8de71b5f659b0d02c6ae5abfceb56fd2b933",
+          "claim_occurrence_id": "1d2af2a9eb9ac7cec86f119a9a3c8ca23630078459765560a39d069fb717fd0b",
+          "subject_occurrence_id": "4008102ac8991b0fe08d2b6d92c484a6a73a7eebbba11e82eff3613c3ae68e0f",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_LIST_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall use reasonable best efforts to cause the Parent Shares that will be issued in the Parent Share Issuance to be listed on the NYSE, subject to official notice of issuance, prior to the Titanium Merger Effective Time.",
+          "canonical_value": "COV-LIST",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9da6700b11fdd4418230c49298e399bb262d03dec906db10457e093d71e28d99"
+          ],
+          "attributes": {
+            "section_reference": "4.9",
+            "covenant_obligor": "Parent",
+            "covenant_code": "COV-LIST",
+            "owner_id": "LISTING_DELISTING_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-LIST"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9da6700b11fdd4418230c49298e399bb262d03dec906db10457e093d71e28d99",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4ebea2cf5cbed6e598eefaf69546263f7c3e36f0ca722e3d324f438f53a42d41",
+              "document_ordinal": 0,
+              "absolute_start": 18,
+              "absolute_end": 245,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aa28dbc342db2fc993aa8cf8adb83a408751017676e2a13a7e9da4f2ad2b5c4a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "5651e88b086491199c472ed46e7c71e7fe4a804fb927164f83fbae4f27762cf9",
+          "producer_receipt_id": "07fd869f4fad0b1430bb465f36811cd0ff02c172b2366dc10a02f5f1096fde58",
+          "governed_scope_digest": "f1f7f2f256e638d647371ad634b47799fa7654e8810c1fef8b37a1836d434c24",
+          "extraction_provenance_id": "651f48226f9229acb03845f1da0baa9cc966fe34647fffb694c22d64b7d2c4c3"
+        }
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.10",
+        "normalized_citation": "4.10",
+        "derived_citation": "4.10"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7200120c929362842d20744972595b7f96f938b202cc142b3e06a762d0caf9c5",
+          "claim_occurrence_id": "294d7c37bdca19d8a4298a8378f16a9f03ed640f14879dadb82d08971ad71c84",
+          "subject_occurrence_id": "1a9e09df0947c49d0807fc59a8a3f0a1c873655e11bd248b9823a777c10271c6",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company shall not, without the consent of Parent, make any press releases or other public communications (including with respect to this Agreement or the Transactions)",
+          "canonical_value": "COV-PUBLICITY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6d5f583c47afc2e23751a36e2e465a0fbd5d94e2ef6264c097b4eb59e874e252"
+          ],
+          "attributes": {
+            "section_reference": "4.10",
+            "covenant_obligor": "the Company",
+            "covenant_code": "COV-PUBLICITY",
+            "owner_id": "PUBLICITY_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-PUBLICITY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6d5f583c47afc2e23751a36e2e465a0fbd5d94e2ef6264c097b4eb59e874e252",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "556258909ad97126e2b05c6893f338e53af2b7dcce7e3dadfb94740c5d5927d7",
+              "document_ordinal": 0,
+              "absolute_start": 149,
+              "absolute_end": 320,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6b9c6435e38eca38d088761250368d7d47cc6e6605769fe4debe507ec80fc722"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "0a8d8236bc00fc6a1dbb6d5de4d3a35b3050bdf55a3db4a302ff27345eff3874",
+          "producer_receipt_id": "c962e2e04036c859683056bffa376bc2c776c1a5cba861bdafcef10b110d499f",
+          "governed_scope_digest": "7427623a5c3195ee2a8d96b64371f2c0ef544560dccc22e77c413096da48a760",
+          "extraction_provenance_id": "1d2e6435b4606ee866687722f1803fc82db0188af29d821f38770e1405a440bd"
+        }
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.10",
+        "normalized_citation": "4.10",
+        "derived_citation": "4.10"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7c382c4f04ae926d26be6c9d2094a41a6c6765a1b1a15f1e01af5b8e0eba0773",
+          "claim_occurrence_id": "f196c9228f74c35200e88a41f203682eb12f352e4e6fea7213f4aee936ec74ac",
+          "subject_occurrence_id": "1db76b4874e0eac287f5a2fcf07c52d94f9bc5c359f8a079c8e9aeb235d6c520",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company will, to the extent not prohibited by Law, prior to making such release or announcement, provide a copy of such release or announcement to Parent and consult with Parent regarding the contents thereof",
+          "canonical_value": "COV-PUBLICITY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b7e5695d668cf0d62e58edaf6bf7b577ee8431f68107dcb98600c1469247c232"
+          ],
+          "attributes": {
+            "section_reference": "4.10",
+            "covenant_obligor": "the Company",
+            "covenant_code": "COV-PUBLICITY",
+            "owner_id": "PUBLICITY_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-PUBLICITY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b7e5695d668cf0d62e58edaf6bf7b577ee8431f68107dcb98600c1469247c232",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5dc1f4ff9abcd8e2e317c902334c2b297dec00aedd2dfc8bd20b8de07fd0f325",
+              "document_ordinal": 0,
+              "absolute_start": 565,
+              "absolute_end": 777,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fc6cbf71b63ad40fcb8086e9abf5930cdd172671b588a5bda8961cf78f9819d6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "0a8d8236bc00fc6a1dbb6d5de4d3a35b3050bdf55a3db4a302ff27345eff3874",
+          "producer_receipt_id": "c962e2e04036c859683056bffa376bc2c776c1a5cba861bdafcef10b110d499f",
+          "governed_scope_digest": "7427623a5c3195ee2a8d96b64371f2c0ef544560dccc22e77c413096da48a760",
+          "extraction_provenance_id": "1d2e6435b4606ee866687722f1803fc82db0188af29d821f38770e1405a440bd"
+        }
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.10",
+        "normalized_citation": "4.10",
+        "derived_citation": "4.10"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "9b826c87c24033dc349824abea05dd1e40570569ae8ea101e81e26bc495185e5",
+          "claim_occurrence_id": "bd2d042ca2d03d8164501222dc21c35087e1c5e8c556e3480e45d969ee9989d7",
+          "subject_occurrence_id": "9a160373480d095b0907b62e0108cdeb1429df1f47cfb47b99433ab8aa50275c",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent (i) shall not, without the consent of the Company (not to be unreasonably withheld, conditioned or delayed), make any press release or other public communication with respect to this Agreement or the Transactions",
+          "canonical_value": "COV-PUBLICITY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "cf7c996aa92def904a79f1cf8ae037a35dd3cbab69dc0c634cdbdedeab62fa32"
+          ],
+          "attributes": {
+            "section_reference": "4.10",
+            "covenant_obligor": "Parent",
+            "covenant_code": "COV-PUBLICITY",
+            "owner_id": "PUBLICITY_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-PUBLICITY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "cf7c996aa92def904a79f1cf8ae037a35dd3cbab69dc0c634cdbdedeab62fa32",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "dee2912f4ad4d452bba01d3b5bb16c752c5eef09680f352106a69261ba43b7d4",
+              "document_ordinal": 0,
+              "absolute_start": 1037,
+              "absolute_end": 1256,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7d69b700c1a0167575250379d77596795e759fd357845369f8ef538ab3b893e2"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "0a8d8236bc00fc6a1dbb6d5de4d3a35b3050bdf55a3db4a302ff27345eff3874",
+          "producer_receipt_id": "c962e2e04036c859683056bffa376bc2c776c1a5cba861bdafcef10b110d499f",
+          "governed_scope_digest": "7427623a5c3195ee2a8d96b64371f2c0ef544560dccc22e77c413096da48a760",
+          "extraction_provenance_id": "1d2e6435b4606ee866687722f1803fc82db0188af29d821f38770e1405a440bd"
+        }
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.10",
+        "normalized_citation": "4.10",
+        "derived_citation": "4.10"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1e469698e016607b74109ed530185d3cb0cc6fb1eb033d3a0afce3333361221e",
+          "claim_occurrence_id": "69707a582d0ee8ff42bbd642a2c8c35217b8f4e54603f30e695a78fdd8c45c4b",
+          "subject_occurrence_id": "40068da495fcdefa3c31b6689e6ee99a81c3de7ed6b47d1c3eb42e9bf73555a2",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent will, to the extent not prohibited by Law and if reasonably practicable, prior to making such release or announcement, provide a copy of such release or announcement to the Company and consult with the Company regarding the contents thereof",
+          "canonical_value": "COV-PUBLICITY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4351a95571a10c095aeb515006cc0270306a03fa7d677cbf5363728d3ea28c90"
+          ],
+          "attributes": {
+            "section_reference": "4.10",
+            "covenant_obligor": "Parent",
+            "covenant_code": "COV-PUBLICITY",
+            "owner_id": "PUBLICITY_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-PUBLICITY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4351a95571a10c095aeb515006cc0270306a03fa7d677cbf5363728d3ea28c90",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c0eca982f8fb47ed66dcabdef4fd8a5d63199bb359db6e1be449ecda1d2725d5",
+              "document_ordinal": 0,
+              "absolute_start": 2277,
+              "absolute_end": 2524,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d4abe70ed3de2b21b44282344df4bca9085abecbf87595bcc74b1c6ab328c911"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "0a8d8236bc00fc6a1dbb6d5de4d3a35b3050bdf55a3db4a302ff27345eff3874",
+          "producer_receipt_id": "c962e2e04036c859683056bffa376bc2c776c1a5cba861bdafcef10b110d499f",
+          "governed_scope_digest": "7427623a5c3195ee2a8d96b64371f2c0ef544560dccc22e77c413096da48a760",
+          "extraction_provenance_id": "1d2e6435b4606ee866687722f1803fc82db0188af29d821f38770e1405a440bd"
+        }
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.18",
+        "normalized_citation": "4.18",
+        "derived_citation": "4.18"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "22fcbc9b7eb2a54e331a3d8268fa03b6da00bd01389671c351ed0beafbe99b69",
+          "claim_occurrence_id": "3b158efe69f2ad8f8d39dab49315f6f46853ff24b26ccd62849bf5ca15d4f03d",
+          "subject_occurrence_id": "098779dde1af5ef6c5dd943f30226b9f55f4356f3b539f71b9d267a193ec15c3",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall promptly notify Parent of any stockholder demands, litigations, arbitrations or other similar Action (including any derivative claim) against the Company or its directors, officers or employees relating to the Transactions (collectively, the “Transaction Litigation”) (including by providing copies of all pleadings with respect thereto) and keep Parent fully informed on a prompt basis regarding any Transaction Litigation and all material developments relating thereto.",
+          "canonical_value": "COV-LITNOTIFY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "cae51c0559890bac85f107f09143030e858aae77d45601f42589bed54bdf9da8"
+          ],
+          "attributes": {
+            "section_reference": "4.18",
+            "covenant_obligor": "The Company",
+            "covenant_code": "COV-LITNOTIFY",
+            "owner_id": "TRANSACTION_LITIGATION_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-LITNOTIFY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "cae51c0559890bac85f107f09143030e858aae77d45601f42589bed54bdf9da8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "dc059073f8d6054fd1ed2dad606961294ffe359d3b0678a22bbd2028e61ecd69",
+              "document_ordinal": 0,
+              "absolute_start": 29,
+              "absolute_end": 522,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "de14ac5435cffa631f32cac49d29d0b1d4c028c1a4a99a9f4a4df97f2eec3f39"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "9d089f13cd7d3aaa6ac36b7a39859aed8e8b63f017007f2c26ab984b162cb53a",
+          "producer_receipt_id": "cb057c3a4144903d0aa41a89f74511d038c7dcb751c0365bb53190926c727eb3",
+          "governed_scope_digest": "39d64f8826f3aeb211db856dfb12732e98fc65d12c1f4456b689f04409f4047c",
+          "extraction_provenance_id": "d908f5edb9aa14d47f62661a9b195c74eff188968ef67d571cfc1913eb0edeb7"
+        }
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.18",
+        "normalized_citation": "4.18",
+        "derived_citation": "4.18"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6dac2112e2320c643deb2361fea43d60e7da99bee3e7b8eacf854259e67f8574",
+          "claim_occurrence_id": "a9ce7ed8c143b4f2e363c94f52df04d651996c01c0f35827f95273a15e96384b",
+          "subject_occurrence_id": "cc0804b65aa615171a5e2eade3fce647fa844ee36ec146b939827f5dd87a8ead",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall give Parent the opportunity to participate in the defense or settlement of any Transaction Litigation and consult with Parent in connection with material strategic decisions relating to the defense or settlement of any such Action.",
+          "canonical_value": "COV-LITNOTIFY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "255cacaab57aeb59b27be19f8ac2716c1da0bd1c7b3a7fec434cdafc1fd6d43a"
+          ],
+          "attributes": {
+            "section_reference": "4.18",
+            "covenant_obligor": "The Company",
+            "covenant_code": "COV-LITNOTIFY",
+            "owner_id": "TRANSACTION_LITIGATION_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-LITNOTIFY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "255cacaab57aeb59b27be19f8ac2716c1da0bd1c7b3a7fec434cdafc1fd6d43a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "274071978191baf335c6be408f5c8bd2c72d15e96fe555dc71aada1c1c94cf82",
+              "document_ordinal": 0,
+              "absolute_start": 523,
+              "absolute_end": 772,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "984f1d5d6c162e859f9ee40c71484def239acaf5a93f58f26386cc94892f1c69"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "9d089f13cd7d3aaa6ac36b7a39859aed8e8b63f017007f2c26ab984b162cb53a",
+          "producer_receipt_id": "cb057c3a4144903d0aa41a89f74511d038c7dcb751c0365bb53190926c727eb3",
+          "governed_scope_digest": "39d64f8826f3aeb211db856dfb12732e98fc65d12c1f4456b689f04409f4047c",
+          "extraction_provenance_id": "d908f5edb9aa14d47f62661a9b195c74eff188968ef67d571cfc1913eb0edeb7"
+        }
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.18",
+        "normalized_citation": "4.18",
+        "derived_citation": "4.18"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "420e29db138f32e09b6d51a038b8b82ee7225f8b29a20b87002de147bb9f3023",
+          "claim_occurrence_id": "0f2bb39880dd8a5854d6ef65db522a0ac585587049097d66bac99e610af2add3",
+          "subject_occurrence_id": "005f0d54f9c3efdd48e594001205e8e289b414a573f88ae656c8941af12de6f7",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company agrees that it shall not settle or offer to settle any Transaction Litigation, without the prior written consent of Parent, not to be unreasonably withheld, conditioned or delayed.",
+          "canonical_value": "COV-LITNOTIFY",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1dc7e68a87918a4165d635afcdacba3afc52b0fe3a4be41ea673789fa26ad192"
+          ],
+          "attributes": {
+            "section_reference": "4.18",
+            "covenant_obligor": "the Company",
+            "covenant_code": "COV-LITNOTIFY",
+            "owner_id": "TRANSACTION_LITIGATION_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-LITNOTIFY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1dc7e68a87918a4165d635afcdacba3afc52b0fe3a4be41ea673789fa26ad192",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1a95176cb7004217f228f70d28118587fd0f2f23874a215b44e3b57ab0a401b2",
+              "document_ordinal": 0,
+              "absolute_start": 811,
+              "absolute_end": 1003,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "86157b01b9ecbda1c0fbce7986fd093798935f459b9f6f2c1fb32b15e5f8a0a4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "9d089f13cd7d3aaa6ac36b7a39859aed8e8b63f017007f2c26ab984b162cb53a",
+          "producer_receipt_id": "cb057c3a4144903d0aa41a89f74511d038c7dcb751c0365bb53190926c727eb3",
+          "governed_scope_digest": "39d64f8826f3aeb211db856dfb12732e98fc65d12c1f4456b689f04409f4047c",
+          "extraction_provenance_id": "d908f5edb9aa14d47f62661a9b195c74eff188968ef67d571cfc1913eb0edeb7"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "eb37124eec3bda1598ef38a16360b810e8f168b2de08092b8ffb3e910472e5a0",
+          "claim_occurrence_id": "f2309666954e5a7f9c1aa65d1a831f98db57e0033732f8ec6de5105aab8670a0",
+          "subject_occurrence_id": "f8dbf0a39d997e08ef21343f3105174d40658317cbe0bffaafca69cc38245f29",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company and Parent each shall take all such steps as may be necessary or appropriate to ensure that any dispositions of Company Shares (including derivative securities related to such stock) resulting from the Mergers by each individual who is subject to the reporting requirements of Section 16(a) of the Exchange Act with respect to the Company immediately prior to the Titanium Merger Effective Time are exempt under Rule 16b-3 promulgated under the Exchange Act.",
+          "canonical_value": "COV-16B",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "75197bf2c7386a75859047cd6570a0ce876fba220119fbdd10723c5b1b3594bb"
+          ],
+          "attributes": {
+            "section_reference": "4.19",
+            "covenant_obligor": "The Company and Parent each",
+            "covenant_code": "COV-16B",
+            "owner_id": "SECTION_16_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-16B"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "75197bf2c7386a75859047cd6570a0ce876fba220119fbdd10723c5b1b3594bb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "169bcc762be9a85ccb6372c06c4bf48b89de0b5dbb551def7074ae541d18f2d2",
+              "document_ordinal": 0,
+              "absolute_start": 25,
+              "absolute_end": 495,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4b8f96ce8b75f696b28b5f500b08c32b1386ebbb3c6f345ccba64e81b1cdeb89"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "48698a08cc6fa1aa5641f6b529456f518c762dc1a6ff1046b86fc5752e1c518b",
+          "producer_receipt_id": "0e0865b3c461ec0d91901151b08c754ffe22b51f49f344494b5dac1b0891ad61",
+          "governed_scope_digest": "5a051b8102de525b0381535548120634e2d77ed1c55392907c55a6cedb54a814",
+          "extraction_provenance_id": "a9ba563eaef3d301f17198ae1a033c9d2d2f817a4cfc3225c120c0ef058e61e0"
+        }
+      }
+    },
+    {
+      "section_reference": "4.21",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.21",
+        "normalized_citation": "4.21",
+        "derived_citation": "4.21"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cf44b27357d50df7cf81e71340c9add6a4f5186c3306903278f95eadd789f5b8",
+          "claim_occurrence_id": "301802cdddec97c99febfeb86a521e24ebeac915f152c34542a5ddd20776d3f7",
+          "subject_occurrence_id": "70d9a6b02637a4fa8d4004e6199dcf6593a1839384f244ac5ec8c059655d4cae",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_FURTHER_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the officers and directors of the Titanium Surviving Corporation will be authorized to execute and deliver, in the name and on behalf of the Company or Titanium Merger Sub, any deeds, bills of sale, assignments or assurances and to take any other actions and do any other things, in the name and on behalf of the Company or Titanium Merger Sub, reasonably necessary to vest, perfect or confirm of record or otherwise in the Titanium Surviving Corporation any and all right, title and interest in, to and under any of the rights, properties or assets of the Company acquired or to be acquired by the Titanium Surviving Corporation as a result of, or in connection with, the Titanium Merger.",
+          "canonical_value": "COV-FURTHER",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1f2241b152e94b4e670869677de5469f6576298f0f96ac63e1b5a53d019e8482"
+          ],
+          "attributes": {
+            "section_reference": "4.21",
+            "covenant_obligor": "the officers and directors of the Titanium Surviving Corporation",
+            "covenant_code": "COV-FURTHER",
+            "owner_id": "FURTHER_ASSURANCES_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-FURTHER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1f2241b152e94b4e670869677de5469f6576298f0f96ac63e1b5a53d019e8482",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fb2dd599437ba63b1864a29175bc9b8b4afb7a26ee9348c92e206325ecd05c75",
+              "document_ordinal": 0,
+              "absolute_start": 74,
+              "absolute_end": 763,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "84ed32c2802affadd462079df10442c2b99c82f0e955f6a96c954b1c30820250"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "51730f5584ac0d99f74f86e75b9efd0e5b11939d90e4a6f74999a3b0d5e8cb32",
+          "producer_receipt_id": "d1e70bb03c3561f04be78dcef5d691814b629bca20518af06050156641693592",
+          "governed_scope_digest": "f8267006b6ab34c6a724fee98a8a96a2ce18be8dd8fa39cbad3e02b9cd1a6787",
+          "extraction_provenance_id": "b775c88457bb35f0704aafbd951ae5323476870b79b121beb808ca7865ea8062"
+        }
+      }
+    },
+    {
+      "section_reference": "4.21",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.21",
+        "normalized_citation": "4.21",
+        "derived_citation": "4.21"
+      },
+      "section_family": "GENERAL_COVENANTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d290ea4448e41671a0dc5c7b762763d33dddad9163a638fbc74e894f0cb21481",
+          "claim_occurrence_id": "3bb0c9c855a190276674f0d7330cfdb47ba0c2d041532a4d10344edbee579ac6",
+          "subject_occurrence_id": "9cb9aabf40bb1f653e42b20b9ff255ab09e62547fb3400ea744a1c1b3996b2f9",
+          "claim_definition_key": "NATIVE_GENERAL_COVENANT_FURTHER_PRESENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the officers and directors of the Forward Surviving Company will be authorized to execute and deliver, in the name and on behalf of the Company, Titanium Merger Sub or the Titanium Surviving Corporation, any deeds, bills of sale, assignments or assurances and to take any other actions and do any other things, in the name and on behalf of the Company, Titanium Merger Sub or the Titanium Surviving Corporation, reasonably necessary to vest, perfect or confirm of record or otherwise in the Forward Surviving Company any and all right, title and interest in, to and under any of the rights, properties or assets of the Titanium Surviving Corporation acquired or to be acquired by the Forward Surviving Company as a result of, or in connection with, the Forward Merger.",
+          "canonical_value": "COV-FURTHER",
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8279fa2528559ab693f90d86b47fb1f0f33d02aa4a23a94650f52e2b9c0f3bb3"
+          ],
+          "attributes": {
+            "section_reference": "4.21",
+            "covenant_obligor": "the officers and directors of the Forward Surviving Company",
+            "covenant_code": "COV-FURTHER",
+            "owner_id": "FURTHER_ASSURANCES_COVENANTS",
+            "definition_cross_references": []
+          },
+          "taxonomy_codes": {
+            "covenant_code": "COV-FURTHER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8279fa2528559ab693f90d86b47fb1f0f33d02aa4a23a94650f52e2b9c0f3bb3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4be9b4cb8da6fd23b8f1dbcb244d52cbb68696094e9da990330c934706107fc9",
+              "document_ordinal": 0,
+              "absolute_start": 812,
+              "absolute_end": 1580,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "500838587a6d729073dcccf6035f3b63365377101e0e6a1e896ad7b10149a327"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GENERAL_COVENANT",
+          "prompt_digest": "51730f5584ac0d99f74f86e75b9efd0e5b11939d90e4a6f74999a3b0d5e8cb32",
+          "producer_receipt_id": "d1e70bb03c3561f04be78dcef5d691814b629bca20518af06050156641693592",
+          "governed_scope_digest": "f8267006b6ab34c6a724fee98a8a96a2ce18be8dd8fa39cbad3e02b9cd1a6787",
+          "extraction_provenance_id": "b775c88457bb35f0704aafbd951ae5323476870b79b121beb808ca7865ea8062"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.8",
+      "source_byte_length": 535,
+      "covered_byte_length": 485,
+      "coverage_share": 0.9065420560747663,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.9",
+      "source_byte_length": 249,
+      "covered_byte_length": 227,
+      "coverage_share": 0.9116465863453815,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.10",
+      "source_byte_length": 4261,
+      "covered_byte_length": 849,
+      "coverage_share": 0.19924900258155362,
+      "marker_counts": {
+        "as of": 0,
+        "except": 2,
+        "knowledge": 0,
+        "material": 0,
+        "total": 2
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.19924900258155362,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 2,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.18",
+      "source_byte_length": 1007,
+      "covered_byte_length": 934,
+      "coverage_share": 0.9275074478649454,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 2,
+        "total": 2
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 2,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.19",
+      "source_byte_length": 496,
+      "covered_byte_length": 470,
+      "coverage_share": 0.9475806451612904,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.21",
+      "source_byte_length": 1584,
+      "covered_byte_length": 1457,
+      "coverage_share": 0.9198232323232324,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.8",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.9",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.10",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 145,
+          "end": 148
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 328,
+          "end": 331
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 781,
+          "end": 785
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1033,
+          "end": 1036
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1044,
+          "end": 1047
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1644,
+          "end": 1647
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1859,
+          "end": 1863
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2040,
+          "end": 2043
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2528,
+          "end": 2531
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2802,
+          "end": 2805
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2990,
+          "end": 2993
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3258,
+          "end": 3261
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3526,
+          "end": 3529
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 13,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 145,
+          "end": 148
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 328,
+          "end": 331
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 781,
+          "end": 785
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1033,
+          "end": 1036
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1044,
+          "end": 1047
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1644,
+          "end": 1647
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1859,
+          "end": 1863
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 2040,
+          "end": 2043
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 2528,
+          "end": 2531
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2802,
+          "end": 2805
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2990,
+          "end": 2993
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 3258,
+          "end": 3261
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 3526,
+          "end": 3529
+        }
+      ],
+      "disagreement_count": 13
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.18",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.19",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 324,
+          "end": 327
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.21",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 12,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "dde619c4bc3c7d99512fb306ac44ae4984fb947a11305f8292b856e2ee1d458f"
+}

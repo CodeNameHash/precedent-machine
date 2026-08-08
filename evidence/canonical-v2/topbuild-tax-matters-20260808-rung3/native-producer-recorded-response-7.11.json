@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T01:03:08.124Z",
+  "section_reference": "7.11",
+  "note": "General extraction run: deal=topbuild, family=TAX_MATTERS, section_references=[\"4.23\",\"7.11\"] (all dispatched as TAX_MATTERS via section_family_assignments), prompt_id=native-producer-tax-matters/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"tax_assertions\": [\n    {\n      \"section_reference\": \"7.11\",\n      \"assertion_kind\": \"TRANSFER_ALLOCATION\",\n      \"quote\": \"All transfer, documentary, sales, use, stamp, registration and other such similar Taxes imposed with respect to the Mergers shall be paid by Parent, Titanium Merger Sub and Forward Merger Sub when due.\",\n      \"treatment_scope_ref\": null,\n      \"treatment_term_ref\": null,\n      \"tax_opinion_ref\": null,\n      \"representation_letter_ref\": null,\n      \"bearer_ref\": null\n    }\n  ],\n  \"mechanics\": [],\n  \"open_world_candidates\": []\n}\n```"
+}

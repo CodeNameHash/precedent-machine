@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T01:18:15.119Z",
+  "section_reference": "1.1",
+  "note": "General extraction run: deal=topbuild, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.1\",\"1.2\",\"1.3\",\"1.4\",\"1.5\",\"1.6\",\"1.7\",\"1.8\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"structure_assertions\":[{\"assertion_kind\":\"ACTIONS\",\"quote\":\"at the Titanium Merger Effective Time, Titanium Merger Sub shall be merged with and into the Company in accordance with the requirements of the DGCL\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the separate corporate existence of Titanium Merger Sub shall thereupon cease\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"The Company shall be the surviving corporation in the Titanium Merger\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the separate corporate existence of the Company under the Laws of the State of Delaware, with all of its rights, privileges, immunities, powers and franchises, shall continue unaffected by the Titanium Merger\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

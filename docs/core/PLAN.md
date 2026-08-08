@@ -1731,7 +1731,7 @@ defined, exported and unable to fire.
    family that previously produced no receipt at all. But it used **63,747
    output tokens, which is BELOW the old 64,000 ceiling**, so this run does not
    itself demonstrate the raise was necessary for this family; the same call
-   measured 71,907 tokens on an earlier sampling. Sampling variance across runs
+   measured 74,080 tokens on an earlier sampling. Sampling variance across runs
    of one section is thousands of tokens wide. **NO_SHOP's 69,576 is the run
    that proves the raise works; REPRESENTATIONS' 63,747 only proves the family
    can complete.** It resolved 0 governed claims, which is its own question.

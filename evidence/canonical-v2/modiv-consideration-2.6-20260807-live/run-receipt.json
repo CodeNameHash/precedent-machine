@@ -25,12 +25,12 @@
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
         "provider_id": "native-producer-anthropic/v1",
-        "model_id": "replay(evidence/canonical-v2/modiv-consideration-2.6-20260807-live)",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
         "prompt_digest": "8dfa04cfc9c23d44983d4f10b10bd708c2a62e5fbe0a6e15a7cbd4b3b485521b",
         "input_scope_digest": "1a8aae6291156c4c51b87cdf2600a57ea1ae876a9279d65185cac7287a9484ca",
         "proposal_count": 1,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "816668cfee68fcaab2b58b9fb9083817b752095d72e22b5cfdc808b2d3626776"
+        "producer_receipt_id": "9dd8fb5fcb83e07baf910e3a04de9e57c1f80dd2997b8d7ff597ec70b98064d1"
       }
     }
   ],
@@ -103,7 +103,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "eeda440004c378c949d3ead81fdb39ce224546eb0d21bb1f712ea2790f6ae87d"
+          "closure_id": "dbfd69bf341ce73d9ab86c0b2af82f7df8ec54fc5e9c74611e6a045e3cbc8c4d"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -111,9 +111,9 @@
           "extractor_version": "1",
           "proposal_kind": "CONSIDERATION",
           "prompt_digest": "8dfa04cfc9c23d44983d4f10b10bd708c2a62e5fbe0a6e15a7cbd4b3b485521b",
-          "producer_receipt_id": "816668cfee68fcaab2b58b9fb9083817b752095d72e22b5cfdc808b2d3626776",
+          "producer_receipt_id": "9dd8fb5fcb83e07baf910e3a04de9e57c1f80dd2997b8d7ff597ec70b98064d1",
           "governed_scope_digest": "b162fe2bd456f18e966dab94c90e33d3115a8f0783841308ae9da08284ed40b0",
-          "extraction_provenance_id": "552b1a84f4d5a1091349ae8237288137a19ad90fc5d3f7b985547abf8a87223a"
+          "extraction_provenance_id": "dc3e873308dc1e512bcfcd5b69b4ccda1311dab87898b4193c4fcc78736ce008"
         }
       }
     }
@@ -162,5 +162,5 @@
   "undispatched_section_count": 0,
   "compiled_candidate_count": 1,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "ebf0bd8a7d326ddf1c1e8ac12413db5a3bc2ba8e7dfa393c29dec38aa9bba6c4"
+  "run_receipt_id": "4ed5ab72a1a6277a6fd770d15aafb36646c805dd16a26504954f131b9790ffdf"
 }

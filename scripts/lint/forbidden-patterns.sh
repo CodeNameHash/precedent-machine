@@ -77,7 +77,14 @@ const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28
 // directory, so resolution.json, validation.json, the receipts and everything
 // else in the same directory stay fully checked, and CODE-class fingerprints
 // still apply to these two in full.
-const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|native-producer-recorded-response-[^/]+)\.json$/;
+// `recording.json` joins the list as the FIFTH instance of the identical
+// exemption, and it belongs by construction rather than by coincidence: a
+// --record recording stores `request_messages`, and the request messages ARE
+// the agreement section handed to the model. It embeds admitted source text
+// for the same reason the other two do. It went unnoticed until a
+// REPRESENTATIONS recording, whose section is the one place a merger agreement
+// says "Qualification" and "litigation" in the same breath.
+const LIVE_RUN_SOURCE_TEXT_FILE = /^evidence\/canonical-v2\/[^/]+\/(adapter-result|recording|native-producer-recorded-response-[^/]+)\.json$/;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',

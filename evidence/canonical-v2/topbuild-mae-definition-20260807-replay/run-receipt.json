@@ -25,12 +25,12 @@
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
         "provider_id": "native-producer-anthropic/v1",
-        "model_id": "replay(evidence/canonical-v2/topbuild-mae-definition-20260806)",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
         "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
         "input_scope_digest": "754917f6ef70b8a55ec7c4f53b3fedbcd343c743b6c390d3b6258e7b6b238a4b",
         "proposal_count": 23,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb"
+        "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2"
       }
     }
   ],
@@ -101,7 +101,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "a38c57b41ea6ae99d9ed49d42636d1f28eca74e1bd2cd8276398de84e0480a67"
+          "closure_id": "13481bbd2f7827809943596d72b439242b14fd5d9b567bd445a22fbc497e339b"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -109,9 +109,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -183,7 +183,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "ed57600d37a825b0732aa1cd556a8de0a239adcacab7a66af41230021a42c25d"
+          "closure_id": "87181c56866dd17340ca3c08cd052ff58bfabdc22205a00fd8cfc3bde21c1814"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -191,9 +191,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -266,7 +266,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "19abba7571ec0dad64fdfad7b02f221266512a2fe558363ea472ae097b10e16a"
+          "closure_id": "12516e9e590382c7977e2f343ed92e61a5bf4fc3e05ed76a62aa46e08a273d3e"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -274,9 +274,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -349,7 +349,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "617bf53b1bc2288b2d7bf7aa721e10552a409467efb7c823ee55bf225594bc01"
+          "closure_id": "fb9b4084b38813610c86f955b32fdce53111054e7838a3bc25dc9fa1af342d81"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -357,9 +357,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -432,7 +432,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "48be6c4160886ece5a351724e968d06de7773b472c5a598acbe6349197210b35"
+          "closure_id": "227462029667277ec88c409dc579916b5e0b48ee20ff6efdcead6c14c157e368"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -440,9 +440,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -514,7 +514,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "2045096829a8697407c6708d3f7e45f0607444a4a24d1eaa65c9bcf0b0003553"
+          "closure_id": "be82db842299de2974af847955aa6d2f4ec8399182b4532fcb5e5d2b174b679e"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -522,9 +522,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -596,7 +596,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "bbd0111a51c8bb9f44673b0b44f8e4817f49d4d96219eb8bf935601d9b296dc8"
+          "closure_id": "a21706aa25c540d1ebdc1aad5b6bc8ba06e615053a4a6c197bf10fa9c8be5149"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -604,9 +604,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -678,7 +678,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "313822ba479919a0f24627bf95183ab25720dfb6e776b048afd1a8d781bb4e05"
+          "closure_id": "d72d753d08a48fb16cce89cfc08db95456e5f09b946af384d650a4448ac0910e"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -686,9 +686,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -760,7 +760,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "9888a3f2ef876e7249853dd28ab1395b45b584b24396f64c3cd6fbe0c8f937c3"
+          "closure_id": "66972c74718b180e95332d9df01c9cca2b7051f45e844a82b60998930d390f2b"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -768,9 +768,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -842,7 +842,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "e5bf7a78b8c3e6ad4f751af79af996147661a527837f6a16e3c313b522f206b1"
+          "closure_id": "c003e1b78b3c5a12cad452e56cf945486721b56a89100da8862bb8989071955b"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -850,9 +850,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -924,7 +924,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "1752768402446bb3a04bf7a8121ab89648deab87394487ca1babf6ff1ba71b37"
+          "closure_id": "f2dd79703f05bc830980be4e53839641a06fd935f273bda0bc43634947d0295f"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -932,9 +932,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1004,7 +1004,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "c007f70d337c72e16135418c4cd39fe9dfd7884031a454f8dbb94a147fa52286"
+          "closure_id": "3e32c112723906391941057060a56e6e999df0cba93d64a2d6362421d62cd759"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1012,9 +1012,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1086,7 +1086,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "217c6da0f68600d9f13d9dbca6ba6444aee198e249a0f3415539bb76c0e061ca"
+          "closure_id": "6c932b468fa920bf2971122c5333dc4a6a37654fa180c156fe5b33eeeeddb3b1"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1094,9 +1094,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1168,7 +1168,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "199c9f0354ece46e4fdfcbc0473ba693e634fb8ee8f2808f06382972847a4e85"
+          "closure_id": "1d92fb048a533676ddb61d68a7b404dffd52aa64bd5e0b4712da12fe74082aff"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1176,9 +1176,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1250,7 +1250,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "963187123324e2645657cc297debc6a3c4f30d9c7a7733156f5eefa648c5090a"
+          "closure_id": "1e08930479274a2ffe36c11814b1368ebb7b5750fc668cf1eed895ac38a65f38"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1258,9 +1258,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1332,7 +1332,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "7b4239809638e96780cd63a1bb9fda2d40af4cfca5513214ba00b8940531903a"
+          "closure_id": "60f3460a6ca8fd9b297f831d81b154ac8981a6064691f323e52a8257af123f86"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1340,9 +1340,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1416,7 +1416,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "ceb7ca6fdcca3fe20e868ddd38dbe52eadf8be48488f1d9749798d14c99ce840"
+          "closure_id": "4f38ab6e69c819fc6c4cb1741d6e23835aba0ab08f0bd8768fe6b9db6293902c"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1424,9 +1424,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1500,7 +1500,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "6c6cf2171601ece9632e163f8670ac31ca18150eb9fa6810133514aa186cab56"
+          "closure_id": "7b2f9b8c97e48f827a0a0333fc22180a3e97a6495bb451c2f34bf4460522921d"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1508,9 +1508,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1584,7 +1584,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "b94394e53c3a3e1d01107c7224d9f7064d19acd3c40f28a04088a2cabd4c61e6"
+          "closure_id": "8a0f72827f8d222ad754cb8d5c18842ccaef9c8622cebd211a99523482d11019"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1592,9 +1592,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1668,7 +1668,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "f9eac3c913840b1bced96dbe78aac6d247a6a23ced9247cbbcaf801bd6d04287"
+          "closure_id": "acd7d02d4725512cf9b06b61ee5c63a704b3d31c1930d166cb739116f804ede8"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1676,9 +1676,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1752,7 +1752,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "0a77428ba34edd60f2af07f11b5abee08f2882a9c77a606efed2b05e94f02c4e"
+          "closure_id": "4a4f5cb081f2fa0222db99e242a79019b190670ba46a7db0968101497de61a00"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1760,9 +1760,9 @@
           "extractor_version": "1",
           "proposal_kind": "MAE_DEFINITION",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "42329d924d1b9db80a73a5d7567c1243d29a2e9e96d651e1ba8077143e5ee414"
+          "extraction_provenance_id": "aac87469ef7db0a3edac9f40cbc7e4f4e5707bbbeeffd7c852278013116b1aae"
         }
       }
     },
@@ -1819,7 +1819,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "8fb960e0e9deca6367dca66ecbcdf9c915784d0531ae238444158145f5ad46da"
+          "closure_id": "2120aec9a429daaecb21065e39600447f713b34e38c82b0a87f3781d97881a94"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1827,9 +1827,9 @@
           "extractor_version": "1",
           "proposal_kind": "OPEN_WORLD",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "1dd760df661fe30204b5772a5d70c5580effdeaaca72805db9de3f151179fc56"
+          "extraction_provenance_id": "a1cae25aa0f0edbfc331ab81c359de9c33e46f11d2f689252056ff9f24dd63e1"
         }
       }
     },
@@ -1886,7 +1886,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "87dfe02e1825b97494f963eddb2be15245884b145d9cee5cbdf9173eb1142ed7"
+          "closure_id": "3eb5d943848619f2c32893ecc1174a8d13aad05e4f447c6aa49e2e1051bf869d"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -1894,9 +1894,9 @@
           "extractor_version": "1",
           "proposal_kind": "OPEN_WORLD",
           "prompt_digest": "25988d805a59499b61fac927b94c3ca6ccfebd94eb78481a0e877a5a1df61efd",
-          "producer_receipt_id": "334ccb78a8393ff3d32ccd665a3abf30b4d1c3f1bd8ed6090570bccfabc024cb",
+          "producer_receipt_id": "2bedf1f2a8df99d29d3901b9b8e73ca576a0dee6fc11c85b8c78a54cb0871cd2",
           "governed_scope_digest": "072dc354003904447b1c4adf5dc106b7d6e532ed080e457872d02fabc3842bad",
-          "extraction_provenance_id": "1dd760df661fe30204b5772a5d70c5580effdeaaca72805db9de3f151179fc56"
+          "extraction_provenance_id": "a1cae25aa0f0edbfc331ab81c359de9c33e46f11d2f689252056ff9f24dd63e1"
         }
       }
     }
@@ -2249,5 +2249,5 @@
   "undispatched_section_count": 0,
   "compiled_candidate_count": 23,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "09cc5d3c0e5387da58f421ab31587a9c7c39b5405148441d7d5d1c623b55ae4e"
+  "run_receipt_id": "f0af6fc95f479e6928e8daf3e5dd257de16ef753e6e16bf6851419bc0b4e8ecc"
 }

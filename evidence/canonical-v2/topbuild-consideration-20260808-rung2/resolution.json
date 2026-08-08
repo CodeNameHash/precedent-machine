@@ -1,0 +1,2884 @@
+{
+  "resolved": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(a)(i)",
+      "citation_context": {
+        "parent_section_reference": "2.1",
+        "child_section_reference": "2.1",
+        "parent_chapeau_quote": "2.1 Effect on Capital Stock.",
+        "child_clause_quote": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”)."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "cb54f000af0a5c79ba47f5bbd3b376f60f0bb49c309e87f0671f845852334f06",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 15784,
+        "absolute_end": 36185,
+        "concept_key": "CONS-PERSHARE",
+        "ordinal": 1,
+        "source_anchor_id": "8163f9055e0af90e49e15193f287b19e9c9de226fec42ab6bbc1c8ed88631ade",
+        "provision_instance_id": "a9f08137cf4cd9fab39663a11ec8ee51d237ca598bf014efe5e2982d6f77d5b5",
+        "closure_id": "b45ee8f91959e9c83be8f02dd77391e9036a1b6b78da12721278687b3fdb9dd5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "f10a6f09b476bbac5bad85cca70c8290d3b6d6ff6653d94e7287e44f36d59bef",
+        "claim_occurrence_id": "f1577de00f5bee6e2044d35cbf70b6f0c741ef733b60d38b4f33c37b6013c38c",
+        "subject_occurrence_id": "a9f08137cf4cd9fab39663a11ec8ee51d237ca598bf014efe5e2982d6f77d5b5",
+        "claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+        "canonical_value": "505.00",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "0bfcfe85613cb56f6031f7d44e5e15715f2e138877d55c0075a27d782c9cf38a"
+        ],
+        "attributes": {
+          "section_reference": "2.1",
+          "assertion_kind": "PER_SHARE_CASH",
+          "consideration_term_ref": "Cash Consideration",
+          "ratio_term_ref": null,
+          "issuer_stock_ref": null,
+          "appraisal_status": null,
+          "statute_ref": null,
+          "currency": "USD",
+          "per_share_cash_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "PER_SHARE_CASH"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "0bfcfe85613cb56f6031f7d44e5e15715f2e138877d55c0075a27d782c9cf38a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e9fad0e43405f276ab97f2f23129fe24cea26ace2da3937642ac9fef5b1ff1c1",
+            "document_ordinal": 0,
+            "absolute_start": 1195,
+            "absolute_end": 1545,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "17e876fab40f89c5beced9bf61614246565e76bf35a4866918899fd1503d45e4"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "f10a6f09b476bbac5bad85cca70c8290d3b6d6ff6653d94e7287e44f36d59bef",
+            "claim_occurrence_id": "f1577de00f5bee6e2044d35cbf70b6f0c741ef733b60d38b4f33c37b6013c38c",
+            "subject_occurrence_id": "a9f08137cf4cd9fab39663a11ec8ee51d237ca598bf014efe5e2982d6f77d5b5",
+            "claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+            "canonical_value": "505.00",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "0bfcfe85613cb56f6031f7d44e5e15715f2e138877d55c0075a27d782c9cf38a"
+            ],
+            "attributes": {
+              "section_reference": "2.1",
+              "assertion_kind": "PER_SHARE_CASH",
+              "consideration_term_ref": "Cash Consideration",
+              "ratio_term_ref": null,
+              "issuer_stock_ref": null,
+              "appraisal_status": null,
+              "statute_ref": null,
+              "currency": "USD",
+              "per_share_cash_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "PER_SHARE_CASH"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "0bfcfe85613cb56f6031f7d44e5e15715f2e138877d55c0075a27d782c9cf38a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e9fad0e43405f276ab97f2f23129fe24cea26ace2da3937642ac9fef5b1ff1c1",
+                "document_ordinal": 0,
+                "absolute_start": 1195,
+                "absolute_end": 1545,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "17e876fab40f89c5beced9bf61614246565e76bf35a4866918899fd1503d45e4"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CONSIDERATION",
+            "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+            "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+            "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+            "extraction_provenance_id": "655eb47a1e6257f79a84b2f908ed0f376bae4072f24633c9c3e86c4ced12eb77"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 60,
+        "materiality_label": "CONSIDERATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1(a)(i)"
+        }
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(d)",
+      "citation_context": {
+        "parent_section_reference": "2.1",
+        "child_section_reference": "2.1",
+        "parent_chapeau_quote": "2.1 Effect on Capital Stock.",
+        "child_clause_quote": "who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "cb54f000af0a5c79ba47f5bbd3b376f60f0bb49c309e87f0671f845852334f06",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 15784,
+        "absolute_end": 36185,
+        "concept_key": "CONS-DISSENT",
+        "ordinal": 1,
+        "source_anchor_id": "8163f9055e0af90e49e15193f287b19e9c9de226fec42ab6bbc1c8ed88631ade",
+        "provision_instance_id": "c174fa8e2b30554052878c9014cbe3aa266752cce4dce7f7951a1a3738abc730",
+        "closure_id": "b606b1bf988a71c54bbb496c49b6a317d5c42f8193fb0c4e066fa2b3ed56a93b"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "53912ea1b661b25821a91d0f5bd50a84c5deeea94518b096ebf013df3783b7ce",
+        "claim_occurrence_id": "fbd12d842112526781ab657a2348dc94245b897533d00d1dd4952e62f42e7b57",
+        "subject_occurrence_id": "c174fa8e2b30554052878c9014cbe3aa266752cce4dce7f7951a1a3738abc730",
+        "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+        "canonical_value": "AVAILABLE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d5fd4708945349658090377cb9bfe4107496564b1d224195be1c2f52f1b7b2ba"
+        ],
+        "attributes": {
+          "section_reference": "2.1",
+          "assertion_kind": "APPRAISAL_STATUS",
+          "consideration_term_ref": null,
+          "ratio_term_ref": null,
+          "issuer_stock_ref": null,
+          "appraisal_status": "AVAILABLE",
+          "statute_ref": "Section 262 of the DGCL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "APPRAISAL_STATUS",
+          "appraisal_status": "AVAILABLE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d5fd4708945349658090377cb9bfe4107496564b1d224195be1c2f52f1b7b2ba",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e4f7747ee26ea1f4dacc901c3f3be1d83390486474e57a6d3fd7268bf8f85a74",
+            "document_ordinal": 0,
+            "absolute_start": 17943,
+            "absolute_end": 18149,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "969116e707c312f65623b07494e6e993a0404bb796e07abb292913cebc1a2852"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "53912ea1b661b25821a91d0f5bd50a84c5deeea94518b096ebf013df3783b7ce",
+            "claim_occurrence_id": "fbd12d842112526781ab657a2348dc94245b897533d00d1dd4952e62f42e7b57",
+            "subject_occurrence_id": "c174fa8e2b30554052878c9014cbe3aa266752cce4dce7f7951a1a3738abc730",
+            "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+            "canonical_value": "AVAILABLE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d5fd4708945349658090377cb9bfe4107496564b1d224195be1c2f52f1b7b2ba"
+            ],
+            "attributes": {
+              "section_reference": "2.1",
+              "assertion_kind": "APPRAISAL_STATUS",
+              "consideration_term_ref": null,
+              "ratio_term_ref": null,
+              "issuer_stock_ref": null,
+              "appraisal_status": "AVAILABLE",
+              "statute_ref": "Section 262 of the DGCL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "APPRAISAL_STATUS",
+              "appraisal_status": "AVAILABLE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d5fd4708945349658090377cb9bfe4107496564b1d224195be1c2f52f1b7b2ba",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e4f7747ee26ea1f4dacc901c3f3be1d83390486474e57a6d3fd7268bf8f85a74",
+                "document_ordinal": 0,
+                "absolute_start": 17943,
+                "absolute_end": 18149,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "969116e707c312f65623b07494e6e993a0404bb796e07abb292913cebc1a2852"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CONSIDERATION",
+            "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+            "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+            "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+            "extraction_provenance_id": "655eb47a1e6257f79a84b2f908ed0f376bae4072f24633c9c3e86c4ced12eb77"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 60,
+        "materiality_label": "CONSIDERATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1(d)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f10a6f09b476bbac5bad85cca70c8290d3b6d6ff6653d94e7287e44f36d59bef",
+      "closure_id": "17e876fab40f89c5beced9bf61614246565e76bf35a4866918899fd1503d45e4",
+      "normalised_phrase": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section 2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 275,
+          "end": 295,
+          "excerpt": "rger Sub or the Company or the holders of any capital stock of the Company:\n(i) Merger Consideration. Subject to the allocation and election procedures set forth in Section ‎2.1(",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 1656,
+          "end": 1676,
+          "excerpt": "tion or Cash Consideration, in each case, without interest, is the “Per Share Merger Consideration”. At the Titanium Merger Effective Time, all of the Company Shares shall ceas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 2228,
+          "end": 2248,
+          "excerpt": "ting Shares) shall thereafter represent only the right to receive the Per Share Merger Consideration, without interest.\n4\n(ii) Cancellation and Conversion of Cancelled Shares. Each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 3151,
+          "end": 3171,
+          "excerpt": "1 per share, of the Titanium Surviving Corporation.\n(b) Allocation of Per Share Merger Consideration; Election Procedures; Exchange of Company Shares.\n(i) Allocation. Notwithstandi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 3341,
+          "end": 3376,
+          "excerpt": "g in this Agreement to the contrary, the maximum number of Company Shares to be converted into the right to receive Cash Consideration in the Titanium Merger shall be equal to forty-five percent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:RIGHT_TO_RECEIVE_CASH",
+          "start": 3360,
+          "end": 3381,
+          "excerpt": " to the contrary, the maximum number of Company Shares to be converted into the right to receive Cash Consideration in the Titanium Merger shall be equal to forty-five percent (45%)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 3707,
+          "end": 3742,
+          "excerpt": "Maximum Cash Election Number”) and the maximum number of Company Shares to be converted into the right to receive Stock Consideration in the Titanium Merger shall be equal to fifty-five percent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 13429,
+          "end": 13464,
+          "excerpt": "es exceeds the Maximum Cash Election Number, all Stock Election Shares shall be converted into the right to receive Stock Consideration, and all Cash Election Shares shall be converted into the r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 13524,
+          "end": 13559,
+          "excerpt": "the right to receive Stock Consideration, and all Cash Election Shares shall be converted into the right to receive:\n(1) an amount in cash (without interest) equal to the product of (x) the Cash ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 14860,
+          "end": 14895,
+          "excerpt": "es exceeds the Maximum Stock Election Number, all Cash Election Shares shall be converted into the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:RIGHT_TO_RECEIVE_CASH",
+          "start": 14879,
+          "end": 14900,
+          "excerpt": "mum Stock Election Number, all Cash Election Shares shall be converted into the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the right ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:PHRASE:CONVERTED_INTO_RIGHT_TO_RECEIVE",
+          "start": 14955,
+          "end": 14990,
+          "excerpt": "the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the right to receive:\n(1) a number of validly issued, fully paid and non-assessable Parent Shares eq",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 18346,
+          "end": 18366,
+          "excerpt": "), shall not be converted into or represent the right to receive the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-PERSHARE",
+          "pattern_id": "CONS-PERSHARE:ACRONYM:MERGER_CONSIDERATION",
+          "start": 18974,
+          "end": 18994,
+          "excerpt": "ive Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(a)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cdbada326ec855ce834fbc7cb8b01a6ec7400cc7d959e5146be24f368cd70981",
+      "closure_id": "2a04e6829aa7f0f96c696748474bea3615a6c660fa575ffd23554c02ab8cbf38",
+      "normalised_phrase": "shall be automatically converted into the right to receive, and become exchangeable for either (x) 20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section 2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”), or (y) an amount in cash equal to $505.00 (the “Cash Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO"
+    },
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "53912ea1b661b25821a91d0f5bd50a84c5deeea94518b096ebf013df3783b7ce",
+      "closure_id": "969116e707c312f65623b07494e6e993a0404bb796e07abb292913cebc1a2852",
+      "normalised_phrase": "who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 1176,
+          "end": 1193,
+          "excerpt": " (B), a “Cancelled Share” and collectively, “Cancelled Shares”) and (C) Dissenting Shares) shall be automatically converted into the right to receive, and become exchang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 2142,
+          "end": 2159,
+          "excerpt": "ormerly representing any of the Company Shares (other than Cancelled Shares and Dissenting Shares) shall thereafter represent only the right to receive the Per Share Merger Cons",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 7514,
+          "end": 7531,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) issued and outstanding immediately prior to the Election Deadline shall be ent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 9099,
+          "end": 9116,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares), in such form as the Company shall reasonably specify and as shall be reasonab",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 11154,
+          "end": 11171,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) between the Mailing Date and the Election Deadline. Parent shall determine, in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18242,
+          "end": 18264,
+          "excerpt": "y Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Shar",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18575,
+          "end": 18597,
+          "excerpt": "r thereof to only such rights as are granted by Section 262 of the DGCL. If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or ef",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 18761,
+          "end": 18778,
+          "excerpt": "ively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19194,
+          "end": 19211,
+          "excerpt": "procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares. Notwithstanding anything to the contrary contained in this Agreement, if, prio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19448,
+          "end": 19465,
+          "excerpt": "the right of a Company stockholder to be paid the fair value of such holder’s Dissenting Shares pursuant to Section 262 of the DGCL shall cease. The Company shall give Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 20147,
+          "end": 20164,
+          "excerpt": "ayment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or w",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(b)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "payment of the Per Share Merger Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b220385442ee958c80c4a546e9e7c116ded27650597350428a96392d49babcaa",
+      "closure_id": "0e3a26dbb70322bb9d56f1401dbad696b62c5c42f70d4fb7007aba399646879d",
+      "normalised_phrase": "payment of the Per Share Merger Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "including, for the avoidance of doubt, Company Shares received from the settlement of RSU Awards, PSU Awards, Company Restricted Stock Awards or the exercise of Company Options in each case prior to the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Company Shares received from settlement of RSU Awards, PSU Awards, Restricted Stock Awards, or Option exercise prior to the Effective Time are included among shares eligible for Per Share Merger Consideration",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5704289ddf34b2ea83d0a7651acd6c68627e527a39510b0af72a14624655ba29",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6bd1ce5fdfa0af13e44ae8caf82d1cba732325373718da791c81a8023b600ab6",
+          "document_ordinal": 0,
+          "absolute_start": 478,
+          "absolute_end": 711,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "766d677b19ef31d20f391563c2225896f78ebe632f368e94a4397154493fd684",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each certificate formerly representing Company Shares (a “Certificate”) or non-certificated Company Shares held in book-entry position formerly representing Company Shares (the “Book-Entry Company Shares”), as the case may be, formerly representing any of the Company Shares (other than Cancelled Shares and Dissenting Shares) shall thereafter represent only the right to receive the Per Share Merger Consideration, without interest.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Certificates and Book-Entry Company Shares formerly representing Company Shares represent only the right to receive the Per Share Merger Consideration after the Effective Time",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8717ee5a19d9de4ed0d47f7e3bf4634f2cec19b0876ef1432426ea52b2b3b59b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa064a170b2b65aa844761705ff555f128479d93085485b6d557fa53750a87f1",
+          "document_ordinal": 0,
+          "absolute_start": 1826,
+          "absolute_end": 2267,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "aa73bcee1fe5aa4ffce6e362f9ba8fde60d6377b81040d7c6ad4c023d457f86a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Each Cancelled Share shall, by virtue of the Titanium Merger and without any action on the part of the holder thereof, cease to be outstanding, shall be cancelled without payment of any consideration therefor and shall cease to exist",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Cancelled Shares receive no merger consideration and are cancelled without payment",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "92b8d823eb4e01c10c04a4029a6c649530962941041d9aeb367d87a3b729d299",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e0906100157cd9d1ba796d5fd0182252fad3912cf299cc8588638b5cc0f4402",
+          "document_ordinal": 0,
+          "absolute_start": 2324,
+          "absolute_end": 2557,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7213c8e77099bca1f26d1d15b9b7200987a665b25888bdcc8d1dfd19d4d9d9a1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the maximum number of Company Shares to be converted into the right to receive Cash Consideration in the Titanium Merger shall be equal to forty-five percent (45%) of the aggregate number of Company Shares issued and outstanding (other than Cancelled Shares) as of immediately prior to the Titanium Merger Effective Time (the “Maximum Cash Election Number”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_ALLOCATION: Maximum Cash Election Number is capped at 45% of outstanding Company Shares (other than Cancelled Shares)",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_ALLOCATION",
+          "cash_cap": "forty-five percent (45%) of the aggregate number of Company Shares issued and outstanding (other than Cancelled Shares) as of immediately prior to the Titanium Merger Effective Time"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "baa53922159527c550b46bcce69804a9a51649546c3a72d1b332a229900504de",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2b61727a62a95a60c745fb495b03283f655c8fe752d8ce063df84718ba6ca32b",
+          "document_ordinal": 0,
+          "absolute_start": 3298,
+          "absolute_end": 3659,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "174efe9572181a8759054d5900fc31d67b426c66ca89f764c4a76ac05355305e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the maximum number of Company Shares to be converted into the right to receive Stock Consideration in the Titanium Merger shall be equal to fifty-five percent (55%) of the aggregate number of Company Shares issued and outstanding (other than Cancelled Shares) as of immediately prior to the Titanium Merger Effective Time (as may be increased (but not decreased) by Parent in its sole discretion, if and only if holders of Company Shares have elected to receive more than fifty-five percent (55%) of the merger consideration in Parent Shares, upon written notice to the Company at any time prior to the Closing, the “Maximum Stock Election Number”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_ALLOCATION: Maximum Stock Election Number is capped at 55% of outstanding Company Shares, increasable (not decreasable) by Parent in its sole discretion if stock elections exceed 55%",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_ALLOCATION",
+          "equity_cap": "fifty-five percent (55%) of the aggregate number of Company Shares issued and outstanding (other than Cancelled Shares) as of immediately prior to the Titanium Merger Effective Time"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d67c61d9839c8a7b0c166fc92137b76790156ddd642029ad5028ba05c7ed8fe1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "87058df9f56e1b86b02160be00026a11816d7ec672743cc8f12c29bca100a384",
+          "document_ordinal": 0,
+          "absolute_start": 3664,
+          "absolute_end": 4317,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ec7bc4a24c57145b9ac6cf0e7d55b42bb96105f7f53a36a3cdef43d936a11ee5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall deposit, or shall cause to be deposited, with an exchange agent selected by Parent and reasonably acceptable to the Company (the “Exchange Agent”) pursuant to an agreement in form and substance reasonably acceptable to Parent and the Company, for the benefit of the holders of Company Shares, (A) at the Titanium Merger Effective Time, certificates, or at Parent’s option, evidence of non-certificated Parent Shares in book-entry form (“Book-Entry Parent Shares”), constituting at least the amounts necessary for the aggregate Stock Consideration, (B) at the Titanium Merger Effective Time, cash in immediately available funds constituting at least the amounts necessary for the aggregate Cash Consideration",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Parent must deposit with the Exchange Agent, at the Effective Time, Parent Shares (or book-entry equivalents) sufficient for the aggregate Stock Consideration and cash sufficient for the aggregate Cash Consideration",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "297bb321356752b5710cb5cbe4924b7b4ff963dc3ac91088e2dd70a4c35d4ba6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "95ebe2d7936c1f3703b01c18cd64aa149e10fde7ad1a04bd70f439b0d01595c6",
+          "document_ordinal": 0,
+          "absolute_start": 4366,
+          "absolute_end": 5096,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "10391fc47fa89fbd73eaff87f7b82a989dcc018630e21b1e002cef2deb402f98",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "shall be entitled to elect to receive in respect of each such Company Share held by such record holder Cash Consideration (a “Cash Election”) or Stock Consideration (a “Stock Election”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_ALTERNATIVE: Each record holder of Company Shares may elect Cash Consideration or Stock Consideration per share",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_ALTERNATIVE",
+          "alternatives": [
+            "Cash Consideration (a “Cash Election”)",
+            "Stock Consideration (a “Stock Election”)"
+          ],
+          "cash_alternatives": [
+            "Cash Consideration (a “Cash Election”)"
+          ],
+          "stock_alternatives": [
+            "Stock Consideration (a “Stock Election”)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1680dce4331cf9fa7882dc8a713bbb7156957cb1c9593ab037d5632122629618",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "eb4e890dbdd0071e56b7474053fb2c77d4a38a665712406f544dc2fe11980d81",
+          "document_ordinal": 0,
+          "absolute_start": 7599,
+          "absolute_end": 7793,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d39ba111ee0672d5b8f92aa8212cd7c3c6dfe322b7dc3598c120e63995484fe1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Company Shares in respect of which no Cash Election or Stock Election has been affirmatively made and not revoked shall be deemed to be Company Shares in respect of which Stock Elections have been made (such Company Shares, the “No Election Shares”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_DEFAULT: Shares with no affirmative, unrevoked election are deemed Stock Election shares (No Election Shares)",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_DEFAULT",
+          "default_treatment": "shall be deemed to be Company Shares in respect of which Stock Elections have been made"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ff33a4ca9fcf6c049b5e7f0a4608b5bcea5d9f3a578482041cf54c8617b2dd32",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "79be079a2a252bab03fc8f4b6d1a701dad331bfa289c6c3838bc11d9d0fd7dae",
+          "document_ordinal": 0,
+          "absolute_start": 7794,
+          "absolute_end": 8048,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8e4d0de8c53b3ba552b4a99aadb451b8cc7096a1ef4dd2c9a9c6339984882d7a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any Company Shares represented by the Company Equity Rights (except for the Company Restricted Stock Awards) that are outstanding immediately prior to the Titanium Merger Effective Time, all of which shall be treated solely as provided in Section ‎2.3",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Company Shares represented by Company Equity Rights (other than Company Restricted Stock Awards) are excluded from the cash/stock election and treated solely as provided in Section 2.3",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fa1bc44fc36aafa43dde53d759f9b6fad66bb7c30252ab8835c56af5e705d9ed",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1e174fba403db097a82ab710aadcc4426fd511f92635647af7c4a861642f3fed",
+          "document_ordinal": 0,
+          "absolute_start": 7230,
+          "absolute_end": 7483,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5a64732ff773e20fdd48773e3307a86ad387f17389f6c2dfe9aa0337358461c6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Not fewer than thirty (30) days prior to the anticipated Election Deadline or on such other date as Parent and the Company mutually agree in writing (the “Mailing Date”), the Company shall cause to be mailed the Form of Election.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_DEADLINE: Form of Election must be mailed by the Mailing Date, at least 30 days before the anticipated Election Deadline",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_DEADLINE"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d6270dd5308339e5825689d6f7824a06b873d994d758a4df86a482485a508563",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7511e052480fb2a4ecc19ce6ddd40f5f25cd9d824637efc1696f4fd49776c1e0",
+          "document_ordinal": 0,
+          "absolute_start": 9248,
+          "absolute_end": 9481,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "63e90865f6fbe5565d3e317a1fb4fce253d5a5d96775fc41aa238b23d601fc2d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "a Form of Election must be (x) properly completed, signed and submitted to the Exchange Agent at its designated office, by 5:00 P.M. (Eastern Time) on the business day that is five (5) business days prior to the date of the Company Stockholder Meeting or such other date and time as Parent may publicly announce with the consent of the Company (the applicable date and times described in this clause (x), the “Election Deadline”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_DEADLINE: Election Deadline is 5:00 P.M. Eastern Time on the business day five business days before the Company Stockholder Meeting, or such other date Parent publicly announces with Company consent",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_DEADLINE"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e4ba93ccc6a3b05bfab5b2435c5355fbaca7da056d0eabdf1515e7c4a61c2811",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d4ccbdc33176c95e8b5905a5ce607f2fafe07dfe7d317598b55762087e04bfde",
+          "document_ordinal": 0,
+          "absolute_start": 9633,
+          "absolute_end": 10066,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "290cb09243bb6abcdbdcb9aaba2ac8ede0523086066bf550f25cd8e37f18b6fd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "A holder of Company Shares that does not submit an effective Form of Election prior to the Election Deadline shall be deemed to have made a Stock Election and any Company Shares with respect to which the Exchange Agent does not receive a properly completed Form of Election during the period from the Mailing Date to the Election Deadline shall be deemed to be No Election Shares.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "ELECTION_DEFAULT: A holder who fails to submit an effective Form of Election by the Election Deadline is deemed to have made a Stock Election, and the affected shares are deemed No Election Shares",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "ELECTION_DEFAULT",
+          "default_treatment": "shall be deemed to have made a Stock Election"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "75f747b5b66c39f22499b1bb0da4acd22caedbef73cfc872949eeba2b161b705",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0fd35bc54f7fcb7c71350649e563e6a5e57589bb56178861d469e5b28a6d8bcd",
+          "document_ordinal": 0,
+          "absolute_start": 11653,
+          "absolute_end": 12033,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "aa57462f86abf900b108eb681e446ce112da3d6455257402e9397ce024a0a8c9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "An election may be revoked or changed by written notice received by the Exchange Agent prior to the Election Deadline.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Elections are revocable or changeable by written notice to the Exchange Agent before the Election Deadline",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "654e067f3caf21fa1496e0a2eb87706c1ffcf777480ca0c3404390b2af2bbe30",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa7e2f7b7e28f28ece2ffb67dae73fa01299272ed9dc6519fabec7f69aecd9aa",
+          "document_ordinal": 0,
+          "absolute_start": 12253,
+          "absolute_end": 12371,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "90f9298f0b5de2ae87a770bb1438d6ff14f768d9ed25ecc2cd0131c5a905b2bc",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that the aggregate number of Cash Election Shares exceeds the Maximum Cash Election Number, all Stock Election Shares shall be converted into the right to receive Stock Consideration, and all Cash Election Shares shall be converted into the right to receive:",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Cash oversubscription proration triggers when Cash Election Shares exceed the Maximum Cash Election Number; Stock Election Shares then convert fully to Stock Consideration",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9b5ed5efddc5242249bc8ff3a91198f152782cd26a60101a02dad4e0883eb815",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d94881c2eedf352d48e6b29c5d37a5bdf5b733ecd079d56ad47e1213eb37c990",
+          "document_ordinal": 0,
+          "absolute_start": 13289,
+          "absolute_end": 13560,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a73cbe096336510b2f9237f31e1fbf081e06d8a643a7894eb5248433ca75121f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "an amount in cash (without interest) equal to the product of (x) the Cash Consideration and (y) a fraction (the “Cash Proration Fraction”), the numerator of which is the Maximum Cash Election Number and the denominator of which is the aggregate number of Cash Election Shares (with the resulting cash amount rounded down to the nearest cent)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Cash Election Shares oversubscription cash proration formula, rounded down to the nearest cent",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA",
+          "proration_numerator": "the Maximum Cash Election Number",
+          "proration_denominator": "the aggregate number of Cash Election Shares"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6d244ca131a086cb02e16ad5ab5261e1257d3c6055201fa124e3e127344cb860",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5eeadadfbab16e6e9ca9b0a005e93cb10a2c9a84b6ee273d52fa6fe755241496",
+          "document_ordinal": 0,
+          "absolute_start": 13565,
+          "absolute_end": 13910,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8f2a4059042986ba49be4acd06fe20bffcfcd4ee51e42a6bda03e4d2f6c794b6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "a number of validly issued, fully paid and non-assessable Parent Shares equal to the product of (x) the Stock Consideration and (y) one minus the Cash Proration Fraction.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Cash Election Shares oversubscription residual stock component, computed as Stock Consideration times one minus the Cash Proration Fraction",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "dd7699ac64873464a4fdd6038ff35487a96b49a8d1ce2a42a505040d7c4a5187",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "81363706ec55bfc336b3bf9474a6248e338d09c64c9d0d083a5ef368c934f361",
+          "document_ordinal": 0,
+          "absolute_start": 13920,
+          "absolute_end": 14090,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "201710e2737631a9f5d0c16055565ddd615b71a7a2dbb641afeb0dbec974df05",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that the aggregate number of Stock Election Shares exceeds the Maximum Stock Election Number, all Cash Election Shares shall be converted into the right to receive Cash Consideration, and all Stock Election Shares shall be converted into the right to receive:",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Stock oversubscription proration triggers when Stock Election Shares exceed the Maximum Stock Election Number; Cash Election Shares then convert fully to Cash Consideration",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9f97057062e17f12863d2d720607729d7bd42683bc616469c0bdde6a1f0b17d0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "36cc1397afe92688b0e6c5e1ec26894b1344fced76442eee79207de2e6d2e168",
+          "document_ordinal": 0,
+          "absolute_start": 14719,
+          "absolute_end": 14991,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5cc1adcf2cf807d018f7e8a29a4271d8d5aeb8c6ac9d387f31a105725c7d23e6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "a number of validly issued, fully paid and non-assessable Parent Shares equal to the product of (x) the Stock Consideration and (y) a fraction (the “Stock Proration Fraction”), the numerator of which is the Maximum Stock Election Number and the denominator of which is the aggregate number of Stock Election Shares",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Stock Election Shares oversubscription stock proration formula",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA",
+          "proration_numerator": "the Maximum Stock Election Number",
+          "proration_denominator": "the aggregate number of Stock Election Shares"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "47ca8d640bc28395433ef0bab36f2a308e0c1b16974f02e971dbe8faf0c1a339",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a11be4a12e785fbf5c8c63977f096cec3d53af0957eed6898b6d61270cda1f14",
+          "document_ordinal": 0,
+          "absolute_start": 14996,
+          "absolute_end": 15314,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4379c5407b7729f549e36c1b582a7190bfb901ff20b640b64a04515ed100d4a6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "an amount in cash (without interest) equal to the product of (x) the Cash Consideration and (y) one minus the Stock Proration Fraction (with the resulting cash amount rounded down to the nearest cent).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRORATION_FORMULA: Stock Election Shares oversubscription residual cash component, computed as Cash Consideration times one minus the Stock Proration Fraction, rounded down to the nearest cent",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRORATION_FORMULA"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e06290d183883bda08bd70ace79a98a89bb90e4fb41f7c22c5ede90c38f813c8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7f025de84562a862e70c6a90bad4e3cb64f1ba70ebdaf0fc5be85a8c627b554a",
+          "document_ordinal": 0,
+          "absolute_start": 15326,
+          "absolute_end": 15527,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3c2f6c5743c933dde0010cfdf9a5a73bd847e05c903af1886f18f97a39cc50fe",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section ‎2.1(a)(i), pursuant to the exchange procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: A Dissenting Share converts into the right to receive the Per Share Merger Consideration if the holder fails to perfect, withdraws, or otherwise loses appraisal rights",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1901a1a0d55d700ae8989a1ad18a75975f218c241f89983fd8c8fce571f5eebc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "aff1d6bc855b7a9c7fb2b6e7af6c64f2b53a5777611b964c6eb480d1aa68da13",
+          "document_ordinal": 0,
+          "absolute_start": 18568,
+          "absolute_end": 19212,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2e4d92d86faf9de1218dafb6d42a92efd5e87d96f398695709f3ebce396877b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "31cfee8ddf212e9ebd1ba68b19f9d525aae2644c97ff99222a61a0a2849419c9",
+        "producer_receipt_id": "e37942a62fee5f638d130248510d42d992e372bad830d7f1838328cc85ad8fe5",
+        "governed_scope_digest": "776aa582f7778e0cf64c2e2886d858c59c2e71fb39387aa4bb07f388d285d471",
+        "extraction_provenance_id": "c41c578d2e68d8b2481251d3d413dd7250b2f79bf7c8060723ee4be233083b0d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the stock transfer books of the Company shall be closed and there shall be no further registrations of transfer on the stock transfer books of the Company of the Company Shares that were outstanding immediately prior to the Titanium Merger Effective Time.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: After the effective time, the Company's stock transfer books close and no further transfers of the pre-effective-time Company Shares are registered.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1e6511e384b552f0e1fc1c926c2f7e0611bb315bca4f308d4e7fb63180c5dff6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "68afda0f2875d34ee6194981be8f3003a2130d5c8fb375770fcb670b4f41f59b",
+          "document_ordinal": 0,
+          "absolute_start": 90,
+          "absolute_end": 345,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5fba141a6c5d42fbd0b4b72812d09c72ac3db72c0304930860e0370625465772",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If, after the Titanium Merger Effective Time, any Certificate is presented to the Forward Surviving Company, Parent or the Exchange Agent for transfer, it shall be cancelled and exchanged for the cash amount in immediately available funds to which the holder thereof is entitled pursuant to this Article ‎II.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: A Certificate presented for transfer after the effective time is cancelled and exchanged for the cash amount in immediately available funds owed under Article II.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4d78420ff24aa0ca85112e5edd5a210124dfdb621c825d9efb9dd3a4f3efb928",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ecc077a82816fbb571925b31391e4a5faa6012181af8a5f7776d77958a30b65f",
+          "document_ordinal": 0,
+          "absolute_start": 346,
+          "absolute_end": 656,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "42e89a8846c0dce0f0424f1349a8847a74514cdfacb270a2c9f3eed9072807a9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Any portion of the Exchange Fund (including the proceeds of any investments thereof) that remains unclaimed by the stockholders of the Company on the date that is one (1) year after the Titanium Merger Effective Time shall be delivered to the Forward Surviving Company.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Exchange Fund amounts unclaimed by stockholders one year after the effective time are delivered to the Forward Surviving Company.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f4d54c20ed540377fdb731cad305b00f67d2122193ac5cb904a5fda0a693fb98",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6128ed266854975acdbbe52c47fa8354ff137d9fe410c409d289099136b2f9be",
+          "document_ordinal": 0,
+          "absolute_start": 691,
+          "absolute_end": 960,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ea5c308e8a9f8b0e73089f708ebed5e65eb5938948abbef99aa26f38ac9ee23c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "none of the Forward Surviving Company, Parent, the Exchange Agent or any other Person shall be liable to any former holder of Company Shares for any amount required to be delivered to a public official pursuant to applicable abandoned property, escheat or similar Laws.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: The Forward Surviving Company, Parent, and the Exchange Agent are not liable for amounts turned over to a public official under abandoned property, escheat, or similar Laws.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2c69e25ba67cb3f8c57e05bb243149b56831a08d251e6b2c435d1dbcdd14de4b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9f02bf429d66e375cce47d408a114bdb09e37a9b3c7f6d55521ced4f8830711f",
+          "document_ordinal": 0,
+          "absolute_start": 1433,
+          "absolute_end": 1702,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "56827cfa9aa566af41fb7525fd1d1d29f965288a7b6227bda17d710482730f3c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent, Titanium Merger Sub, Forward Merger Sub, the Titanium Surviving Corporation, the Forward Surviving Company, the Exchange Agent and any other applicable withholding agent shall be entitled to deduct and withhold from any amounts otherwise payable under this Agreement (including the Mergers), such amounts as are required to be withheld or deducted under the Code, Treasury Regulations or any provision of state, local or foreign Tax Law with respect to the making of such payment.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WITHHOLDING: Parent, the Merger Subs, the Surviving entities, the Exchange Agent, and any other withholding agent may deduct and withhold amounts required under the Code, Treasury Regulations, or state, local, or foreign Tax Law from payments under the Agreement.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "WITHHOLDING"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a48e71c47d976dd8179af9c0a46a23f181d004659ab3557543de1849ccc1b271",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b8192412d258364abbd97aaa1ef6ee11b6ea54de9585af911bbd5605b395c161",
+          "document_ordinal": 0,
+          "absolute_start": 2327,
+          "absolute_end": 2815,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "00a69e96f9e3ad6aa91d73c865a8153f1eef1afbedbf6268beb7b6397a584cd1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "To the extent that amounts are so withheld or deducted and paid over to the applicable Governmental Entity, such withheld or deducted amounts shall be treated for all purposes of this Agreement as having been paid to the Person in respect of which such deduction and withholding were made.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WITHHOLDING: Amounts withheld and paid over to a Governmental Entity are treated as having been paid to the Person from whom they were withheld.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "WITHHOLDING"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b4f1eeab48b94b0d3f13b725672c374323d3d0bdf1deb34e98e5f21b8033e7f9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e7ab73817d04ed2e87f8883494329fe7d9111f4f6ca7cfc9d1e5538bd5fa1647",
+          "document_ordinal": 0,
+          "absolute_start": 2816,
+          "absolute_end": 3105,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b0f2089de80222b0b25c178c829d4c0e0d60279b6905907737c23b7d7ee35345",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event any Certificate shall have been lost, stolen or destroyed, upon the making of an affidavit (satisfactory to the Exchange Agent, acting reasonably) of that fact by the Person claiming such Certificate to be lost, stolen or destroyed and, if required by Parent, the posting by such Person of a bond in customary amount and upon such terms as may be required by Parent as indemnity against any claim that may be made against it or the Forward Surviving Company with respect to such Certificate, the Exchange Agent shall pay, in exchange for such lost, stolen or destroyed Certificate, the Per Share Merger Consideration to be paid in respect of the Company Shares represented by such Certificate as contemplated by this Article ‎II.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: A lost, stolen, or destroyed Certificate may be replaced with payment of the Per Share Merger Consideration upon a satisfactory affidavit and, if Parent requires, a bond indemnifying against claims on the Certificate.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cbd1d25f8c616fb2f319e0ec0a8022e50bd669e24b4d074f2565687bf9963b40",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8641f8dfa099e0756f5e7d0eeb191093ffbed768698e2061650156c5cb7e5c79",
+          "document_ordinal": 0,
+          "absolute_start": 3153,
+          "absolute_end": 3897,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e1f7e283652699ae52630f28e29f199e40247a15185f3cd33805b383e9fe6a8d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(other than holders of Cancelled Shares or Dissenting Shares)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "References Dissenting Shares but this quote does not identify an appraisal statute, so it cannot support an APPRAISAL_STATUS assertion under the AVAILABLE-by-necessary-implication rule.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5a5742f46840b4b5f504618f2f382bd1531abf6b60639307e1a359b3cd117d5b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1753572ce8697c1222cc41253354a22f4ff6e7341a09ac609520b9c8a9128461",
+          "document_ordinal": 0,
+          "absolute_start": 990,
+          "absolute_end": 1051,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1fb7c23ffbf4ff9056e175292f7e3695708b9d738339da26726bcd52fc5b1604",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "081faa9128d92c48cdbd75e0a3b483828b1df4bba37ec033d4c44a17b0cde84a",
+        "producer_receipt_id": "5e6b661dab21676bc756185fceca1946544baf2de14517b8f16410eeb809bf7b",
+        "governed_scope_digest": "1b20685749b014fde7ec2c950961745a4f8760a64e4385ddf048f828e31f814f",
+        "extraction_provenance_id": "9a04750d3a4bdcae21c67584abe2a7c790c6793ed56975dc044010a113ca6ce9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each such Company Option shall, by virtue of the Titanium Merger and without any action on the part of the holder thereof, be canceled and converted into the right to receive Parent Shares equal to (i) the total Company Shares subject to such Company Option as of immediately prior to the Titanium Merger Effective Time, multiplied by (ii) the Option Conversion Amount",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Company Options are canceled and converted into the right to receive Parent Shares equal to the Company Shares subject to the option multiplied by the Option Conversion Amount.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4df349cf0c9762649b40369d38640fbde7c0b041b649fa197fc42539c01b4fe3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c6f03c6fe7652b1beffeb2a18bc99c0fab63048b45f859cc472e16820329bd11",
+          "document_ordinal": 0,
+          "absolute_start": 314,
+          "absolute_end": 682,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5bd355f03b012729c62ddc80863540c2c1384d425d2f39aaefcaeefa234f57a4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the “Option Conversion Amount” means the quotient obtained by dividing (a) the excess, if any, of (i) $505.00 minus (ii) the exercise price per Company Share applicable to such Company Option by (b) $25.00.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Defines the Option Conversion Amount as a quotient formula referencing $505.00, the option exercise price, and $25.00.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "981f82b6c4e2810f3fea858492e8a430e926082db96be1431cfad2e04d4252cc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "23dfa499be401fbea2a6ea25c7e74feb6282d3c9c47b0908cccef0d720230021",
+          "document_ordinal": 0,
+          "absolute_start": 851,
+          "absolute_end": 1061,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "aefb0e7e55a502283901a14dfb7769cc3073b5cc3c9569d43c1cd0dd6442c70d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "to be delivered as soon as reasonably practicable (but no later than ten (10) calendar days) after the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Sets the delivery deadline for Parent Shares issued on conversion of Company Options.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "71d9785166220c7c5ccf03fed466f4b9b6ca470f94b930881ec99972517c48c2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "957343d776fe6d7600d058d7364aef50adc2025337ebdf2e48b5fd0ee8e6e927",
+          "document_ordinal": 0,
+          "absolute_start": 684,
+          "absolute_end": 817,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "50d80d757d097f772a3fedf670626f1cc3ba926e081dff6826271d843927f043",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Each award of Company Shares that is subject to vesting conditions, whether granted under the A&R 2015 Plan or otherwise (each, a “Company Restricted Stock Award”), outstanding immediately prior to the Titanium Merger Effective Time shall be fully vested and the holder thereof shall be entitled to receive the Per Share Merger Consideration pursuant to Section ‎2.1(a)(i) and Section ‎2.1(b) in respect of each Company Share underlying such Company Restricted Stock Award.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Company Restricted Stock Awards fully vest and the holder receives the Per Share Merger Consideration under Section 2.1(a)(i) and 2.1(b).",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "83822a7c9e132759d3536c6be88b75008a2e91ec5c332bc696264919a2eb0432",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c379224a0d499bed312139127b2715e699413723c2df9f88ad68e3d92d9d279b",
+          "document_ordinal": 0,
+          "absolute_start": 1104,
+          "absolute_end": 1585,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e6a91a272152bf7ab0ccbaf40b9ec505f9e3b3a3262faf227c00fe6457257b59",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each such RSU Award shall, by virtue of the Titanium Merger and without any action on the part of the holder thereof, be converted into a restricted stock unit award (an “Adjusted RSU”) relating to the number of Parent Shares equal to the product of (x) the number of Company Shares subject to such RSU Award immediately prior to the Titanium Merger Effective Time, multiplied by (y) the Stock Consideration, with any fractional shares rounded to the nearest whole number of shares",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: RSU Awards convert into Adjusted RSUs covering Parent Shares equal to the Company Shares subject to the RSU multiplied by the Stock Consideration, fractional shares rounded to the nearest whole share.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "616b120d1a1898b3b45e9fba6b02f58b7c5cc75c0dcc23aa977d21ad088b0941",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ce6da998e253ff3dd61b69ebfa06ef649614b2f9ef3dee1a16d68a01b965a978",
+          "document_ordinal": 0,
+          "absolute_start": 1869,
+          "absolute_end": 2354,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "95d111c004696eab083f574896da1d0cf498da8ed3102cd8780a7b6bea0f919d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any amounts relating to dividend equivalents, if any, granted with respect to such RSU Award that are accrued but unvested and unpaid as of the Titanium Merger Effective Time will carry over and will be paid if required by and in accordance with the terms and conditions applicable to the corresponding RSU Award immediately prior to the Titanium Merger Effective Time (as modified by this Section ‎2.3(c))",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Accrued but unvested and unpaid dividend equivalents on RSU Awards carry over to the Adjusted RSU under the original RSU terms.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "888d55987fb283fd0ef736a38332ce774690c89759feed57b5acba9ba924f5a2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d76030f952a835218d160ca4967ca849c517fbfbe057eaab3e5d19c37fd4c8fc",
+          "document_ordinal": 0,
+          "absolute_start": 2546,
+          "absolute_end": 2954,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c7f8c76148c18e8cd1466ad41101c4c71e53af4297a19e26edf21f71741b5647",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any dividend equivalents that are payable with respect to any unvested Adjusted RSU following the Titanium Merger Effective Time will be paid within 30 days following vesting.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Dividend equivalents payable on unvested Adjusted RSUs after the Effective Time are paid within 30 days of vesting.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "dce3c86b1c29467b67849ff3274b5497a4241d40eb02981fe29dcb0e79a4c952",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "feb8ba9b498650183208a433ab882ca6ed6c6e38f59b29bdd50848bdf2756b68",
+          "document_ordinal": 0,
+          "absolute_start": 2963,
+          "absolute_end": 3138,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "09098235945a19dbf68b632dffb4abf0019ae6c1bedae93ed1817135240285a0",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each such PSU Award shall, by virtue of the Titanium Merger and without any action on the part of the holder thereof, be converted into an award of restricted stock units for which vesting is based solely on service-based conditions (an “Adjusted PSU”) relating to the number of Parent Shares equal to the product of (x) the number of Company Shares subject to such PSU Award immediately prior to the Titanium Merger Effective Time, determined based on the target performance for such PSU Award multiplied by (y) the Stock Consideration, with any fractional shares rounded to the nearest whole number of shares",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: PSU Awards convert into Adjusted PSUs (service-vesting only) covering Parent Shares equal to the target-performance Company Share number multiplied by the Stock Consideration, fractional shares rounded to the nearest whole share.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c23da58137b1d634ec88c6dcf1d759bd32bee7f30ff7bf3e8ea9f18c851c8e18",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "83c89dd394346b3656f983612db82d45c29ecb08bc6ce093199991ebc04bf170",
+          "document_ordinal": 0,
+          "absolute_start": 3472,
+          "absolute_end": 4086,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2d13bf5c6c955518c2ef51c8d2beaabc714700c7af8fcfbe2d8be0c80f4e6240",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any amounts relating to dividend equivalents, if any, granted with respect to such PSU Award that are accrued but unvested and unpaid as of the Titanium Merger Effective Time will carry over and will be paid if required by and in accordance with the terms and conditions applicable to the corresponding PSU Award immediately prior to the Titanium Merger Effective Time (as modified by this Section ‎2.3(d))",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Accrued but unvested and unpaid dividend equivalents on PSU Awards carry over to the Adjusted PSU under the original PSU terms.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7644e20805e0c098c548d5f92be66b0a684ef0c37d4149acbefdf3e703279bfb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d3820683b7940c488e49c65903e835c072b6a78ee91ba236f0fa7c02070926c0",
+          "document_ordinal": 0,
+          "absolute_start": 4314,
+          "absolute_end": 4722,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4adae97facf9ed58506dfcea4fa65d1d26f5c7d699f1b22515b61d07c7b8e40e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any dividend equivalents that are payable with respect to any unvested Adjusted PSU following the Titanium Merger Effective Time will be paid within thirty (30) days following vesting.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Dividend equivalents payable on unvested Adjusted PSUs after the Effective Time are paid within thirty (30) days of vesting.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2c1cd182c8770052a61403cf78b208d836f04ebb332c3657ff99945d48a275df",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0db50dcade74c0f537f58f800d838ee5ffe3ba0e382aacaa66463527041f2256",
+          "document_ordinal": 0,
+          "absolute_start": 4732,
+          "absolute_end": 4916,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ed7b188a1ccb0c7d443b9a1ac2f01788a37b0bde3c423a29585c999c61eefff1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall prepare and have on file with the U.S. Securities and Exchange Commission (the “SEC”) an effective registration statement on an appropriate form with respect to the Parent Shares subject to the Adjusted RSUs and Adjusted PSUs.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Parent must have an effective SEC registration statement on file for the Parent Shares issuable under the Adjusted RSUs and Adjusted PSUs, no later than the Effective Time.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "76733dc235121bfd4221189f240fb64f5c4ee8d2a6edf1417613094e6b5ac817",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4195c91fb9226e2b85878651721e47342a0e05b47b23582b755bc09f385ec856",
+          "document_ordinal": 0,
+          "absolute_start": 5422,
+          "absolute_end": 5665,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7b075c38d816d82fa72edcf0de1a36bfba59b7737ea907b519c78fc114201631",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cf3ce1ac547fec99ea41ef735d38ce9d326f9ebd4adfc2c01dbdbd0efb6c8b6a",
+        "producer_receipt_id": "c3f57a731541a6bcbb0499de7d92c27278fca766342021b68a22c5f924950e79",
+        "governed_scope_digest": "3c60501a576199a40d00844eac0c4883834d56be56d608f7128ac54c94a4dc15",
+        "extraction_provenance_id": "2f0cbdc092b82f404fef5aa054638891f0749d8c1774d1640b270c871b6264ef"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.4",
+      "source_citation": "2.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any change in the number of Company Shares or Parent Shares, as applicable, or securities convertible or exchangeable into or exercisable for Company Shares or Parent Shares, as applicable, shall occur as a result of a reclassification, stock split (including a reverse stock split), stock dividend or distribution, recapitalization, merger, issuer tender or exchange offer or other similar transaction, the Per Share Merger Consideration and payments pursuant to Section ‎2.3 shall be equitably adjusted",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Anti-dilution equitable-adjustment mechanism for the Per Share Merger Consideration triggered by capitalization events; does not match any defined consideration_mechanics surface (not a CVR, election, proration formula, equity-award treatment, collar/ticking fee, withholding, or exchange mechanic) and contains no specific cash amount, ratio, or appraisal statute for a consideration_assertions entry.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "894f3ffc7f514cd3b05f3e82c542fbc1c8bd869d2ecb4e2aff68f0a209eccc69",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "34714a3d6faf3a29d7f8713d97c9374b12b013cfb9bc45fcd3e13c69f15400a4",
+          "document_ordinal": 0,
+          "absolute_start": 145,
+          "absolute_end": 651,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "39baaca1d6524e0ad9f280ed5a270a91c3db0df2a2946d700fefdf3b5344f8a4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "375e9efdb9e19e9e87ad9a768facadcef0846cb145fc16d51e0f9d70e11c1092",
+        "producer_receipt_id": "12b7bcdbb546345d88ec9ad8976364bbceb4188e1326a12677a4e4495706c776",
+        "governed_scope_digest": "b971fd1cad11fe3793a2f940cbf324ea8887d12d5464c6cf747de1886c4c8bd3",
+        "extraction_provenance_id": "530faf5be4f2dcbf74f8a61469b7bbeebd358487de9d45dd8f6ba95dc7025b2a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.5",
+      "source_citation": "2.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "No fractional shares of Parent Shares, and no certificate, receipt or scrip representing fractional shares of Parent Shares, shall be issued upon the surrender for exchange of Certificates or Book-Entry Company Shares",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: No fractional shares or scrip representing fractional shares will be issued upon surrender of Certificates or Book-Entry Company Shares for exchange.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "62ce7a0eb871cd490bdda700afca65c4658d027450ff4eb7d4ba3dd7bd165846",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d70477b48bf1050cf18f8a425fb89865575233720fa0f05bd4086fb0a14babc1",
+          "document_ordinal": 0,
+          "absolute_start": 26,
+          "absolute_end": 243,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4a515354d732534997c5900a443db7b6b856402518b737224f089697ead75fd3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "578f59dedf8bfd137da67fefaf9bb90648a5fdb0150db98d8070b8eb6abf38cc",
+        "producer_receipt_id": "b41c097cc0fb9b5c8e15b0beb1536ec1fa0902b2e90a91c4d07d20d5ffa1f21e",
+        "governed_scope_digest": "e2c5e5afba49bc3c69a420fdc2036507275786283602371b9ab18965c9e1ed43",
+        "extraction_provenance_id": "6ba7b84d2503b14520850ffc94193f5cf9d99ec9615e3d63506750128cd4e5cc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.5",
+      "source_citation": "2.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "such fractional share interests shall not entitle the owner thereof to vote or to any other rights of a stockholder of Parent",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Fractional share interests do not carry voting or other stockholder rights.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "027d516f3e789c98aa1413bbe31e54c553edec6ff60a3db1326d16da3dcb0280",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "167591c51cddd6774a6a1401c3dcfeb2cd2a0aa9e4bcdac4246d5d7041f60af2",
+          "document_ordinal": 0,
+          "absolute_start": 249,
+          "absolute_end": 374,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e13e92e09764d1d85d2e7861888262049399006f32d4b3565cca73746e4be672",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "578f59dedf8bfd137da67fefaf9bb90648a5fdb0150db98d8070b8eb6abf38cc",
+        "producer_receipt_id": "b41c097cc0fb9b5c8e15b0beb1536ec1fa0902b2e90a91c4d07d20d5ffa1f21e",
+        "governed_scope_digest": "e2c5e5afba49bc3c69a420fdc2036507275786283602371b9ab18965c9e1ed43",
+        "extraction_provenance_id": "6ba7b84d2503b14520850ffc94193f5cf9d99ec9615e3d63506750128cd4e5cc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.5",
+      "source_citation": "2.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each holder of Company Shares converted pursuant to the Titanium Merger who would otherwise have been entitled to receive a fraction of a share of Parent Shares (after aggregating all shares represented by the Certificates and Book-Entry Company Shares delivered by such holder) shall receive, in lieu thereof, cash, without interest, in an amount equal to such fractional part of a share of Parent Shares multiplied by the closing price of Parent Shares on the NYSE on the last trading day immediately preceding the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Holders who would otherwise receive a fractional Parent Share instead receive cash, without interest, equal to the fractional share amount multiplied by the NYSE closing price of Parent Shares on the last trading day before the Titanium Merger Effective Time, aggregating all shares delivered by the holder.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bf82db01aa6516b42efa1df485aac1e4bfc287e9750d8b16a5f22ec62e3cb5e2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "01e99e3ed9efc738bf67fa1a7300d27e24a2d16d81354ceba13e03f6b7f435ed",
+          "document_ordinal": 0,
+          "absolute_start": 447,
+          "absolute_end": 994,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "72eeb192b2b4d905013b67763ced110ede18bdbd8cb5a3e80b11a44a7ba2a93a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "578f59dedf8bfd137da67fefaf9bb90648a5fdb0150db98d8070b8eb6abf38cc",
+        "producer_receipt_id": "b41c097cc0fb9b5c8e15b0beb1536ec1fa0902b2e90a91c4d07d20d5ffa1f21e",
+        "governed_scope_digest": "e2c5e5afba49bc3c69a420fdc2036507275786283602371b9ab18965c9e1ed43",
+        "extraction_provenance_id": "6ba7b84d2503b14520850ffc94193f5cf9d99ec9615e3d63506750128cd4e5cc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.5",
+      "source_citation": "2.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "rounded to the nearest cent (with 0.5 of a cent being rounded upward) (the “Merger Fractional Share Payout”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: The cash-in-lieu amount is rounded to the nearest cent, with 0.5 of a cent rounded upward; this payment is defined as the Merger Fractional Share Payout.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "df6a89b3fc742895fd63ebda79f7cb8c62f819921cbfba50528f6e7ac1df9120",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6e623c2d26858a3b5e2c08625fdb1ecc7cef2dd7a3be903243500d30d967e918",
+          "document_ordinal": 0,
+          "absolute_start": 996,
+          "absolute_end": 1108,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a56cba90cbf1343ce9804b976955d73422d9342e77bca698d958c9057b32c958",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "578f59dedf8bfd137da67fefaf9bb90648a5fdb0150db98d8070b8eb6abf38cc",
+        "producer_receipt_id": "b41c097cc0fb9b5c8e15b0beb1536ec1fa0902b2e90a91c4d07d20d5ffa1f21e",
+        "governed_scope_digest": "e2c5e5afba49bc3c69a420fdc2036507275786283602371b9ab18965c9e1ed43",
+        "extraction_provenance_id": "6ba7b84d2503b14520850ffc94193f5cf9d99ec9615e3d63506750128cd4e5cc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "26bbb12d716e44b59962b32c62f2d4bfcef804abaa26002762c2a36b082f46e2",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 48,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 4,
+      "open_world": 44,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "52c2155e5a283d3d884ce19df0459ddd8f8b7db6d9d9db413a9d9047f69d6560"
+  }
+}

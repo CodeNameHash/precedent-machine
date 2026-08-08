@@ -1,0 +1,1709 @@
+{
+  "resolved": [
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(a)",
+      "citation_context": {
+        "parent_section_reference": "4.11",
+        "child_section_reference": "4.11",
+        "parent_chapeau_quote": "4.11 Employee Benefits.",
+        "child_clause_quote": "a base salary or regular hourly wage rate, as applicable, that is not less than the base salary or regular hourly wage rate provided to such Continuing Employees by the Company and its Subsidiaries immediately prior to the Titanium Merger Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e7f1d927febd0e39b7906e72ab0a9bfab168210f64d22b492e5e020455427844",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 285771,
+        "absolute_end": 295486,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "6f781c790a6446451ec4d399b4efc9d7dec6db7bade329f50fe2326bb05cf5ac",
+        "provision_instance_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "closure_id": "4e609cddf6d24adf44d878fa316bbf867a35e140df08ed0d60b6ea322b5e7891"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "29dd76ef774651e48b392feaa03a30d6e875abcaf6c2c8e706b7fad169dfbb48",
+        "claim_occurrence_id": "7d7ae186fced8195448329763baed1babdb46a1acdbcf881e0ac064575e12b6f",
+        "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "a base salary or regular hourly wage rate, as applicable, that is not less than the base salary or regular hourly wage rate provided to such Continuing Employees by the Company and its Subsidiaries immediately prior to the Titanium Merger Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "33cb72e1f243d35e6fe66db38cf15ceb303ed95deb1461a7ab62f7032ae8aba3"
+        ],
+        "attributes": {
+          "comp_item": "BASE_SALARY",
+          "standard_kind": "NO_LESS_FAVORABLE",
+          "aggregation": "ITEM_BY_ITEM",
+          "benchmark": "TARGET_PRE_CLOSING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "33cb72e1f243d35e6fe66db38cf15ceb303ed95deb1461a7ab62f7032ae8aba3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1835a3430bc6281e886440ff7eaa8601f4a70c91aa35b044490b6f0157c9798b",
+            "document_ordinal": 0,
+            "absolute_start": 456,
+            "absolute_end": 709,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7b6d9245149726c33cd6d37a21e59903bef48900520ace57e0a7152727fca19d"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "29dd76ef774651e48b392feaa03a30d6e875abcaf6c2c8e706b7fad169dfbb48",
+            "claim_occurrence_id": "7d7ae186fced8195448329763baed1babdb46a1acdbcf881e0ac064575e12b6f",
+            "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+            "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "a base salary or regular hourly wage rate, as applicable, that is not less than the base salary or regular hourly wage rate provided to such Continuing Employees by the Company and its Subsidiaries immediately prior to the Titanium Merger Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "33cb72e1f243d35e6fe66db38cf15ceb303ed95deb1461a7ab62f7032ae8aba3"
+            ],
+            "attributes": {
+              "comp_item": "BASE_SALARY",
+              "standard_kind": "NO_LESS_FAVORABLE",
+              "aggregation": "ITEM_BY_ITEM",
+              "benchmark": "TARGET_PRE_CLOSING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "33cb72e1f243d35e6fe66db38cf15ceb303ed95deb1461a7ab62f7032ae8aba3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1835a3430bc6281e886440ff7eaa8601f4a70c91aa35b044490b6f0157c9798b",
+                "document_ordinal": 0,
+                "absolute_start": 456,
+                "absolute_end": 709,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7b6d9245149726c33cd6d37a21e59903bef48900520ace57e0a7152727fca19d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+            "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+            "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+            "extraction_provenance_id": "215f482d0972f6b3237bb602a50e87e62bd4badeb2f639dab14fea81a430241c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(a)",
+      "citation_context": {
+        "parent_section_reference": "4.11",
+        "child_section_reference": "4.11",
+        "parent_chapeau_quote": "4.11 Employee Benefits.",
+        "child_clause_quote": "employee benefits (excluding severance, equity-based incentive compensation opportunities, defined benefit pension, non-qualified deferred compensation, post-retirement medical or welfare benefits, retention and any change in control benefits) that are substantially similar, in the aggregate, to those provided to such Continuing Employee as of immediately prior to the Titanium Merger Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e7f1d927febd0e39b7906e72ab0a9bfab168210f64d22b492e5e020455427844",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 285771,
+        "absolute_end": 295486,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "6f781c790a6446451ec4d399b4efc9d7dec6db7bade329f50fe2326bb05cf5ac",
+        "provision_instance_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "closure_id": "4e609cddf6d24adf44d878fa316bbf867a35e140df08ed0d60b6ea322b5e7891"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "11e1b00438d741ad1b397021b0f7f54524b1d13155068be4584607e648149d1d",
+        "claim_occurrence_id": "65147890151ca12c08ca36b15d0374de6b39baf979b2be4a75eac531b064d819",
+        "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "employee benefits (excluding severance, equity-based incentive compensation opportunities, defined benefit pension, non-qualified deferred compensation, post-retirement medical or welfare benefits, retention and any change in control benefits) that are substantially similar, in the aggregate, to those provided to such Continuing Employee as of immediately prior to the Titanium Merger Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b892801977954a5d302a4b0845d27f749c2ee45fbd735de5ce6150884cd2586d"
+        ],
+        "attributes": {
+          "comp_item": "EMPLOYEE_BENEFITS",
+          "standard_kind": "SUBSTANTIALLY_SIMILAR",
+          "aggregation": "AGGREGATE",
+          "benchmark": "TARGET_PRE_CLOSING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b892801977954a5d302a4b0845d27f749c2ee45fbd735de5ce6150884cd2586d",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "625cce09de07caec785b3081e85bb962db8b3917ac96293e72a82e08c8b3abaf",
+            "document_ordinal": 0,
+            "absolute_start": 1415,
+            "absolute_end": 1816,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "869e0a8aeb2f5b7bd278e73c410ba518e8d3846f46f932fe6c5c4f179563f790"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "11e1b00438d741ad1b397021b0f7f54524b1d13155068be4584607e648149d1d",
+            "claim_occurrence_id": "65147890151ca12c08ca36b15d0374de6b39baf979b2be4a75eac531b064d819",
+            "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+            "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "employee benefits (excluding severance, equity-based incentive compensation opportunities, defined benefit pension, non-qualified deferred compensation, post-retirement medical or welfare benefits, retention and any change in control benefits) that are substantially similar, in the aggregate, to those provided to such Continuing Employee as of immediately prior to the Titanium Merger Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b892801977954a5d302a4b0845d27f749c2ee45fbd735de5ce6150884cd2586d"
+            ],
+            "attributes": {
+              "comp_item": "EMPLOYEE_BENEFITS",
+              "standard_kind": "SUBSTANTIALLY_SIMILAR",
+              "aggregation": "AGGREGATE",
+              "benchmark": "TARGET_PRE_CLOSING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b892801977954a5d302a4b0845d27f749c2ee45fbd735de5ce6150884cd2586d",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "625cce09de07caec785b3081e85bb962db8b3917ac96293e72a82e08c8b3abaf",
+                "document_ordinal": 0,
+                "absolute_start": 1415,
+                "absolute_end": 1816,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "869e0a8aeb2f5b7bd278e73c410ba518e8d3846f46f932fe6c5c4f179563f790"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+            "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+            "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+            "extraction_provenance_id": "215f482d0972f6b3237bb602a50e87e62bd4badeb2f639dab14fea81a430241c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(b)",
+      "citation_context": {
+        "parent_section_reference": "4.11",
+        "child_section_reference": "4.11",
+        "parent_chapeau_quote": "4.11 Employee Benefits.",
+        "child_clause_quote": "waive any pre-existing condition limitations, eligibility waiting periods and evidence of insurability requirements with respect to participation and coverage requirements applicable to each Continuing Employee and any covered dependent under any Parent Benefit Plan that is a welfare benefit plan to the extent such conditions were waived or satisfied under similar Benefit Plans immediately prior to the Titanium Merger Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e7f1d927febd0e39b7906e72ab0a9bfab168210f64d22b492e5e020455427844",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 285771,
+        "absolute_end": 295486,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "6f781c790a6446451ec4d399b4efc9d7dec6db7bade329f50fe2326bb05cf5ac",
+        "provision_instance_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "closure_id": "4e609cddf6d24adf44d878fa316bbf867a35e140df08ed0d60b6ea322b5e7891"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "246f398f80d8591bbdd54da5c651f5905a46ca58ea76fcfdf888b7e213b8386d",
+        "claim_occurrence_id": "4b1760fe009cb22ba52b5918f3f13f3cd7e4167c0a8228bf0e572810225cc0f0",
+        "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "waive any pre-existing condition limitations, eligibility waiting periods and evidence of insurability requirements with respect to participation and coverage requirements applicable to each Continuing Employee and any covered dependent under any Parent Benefit Plan that is a welfare benefit plan to the extent such conditions were waived or satisfied under similar Benefit Plans immediately prior to the Titanium Merger Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "f7152f6ca2f299febeee4dbdebe4dcc96dd9e7d5a22d1642206d078274695ee3"
+        ],
+        "attributes": {
+          "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "f7152f6ca2f299febeee4dbdebe4dcc96dd9e7d5a22d1642206d078274695ee3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e05a13e1e9ac23d5ba42271ee7b0148c205966f4af6cfd6442df7f3bf1d2149a",
+            "document_ordinal": 0,
+            "absolute_start": 3678,
+            "absolute_end": 4114,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "6f518b4cbd491ca3bc0fe82833bc4bdb4657075aa09fd7ceaef6a33290f1b846"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "246f398f80d8591bbdd54da5c651f5905a46ca58ea76fcfdf888b7e213b8386d",
+            "claim_occurrence_id": "4b1760fe009cb22ba52b5918f3f13f3cd7e4167c0a8228bf0e572810225cc0f0",
+            "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+            "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "waive any pre-existing condition limitations, eligibility waiting periods and evidence of insurability requirements with respect to participation and coverage requirements applicable to each Continuing Employee and any covered dependent under any Parent Benefit Plan that is a welfare benefit plan to the extent such conditions were waived or satisfied under similar Benefit Plans immediately prior to the Titanium Merger Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "f7152f6ca2f299febeee4dbdebe4dcc96dd9e7d5a22d1642206d078274695ee3"
+            ],
+            "attributes": {
+              "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "f7152f6ca2f299febeee4dbdebe4dcc96dd9e7d5a22d1642206d078274695ee3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e05a13e1e9ac23d5ba42271ee7b0148c205966f4af6cfd6442df7f3bf1d2149a",
+                "document_ordinal": 0,
+                "absolute_start": 3678,
+                "absolute_end": 4114,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "6f518b4cbd491ca3bc0fe82833bc4bdb4657075aa09fd7ceaef6a33290f1b846"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+            "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+            "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+            "extraction_provenance_id": "215f482d0972f6b3237bb602a50e87e62bd4badeb2f639dab14fea81a430241c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11(b)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(b)",
+      "citation_context": {
+        "parent_section_reference": "4.11",
+        "child_section_reference": "4.11",
+        "parent_chapeau_quote": "4.11 Employee Benefits.",
+        "child_clause_quote": "provide credit to each Continuing Employee and any covered dependent thereof for any co-payments and deductibles incurred prior to the effective time for the Continuing Employee’s coverage under the applicable Parent Benefit Plan for purposes of satisfying any applicable deductible, out-of-pocket or similar requirements under any such Parent Benefit Plan that may apply as of or following the Titanium Merger Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "e7f1d927febd0e39b7906e72ab0a9bfab168210f64d22b492e5e020455427844",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 285771,
+        "absolute_end": 295486,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "6f781c790a6446451ec4d399b4efc9d7dec6db7bade329f50fe2326bb05cf5ac",
+        "provision_instance_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "closure_id": "4e609cddf6d24adf44d878fa316bbf867a35e140df08ed0d60b6ea322b5e7891"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6a7b7a661c16ac3c4fb24416b4f03bae876764017696492ecc9d9e890d264fdc",
+        "claim_occurrence_id": "650e02631699caa821fa0ddb1a299cbf218e3e264778278b8e3efc790990735a",
+        "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+        "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "provide credit to each Continuing Employee and any covered dependent thereof for any co-payments and deductibles incurred prior to the effective time for the Continuing Employee’s coverage under the applicable Parent Benefit Plan for purposes of satisfying any applicable deductible, out-of-pocket or similar requirements under any such Parent Benefit Plan that may apply as of or following the Titanium Merger Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "6fd717411e0ae8317770af7a986148b6f8bc916ddbd7bc11241173efb6350441"
+        ],
+        "attributes": {
+          "relief_kind": "EXPENSE_CREDIT",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "6fd717411e0ae8317770af7a986148b6f8bc916ddbd7bc11241173efb6350441",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "00fbc8b7ba90712040835339bbd67d36779cae97c8994741ae789981678a4b24",
+            "document_ordinal": 0,
+            "absolute_start": 4125,
+            "absolute_end": 4552,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "886e59458d5f7db6ea9c21c12f72b57ac745e06bf2d2472934d551a185404c68"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6a7b7a661c16ac3c4fb24416b4f03bae876764017696492ecc9d9e890d264fdc",
+            "claim_occurrence_id": "650e02631699caa821fa0ddb1a299cbf218e3e264778278b8e3efc790990735a",
+            "subject_occurrence_id": "e8d2d27ae1c00f77568769fdfc99b09a2e480c6bcd203cece47160899123a0ed",
+            "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "provide credit to each Continuing Employee and any covered dependent thereof for any co-payments and deductibles incurred prior to the effective time for the Continuing Employee’s coverage under the applicable Parent Benefit Plan for purposes of satisfying any applicable deductible, out-of-pocket or similar requirements under any such Parent Benefit Plan that may apply as of or following the Titanium Merger Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "6fd717411e0ae8317770af7a986148b6f8bc916ddbd7bc11241173efb6350441"
+            ],
+            "attributes": {
+              "relief_kind": "EXPENSE_CREDIT",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "6fd717411e0ae8317770af7a986148b6f8bc916ddbd7bc11241173efb6350441",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "00fbc8b7ba90712040835339bbd67d36779cae97c8994741ae789981678a4b24",
+                "document_ordinal": 0,
+                "absolute_start": 4125,
+                "absolute_end": 4552,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "886e59458d5f7db6ea9c21c12f72b57ac745e06bf2d2472934d551a185404c68"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+            "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+            "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+            "extraction_provenance_id": "215f482d0972f6b3237bb602a50e87e62bd4badeb2f639dab14fea81a430241c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.11",
+          "normalized_citation": "4.11",
+          "derived_citation": "4.11(b)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(b)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors as the case may be, for purposes of determining eligibility to participate, vesting, accruals, and entitlement to and level of benefits where length of service is relevant, other than benefit accruals under a defined benefit pension plan or as would result in a duplication of benefits",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "635fb61dd213845d1f8f829a25697017901c1d5c67af3a08662bd713b5b6f1cd",
+      "closure_id": "06d205707e8da62623a65beaf88f87ecc8415a5b9d6c6db97ced84d1107933b9",
+      "normalised_phrase": "recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors as the case may be, for purposes of determining eligibility to participate, vesting, accruals, and entitlement to and level of benefits where length of service is relevant, other than benefit accruals under a defined benefit pension plan or as would result in a duplication of benefits",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "MONTH_COUNT_UNRESOLVED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "252815479590e09021f2f8c8e792261d49682574ae076fc6cf3c6b601d7c8f16",
+      "closure_id": "479874094f8b4ae598dbce51897f38ce861845267dc49a67595657e59f40a329",
+      "normalised_phrase": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "annual target cash incentive compensation opportunities (excluding equity-based incentive compensation opportunities) that are not less than those provided to such Continuing Employee by the Company and its Subsidiaries as of immediately prior to the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "926c3c9c2378dc6eb7dc8eccad2cde1260ad3f91fe017880df495e5381593cab",
+      "closure_id": "6ba4c3c4ec6b29370eba35d70ec04602f3005cd7b802e3d4697566b096a34f6e",
+      "normalised_phrase": "annual target cash incentive compensation opportunities (excluding equity-based incentive compensation opportunities) that are not less than those provided to such Continuing Employee by the Company and its Subsidiaries as of immediately prior to the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "4.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "246f398f80d8591bbdd54da5c651f5905a46ca58ea76fcfdf888b7e213b8386d",
+      "closure_id": "6f518b4cbd491ca3bc0fe82833bc4bdb4657075aa09fd7ceaef6a33290f1b846",
+      "normalised_phrase": "waive any pre-existing condition limitations, eligibility waiting periods and evidence of insurability requirements with respect to participation and coverage requirements applicable to each Continuing Employee and any covered dependent under any Parent Benefit Plan that is a welfare benefit plan to the extent such conditions were waived or satisfied under similar Benefit Plans immediately prior to the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 427,
+          "end": 447,
+          "excerpt": "Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not l",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1036,
+          "end": 1056,
+          "excerpt": "ior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1241,
+          "end": 1261,
+          "excerpt": "ubsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term ince",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2140,
+          "end": 2160,
+          "excerpt": "use the Company or the Forward Surviving Company, as applicable, to provide the Continuing Employees who experience a qualifying termination of employment during the Continuation P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2387,
+          "end": 2407,
+          "excerpt": "(a) of the Company Disclosure Letter. Until such time as Parent shall cause the Continuing Employees to participate in the applicable compensation and employee benefit plans mainta",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2613,
+          "end": 2633,
+          "excerpt": "llectively, the “Parent Benefit Plans”), the continued participation of the Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2981,
+          "end": 3001,
+          "excerpt": "arent Benefit Plans).\n(b) With respect to any Parent Benefit Plans in which the Continuing Employees or their respective beneficiaries and dependents are otherwise eligible to part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 3286,
+          "end": 3306,
+          "excerpt": "ny to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4930,
+          "end": 4950,
+          "excerpt": "and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "29dd76ef774651e48b392feaa03a30d6e875abcaf6c2c8e706b7fad169dfbb48",
+      "closure_id": "7b6d9245149726c33cd6d37a21e59903bef48900520ace57e0a7152727fca19d",
+      "normalised_phrase": "a base salary or regular hourly wage rate, as applicable, that is not less than the base salary or regular hourly wage rate provided to such Continuing Employees by the Company and its Subsidiaries immediately prior to the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 427,
+          "end": 447,
+          "excerpt": "Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not l",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1036,
+          "end": 1056,
+          "excerpt": "ior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1241,
+          "end": 1261,
+          "excerpt": "ubsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term ince",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2140,
+          "end": 2160,
+          "excerpt": "use the Company or the Forward Surviving Company, as applicable, to provide the Continuing Employees who experience a qualifying termination of employment during the Continuation P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2387,
+          "end": 2407,
+          "excerpt": "(a) of the Company Disclosure Letter. Until such time as Parent shall cause the Continuing Employees to participate in the applicable compensation and employee benefit plans mainta",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2613,
+          "end": 2633,
+          "excerpt": "llectively, the “Parent Benefit Plans”), the continued participation of the Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2981,
+          "end": 3001,
+          "excerpt": "arent Benefit Plans).\n(b) With respect to any Parent Benefit Plans in which the Continuing Employees or their respective beneficiaries and dependents are otherwise eligible to part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 3286,
+          "end": 3306,
+          "excerpt": "ny to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4930,
+          "end": 4950,
+          "excerpt": "and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(g)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "All provisions contained in this Section ‎‎4.11 are included for the sole benefit of the respective parties to this Agreement, and shall not create (A) any third-party beneficiary or other rights in any Company Employee or Continuing Employee, or their respective legal representatives or beneficiaries, or any other Person or (B) any right to continued employment with the Company, any of its Subsidiaries, Parent or the Forward Surviving Company.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6a6582fc0c60386a11ffba420e91e7066c0f001d9b5bda5fa18890a0ca315d1d",
+      "closure_id": "8289a520b836a744892308d3f572761c79e8fdea4a04e4c7fd79c426ff48e056",
+      "normalised_phrase": "All provisions contained in this Section 4.11 are included for the sole benefit of the respective parties to this Agreement, and shall not create (A) any third-party beneficiary or other rights in any Company Employee or Continuing Employee, or their respective legal representatives or beneficiaries, or any other Person or (B) any right to continued employment with the Company, any of its Subsidiaries, Parent or the Forward Surviving Company.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "4.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "11e1b00438d741ad1b397021b0f7f54524b1d13155068be4584607e648149d1d",
+      "closure_id": "869e0a8aeb2f5b7bd278e73c410ba518e8d3846f46f932fe6c5c4f179563f790",
+      "normalised_phrase": "employee benefits (excluding severance, equity-based incentive compensation opportunities, defined benefit pension, non-qualified deferred compensation, post-retirement medical or welfare benefits, retention and any change in control benefits) that are substantially similar, in the aggregate, to those provided to such Continuing Employee as of immediately prior to the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 427,
+          "end": 447,
+          "excerpt": "Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not l",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1036,
+          "end": 1056,
+          "excerpt": "ior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1241,
+          "end": 1261,
+          "excerpt": "ubsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term ince",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2140,
+          "end": 2160,
+          "excerpt": "use the Company or the Forward Surviving Company, as applicable, to provide the Continuing Employees who experience a qualifying termination of employment during the Continuation P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2387,
+          "end": 2407,
+          "excerpt": "(a) of the Company Disclosure Letter. Until such time as Parent shall cause the Continuing Employees to participate in the applicable compensation and employee benefit plans mainta",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2613,
+          "end": 2633,
+          "excerpt": "llectively, the “Parent Benefit Plans”), the continued participation of the Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2981,
+          "end": 3001,
+          "excerpt": "arent Benefit Plans).\n(b) With respect to any Parent Benefit Plans in which the Continuing Employees or their respective beneficiaries and dependents are otherwise eligible to part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 3286,
+          "end": 3306,
+          "excerpt": "ny to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4930,
+          "end": 4950,
+          "excerpt": "and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a7b7a661c16ac3c4fb24416b4f03bae876764017696492ecc9d9e890d264fdc",
+      "closure_id": "886e59458d5f7db6ea9c21c12f72b57ac745e06bf2d2472934d551a185404c68",
+      "normalised_phrase": "provide credit to each Continuing Employee and any covered dependent thereof for any co-payments and deductibles incurred prior to the effective time for the Continuing Employee’s coverage under the applicable Parent Benefit Plan for purposes of satisfying any applicable deductible, out-of-pocket or similar requirements under any such Parent Benefit Plan that may apply as of or following the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 427,
+          "end": 447,
+          "excerpt": "Company and its Affiliates following the Titanium Merger Effective Time (the “Continuing Employees”) (i) a base salary or regular hourly wage rate, as applicable, that is not l",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1036,
+          "end": 1056,
+          "excerpt": "ior to the Titanium Merger Effective Time, (iii) solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1241,
+          "end": 1261,
+          "excerpt": "ubsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term ince",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2140,
+          "end": 2160,
+          "excerpt": "use the Company or the Forward Surviving Company, as applicable, to provide the Continuing Employees who experience a qualifying termination of employment during the Continuation P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2387,
+          "end": 2407,
+          "excerpt": "(a) of the Company Disclosure Letter. Until such time as Parent shall cause the Continuing Employees to participate in the applicable compensation and employee benefit plans mainta",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2613,
+          "end": 2633,
+          "excerpt": "llectively, the “Parent Benefit Plans”), the continued participation of the Continuing Employees in the Benefit Plans as in effect at the Titanium Merger Effective Time shall b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2981,
+          "end": 3001,
+          "excerpt": "arent Benefit Plans).\n(b) With respect to any Parent Benefit Plans in which the Continuing Employees or their respective beneficiaries and dependents are otherwise eligible to part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 3286,
+          "end": 3306,
+          "excerpt": "ny to take commercially reasonable efforts to (i) recognize all service of such Continuing Employees with the Company or any of its Subsidiaries, and their respective predecessors ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4930,
+          "end": 4950,
+          "excerpt": "and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "provide the Continuing Employees who experience a qualifying termination of employment during the Continuation Period with severance benefits that are described on Section ‎4.11(a) of the Company Disclosure Letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d41e31a3ac9a2fb8dfe2e0902a5b35a051a2a17f06ad75158f674ca04cbce52c",
+      "closure_id": "91139b87a350451a8d3b12aa20a2646ea74795439c14b6f9af8df9189f80d219",
+      "normalised_phrase": "provide the Continuing Employees who experience a qualifying termination of employment during the Continuation Period with severance benefits that are described on Section 4.11(a) of the Company Disclosure Letter",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each Benefit Plan that is an “employee pension benefit plan” within the meaning of Section 3(2) of ERISA and is intended to be qualified under Section 401(a) of the Code, has received or may rely on a favorable determination or opinion letter from the IRS",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: IRS determination/opinion letter reliance for pension benefit plans intended to qualify under Code Section 401(a).",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b737350ab9df724c76f0ff9f00340e1873aabdf419fb857c2131d96d668ef2f3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ce2cd26d31261a9420c093a99d4b44139b166dacb76a4d6aa1e4c9b71c35d670",
+          "document_ordinal": 0,
+          "absolute_start": 32558,
+          "absolute_end": 32817,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "92d45a1c3d39c174f293dd4e403b8cd6ae4b42bc306e8e8c5c279b01be5114e4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dd531fce2ab02b468f8df239969a7e1f83291da8d2b4e31bd934f997054c2d88",
+        "producer_receipt_id": "49297d851f23adb88609179d39a9cdba5b5a00c1c0ec957ba6096e02818df6e0",
+        "governed_scope_digest": "4a6db0fe3473c02c60e6ba2f1527f1ad260c9f1b3f32c70d359284dcd67b3ba4",
+        "extraction_provenance_id": "be7ee4326502e81d5945aae9afd70fef7ae1bcc2a2a1dd9b89a28b5d2dd4bade"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding as of the date hereof have been granted in accordance with the terms of the A&R 2015 Plan and applicable Laws",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "BONUS_OR_LTI: Equity awards (options, restricted stock, RSUs, PSUs) were granted under the A&R 2015 Plan pursuant to its terms and applicable law.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "473f9311d2a29d766664c4978badfd7ec6d7e4b01ba106b7f96ba2ef7d644cc1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0bd8293891b31575922c9ce6dc4b398124607facb57725d481fa1fdb616b5604",
+          "document_ordinal": 0,
+          "absolute_start": 41169,
+          "absolute_end": 41370,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ea9949f688bfe619594d57b4c4c3f8895578e5fe4b1f6aed155ad826476e06e6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dd531fce2ab02b468f8df239969a7e1f83291da8d2b4e31bd934f997054c2d88",
+        "producer_receipt_id": "49297d851f23adb88609179d39a9cdba5b5a00c1c0ec957ba6096e02818df6e0",
+        "governed_scope_digest": "4a6db0fe3473c02c60e6ba2f1527f1ad260c9f1b3f32c70d359284dcd67b3ba4",
+        "extraction_provenance_id": "be7ee4326502e81d5945aae9afd70fef7ae1bcc2a2a1dd9b89a28b5d2dd4bade"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "neither the Company nor any of its Subsidiaries is a party to or otherwise bound by any collective bargaining agreement or other Contract with a labor union, labor organization or works council",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WARN_OR_CBA: No CBA or other labor union/works council contract binds the Company or its Subsidiaries, except as scheduled in the Company Disclosure Letter.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fe376b4cdc355d88af16a23a4cadb6af579b22cb3c361ec9867ef28b29e84c3f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0e1db93af38162cc3663a864a905349c7e09d6288ce7189e70f6ec69659639d2",
+          "document_ordinal": 0,
+          "absolute_start": 57966,
+          "absolute_end": 58159,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2192cdafd1d74388dd5e68cf4cff42994a766c884c81984a091efa135df9640b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dd531fce2ab02b468f8df239969a7e1f83291da8d2b4e31bd934f997054c2d88",
+        "producer_receipt_id": "49297d851f23adb88609179d39a9cdba5b5a00c1c0ec957ba6096e02818df6e0",
+        "governed_scope_digest": "4a6db0fe3473c02c60e6ba2f1527f1ad260c9f1b3f32c70d359284dcd67b3ba4",
+        "extraction_provenance_id": "be7ee4326502e81d5945aae9afd70fef7ae1bcc2a2a1dd9b89a28b5d2dd4bade"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Except if not permitted by a collective bargaining agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WARN_OR_CBA: Carve-out conditioning Parent's ability to request termination of the Company 401(k) Plan.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8b747b3c4d0b34d910f0d30bc1dd8f7bfd7442041241c8b0f07feae8d36ae619",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b69d2333eb22f56e503a5cc8b1a8d3787f76faad244983eae760a7942a3eed2",
+          "document_ordinal": 0,
+          "absolute_start": 5689,
+          "absolute_end": 5749,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5b3753ce610c117f5ca81174ca01e4940bfcca7249db79e1a3bd4871c9195815",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "if requested by Parent in writing at least ten (10) business days prior to the Titanium Merger Effective Time, then, solely to the extent that Parent has established a defined contribution plan that includes a qualified cash or deferred arrangement within the meaning of Section 401(k) of the Code (a “Parent 401(k) Plan”) at or prior to the Titanium Merger Effective Time, the Company shall cause any Benefit Plan that is a defined contribution plan intended to be qualified under Section 401(a) of the Code (a “Company 401(k) Plan”) to be terminated effective as of the day immediately prior to the Titanium Merger Effective Time and contingent upon the occurrence of the Closing.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: Conditional termination of the Company 401(k) Plan the day before the Effective Time, upon Parent's written request and contingent on Closing.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2dfb20676db7595d4190d7fa6e3306033c30d570bf4a59d4db17da9488acf90a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b25f4872007bf911da9350e65c51ceba685b82e385cbf9f4ee6feb44cd88905b",
+          "document_ordinal": 0,
+          "absolute_start": 5751,
+          "absolute_end": 6441,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7a74682f213db92071fb745f7ebf52ce480502ff41962d8730fdae66e1ca6d5f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall permit each Continuing Employee who is then actively employed and participating in the Company 401(k) Plan to elect, and Parent agrees to cause the Parent 401(k) Plan to accept, a “direct rollover” of “eligible rollover distributions” (within the meaning of Section 401(a)(31) of the Code) in the form of cash, promissory notes (in the case of outstanding loans) or a combination thereof in an amount equal to the full account balance (including earnings thereon) distributed to such Continuing Employee from the Company 401(k) Plan.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: Direct rollover election mechanics of full account balances from the Company 401(k) Plan into the Parent 401(k) Plan.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bca87031362d93b6f6b76e8fc5578b43c160ccd04b2593cb295475d0300d02a5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "926fa3d9155288f2d06a5034f5ab5193b0a9c0ee9c7b9bdf8b0a41c9feb8a835",
+          "document_ordinal": 0,
+          "absolute_start": 6442,
+          "absolute_end": 6996,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ad27edd0b638ae6edb12e9f8316ee1c0f7d615f703ea08a219568abab0bf717f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If the Company 401(k) Plan is terminated pursuant to Parent’s request in accordance with the preceding sentence, each Continuing Employee shall be eligible to participate in the Parent 401(k) Plan as of the Titanium Merger Effective Time.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: Resulting eligibility to participate in the Parent 401(k) Plan as of the Effective Time if the Company plan is terminated.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b276c9e3eaa0684b3f7c72b4a579ec5b95c47ea14a278c200f8314eb65981627",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9da1469ffb6991c33a488ac9a5c1ab09760d2cbcdfe93e0fc164b2a24db2136a",
+          "document_ordinal": 0,
+          "absolute_start": 6997,
+          "absolute_end": 7237,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "751862a1eb362cbe4a73c85cb76e61a72559f6257fea330f594687e6e90dacc3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company or the Forward Surviving Company, as applicable, will, and Parent will cause the Company or the Forward Surviving Company, as applicable, to, honor, in accordance with their terms, all employment, severance, income continuity and change of control programs, plans or agreements between the Company and the Continuing Employees, bonuses, incentives, severance payments or deferred compensation in existence on the date hereof or, to the extent such changes are permitted under Section ‎4.1(xiv) hereof, as of the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "BONUS_OR_LTI: Obligation to honor pre-existing employment, severance, and bonus/incentive/deferred-compensation arrangements in accordance with their terms.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7ddc6b1e611aeff3a1b1fe779007f5a03a5f83bf5a8bbc2a1cca014d77f6ecb3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1a6f9f5732e84ce4bee8fc7425dcd594f4f31c61d396222e376e5f83ab1ccf81",
+          "document_ordinal": 0,
+          "absolute_start": 4612,
+          "absolute_end": 5168,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0706b17c1c2a9b4fc9fb2d9b15b3b4004096be80020194a9099adea567752d6c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.11",
+      "source_citation": "4.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "solely to the extent that such Continuing Employees are eligible for target long-term incentive compensation opportunities provided by the Company and its Subsidiaries as of immediately prior to the Titanium Merger Effective Time, such Continuing Employees shall be eligible for consideration to participate in Parent’s long-term incentive plan, as determined by Parent in its reasonable discretion",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "BONUS_OR_LTI: Conditional eligibility for consideration to participate in Parent's long-term incentive plan, subject to Parent's reasonable discretion.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1342cdd03eabeb45270a4f37eab9755d77d0a0b7b2b688d4cc565eab5f95743c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "939a022c8fcfe1f33cb407e9befcd0880fd36ada32cc8274e31dc159ce9fd85b",
+          "document_ordinal": 0,
+          "absolute_start": 1005,
+          "absolute_end": 1405,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2ea5a28b96e027ba124a631c0c53090120bd07c468b0eebb39de3944d0f0b155",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b2030e2bf921581589d88a55b54e800cdd1405a7e0a65879a10522d281b6107c",
+        "producer_receipt_id": "0a55e72cb4fd07bf3e0df59a4fd83a8e48a5f722469c298edbc40277bae49cd8",
+        "governed_scope_digest": "7ed4399d42beeabe8f887b3c78e121d3ea6c5f66047993ffb1b3bab7739e8665",
+        "extraction_provenance_id": "96334277c4a4b56a66099d0b1acf7ad3b2d936644721ba934c837b4f7e8c4332"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "736af2004e15134184310ce2e2ec1984f9571bf0c97dacc203c1597507d6c975",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 18,
+      "resolved": 4,
+      "auto_pass": 0,
+      "review_queue": 9,
+      "open_world": 9,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "57c043781e9d63a30c1c1f8531458e3c09b368da45ee4cc605ad1780ba43fde1"
+  }
+}

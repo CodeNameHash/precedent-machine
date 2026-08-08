@@ -1,0 +1,181 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "79c2d01fa5dff7dd0d59b7c17bcaaa09453e1ca4ffb0a7e41838598191e6c8b7",
+  "review_queue": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the annual premiums of such insurance coverage exceed such amount, the Company may and the Forward Surviving Company shall obtain a policy with the greatest coverage available for a cost not exceeding such amount",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "455d02ebed9b5757b0abf9570440fa7d59c95d4a6e2ced5215a042e6a02b6847",
+      "closure_id": "171ffc9056f9068bc7cab6bab06b8980f5fc3eafb6ba463dae9470e80e5d387f",
+      "normalised_phrase": "if the annual premiums of such insurance coverage exceed such amount, the Company may and the Forward Surviving Company shall obtain a policy with the greatest coverage available for a cost not exceeding such amount",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(f)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-INDEM",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "for a six (6)-year period beginning at the Titanium Merger Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7d8e0babdf368c08dd0f5d6e8917c0679d01fee8bf09fe2f7653ece5c6924a5d",
+      "closure_id": "240d1b0880351401619f8ea9e4bb5a22e69576b26d4d707ec76d6931a29669f8",
+      "normalised_phrase": "for a six (6)-year period beginning at the Titanium Merger Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "YEAR_COUNT_UNRESOLVED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "obtain and fully pay the premium for six-year “tail” directors’ and officers’ insurance policies",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a170ad417801048bf40b623fdb8f727e1a2074931b79aa53d628383de2662738",
+      "closure_id": "39884eecf8048c6f4e3e2269580d1a7bcf9672e74f5a258f6019a5044315de60",
+      "normalised_phrase": "obtain and fully pay the premium for six-year “tail” directors’ and officers’ insurance policies",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "721c26ca96621c8fcd54c31c874eef4e97649f8009844ca32437a51d7b3f8327",
+      "closure_id": "63699e547ace13be7ef629dfbfcb0379b1687f7bd5c61e9a6673ad47ee543269",
+      "normalised_phrase": "in no event shall the Company expend, or shall Parent or the Forward Surviving Company be required to expend, in the aggregate for such policies an amount in excess of 300% of the annual premiums currently paid by the Company for such insurance",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "with retentions, limits of liability and other material terms that are at least as favorable as the Company’s existing policies",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e3e5cadc508097726ee1e52183b8e8e563ef4ee1875f2bcbd39ce5365a4ed2ce",
+      "closure_id": "6aa3ef7453e6dd7389fc084b8cb2f329765366192cfe21f747783ada09a736ae",
+      "normalised_phrase": "with retentions, limits of liability and other material terms that are at least as favorable as the Company’s existing policies",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(e)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-BENEF",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "are intended to be for the benefit of, and shall be enforceable by, each of the Indemnified Parties",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ed89e7498a9e1dabc1bcba75e4180546d940d7c0e12b7e43cf81be1632cd5c3a",
+      "closure_id": "87758d4fe1687b4fd911a65343e54a6ff1e09f70340f8379c3a1a7929df711f1",
+      "normalised_phrase": "are intended to be for the benefit of, and shall be enforceable by, each of the Indemnified Parties",
+      "attachment_position": null,
+      "concept_family": "DNO-BENEF"
+    },
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "392692a1de9688b91f324a07f2dd1b5d0f29a8361bfc32887ebd8090e3a839a1",
+      "closure_id": "88180af2205b8a40969558b3e70f9750c73cb20053e4a6b07b26219400e14fc9",
+      "normalised_phrase": "all provisions relating to exculpation, advancement of expenses and indemnification for acts or omissions occurring prior to the Titanium Merger Effective Time now existing in favor of an Indemnified Party as provided in the Charter or Bylaws of the Company or of any of its Subsidiaries, in each case as of the date hereof, shall remain in full force and effect",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "efd0a0c067d2721a3b918aa8439eb6f4472d5ea23b061a6554fb4136598e6964",
+      "closure_id": "cbd5b0c111718cf3884d1d100300e67b68338a08359211435128298ce19e9105",
+      "normalised_phrase": "to the same extent as such Indemnified Parties are indemnified as of the date hereof by the Company pursuant to the Charter or Bylaws or the organizational documents of any Subsidiary of the Company and any indemnification Contracts as of the date hereof",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13(a)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-INDEM",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each of Parent and the Forward Surviving Company shall also pay expenses (including reasonable attorneys’ fees) incurred by an Indemnified Party in advance of the final disposition of any such claim, Action, suit, proceeding or investigation to the fullest extent permitted under applicable Laws",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "dc24d4bc7caee14a9934d5077e949b9499c381bccec2eaed08e0a1102c83d2cf",
+      "closure_id": "cca7c118779ed28afe6abea374f7cb14f0b9713fe6dbe9b8afa07ed132fc6618",
+      "normalised_phrase": "Each of Parent and the Forward Surviving Company shall also pay expenses (including reasonable attorneys’ fees) incurred by an Indemnified Party in advance of the final disposition of any such claim, Action, suit, proceeding or investigation to the fullest extent permitted under applicable Laws",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    }
+  ],
+  "review_queue_artifact_id": "24c46d386797ae46d0007bd317e18a21980373acd784a1ab2cb7fbece84f3705"
+}

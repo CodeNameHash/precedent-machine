@@ -1089,19 +1089,39 @@ function runProvenance() {
 // document at all. The table is not the behaviour; the run is.
 const CLI_MAX_OUTPUT_TOKENS = 128000;
 
+// ONE function derives the ceiling, for both the child environment and the
+// guard that measures against it. Two derivations would be two sources of
+// truth for one number, which is the shape of the defect this whole area
+// exists to close.
+//
+// A malformed override fails the run at startup rather than being forwarded.
+// The alternative -- pass the string to the CLI and let the guard reject it
+// numerically -- silently splits the two apart: the CLI would generate under
+// one ceiling while the guard measured another, and the guard would be wrong
+// exactly when it mattered.
+function effectiveMaxOutputTokens() {
+  const raw = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS;
+  if (raw === undefined || raw === '') return CLI_MAX_OUTPUT_TOKENS;
+  const override = Number(raw);
+  if (!Number.isInteger(override) || override <= 0) {
+    throw new Error(
+      `INVALID_OUTPUT_CEILING: CLAUDE_CODE_MAX_OUTPUT_TOKENS is "${raw}", which is not a positive `
+      + 'integer. Refusing rather than forwarding it: the CLI and the overflow guard must generate '
+      + 'and measure against the SAME number, and a value only one of them understands puts them '
+      + 'quietly out of step.',
+    );
+  }
+  return override;
+}
+
 function childEnv() {
   const env = { ...process.env };
   delete env.ANTHROPIC_API_KEY; // force subscription auth, not metered billing
-  // Honour an operator override so the ceiling can be probed without a code
-  // change, which is how the 64,000 figure was falsified in the first place.
-  env.CLAUDE_CODE_MAX_OUTPUT_TOKENS = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS
-    || String(CLI_MAX_OUTPUT_TOKENS);
+  // Set from the same resolver the guard uses, so the ceiling asked for and
+  // the ceiling measured cannot drift. An operator override still works --
+  // that is how the 64,000 figure was falsified in the first place.
+  env.CLAUDE_CODE_MAX_OUTPUT_TOKENS = String(effectiveMaxOutputTokens());
   return env;
-}
-
-function effectiveMaxOutputTokens() {
-  const override = Number(process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS);
-  return Number.isFinite(override) && override > 0 ? override : CLI_MAX_OUTPUT_TOKENS;
 }
 
 function runClaudeCli(promptText, { model, timeoutMs = 10 * 60 * 1000 } = {}) {
@@ -1226,6 +1246,10 @@ function makeMeasuredCliClient({
 }
 
 async function main() {
+  // Before anything else, including --dry-run. A malformed ceiling is a
+  // configuration error, and finding it at the first model call -- minutes in,
+  // on a path a dry run never reaches -- is finding it too late.
+  effectiveMaxOutputTokens();
   const args = parseArgs(process.argv.slice(2));
   const config = resolveRunConfig(args);
   const promptInfo = resolvePromptVersionInfo(config.family);

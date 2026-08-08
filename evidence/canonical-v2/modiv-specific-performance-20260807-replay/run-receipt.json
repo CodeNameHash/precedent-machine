@@ -25,12 +25,12 @@
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
         "provider_id": "native-producer-anthropic/v1",
-        "model_id": "replay(evidence/canonical-v2/modiv-specific-performance-20260806)",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
         "prompt_digest": "6baf48493095bca7789fc569a6d65cfebc84fc9a5b87f84c75bf2ea0005be9d5",
         "input_scope_digest": "3177533a32d98da74234d7f4f6955f6674bcfedef8dc06aa55cd004999474255",
         "proposal_count": 1,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "d251885ab63571787019ee5f0d75f555a8aba934a0fd4638296bae80a07ee7e4"
+        "producer_receipt_id": "12f9ced74c07375b4d37f6919c4465e7decf4b98f86354391b43c9e57b25de18"
       }
     }
   ],
@@ -89,7 +89,7 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "683eefebfbd0693f89456919cf2d3c5a586ace18c1696ae3f15f6fa2c3711484"
+          "closure_id": "035778b31bd57692a8c1dba9134bf2771380a0967a389e198240ae444a6632c3"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -97,9 +97,9 @@
           "extractor_version": "1",
           "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
           "prompt_digest": "6baf48493095bca7789fc569a6d65cfebc84fc9a5b87f84c75bf2ea0005be9d5",
-          "producer_receipt_id": "d251885ab63571787019ee5f0d75f555a8aba934a0fd4638296bae80a07ee7e4",
+          "producer_receipt_id": "12f9ced74c07375b4d37f6919c4465e7decf4b98f86354391b43c9e57b25de18",
           "governed_scope_digest": "82a36e977465d19ab801052a39062fc969c826b149d914748959f9deb3e97d13",
-          "extraction_provenance_id": "7c2ecac399c6e747437919f25a5123767ee28bca08b9f10e8b567c6d6efa2f81"
+          "extraction_provenance_id": "260d433c79fa8e2fcd5fead3bd032bf958455f79ac2af561b9acaeb6969dfaef"
         }
       }
     }
@@ -248,5 +248,5 @@
   "undispatched_section_count": 0,
   "compiled_candidate_count": 1,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "2cd7e40483669d883d20b81c4804f563ecab4903d7af163fb7ce429bbba05b41"
+  "run_receipt_id": "d183c4c5183aed9c36dd879fd1a1284f2182f807941f55be57ef7b608c9596f0"
 }
