@@ -117,7 +117,9 @@
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
  *     [--model <claude CLI model alias, default "sonnet">] \
  *     [--no-follow-citations] \
- *     [--call-timeout-ms <positive integer, default 600000>] \
+ *     [--call-timeout-ms <positive integer. Default is DERIVED from the \
+ *        output ceiling via derivedCallTimeoutMs(): 4.3s + 8.23ms/token + 25%%, \
+ *        so raising the ceiling cannot silently outrun the timeout>] \
  *     [--v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON, \
  *        default: none -- condition 1 (v1<->v2 comparator) then stays \
  *        unevaluated for every claim, recorded explicitly in run-manifest.json>] \
@@ -1504,6 +1506,29 @@ const CLI_MAX_OUTPUT_TOKENS = 128000;
 // numerically -- silently splits the two apart: the CLI would generate under
 // one ceiling while the guard measured another, and the guard would be wrong
 // exactly when it mattered.
+// The call timeout is DERIVED from the output ceiling, not fixed alongside it.
+//
+// Fable's latency ruling measured duration = 4.3s + 8.23ms per output token,
+// R^2 = 0.993. So a call permitted to emit N tokens can legitimately take
+// 4.3s + 8.23N milliseconds, and a timeout shorter than that does not protect
+// against a hung call -- it guarantees failure on the largest legitimate ones.
+//
+// This was not hypothetical for ten minutes. Raising the ceiling from 64,000
+// to 128,000 doubled the longest legitimate call while the timeout stayed at
+// its 600,000ms default, and Skechers KEY_DEFINED_TERMS -- 1.1 plus 1.2, the
+// definitions article -- died at exactly 600,000ms on the first attempt after
+// the change. Two numbers that must move together, kept in one place so they
+// cannot drift, the same fix applied to the ceiling itself above.
+const MS_PER_OUTPUT_TOKEN = 8.23;
+const CALL_FIXED_OVERHEAD_MS = 4300;
+const CALL_TIMEOUT_SAFETY = 1.25;
+
+function derivedCallTimeoutMs(maxOutputTokens) {
+  return Math.ceil(
+    (CALL_FIXED_OVERHEAD_MS + (MS_PER_OUTPUT_TOKEN * maxOutputTokens)) * CALL_TIMEOUT_SAFETY,
+  );
+}
+
 function effectiveMaxOutputTokens() {
   const raw = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS;
   if (raw === undefined || raw === '') return CLI_MAX_OUTPUT_TOKENS;
@@ -1606,7 +1631,12 @@ function makeMeasuredCliClient({
           : 'CITATION_FOLLOWUP_UNATTRIBUTED';
         const prompt = flattenMessages(params);
         const startedAt = Date.now();
-        const rawCliOutput = await runClaudeCli(prompt, { model, ...(config.timeoutMs ? { timeoutMs: config.timeoutMs } : {}) });
+        // An explicit --call-timeout-ms wins; otherwise the timeout follows the
+        // ceiling, so raising one can never silently outrun the other.
+        const rawCliOutput = await runClaudeCli(prompt, {
+          model,
+          timeoutMs: config.timeoutMs || derivedCallTimeoutMs(effectiveMaxOutputTokens()),
+        });
         const wallClockMs = Date.now() - startedAt;
         const parsed = JSON.parse(rawCliOutput);
         if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
