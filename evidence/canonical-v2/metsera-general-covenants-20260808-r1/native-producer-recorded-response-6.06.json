@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:05:47.136Z",
+  "section_reference": "6.06",
+  "note": "General extraction run: deal=metsera, family=GENERAL_COVENANTS, section_references=[\"6.02\",\"6.03\",\"6.06\",\"6.07\",\"6.08\",\"6.09\",\"6.12\",\"6.13\",\"6.14\",\"6.15\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"6.06\",\n      \"covenant_obligor\": \"Parent and Merger Sub, on the one hand, and the Company, on the other hand\",\n      \"covenant_code\": \"COV-PUBLICITY\",\n      \"definition_cross_references\": [],\n      \"quote\": \"Parent and Merger Sub, on the one hand, and the Company, on the other hand, shall consult with each other before issuing, and provide each other the opportunity to review and comment upon, any press release or other public statements with respect to the Merger and the other Transactions, and shall not issue any such press release or make any such public statement without the prior written consent of the other party\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

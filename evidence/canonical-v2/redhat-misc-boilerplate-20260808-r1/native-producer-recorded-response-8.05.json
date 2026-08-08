@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:05:05.757Z",
+  "section_reference": "8.05",
+  "note": "General extraction run: deal=redhat, family=MISC_BOILERPLATE, section_references=[\"8.01\",\"8.02\",\"8.04\",\"8.05\",\"8.06\",\"8.07\",\"8.08\",\"8.09\",\"8.10\",\"8.12\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"No party may raise the use of an Electronic Delivery to deliver a signature, or the fact that any signature or agreement or instrument was transmitted or communicated through the use of an Electronic Delivery, as a defense to the formation of a contract, and each party forever waives any such defense, except to the extent such defense relates to lack of authenticity.\"}],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

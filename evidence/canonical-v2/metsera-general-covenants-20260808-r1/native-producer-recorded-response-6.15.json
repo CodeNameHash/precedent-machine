@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:09:03.970Z",
+  "section_reference": "6.15",
+  "note": "General extraction run: deal=metsera, family=GENERAL_COVENANTS, section_references=[\"6.02\",\"6.03\",\"6.06\",\"6.07\",\"6.08\",\"6.09\",\"6.12\",\"6.13\",\"6.14\",\"6.15\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"The Parties agree to the matters set forth on Section 6.15 of the Company Disclosure Letter.\",\n      \"why_unmapped\": \"The clause is a bare cross-reference to a disclosure letter schedule and contains no operative covenant language identifying a specific subject matter or obligated party; the actual content of the referenced matters is not present in the source text, so no GENERAL_COVENANT code can be selected without inventing a covenant.\",\n      \"nearest_concept\": \"GENERAL_COVENANT_ROUTER\"\n    }\n  ]\n}\n```"
+}
