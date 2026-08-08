@@ -1211,6 +1211,9 @@ the same day. Many of the 69 may be genuine cross-references correctly declined,
 which the receipt's `limb_enumeration_scan` could show, but "correctly declined"
 and "silently dropped" look identical from outside when nothing is recorded.
 
+**Step 2X-L1 closed the account** — see the section below. All 69 limbs traced;
+replay evidence refreshed without `MAT_MAE_AGGREGATE`.
+
 **2X-E — absence copy.** 14 unsafe wordings across 11 config files now use
 `CONDITION_ABSENT_COPY`, verified as zero remaining. The termination-fees
 provenance pill was deliberately **not** ported: no other family has a genuine
@@ -1269,9 +1272,34 @@ runner, including a dev server left running from the live-verification attempt.
 The pattern cost real time and is now in the handoff's trap list: a gate run is
 only evidence if nothing else is touching the tree.
 
-**Carried forward, all in the plan.** Regenerate the 2X-L replay evidence, which
-still carries the retired MAE code — free by replay, and loud rather than silent
-if forgotten, since re-validation raises `INVALID_CANONICAL_VALUE` and
-quarantines. Publish the 69-limb disposition table that 2X-L1 demands. And the
-placement pass across all 22 flat families, which is the step that actually
-moves the top of the resolution table.
+**Carried forward, all in the plan.** The placement pass across all 22 flat
+families, which is the step that actually moves the top of the resolution table.
+
+---
+
+## Step 2X-L1. Account for every limb — disposition table and replay refresh
+
+**Closed 2026-08-08**, same branch session as the merge follow-up.
+
+**Disposition table published.** All **69** model-emitted limbs on Red Hat
+REPRESENTATIONS §3.01+§3.02 traced to exactly one disposition; **unaccounted=0**.
+Computed from evidence via `scripts/canonical-v2-redhat-reps-limb-disposition.mjs`,
+not asserted by hand:
+
+| disposition | count | reason_code |
+|---|---:|---|
+| `RESIDUAL_QUOTE_UNVERIFIED` | 1 | `LIMB_ASSERTION_QUOTE_UNVERIFIED` |
+| `OPEN_WORLD_ONLY` | 62 | `UNMAPPED_GENERIC_CLAIM_KEY` |
+| `OPEN_WORLD_AND_ASSERTION_NODE` | 6 | `UNMAPPED_GENERIC_CLAIM_KEY` |
+
+Path hygiene on all 69 inputs: MARKER 66, DESCRIPTIVE 3, MIXED 0. The six
+assertion-node feeders are §3.01 `(a)/(i–iii)` and §3.02's three descriptive
+headings — a subset of the 68 open-world limb candidates, not a separate channel.
+
+**2X-L replay evidence regenerated** in place at zero model calls
+(`redhat-representations-20260808-2xl-replay`). `MAT_MAE_AGGREGATE` count in
+`resolution.json`: **0** (was 26 on the stale artefact captured while V41 briefly
+included the retired code). Post-regeneration counts unchanged: 2 trees, 7 path
+nodes, 6 assertion nodes, `resolved=32`, `open_world=100`, 1 adapter residual.
+
+Evidence and commands: `docs/codex-program/notes/step-2x-l1-limb-disposition.md`.
