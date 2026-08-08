@@ -1,0 +1,1207 @@
+{
+  "resolved": [
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28(b)",
+      "citation_context": {
+        "parent_section_reference": "3.28",
+        "child_section_reference": "3.28(b)",
+        "parent_chapeau_quote": "3.28 Exclusivity of Representations and Warranties.",
+        "child_clause_quote": "(b) neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;\n(i) no Person has been authorized by the Buyer Parties or any of its Affiliates or Representatives to make any representation or warranty relating to the Buyer Parties or any of its businesses or operations or otherwise in connection with this Agreement or the Merger, and if made, such representation or warranty must not be relied upon by the Company Group or any of their respective Affiliates or Representatives as having been authorized by the Buyer Parties or any of its Affiliates or Representatives (or any other Person); and\n-44-\n(ii) the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements)."
+      },
+      "governing_context_quote": "(b) neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Buyer Parties",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ce71d242f5f2e8dcd1186f26d9abd0712b551f559d1a7d14546f7d1d3314724e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 178805,
+        "absolute_end": 181651,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Buyer Parties",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "c4c5f55dbd768cda7da4dc723ebf41b809763095501d990c16058b7ced767bbb",
+        "provision_instance_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+        "closure_id": "6d597cafbe383307dfa07a04c30558269b0dde48979a9f5c44c64d9cfac9c829"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "d9d598f999d0deec94a62759c1558e16b4dc26f8fec595ddbe4462bebf4252cd",
+        "claim_occurrence_id": "0d92866911a2b60aaa501d0d7809799acb8e6713ac70b8a59c65da961efe8d6c",
+        "subject_occurrence_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "77d2a1818a42f8a69c39502b02012e5168eed72b28efdc3fe55d41a4cf29a816"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "the Buyer Parties",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "77d2a1818a42f8a69c39502b02012e5168eed72b28efdc3fe55d41a4cf29a816",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9130aa339e33a6171258a2e5d26293f3f2d37521ac6bff4adf8516830c49063a",
+            "document_ordinal": 0,
+            "absolute_start": 314,
+            "absolute_end": 591,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "561444e1b819d0e3d1bb1697d141ee9ef014676e009a3dfec3efe98d8aa82bce"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.28",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "d9d598f999d0deec94a62759c1558e16b4dc26f8fec595ddbe4462bebf4252cd",
+            "claim_occurrence_id": "0d92866911a2b60aaa501d0d7809799acb8e6713ac70b8a59c65da961efe8d6c",
+            "subject_occurrence_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "77d2a1818a42f8a69c39502b02012e5168eed72b28efdc3fe55d41a4cf29a816"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "the Buyer Parties",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "77d2a1818a42f8a69c39502b02012e5168eed72b28efdc3fe55d41a4cf29a816",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9130aa339e33a6171258a2e5d26293f3f2d37521ac6bff4adf8516830c49063a",
+                "document_ordinal": 0,
+                "absolute_start": 314,
+                "absolute_end": 591,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "561444e1b819d0e3d1bb1697d141ee9ef014676e009a3dfec3efe98d8aa82bce"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "fe93138c9f12cb9558fb23b5b0e4b8000b00a863c9ff5ca394e9a0253f34925b",
+            "producer_receipt_id": "cd2f0c8477bbecae23cf089aec4b4c648e88ca7e246459d0a690dd6c85c50d2e",
+            "governed_scope_digest": "988338fe9eea4749d6fd36b0c7d4c896f2c8aa0cc603fd049bdc4213e1010ca5",
+            "extraction_provenance_id": "98a4a14194726b2cae2db0e6f93c247b8fde26130932be54931dcf804e5575d5"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(b)"
+        }
+      }
+    },
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28(b)(ii)",
+      "citation_context": {
+        "parent_section_reference": "3.28",
+        "child_section_reference": "3.28(b)(ii)",
+        "parent_chapeau_quote": "3.28 Exclusivity of Representations and Warranties.",
+        "child_clause_quote": "(ii) the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements)."
+      },
+      "governing_context_quote": "(ii) the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Buyer Parties",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ce71d242f5f2e8dcd1186f26d9abd0712b551f559d1a7d14546f7d1d3314724e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 178805,
+        "absolute_end": 181651,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Buyer Parties",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "c4c5f55dbd768cda7da4dc723ebf41b809763095501d990c16058b7ced767bbb",
+        "provision_instance_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+        "closure_id": "6d597cafbe383307dfa07a04c30558269b0dde48979a9f5c44c64d9cfac9c829"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "25b8d1b49c324b8356a2638cc5bbda5f47e3c35bada345dc197406c2057274c9",
+        "claim_occurrence_id": "92d0e05a7a012c957cb30b1a2ccb399349bbb52e6f43af81cc0cd237ef6dcb37",
+        "subject_occurrence_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "60888858fdf71091c426914964be6a453cd5e96d4ee60c144330aef803ff8f43"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "the Buyer Parties",
+          "agreement_scope_quote": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "60888858fdf71091c426914964be6a453cd5e96d4ee60c144330aef803ff8f43",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "74c32643f14790b538d5aa6d28c61e54749482b91ffeee087fe01e10bfc884f2",
+            "document_ordinal": 0,
+            "absolute_start": 1136,
+            "absolute_end": 1759,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ac140cb1870de62d1ae09c65097ff1c6a73ba0eb421fc30fd1197a8a8615698c"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.28",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(b)(ii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "25b8d1b49c324b8356a2638cc5bbda5f47e3c35bada345dc197406c2057274c9",
+            "claim_occurrence_id": "92d0e05a7a012c957cb30b1a2ccb399349bbb52e6f43af81cc0cd237ef6dcb37",
+            "subject_occurrence_id": "17c521aa7330d8240ce7ea2b411279124793ba8fa1e8c89e2486d7ae1fec6646",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "60888858fdf71091c426914964be6a453cd5e96d4ee60c144330aef803ff8f43"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "the Buyer Parties",
+              "agreement_scope_quote": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "60888858fdf71091c426914964be6a453cd5e96d4ee60c144330aef803ff8f43",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "74c32643f14790b538d5aa6d28c61e54749482b91ffeee087fe01e10bfc884f2",
+                "document_ordinal": 0,
+                "absolute_start": 1136,
+                "absolute_end": 1759,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ac140cb1870de62d1ae09c65097ff1c6a73ba0eb421fc30fd1197a8a8615698c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "fe93138c9f12cb9558fb23b5b0e4b8000b00a863c9ff5ca394e9a0253f34925b",
+            "producer_receipt_id": "cd2f0c8477bbecae23cf089aec4b4c648e88ca7e246459d0a690dd6c85c50d2e",
+            "governed_scope_digest": "988338fe9eea4749d6fd36b0c7d4c896f2c8aa0cc603fd049bdc4213e1010ca5",
+            "extraction_provenance_id": "98a4a14194726b2cae2db0e6f93c247b8fde26130932be54931dcf804e5575d5"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(b)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28(c)",
+      "citation_context": {
+        "parent_section_reference": "3.28",
+        "child_section_reference": "3.28(c)",
+        "parent_chapeau_quote": "3.28 Exclusivity of Representations and Warranties.",
+        "child_clause_quote": "(c) No Reliance. The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information."
+      },
+      "governing_context_quote": "(c) No Reliance. The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Buyer Parties",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ce71d242f5f2e8dcd1186f26d9abd0712b551f559d1a7d14546f7d1d3314724e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 178805,
+        "absolute_end": 181651,
+        "concept_key": "REP-B-NONRELIANCE",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Buyer Parties",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "c4c5f55dbd768cda7da4dc723ebf41b809763095501d990c16058b7ced767bbb",
+        "provision_instance_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+        "closure_id": "a83ee473bd61a31fa7a091f3a600d87ddd019b3ba1171b803df53a84aa0ec429"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6444a2b4da1e04ee9ff5ed2e9b21ca5663e3cd1910d197fbf0264e46202f016e",
+        "claim_occurrence_id": "661cb4a4d006ebcc5b61bd7d9685b5214577f89a9cbc7c85a308d83208772a88",
+        "subject_occurrence_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+        "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "54203fe53fca4a749ca5e23bf52b821892ebf83e58b63b67794f3277f12bfe4b"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "relying_party_ref": "The Company",
+          "agreement_scope_quote": "except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "54203fe53fca4a749ca5e23bf52b821892ebf83e58b63b67794f3277f12bfe4b",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9641c5176791dc5ae7ba0608455da07ca8e55c0ffe92bddfbf0729ed98b4609f",
+            "document_ordinal": 0,
+            "absolute_start": 1777,
+            "absolute_end": 2845,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9f8dbbce7063cfd82a0d138990d5f57c29df474c3451592ee8e121b8ad007ad5"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.28",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6444a2b4da1e04ee9ff5ed2e9b21ca5663e3cd1910d197fbf0264e46202f016e",
+            "claim_occurrence_id": "661cb4a4d006ebcc5b61bd7d9685b5214577f89a9cbc7c85a308d83208772a88",
+            "subject_occurrence_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+            "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "54203fe53fca4a749ca5e23bf52b821892ebf83e58b63b67794f3277f12bfe4b"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "relying_party_ref": "The Company",
+              "agreement_scope_quote": "except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "54203fe53fca4a749ca5e23bf52b821892ebf83e58b63b67794f3277f12bfe4b",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9641c5176791dc5ae7ba0608455da07ca8e55c0ffe92bddfbf0729ed98b4609f",
+                "document_ordinal": 0,
+                "absolute_start": 1777,
+                "absolute_end": 2845,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9f8dbbce7063cfd82a0d138990d5f57c29df474c3451592ee8e121b8ad007ad5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "fe93138c9f12cb9558fb23b5b0e4b8000b00a863c9ff5ca394e9a0253f34925b",
+            "producer_receipt_id": "cd2f0c8477bbecae23cf089aec4b4c648e88ca7e246459d0a690dd6c85c50d2e",
+            "governed_scope_digest": "988338fe9eea4749d6fd36b0c7d4c896f2c8aa0cc603fd049bdc4213e1010ca5",
+            "extraction_provenance_id": "98a4a14194726b2cae2db0e6f93c247b8fde26130932be54931dcf804e5575d5"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28(c)",
+      "citation_context": {
+        "parent_section_reference": "3.28",
+        "child_section_reference": "3.28(c)",
+        "parent_chapeau_quote": "3.28 Exclusivity of Representations and Warranties.",
+        "child_clause_quote": "(c) No Reliance. The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information."
+      },
+      "governing_context_quote": "(c) No Reliance. The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "generic_claim_key": "NATIVE_EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Buyer Parties",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ce71d242f5f2e8dcd1186f26d9abd0712b551f559d1a7d14546f7d1d3314724e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 178805,
+        "absolute_end": 181651,
+        "concept_key": "REP-B-NONRELIANCE",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Buyer Parties",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "c4c5f55dbd768cda7da4dc723ebf41b809763095501d990c16058b7ced767bbb",
+        "provision_instance_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+        "closure_id": "a83ee473bd61a31fa7a091f3a600d87ddd019b3ba1171b803df53a84aa0ec429"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a40baff19d107f491d54edbed3f8e201c0f35b422c4f55fb40736b45500f4ce5",
+        "claim_occurrence_id": "88d6770727e8c4bf529f33dab798469376652f8894f6dab0cde3a32fa7ee9c68",
+        "subject_occurrence_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+        "claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "48411fa7ad9a118c629f42a6a083212546b6f58ced497a0aecfe42b63e86a288"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "relying_party_ref": "The Company",
+          "extra_contractual_scope_quote": "any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "48411fa7ad9a118c629f42a6a083212546b6f58ced497a0aecfe42b63e86a288",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9641c5176791dc5ae7ba0608455da07ca8e55c0ffe92bddfbf0729ed98b4609f",
+            "document_ordinal": 0,
+            "absolute_start": 1777,
+            "absolute_end": 2845,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "af4ec39f559be157dff3b4627b19702920e7d649e8ba9a93c7ceb55acf07faf4"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.28",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(c)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a40baff19d107f491d54edbed3f8e201c0f35b422c4f55fb40736b45500f4ce5",
+            "claim_occurrence_id": "88d6770727e8c4bf529f33dab798469376652f8894f6dab0cde3a32fa7ee9c68",
+            "subject_occurrence_id": "00bbf2044124edcbbed4a628ac3b823038ca2d206a2421e9b179f96588eec13d",
+            "claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "48411fa7ad9a118c629f42a6a083212546b6f58ced497a0aecfe42b63e86a288"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "relying_party_ref": "The Company",
+              "extra_contractual_scope_quote": "any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "48411fa7ad9a118c629f42a6a083212546b6f58ced497a0aecfe42b63e86a288",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9641c5176791dc5ae7ba0608455da07ca8e55c0ffe92bddfbf0729ed98b4609f",
+                "document_ordinal": 0,
+                "absolute_start": 1777,
+                "absolute_end": 2845,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "af4ec39f559be157dff3b4627b19702920e7d649e8ba9a93c7ceb55acf07faf4"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "fe93138c9f12cb9558fb23b5b0e4b8000b00a863c9ff5ca394e9a0253f34925b",
+            "producer_receipt_id": "cd2f0c8477bbecae23cf089aec4b4c648e88ca7e246459d0a690dd6c85c50d2e",
+            "governed_scope_digest": "988338fe9eea4749d6fd36b0c7d4c896f2c8aa0cc603fd049bdc4213e1010ca5",
+            "extraction_provenance_id": "98a4a14194726b2cae2db0e6f93c247b8fde26130932be54931dcf804e5575d5"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.28",
+          "normalized_citation": "3.28",
+          "derived_citation": "3.28(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(a)(iii)",
+      "citation_context": {
+        "parent_section_reference": "4.17",
+        "child_section_reference": "4.17(a)(iii)",
+        "parent_chapeau_quote": "4.17 Exclusivity of Representations and Warranties.",
+        "child_clause_quote": "(iii) the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements)."
+      },
+      "governing_context_quote": "(iii) the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ce71d242f5f2e8dcd1186f26d9abd0712b551f559d1a7d14546f7d1d3314724e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 204024,
+        "absolute_end": 207088,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "62fc7c6e1b268cbf5ab25e478ab03972aa0ef1af3d0f913c4b5e7d8022af4e77",
+        "provision_instance_id": "dafc9512505e188852ace6c8964845ae3661c28561f5ef55711428dd056199c4",
+        "closure_id": "f63552be2ad2bae860092abff511fbc0a8de40308e682490cfd51fde9b089a58"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "96b2fa6db5689563e02289058d3fb09dc4c6986b6aaff4fd4545f53827d268db",
+        "claim_occurrence_id": "afbde1b57eb1e742832c935d67866095071f45ad588f1c3c432ecf0f2ced9f40",
+        "subject_occurrence_id": "dafc9512505e188852ace6c8964845ae3661c28561f5ef55711428dd056199c4",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9ff0ebbfb437f3299c2b5fdf116e88226989a5ef484188d8e2a77ff8b3f3d479"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "the Company",
+          "agreement_scope_quote": "in this Agreement",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9ff0ebbfb437f3299c2b5fdf116e88226989a5ef484188d8e2a77ff8b3f3d479",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "717751791d8b5d1ea02b51e3be5e9cf052b0c6d5c31722ec0d08a7ca44428beb",
+            "document_ordinal": 0,
+            "absolute_start": 1083,
+            "absolute_end": 1695,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3e30e7101f8828d80d74130c69e395538e24563e8f006ddef312818f28a8bc54"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.17",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.17",
+          "normalized_citation": "4.17",
+          "derived_citation": "4.17(a)(iii)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "96b2fa6db5689563e02289058d3fb09dc4c6986b6aaff4fd4545f53827d268db",
+            "claim_occurrence_id": "afbde1b57eb1e742832c935d67866095071f45ad588f1c3c432ecf0f2ced9f40",
+            "subject_occurrence_id": "dafc9512505e188852ace6c8964845ae3661c28561f5ef55711428dd056199c4",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9ff0ebbfb437f3299c2b5fdf116e88226989a5ef484188d8e2a77ff8b3f3d479"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "the Company",
+              "agreement_scope_quote": "in this Agreement",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9ff0ebbfb437f3299c2b5fdf116e88226989a5ef484188d8e2a77ff8b3f3d479",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "717751791d8b5d1ea02b51e3be5e9cf052b0c6d5c31722ec0d08a7ca44428beb",
+                "document_ordinal": 0,
+                "absolute_start": 1083,
+                "absolute_end": 1695,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3e30e7101f8828d80d74130c69e395538e24563e8f006ddef312818f28a8bc54"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "5bf0b430e769abeaf7348b83edf8b32863fab6bd1aa2448c002c5d5f6fd477f9",
+            "producer_receipt_id": "f67322489b0388a8e7c936dc582b6d9c1b244bca45ca894bc641dc28ef2e1e62",
+            "governed_scope_digest": "77de7ead9bbecf8b916b6466acf543b49e35fde32898f6709d9992bc42b010dc",
+            "extraction_provenance_id": "20a65b05fd5dfb3f38f9917397982716f9d5cc3582a44b4ea1ef141a72c01152"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.17",
+          "normalized_citation": "4.17",
+          "derived_citation": "4.17(a)(iii)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a40baff19d107f491d54edbed3f8e201c0f35b422c4f55fb40736b45500f4ce5",
+      "closure_id": "af4ec39f559be157dff3b4627b19702920e7d649e8ba9a93c7ceb55acf07faf4",
+      "normalised_phrase": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE"
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d9d598f999d0deec94a62759c1558e16b4dc26f8fec595ddbe4462bebf4252cd",
+      "closure_id": "561444e1b819d0e3d1bb1697d141ee9ef014676e009a3dfec3efe98d8aa82bce",
+      "normalised_phrase": "neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "3.28 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. The Company, on behalf of itself and its Subsidiaries, acknowle",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25b8d1b49c324b8356a2638cc5bbda5f47e3c35bada345dc197406c2057274c9",
+      "closure_id": "ac140cb1870de62d1ae09c65097ff1c6a73ba0eb421fc30fd1197a8a8615698c",
+      "normalised_phrase": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "3.28 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. The Company, on behalf of itself and its Subsidiaries, acknowle",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6444a2b4da1e04ee9ff5ed2e9b21ca5663e3cd1910d197fbf0264e46202f016e",
+      "closure_id": "9f8dbbce7063cfd82a0d138990d5f57c29df474c3451592ee8e121b8ad007ad5",
+      "normalised_phrase": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE"
+    },
+    {
+      "section_reference": "4.17",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "96b2fa6db5689563e02289058d3fb09dc4c6986b6aaff4fd4545f53827d268db",
+      "closure_id": "3e30e7101f8828d80d74130c69e395538e24563e8f006ddef312818f28a8bc54",
+      "normalised_phrase": "the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "4.17 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. Each Buyer Party, on behalf of itself and its Subsidiaries, ack",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(b)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [
+        "REPRESENTATION_SIDE_PARTY_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each Buyer Party, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article III, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;",
+      "canonical_value": true,
+      "original_claim_occurrence_id": "4ac39e7274755e2b29db2d52632df600f7905952ca8851e8717ee73c0ff8381c",
+      "closure_id": "4250457c60c23ff669f9f4e8375ecef26b36a397ea7c141df36a602613d2b280",
+      "normalised_phrase": "Each Buyer Party, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article III, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(b)",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT_CANDIDATE",
+      "raw_value": "Each of Parent and Merger Sub has conducted its own independent review and analysis of the business, operations, assets, liabilities, results of operations, financial condition and prospects of the Company and its Subsidiaries and acknowledges that each of Parent and Merger Sub has been provided access for such purposes.",
+      "canonical_value": true,
+      "attributes": {
+        "section_reference": "4.17",
+        "representation_side": "TARGET",
+        "investigating_party_ref": "Each of Parent and Merger Sub"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc4d4e4efd04a78d63491dab495593e1264381075a67c24c1a78ebdad9fe4790",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6015e90a765ddb02f50cf4a4cbbeec8a2ce3acf99feb9196fac939bda4ec03c4",
+          "document_ordinal": 0,
+          "absolute_start": 1713,
+          "absolute_end": 2035,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "16ca989cc5909b1464668f14a563c6ffd91c48fe68e5cd373fb0b425a707ec40",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "NO_OTHER_REPS_FRAUD",
+        "prompt_digest": "5bf0b430e769abeaf7348b83edf8b32863fab6bd1aa2448c002c5d5f6fd477f9",
+        "producer_receipt_id": "f67322489b0388a8e7c936dc582b6d9c1b244bca45ca894bc641dc28ef2e1e62",
+        "governed_scope_digest": "77de7ead9bbecf8b916b6466acf543b49e35fde32898f6709d9992bc42b010dc",
+        "extraction_provenance_id": "20a65b05fd5dfb3f38f9917397982716f9d5cc3582a44b4ea1ef141a72c01152"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.17",
+        "normalized_citation": "4.17",
+        "derived_citation": "4.17(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b5188e8cfcd3a46f0a79457b531a43b3fa995dd16816038c666702ee681acb92",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 7,
+      "resolved": 5,
+      "auto_pass": 0,
+      "review_queue": 6,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "96235ef1811a97a1c1037e6cbe8a721d197f651ac82cefbbc5e329332b6fc214"
+  }
+}

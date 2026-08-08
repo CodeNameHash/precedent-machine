@@ -1,0 +1,147 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b5188e8cfcd3a46f0a79457b531a43b3fa995dd16816038c666702ee681acb92",
+  "review_queue": [
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a40baff19d107f491d54edbed3f8e201c0f35b422c4f55fb40736b45500f4ce5",
+      "closure_id": "af4ec39f559be157dff3b4627b19702920e7d649e8ba9a93c7ceb55acf07faf4",
+      "normalised_phrase": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE"
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d9d598f999d0deec94a62759c1558e16b4dc26f8fec595ddbe4462bebf4252cd",
+      "closure_id": "561444e1b819d0e3d1bb1697d141ee9ef014676e009a3dfec3efe98d8aa82bce",
+      "normalised_phrase": "neither the Buyer Parties nor any of their Subsidiaries (or any other Person) makes, or has made, any representation or warranty relating to the Buyer Parties, its Subsidiaries or any of their businesses, operations or otherwise in connection with this Agreement or the Merger;",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "3.28 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. The Company, on behalf of itself and its Subsidiaries, acknowle",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25b8d1b49c324b8356a2638cc5bbda5f47e3c35bada345dc197406c2057274c9",
+      "closure_id": "ac140cb1870de62d1ae09c65097ff1c6a73ba0eb421fc30fd1197a8a8615698c",
+      "normalised_phrase": "the representations and warranties made by the Buyer Parties in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Buyer Parties hereby disclaim any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Company Group or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "3.28 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. The Company, on behalf of itself and its Subsidiaries, acknowle",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.28",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6444a2b4da1e04ee9ff5ed2e9b21ca5663e3cd1910d197fbf0264e46202f016e",
+      "closure_id": "9f8dbbce7063cfd82a0d138990d5f57c29df474c3451592ee8e121b8ad007ad5",
+      "normalised_phrase": "The Company, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article IV, the Equity Commitment Letter and the Guaranty, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;\n(ii) any estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information provided or addressed to the Buyer Parties or any of their respective Affiliates or Representatives, including any materials or information made available in the electronic data room hosted by or on behalf of the Company in connection with the Merger, in connection with presentations by the Company’s management or in any other forum or setting; or\n(iii) the accuracy or completeness of any other representation, warranty, estimate, projection, prediction, data, financial information, memorandum, presentation or other materials or information.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE"
+    },
+    {
+      "section_reference": "4.17",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "96b2fa6db5689563e02289058d3fb09dc4c6986b6aaff4fd4545f53827d268db",
+      "closure_id": "3e30e7101f8828d80d74130c69e395538e24563e8f006ddef312818f28a8bc54",
+      "normalised_phrase": "the representations and warranties made by the Company in this Agreement are in lieu of and are exclusive of all other representations and warranties, including any express or implied or as to merchantability or fitness for a particular purpose, and the Company hereby disclaims any other or implied representations or warranties, notwithstanding the delivery or disclosure to the Buyer Parties or any of their respective Affiliates or Representatives of any documentation or other information (including any financial information, supplemental data or financial projections or other forward-looking statements).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 56,
+          "end": 80,
+          "excerpt": "4.17 Exclusivity of Representations and Warranties.\n(a) No Other Representations and Warranties. Each Buyer Party, on behalf of itself and its Subsidiaries, ack",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.17",
+      "source_citation": "4.17(b)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [
+        "REPRESENTATION_SIDE_PARTY_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each Buyer Party, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article III, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;",
+      "canonical_value": true,
+      "original_claim_occurrence_id": "4ac39e7274755e2b29db2d52632df600f7905952ca8851e8717ee73c0ff8381c",
+      "closure_id": "4250457c60c23ff669f9f4e8375ecef26b36a397ea7c141df36a602613d2b280",
+      "normalised_phrase": "Each Buyer Party, on behalf of itself and its Subsidiaries, acknowledges and agrees that, except for the representations and warranties expressly set forth in Article III, it is not acting (including, as applicable, by entering into this Agreement or consummating the Merger) in reliance on:\n(i) any representation or warranty, express or implied;",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE"
+    }
+  ],
+  "review_queue_artifact_id": "b1b46d9f7cf346bd415dc19d0662a223d3f68b318de180f9863053947876a711"
+}

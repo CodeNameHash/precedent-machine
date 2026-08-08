@@ -654,6 +654,411 @@ const DEAL_PINS = Object.freeze({
     }),
     debug_related_node_pattern: null,
   }),
+  skywater: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:09.000Z',
+    label: 'IonQ, Inc. / SkyWater Technology, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1819974/000119312526022750/d32015dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/skywater-first-live-run/skywater-raw-fetched.htm',
+    raw_bytes_sha256: 'd65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a',
+    canonical_text_sha256: 'ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1',
+    agreement_date: '2026-01-25',
+    pin_corroboration: 'raw_bytes_sha256 corroborated by docs/codex-program/notes/four-deal-sources-2026-08-08.md; '
+      + 'canonical_text_sha256 independently re-derived through THIS script\'s own loadAndVerifySource() code '
+      + 'path (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), read '
+      + 'from a --dry-run report against a placeholder digest, then pinned -- see '
+      + 'docs/codex-program/notes/step-2g-skywater-onboarding.md.',
+    // TWO-STEP MERGER. Two merger subs (Merger Subsidiary 1 Inc., a Delaware
+    // corporation, and Merger Subsidiary 2 LLC, a Delaware LLC), a "First
+    // Surviving Corporation" (Merger Sub 1 merges into the Company), and a
+    // Second Merger (the First Surviving Corporation merges into Merger Sub
+    // 2, an LLC, with Merger Sub 2 as the final "Surviving Company"). Every
+    // other pinned deal in this table is a single reverse triangular merger.
+    // Section 1.1 ("The Mergers") carries BOTH the Effective Time and the
+    // Second Effective Time, and both certificates of merger, in one section
+    // -- so MERGER_STRUCTURE_CLOSING's single dispatch of 1.1 (plus 1.2/1.3)
+    // already covers both steps; there was no second "Article I" to miss.
+    // Section 1.4 ("Effect on Capital Stock") converts Company Common Stock
+    // into Merger Consideration at the FIRST Effective Time (1.4(a)-(d)),
+    // then separately cancels the First Surviving Corporation's shares with
+    // NO further consideration at the SECOND Effective Time (1.4(e)) -- the
+    // consideration-producer-prompt's own instructions ("Never treat Merger
+    // Sub or Surviving Corporation internal share conversion as merger
+    // consideration") already anticipate exactly this shape. See
+    // docs/codex-program/notes/step-2g-skywater-onboarding.md section 2 for
+    // the full read.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['7.1']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['1.6']),
+      CAPITALISATION: Object.freeze(['3.5', '4.5', '4.14']),
+      CLOSING_CONDITIONS: Object.freeze(['8.1', '8.2', '8.3', '8.4']),
+      CONSIDERATION: Object.freeze(['1.4', '1.5', '2.1', '2.2', '2.3', '2.4']),
+      DIVIDENDS: Object.freeze(['5.1']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.3']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.5']),
+      FINANCING_COVENANTS: Object.freeze(['5.8']),
+      GENERAL_COVENANTS: Object.freeze([
+        '5.4', '5.5', '5.6', '5.7', '6.2', '6.4', '7.2', '7.3', '7.5', '7.6', '7.7', '7.8', '7.9',
+      ]),
+      // GUARANTY_FINANCING_PARTY: deliberately absent -- no committed pin.
+      // No guaranty, no "Financing Sources"/"Financing Parties" defined
+      // term, and no non-recourse/financing-party-protection clause appears
+      // anywhere in this filing (grepped for "guarant", "debt financing",
+      // "financing sources", "commitment letter", "no recourse" and
+      // "non-recourse" against the full canonical text -- only unrelated
+      // hits, e.g. Pension Benefit Guaranty Corporation, real-property lease
+      // guaranties, existing-debt payoff guarantees). This is a cash-and-
+      // stock strategic acquisition with no acquisition debt financing
+      // condition, so the family has no section to point at -- left
+      // unmapped rather than guessed.
+      INTERIM_OPERATING: Object.freeze(['5.1', '6.1']),
+      KEY_DEFINED_TERMS: Object.freeze(['Annex-A']),
+      MAE_DEFINITION: Object.freeze(['Annex-A']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.20']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.1', '1.2', '1.3']),
+      MISC_BOILERPLATE: Object.freeze([
+        '10.1', '10.2', '10.3', '10.4', '10.7', '10.8', '10.9',
+        '10.10', '10.11', '10.12', '10.13', '10.14', '10.15',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.30', '4.16']),
+      // NO_SHOP covers BOTH 5.2 ("No Solicitation") and 5.3 ("Company
+      // Stockholder Meeting; Proxy Material"): on this filing the fiduciary-
+      // out / Change-in-Company-Recommendation mechanism (5.3(a)-(b)) is
+      // filed under the *meeting* section, not the no-solicit section --
+      // 5.2 cross-references "Section 5.3(b)" for its own carve-out. A
+      // mapping that used only 5.2 would silently drop every
+      // RECOMMENDATION_CHANGE_ACTION/TRIGGER fact on this deal.
+      NO_SHOP: Object.freeze(['5.2', '5.3']),
+      PROXY_MEETING: Object.freeze(['5.3']),
+      REPRESENTATIONS: Object.freeze([
+        '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26', '3.27', '3.28', '3.29', '3.30',
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['10.9']),
+      TAX_MATTERS: Object.freeze(['7.4']),
+      TERMINATION: Object.freeze(['9.1', '9.2']),
+      TERMINATION_FEE: Object.freeze(['10.5']),
+    }),
+    section_expectations: Object.freeze({}),
+    debug_related_node_pattern: null,
+  }),
+  metsera: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:07.000Z',
+    label: 'Pfizer Inc. / Metsera, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm',
+    raw_bytes_sha256: 'd0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac',
+    canonical_text_sha256: '4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3',
+    agreement_date: '2025-09-21',
+    pin_corroboration: 'docs/codex-program/notes/four-deal-sources-2026-08-08.md -- raw_bytes_sha256 above '
+      + 'matches that note\'s table exactly (583764 raw bytes). canonical_text_sha256 was computed through '
+      + 'this script\'s own loadAndVerifySource() code path via --dry-run, not reimplemented separately.',
+    // Every reference below was read against the actual sectionizer tree and
+    // body text for THIS filing -- none copied from another deal's numbering.
+    // Full per-family rationale, quotes and dry-run verification in
+    // docs/codex-program/notes/step-2g-metsera-onboarding.md. 23 of 25
+    // registered families mapped; FINANCING_COVENANTS and
+    // GUARANTY_FINANCING_PARTY are deliberately absent (correct zero -- Pfizer
+    // self-funds per Section 4.09 "Available Funds", no Debt Commitment
+    // Letter, no guarantor, no non-recourse/financing-source-protection
+    // clause anywhere in this filing).
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.03']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.01']),
+      CAPITALISATION: Object.freeze(['3.02', '4.02']),
+      CLOSING_CONDITIONS: Object.freeze(['7.01', '7.02', '7.03', '7.04']),
+      CONSIDERATION: Object.freeze(['2.01', '2.02', '2.03']),
+      DIVIDENDS: Object.freeze(['5.01']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.05']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.04']),
+      GENERAL_COVENANTS: Object.freeze([
+        '6.02', '6.03', '6.06', '6.07', '6.08', '6.09', '6.12', '6.13', '6.14', '6.15',
+      ]),
+      INTERIM_OPERATING: Object.freeze(['5.01']),
+      KEY_DEFINED_TERMS: Object.freeze(['9.03', '5.02', '8.02']),
+      MAE_DEFINITION: Object.freeze(['9.03']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.13']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.01', '1.02', '1.03', '1.04', '1.05', '1.06']),
+      MISC_BOILERPLATE: Object.freeze([
+        '9.01', '9.02', '9.04', '9.05', '9.06', '9.07', '9.08', '9.09', '9.10', '9.11', '8.04',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['9.07']),
+      NO_SHOP: Object.freeze(['5.02']),
+      PROXY_MEETING: Object.freeze(['6.01', '6.10', '6.11']),
+      REPRESENTATIONS: Object.freeze([
+        '3.01', '3.02', '3.03', '3.04', '3.05', '3.06', '3.07', '3.08', '3.09', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26',
+        '4.01', '4.02', '4.03', '4.04', '4.05', '4.06', '4.07', '4.08', '4.09',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.10']),
+      TAX_MATTERS: Object.freeze(['3.09']),
+      TERMINATION: Object.freeze(['8.01', '8.02', '8.05']),
+      TERMINATION_FEE: Object.freeze(['8.01', '8.02', '8.05']),
+    }),
+    section_expectations: Object.freeze({}),
+    debug_related_node_pattern: null,
+  }),
+  concho: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:08.000Z',
+    label: 'ConocoPhillips / Concho Resources Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1358071/000119312520271642/d32162dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm',
+    raw_bytes_sha256: '3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6',
+    canonical_text_sha256: '30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5',
+    agreement_date: '2020-10-18',
+    pin_corroboration: 'tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm (552,099 bytes) '
+      + 'sourced per docs/codex-program/notes/four-deal-sources-2026-08-08.md; canonical_text_sha256 above is '
+      + 'independently re-derived through this runner\'s own loadAndVerifySource() code path '
+      + '(buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), not copied '
+      + 'from anywhere else -- see docs/codex-program/notes/step-2g-concho-onboarding.md section 1.',
+    // Method and per-family evidence: docs/codex-program/notes/step-2g-concho-onboarding.md.
+    // All-stock, two-sided (merger-of-equals-shaped) oil & gas deal --
+    // Article IV (Company reps, 27 sections) and Article V (Parent reps, 19
+    // sections) both exist, No Solicitation and Proxy/Meeting covenants run
+    // both directions (6.3/6.4, and both sides hold their own stockholder
+    // vote via one Joint Proxy Statement/Form S-4), and there is a real,
+    // standalone Coordination-of-Quarterly-Dividends section (6.21) rather
+    // than a forbearance-covenant limb. GUARANTY_FINANCING_PARTY is
+    // deliberately absent from the table below: zero hits anywhere in this
+    // filing for "Guaranty", "Financing Sources", "Debt Financing" or
+    // "Non-Recourse"/"No Recourse" -- there is no debt financing and no
+    // sponsor guaranty on an all-stock strategic deal, so this is a correct
+    // absence, not a mapping gap. Definitions (including "Material Adverse
+    // Effect" itself, with its full carve-out proviso, and "Willful and
+    // Material Breach") live in "Annex A" at the end of the document, not in
+    // Article I -- Article I's 1.1/1.2 are a one-line pointer to Annex A
+    // plus a "terms defined elsewhere" locator table, not the definitions
+    // themselves.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.8']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['3.4']),
+      CAPITALISATION: Object.freeze(['4.2', '5.2']),
+      CLOSING_CONDITIONS: Object.freeze(['7.1', '7.2', '7.3', '7.4']),
+      CONSIDERATION: Object.freeze(['3.1', '3.2', '3.3']),
+      DIVIDENDS: Object.freeze(['6.21']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.10']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.9']),
+      FINANCING_COVENANTS: Object.freeze(['6.17']),
+      GENERAL_COVENANTS: Object.freeze(['6.7', '6.11', '6.12', '6.14', '6.15', '6.16', '6.19', '6.20']),
+      INTERIM_OPERATING: Object.freeze(['6.1', '6.2']),
+      KEY_DEFINED_TERMS: Object.freeze(['Annex-A']),
+      MAE_DEFINITION: Object.freeze(['Annex-A']),
+      MATERIAL_CONTRACTS: Object.freeze(['4.19']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7']),
+      MISC_BOILERPLATE: Object.freeze(['9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7', '9.8', '9.9', '9.10', '9.12', '9.13']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['4.27', '5.19']),
+      NO_SHOP: Object.freeze(['6.3', '6.4']),
+      PROXY_MEETING: Object.freeze(['6.5', '6.6']),
+      REPRESENTATIONS: Object.freeze([
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16', '4.17', '4.18', '4.19', '4.20',
+        '4.21', '4.22', '4.23', '4.24', '4.25', '4.26', '4.27',
+        '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10',
+        '5.11', '5.12', '5.13', '5.14', '5.15', '5.16', '5.17', '5.18', '5.19',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.11']),
+      TAX_MATTERS: Object.freeze(['4.12', '5.11', '6.18']),
+      TERMINATION: Object.freeze(['8.1', '8.2']),
+      TERMINATION_FEE: Object.freeze(['8.1', '8.3', 'Annex-A']),
+    }),
+    // Verified empirically against this exact filing (sectionizeAdmittedSource
+    // node dump, 441 nodes: ROOT 1, ARTICLE 10, SECTION 109, SUBSECTION 321):
+    // every SECTION reference below resolves to kind SECTION with the given
+    // heading, except "Annex-A" which is itself a SECTION node (heading
+    // "Certain Definitions") nested under the wrapper ARTICLE node "ARTICLE A".
+    section_expectations: Object.freeze({
+      '6.8': Object.freeze({ kind: 'SECTION', heading: /HSR and Other Approvals/i }),
+      '3.4': Object.freeze({ kind: 'SECTION', heading: /No Appraisal Rights/i }),
+      '4.2': Object.freeze({ kind: 'SECTION', heading: /Capital Structure/i }),
+      '5.2': Object.freeze({ kind: 'SECTION', heading: /Capital Structure/i }),
+      '7.1': Object.freeze({ kind: 'SECTION', heading: /Conditions to Each Party/i }),
+      '7.2': Object.freeze({ kind: 'SECTION', heading: /Additional Conditions to Obligations of Parent/i }),
+      '7.3': Object.freeze({ kind: 'SECTION', heading: /Additional Conditions to Obligations of the Company/i }),
+      '7.4': Object.freeze({ kind: 'SECTION', heading: /Frustration of Closing Conditions/i }),
+      '3.1': Object.freeze({ kind: 'SECTION', heading: /Effect of the Merger on Capital Stock/i }),
+      '3.2': Object.freeze({ kind: 'SECTION', heading: /Treatment of Equity Compensation Awards/i }),
+      '3.3': Object.freeze({ kind: 'SECTION', heading: /Payment for Securities/i }),
+      '6.21': Object.freeze({ kind: 'SECTION', heading: /Coordination of Quarterly Dividends/i }),
+      '6.10': Object.freeze({ kind: 'SECTION', heading: /Indemnification.*Officers.*Insurance/i }),
+      '6.9': Object.freeze({ kind: 'SECTION', heading: /Employee Matters/i }),
+      '6.17': Object.freeze({ kind: 'SECTION', heading: /Certain Indebtedness/i }),
+      '6.7': Object.freeze({ kind: 'SECTION', heading: /Access to Information/i }),
+      '6.11': Object.freeze({ kind: 'SECTION', heading: /Transaction Litigation/i }),
+      '6.12': Object.freeze({ kind: 'SECTION', heading: /Public Announcements/i }),
+      '6.14': Object.freeze({ kind: 'SECTION', heading: /Reasonable Best Efforts; Notification/i }),
+      '6.15': Object.freeze({ kind: 'SECTION', heading: /Section 16 Matters/i }),
+      '6.16': Object.freeze({ kind: 'SECTION', heading: /Stock Exchange Listing and Delistings/i }),
+      '6.19': Object.freeze({ kind: 'SECTION', heading: /Takeover Laws/i }),
+      '6.20': Object.freeze({ kind: 'SECTION', heading: /Obligations of Merger Sub/i }),
+      '6.1': Object.freeze({ kind: 'SECTION', heading: /Conduct of Company Business Pending the Merger/i }),
+      '6.2': Object.freeze({ kind: 'SECTION', heading: /Conduct of Parent Business Pending the Merger/i }),
+      'Annex-A': Object.freeze({ kind: 'SECTION', heading: /Certain Definitions/i }),
+      '4.19': Object.freeze({ kind: 'SECTION', heading: /Material Contracts/i }),
+      '2.1': Object.freeze({ kind: 'SECTION', heading: /The Merger/i }),
+      '2.2': Object.freeze({ kind: 'SECTION', heading: /Closing/i }),
+      '2.3': Object.freeze({ kind: 'SECTION', heading: /Effect of the Merger/i }),
+      '2.4': Object.freeze({ kind: 'SECTION', heading: /Certificate of Incorporation of the Surviving Corporation/i }),
+      '2.5': Object.freeze({ kind: 'SECTION', heading: /Bylaws of the Surviving Corporation/i }),
+      '2.6': Object.freeze({ kind: 'SECTION', heading: /Directors and Officers of the Surviving Corporation/i }),
+      '2.7': Object.freeze({ kind: 'SECTION', heading: /Directors of Parent/i }),
+      '9.1': Object.freeze({ kind: 'SECTION', heading: /Schedule Definitions/i }),
+      '9.2': Object.freeze({ kind: 'SECTION', heading: /Survival/i }),
+      '9.3': Object.freeze({ kind: 'SECTION', heading: /Notices/i }),
+      '9.4': Object.freeze({ kind: 'SECTION', heading: /Rules of Construction/i }),
+      '9.5': Object.freeze({ kind: 'SECTION', heading: /Counterparts/i }),
+      '9.6': Object.freeze({ kind: 'SECTION', heading: /Entire Agreement/i }),
+      '9.7': Object.freeze({ kind: 'SECTION', heading: /Governing Law/i }),
+      '9.8': Object.freeze({ kind: 'SECTION', heading: /Severability/i }),
+      '9.9': Object.freeze({ kind: 'SECTION', heading: /Assignment/i }),
+      '9.10': Object.freeze({ kind: 'SECTION', heading: /Affiliate Liability/i }),
+      '9.12': Object.freeze({ kind: 'SECTION', heading: /Amendment/i }),
+      '9.13': Object.freeze({ kind: 'SECTION', heading: /Extension; Waiver/i }),
+      '4.27': Object.freeze({ kind: 'SECTION', heading: /No Additional Representations/i }),
+      '5.19': Object.freeze({ kind: 'SECTION', heading: /No Additional Representations/i }),
+      '6.3': Object.freeze({ kind: 'SECTION', heading: /No Solicitation by the Company/i }),
+      '6.4': Object.freeze({ kind: 'SECTION', heading: /No Solicitation by Parent/i }),
+      '6.5': Object.freeze({ kind: 'SECTION', heading: /Preparation of Joint Proxy Statement/i }),
+      '6.6': Object.freeze({ kind: 'SECTION', heading: /Stockholders Meetings/i }),
+      '9.11': Object.freeze({ kind: 'SECTION', heading: /Specific Performance/i }),
+      '4.12': Object.freeze({ kind: 'SECTION', heading: /Taxes/i }),
+      '5.11': Object.freeze({ kind: 'SECTION', heading: /Taxes/i }),
+      '6.18': Object.freeze({ kind: 'SECTION', heading: /Tax Matters/i }),
+      '8.1': Object.freeze({ kind: 'SECTION', heading: /Termination/i }),
+      '8.2': Object.freeze({ kind: 'SECTION', heading: /Notice of Termination; Effect of Termination/i }),
+      '8.3': Object.freeze({ kind: 'SECTION', heading: /Expenses and Other Payments/i }),
+    }),
+    // Debugging aid, same purpose as modiv's: every node in Articles VI, VIII
+    // or the Annex-A definitions run, for a reviewer to see neighbours
+    // without re-running the sectionizer.
+    debug_related_node_pattern: /^6\.[0-9]+|^8\.[0-9]+|^Annex-A/,
+  }),
+  redhat: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:09.000Z',
+    label: 'International Business Machines Corporation / Red Hat, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1087423/000119312518310577/d640856dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/redhat-first-live-run/redhat-raw-fetched.htm',
+    raw_bytes_sha256: 'ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e',
+    canonical_text_sha256: 'dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e',
+    agreement_date: '2018-10-28',
+    pin_corroboration: 'docs/codex-program/notes/four-deal-sources-2026-08-08.md (raw_bytes_sha256 and '
+      + 'raw_bytes_length 464782 both match this pin exactly); canonical_text_sha256 above was independently '
+      + 're-derived through this script\'s own loadAndVerifySource path (loadAndVerifySource -> '
+      + 'buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText) via a '
+      + '--dry-run probe, read from its own CANONICAL_TEXT_HASH_MISMATCH report, and pinned from that value '
+      + 'verbatim -- never reimplemented or hand-computed.',
+    // Section mapping done by driving the deterministic sectionizer over
+    // this deal's own canonical text and reading headings + body text --
+    // never copied from another deal's section numbers (Modiv's no-shop is
+    // 7.x/8.12, TopBuild's and Skechers' section numbers are their own;
+    // Red Hat's are these, verified against ITS OWN preamble/body).
+    // See docs/codex-program/notes/step-2g-redhat-onboarding.md for the
+    // full family-by-family evidence table (heading + quoted phrase).
+    //
+    // Two known sectionizer artefacts on THIS filing, both worked around
+    // the same way Modiv's 8.12/"(z)" collision was (pin the whole node
+    // rather than a guessed sub-reference):
+    //  - MATERIAL_CONTRACTS: the agreement's own "(h) Contracts." heading
+    //    opens with a single roman-numeral sub-item "(i)" introducing
+    //    lettered criteria (A)-(M). The sectionizer's letter-depth heuristic
+    //    reads that "(i)" as 3.01's NEXT top-level letter sibling rather
+    //    than 3.01(h)'s own child, so what is printed as "Section 3.01(h)(i)"
+    //    resolves under this tree as "3.01(i)" (and "3.01(i)(A)".."3.01(i)(M)"
+    //    for the printed "(h)(i)(A)".."(h)(i)(M)"). Both "3.01(h)" (the
+    //    heading) and "3.01(i)" (the mislabeled body) are pinned together.
+    //  - TERMINATION_FEE: Section 5.06(b) states four of its five triggers
+    //    as BARE cross-references into Section 7.01 ("pursuant to Section
+    //    7.01(c)", "pursuant to Section 7.01(f)", etc.) with no operative
+    //    description of the ground itself at 5.06 -- the same
+    //    TRIGGER_UNCORROBORATED shape as Modiv's original narrow run (see
+    //    this file's own "ORIGINAL MODIV RUN" note above). Section 7.01 is
+    //    pinned alongside 5.06 so the actual grounds are in governed scope;
+    //    unlike Modiv, no separate Definitions section is needed because
+    //    the fee amount ($975,000,000, defined inline as "the Termination
+    //    Fee") is stated directly in 5.06(b) itself.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['5.03']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.01(d)']),
+      CAPITALISATION: Object.freeze(['3.01(c)']),
+      CLOSING_CONDITIONS: Object.freeze(['6.01', '6.02', '6.03', '6.04']),
+      CONSIDERATION: Object.freeze(['2.01', '2.02', '5.04']),
+      DNO_INDEMNIFICATION: Object.freeze(['5.05']),
+      EMPLOYEE_MATTERS: Object.freeze(['5.11']),
+      // Confidently mapped to the follow-on covenant codes this deal's own
+      // Article V headings name unambiguously (COV-ACCESS, COV-PUBLICITY,
+      // COV-MERGESUB, COV-DELIST/COV-LIST, COV-DEBT -- see
+      // p0-product-surface-routing.js's GENERAL_COVENANT_FOLLOW_ON_OWNERS).
+      // GENERAL_COVENANTS is a residual router over many possible codes
+      // (16b, access, consent-delivery, CVR, existing-debt, delisting, FDA
+      // comms, further-assurances, indemnification, litigation-notify,
+      // merger-sub, notification, payment-agent, publicity, resignation,
+      // SEC-reporting, takeover-law) and this list is NOT a claim that every
+      // possible GENERAL_COVENANT code has a home here -- only that these
+      // five sections are confidently, not guessed, identified. Section
+      // 5.12 ("Restructuring") was read and left out: its content (a
+      // pre-closing tax-restructuring indemnity) did not confidently match
+      // any one follow-on code.
+      GENERAL_COVENANTS: Object.freeze(['5.02', '5.07', '5.08', '5.09', '5.10']),
+      INTERIM_OPERATING: Object.freeze(['4.01']),
+      KEY_DEFINED_TERMS: Object.freeze(['8.03']),
+      MAE_DEFINITION: Object.freeze(['8.03(l)']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.01(h)', '3.01(i)']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.01', '1.02', '1.03', '1.04', '1.05', '1.06', '1.07']),
+      // Article VIII's boilerplate cluster, excluding 8.03 (owned by
+      // KEY_DEFINED_TERMS) and 8.11 (owned by SPECIFIC_PERFORMANCE_REMEDIES).
+      MISC_BOILERPLATE: Object.freeze(['8.01', '8.02', '8.04', '8.05', '8.06', '8.07', '8.08', '8.09', '8.10', '8.12']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.01(v)', '3.02(f)', '8.03(p)']),
+      NO_SHOP: Object.freeze(['4.02']),
+      PROXY_MEETING: Object.freeze(['5.01']),
+      REPRESENTATIONS: Object.freeze(['3.01', '3.02']),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['8.11']),
+      TAX_MATTERS: Object.freeze(['3.01(m)']),
+      TERMINATION: Object.freeze(['7.01', '7.02']),
+      TERMINATION_FEE: Object.freeze(['5.06', '7.01']),
+      // DIVIDENDS, FINANCING_COVENANTS, GUARANTY_FINANCING_PARTY: no entry.
+      // All three were searched for in the canonical text and found absent
+      // as their own family's content on this filing (see the onboarding
+      // note for what WAS found and why it does not qualify) -- correct
+      // zeros for a self-funded, non-financing-contingent, no-guarantor
+      // all-cash acquisition, not mapping gaps.
+    }),
+    section_expectations: Object.freeze({
+      '5.03': Object.freeze({ kind: 'SECTION', heading: /Reasonable Best Efforts/i }),
+      '3.01(c)': Object.freeze({ kind: 'SUBSECTION' }),
+      '2.01': Object.freeze({ kind: 'SECTION', heading: /Conversion of Capital Stock/i }),
+      '2.02': Object.freeze({ kind: 'SECTION', heading: /Exchange of Certificates/i }),
+      '5.04': Object.freeze({ kind: 'SECTION', heading: /Equity Awards/i }),
+      '5.05': Object.freeze({ kind: 'SECTION', heading: /Indemnification, Exculpation and Insurance/i }),
+      '5.11': Object.freeze({ kind: 'SECTION', heading: /Employee Matters/i }),
+      '4.01': Object.freeze({ kind: 'SECTION', heading: /Conduct of Business/i }),
+      '8.03': Object.freeze({ kind: 'SECTION', heading: /Definitions/i }),
+      '4.02': Object.freeze({ kind: 'SECTION', heading: /No Solicitation/i }),
+      '5.01': Object.freeze({ kind: 'SECTION', heading: /Preparation of the Proxy Statement/i }),
+      '3.01': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of the Company/i }),
+      '3.02': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of Parent/i }),
+      '8.11': Object.freeze({ kind: 'SECTION', heading: /Enforcement/i }),
+      '7.01': Object.freeze({ kind: 'SECTION', heading: /Termination/i }),
+      '7.02': Object.freeze({ kind: 'SECTION', heading: /Effect of Termination/i }),
+      '5.06': Object.freeze({ kind: 'SECTION', heading: /Fees and Expenses/i }),
+      '1.01': Object.freeze({ kind: 'SECTION', heading: /The Merger/i }),
+      '1.02': Object.freeze({ kind: 'SECTION', heading: /Closing/i }),
+      '6.01': Object.freeze({ kind: 'SECTION' }),
+      '6.02': Object.freeze({ kind: 'SECTION' }),
+      '6.03': Object.freeze({ kind: 'SECTION' }),
+      '6.04': Object.freeze({ kind: 'SECTION' }),
+    }),
+    debug_related_node_pattern: /^3\.01|^8\.03/,
+  }),
 });
 
 function parseArgs(argv) {
