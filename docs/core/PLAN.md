@@ -1910,6 +1910,461 @@ pass.
 
 ---
 
+## Step 2X. Build structure once, and let the families follow
+
+**Added 2026-08-08**, after the four staged resolver fixes, a seven-slice sweep
+of the whole repository, REPRESENTATIONS across four new deals, and a topology
+investigation. This step exists because that work produced a single measured
+finding that reorganises the rest of the programme, and a set of assets we
+already owned and were not using.
+
+### The finding this step is built on
+
+Resolution rate by family, all 2026-08-08 runs, `resolved / review_queue`:
+
+| family | attempted | resolved | rate | open-world |
+|---|---|---|---|---|
+| financing-covenants | 40 | 5 | 13% | 21 |
+| termination | 82 | 14 | 17% | 82 |
+| consideration | 32 | 6 | 19% | 315 |
+| representations | 421 | 92 | 22% | 1,319 |
+| proxy-meeting | 78 | 18 | 23% | 53 |
+| interim-operating | 404 | 105 | 26% | 301 |
+| termination-fee | 59 | 22 | 37% | 57 |
+| closing-conditions | 108 | 43 | 40% | 27 |
+| antitrust-regulatory | 168 | 82 | 49% | 10 |
+| dno-indemnification | 63 | 32 | 51% | 38 |
+| employee-matters | 54 | 28 | 52% | 26 |
+| mae-definition | 148 | 93 | 63% | 7 |
+| no-shop | 439 | 326 | 74% | 64 |
+| key-defined-terms | 96 | 74 | 77% | 477 |
+| general-covenants | 54 | 46 | 85% | 62 |
+| no-other-reps-fraud | 32 | 28 | 88% | 5 |
+| material-contracts | 84 | 84 | 100% | 75 |
+| merger-structure-closing | 82 | 82 | 100% | 9 |
+| misc-boilerplate | 199 | 199 | 100% | 9 |
+| tax-matters | 17 | 17 | 100% | 24 |
+| specific-performance-remedies | 10 | 10 | 100% | 2 |
+| appraisal-dissenters-rights | 6 | 6 | 100% | 23 |
+| **total** | **2,679** | **1,415** | **52.8%** | **3,031** |
+
+**Read the ordering, not the numbers.** The families at 100% — misc-boilerplate,
+tax-matters, material-contracts, merger-structure — are drafted flat: one fact
+per sentence, no nesting. The families at 13–26% are drafted as a chapeau over
+lettered or roman limbs with qualifiers attaching at different levels.
+
+**Resolution rate tracks structural depth, inversely, across 25 families.** The
+resolver is not failing. It is being handed fragments with no parent to inherit
+from and correctly refusing to guess. The open-world column says the same from
+the other side: representations produced 1,319 unmapped candidates against 92
+governed claims. The content is seen. It is not placed.
+
+**A correction is recorded here because the earlier number was wrong.**
+`review_queue` in `resolution.json` is not a reject pile alongside `resolved`;
+it is the full attempted set, each entry carrying `has_resolution` and
+`auto_pass`. Adding the two together produced a reported 34.6% corpus rate and
+an 18.3% representations rate. Both were wrong. The figures above use
+`resolved / review_queue`. Anyone re-deriving this must use the same
+denominator or they will reproduce the error.
+
+### What we already owned and were not using
+
+The sweep found working, tested V1 machinery that canonical-V2 does not require
+anywhere. Verified: `CI=true node --test` over the five relevant suites returns
+exit 0, 60/60.
+
+- **`lib/parser-v2/subclauses.js`** — `segmentSubClauses` returns the leaf spans
+  that partition a section, with dotted outline paths and explicit chapeau
+  nodes. This is the limb tree, already built, deterministic, no model call.
+- **`lib/bring-down-tiers.js`** — holds the whole clause, splits provisos off
+  the operative text so a proviso cannot contaminate the standard, derives
+  materiality codes lexically, derives which reps are covered from the prefix,
+  and keeps the full clause as the quote. This is the unit-of-extraction
+  inversion, already implemented.
+- **`lib/canonical-conditions.js`** — canonical code matched first, category
+  regex as fallback, and `CONDITION_ABSENT_COPY` for absence that does not
+  assert absence as fact.
+- **`lib/employee-benefits.js`** — a bundled element inherits the standard and
+  quote of the entry that bundled it, copied never invented, with a direct
+  entry always beating an inferred one and a `bundled` flag keeping the two
+  distinguishable.
+- **`lib/category-summary-features.js`** — roughly 200 expected rows across 12
+  families, annotated with the Paul Weiss diligence question numbers they
+  answer. An expected-yield target per family.
+
+Five V1 vocabulary assets were consumed by the staged fixes
+(`party-role-aliases.js`, `TERMF_TRIGGER_META`, `ioc-categories.js`,
+`ioc-components.js`, `MATERIALITY_CODES`). The rest of `taxonomy.js` — 54
+vocabularies, 429 codes — `MAE_CARVEOUT_META`, and the 551 feature definitions
+in `lib/schema/features.js` are not consumed. Step 2X-B and 2X-K address that.
+
+### The standing rule this step establishes
+
+**Deterministic where the thing is mechanical; the model where meaning is
+genuinely required; and every deterministic component must be able to say it
+does not know.**
+
+The evidence for the first clause is above. The evidence for the third clause
+is the V1 topology detector: it is deterministic and scores 4/7, and its
+failures are dangerous specifically because its no-match path returns
+`SINGLE_MERGER` — an answer wearing the costume of a finding — rather than
+`UNDETERMINED`. `bring-down-tiers` is safe under the same technique because
+when nothing matches it returns nothing.
+
+The second clause is narrower than first drafted. Concept identification does
+**not** always need a model: `canonical-conditions.js` identifies 18 closing
+conditions deterministically, `ioc-categories.js` matches 25 categories by
+heading, and Stage 4's IOC work moved `CATEGORY_UNCORROBORATED` from 105 to 33
+purely by consulting a vocabulary. The real axis is **stereotyped versus
+novel**. M&A drafting is heavily conventional, and most provisions have
+near-canonical phrasings a vocabulary identifies as well as a model does,
+faster and reproducibly. The model earns its place on genuinely novel drafting
+and on adjudicating between two concepts that both plausibly fit.
+
+This has a consequence worth stating, because it is the argument for funding
+2X-G: the 3,031 open-world candidates *are* the novel tail. If promotion works,
+every promotion moves a shape from the model's job to the vocabulary's job, and
+the system becomes progressively more deterministic — and cheaper, and more
+reproducible — as the corpus grows.
+
+**The alternative goes to Fable alongside the recommendation, not after it.**
+The counter-position is that the current architecture is right: model-first
+with deterministic verification, on the argument that verification-side
+determinism fails visibly (it refuses) while generation-side determinism fails
+silently on unseen drafting, and that the Modiv over-fits are evidence for the
+second. Fable adjudicates on the evidence; it is not handed a conclusion to
+ratify.
+
+---
+
+## Step 2X-A. One structure service, or a written reason there are five
+
+**What it is.** There are five mechanisms in the tree that answer some version
+of "what governs this span": the termination limb finder in
+`candidate-resolution.js`, `findIocChapeau`, `qualifier-attachment.js`,
+`limb-components.js`, and now `segmentSubClauses`. None is aware of the others.
+
+**Why.** Each family's inheritance is currently fixed separately and drifts
+separately. But convergence is a hypothesis, not a conclusion — some of the
+five may differ for good reasons, and collapsing them would then lose
+behaviour.
+
+**Change.** First, a written comparison: for each of the five, its real input,
+its real output, and the specific question it answers. Then either a single
+structure-context service over `segmentSubClauses` answering "given a section
+and a span, return its governing chapeau chain", with the other four as
+adapters — or a written statement of which must stay separate and why. Both
+outcomes are acceptable. Silently building the service without the comparison
+is not.
+
+Segmentation runs in string indices (UTF-16). The V2 pipeline slices by UTF-8
+bytes. Convert at the boundary using `lib/canonical-v2/canonical-bytes.js`
+(`utf8ByteLength`, `utf8Slice`). Do **not** port `subclauses.js` to bytes: it
+has 8 passing tests and live V1 callers in `span-claims.js`,
+`span-residual.js`, `consideration-equity.js` and `bring-down-tiers.js`.
+
+**Proves it is done.** The comparison exists and names, per mechanism, at least
+one input on which it differs from the others or a statement that it does not.
+Where the service is built, `CI=true npm test` stays exit 0 and the four
+existing V1 consumers produce byte-identical output on the pinned fixtures — a
+moved consumer is a regression to explain, not a fixture to regenerate.
+
+---
+
+## Step 2X-B. The corroboration fallback, in the three families that lack it
+
+**What it is.** `ioc-corroboration.js` retries against a legacy vocabulary when
+its primary pattern matches nothing, tags the hit
+`corroboration_provenance: 'V1_IOC_CATEGORY_VOCABULARY'`, and keeps the
+fail-closed ambiguity discipline on the fallback pass.
+`general-covenant-corroboration.js`, `guaranty-corroboration.js` and
+`tax-cooperation-corroboration.js` are single-shot: a primary miss goes to
+review or open-world permanently.
+
+**Why.** That is the same bug IOC had before Stage 4, still live in three
+families. Stage 4 moved `CATEGORY_UNCORROBORATED` from 105 to 33 by fixing it
+once.
+
+**Change.** Port the fallback to the three. Note the honest obstacle: IOC's
+fallback worked because `lib/vocab/ioc-categories.js` already existed. There is
+no equivalent for general-covenants, guaranty or tax-cooperation, so this is
+vocabulary curation, not a straight port, and general-covenants is the hardest
+of the three. Copy IOC's discipline of leaving the primary-hit path untouched —
+enriching it would re-mint every already-resolved claim for no information gain.
+
+**Direction of risk: additive.** Candidates can only move from held to resolved;
+existing resolved claims are untouched. This is why it precedes 2X-C.
+
+**Proves it is done.** Per family, the count of its uncorroborated reason code
+before and after, from `review-queue.json` files, plus the count of claims that
+changed from held to resolved and zero that moved the other way.
+
+---
+
+## Step 2X-C. Enforce the non-collision claim that is currently only a comment
+
+**What it is.** `guaranty-corroboration.js` and `ioc-corroboration.js` check a
+quote against every code's pattern and refuse when more than one matches.
+`general-covenant-corroboration.js` and `tax-cooperation-corroboration.js` rely
+instead on a comment asserting that their patterns are written to avoid
+cross-code collision. That claim is never checked at run time.
+
+**Why.** It is the read-the-code-not-the-comment failure one level down: not a
+stale description of behaviour, but a **safety property asserted in prose and
+never verified**. If it is false anywhere in the corpus we are mis-resolving
+today and nothing tells us.
+
+**Change.** Run all codes' patterns against the quote and refuse on more than
+one hit, as guaranty and IOC already do.
+
+**Direction of risk: regressive.** Enforcing the check can move currently
+resolved claims to review. It therefore requires a deal-by-deal diff of the
+resolution set before it lands, and must not ship as a pure additive change.
+
+**Proves it is done.** A diff of the resolution set per deal, and for every
+claim that moved from resolved to review, the two codes that collided, quoted.
+If the count is zero the comment was true and that is a result worth recording.
+
+---
+
+## Step 2X-D. Revert the MAE materiality split, and fix the duplicate key
+
+**What it is.** The Stage 3 work split `MAT_MAE_AGGREGATE` from
+`MAT_MAE_QUALIFIED` on whether the drafter wrote "individually or in the
+aggregate".
+
+**Why.** Ben's ruling, 2026-08-08, and it is right. That phrase is a drafting
+variant, not a different legal standard — MAE is defined as an effect on the
+company taken as a whole and aggregates whether or not the words appear.
+Carrying two codes means two deals with identical legal effect stop matching in
+precedent search, which corrupts the one thing the product exists to do. The
+real MAE variable is *which limb the qualifier governs*, which is a scope
+problem and is addressed by 2X-A, not by more codes.
+
+**Also fix, separately.** `MAT_MAE_AGGREGATE` is defined **twice** in
+`lib/taxonomy.js` with different meanings: in `EXCEPTION_CODES` at line 105
+glossed "Would not reasonably be expected to have an MAE", identical to `MAE`,
+`MAE_THRESHOLD` and `MAE_EXCEPTION`; and in `MATERIALITY_CODES` at line 143 as
+the "individually or in aggregate" form. Same key, two semantics, one file.
+This is a live source of silent miscoding independent of the split.
+
+**Change.** `lib/canonical-v2/native-producer/qualifier-kind-lexicon.js` and
+`lib/taxonomy.js`.
+
+**Proves it is done.** No claim carries `MAT_MAE_AGGREGATE` as a materiality
+standard; the duplicate key is resolved with the surviving meaning stated in a
+comment; and the Red Hat qualifier count is re-derived rather than assumed,
+since 11 of its 32 resolved claims used the code being retired.
+
+---
+
+## Step 2X-E. Absence that does not assert absence, across every family
+
+**What it is.** 14 unsafe absence wordings across 11 config files, all telling a
+reviewer the agreement lacks something when all that is known is that
+extraction found nothing.
+
+**Why.** It is the difference between "this deal has no go-shop" and "we did not
+look". A reviewer cannot tell them apart today.
+
+**Change.** Done 2026-08-08. All 14 now reuse `CONDITION_ABSENT_COPY` from
+`lib/canonical-conditions.js`; no new string was minted. Recorded here because
+two things about it generalise. First, the count was re-derived rather than
+trusted, and the earlier sweep's "11 across 10 files" was wrong — the extra
+find was a **per-cell** string in `termination-rights.config.js` `keyTermsNode()`
+that a table-level grep could not see. Second, only the wording half of the
+`termination-fees.config.js` mechanism was ported: its amber NOT_YET_EXTRACTED
+pill derives from canonical coverage surfaces minus what canonical produced,
+and no other family has a genuine second source to derive that from. Inventing
+one would have been fabricating a signal.
+
+**Still open.** `NoShopCrossViewPreview.jsx`'s `formatCode(null) → 'Not
+applicable'`, whose fix is to match its own siblings in the same file rather
+than a cross-family port.
+
+**Proves it is done.** Zero occurrences of the unsafe shapes in
+`components/review/table-configs/`, and `CI=true npm test` exit 0.
+
+---
+
+## Step 2X-F. Topology, with an undetermined state
+
+**What it is.** `lib/schema/topology-detector.js` scores 4/7 against real
+hash-verified document text: concho, metsera and redhat correct at one step;
+skywater's chain correct; **skechers a false positive** (a generic `/the offer/i`
+regex matches an unrelated antitrust-remedies clause, reported at HIGH
+confidence); **topbuild a false negative** (its double-dummy pattern is
+hardcoded to "first/second/subsequent merger" and topbuild names its steps
+"Titanium Merger" and "Forward Merger"); **modiv a false negative** (no parallel
+pattern exists).
+
+**Why the earlier recommendation was not to wire it, and why that changed.**
+The objection was never to topology as a capability — Ben's point that
+understanding how a merger works is valuable stands. The objection was to a
+silent fallback: two of the three failures return `SINGLE_MERGER`, which looks
+like a normal answer, so nothing invites review. That is a property of the
+default, not of the detection. With no unconditional default the same 4/7
+becomes four correct and three visibly flagged, which is useful and honest.
+
+**Change.**
+1. Remove the unconditional single-step default; no matched pattern yields
+   `UNDETERMINED`.
+2. Replace the generic tender regex; derive step names from the agreement's own
+   defined terms rather than a fixed list.
+3. Add a concurrency concept. `step_order` is an enforced total order
+   (`assertConsecutiveSteps` requires 1,2,3…) and nothing carries simultaneity,
+   so modiv's UPREIT structure — Company Merger and OpCo Merger, explicitly
+   simultaneous — currently lands in the same bucket as a malformed deal. Ben's
+   ruling, 2026-08-08: invent the simultaneous-merger taxonomy.
+4. Add reverse-triangular-then-LLC-conversion as its own structure. Ben's
+   ruling: double dummy is a real structure, but skywater and topbuild are not
+   it — there is no HoldCo.
+5. Model-extracted steps primary, detector as corroboration, with disagreement
+   surfaced rather than resolved silently.
+
+Also fix or document `FORWARD_TRIANGULAR` and `REVERSE_TRIANGULAR`, which the
+module declares but cannot reach — they are gated behind an option no caller
+passes.
+
+**Proves it is done.** Seven deals, one right answer each: concho, metsera,
+redhat and skechers single-step; skywater and topbuild sequential two-step;
+modiv parallel two-step. Any deal the detector cannot place returns
+`UNDETERMINED` and is counted separately from a wrong answer.
+
+---
+
+## Step 2X-G. The open-world promotion loop
+
+**What it is.** Open-world capture works — 160 of 204 runs produce candidates,
+up to 194 in one run, 3,031 corpus-wide. **Nothing is ever promoted to a mapped
+concept.** One hand-authored pin exists, marked `NOT_YET_GOVERNED`.
+
+**Why.** Without promotion the same shape re-opens on every new deal forever,
+and supplying more approved phrases by hand is the only lever — which does not
+scale and is the wrong instrument. This is also the mechanism that makes the
+standing rule above pay off over time.
+
+**Change.** A promotion path gated on corpus recurrence, using the machinery in
+`lib/expected-sets.js`. **Ben's ruling, 2026-08-08:** promote when a concept
+appears in three or four deals, with a confidence check and a check that it does
+not collide with an existing concept — not a percentage. A percentage is the
+wrong instrument for a concept that surfaces a handful of times; at seven deals
+one recurrence is 14%.
+
+**Proves it is done.** A promotion produces a governed concept, and re-running
+an earlier deal resolves the shape that previously went to open world, with the
+before and after counts cited from evidence rather than asserted.
+
+---
+
+## Step 2X-H. Record input tokens
+
+**What it is.** Call telemetry across the fifteen REPRESENTATIONS chunks reports
+**426 input tokens across 172 calls**, which is impossible. Output is recorded
+correctly at 2,734,334.
+
+**Why.** Without input tokens no run can be costed and no two prompt variants
+can be compared. Every cost statement made from this telemetry, including in
+this plan, is output-only and must be read that way.
+
+**Change.** `lib/canonical-v2/native-producer/anthropic-provider.js` and the
+telemetry writer in `scripts/canonical-v2-live-extraction-run.mjs`.
+
+**Proves it is done.** A single recorded call carries an input token count
+consistent with its own prompt length, checked by hand once.
+
+---
+
+## Step 2X-I. One prompt bump, not four
+
+**What it is.** Four producer-side changes, batched into a single digest
+invalidation: limb-assertion emission for REPRESENTATIONS and MAE; the IOC
+producer's category enum widened; `transaction_steps` fields for topology; and
+the 2F2 open-world element-schema fix, held since 2026-08-08 for exactly this.
+
+**Why the limb work is here and not in 2X-A.** The limb tree cannot mint for a
+reason no resolver change reaches: **the REPRESENTATIONS producer emits zero
+limb-assertion candidates at all.** Red Hat's receipt shows 68 qualifiers, 12
+open-world, no limbs. There is a second, shallower cause — the tree pre-pass
+keys on capitalisation-specific candidate names REPRESENTATIONS never emits —
+but fixing only that would mint empty trees. The raw material is absent from the
+run.
+
+**Why IOC is here.** V1 has 25 categories; the V2 producer enum has 11. Nine
+categories that hit in the corpus **cannot be emitted at all**, so no
+resolver-side work can recover them. **Ben's ruling, 2026-08-08:** bring in all
+25, and the IOC codes go in the rubric.
+
+**Also folded in, deliberately.** Ruling 2 — a mutual right minting two rows,
+one per party — is not implemented anywhere; mutual rights still mint one row
+with `EITHER_PRINCIPAL_PARTY`. It re-mints Modiv's committed identities and
+rewrites three pinned test files plus the termination projection, so it belongs
+in the bump rather than as a silent fold into a resolver step.
+
+**The open question for this step.** Whether segmentation should also move
+*ahead* of the model call, so the model cites a limb by path rather than
+re-quoting its governing text. Output dominates cost — 15,897 tokens per call
+on average — and much of it is the model re-transcribing structure a pure
+function already knows. This is the lever, but the magnitude is unmeasured and
+must not be claimed until one family is run both ways.
+
+**Proves it is done.** One digest invalidation, not four; and REPRESENTATIONS
+produces a non-empty limb tree on at least one deal, which has happened once in
+202 runs to date.
+
+---
+
+## Step 2X-J. Consume the rest of the V1 vocabulary
+
+**What it is.** Five V1 assets are consumed. `taxonomy.js`'s remaining
+vocabularies, `MAE_CARVEOUT_META`'s 27 codes, and `lib/schema/features.js`'s 551
+feature definitions are not.
+
+**Why.** Every one is a concept the corpus may already be producing as an
+open-world candidate because nothing can express it. This is the cheapest
+possible source of new coverage: it is curation, not design.
+
+**Change.** Per vocabulary, a decision to consume, to widen, or to record as
+deliberately unused. `lib/category-summary-features.js`'s roughly 200 expected
+rows give a per-family target to measure against.
+
+**Proves it is done.** Every vocabulary in `taxonomy.js` has one of the three
+dispositions recorded against it, and the count with none is zero.
+
+---
+
+## Step 2X-K. The re-validation ladder
+
+**What it is.** How Step 2X is proven, once implemented. **Ben's ruling,
+2026-08-08**, superseding "run it against all seven deals, then expand":
+Modiv on a few families, then Modiv on more families, then TopBuild, then more
+deals.
+
+**Why.** It is the ladder discipline the programme already runs on, applied to
+validation rather than build-out. Step 2X lands a structure service, vocabulary
+consumption, absence discipline, a corroboration fallback, an ambiguity guard
+and a prompt bump. Fire all of that at seven deals across 25 families at once
+and a regression is unattributable.
+
+Modiv is first on the evidence: **62 evidence directories**, the deepest
+baseline in the corpus (TopBuild next at 33), and it was already the explicit
+regression pin in the Stage 1 termination work, held at 12 → 12 unchanged as a
+control while six other deals moved. TopBuild is second for the next-deepest
+baseline and because it is a genuine sequential two-step chain, so it exercises
+2X-F where the four single-step deals cannot.
+
+**The consequence for sequencing.** Replay costs zero model calls, so every rung
+before the prompt bump is free. Everything after 2X-I is a live run at full
+cost. So the ladder is climbed **twice**: a replay-validated resolver phase
+(2X-A through 2X-E, 2X-J), then one prompt bump, then a live phase for the
+producer-side changes. This places 2X-I by design rather than letting
+implementation order decide it.
+
+**Proves it is done.** Each rung has its own pass before the next is funded. The
+blind 96-card re-score is the final rung's gate, not the only gate.
+
+---
+
 # Stage 3. Close the extraction gaps that are already named and located
 
 Each of these was found, diagnosed and deliberately left. They are the reason

@@ -1439,3 +1439,80 @@ unknowns at once.
 - Amendment parsing deferred until after launch; detection ships before.
 - The source-completeness admin page deferred; a column and a banner before
   launch.
+
+---
+
+## 14. Structure, determinism and the shape of Step 2X: DECIDED 2026-08-08
+
+Seven rulings taken in one sitting, after the resolution-rate table showed that
+**resolution tracks structural depth inversely across all 25 families** — flat
+families at 100%, chapeau-over-limbs families at 13–26%.
+
+**MAE materiality: revert the split.** `MAT_MAE_AGGREGATE` had been separated
+from `MAT_MAE_QUALIFIED` on whether the drafter wrote "individually or in the
+aggregate". Ben's reasoning, and it is right: MAE is inherently an aggregate
+concept — it is defined as an effect on the company taken as a whole and
+aggregates whether or not the words appear. The phrase is a drafting variant,
+not a legal standard, so two deals with identical effect would stop matching in
+precedent search, which corrupts the one thing the product exists to do. The
+real MAE variable is *which limb the qualifier governs* — attach it to the
+smallest limb that carries it. Separately: the key is defined twice in
+`taxonomy.js` with different meanings, which is a live miscoding source.
+
+**Topology: implement it, with an undetermined state.** The earlier
+recommendation was not to wire the V1 detector at 4/7. Ben's counter — that
+understanding how a merger works is genuinely valuable — was accepted, and it
+sharpened the real objection. The danger was never determinism; it was that the
+no-match path returned `SINGLE_MERGER`, an answer wearing the costume of a
+finding, so two false negatives were invisible while the one false positive
+arrived labelled HIGH confidence. Remove the unconditional default and the same
+detector becomes four correct and three visibly flagged. **Every deterministic
+component must be able to say it does not know.**
+
+**Parallel mergers: invent the taxonomy.** Modiv's Company Merger and OpCo
+Merger are explicitly simultaneous, and `step_order` is an enforced total order
+with no concurrency concept, so a real parallel structure lands in the same
+bucket as a malformed deal. Ben: create the simultaneous-merger taxonomy.
+
+**Double dummy: it exists, but not here.** SkyWater and TopBuild have no HoldCo;
+they are reverse-triangular-then-LLC-conversion. Add that as its own structure
+or as two topology steps rather than mislabelling it.
+
+**IOC: all 25 categories, into the rubric.** Nine V1 categories that hit the
+corpus cannot currently be emitted at all, because the V2 producer enum carries
+11. No resolver work can recover them; the enum must widen.
+
+**Open-world promotion: three or four deals, not a percentage.** A percentage is
+the wrong instrument for a concept that surfaces a handful of times — at seven
+deals, one recurrence is 14%. Promote when a concept appears in three or four
+deals, with a confidence check and a check that it does not collide with an
+existing concept.
+
+**Concept identification does not always need a model.** The boundary was first
+drafted as structure-deterministic, meaning-model. Ben rejected that as too
+generous to the model, and the codebase agrees: `canonical-conditions.js`
+identifies 18 closing conditions deterministically, `ioc-categories.js` matches
+25 by heading, and the IOC work moved `CATEGORY_UNCORROBORATED` 105 → 33 by
+consulting a vocabulary. The corpus says the same — misc-boilerplate, the most
+stereotyped drafting in the agreement, resolves at 100%. **The axis is
+stereotyped versus novel, not structure versus meaning.** The model earns its
+place on novel drafting and on adjudicating between two concepts that both fit.
+
+The consequence, and the reason this is a decision rather than a preference: the
+3,031 open-world candidates *are* the novel tail, so every promotion moves a
+shape from the model's job to the vocabulary's job, and the system becomes more
+deterministic, cheaper and more reproducible as the corpus grows.
+
+**Both positions go to Fable, not just the recommendation.** The
+counter-position — keep model-first with deterministic verification, on the
+argument that verification-side determinism fails visibly while generation-side
+determinism fails silently — is put with equal weight and its own evidence.
+Fable adjudicates; it is not handed a conclusion to ratify.
+
+**Re-validation: climb the ladder again.** Superseding "run all seven deals then
+expand": Modiv on a few families, then Modiv on more, then TopBuild, then more
+deals. Modiv first on the evidence — 62 evidence directories, the deepest
+baseline, and already the regression pin held at 12 → 12 while six deals moved.
+Because replay costs zero model calls and the prompt bump invalidates digests,
+the ladder is climbed twice: a free replay-validated resolver phase, one prompt
+bump, then a live phase.

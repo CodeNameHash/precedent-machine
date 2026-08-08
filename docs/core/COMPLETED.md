@@ -1105,3 +1105,70 @@ supplied. Fixed by carrying `usage` on the response and setting the provider's
 Two lessons, both already in CLAUDE.md and both re-learnt the hard way: a
 minified table is not the behaviour, and a guard proven by tests is not a guard
 proven in production. Remaining questions are Step 2F1.
+
+---
+
+## Step 2X-PRE. Four resolver fixes, a segmenter adopted, and absence copy made honest
+
+**Closed 2026-08-08.** Gates, run on a clean machine with nothing else on it,
+exit codes captured to files and read back rather than piped:
+`CI=true npm test` exit 0 — 8,300 tests, 8,255 pass, 0 fail, 45 skipped;
+`npm run build` exit 0; `scripts/lint/forbidden-patterns.sh` exit 0,
+INVARIANT-4 PASS.
+
+**What landed.**
+
+*Termination.* Two new limb grammars, a third grant tier for section-chapeau
+mutual grants, and party-scope derived when the model emits null — limb
+direction, then section either-grant, then `PARTY_ROLE_ALIASES` from
+`lib/vocab/party-role-aliases.js`. Trigger corroboration now consumes
+`TERMF_TRIGGER_META` through an explicit V2→V1 code map with the AND and
+exclusion gates preserved. `TERMINATING_PARTY_REF_NOT_IN_QUOTE` fell from 60 to
+about 3 corpus-wide. Modiv held at 12 → 12 as the regression pin.
+
+*IOC.* `ioc-corroboration.js` consumes `ioc-categories.js` as a fail-closed
+second chance, tried only when the primary test matches nothing, refusing on
+cross-vocabulary ambiguity and carrying typed provenance.
+`CATEGORY_UNCORROBORATED` fell from 105 to 33; Concho went 20 → 34, which is
+card 04 and both its siblings — "Organizational Documents" now reaches
+IOC-CHARTER.
+
+*MAE carve-out scoping.* Scoped to the candidate's own definition record before
+adjacency verification, plus a structural containment tier over
+`segmentSubClauses`. SkyWater 18 → 28, Modiv 10 → 24, TopBuild unchanged at 19
+as required.
+
+*Qualifier host-composition.* The lexicon now consumes `MATERIALITY_CODES` from
+`lib/taxonomy.js` with a load-time membership assertion. Red Hat 13 → 32,
+Metsera 6 → 13, TopBuild 0 → 7.
+
+*Sub-clause segmentation.* `segmentSubClauses` gained a third CHILD-OPEN
+condition: a colon-introduced inline enumeration opens a child when the colon is
+the immediate lead-up, whitespace aside. The decisive check was whether Redfin
+§2.10's pinned un-split runs are colon-introduced — they are not, both are plain
+prose lead-ins, verified against the fixture, so the pinned expectation did not
+have to be weakened. **Guard proof:** neutering the predicate fails the Metsera
+colon-introduced (A)-(J) carve-out test; restoring it returns 8/8.
+
+*Absence copy.* 14 unsafe wordings across 11 config files now reuse
+`CONDITION_ABSENT_COPY`. The count was re-derived rather than trusted; the
+earlier sweep's "11 across 10 files" missed a per-cell string in
+`termination-rights.config.js` `keyTermsNode()` that a table-level grep could
+not see.
+
+**Acceptance evidence.** The blind 96-card sample re-scored: 21 now resolve,
+concentrated entirely in the four staged reason codes —
+`TERMINATING_PARTY_REF_NOT_IN_QUOTE` 7/8, `CLAUSE_LABEL_NOT_IN_QUOTE` 6/8,
+`QUALIFIER_KIND_UNCLASSIFIED` 4/8, `CATEGORY_UNCORROBORATED` 4/8 — and every one
+of the eight untouched strata at 0/8. The eight zeros are the result that
+matters: nothing moved by accident. Re-derived by joining the re-score to the
+blind key on card id rather than accepting the reported table.
+
+**Two errors corrected in the record.** `review_queue` is the full attempted
+claim set, not a reject pile alongside `resolved`; adding the two together
+produced a reported 34.6% corpus rate and 18.3% for representations, both wrong.
+The correct figures are 52.8% and 22.4%, using `resolved / review_queue`. And
+process liveness was twice reported from `pgrep -fc`, which matches the checking
+shell's own argv — the same self-match that produced false "still running"
+reports overnight. Counting via `/proc` with the checking shell excluded gives
+the real answer.
