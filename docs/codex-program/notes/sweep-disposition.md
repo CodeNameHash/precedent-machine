@@ -23,8 +23,8 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 | Its CHILD-OPEN rule refused colon-introduced inline enumerations | **DONE** | landed 2026-08-08 with guard proof; 8/8 |
 | Five structure mechanisms unaware of each other | PLAN | 2X-A, with convergence stated as a hypothesis to test |
 | `EXCEPTED_BY` exists with schema and validator, scoped `deal:qxo-topbuild`, `OFFLINE_REVIEW_ONLY`, zero evidence files | PLAN | 2X-A |
-| `limb_component_trees` non-empty in 1 of 202 runs | PLAN | 2X-I — producer emits no limb candidates; resolver work cannot reach it |
-| Tree pre-pass keys on capitalisation-specific candidate names | PLAN | 2X-I, named as the shallower of two causes |
+| `limb_component_trees` non-empty in 1 of 202 runs | PLAN | **2X-L** — CORRECTED. The producer DOES emit limbs (69 in Red Hat's two sections); `shapeRepresentationQualifierProposals` discards them. Resolver-side and free. The earlier entry read "producer emits no limb candidates; resolver work cannot reach it" and was wrong — it inferred absence at the source from a run receipt, which records what the shaper produced, not what the model returned |
+| Tree pre-pass keys on capitalisation-specific candidate names | PLAN | 2X-L — this is the *only* cause for REPRESENTATIONS, not the shallower of two |
 | `qualifier-attachment.js` runs live on REPRESENTATIONS | CRITERION | keep working through 2X-A |
 | Segmentation is UTF-16; pipeline is UTF-8 | CRITERION | 2X-A convert at the boundary, do not port |
 | `provision_components` are flat under an instance — no component-to-component parent | BEN | narrow→limb→clause needs two levels of nesting; schema supports one |
@@ -113,3 +113,25 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 | IOC categories | ruled: all 25, into the rubric. 2X-I, 2X-J |
 | Promotion threshold | ruled: three or four deals with a confidence and collision check. 2X-G |
 | Deterministic vs model boundary | recommendation and alternative both go to Fable, not a conclusion to ratify |
+
+
+## Corrections made after Fable's review, 2026-08-08
+
+| claim | status |
+|---|---|
+| "the REPRESENTATIONS producer emits zero limb-assertion candidates" | **FALSE.** 69 limbs in Red Hat's §3.01 and §3.02 recorded responses. Verified by parsing `raw_response_text`, not the receipt |
+| "the raw material is absent from the run" | **FALSE.** Same error, same cause |
+| "no resolver change can reach the limb tree" | **FALSE.** The shaper is resolver-side and replay re-feeds the recorded response through it, so the fix costs zero model calls |
+| MAE limb emission needs the prompt bump | **TRUE.** Neither Red Hat's nor SkyWater's MAE responses contain a `limbs` array. Verified |
+| 2X-A: converge all five | **DECIDED: converge two.** `findIocChapeau` is correct on an input where `segmentSubClauses` mis-nests, so the service is not a superset |
+| 2X-K phase list | **INCOMPLETE.** Omitted 2X-F, G, H; 2X-F straddles both phases |
+
+Everything else Fable checked held: the duplicate `MAT_MAE_AGGREGATE` at
+`taxonomy.js` lines 105 and 143, IOC 11 versus 25, the vocab-scaffold DROP not
+conflicting with 2X-B, `subclauses.js`'s four consumers, and the denominator
+correction. No ruling of Ben's was contradicted.
+
+**The lesson worth keeping.** A run receipt records what the *shaper produced*,
+not what the *model returned*. Concluding a producer emits nothing from a
+receipt is the same error class as concluding a module does one thing from its
+header comment. Read `raw_response_text`.

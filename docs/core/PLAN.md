@@ -2049,6 +2049,27 @@ separately. But convergence is a hypothesis, not a conclusion — some of the
 five may differ for good reasons, and collapsing them would then lose
 behaviour.
 
+**DECIDED 2026-08-08 by Fable: converge two of the five, not all five.** Build
+the service; adapt `findTerminationLimbGrantContext`'s structural half and the
+limb pre-pass onto it; keep `findIocChapeau`, `qualifier-attachment.js` and
+`limb-components.js` separate.
+
+The deciding facts. Only two of the five discover structure from text at all —
+`qualifier-attachment.js` takes no span and answers scope-of-wording, and
+`limb-components.js` consumes model-declared paths including descriptive
+headings a segmenter can never produce. And there is a concrete input where the
+proposed base mechanism is **wrong** and a supposedly redundant one is right: on
+a section carrying two "shall not" lists, `segmentSubClauses` mis-nests the
+second `(a)` under `(b)` via the colon rule landed today, while `findIocChapeau`
+— anchored on a lexical verb pattern at no outline position — is correct. The
+service is therefore not a superset of `findIocChapeau`, and collapsing it would
+lose behaviour silently.
+
+**Contract.** `resolveGoverningStructure({ sectionText, startByte, endByte })`
+returns either a RESOLVED leaf plus its chapeau chain, in UTF-8 bytes, or a
+typed UNDETERMINED. Never a guess. The termination adapter keeps its own
+direction grammar and capacity comparison; only the structural half moves.
+
 **Change.** First, a written comparison: for each of the five, its real input,
 its real output, and the specific question it answers. Then either a single
 structure-context service over `segmentSubClauses` answering "given a section
@@ -2116,6 +2137,11 @@ today and nothing tells us.
 
 **Change.** Run all codes' patterns against the quote and refuse on more than
 one hit, as guaranty and IOC already do.
+
+**Land it report-only first (Fable, 2026-08-08).** The enforcing code generates
+its own diff, so run it in report mode over **all importable runs by replay**,
+not merely the ladder rungs — collisions are corpus-dependent and replay is
+free. Enforce only once that report is read.
 
 **Direction of risk: regressive.** Enforcing the check can move currently
 resolved claims to review. It therefore requires a deal-by-deal diff of the
@@ -2282,13 +2308,34 @@ invalidation: limb-assertion emission for REPRESENTATIONS and MAE; the IOC
 producer's category enum widened; `transaction_steps` fields for topology; and
 the 2F2 open-world element-schema fix, held since 2026-08-08 for exactly this.
 
-**Why the limb work is here and not in 2X-A.** The limb tree cannot mint for a
-reason no resolver change reaches: **the REPRESENTATIONS producer emits zero
-limb-assertion candidates at all.** Red Hat's receipt shows 68 qualifiers, 12
-open-world, no limbs. There is a second, shallower cause — the tree pre-pass
-keys on capitalisation-specific candidate names REPRESENTATIONS never emits —
-but fixing only that would mint empty trees. The raw material is absent from the
-run.
+**Why only MAE's limb work is here. CORRECTED 2026-08-08 after Fable's review.**
+This step originally read "the REPRESENTATIONS producer emits zero
+limb-assertion candidates at all", citing Red Hat's run receipt — 68
+qualifiers, 12 open-world, no limbs — and concluded no resolver change could
+reach the limb tree. **That was wrong, and it was the load-bearing claim of the
+whole step.**
+
+Red Hat's recorded responses contain **69 limbs**: 60 across 29 instances in
+§3.01 and 9 across 3 instances in §3.02. The model has been emitting them all
+along. They are dropped one layer later, because
+`FAMILY_RESPONSE_SHAPERS.REPRESENTATIONS` is
+`shapeRepresentationQualifierProposals`, which never reads `instance.limbs`.
+Only `CAPITALISATION` routes to the minting shaper — which is exactly why
+`limb_component_trees` is non-empty in 1 of 202 runs.
+
+The error is the one CLAUDE.md exists to prevent: absence was inferred at the
+source from an artefact three steps downstream. A run receipt records what the
+**shaper produced**, not what the **model returned**. Anyone re-deriving this
+must read `raw_response_text`, not the receipt.
+
+**Consequence: the REPRESENTATIONS fix is free and does not belong in this
+step.** Replay re-feeds `raw_response_text` through the shapers, so fixing the
+shaper costs zero model calls. The 421-claim family — the largest in the corpus
+— moves to the replay-validated phase in 2X-K. See Step 2X-L.
+
+MAE is genuinely different and stays here: neither Red Hat's nor SkyWater's MAE
+recorded responses contain a `limbs` array at all, so its limb emission really
+does need the prompt to change.
 
 **Why IOC is here.** V1 has 25 categories; the V2 producer enum has 11. Nine
 categories that hit in the corpus **cannot be emitted at all**, so no
@@ -2311,6 +2358,45 @@ must not be claimed until one family is run both ways.
 **Proves it is done.** One digest invalidation, not four; and REPRESENTATIONS
 produces a non-empty limb tree on at least one deal, which has happened once in
 202 runs to date.
+
+---
+
+## Step 2X-L. Make the REPRESENTATIONS shaper read the limbs it is already given
+
+**Added 2026-08-08, from Fable's review.** This is the single highest-value
+item in Step 2X and it costs nothing.
+
+**What it is.** The model already emits limbs for REPRESENTATIONS — 69 of them
+in Red Hat's two recorded sections alone. `shapeRepresentationQualifierProposals`
+never reads `instance.limbs`, so every one is discarded before it reaches the
+tree pre-pass. Route REPRESENTATIONS to a shaper that mints from the limbs in
+the response.
+
+**Why it is first.** REPRESENTATIONS is the largest family in the corpus at 421
+attempted claims and resolves at 22%. It is the clearest case of the structural
+gap this whole step exists to close, and the fix needs no prompt change, no
+digest invalidation and no model calls — replay re-feeds `raw_response_text`
+through the shapers. Everything 2X-A builds has a real consumer the moment this
+lands.
+
+**The gap this exposes, which is an acceptance criterion, not a footnote.**
+Model-declared limb paths are not uniform: some are outline markers
+(`["(a)", "(i)"]`), others are descriptive headings
+(`["Corporate power and authority"]`) that no segmenter can ever produce. Path
+hygiene must therefore be settled as part of this change, with the 2X-A
+structure service corroborating a marker path where one exists and the
+descriptive form carried as a distinct, labelled kind rather than silently
+coerced into a marker.
+
+**Check the other families while here.** REPRESENTATIONS is the family that was
+looked at. Every other family whose prompt asks for limbs should be checked the
+same way — against `raw_response_text`, never against the receipt — because the
+same shaper gap may exist elsewhere and would be invisible by the same route.
+
+**Proves it is done.** A REPRESENTATIONS replay produces a non-empty
+`limb_component_trees`, with the limb count reconciled against the count in the
+recorded response — 69 for Red Hat's §3.01 and §3.02 — and no limb silently
+dropped. Zero new model calls in the run receipt.
 
 ---
 
@@ -2356,8 +2442,16 @@ baseline and because it is a genuine sequential two-step chain, so it exercises
 **The consequence for sequencing.** Replay costs zero model calls, so every rung
 before the prompt bump is free. Everything after 2X-I is a live run at full
 cost. So the ladder is climbed **twice**: a replay-validated resolver phase
-(2X-A through 2X-E, 2X-J), then one prompt bump, then a live phase for the
-producer-side changes. This places 2X-I by design rather than letting
+(2X-A through 2X-E, 2X-H, 2X-J and **2X-L**), then one prompt bump, then a live
+phase for the producer-side changes.
+
+**Corrected 2026-08-08 after Fable's review.** The original phase list omitted
+2X-F, 2X-G and 2X-H. 2X-H is replay-safe and joins the free phase. 2X-G's
+promotion loop spans both. **2X-F straddles**: its detector work is
+replay-validatable, but its seven-deal acceptance proof needs `transaction_steps`
+from the bump, so that acceptance must be split in two or it stalls the free
+phase. 2X-D is confirmed replay-safe — the retired code was already absent from
+the prompt. This places 2X-I by design rather than letting
 implementation order decide it.
 
 **Proves it is done.** Each rung has its own pass before the next is funded. The
