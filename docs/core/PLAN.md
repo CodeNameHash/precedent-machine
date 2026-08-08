@@ -1814,6 +1814,21 @@ the replayed run recorded. No escape hatch: a changed prompt means re-extract.
 typed error, and a directory-by-directory audit says how far the drift already
 spread across committed evidence.
 
+**Four evidence directories still carry a path-derived `model_id` after the
+2026-08-08 regeneration, each for a stated reason and none of them silent:**
+
+| Directory | Why |
+|---|---|
+| `modiv-capitalisation-20260807-replay` | CAPITALISATION is parked by Ben (Step 2D2), so it was out of scope |
+| `modiv-closing-conditions-6.1-only-20260807-replay` | Its source has **no `run-receipt.json` in any git history**, and its recordings are schema V1, so `REPLAY_MODEL_IDENTITY_UNKNOWN` fires — the new guard refusing on real data, correctly |
+| `modiv-dividends-20260807-replay` | Held back by hand: the DIVIDENDS prompt moved to v2 mid-regeneration, so replaying would attribute a v1 response to a v2 digest. Superseded by the live `modiv-dividends-20260808-v2` run |
+| `modiv-guaranty-20260807-replay` | Same, superseded by `modiv-guaranty-20260808-v2` |
+
+The second row is the interesting one: it is the first time this guard has
+refused something real, and the agent doing the regeneration reported it rather
+than reaching for the `--replay-model-id` escape hatch it had not been
+authorised to use. That is the behaviour the refusal exists to produce.
+
 ## Step 2H. Say which fixes generalised and which were Modiv-only
 
 **What it is.** One table. A row per fix landed since commit `bff5cd28`, with

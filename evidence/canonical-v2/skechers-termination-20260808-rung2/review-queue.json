@@ -1,0 +1,474 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d38e22228efebdb45e63dbb56b3caf13457355b412e7b19541e5c0278fdc71a2",
+  "review_queue": [
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-OUTSIDE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "04f42d5f2499eaab2b100bd946a21b68170c8ec6db3cb83db16d61b11bd86e5a",
+      "closure_id": "081aa6c783c47019e3fae091e360e44921e800e1b05b33082bdd2e6aa2b7aa86",
+      "normalised_phrase": "by either Parent or the Company, at any time prior to the Effective Time if the Closing has not occurred by 11:59 p.m., Eastern time, on November 4, 2025 (the “Termination Date”)",
+      "attachment_position": null,
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 2163,
+          "end": 2179,
+          "excerpt": "being satisfied at the Closing) or (to the extent permitted by law) waived, the Termination Date will be automatically extended to February 4, 2026 (and all references to the T",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 2258,
+          "end": 2274,
+          "excerpt": "e will be automatically extended to February 4, 2026 (and all references to the Termination Date herein shall be as so extended); provided, that the right to terminate this Agr",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 2978,
+          "end": 2994,
+          "excerpt": "erminating Party to consummate the Merger set forth in Article VII prior to the Termination Date; or (2) the failure of the Closing to have occurred prior to the Termination Da",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 3060,
+          "end": 3076,
+          "excerpt": "rmination Date; or (2) the failure of the Closing to have occurred prior to the Termination Date (it being understood that Parent and Merger Sub shall be deemed a single party ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 3296,
+          "end": 3312,
+          "excerpt": " the Marketing Period has commenced but has not completed as of the time of the Termination Date, the Termination Date may be extended (or further extended) by Parent in its so",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 3318,
+          "end": 3334,
+          "excerpt": "has commenced but has not completed as of the time of the Termination Date, the Termination Date may be extended (or further extended) by Parent in its sole discretion by provi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 3496,
+          "end": 3512,
+          "excerpt": "ng written notice thereof to the Company at least one Business Day prior to the Termination Date until four Business Days after the then-scheduled expiration of the Marketing P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 4290,
+          "end": 4306,
+          "excerpt": " that (i) if such breach or failure to perform is capable of being cured by the Termination Date, Parent will not be entitled to terminate this Agreement pursuant to this Secti",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 4586,
+          "end": 4602,
+          "excerpt": "ior to such termination (or such shorter period of time as remains prior to the Termination Date), stating Parent’s intention to terminate this Agreement pursuant to this Sec",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 5874,
+          "end": 5890,
+          "excerpt": "Parent to the Company and (B) the date that is three Business Days prior to the Termination Date;\n(h) by the Company, if the Buyer Parties have breached or failed to perform in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 6305,
+          "end": 6321,
+          "excerpt": " that (i) if such breach or failure to perform is capable of being cured by the Termination Date, the Company will not be entitled to terminate this Agreement pursuant to this ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:TERMINATION_DATE",
+          "start": 6606,
+          "end": 6622,
+          "excerpt": "ior to such termination (or such shorter period of time as remains prior to the Termination Date), stating the Company’s intention to terminate this Agreement pursuant to thi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any statute, rule, regulation or order will have been enacted, entered, enforced or deemed applicable to the Merger that prohibits, makes illegal or enjoins the consummation of the Merger",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9589379d76b6572a9c699501cc4192d56b63ddaa862affc74f29394b10535a2a",
+      "closure_id": "09fa09a7a8419aa78b91169c8b31ec8aed8bf6c2503d6e480861396a167ccd6f",
+      "normalised_phrase": "any statute, rule, regulation or order will have been enacted, entered, enforced or deemed applicable to the Merger that prohibits, makes illegal or enjoins the consummation of the Merger",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-BREACH",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ed37a6801932b98d9d0984d0d70adb29092bf569002aa85362f8abb568514b06",
+      "closure_id": "10490a867ee6272761d190b407b382b34dc920c14e3f699e4fb66d46ec6af946",
+      "normalised_phrase": "by the Company, if the Buyer Parties have breached or failed to perform in any material respect any of its respective representations, warranties, covenants or other agreements contained in this Agreement, which breach or failure to perform would result in a failure of a condition set forth in Section 7.1 or Section 7.3",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-BREACH",
+          "pattern_id": "TERMR-BREACH:PHRASE:WRITTEN_NOTICE_OF_SUCH_BREACH",
+          "start": 4446,
+          "end": 4475,
+          "excerpt": "rsuant to this Section 8.1(f) prior to the delivery by Parent to the Company of written notice of such breach, delivered at least 45 days prior to such termination (or such shorter period o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-BREACH",
+          "pattern_id": "TERMR-BREACH:PHRASE:WRITTEN_NOTICE_OF_SUCH_BREACH",
+          "start": 6466,
+          "end": 6495,
+          "excerpt": "rsuant to this Section 8.1(h) prior to the delivery by the Company to Parent of written notice of such breach, delivered at least 45 days prior to such termination (or such shorter period o",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(g)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TRIGGER_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth Business Day after written notice thereof is given by Parent to the Company and (B) the date that is three Business Days prior to the Termination Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b8da17ad3bc795b3c594a2c779d326044f4a68ef970d73e587fcc96ebaaa1a7b",
+      "closure_id": "16ccc1789373ac6cab789bcaf5d619631576d075b60ebedc33d5d994568af886",
+      "normalised_phrase": "such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth Business Day after written notice thereof is given by Parent to the Company and (B) the date that is three Business Days prior to the Termination Date",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-LEGAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ab15d4296f059af0c3119bc9640bca246fe69b4b2ba00a282780e7835addf292",
+      "closure_id": "2262eea9420479f314357a0b2bbcaf8acfe84e8d8955880a1da4be22f66c35e1",
+      "normalised_phrase": "by either Parent or the Company, at any time prior to the Effective Time if (i) any permanent injunction or other judgment or order issued by any court of competent jurisdiction or other legal or regulatory restraint or prohibition preventing the consummation of the Merger will be in effect, or any action has been taken by any Governmental Authority of competent jurisdiction, that, in each case, prohibits, makes illegal or enjoins the consummation of the Merger and has become final and non-appealable",
+      "attachment_position": null,
+      "concept_family": "TERMR-LEGAL"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(j)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-SUPERIOR",
+      "reasons": [
+        "TERMINATING_PARTY_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company has received a Superior Proposal",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b1c0c08cb6bbd27fe3259f457716d7449f960ed6f852194977c2f5e4a06251c5",
+      "closure_id": "3f32cfc3a5ada2f0e0fa125a816dcdbb7d97765608bbd841d72ad9d27956e655",
+      "normalised_phrase": "the Company has received a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMR-SUPERIOR"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(g)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board or the Company has breached in any material respect its obligations under Section 5.3",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cfdc8b481a43b500d2014068c9b7f772799a8959ccef5b7c10d03cac9a5ab935",
+      "closure_id": "4c878d67b3d5045b8e89c93132ddbda281d59eedc792e05cc46af9f934aa0145",
+      "normalised_phrase": "the Company Board or the Company has breached in any material respect its obligations under Section 5.3",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TRIGGER_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by the Company, if (i) the Marketing Period has ended and all of the conditions set forth in Section 7.1 or Section 7.2 have been satisfied (other than those conditions that by their terms are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing), (ii) Parent and Merger Sub have failed to consummate the Merger at the Closing at the time required pursuant to Section 2.3, (iii) the Company has irrevocably notified Parent in writing that (y) the Company is ready, willing and able to consummate, and will consummate, the Merger and (z) all conditions set forth in Section 7.1 and Section 7.3 have been satisfied (other than those conditions that by their terms are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing) or that it is irrevocably waiving any unsatisfied conditions set forth in Section 7.1 and Section 7.3 and (iv) Parent or Merger Sub fail to consummate the Merger within three Business Days of the receipt of the notice contemplated by clause (iii) of this sentence",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cdffa9bf2a17c3b597aed83dd01166f503b261da61f228f0a68d1aabfa0364e4",
+      "closure_id": "6040667a978c521a96beb4cb218a86023d0c13f72d7b50f18dbee896869b4706",
+      "normalised_phrase": "by the Company, if (i) the Marketing Period has ended and all of the conditions set forth in Section 7.1 or Section 7.2 have been satisfied (other than those conditions that by their terms are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing), (ii) Parent and Merger Sub have failed to consummate the Merger at the Closing at the time required pursuant to Section 2.3, (iii) the Company has irrevocably notified Parent in writing that (y) the Company is ready, willing and able to consummate, and will consummate, the Merger and (z) all conditions set forth in Section 7.1 and Section 7.3 have been satisfied (other than those conditions that by their terms are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing) or that it is irrevocably waiving any unsatisfied conditions set forth in Section 7.1 and Section 7.3 and (iv) Parent or Merger Sub fail to consummate the Merger within three Business Days of the receipt of the notice contemplated by clause (iii) of this sentence",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "delivered at least 45 days prior to such termination (or such shorter period of time as remains prior to the Termination Date)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "066227d581c2ee0ad0da98d8294ff0a7f0e4e790605ed5d46be226710fffb384",
+      "closure_id": "8863e4093ccf93ba53fb4449ad62b7b48aeea8100ea8a73f0a3571cdce747e91",
+      "normalised_phrase": "delivered at least 45 days prior to such termination (or such shorter period of time as remains prior to the Termination Date)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-MUTUAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c4f2eaef9faefbad55d578a70e8d99d890c16b336393c6f12e0b88c21c479df6",
+      "closure_id": "ae041c572fc41731635ffd6223c1c1a74aab08df6b68781ca7df534ad7a5affe",
+      "normalised_phrase": "at any time prior to the Effective Time by mutual written agreement of Parent and the Company",
+      "attachment_position": null,
+      "concept_family": "TERMR-MUTUAL"
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-BREACH",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "599338b8650631283056686bf504cc6567e40e61ae5d40351a77e3f36fa96bcc",
+      "closure_id": "bdd6d7aff56fa58c0dd7e2c80850902c33382564830b5c2d233e7043abcc6016",
+      "normalised_phrase": "by Parent, if the Company has breached or failed to perform in any material respect any of its representations, warranties, covenants or other agreements contained in this Agreement, which breach or failure to perform would result in a failure of a condition set forth in Section 7.2(a) or Section 7.2(b)",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-BREACH",
+          "pattern_id": "TERMR-BREACH:PHRASE:WRITTEN_NOTICE_OF_SUCH_BREACH",
+          "start": 4446,
+          "end": 4475,
+          "excerpt": "rsuant to this Section 8.1(f) prior to the delivery by Parent to the Company of written notice of such breach, delivered at least 45 days prior to such termination (or such shorter period o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-BREACH",
+          "pattern_id": "TERMR-BREACH:PHRASE:WRITTEN_NOTICE_OF_SUCH_BREACH",
+          "start": 6466,
+          "end": 6495,
+          "excerpt": "rsuant to this Section 8.1(h) prior to the delivery by the Company to Parent of written notice of such breach, delivered at least 45 days prior to such termination (or such shorter period o",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "delivered at least 45 days prior to such termination (or such shorter period of time as remains prior to the Termination Date)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a1b18451de510ae56211cae3d158b104fadb304c9770eae11d652307c947b447",
+      "closure_id": "c6ae7e6ad351ccca21f0cc6dbfa64e4645ed78f1278004c5ff3b40251c05e451",
+      "normalised_phrase": "delivered at least 45 days prior to such termination (or such shorter period of time as remains prior to the Termination Date)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(d)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TRIGGER_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent, if the Written Consent shall not have been delivered to Parent by the Company by 11:59 p.m., Eastern Time on May 5, 2025",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "090c5b51b5d0741623540e68500bb20847fd8edca623af73f7fb7c1c80250c8a",
+      "closure_id": "cb3895c60c890bd718137cabb1d6efacb198bb0f45c3948d162a8d7f0a70a15f",
+      "normalised_phrase": "by Parent, if the Written Consent shall not have been delivered to Parent by the Company by 11:59 p.m., Eastern Time on May 5, 2025",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by either Parent or the Company, at any time prior to the Effective Time if the Closing has not occurred by 11:59 p.m., Eastern time, on November 4, 2025 (the “Termination Date”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3b5bcc7e13f05a9c994bb2b0191f6416713ff402d25b4e700c9b5a6ee9dc1573",
+      "closure_id": "d43e722f558f393da2138e8517a550a2b60acdf208fe015fe024f5459f9aee38",
+      "normalised_phrase": "by either Parent or the Company, at any time prior to the Effective Time if the Closing has not occurred by 11:59 p.m., Eastern time, on November 4, 2025 (the “Termination Date”)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(g)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board has effected a Company Board Recommendation Change",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fd48390dbfcf5e9f15457f4f47c9a598de86a7f5e6f41f20121b669f3f4ae75e",
+      "closure_id": "d80688407eaa98cf377fa0a8ee13216cf64fef6f40c9c962613154b27974f3cf",
+      "normalised_phrase": "the Company Board has effected a Company Board Recommendation Change",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TRIGGER_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by the Company, if the Parent Written Consent shall not have been delivered to Merger Sub and the Company by 11:59 p.m., Eastern Time on May 5, 2025",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "25b8fa04ef91912eb675b5e92445e030f79fb48f6665f2cf00715d4c59bb099b",
+      "closure_id": "e8645e38214d05251aba8b6414c5ecd358c9036b4b617232cdbcb795d37cb911",
+      "normalised_phrase": "by the Company, if the Parent Written Consent shall not have been delivered to Merger Sub and the Company by 11:59 p.m., Eastern Time on May 5, 2025",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    }
+  ],
+  "review_queue_artifact_id": "ad4931894664d09c9eb85772c0f0c32976ea543d161fea4aa4108545e6e5ad2c"
+}

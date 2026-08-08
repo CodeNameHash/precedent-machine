@@ -1,0 +1,1571 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "an annual base salary or hourly wage rate (as applicable) that is no less favorable than the annual base salary or hourly wage rate (as applicable) provided to such Continuing Employee immediately prior to the Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "2f3f2e74f2e237f0d9d99ecb8a4668fa06d3d672d0af4bd4f27fe80af11ea042",
+        "claim_occurrence_id": "e6d3e99744736a8387ba03637ee35ee62139298c3c7e87a50f71d4d2b4740e84",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "an annual base salary or hourly wage rate (as applicable) that is no less favorable than the annual base salary or hourly wage rate (as applicable) provided to such Continuing Employee immediately prior to the Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7f9667109d31d149fb609c56b1559c069e5417f90a03dc2af8da3f4b165798d3"
+        ],
+        "attributes": {
+          "comp_item": "BASE_SALARY",
+          "standard_kind": "NO_LESS_FAVORABLE",
+          "aggregation": "ITEM_BY_ITEM",
+          "benchmark": "TARGET_PRE_CLOSING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7f9667109d31d149fb609c56b1559c069e5417f90a03dc2af8da3f4b165798d3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "342276a9e9bc8c6a991fc08adfa4109d1cf8339d721f6e8a53e2b663c7e375a5",
+            "document_ordinal": 0,
+            "absolute_start": 1279,
+            "absolute_end": 1503,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "75c64dbf5c1862b7be67b02f205b8fc579b0ba92a35fdd7e86839edd827646ea"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "2f3f2e74f2e237f0d9d99ecb8a4668fa06d3d672d0af4bd4f27fe80af11ea042",
+            "claim_occurrence_id": "e6d3e99744736a8387ba03637ee35ee62139298c3c7e87a50f71d4d2b4740e84",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "an annual base salary or hourly wage rate (as applicable) that is no less favorable than the annual base salary or hourly wage rate (as applicable) provided to such Continuing Employee immediately prior to the Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7f9667109d31d149fb609c56b1559c069e5417f90a03dc2af8da3f4b165798d3"
+            ],
+            "attributes": {
+              "comp_item": "BASE_SALARY",
+              "standard_kind": "NO_LESS_FAVORABLE",
+              "aggregation": "ITEM_BY_ITEM",
+              "benchmark": "TARGET_PRE_CLOSING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7f9667109d31d149fb609c56b1559c069e5417f90a03dc2af8da3f4b165798d3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "342276a9e9bc8c6a991fc08adfa4109d1cf8339d721f6e8a53e2b663c7e375a5",
+                "document_ordinal": 0,
+                "absolute_start": 1279,
+                "absolute_end": 1503,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "75c64dbf5c1862b7be67b02f205b8fc579b0ba92a35fdd7e86839edd827646ea"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "short-term (annual or more frequent) cash incentive compensation or commission opportunities that are no less favorable than the short-term (annual or more frequent) cash incentive compensation or commission opportunities provided to such Continuing Employee immediately prior to the Effective Time"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6761e7a1d7479f33d476e54a20d03fba236c5082db09431277016a9eee29a6b8",
+        "claim_occurrence_id": "df7c5d52eda6de76bbed4695e1c84d05f4bf01eb6405201510bd026e2bb6bf6a",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "short-term (annual or more frequent) cash incentive compensation or commission opportunities that are no less favorable than the short-term (annual or more frequent) cash incentive compensation or commission opportunities provided to such Continuing Employee immediately prior to the Effective Time",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b740c551e6c2c3f80a7f445fe693a5e561136426cbc0f64ee4cab5fce0457e60"
+        ],
+        "attributes": {
+          "comp_item": "TARGET_BONUS",
+          "standard_kind": "NO_LESS_FAVORABLE",
+          "aggregation": "ITEM_BY_ITEM",
+          "benchmark": "TARGET_PRE_CLOSING",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b740c551e6c2c3f80a7f445fe693a5e561136426cbc0f64ee4cab5fce0457e60",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "58d9b1efe24a1b9728458d1c70c233ec6d2bf9da2a69d0ccbfa1c1f4b57aee2c",
+            "document_ordinal": 0,
+            "absolute_start": 1518,
+            "absolute_end": 1816,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "54dd8326897747c565f6f6510d1316bbe26f3ca4f386a75f7a6fa21db15e01e5"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6761e7a1d7479f33d476e54a20d03fba236c5082db09431277016a9eee29a6b8",
+            "claim_occurrence_id": "df7c5d52eda6de76bbed4695e1c84d05f4bf01eb6405201510bd026e2bb6bf6a",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "short-term (annual or more frequent) cash incentive compensation or commission opportunities that are no less favorable than the short-term (annual or more frequent) cash incentive compensation or commission opportunities provided to such Continuing Employee immediately prior to the Effective Time",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b740c551e6c2c3f80a7f445fe693a5e561136426cbc0f64ee4cab5fce0457e60"
+            ],
+            "attributes": {
+              "comp_item": "TARGET_BONUS",
+              "standard_kind": "NO_LESS_FAVORABLE",
+              "aggregation": "ITEM_BY_ITEM",
+              "benchmark": "TARGET_PRE_CLOSING",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b740c551e6c2c3f80a7f445fe693a5e561136426cbc0f64ee4cab5fce0457e60",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "58d9b1efe24a1b9728458d1c70c233ec6d2bf9da2a69d0ccbfa1c1f4b57aee2c",
+                "document_ordinal": 0,
+                "absolute_start": 1518,
+                "absolute_end": 1816,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "54dd8326897747c565f6f6510d1316bbe26f3ca4f386a75f7a6fa21db15e01e5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "cause to be granted to such Continuing Employee credit for all service with the Company Group prior to the Effective Time for purposes of eligibility to participate, vesting and for purposes of future vacation accrual and determining severance amounts"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5433c0aacf32d089170417c8eb5c639acf436372d5208fea281b59bbea12d290",
+        "claim_occurrence_id": "071e087ae408acc34e9d85e10f82715c587581c5c7c47ed726ec213fc96ed083",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "cause to be granted to such Continuing Employee credit for all service with the Company Group prior to the Effective Time for purposes of eligibility to participate, vesting and for purposes of future vacation accrual and determining severance amounts",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e8adecb47c275de1fd616f47fe862f5ada399c186db123b46ea3d1fd463ffd44"
+        ],
+        "attributes": {
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e8adecb47c275de1fd616f47fe862f5ada399c186db123b46ea3d1fd463ffd44",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0dbe8594f4b7a43e79d143d4cc615fee48b3529fbbab4fe38dbe8fb37e7a73fe",
+            "document_ordinal": 0,
+            "absolute_start": 3380,
+            "absolute_end": 3631,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "cd953cf661ba8f0d98c61ce2b8cccfd6244c5edbb838b9b7ce55d704201086c6"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5433c0aacf32d089170417c8eb5c639acf436372d5208fea281b59bbea12d290",
+            "claim_occurrence_id": "071e087ae408acc34e9d85e10f82715c587581c5c7c47ed726ec213fc96ed083",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "cause to be granted to such Continuing Employee credit for all service with the Company Group prior to the Effective Time for purposes of eligibility to participate, vesting and for purposes of future vacation accrual and determining severance amounts",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e8adecb47c275de1fd616f47fe862f5ada399c186db123b46ea3d1fd463ffd44"
+            ],
+            "attributes": {
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e8adecb47c275de1fd616f47fe862f5ada399c186db123b46ea3d1fd463ffd44",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0dbe8594f4b7a43e79d143d4cc615fee48b3529fbbab4fe38dbe8fb37e7a73fe",
+                "document_ordinal": 0,
+                "absolute_start": 3380,
+                "absolute_end": 3631,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "cd953cf661ba8f0d98c61ce2b8cccfd6244c5edbb838b9b7ce55d704201086c6"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(d)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "each Continuing Employee will be immediately eligible to participate, without any waiting period, in any and all employee benefit plans sponsored by the Surviving Corporation and its Subsidiaries (other than any plan that provides for equity or equity-based compensation)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "9be9214aac9351657ec25ac4e17d48eae20efe6266eaf5119772aea7f13d174b",
+        "claim_occurrence_id": "0b768de8cb35011622987de5081cbc15a0eaecdccb359844c7c86a47702624be",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "each Continuing Employee will be immediately eligible to participate, without any waiting period, in any and all employee benefit plans sponsored by the Surviving Corporation and its Subsidiaries (other than any plan that provides for equity or equity-based compensation)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "28bd24d1f5cbc35a2dfd3d8f323085971f398413bccd9b3f09ac786511454d98"
+        ],
+        "attributes": {
+          "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "28bd24d1f5cbc35a2dfd3d8f323085971f398413bccd9b3f09ac786511454d98",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "99e30cca2e726def521ba463959f985d2f69b8c94975f9fa69ae8ae07f43897f",
+            "document_ordinal": 0,
+            "absolute_start": 4323,
+            "absolute_end": 4594,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9a02d35bda0bc21773f8ac724a648071e0ad48ae5ebdfe642f44fb982ff81463"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "9be9214aac9351657ec25ac4e17d48eae20efe6266eaf5119772aea7f13d174b",
+            "claim_occurrence_id": "0b768de8cb35011622987de5081cbc15a0eaecdccb359844c7c86a47702624be",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "each Continuing Employee will be immediately eligible to participate, without any waiting period, in any and all employee benefit plans sponsored by the Surviving Corporation and its Subsidiaries (other than any plan that provides for equity or equity-based compensation)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "28bd24d1f5cbc35a2dfd3d8f323085971f398413bccd9b3f09ac786511454d98"
+            ],
+            "attributes": {
+              "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "28bd24d1f5cbc35a2dfd3d8f323085971f398413bccd9b3f09ac786511454d98",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "99e30cca2e726def521ba463959f985d2f69b8c94975f9fa69ae8ae07f43897f",
+                "document_ordinal": 0,
+                "absolute_start": 4323,
+                "absolute_end": 4594,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9a02d35bda0bc21773f8ac724a648071e0ad48ae5ebdfe642f44fb982ff81463"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(d)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause all waiting periods, pre-existing condition exclusions, evidence of insurability requirements and actively-at-work or similar requirements of such New Plan to be waived for such Continuing Employee and his or her covered dependents"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "dfc2bd6a3646c91de2057871c3c4a237801439a1c12c1f14ae7a2c95cd412c1d",
+        "claim_occurrence_id": "6b3b85a41d925e72c9a75e5c008c6e0c3ccbb41f04cfcf23829da2f33c49afea",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause all waiting periods, pre-existing condition exclusions, evidence of insurability requirements and actively-at-work or similar requirements of such New Plan to be waived for such Continuing Employee and his or her covered dependents",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "636a7cd908819df17f4a3a7b63e8367751a6fce725310e2c98d1e41bba9d8bf6"
+        ],
+        "attributes": {
+          "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "636a7cd908819df17f4a3a7b63e8367751a6fce725310e2c98d1e41bba9d8bf6",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5177a03434c2576a3fcbe683a971cea0745f84cae71f91d425c294b0f35c0c97",
+            "document_ordinal": 0,
+            "absolute_start": 4993,
+            "absolute_end": 5314,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "28e596b264b4da2fc6bdd4bca55e30df49c204eb173649eabd45d07b3287a7f4"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "dfc2bd6a3646c91de2057871c3c4a237801439a1c12c1f14ae7a2c95cd412c1d",
+            "claim_occurrence_id": "6b3b85a41d925e72c9a75e5c008c6e0c3ccbb41f04cfcf23829da2f33c49afea",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause all waiting periods, pre-existing condition exclusions, evidence of insurability requirements and actively-at-work or similar requirements of such New Plan to be waived for such Continuing Employee and his or her covered dependents",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "636a7cd908819df17f4a3a7b63e8367751a6fce725310e2c98d1e41bba9d8bf6"
+            ],
+            "attributes": {
+              "relief_kind": "PREEXISTING_AND_WAITING_WAIVER",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "636a7cd908819df17f4a3a7b63e8367751a6fce725310e2c98d1e41bba9d8bf6",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5177a03434c2576a3fcbe683a971cea0745f84cae71f91d425c294b0f35c0c97",
+                "document_ordinal": 0,
+                "absolute_start": 4993,
+                "absolute_end": 5314,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "28e596b264b4da2fc6bdd4bca55e30df49c204eb173649eabd45d07b3287a7f4"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(d)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "citation_context": {
+        "parent_section_reference": "6.11",
+        "child_section_reference": "6.11",
+        "parent_chapeau_quote": "6.11 Employee Matters.",
+        "child_clause_quote": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause any eligible expenses incurred by such Continuing Employee and his or her covered dependents during the portion of the plan year ending on the Closing Date to be given full credit pursuant to such New Plan for purposes of satisfying all deductible, coinsurance, co-pay, offsets and maximum out-of-pocket requirements applicable to such Continuing Employee and his or her covered dependents for the applicable plan year as if such amounts had been paid in accordance with such New Plan."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "15de52176bcb150468d6e25f36d5421a14ff1fc0dd361167653ddbf1930fcd2b",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 298230,
+        "absolute_end": 306904,
+        "concept_key": "COV-EMPLOYEE",
+        "ordinal": 1,
+        "source_anchor_id": "e22d814ae84aeb786b7d827e080ca8e8a062141f567ba9079035a5ee67a31319",
+        "provision_instance_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "closure_id": "b577f714adb07cee43a6dc62b3d3554df0b57c3ae391f4de86bde44abc059e62"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5a06b5b7f902a5d1abd954923d5c21e7f56af2dd2221d28b000b6bc6c8686a07",
+        "claim_occurrence_id": "d03920ace92fbd67394557a26a122fbb411542ee9cae14fb9bb99a9c09d53cb5",
+        "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+        "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause any eligible expenses incurred by such Continuing Employee and his or her covered dependents during the portion of the plan year ending on the Closing Date to be given full credit pursuant to such New Plan for purposes of satisfying all deductible, coinsurance, co-pay, offsets and maximum out-of-pocket requirements applicable to such Continuing Employee and his or her covered dependents for the applicable plan year as if such amounts had been paid in accordance with such New Plan.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "19dc4f1dc328ba62d398a4758e7719413923eda0a8dc6c758606bd81eee38e47"
+        ],
+        "attributes": {
+          "relief_kind": "EXPENSE_CREDIT",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "19dc4f1dc328ba62d398a4758e7719413923eda0a8dc6c758606bd81eee38e47",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "fe7f258dea332b87d04f6676911eb4b0b62b667354d643787c598e8d07be0341",
+            "document_ordinal": 0,
+            "absolute_start": 5324,
+            "absolute_end": 5899,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "0c557a319a226a46abec49fd190fedc2c195f77435b214bde37a83dce8363075"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5a06b5b7f902a5d1abd954923d5c21e7f56af2dd2221d28b000b6bc6c8686a07",
+            "claim_occurrence_id": "d03920ace92fbd67394557a26a122fbb411542ee9cae14fb9bb99a9c09d53cb5",
+            "subject_occurrence_id": "315e29c4b6ab67bc3890ff3ff031fd369b6785d36776c48ed9a5332ca6b2aa55",
+            "claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause any eligible expenses incurred by such Continuing Employee and his or her covered dependents during the portion of the plan year ending on the Closing Date to be given full credit pursuant to such New Plan for purposes of satisfying all deductible, coinsurance, co-pay, offsets and maximum out-of-pocket requirements applicable to such Continuing Employee and his or her covered dependents for the applicable plan year as if such amounts had been paid in accordance with such New Plan.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "19dc4f1dc328ba62d398a4758e7719413923eda0a8dc6c758606bd81eee38e47"
+            ],
+            "attributes": {
+              "relief_kind": "EXPENSE_CREDIT",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "19dc4f1dc328ba62d398a4758e7719413923eda0a8dc6c758606bd81eee38e47",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "fe7f258dea332b87d04f6676911eb4b0b62b667354d643787c598e8d07be0341",
+                "document_ordinal": 0,
+                "absolute_start": 5324,
+                "absolute_end": 5899,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "0c557a319a226a46abec49fd190fedc2c195f77435b214bde37a83dce8363075"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "EMPLOYEE_MATTERS",
+            "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+            "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+            "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+            "extraction_provenance_id": "0568f857db5a0f124109ad4b38ef856c32b9dcc54c37d8b4da1ac3c246ac705a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 82,
+        "materiality_label": "EMPLOYEE_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.11",
+          "normalized_citation": "6.11",
+          "derived_citation": "6.11(d)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5a06b5b7f902a5d1abd954923d5c21e7f56af2dd2221d28b000b6bc6c8686a07",
+      "closure_id": "0c557a319a226a46abec49fd190fedc2c195f77435b214bde37a83dce8363075",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause any eligible expenses incurred by such Continuing Employee and his or her covered dependents during the portion of the plan year ending on the Closing Date to be given full credit pursuant to such New Plan for purposes of satisfying all deductible, coinsurance, co-pay, offsets and maximum out-of-pocket requirements applicable to such Continuing Employee and his or her covered dependents for the applicable plan year as if such amounts had been paid in accordance with such New Plan.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dfc2bd6a3646c91de2057871c3c4a237801439a1c12c1f14ae7a2c95cd412c1d",
+      "closure_id": "28e596b264b4da2fc6bdd4bca55e30df49c204eb173649eabd45d07b3287a7f4",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause all waiting periods, pre-existing condition exclusions, evidence of insurability requirements and actively-at-work or similar requirements of such New Plan to be waived for such Continuing Employee and his or her covered dependents",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e3f2100e6be11f2082c6acc9e3145c6065a082d2e1145c96304a4266673e0890",
+      "closure_id": "3f4bddf3556b8ffbfbd2714fe863556132fd9afee53572e9f0a591dda32b8de6",
+      "normalised_phrase": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6761e7a1d7479f33d476e54a20d03fba236c5082db09431277016a9eee29a6b8",
+      "closure_id": "54dd8326897747c565f6f6510d1316bbe26f3ca4f386a75f7a6fa21db15e01e5",
+      "normalised_phrase": "short-term (annual or more frequent) cash incentive compensation or commission opportunities that are no less favorable than the short-term (annual or more frequent) cash incentive compensation or commission opportunities provided to such Continuing Employee immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2f3f2e74f2e237f0d9d99ecb8a4668fa06d3d672d0af4bd4f27fe80af11ea042",
+      "closure_id": "75c64dbf5c1862b7be67b02f205b8fc579b0ba92a35fdd7e86839edd827646ea",
+      "normalised_phrase": "an annual base salary or hourly wage rate (as applicable) that is no less favorable than the annual base salary or hourly wage rate (as applicable) provided to such Continuing Employee immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) provide severance benefits to eligible employees in accordance with the Company’s severance agreements, plans, guidelines and practices as set forth in Section 6.11(c) of the Company Disclosure Letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f5c595e2b4ef1ea1c0d69b70af87b9879c6ec48ab7bd813b67aa820544bf52a4",
+      "closure_id": "786ff1950baeec5c0a248e2e4f573b3ec7548c4b81418581c03a016e8eff12b7",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) provide severance benefits to eligible employees in accordance with the Company’s severance agreements, plans, guidelines and practices as set forth in Section 6.11(c) of the Company Disclosure Letter",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9be9214aac9351657ec25ac4e17d48eae20efe6266eaf5119772aea7f13d174b",
+      "closure_id": "9a02d35bda0bc21773f8ac724a648071e0ad48ae5ebdfe642f44fb982ff81463",
+      "normalised_phrase": "each Continuing Employee will be immediately eligible to participate, without any waiting period, in any and all employee benefit plans sponsored by the Surviving Corporation and its Subsidiaries (other than any plan that provides for equity or equity-based compensation)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5433c0aacf32d089170417c8eb5c639acf436372d5208fea281b59bbea12d290",
+      "closure_id": "cd953cf661ba8f0d98c61ce2b8cccfd6244c5edbb838b9b7ce55d704201086c6",
+      "normalised_phrase": "cause to be granted to such Continuing Employee credit for all service with the Company Group prior to the Effective Time for purposes of eligibility to participate, vesting and for purposes of future vacation accrual and determining severance amounts",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(e)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Section 6.11 will not be deemed to (i) guarantee employment for any period of time for, or preclude the ability of Parent, the Surviving Corporation or any of its Subsidiaries to terminate any Continuing Employee for any reason; (ii) require Parent, the Surviving Corporation or any of their respective Subsidiaries to continue any particular Employee Plan or other compensation or benefit plan or arrangement, or prevent the amendment, modification or termination thereof after the Effective Time; (iii) create any third party beneficiary rights in any Person; or (iv) establish, amend or modify any benefit plan, program, agreement or arrangement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fe564c87c19b35b9d1f2e3c15e62cec328bb6173a5d7bd6eda0504d237bfe494",
+      "closure_id": "cfcf699dee4c02c7beb32e428e5f51002a4aaea561b17145fda261e2599d9b9c",
+      "normalised_phrase": "this Section 6.11 will not be deemed to (i) guarantee employment for any period of time for, or preclude the ability of Parent, the Surviving Corporation or any of its Subsidiaries to terminate any Continuing Employee for any reason; (ii) require Parent, the Surviving Corporation or any of their respective Subsidiaries to continue any particular Employee Plan or other compensation or benefit plan or arrangement, or prevent the amendment, modification or termination thereof after the Effective Time; (iii) create any third party beneficiary rights in any Person; or (iv) establish, amend or modify any benefit plan, program, agreement or arrangement.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "MONTH_COUNT_UNRESOLVED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "From and after the Effective Time until December 31, 2026 (or, if earlier, the termination date of an applicable Continuing Employee) (the “Continuation Period”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "61fc9d9f5e15b38d231928ee6eb258024f26577c4a6ce983d340a49d988a503b",
+      "closure_id": "d21150bebef8a4c14674cc8579b4323f3ccbe786fad04c02949ab0e539cc43db",
+      "normalised_phrase": "From and after the Effective Time until December 31, 2026 (or, if earlier, the termination date of an applicable Continuing Employee) (the “Continuation Period”)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Any vacation or paid time off accrued but unused by a Continuing Employee as of immediately prior to the Effective Time will be credited to such Continuing Employee following the Effective Time, and will not be subject to accrual limits or other forfeiture and will not limit future accruals",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fc5714f745790ac0f0492fc4f6a4f8719e6aa02b7161a648d0f0e343482c9531",
+      "closure_id": "f274413aeab42ebc1927fdc1a18434d5d446967c81e7210d086697e6ce6756bf",
+      "normalised_phrase": "Any vacation or paid time off accrued but unused by a Continuing Employee as of immediately prior to the Effective Time will be credited to such Continuing Employee following the Effective Time, and will not be subject to accrual limits or other forfeiture and will not limit future accruals",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "If Parent provides written notice to the Company no later than ten Business Days prior to the Effective Time that the 401(k) Plan shall be terminated, the Company Board (or the appropriate committee thereof) shall take actions necessary to terminate the Company 401(k) Plan",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: Termination of the Company 401(k) Plan requires Parent's written notice at least ten Business Days before the Effective Time, followed by Company Board action to terminate the plan.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "75aeb9707ef581e8e8f3e7278da77343c468daaadd053f77d7058f02b6abdbf4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c99a193c4508e65fcdc32eca0657cb03e554ce9d2b001bfc26e8cc302e690879",
+          "document_ordinal": 0,
+          "absolute_start": 7111,
+          "absolute_end": 7384,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1f5799489925f7639ba78d579fa10d420d6ccf55bf016163bffc971af6fc0d06",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+        "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+        "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+        "extraction_provenance_id": "9ecb100833ecc3f61b56cd79cfb5515d65b8eafb598ecc50707cae13ad23c950"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall, effective as of the Closing Date, offer participation in Parent’s tax qualified defined contribution plan (the “Parent 401(k) Plan”) to each Continuing Employee who was an active participant in the Company 401(k) Plan as of the date of its termination and who satisfies the eligibility requirements of the Parent 401(k) Plan",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: If the Company 401(k) Plan is terminated, Parent will offer eligible Continuing Employees participation in the Parent 401(k) Plan effective as of the Closing Date.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "82f473c22a4a06c4a47928c8ce2766e7ac13e2e47b2075f1b48f2ad9751f8199",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "96ebd23fbe2ac1cffab2d5b8d920099fc220e3e1afd48efe0fe68daf3fe13442",
+          "document_ordinal": 0,
+          "absolute_start": 8025,
+          "absolute_end": 8369,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "05e030aaaf207547ec05b69c4b635582d51aa4810a1f4c9e192c8bb2576954a3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+        "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+        "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+        "extraction_provenance_id": "9ecb100833ecc3f61b56cd79cfb5515d65b8eafb598ecc50707cae13ad23c950"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "if elected by such Continuing Employee in accordance with applicable Law, Parent shall permit the Parent 401(k) Plan to, following the Closing Date, accept a “direct rollover” to such Parent 401(k) Plan of the account balances (including any participant loans) of such Continuing Employee.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: If elected, the Parent 401(k) Plan will accept a direct rollover of a Continuing Employee's account balances, including participant loans, following the Closing Date.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3596a385f49aa8410ace4704b4b25b3237d32502fc94e81e23611a5b781ab2d0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "215b4ab8c3874d92de447ae4b7d69aab54bded7a5fe7a5a7323a83c5a08220b2",
+          "document_ordinal": 0,
+          "absolute_start": 8380,
+          "absolute_end": 8673,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2de53cc48143ed306714e7e2e6ea5927717c0980ea5ac15e8d8ec9c5970b7e82",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71e2873d07da5ad0899f80e5914f6d819caee6f41570c9c80224324442a3d3f7",
+        "producer_receipt_id": "c7e8b440047c47922739b0fd834585697328465584d0c1d0676fe1238134a1a2",
+        "governed_scope_digest": "316ac3b54c06f2d3de406c2854eadf2431ae326bcef5425c45019d848647d375",
+        "extraction_provenance_id": "9ecb100833ecc3f61b56cd79cfb5515d65b8eafb598ecc50707cae13ad23c950"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "84415e9b98ba85b5c12a6e8cecdc7e70ebea042a18852fa25b4bcedb678ee8ff",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 14,
+      "resolved": 6,
+      "auto_pass": 0,
+      "review_queue": 11,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "3ccb071f425cd3596b751d70bc067a3dfeae8b4e8d1c161bb4dcb0fbb7017ada"
+  }
+}

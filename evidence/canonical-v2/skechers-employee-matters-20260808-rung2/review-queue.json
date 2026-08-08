@@ -1,0 +1,286 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "84415e9b98ba85b5c12a6e8cecdc7e70ebea042a18852fa25b4bcedb678ee8ff",
+  "review_queue": [
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5a06b5b7f902a5d1abd954923d5c21e7f56af2dd2221d28b000b6bc6c8686a07",
+      "closure_id": "0c557a319a226a46abec49fd190fedc2c195f77435b214bde37a83dce8363075",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause any eligible expenses incurred by such Continuing Employee and his or her covered dependents during the portion of the plan year ending on the Closing Date to be given full credit pursuant to such New Plan for purposes of satisfying all deductible, coinsurance, co-pay, offsets and maximum out-of-pocket requirements applicable to such Continuing Employee and his or her covered dependents for the applicable plan year as if such amounts had been paid in accordance with such New Plan.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dfc2bd6a3646c91de2057871c3c4a237801439a1c12c1f14ae7a2c95cd412c1d",
+      "closure_id": "28e596b264b4da2fc6bdd4bca55e30df49c204eb173649eabd45d07b3287a7f4",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) cause all waiting periods, pre-existing condition exclusions, evidence of insurability requirements and actively-at-work or similar requirements of such New Plan to be waived for such Continuing Employee and his or her covered dependents",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e3f2100e6be11f2082c6acc9e3145c6065a082d2e1145c96304a4266673e0890",
+      "closure_id": "3f4bddf3556b8ffbfbd2714fe863556132fd9afee53572e9f0a591dda32b8de6",
+      "normalised_phrase": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6761e7a1d7479f33d476e54a20d03fba236c5082db09431277016a9eee29a6b8",
+      "closure_id": "54dd8326897747c565f6f6510d1316bbe26f3ca4f386a75f7a6fa21db15e01e5",
+      "normalised_phrase": "short-term (annual or more frequent) cash incentive compensation or commission opportunities that are no less favorable than the short-term (annual or more frequent) cash incentive compensation or commission opportunities provided to such Continuing Employee immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2f3f2e74f2e237f0d9d99ecb8a4668fa06d3d672d0af4bd4f27fe80af11ea042",
+      "closure_id": "75c64dbf5c1862b7be67b02f205b8fc579b0ba92a35fdd7e86839edd827646ea",
+      "normalised_phrase": "an annual base salary or hourly wage rate (as applicable) that is no less favorable than the annual base salary or hourly wage rate (as applicable) provided to such Continuing Employee immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) provide severance benefits to eligible employees in accordance with the Company’s severance agreements, plans, guidelines and practices as set forth in Section 6.11(c) of the Company Disclosure Letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f5c595e2b4ef1ea1c0d69b70af87b9879c6ec48ab7bd813b67aa820544bf52a4",
+      "closure_id": "786ff1950baeec5c0a248e2e4f573b3ec7548c4b81418581c03a016e8eff12b7",
+      "normalised_phrase": "the Surviving Corporation will (and Parent will cause the Surviving Corporation to) provide severance benefits to eligible employees in accordance with the Company’s severance agreements, plans, guidelines and practices as set forth in Section 6.11(c) of the Company Disclosure Letter",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9be9214aac9351657ec25ac4e17d48eae20efe6266eaf5119772aea7f13d174b",
+      "closure_id": "9a02d35bda0bc21773f8ac724a648071e0ad48ae5ebdfe642f44fb982ff81463",
+      "normalised_phrase": "each Continuing Employee will be immediately eligible to participate, without any waiting period, in any and all employee benefit plans sponsored by the Surviving Corporation and its Subsidiaries (other than any plan that provides for equity or equity-based compensation)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5433c0aacf32d089170417c8eb5c639acf436372d5208fea281b59bbea12d290",
+      "closure_id": "cd953cf661ba8f0d98c61ce2b8cccfd6244c5edbb838b9b7ce55d704201086c6",
+      "normalised_phrase": "cause to be granted to such Continuing Employee credit for all service with the Company Group prior to the Effective Time for purposes of eligibility to participate, vesting and for purposes of future vacation accrual and determining severance amounts",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2445,
+          "end": 2465,
+          "excerpt": "s) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions). Durin",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(e)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Section 6.11 will not be deemed to (i) guarantee employment for any period of time for, or preclude the ability of Parent, the Surviving Corporation or any of its Subsidiaries to terminate any Continuing Employee for any reason; (ii) require Parent, the Surviving Corporation or any of their respective Subsidiaries to continue any particular Employee Plan or other compensation or benefit plan or arrangement, or prevent the amendment, modification or termination thereof after the Effective Time; (iii) create any third party beneficiary rights in any Person; or (iv) establish, amend or modify any benefit plan, program, agreement or arrangement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fe564c87c19b35b9d1f2e3c15e62cec328bb6173a5d7bd6eda0504d237bfe494",
+      "closure_id": "cfcf699dee4c02c7beb32e428e5f51002a4aaea561b17145fda261e2599d9b9c",
+      "normalised_phrase": "this Section 6.11 will not be deemed to (i) guarantee employment for any period of time for, or preclude the ability of Parent, the Surviving Corporation or any of its Subsidiaries to terminate any Continuing Employee for any reason; (ii) require Parent, the Surviving Corporation or any of their respective Subsidiaries to continue any particular Employee Plan or other compensation or benefit plan or arrangement, or prevent the amendment, modification or termination thereof after the Effective Time; (iii) create any third party beneficiary rights in any Person; or (iv) establish, amend or modify any benefit plan, program, agreement or arrangement.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "MONTH_COUNT_UNRESOLVED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "From and after the Effective Time until December 31, 2026 (or, if earlier, the termination date of an applicable Continuing Employee) (the “Continuation Period”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "61fc9d9f5e15b38d231928ee6eb258024f26577c4a6ce983d340a49d988a503b",
+      "closure_id": "d21150bebef8a4c14674cc8579b4323f3ccbe786fad04c02949ab0e539cc43db",
+      "normalised_phrase": "From and after the Effective Time until December 31, 2026 (or, if earlier, the termination date of an applicable Continuing Employee) (the “Continuation Period”)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11(d)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Any vacation or paid time off accrued but unused by a Continuing Employee as of immediately prior to the Effective Time will be credited to such Continuing Employee following the Effective Time, and will not be subject to accrual limits or other forfeiture and will not limit future accruals",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fc5714f745790ac0f0492fc4f6a4f8719e6aa02b7161a648d0f0e343482c9531",
+      "closure_id": "f274413aeab42ebc1927fdc1a18434d5d446967c81e7210d086697e6ce6756bf",
+      "normalised_phrase": "Any vacation or paid time off accrued but unused by a Continuing Employee as of immediately prior to the Effective Time will be credited to such Continuing Employee following the Effective Time, and will not be subject to accrual limits or other forfeiture and will not limit future accruals",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    }
+  ],
+  "review_queue_artifact_id": "4be73962b15d349871ddf912bff62d6f56e3dd1e18041a1af2e10f99fb764283"
+}

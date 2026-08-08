@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T03:09:35.164Z",
+  "section_reference": "5.2",
+  "note": "General extraction run: deal=skechers, family=DIVIDENDS, section_references=[\"5.2\"] (all dispatched as DIVIDENDS via section_family_assignments), prompt_id=native-producer-dividends/v1, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"dividend_assertions\":[],\"mechanics\":[],\"open_world_candidates\":[]}\n```\n\nThe only dividend-related text in this section is clause (e)(B) — a forbearance/interim-operating restriction prohibiting the Company from declaring, setting aside, or paying dividends or distributions (with a carve-out for intercompany cash dividends) absent Parent consent. That is an interim-operating limb belonging to the interim-operating-covenants family, not a coordination covenant, a special dividend, or a recurring-mandated-dividend/preferred-stock-dividend fact this family owns — so per the routing instruction it is excluded from all three lists here rather than duplicated."
+}

@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 83,
-  "importable_run_count": 59,
+  "run_count": 85,
+  "importable_run_count": 61,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,7 +31,7 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 1048,
+    "excerpts": 1065,
     "provisions": 207,
     "claims": 534,
     "relationships": 0,
@@ -1196,6 +1196,29 @@
       "published": null
     },
     {
+      "run": "skechers-dividends-20260808-rung1",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.2"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-antitrust-regulatory-20260808-rung4",
       "section_family": "ANTITRUST_REGULATORY",
       "section_references": [
@@ -1747,6 +1770,29 @@
         "excerpts": 16,
         "provisions": 1,
         "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-representations-20260808-ceiling128k",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 20,
+      "open_world": 44,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 0,
+        "claims": 0,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,

@@ -1,0 +1,248 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "3.13"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "3.13",
+      "section_id": "8b25ef43221c1e7d419374dac4c1fecd7c0cefb45c8dbe7cba16dcd7dd8e275f",
+      "parent_section_id": "9f992b257c0e9b66692f64189c65554650ddba19c16c5474a2ba7d7dcee96d46",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 138630,
+      "end": 140559,
+      "text_sha256": "78d08d591fce905fb2e501b60c8861a13c96484b73eb381ee32ae806ce58833f",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-material-contracts/v1",
+      "prompt_version": 1,
+      "prompt_digest": "faad64f2233ca2f01f8d2af728f8d065a1936a524af2dc446c49dafe69fe39ab",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "9b3043125a8c29306a7cfe3fd9bb792b6c4b3a2697baf87565f072eec0404222",
+        "input_scope_digest": "f26b93167382b9cca4c24db7907772e06a42e4ae7f6ada551e443d22c42a005c",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "6599d640a3f635a8afb20826ddfb7cd3186d0d6942647f01915951df81250f9f"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "3.13",
+      "citation_validation": null,
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a9660d12d68b196b2fa8c5db065095e5c46f4508141f3ed0e07aa324bfa11498",
+          "claim_occurrence_id": "bf27f2a9a8f285d1f1ad50f28c09704f09cdb7b4efca3b1e9b463a654a6e3185",
+          "subject_occurrence_id": "c6e6a2ea4719a97d16ce56dff63d4b2945298bd9341834a24e37a8eae949efcc",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "a true, correct and complete list of all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3a152909faf5c360f25c54be104a2ab12f3a342b92ded7c7f08a5310c0946a5c"
+          ],
+          "attributes": {
+            "why_unmapped": "This clause covers all contracts falling within the defined term \"Material Contract,\" but the definition itself (including its bucket-specific clauses, referenced here only as \"clause (i) of the definition of Material Contract\") is not supplied in SOURCE TEXT or KNOWN DEFINITIONS. No bucket-specific synonym (e.g., indebtedness, real estate, IP license, government contract) appears directly in this section's text, so no MATERIAL_CONTRACT_BUCKET code can be assigned without inferring the unresolved definition.",
+            "nearest_concept": "REP-T-CONTRACTS"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3a152909faf5c360f25c54be104a2ab12f3a342b92ded7c7f08a5310c0946a5c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "16b82ef0859bfe549f4de62432c5007aea353424e7e53258900507b9a474047b",
+              "document_ordinal": 0,
+              "absolute_start": 115,
+              "absolute_end": 252,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4320e071cdc3ce3db413ff7c0965c550863636245833097f451ea70a11ee1acd"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9b3043125a8c29306a7cfe3fd9bb792b6c4b3a2697baf87565f072eec0404222",
+          "producer_receipt_id": "6599d640a3f635a8afb20826ddfb7cd3186d0d6942647f01915951df81250f9f",
+          "governed_scope_digest": "25c630246cef40401cedc4683648b2e42c43474da4116070b2fbaa7080b11864",
+          "extraction_provenance_id": "fd524916c51091ceb1f9cf0f5bcda3bab766c1cc3adf0f0d74bda66bf38ff086"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.13",
+      "source_byte_length": 1929,
+      "covered_byte_length": 137,
+      "coverage_share": 0.07102125453602903,
+      "marker_counts": {
+        "as of": 1,
+        "except": 2,
+        "knowledge": 3,
+        "material": 19,
+        "total": 25
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.07102125453602903,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 25,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.13",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 25,
+          "end": 28
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 69,
+          "end": 72
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 330,
+          "end": 333
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 422,
+          "end": 425
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 560,
+          "end": 563
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1302,
+          "end": 1305
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1589,
+          "end": 1592
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1727,
+          "end": 1731
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 3,
+        "section_paragraph_marker": 3,
+        "cross_reference_marker": 2
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 330,
+          "end": 333
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1589,
+          "end": 1592
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1727,
+          "end": 1731
+        }
+      ],
+      "disagreement_count": 3
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "ab115afa9a6fab293a09d67e41046b48477ace7817adc2c6f5dcf614e4bd154b"
+}

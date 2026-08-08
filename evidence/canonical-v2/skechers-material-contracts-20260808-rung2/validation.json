@@ -1,0 +1,125 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "15b3488834435abdc367342ed9b4b7d103c697468dbf84a400b5a7863fc306c9",
+      "deal_key": "deal:skechers-material-contracts:5e1d6f13ab83e3f9",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 138882,
+        "absolute_start": 138745,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "6bb5f47b51dddd41921ca003eb63a282050be6db31c9c4952e540bf06cbbf84d",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "cdee081d6406d135d655a1b97c97b7cc8b88704585015738d943e4fa123ac58b",
+        "exact_text": "a true, correct and complete list of all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "b9784a96f53514633df089d4141277d5271f6735305b2f732e6ad508b7d1a9d6",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "1bba5831fd9ce2b67cdc75f5b69f484ec4ea59069f0b01bfa46b80f239020a4f"
+          }
+        ],
+        "output_text_hash": "cdee081d6406d135d655a1b97c97b7cc8b88704585015738d943e4fa123ac58b",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "122688478962287fbc2b86b0b7044d5de17fa7c87acd4dce61bb405b73852b89",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "candidate_id": "7055db6d06877ce5e02de2ffea9f0c59389736243d28fbd5779e1b057c8e904d",
+        "canonical_value": null,
+        "closure_id": "4320e071cdc3ce3db413ff7c0965c550863636245833097f451ea70a11ee1acd",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "a true, correct and complete list of all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "3.13"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "nearest_concept": "REP-T-CONTRACTS",
+          "why_unmapped": "This clause covers all contracts falling within the defined term \"Material Contract,\" but the definition itself (including its bucket-specific clauses, referenced here only as \"clause (i) of the definition of Material Contract\") is not supplied in SOURCE TEXT or KNOWN DEFINITIONS. No bucket-specific synonym (e.g., indebtedness, real estate, IP license, government contract) appears directly in this section's text, so no MATERIAL_CONTRACT_BUCKET code can be assigned without inferring the unresolved definition."
+        },
+        "candidate_id": "7055db6d06877ce5e02de2ffea9f0c59389736243d28fbd5779e1b057c8e904d",
+        "canonical_value": null,
+        "closure_id": "4320e071cdc3ce3db413ff7c0965c550863636245833097f451ea70a11ee1acd",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "f2fa8ad9474d390fa420863c63793722564fde214ac43c71de4c264d26a6e578",
+        "raw_value": "a true, correct and complete list of all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 138882,
+        "absolute_start": 138745,
+        "closure_id": "4320e071cdc3ce3db413ff7c0965c550863636245833097f451ea70a11ee1acd",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "5f164365e6ca4ca88515a92547b451ed10b233041d66937ecbb71aee9a26c0e3",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "b9784a96f53514633df089d4141277d5271f6735305b2f732e6ad508b7d1a9d6",
+        "open_world_candidate_occurrence_id": "f2fa8ad9474d390fa420863c63793722564fde214ac43c71de4c264d26a6e578",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "4320e071cdc3ce3db413ff7c0965c550863636245833097f451ea70a11ee1acd",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "43f797907d474270d561ad8c46a89c7b235653090320bfdcc9142b7d465cca06",
+        "open_world_candidate_occurrence_id": "f2fa8ad9474d390fa420863c63793722564fde214ac43c71de4c264d26a6e578",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "deal_admission_id": "15b3488834435abdc367342ed9b4b7d103c697468dbf84a400b5a7863fc306c9",
+        "governed_deal_key": "deal:skechers-material-contracts:5e1d6f13ab83e3f9",
+        "immutable_source_document_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "a8663ed9e48231e088ab21faed3ebea3f1006b59b6dd6ef358511d319ceda18e",
+        "source_admission_manifest_id": "cd518ad18e64ffdead9f1a4aec266d05b5eec52a7f7c0e717cbac7f049ffb6cb",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 5,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}
