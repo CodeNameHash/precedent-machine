@@ -1,0 +1,104 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "metsera",
+  "deal_label": "Pfizer Inc. / Metsera, Inc.",
+  "section_family": "REPRESENTATIONS",
+  "purpose": "General extraction run: family REPRESENTATIONS on deal metsera.",
+  "section_references": [
+    "3.25",
+    "3.26",
+    "4.01",
+    "4.02",
+    "4.03",
+    "4.04",
+    "4.05",
+    "4.06",
+    "4.07",
+    "4.08",
+    "4.09"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.25",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.26",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.01",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.02",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.03",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.04",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.05",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.06",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.07",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.08",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.09",
+      "family_id": "REPRESENTATIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "agreement_date": "2025-09-21",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T13:10:49.915Z",
+  "total_elapsed_ms": 950564,
+  "extraction_wall_clock_ms": 943101,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/metsera-representations-20260808-r1c/recording.json",
+  "code_provenance": {
+    "commit": "288a6c407c308787c6f5753cbc46dba1f2602bcd",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 11,
+  "run_receipt_id": "2133c90e6bdc6368d3399c84ec892e5c8a3315df764c90c505c0fee0f11c40d1",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 11,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
