@@ -7,7 +7,7 @@
   "summary": {
     "section_families": 25,
     "product_projection_modules": 16,
-    "resolver_exports": 96,
+    "resolver_exports": 97,
     "review_table_configs": 26,
     "dark_bridge_leaves": 4,
     "dark_bridge_aggregators": 1,
@@ -638,7 +638,7 @@
     "method": "extracts module.exports identifiers from lib/canonical-v2/native-producer/candidate-resolution.js, the single module every registered family's proposals resolve through. 'tables' is every export ending _TABLE or _LEXICON (per-concept corroboration/lookup tables); 'helper_functions' is every export starting with a lowercase letter.",
     "module": "lib/canonical-v2/native-producer/candidate-resolution.js",
     "dispatch_entry_point": "resolveCandidates",
-    "total_exports": 96,
+    "total_exports": 97,
     "tables": [
       "FEE_SIDE_CORROBORATION_TABLE",
       "FEE_TRIGGER_CORROBORATION_TABLE",
@@ -671,6 +671,7 @@
       "feeTriggerCorroboratedCodes",
       "findTerminationLimbChapeau",
       "findTerminationLimbGrantContext",
+      "findTerminationSectionEitherGrantContext",
       "indexFeeAmountCandidatesBySection",
       "indexFeeTriggerCandidatesBySection",
       "indexMaeLabelledCandidatesBySection",
