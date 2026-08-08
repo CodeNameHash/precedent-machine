@@ -195,6 +195,19 @@ function fallbackTagFamily(key) {
   return null;
 }
 
+// Features whose inventory row predates the `list-tagged` declared type but
+// whose taxonomy family is real and mapped. Without this the generator emits
+// listItemType 'string' and no tag family, while lib/schema/features.js --
+// hand-edited at some point to say 'tag' -- points at a family the generator
+// never produced tags for. tests/schema/registry-shape.test.js caught the
+// mismatch once the recursive test glob started running it (2026-08-07).
+// Keep this list empty if you can: the right long-term fix is the inventory
+// row, and every entry here is a place the generated output diverges from
+// what the inventory literally says.
+const TAGGED_LIST_OVERRIDES = Object.freeze({
+  secFilingsExcludedSections: 'SEC_FILING_EXCLUSION_CODES',
+});
+
 function tagFamilyByFeature(rows, sourceInventory) {
   const mapped = new Map();
   for (const mapping of sourceInventory.taxonomy.featureKeyMappings || []) {
@@ -204,8 +217,8 @@ function tagFamilyByFeature(rows, sourceInventory) {
   const out = new Map();
   for (const row of rows) {
     const rawType = String((row.type_candidates || [])[0] || row.declared_type || '').toLowerCase();
-    if (rawType !== 'list-tagged') continue;
-    out.set(row.key, mapped.get(row.key) || fallbackTagFamily(row.key));
+    if (rawType !== 'list-tagged' && !TAGGED_LIST_OVERRIDES[row.key]) continue;
+    out.set(row.key, TAGGED_LIST_OVERRIDES[row.key] || mapped.get(row.key) || fallbackTagFamily(row.key));
   }
   return out;
 }
@@ -217,7 +230,8 @@ function buildFeature(row, sourceInventory, getDisplayOrder, featureTagFamily, v
   const provisionTypes = provisionTypesFor(row, validTypes);
   const provisionCodes = provisionCodesFor(row);
   const family = featureTagFamily.get(row.key) || null;
-  const isTaggedList = String(row.declared_type || rawType).toLowerCase() === 'list-tagged';
+  const isTaggedList = String(row.declared_type || rawType).toLowerCase() === 'list-tagged'
+    || Boolean(TAGGED_LIST_OVERRIDES[row.key]);
   const isObjectList = ['object-list', 'tiers'].includes(String(row.declared_type || rawType).toLowerCase());
   const citable = rowsForSource(row, 'rubric_js').some((item) => item.citable === true);
   const requiredEvidence = rowsForSource(row, 'rubric_js').some((item) => item.requiredEvidence === true);
@@ -303,6 +317,13 @@ function supplementalFeature({
   formatter = null,
   benchmarkable = false,
   listItemType = null,
+  // Supplemental features could not declare a tag family until 2026-08-07.
+  // Two of them (secFilingsExcludedSections, interveningEventExceptions)
+  // were hand-edited into lib/schema/features.js as tagged lists anyway,
+  // which left them pointing at families this generator never emitted tags
+  // for -- caught by tests/schema/registry-shape.test.js once the recursive
+  // test glob started running it.
+  listItemTagFamily = null,
 }) {
   return {
     key,
@@ -313,7 +334,7 @@ function supplementalFeature({
     enumSet,
     objectShape: null,
     listItemType,
-    listItemTagFamily: null,
+    listItemTagFamily,
     provisionTypes,
     provisionCodes,
     presence,
@@ -599,7 +620,9 @@ function supplementalReconciliationFeatures() {
       key: 'interveningEventExceptions',
       label: 'Intervening Event exceptions',
       description: 'TODO: describe Intervening Event exceptions.',
-      valueType: 'string',
+      valueType: 'list',
+      listItemType: 'tag',
+      listItemTagFamily: 'INTERVENING_EVENT_EXCEPTION_CODES',
       provisionTypes: ['NOSOL'],
       provisionCodes: ['NOSOL-ACQPROPOSAL', 'NOSOL-CEASE', 'NOSOL-EXCEPT', 'NOSOL-MATCH', 'NOSOL-NOTICE', 'NOSOL-PROHIBIT', 'NOSOL-RECOMMEND', 'NOSOL-SUPERIOR'],
       presence: 'often',
@@ -721,7 +744,18 @@ function main() {
   Object.assign(features, supplementalLiveFeatures(validTypes));
   Object.assign(features, supplementalReconciliationFeatures());
 
-  const tags = buildTags(sourceInventory, featureTagFamily);
+  // Supplemental features are not inventory rows, so their tag families are
+  // absent from featureTagFamily and buildTags would skip them -- which is
+  // how INTERVENING_EVENT_EXCEPTION_CODES ended up declared by a feature and
+  // emitted by no tag. Fold them in before building tags.
+  const tagFamilyWithSupplemental = new Map(featureTagFamily);
+  for (const [key, feature] of Object.entries(features)) {
+    if (feature.listItemType === 'tag' && feature.listItemTagFamily) {
+      tagFamilyWithSupplemental.set(key, feature.listItemTagFamily);
+    }
+  }
+
+  const tags = buildTags(sourceInventory, tagFamilyWithSupplemental);
   writeGeneratedFile(FEATURES_GENERATED, 'FEATURES', features);
   writeGeneratedFile(TAGS_GENERATED, 'TAGS', tags);
   writeAuditFiles(features, tags);

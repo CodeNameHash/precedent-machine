@@ -1,0 +1,374 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "f008765dbf37104453b89e0af88d533b808d49f2dbd47bd54ab6ecdc9172bbc5",
+  "review_queue": [
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_RESIGN_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-RESIGN",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "64a921191c067b60a5c6bf5543451969dc8b7c61d0c354978e94547cc0b30136",
+      "closure_id": "bcedd2bcf2fe8df6d2060c81e9f4dacc3cab6b6183d0a602c14043137e4c98ca",
+      "normalised_phrase": "the Company shall (a) cause each director of the Company to deliver a written resignation to the Company effective at the Effective Time and (b) cause the vacancies resulting from such resignations to be filled by the Person or Persons who serve as director of Merger Subsidiary 1 immediately prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "COV-RESIGN"
+    },
+    {
+      "section_reference": "5.7",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "12e5d8398c8b5cb1c9c13b97756d84ae4466221c1f9cec5d6af386a827ebc6e1",
+      "closure_id": "fcf354f7b5bbec9e274d6ecd412423a3e8755ff0fe5e25c4825cc27981e756d3",
+      "normalised_phrase": "Prior to the Effective Time, the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable law and the rules and regulations of Nasdaq to cause (a) the delisting of the Company Common Stock from Nasdaq as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 27,
+          "end": 36,
+          "excerpt": "Section 5.7 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.4",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1fac6ec47c63da388ead84c8615436f034dc60cc914eb94399670da1cd1b53f0",
+      "closure_id": "d863c7798f924e89cdeb5dcd16993c08dd06ae2f9e8f41e6592b46655f10ad10",
+      "normalised_phrase": "Parent shall take all necessary action to cause the shares of Parent Common Stock to be issued in connection with the Mergers to be listed on the NYSE, subject to official notice of issuance.",
+      "attachment_position": null,
+      "concept_family": "COV-LIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LIST",
+          "pattern_id": "COV-LIST:PHRASE:LIST",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 6.4 Stock Exchange Listing. Parent shall take all necessary action to cause the shares of Parent Common St",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d3a4558cd7e48755abb48c34d8a38f0d6c7ecd8366954a22f28a57de3fc0a783",
+      "closure_id": "50dc59043d2f224bba2e1f9bd6acdd43adc7794b79aa62c2a41606c32b97dbfc",
+      "normalised_phrase": "All information obtained by Parent pursuant to this Section 7.3 shall be kept confidential in accordance with, and shall otherwise be subject to the terms of the Confidentiality Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 12,
+          "end": 33,
+          "excerpt": "Section 7.3 Access to Information. From the date of this Agreement until the Effective Time, to the extent permit",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "42d06fdbf5755df7844eaade244dbef4f48f3fe94b03242ddcca3ead12382b88",
+      "closure_id": "95b2188666f7117501f5ff7427da35fb864f3a4b3b1da9289c3dca5a0455eba0",
+      "normalised_phrase": "the Company shall, during normal business hours and upon reasonable request, (a) give Parent and its employees, counsel, financial advisors, auditors and other authorized representatives reasonable access to the offices, properties, books and records of the Company and its Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 12,
+          "end": 33,
+          "excerpt": "Section 7.3 Access to Information. From the date of this Agreement until the Effective Time, to the extent permit",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.5",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "277c4425eb0b41d2165dec7828a7f905bad002e60cfe71665e356345b7f9789f",
+      "closure_id": "1c7e61ae0ff6b881b395dfa395733a014ccf3792a37ec25827e9153945769ec8",
+      "normalised_phrase": "Parent and the Company shall consult with each other before issuing any press release or making any public statement with respect to this Agreement or the Transactions and shall not issue any such press release or make any such public statement without the prior written consent of the other party, which consent shall not be unreasonably withheld.",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 12,
+          "end": 32,
+          "excerpt": "Section 7.5 Public Announcements. Parent and the Company shall consult with each other before issuing any press ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.8",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-16B",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "788aa7669fbdb030a960d15adf7ed7fc4ced78b582c88fedd18d7439aa042606",
+      "closure_id": "8cc6913469ce2fc41b69b57fd394f1d8e161629e0ed5ba547d45810dfb238de6",
+      "normalised_phrase": "Each of Parent and the Company shall take all such steps as may be reasonably necessary to cause the Transactions and any other dispositions of equity securities of the Company (including derivative securities) or acquisitions of equity securities of Parent (including derivative securities) in connection with this Agreement by each individual who (a) is a director or officer of the Company or (b) at the Effective Time will become a director or officer of Parent, to be exempt under Rule 16b-3 promulgated under the Exchange Act.",
+      "attachment_position": null,
+      "concept_family": "COV-16B"
+    },
+    {
+      "section_reference": "7.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6b8d039e34240a71d9bb5c31a15e830055741fda8285d0fcda331e7a4d34b248",
+      "closure_id": "0ffcae858e859d0ba9ea05e63eb4afd9729c4e9dd28e3e5d0bf53e5e83765c82",
+      "normalised_phrase": "shall keep Parent reasonably informed regarding any developments in any Transaction Litigation",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 7.9 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 319,
+          "end": 341,
+          "excerpt": "ers relating to this Agreement or any of the Transactions (collectively, the “Transaction Litigation”) and shall keep Parent reasonably informed regarding any developments in any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "12c7a8e28b728ca80b249ad979b1261febb9a441e24050e6e964c5a0a3fec18e",
+      "closure_id": "53d22eb62f6430fa595f08eb652207db3bb95c5371518d94d5a1ecd43a35c2ba",
+      "normalised_phrase": "the Company shall give Parent’s advice with respect to such Transaction Litigation reasonable consideration",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 7.9 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 319,
+          "end": 341,
+          "excerpt": "ers relating to this Agreement or any of the Transactions (collectively, the “Transaction Litigation”) and shall keep Parent reasonably informed regarding any developments in any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8522cac96e2c79e0c9f02665fe0c8404c405f1491d2a7d2c97b187bc13132f65",
+      "closure_id": "6ba3b8126557ee4e692a48ecaf995870f9574cc60733350e8dde106eff143502",
+      "normalised_phrase": "None of the Company, or any of its respective Subsidiaries shall settle or offer to settle any Transaction Litigation without the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed).",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 7.9 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 319,
+          "end": 341,
+          "excerpt": "ers relating to this Agreement or any of the Transactions (collectively, the “Transaction Litigation”) and shall keep Parent reasonably informed regarding any developments in any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7307003240e1b035988b791155b0fd6ea7ca88c36223673a81fe34b84638bfea",
+      "closure_id": "7ad513304598f0ae2181cbed8daa82274aed8ed5e91bec15d19b1d88e1c8cfb1",
+      "normalised_phrase": "shall in good faith consult with Parent on a regular basis regarding the defense or settlement of such Transaction Litigation",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 7.9 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 319,
+          "end": 341,
+          "excerpt": "ers relating to this Agreement or any of the Transactions (collectively, the “Transaction Litigation”) and shall keep Parent reasonably informed regarding any developments in any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "df288da9cd1f053eb5cd0ac94e63789e723dfb96f21e4a030eef68478f527dc4",
+      "closure_id": "ffcce9e059eee850b5f637129a665f321730d323d1646a67692280e82641a034",
+      "normalised_phrase": "shall cooperate with Parent in the defense or settlement of any Transaction Litigation",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 12,
+          "end": 34,
+          "excerpt": "Section 7.9 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 319,
+          "end": 341,
+          "excerpt": "ers relating to this Agreement or any of the Transactions (collectively, the “Transaction Litigation”) and shall keep Parent reasonably informed regarding any developments in any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "11fbbf1d2bb721431d988e935b42915a3c08beeaee09999826590df9736fdc82"
+}

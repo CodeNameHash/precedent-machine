@@ -28,25 +28,45 @@
  *
  * Usage: node scripts/nets-eligibility-report.mjs [--json]
  *
- * CURRENTLY BLOCKED END-TO-END (as of commit 0d17ad00, "Phase 1
- * production-readiness controls", 2026-08-04). That commit made
- * `runTwoPassFlow` refuse a snapshot without verified
- * `snapshot_identity_evidence` (tests/nets-eligibility-report-identity-
- * fence.test.js), and, correctly, could no longer trust the raw
- * `governed_deal_key` `loadSkechersReplayRun()` used to hand-pass into
- * `buildAdmittedSemanticSourceContext()` (a derived value, not issued/
- * verified identity evidence) -- so the same commit made
+ * WAS BLOCKED END-TO-END, as of commit 0d17ad00 ("Phase 1
+ * production-readiness controls", 2026-08-04) through docs/core/PLAN.md's
+ * Stage 2 prerequisite fix (2026-08-07). That commit made `runTwoPassFlow`
+ * refuse a snapshot without verified `snapshot_identity_evidence`
+ * (tests/nets-eligibility-report-identity-fence.test.js), and, correctly,
+ * could no longer trust the raw `governed_deal_key` `loadSkechersReplayRun()`
+ * used to hand-pass into `buildAdmittedSemanticSourceContext()` (a derived
+ * value, not issued/verified identity evidence) -- so the same commit made
  * `loadSkechersReplayRun()` throw unconditionally as its very first
- * statement, leaving ~38 lines of the original replay below it dead. That
- * fence is correctly scoped to Skechers in principle. In practice, `main()`'s
- * `deals` loop has no per-deal try/catch, so today running this script
- * produces NO output at all for ANY deal -- not just Skechers, but also
- * TopBuild and Modiv, which have complete data and nothing to do with the
- * Skechers identity gap (see the last successful run, captured before this
- * commit, in docs/archive/handoffs/NETS-ELIGIBILITY-2026-08-02.md). Until
- * Skechers has real issued identity evidence, or `main()` is changed to
- * isolate a per-deal failure instead of aborting the whole run, this script
- * cannot produce the report its own header above describes.
+ * statement, leaving ~38 lines of the original replay below it dead.
+ *
+ * CORRECTION TO THE PRIOR VERSION OF THIS COMMENT (read the code, not the
+ * comment -- the prior paragraph here claimed the identity fence was
+ * "correctly scoped to Skechers in principle" and that TopBuild/Modiv had
+ * "complete data and nothing to do with the Skechers identity gap". That
+ * was checked and found false: `runTwoPassFlow`'s guard --
+ * `if (!snapshot?.snapshot_identity_evidence) throw` -- is unconditional,
+ * not Skechers-specific, and NONE of the three committed snapshot fixtures
+ * (tests/fixtures/canonical-v2/v1v2-comparator/{modiv,topbuild,skechers}-
+ * v1-provision-snapshot.json) carries `snapshot_identity_evidence`. Running
+ * this script before the fix below threw on the FIRST deal in the `deals`
+ * array (TopBuild), never reaching Skechers at all.
+ *
+ * FIXED: `main()`'s `deals` loop now isolates each deal's own
+ * load+runTwoPassFlow in its own try/catch (the remedy this comment's prior
+ * version itself prescribed), collecting a `blocked` list alongside
+ * `summaries` instead of aborting the whole run on the first exception. This
+ * makes the script run and report per-deal status honestly -- it does NOT
+ * manufacture identity evidence to force deals through (that would defeat
+ * the control 0d17ad00 deliberately added). As of 2026-08-07, EVERY deal
+ * still reports blocked, because none of the three committed snapshots
+ * carries real identity evidence yet -- that is a real, disclosed gap, not
+ * fixed by this change, and the same root cause blocking condition 1 of
+ * docs/core/PLAN.md's Stage 2 prerequisite (see
+ * docs/codex-program/notes/stage-2-prerequisite.md). A real fix needs a
+ * `scripts/export-v1-provision-snapshot.mjs` re-run against a deal with
+ * genuine issued identity evidence, which needs DB access and a real
+ * `governed-identity-proposal-packet.js` issuance chain -- out of this
+ * script's own scope.
  */
 
 import { readFileSync } from 'node:fs';
@@ -218,16 +238,28 @@ async function main() {
     { name: 'Modiv', load: async () => ({ ...loadDirectRun('modiv-first-live-run'), snapshot: loadSnapshot('modiv-v1-provision-snapshot.json') }) },
   ];
 
+  // Per-deal isolation (fix for the state described in this file's own
+  // header, "FIXED" paragraph): one deal's exception -- an identity fence
+  // refusal today, but this isolation is not specific to that failure mode
+  // -- must never abort every other deal's report. Each deal either lands
+  // in `summaries` (ran clean) or `blocked` (typed reason, never silently
+  // dropped).
   const summaries = [];
+  const blocked = [];
   for (const deal of deals) {
-    const run = await deal.load();
-    const result = await runTwoPassFlow(run);
-    summaries.push(summarizeDeal(deal.name, result));
+    try {
+      const run = await deal.load();
+      const result = await runTwoPassFlow(run);
+      summaries.push(summarizeDeal(deal.name, result));
+    } catch (error) {
+      blocked.push({ deal: deal.name, blocked_reason: error.message || String(error) });
+    }
   }
 
   if (jsonOutput) {
-    process.stdout.write(`${JSON.stringify(summaries, null, 2)}\n`);
-    return summaries;
+    const output = { summaries, blocked };
+    process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
+    return output;
   }
 
   process.stdout.write(
@@ -249,7 +281,11 @@ async function main() {
     process.stdout.write(`  v1 recall (Tier1): ${JSON.stringify(summary.v1_recall)}\n`);
     process.stdout.write(`  v1 cards total:    ${summary.v1_cards_total}\n\n`);
   }
-  return summaries;
+  for (const entry of blocked) {
+    process.stdout.write(`=== ${entry.deal} === BLOCKED\n`);
+    process.stdout.write(`  ${entry.blocked_reason}\n\n`);
+  }
+  return { summaries, blocked };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

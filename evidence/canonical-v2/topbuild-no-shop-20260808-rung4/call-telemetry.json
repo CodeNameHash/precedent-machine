@@ -1,0 +1,74 @@
+{
+  "run_wall_clock_ms": 536789,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "4.3",
+      "wall_clock_ms": 536425,
+      "duration_ms_reported": 534528,
+      "duration_api_ms_reported": 534756,
+      "total_cost_usd_cli": 1.5394690999999998,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 87589,
+        "cache_read_input_tokens": 86947,
+        "output_tokens": 65210,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 87589,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1210,
+            "cache_read_input_tokens": 55236,
+            "cache_creation_input_tokens": 64064,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 64064
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 9579,
+          "outputTokens": 22,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.009689000000000001,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 4,
+          "outputTokens": 65210,
+          "cacheReadInputTokens": 86947,
+          "cacheCreationInputTokens": 87589,
+          "webSearchRequests": 0,
+          "costUSD": 1.5297800999999998,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    }
+  ],
+  "failed": true,
+  "error": "native producer model call failed after 1 attempt(s): model response contains 5 independent JSON objects; expected exactly one and cannot guess which is authoritative"
+}

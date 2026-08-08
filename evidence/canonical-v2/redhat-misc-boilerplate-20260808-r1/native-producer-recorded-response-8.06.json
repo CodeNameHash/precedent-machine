@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:06:00.010Z",
+  "section_reference": "8.06",
+  "note": "General extraction run: deal=redhat, family=MISC_BOILERPLATE, section_references=[\"8.01\",\"8.02\",\"8.04\",\"8.05\",\"8.06\",\"8.07\",\"8.08\",\"8.09\",\"8.10\",\"8.12\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"the right of the Company\\u2019s stockholders to receive the Merger Consideration pursuant to Article II following the Effective Time in accordance with the terms of this Agreement\"},{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"the right of the holders of Stock Options, Restricted Shares, RSUs, PSUs or DSUs to receive the consideration set forth in Section 5.04\"},{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"the provisions of Section 5.05\"},{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"extent applicable to the Financing Sources, the Financing Sources shall be third party beneficiaries of, and entitled to rely on the last sentence of Section 7.03, this proviso of Section 8.06, the proviso of Section 8.07, the last sentence of Section 8.09 and the last two sentences of Section 8.11.\"}],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

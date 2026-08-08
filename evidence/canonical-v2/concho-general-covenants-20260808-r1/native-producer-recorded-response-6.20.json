@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:04:16.541Z",
+  "section_reference": "6.20",
+  "note": "General extraction run: deal=concho, family=GENERAL_COVENANTS, section_references=[\"6.7\",\"6.11\",\"6.12\",\"6.14\",\"6.15\",\"6.16\",\"6.19\",\"6.20\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"6.20\",\n      \"covenant_obligor\": \"Parent\",\n      \"covenant_code\": \"COV-MERGESUB\",\n      \"definition_cross_references\": [],\n      \"quote\": \"Parent shall take all action necessary to cause Merger Sub and the Surviving Corporation to perform their respective obligations under this Agreement.\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

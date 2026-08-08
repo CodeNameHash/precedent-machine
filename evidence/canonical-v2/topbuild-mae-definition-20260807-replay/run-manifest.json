@@ -1,0 +1,60 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "MAE_DEFINITION",
+  "purpose": "General extraction run: family MAE_DEFINITION on deal topbuild.",
+  "section_references": [
+    "3.1(a)"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.1(a)",
+      "family_id": "MAE_DEFINITION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "mae-definition-producer/v2",
+  "prompt_version": 2,
+  "agreement_date": "2026-04-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T02:38:10.609Z",
+  "total_elapsed_ms": 6154,
+  "extraction_wall_clock_ms": 323,
+  "replay": {
+    "recorded_calls": 1,
+    "replayed_calls": 1,
+    "keying": "ORDERED_SECTION_REFERENCE",
+    "unused_recorded_requests": 0,
+    "complete": true
+  },
+  "recorded_to": null,
+  "code_provenance": {
+    "commit": "bb8efd998a16953bf040e26bf7953b0edd01ecad",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 0,
+  "run_receipt_id": "f0af6fc95f479e6928e8daf3e5dd257de16ef753e6e16bf6851419bc0b4e8ecc",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

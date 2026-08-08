@@ -1,0 +1,81 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a64ea76fc8ed136ce8b025bcf07d3c5682e8f45be0f2d0bf6d2bba2743a6f6e9",
+  "review_queue": [
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25a7bc398739e6d2e18e2c2dc90015a669b0798bc447d217afb23b8d4ef383e4",
+      "closure_id": "557bb257abe36512860c37c34aa3d0221fde65e3b6c5de87b17242e7f69ee921",
+      "normalised_phrase": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "84898dc18d4d8e8cc010f22cbe079171a772d06003f107ef87507ffa60f4696a",
+      "closure_id": "77d1f3d9cdcf6af58b12a299014fa609a09c036ce21e868cd5a70e07f39e9413",
+      "normalised_phrase": "the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b)",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3ce991a873c936cb46849e15f193f502adfacdf794f7262984f3193b0564d3a3",
+      "closure_id": "5ca2660b7995b70a57b53a77f19362e6aa1667847705f47dd3c07adb8278b034",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b)",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE"
+    }
+  ],
+  "review_queue_artifact_id": "85efb5be3d56aeb6ac8ccb53d4d56a435fe306799639ef34130d65ee9182cbee"
+}

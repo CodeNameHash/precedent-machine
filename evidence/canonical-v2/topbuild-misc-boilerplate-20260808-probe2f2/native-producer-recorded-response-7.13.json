@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:57:37.062Z",
+  "section_reference": "7.13",
+  "note": "General extraction run: deal=topbuild, family=MISC_BOILERPLATE, section_references=[\"7.1\",\"7.2\",\"7.3\",\"7.4\",\"7.5\",\"7.7\",\"7.8\",\"7.9\",\"7.13\",\"7.14\",\"7.15\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[],\"mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"The provisions of this Agreement shall be deemed severable and the invalidity or unenforceability of any provision shall not affect the validity or enforceability of the other provisions hereof.\",\"why_unmapped\":\"Severability clause (invalidity of a provision does not affect the rest, with good-faith substitution of an equitable replacement) has no matching assertion_kind or mechanics surface in the governed taxonomy; not a remedies/mechanics fact and not one of GOVERNING_LAW/FORUM_FALLBACK/WAIVER_OR_SURVIVAL/CONSTRUCTION_OR_EXPENSES/TPB_EXCEPTION/ASSIGNMENT_DETAIL/NOTICE.\",\"nearest_concept\":null}]}\n```"
+}

@@ -1,0 +1,1562 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a6c677397d3aa5c2c01fb5e01741fa2f3edeb35d43a71b6fdedccf13a9c4ba4b",
+  "review_queue": [
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ee6d5e1d4385f31a61972e4d6f4f6e41e7316fb8ec237d158baca73ae28d902f",
+      "closure_id": "03a20804e69332cf28d3939e5ce8ef5de7846bca02f6b2fa2c0d33698e715cdc",
+      "normalised_phrase": "changes or proposed changes in GAAP or other accounting standards",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e025ff8c9910c43d5f52096e7ebc7444bbb5d783ec9233f4b85bb212e0bd2eab",
+      "closure_id": "050c07d82a3f173b839271cd4a210aa4f1008e30a4dd11d9aa660650ffe351b3",
+      "normalised_phrase": "changes in trade regulations, such as the imposition of new or increased trade restrictions, tariffs, trade policies or disputes, or changes in, or any consequences resulting from, any “trade war” or similar actions in the United States or any other country or region in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(x)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any action taken or refrained from being taken, in each case which Parent has expressly approved, consented to or requested in writing following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2c2652c041386eee6dd63ef50818a0037e829c6650c900ac719ac0de120b7671",
+      "closure_id": "21ed638b7313f6f67b501d0529ec5e092306440b51133f705fef6b6f5aed7396",
+      "normalised_phrase": "any action taken or refrained from being taken, in each case which Parent has expressly approved, consented to or requested in writing following the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d72ed98ecfe6b2eb3cf12368adc20298fb9ffeec0a81ef25e77cd883fedf903a",
+      "closure_id": "336f76f65b8ccf46b8ef0d91d66370ea647f5394fc452e689d9b809945231d05",
+      "normalised_phrase": "changes in conditions in the industries in which the Company Group generally conducts business",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(xi)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "in any applicable laws or regulations (or the enforcement or interpretation of any of the foregoing)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d0b47244bd7c3ef396a09e101c062d3baa41d6c813b4062643ca5772f7d2287e",
+      "closure_id": "4a7887830a5118d402d098dcae54568c21ce4092280b1648a9d3e6dd695f82c6",
+      "normalised_phrase": "in any applicable laws or regulations (or the enforcement or interpretation of any of the foregoing)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f63f4266d92d9db8c6a13d21f7f0d16da65d4d281cb8cb931c801c93d715701c",
+      "closure_id": "4db586474883ca2578492af93578b2857c47e227095f178c3510e5910a5566e9",
+      "normalised_phrase": "changes in the price or trading volume of the Company Common Stock, in and of itself (it being understood that any cause of such change may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(iv)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "changes in regulatory, legislative or political conditions in the United States or any other country or region in the world",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "941410289ad36ccf12723240ee8643c73fe633508a2d8bc340bf8a54b2eb4018",
+      "closure_id": "5b9a5646f83c05778a0a338c01014b2cc4618d1359faa6e1dde2a85b074aafd0",
+      "normalised_phrase": "changes in regulatory, legislative or political conditions in the United States or any other country or region in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8354bb3775b94a2f849cb5d36ce0a193a94f8e5720976675ef28eaa28a5fe22a",
+      "closure_id": "a3282f3f6d7fdba48842f535821f64dc446e2a65d03a8fda5d7bbf3ffd16bd5b",
+      "normalised_phrase": "earthquakes, hurricanes, tsunamis, tornadoes, floods, mudslides, wild fires or other natural disasters, weather conditions",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(ix)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the compliance by any Party with the terms of this Agreement, including any action taken or refrained from being taken pursuant to or in accordance with this Agreement (other than for purposes of any representation or warranty contained in Section 3.5 or Section 3.6, and the related conditions to the Closing)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "210a1a76d4253d9478a0daa38201e826d02879636f0e08d791e5bfbed3432754",
+      "closure_id": "b85735bc5c7154e304b2a8b1a075f3502b21818147c41c04786606354b2632ac",
+      "normalised_phrase": "the compliance by any Party with the terms of this Agreement, including any action taken or refrained from being taken pursuant to or in accordance with this Agreement (other than for purposes of any representation or warranty contained in Section 3.5 or Section 3.6, and the related conditions to the Closing)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(xiii)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any failure, in and of itself, by the Company Group to meet (A) any public estimates or expectations of the Company’s revenue, earnings or other financial performance or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or results of operations (it being understood that any cause of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "151b052bfd4d139c43f3fdb0f71626050f8211b0aa36337adde76a3bb9f6cf5e",
+      "closure_id": "bc4247f8979e46a1430c60c969e7edc542c9805ba8b6f74d79246a4d53b55c8e",
+      "normalised_phrase": "any failure, in and of itself, by the Company Group to meet (A) any public estimates or expectations of the Company’s revenue, earnings or other financial performance or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or results of operations (it being understood that any cause of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "594f0f884c64c5618d8275c5c78240230c064c0f112544139058355b5d7dce49",
+      "closure_id": "bf1eb097dd6b7b00c409dabe6f1483b9cca4e38c8b9fec3665d9d0e8aa2e1438",
+      "normalised_phrase": "any geopolitical conditions, outbreak of hostilities, acts of war, sabotage, terrorism (including cyberattacks or cyberterrorism) or military actions (including any escalation or general worsening of any such hostilities, acts of war, sabotage, terrorism or military actions) in the United States or any other country or region in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(xiv)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the availability or cost of equity, debt or other financing to the Buyer Parties",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "66588af80be9543ef479c8f562178d32de02dc303636e057f0139f8c0064318c",
+      "closure_id": "d9c3250e1e32deb0aff6fd6c604c4442a59c172539352642682d61b5e22ac0d6",
+      "normalised_phrase": "the availability or cost of equity, debt or other financing to the Buyer Parties",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cbf65dae2cf129f22124915fa8e1c62f92adcec8a5b1c4e6fc546f2631a6570a",
+      "closure_id": "e5ef9a1e1a47bb9dcc22060de7690cfbefc0a0a0ecb8595ec1bda2024eb3161b",
+      "normalised_phrase": "changes in conditions in the financial markets, credit markets or capital markets in the United States or any other country or region in the world, including (1) changes in interest rates or credit ratings in the United States or any other country; (2) changes in exchange rates for the currencies of any country; or (3) any suspension of trading in securities (whether equity, debt, derivative or hybrid securities) generally on any securities exchange or over-the-counter market operating in the United States or any other country or region in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e1f99c1491ed9bcbf8cd24dc7c3b76e222dbbef9313defd93aa31bb0ea9e7abc",
+      "closure_id": "f61c8a38938c164c952afd7f36c1e486ba5a3a6749e27060501dbbb603dcbf11",
+      "normalised_phrase": "changes in general economic conditions in the United States or any other country or region in the world, or changes in conditions in the global economy generally",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f37fb1ddd2aa015af0d6c633eef799c8ef7edcdd2539788570f01fbf1ec64cb3",
+      "closure_id": "f7040f87431972eb14b58b5011f9151c6ca34159298607d0824728a830271393",
+      "normalised_phrase": "any Effect resulting from the announcement of this Agreement or the pendency of the Merger and the transactions contemplated hereby, including the impact thereof on the relationships, contractual or otherwise, of the Company Group with employees, labor unions, suppliers, customers, lessors, partners, vendors or any other third Person (other than for purposes of any representation or warranty contained in Section 3.5 or Section 3.6, and the related conditions to the Closing)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(r)(vii)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "epidemics, pandemics or disease outbreaks",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2f07267a73e7605798c6a5ee5571e6ca5657863cdf81dc1663bdb6b3c8946c62",
+      "closure_id": "fb58fd54c23546f4ea04030484b975633f8f29d5e3b17747b12dc94994c65c31",
+      "normalised_phrase": "epidemics, pandemics or disease outbreaks",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e41906fa3174d4f724454cd6ecd851673b8a939d4af5f276a7715e08ae5e0d0",
+      "closure_id": "3c6ea626d41ceef97cbc8a6cbe2c37e5d78b21516405601ad010f103618d8f0d",
+      "normalised_phrase": "is or would reasonably be expected to have a material adverse effect on the business, financial condition or results of operations of the Company Group, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e256281a08561d207da89a3e6f54fc22cb40f9e3508555503090828d0781f1ce",
+      "closure_id": "c3dd8048520ff06b1f4c2b31597a242ad70d9cad01861d4adebf9f2ca53e2c41",
+      "normalised_phrase": "except, with respect to clauses (i), (ii), (vi), (vii) and (xi), to the extent that such Effect has had a disproportionate adverse effect on the Company relative to other companies of a similar size operating in the industries in which the Company Group conducts business, in which case only the incremental disproportionate adverse impact may be taken into account in determining whether there has occurred a Company Material Adverse Effect",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 6835,
+          "end": 6858,
+          "excerpt": "d, or purported to be owned, by any member of the Company Group.\n(r) “Company Material Adverse Effect” means any change, event, violation, inaccuracy, effect or circumstance (each",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7110,
+          "end": 7133,
+          "excerpt": "urred on or prior to the date of determination of the occurrence of the Company Material Adverse Effect, is or would reasonably be expected to have a material adverse effect on the bu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7428,
+          "end": 7451,
+          "excerpt": "ing (by itself or when aggregated) will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adver",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_WHEN_DETERMINING",
+          "start": 7463,
+          "end": 7498,
+          "excerpt": "will be deemed to be or constitute a Company Material Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7517,
+          "end": 7540,
+          "excerpt": "Adverse Effect or will be taken into account when determining whether a Company Material Adverse Effect has occurred or may, would or could occur (subject to the limitations set forth",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9357,
+          "end": 9366,
+          "excerpt": ", floods, mudslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United St",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9368,
+          "end": 9377,
+          "excerpt": "udslides, wild fires or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 9409,
+          "end": 9422,
+          "excerpt": "asters, weather conditions, epidemics, pandemics or disease outbreaks and other force majeure events in the United States or any other country or region in the world;\n(viii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11232,
+          "end": 11243,
+          "excerpt": "ce or results of operations for any period; or (B) any internal budgets, plans, projections or forecasts of its revenues, earnings or other financial performance or result",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11452,
+          "end": 11475,
+          "excerpt": "se of any such failure may be deemed to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_CONSIDERATION_WHEN_DETERMINING",
+          "start": 11487,
+          "end": 11528,
+          "excerpt": "d to constitute, in and of itself, a Company Material Adverse Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availabi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11547,
+          "end": 11570,
+          "excerpt": "e Effect and may be taken into consideration when determining whether a Company Material Adverse Effect has occurred); and\n(xiv) the availability or cost of equity, debt or other fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "6d4fb2d8bc113688738789e770488c5efb59ca95aee1c3e64504daeca5e0692a"
+}

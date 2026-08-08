@@ -1,0 +1,259 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "7.6"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "7.6",
+      "section_id": "9323c0c8f33357c8a78e7e9a261b9fe168a0e52cec4429373705576e20907dc5",
+      "parent_section_id": "1c24ef91a0fa2ba30952fc2f82d9d4242a7f724d8dd2b3a6795d7446a1392466",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 389293,
+      "end": 393229,
+      "text_sha256": "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-specific-performance-remedies/v1",
+      "prompt_version": 2,
+      "prompt_digest": "e8c4536cda72d588851d56e0d39fe73d3f9857d8b89a2369571c748d3cccd07d",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "d291ef71be480d30dea9665f337ec0b0e8d003475f24374e9e423241c5d3f1a2",
+        "input_scope_digest": "802f741f4ce8e4cab7aad2755b12e78ff4de50020c7008257a8e50af41cbfc19",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "93044093905bd89b367627b9b160fec06891ced4cc98643a67ef2ed458a6f2f9"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "7.6",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c406e1696561c7c196d9e56149ca44d49d6984a2c72880688c575f6ef1c56daf",
+          "claim_occurrence_id": "f61d66e7efc3c110e7e3d676e9ca59bd4c643c56f9b24be85eae1a7e0b1922cd",
+          "subject_occurrence_id": "5ea1d6ceb20d4bf1d6dffe138d58473ac78eaf642aca84eb22c9bc2450a0e110",
+          "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith. The parties hereby further acknowledge and agree that such relief shall include (x) the right of the Company to cause Parent, Titanium Merger Sub and Forward Merger Sub to consummate the Transactions, in each case, if each of the conditions set forth in Section ‎5.1 and Section ‎5.2 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing) and (y) the right of Parent, Titanium Merger Sub and Forward Merger Sub to cause the Company to consummate the Transactions if each of the conditions set forth in Section ‎5.1 and Section ‎5.3 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing).",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0363be8d3703386bc1cc70a47f5016ebbb6f63ee255aff711df813e10258b3af"
+          ],
+          "attributes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0363be8d3703386bc1cc70a47f5016ebbb6f63ee255aff711df813e10258b3af",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "20c83a5767af11d47dc2c620f4cd793228c9f0bfa67256267a2ad9b0ca8b8d01",
+              "document_ordinal": 0,
+              "absolute_start": 26,
+              "absolute_end": 1747,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a371ce46c08ef685fb070cac5634c8fa7f8ed2b46c0769e057c81c0825dfdb46"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+          "prompt_digest": "d291ef71be480d30dea9665f337ec0b0e8d003475f24374e9e423241c5d3f1a2",
+          "producer_receipt_id": "93044093905bd89b367627b9b160fec06891ced4cc98643a67ef2ed458a6f2f9",
+          "governed_scope_digest": "595359aaa0803fb9a99106e60deb249080958c5e853a53acd0bdb9df73e97e2b",
+          "extraction_provenance_id": "229014211dda5175aaaa03984ac8c511a23d1e35937e4cc9220eb0d61ab92f1a"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "7.6",
+      "source_byte_length": 3936,
+      "covered_byte_length": 1721,
+      "coverage_share": 0.4372459349593496,
+      "marker_counts": {
+        "as of": 0,
+        "except": 1,
+        "knowledge": 3,
+        "material": 0,
+        "total": 4
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.4372459349593496,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 4,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "7.6",
+      "markers_found": [
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 958,
+          "end": 961
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1362,
+          "end": 1365
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1779,
+          "end": 1782
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2198,
+          "end": 2201
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3227,
+          "end": 3230
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3356,
+          "end": 3360
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 6,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 958,
+          "end": 961
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 1362,
+          "end": 1365
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1779,
+          "end": 1782
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2198,
+          "end": 2201
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3227,
+          "end": 3230
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3356,
+          "end": 3360
+        }
+      ],
+      "disagreement_count": 6
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "096169fe59c8691aadf2b4f42f7326d14a2f86cf09a227acf302e36533d91e54"
+}

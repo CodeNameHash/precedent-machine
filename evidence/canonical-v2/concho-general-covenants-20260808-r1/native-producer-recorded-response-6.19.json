@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:04:05.554Z",
+  "section_reference": "6.19",
+  "note": "General extraction run: deal=concho, family=GENERAL_COVENANTS, section_references=[\"6.7\",\"6.11\",\"6.12\",\"6.14\",\"6.15\",\"6.16\",\"6.19\",\"6.20\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"6.19\",\n      \"covenant_obligor\": \"None of the Parties\",\n      \"covenant_code\": \"COV-TAKEOVER\",\n      \"definition_cross_references\": [],\n      \"quote\": \"None of the Parties will take any action that would cause the Transactions to be subject to requirements imposed by any Takeover Laws\"\n    },\n    {\n      \"section_reference\": \"6.19\",\n      \"covenant_obligor\": \"each of them\",\n      \"covenant_code\": \"COV-TAKEOVER\",\n      \"definition_cross_references\": [],\n      \"quote\": \"each of them will take all reasonable steps within its control to exempt (or ensure the continued exemption of) the Transactions from the Takeover Laws of any state that purport to apply to this Agreement or the Transactions\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T08:56:29.025Z",
+  "section_reference": "5.1",
+  "note": "General extraction run: deal=skywater, family=DIVIDENDS, section_references=[\"5.1\"] (all dispatched as DIVIDENDS via section_family_assignments), prompt_id=native-producer-dividends/v1, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"dividend_assertions\":[],\"mechanics\":[],\"open_world_candidates\":[]}\n\nThe only dividend-referencing text in this section is clause (d)(ii) — \"declare, set aside or pay any dividend or other distribution payable in cash, stock or property with respect to its capital stock other than dividends or distributions paid by any Subsidiary of the Company to the Company or any wholly-owned Subsidiary of the Company\" — which is an interim-operating-covenant restriction on paying dividends, not a coordination covenant or a special dividend. Per the routing rule, IOC restrictions belong to that other family even when their text is about dividends, and must not be repeated here as an open-world candidate either (that would duplicate the provision across two families). No coordination-covenant, special-dividend, recurring-mandated-dividend, or preferred-stock-dividend language appears anywhere else in the section, so all three lists are empty."
+}

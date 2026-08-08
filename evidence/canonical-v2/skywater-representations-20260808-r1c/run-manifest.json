@@ -1,0 +1,109 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skywater",
+  "deal_label": "IonQ, Inc. / SkyWater Technology, Inc.",
+  "section_family": "REPRESENTATIONS",
+  "purpose": "General extraction run: family REPRESENTATIONS on deal skywater.",
+  "section_references": [
+    "3.25",
+    "3.26",
+    "3.27",
+    "3.28",
+    "3.29",
+    "3.30",
+    "4.1",
+    "4.2",
+    "4.3",
+    "4.4",
+    "4.5",
+    "4.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.25",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.26",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.27",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.28",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.29",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.30",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.1",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.2",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.3",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.4",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.5",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.6",
+      "family_id": "REPRESENTATIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-01-25",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T14:45:35.076Z",
+  "total_elapsed_ms": 1231092,
+  "extraction_wall_clock_ms": 1225635,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/skywater-representations-20260808-r1c/recording.json",
+  "code_provenance": {
+    "commit": "308b77bdf95f4241e1d2550a15f6b3dd68ec53c5",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 12,
+  "run_receipt_id": "887c6e57b39d5f3f94c459320c4f90e50fe41f1e9e70157c49897a3c4c2e1ccb",
+  "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "source_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 12,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

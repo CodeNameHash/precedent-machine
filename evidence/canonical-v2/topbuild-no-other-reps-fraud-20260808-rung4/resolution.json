@@ -1,0 +1,705 @@
+{
+  "resolved": [
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(r)",
+      "citation_context": {
+        "parent_section_reference": "3.2",
+        "child_section_reference": "3.2(r)",
+        "parent_chapeau_quote": "3.2 Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub. Except as set forth",
+        "child_clause_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2"
+      },
+      "governing_context_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 131511,
+        "absolute_end": 179129,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "a4a1b7ef3611bfe7d384a567a2f2d068d654a0332de8a29bcaab634f4774e8f0",
+        "provision_instance_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+        "closure_id": "e06d011720cbf328ac7eb796bf1d40acd6ba121cc3aecc5447c33ad4ba05781c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "25a7bc398739e6d2e18e2c2dc90015a669b0798bc447d217afb23b8d4ef383e4",
+        "claim_occurrence_id": "2e2bd4535d8a668ed95a37c2908414f3354a558686c934f52df6efc47c03b851",
+        "subject_occurrence_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "aacdf379c35359afa362037e334faf479603b716699ce5e0633ab7dd061c3f9f"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "aacdf379c35359afa362037e334faf479603b716699ce5e0633ab7dd061c3f9f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "90fb2eb397e305681272144b0a63a24cf77a8ae7b64822f2b72427152a988d5f",
+            "document_ordinal": 0,
+            "absolute_start": 46828,
+            "absolute_end": 47174,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "557bb257abe36512860c37c34aa3d0221fde65e3b6c5de87b17242e7f69ee921"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.2",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "25a7bc398739e6d2e18e2c2dc90015a669b0798bc447d217afb23b8d4ef383e4",
+            "claim_occurrence_id": "2e2bd4535d8a668ed95a37c2908414f3354a558686c934f52df6efc47c03b851",
+            "subject_occurrence_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "aacdf379c35359afa362037e334faf479603b716699ce5e0633ab7dd061c3f9f"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "aacdf379c35359afa362037e334faf479603b716699ce5e0633ab7dd061c3f9f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "90fb2eb397e305681272144b0a63a24cf77a8ae7b64822f2b72427152a988d5f",
+                "document_ordinal": 0,
+                "absolute_start": 46828,
+                "absolute_end": 47174,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "557bb257abe36512860c37c34aa3d0221fde65e3b6c5de87b17242e7f69ee921"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "68b942e2411ba3c32f2893eb513d8f488d5136790c765eba078d08f0e9929fca",
+            "producer_receipt_id": "bd8488cca3895e3a8ec3f3c35764fc16c834b8f64e95b14289c94188479d69d5",
+            "governed_scope_digest": "15da28b858eac2dcfa209f37c5ee0a26607a4175167e405dc1c5c820b68a7f46",
+            "extraction_provenance_id": "25cf6d0f143e5acb8322c4724ea7cec92e0b2778d35142126a722b3bab43c672"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(r)",
+      "citation_context": {
+        "parent_section_reference": "3.2",
+        "child_section_reference": "3.2(r)",
+        "parent_chapeau_quote": "3.2 Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub. Except as set forth",
+        "child_clause_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)."
+      },
+      "governing_context_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 131511,
+        "absolute_end": 179129,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "a4a1b7ef3611bfe7d384a567a2f2d068d654a0332de8a29bcaab634f4774e8f0",
+        "provision_instance_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+        "closure_id": "e06d011720cbf328ac7eb796bf1d40acd6ba121cc3aecc5447c33ad4ba05781c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "84898dc18d4d8e8cc010f22cbe079171a772d06003f107ef87507ffa60f4696a",
+        "claim_occurrence_id": "44817b0bdedc8a62e27a3e34d4f4d331c156c3a8ea3e7b3ab96f81340a8d1120",
+        "subject_occurrence_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "f74c74929321ce574f5cb7181a5ab3f1e7561d08908155b66600260dd88c1efd"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "the Company, any of its Affiliates or their respective Representatives",
+          "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "f74c74929321ce574f5cb7181a5ab3f1e7561d08908155b66600260dd88c1efd",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "18509cfc501878630c6f8a144f3cdcf56c4ee2d83da0157ac70f752d98ba8b24",
+            "document_ordinal": 0,
+            "absolute_start": 47286,
+            "absolute_end": 47616,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "77d1f3d9cdcf6af58b12a299014fa609a09c036ce21e868cd5a70e07f39e9413"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.2",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "84898dc18d4d8e8cc010f22cbe079171a772d06003f107ef87507ffa60f4696a",
+            "claim_occurrence_id": "44817b0bdedc8a62e27a3e34d4f4d331c156c3a8ea3e7b3ab96f81340a8d1120",
+            "subject_occurrence_id": "71468e0b48dc66ab4b03a5b189d067213e368430e46bd32b372c5c36a8bd8f6f",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "f74c74929321ce574f5cb7181a5ab3f1e7561d08908155b66600260dd88c1efd"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "the Company, any of its Affiliates or their respective Representatives",
+              "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "f74c74929321ce574f5cb7181a5ab3f1e7561d08908155b66600260dd88c1efd",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "18509cfc501878630c6f8a144f3cdcf56c4ee2d83da0157ac70f752d98ba8b24",
+                "document_ordinal": 0,
+                "absolute_start": 47286,
+                "absolute_end": 47616,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "77d1f3d9cdcf6af58b12a299014fa609a09c036ce21e868cd5a70e07f39e9413"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "68b942e2411ba3c32f2893eb513d8f488d5136790c765eba078d08f0e9929fca",
+            "producer_receipt_id": "bd8488cca3895e3a8ec3f3c35764fc16c834b8f64e95b14289c94188479d69d5",
+            "governed_scope_digest": "15da28b858eac2dcfa209f37c5ee0a26607a4175167e405dc1c5c820b68a7f46",
+            "extraction_provenance_id": "25cf6d0f143e5acb8322c4724ea7cec92e0b2778d35142126a722b3bab43c672"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(r)",
+      "citation_context": {
+        "parent_section_reference": "3.2",
+        "child_section_reference": "3.2(r)",
+        "parent_chapeau_quote": "3.2 Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub. Except as set forth",
+        "child_clause_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)."
+      },
+      "governing_context_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 131511,
+        "absolute_end": 179129,
+        "concept_key": "REP-T-NONRELIANCE",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "a4a1b7ef3611bfe7d384a567a2f2d068d654a0332de8a29bcaab634f4774e8f0",
+        "provision_instance_id": "bb6d6509993001b020598ec56ccddb2dde4febcc612958939b6933acc23807c8",
+        "closure_id": "f604b14aef79120abe2f9d5750e80a395e0d3e3bd70a17c4bdc26e86753acbc5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "3ce991a873c936cb46849e15f193f502adfacdf794f7262984f3193b0564d3a3",
+        "claim_occurrence_id": "54fe1eed2faeb62f561a8054fb59383cac739f79ce2146ce865a74c5a787db12",
+        "subject_occurrence_id": "bb6d6509993001b020598ec56ccddb2dde4febcc612958939b6933acc23807c8",
+        "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8f668be54a2819c6497f0ef6fc34062d358d1b334ad6462d36dd818d783af20a"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "relying_party_ref": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "disclaimed_representation_party_ref": "the Company, any of its Affiliates or their respective Representatives",
+          "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8f668be54a2819c6497f0ef6fc34062d358d1b334ad6462d36dd818d783af20a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2cf4edf4018b12afa90116d0516455550f563d9e5cd1b03a22ecb9e180f3cc2d",
+            "document_ordinal": 0,
+            "absolute_start": 47180,
+            "absolute_end": 47616,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "5ca2660b7995b70a57b53a77f19362e6aa1667847705f47dd3c07adb8278b034"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.2",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "3ce991a873c936cb46849e15f193f502adfacdf794f7262984f3193b0564d3a3",
+            "claim_occurrence_id": "54fe1eed2faeb62f561a8054fb59383cac739f79ce2146ce865a74c5a787db12",
+            "subject_occurrence_id": "bb6d6509993001b020598ec56ccddb2dde4febcc612958939b6933acc23807c8",
+            "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8f668be54a2819c6497f0ef6fc34062d358d1b334ad6462d36dd818d783af20a"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "relying_party_ref": "Parent, Titanium Merger Sub and Forward Merger Sub",
+              "disclaimed_representation_party_ref": "the Company, any of its Affiliates or their respective Representatives",
+              "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8f668be54a2819c6497f0ef6fc34062d358d1b334ad6462d36dd818d783af20a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2cf4edf4018b12afa90116d0516455550f563d9e5cd1b03a22ecb9e180f3cc2d",
+                "document_ordinal": 0,
+                "absolute_start": 47180,
+                "absolute_end": 47616,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "5ca2660b7995b70a57b53a77f19362e6aa1667847705f47dd3c07adb8278b034"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "68b942e2411ba3c32f2893eb513d8f488d5136790c765eba078d08f0e9929fca",
+            "producer_receipt_id": "bd8488cca3895e3a8ec3f3c35764fc16c834b8f64e95b14289c94188479d69d5",
+            "governed_scope_digest": "15da28b858eac2dcfa209f37c5ee0a26607a4175167e405dc1c5c820b68a7f46",
+            "extraction_provenance_id": "25cf6d0f143e5acb8322c4724ea7cec92e0b2778d35142126a722b3bab43c672"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25a7bc398739e6d2e18e2c2dc90015a669b0798bc447d217afb23b8d4ef383e4",
+      "closure_id": "557bb257abe36512860c37c34aa3d0221fde65e3b6c5de87b17242e7f69ee921",
+      "normalised_phrase": "neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "84898dc18d4d8e8cc010f22cbe079171a772d06003f107ef87507ffa60f4696a",
+      "closure_id": "77d1f3d9cdcf6af58b12a299014fa609a09c036ce21e868cd5a70e07f39e9413",
+      "normalised_phrase": "the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b)",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3ce991a873c936cb46849e15f193f502adfacdf794f7262984f3193b0564d3a3",
+      "closure_id": "5ca2660b7995b70a57b53a77f19362e6aa1667847705f47dd3c07adb8278b034",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b)",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE"
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "a64ea76fc8ed136ce8b025bcf07d3c5682e8f45be0f2d0bf6d2bba2743a6f6e9",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "4a0aadedded0080577ac98365cf27fcf05b53ef60c2f6d2754a8d4dff68c783b"
+  }
+}

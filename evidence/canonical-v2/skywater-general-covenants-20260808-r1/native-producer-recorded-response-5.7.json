@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:10:35.453Z",
+  "section_reference": "5.7",
+  "note": "General extraction run: deal=skywater, family=GENERAL_COVENANTS, section_references=[\"5.4\",\"5.5\",\"5.6\",\"5.7\",\"6.2\",\"6.4\",\"7.2\",\"7.3\",\"7.5\",\"7.6\",\"7.7\",\"7.8\",\"7.9\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"5.7\",\n      \"covenant_obligor\": \"the Company\",\n      \"covenant_code\": \"COV-DELIST\",\n      \"definition_cross_references\": [],\n      \"quote\": \"Prior to the Effective Time, the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable law and the rules and regulations of Nasdaq to cause (a) the delisting of the Company Common Stock from Nasdaq as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

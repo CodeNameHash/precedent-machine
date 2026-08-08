@@ -4,6 +4,7 @@ import { standardColorKey } from './standard-colors.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -531,7 +532,7 @@ const nosolNoshopConfig = {
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
-  empty: { copy: 'No no-shop core mechanics found.' },
+  empty: { copy: CONDITION_ABSENT_COPY },
 };
 
 export { deriveHeaderNote, nosolNoshopConfig, renderDetail, renderSignals, rowSignal };

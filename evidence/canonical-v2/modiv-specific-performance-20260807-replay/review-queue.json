@@ -1,0 +1,45 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d183c4c5183aed9c36dd879fd1a1284f2182f807941f55be57ef7b608c9596f0",
+  "review_queue": [
+    {
+      "section_reference": "8.8",
+      "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+      "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+      "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 25,
+      "materiality_label": "REMEDIES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "14c8bf2af8abbcf1eed5e4e691b6e55968780e54027bb911e101c33acff51b5e",
+      "closure_id": "70738f8f7562493388e6b783374de9d2b89f14e9a45a505c69bfbf97beefdd8a",
+      "normalised_phrase": "The parties hereto agree that irreparable harm, for which monetary damages (even if available) would not be an adequate remedy, would occur in the event that any party hereto does not perform any of the provisions of this Agreement (including failing to take such actions as are required of them hereunder to consummate the Mergers and the other Transactions) in accordance with this Agreement’s specified terms or otherwise breaches such provisions. Accordingly, the parties acknowledge and agree that the parties hereto shall be entitled to an injunction, specific performance or other equitable relief to prevent and/or remedy a breach of this Agreement by any other party hereto and to enforce specifically the terms and provisions hereof, in addition to any other remedy to which such party is entitled at Law or in equity. Each party hereto agrees that it will not oppose the granting of an injunction, specific performance, or other equitable relief on the basis that there is an adequate remedy at Law or that any award of specific performance is not an appropriate remedy for any reason at Law or in equity. Any party hereto seeking an injunction or injunctions to prevent a breach or breaches of this Agreement or to enforce specifically the terms and provisions of this Agreement shall not be required to provide any bond or other security in connection with the request for or grant of any such order or injunction. Each party hereto agrees not to assert that a remedy of specific performance is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy.",
+      "attachment_position": null,
+      "concept_family": "REMEDY-SPECIFIC-PERFORMANCE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 12,
+          "end": 32,
+          "excerpt": "Section 8.8 Specific Performance.\n(a) The parties hereto agree that irreparable harm, for which monetary damages",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 2344,
+          "end": 2364,
+          "excerpt": "y proceeding for (or limit any party’s right to institute any proceeding for) specific performance under this Section 8.8 prior to or as a condition to exercising any termination",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "614d19c30ce7008b81eac94002e9a6332f7d84c5ff021b28ad009425a90fef29"
+}

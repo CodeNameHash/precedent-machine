@@ -1,0 +1,70 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "c4fe4f40691d60129cb5e4e703aed0ab3bf92578799d8b06b54e8674772c801b",
+  "review_queue": [
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an amount in cash, without interest, equal to $15.00 (the “Per Share Cash Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3f2c1d08e98ce4827d9b0406e12521b0cae1ab05c88950c9e51e4dc7a2215905",
+      "closure_id": "72f95d1499274351295f617f9460cdb6ed345b599938662e47e3b755277aa030",
+      "normalised_phrase": "an amount in cash, without interest, equal to $15.00 (the “Per Share Cash Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "NO_RATIO_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c51f13a2a6ff7c2c7079afd22389727fc3c8abdff09c2cb5f2d7d6803ebaafab",
+      "closure_id": "c7f0880739533edd6333e672205aa7084f49e2fa6c8301815ed4ddc4e9c31c8e",
+      "normalised_phrase": "such number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO"
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the cash portion of the Merger Consideration that such holder has the right to receive pursuant to Section 1.4",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6095f5e51dd16836a2fbce1a3b559a99e766895e22ed08717c74d876a3d80bea",
+      "closure_id": "408306c4dfb8ee16e7d93c832eb9dbc0bb76e5287005806b3da8dc9f701a31b7",
+      "normalised_phrase": "the cash portion of the Merger Consideration that such holder has the right to receive pursuant to Section 1.4",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    }
+  ],
+  "review_queue_artifact_id": "d9b2865aab409e23d250082f388ff66ffd0137e4dccdf3e9d340e436b6cda605"
+}

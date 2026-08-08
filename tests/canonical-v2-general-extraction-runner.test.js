@@ -202,17 +202,24 @@ test('resolveRunConfig: UNPINNED_DEAL fails loudly and distinctly', () => {
 });
 
 test('resolveRunConfig: a (deal, family) pair with no pinned default section refs requires --section-refs explicitly', () => {
+  // topbuild + CAPITALISATION, deliberately: PLAN.md Step 2F pinned all the
+  // OTHER 24 registered families for topbuild, and left CAPITALISATION
+  // unpinned because Ben parked that family on 2026-08-08 (Step 2D2, now
+  // Step 9F). So it is the one genuinely unpinned (deal, family) pair left,
+  // and this test doubles as the guard that the parking still holds: pinning
+  // capitalisation for topbuild would fail here rather than pass silently.
+  // (This used to use topbuild + MAE_DEFINITION, which is now pinned.)
   assert.throws(
-    () => mod.resolveRunConfig(mod.parseArgs(['--out-dir', 'x', '--deal', 'topbuild', '--family', 'MAE_DEFINITION'])),
-    /--section-refs is required for deal "topbuild" \+ family "MAE_DEFINITION"/,
+    () => mod.resolveRunConfig(mod.parseArgs(['--out-dir', 'x', '--deal', 'topbuild', '--family', 'CAPITALISATION'])),
+    /--section-refs is required for deal "topbuild" \+ family "CAPITALISATION"/,
   );
   // Once named explicitly, resolution succeeds.
   const config = mod.resolveRunConfig(mod.parseArgs([
     '--out-dir', 'x', '--deal', 'topbuild', '--family', 'MAE_DEFINITION', '--section-refs', '3.1(d)(iii)',
   ]));
-  assert.deepEqual(config.sectionRefs, ['3.1(d)(iii)']);
+  assert.deepEqual(config.sectionRefs, ['3.1(d)(iii)'], 'an explicit --section-refs still beats the pinned default');
   assert.equal(config.rawHtmlPath, 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm');
-  assert.equal(config.agreementDate, null, 'topbuild has no pinned agreement_date and none was given');
+  assert.equal(config.agreementDate, '2026-04-18', 'topbuild pins the agreement date read from its own preamble');
 });
 
 test('resolveRunConfig: an explicit --agreement-date overrides the deal pin default', () => {
@@ -513,7 +520,9 @@ test('CLI dry run: a (deal, family) pair with no pinned section refs and none gi
   const outDir = makeTempDir();
   let caught = null;
   try {
-    execFileSync('node', [SCRIPT_PATH, '--out-dir', outDir, '--dry-run', '--deal', 'topbuild', '--family', 'MAE_DEFINITION'], {
+    // CAPITALISATION, not MAE_DEFINITION: see the resolveRunConfig test above
+    // for why topbuild + CAPITALISATION is the remaining unpinned pair.
+    execFileSync('node', [SCRIPT_PATH, '--out-dir', outDir, '--dry-run', '--deal', 'topbuild', '--family', 'CAPITALISATION'], {
       cwd: ROOT, encoding: 'utf8', stdio: 'pipe',
     });
   } catch (error) {
@@ -521,7 +530,7 @@ test('CLI dry run: a (deal, family) pair with no pinned section refs and none gi
   }
   assert.ok(caught);
   assert.equal(caught.status, 1);
-  assert.match(caught.stderr.toString(), /--section-refs is required for deal "topbuild" \+ family "MAE_DEFINITION"/);
+  assert.match(caught.stderr.toString(), /--section-refs is required for deal "topbuild" \+ family "CAPITALISATION"/);
   // Refused before any output was written at all.
   assert.deepEqual(fs.readdirSync(outDir), []);
 });

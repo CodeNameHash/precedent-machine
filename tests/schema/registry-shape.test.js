@@ -47,6 +47,10 @@ test('enum and list-tag features carry the required schema fields', () => {
       assert.ok(Array.isArray(feature.enumSet) && feature.enumSet.length > 0, `${feature.key} needs enumSet`);
     }
     if (feature.listItemType === 'tag') {
+      // Quarantined 2026-08-06 when the recursive test glob first ran this
+      // file and two features pointed at families no TAGS entry carried.
+      // Un-quarantined 2026-08-07: the generator now emits both
+      // (SEC_FILING_EXCLUSION_CODES, INTERVENING_EVENT_EXCEPTION_CODES).
       assert.ok(tagFamilies.has(feature.listItemTagFamily), `${feature.key} references unknown tag family`);
     }
   }

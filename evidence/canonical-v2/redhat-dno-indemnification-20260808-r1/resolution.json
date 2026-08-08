@@ -1,0 +1,1182 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(a)",
+      "citation_context": {
+        "parent_section_reference": "5.05",
+        "child_section_reference": "5.05",
+        "parent_chapeau_quote": "Section 5.05 Indemnification, Exculpation and Insurance.",
+        "child_clause_quote": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "edb57273ff7c05eeca9a0c2f4e74ae86420b43685f78b10766761643c6cd4043",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 189504,
+        "absolute_end": 192483,
+        "concept_key": "DNO-INDEM",
+        "ordinal": 1,
+        "source_anchor_id": "2bd120891a4beafb4b14120ed399392baa227cdeafef92d43c2a8d67fcde4c06",
+        "provision_instance_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "closure_id": "4a56d2b163dc703132d33293bdcc2d89de3746e47199e12d68fd766f1fb1e3ed"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ff3ffba1602c9b6893e03d9a7fda55c626c93a27f6a38a66291d7060c2495fd4",
+        "claim_occurrence_id": "85fc6839aab33c8566056a75a859de1fee1e4603fdf4c73056738363435a3070",
+        "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "54137802a890d539865eca8f3bd3f65751e94f08eac5f9142072dc960b5ec405"
+        ],
+        "attributes": {
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "54137802a890d539865eca8f3bd3f65751e94f08eac5f9142072dc960b5ec405",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "72934fe2c751e98735c3e796c41c78ebbbee642e4ca88cecc6c9243a419f548f",
+            "document_ordinal": 0,
+            "absolute_start": 87,
+            "absolute_end": 771,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "39c0b8734216df949e89557494566c398ae308fdc41a4292beca8a7dc92f5cab"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.05",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ff3ffba1602c9b6893e03d9a7fda55c626c93a27f6a38a66291d7060c2495fd4",
+            "claim_occurrence_id": "85fc6839aab33c8566056a75a859de1fee1e4603fdf4c73056738363435a3070",
+            "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+            "claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "54137802a890d539865eca8f3bd3f65751e94f08eac5f9142072dc960b5ec405"
+            ],
+            "attributes": {
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "54137802a890d539865eca8f3bd3f65751e94f08eac5f9142072dc960b5ec405",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "72934fe2c751e98735c3e796c41c78ebbbee642e4ca88cecc6c9243a419f548f",
+                "document_ordinal": 0,
+                "absolute_start": 87,
+                "absolute_end": 771,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "39c0b8734216df949e89557494566c398ae308fdc41a4292beca8a7dc92f5cab"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DNO",
+            "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+            "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+            "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+            "extraction_provenance_id": "19515e2c38b186cbae093d31837f12851066d893e552529795acd837bdb0151e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 85,
+        "materiality_label": "DNO_INDEMNIFICATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(a)",
+      "citation_context": {
+        "parent_section_reference": "5.05",
+        "child_section_reference": "5.05",
+        "parent_chapeau_quote": "Section 5.05 Indemnification, Exculpation and Insurance.",
+        "child_clause_quote": "as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "edb57273ff7c05eeca9a0c2f4e74ae86420b43685f78b10766761643c6cd4043",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 189504,
+        "absolute_end": 192483,
+        "concept_key": "DNO-INDEM",
+        "ordinal": 1,
+        "source_anchor_id": "2bd120891a4beafb4b14120ed399392baa227cdeafef92d43c2a8d67fcde4c06",
+        "provision_instance_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "closure_id": "4a56d2b163dc703132d33293bdcc2d89de3746e47199e12d68fd766f1fb1e3ed"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0b6fc997b6da35033a795b12f48aec86ea4632df3857697213b101d39f1cd510",
+        "claim_occurrence_id": "238ba77dc6d874de257f0db32c749d67da92ce83857fe976129964901cc9d746",
+        "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9f331028acf69f425551a90f532605cc7bf1bf2a1854e8a7795f0e5ee5291a54"
+        ],
+        "attributes": {
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9f331028acf69f425551a90f532605cc7bf1bf2a1854e8a7795f0e5ee5291a54",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "36f3ab89254f80d426502efcb513c2b53225444e75232401014f0fad4910095e",
+            "document_ordinal": 0,
+            "absolute_start": 346,
+            "absolute_end": 457,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "565dddc9d89efb099abed5398988fc32a87097780f2a716b6fa1056b62a8c32a"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.05",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0b6fc997b6da35033a795b12f48aec86ea4632df3857697213b101d39f1cd510",
+            "claim_occurrence_id": "238ba77dc6d874de257f0db32c749d67da92ce83857fe976129964901cc9d746",
+            "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+            "claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9f331028acf69f425551a90f532605cc7bf1bf2a1854e8a7795f0e5ee5291a54"
+            ],
+            "attributes": {
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9f331028acf69f425551a90f532605cc7bf1bf2a1854e8a7795f0e5ee5291a54",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "36f3ab89254f80d426502efcb513c2b53225444e75232401014f0fad4910095e",
+                "document_ordinal": 0,
+                "absolute_start": 346,
+                "absolute_end": 457,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "565dddc9d89efb099abed5398988fc32a87097780f2a716b6fa1056b62a8c32a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DNO",
+            "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+            "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+            "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+            "extraction_provenance_id": "19515e2c38b186cbae093d31837f12851066d893e552529795acd837bdb0151e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 85,
+        "materiality_label": "DNO_INDEMNIFICATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(a)",
+      "citation_context": {
+        "parent_section_reference": "5.05",
+        "child_section_reference": "5.05",
+        "parent_chapeau_quote": "Section 5.05 Indemnification, Exculpation and Insurance.",
+        "child_clause_quote": "advancement of expenses"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "ADVANCEMENT_OF_EXPENSES",
+      "concept_key": "DNO-INDEM",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "edb57273ff7c05eeca9a0c2f4e74ae86420b43685f78b10766761643c6cd4043",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 189504,
+        "absolute_end": 192483,
+        "concept_key": "DNO-INDEM",
+        "ordinal": 1,
+        "source_anchor_id": "2bd120891a4beafb4b14120ed399392baa227cdeafef92d43c2a8d67fcde4c06",
+        "provision_instance_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "closure_id": "4a56d2b163dc703132d33293bdcc2d89de3746e47199e12d68fd766f1fb1e3ed"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "20f2e900d13f93da7dff4fff23712badfffb40197ae32467e453153734f80ad5",
+        "claim_occurrence_id": "545ff9e2346bdd1cdd6a63b3e911b9b2eebbe7b1a95b254343d87292216078eb",
+        "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+        "claim_definition_key": "ADVANCEMENT_OF_EXPENSES",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "advancement of expenses",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7875b95f5aa8ef1066c5a5bebf5e41ae1235ef820cd02c3d24a476d36074bd51"
+        ],
+        "attributes": {
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7875b95f5aa8ef1066c5a5bebf5e41ae1235ef820cd02c3d24a476d36074bd51",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "fafa3f8f35e712795cb25d76e51509a138d4b721e2144a0d1c6d16e8b396ad08",
+            "document_ordinal": 0,
+            "absolute_start": 118,
+            "absolute_end": 141,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "5c0e3a54188c3bdba91836b6200220bd189bbcdbe28bcfff82f5e19948ad5b9b"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.05",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "20f2e900d13f93da7dff4fff23712badfffb40197ae32467e453153734f80ad5",
+            "claim_occurrence_id": "545ff9e2346bdd1cdd6a63b3e911b9b2eebbe7b1a95b254343d87292216078eb",
+            "subject_occurrence_id": "15073d843df33e8be1f486a88e663f41ff3c04118b913a625bc7df538634799a",
+            "claim_definition_key": "ADVANCEMENT_OF_EXPENSES",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "advancement of expenses",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7875b95f5aa8ef1066c5a5bebf5e41ae1235ef820cd02c3d24a476d36074bd51"
+            ],
+            "attributes": {
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7875b95f5aa8ef1066c5a5bebf5e41ae1235ef820cd02c3d24a476d36074bd51",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "fafa3f8f35e712795cb25d76e51509a138d4b721e2144a0d1c6d16e8b396ad08",
+                "document_ordinal": 0,
+                "absolute_start": 118,
+                "absolute_end": 141,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "5c0e3a54188c3bdba91836b6200220bd189bbcdbe28bcfff82f5e19948ad5b9b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DNO",
+            "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+            "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+            "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+            "extraction_provenance_id": "19515e2c38b186cbae093d31837f12851066d893e552529795acd837bdb0151e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 85,
+        "materiality_label": "DNO_INDEMNIFICATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "citation_context": {
+        "parent_section_reference": "5.05",
+        "child_section_reference": "5.05",
+        "parent_chapeau_quote": "Section 5.05 Indemnification, Exculpation and Insurance.",
+        "child_clause_quote": "Parent shall obtain, or cause to be obtained, as of the Effective Time, a “tail” insurance policy with a claims period of six (6) years from the Effective Time with respect to directors’ and officers’ liability insurance covering each person currently covered by the Company’s directors’ and officers’ liability insurance policy for acts or omissions occurring prior to the Effective Time on terms that are no less favorable than those of such policy of the Company in effect on the date of this Agreement"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_OBLIGATION",
+      "concept_key": "DNO-TAIL",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "edb57273ff7c05eeca9a0c2f4e74ae86420b43685f78b10766761643c6cd4043",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 189504,
+        "absolute_end": 192483,
+        "concept_key": "DNO-TAIL",
+        "ordinal": 2,
+        "source_anchor_id": "2bd120891a4beafb4b14120ed399392baa227cdeafef92d43c2a8d67fcde4c06",
+        "provision_instance_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+        "closure_id": "35ad4043e947b84999f5319a7353d947d5ec46986c8525794f8b0847cc32cde3"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "3244cfb67616e8102ce20ace681736321af7707ed37b914b25b66c48dc213402",
+        "claim_occurrence_id": "70cfc8216e033b560dd8d90be3e86efec8362fce2cc011bf519bde89fec73aa8",
+        "subject_occurrence_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+        "claim_definition_key": "TAIL_POLICY_OBLIGATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent shall obtain, or cause to be obtained, as of the Effective Time, a “tail” insurance policy with a claims period of six (6) years from the Effective Time with respect to directors’ and officers’ liability insurance covering each person currently covered by the Company’s directors’ and officers’ liability insurance policy for acts or omissions occurring prior to the Effective Time on terms that are no less favorable than those of such policy of the Company in effect on the date of this Agreement",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b6f2a3fe6c6decdefb777c2967a1e4287cf3b1049f4ffdc7b80dc9ceafd79319"
+        ],
+        "attributes": {
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b6f2a3fe6c6decdefb777c2967a1e4287cf3b1049f4ffdc7b80dc9ceafd79319",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "abb677a720176a8d4b96eaf71eb1e4c8597be79add451b90c4a065a643304a32",
+            "document_ordinal": 0,
+            "absolute_start": 1452,
+            "absolute_end": 1971,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ba3744bd42250ef2eb091f99e170c6e6e30c5d2cbdb57a1d428c34265322cd93"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.05",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "3244cfb67616e8102ce20ace681736321af7707ed37b914b25b66c48dc213402",
+            "claim_occurrence_id": "70cfc8216e033b560dd8d90be3e86efec8362fce2cc011bf519bde89fec73aa8",
+            "subject_occurrence_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+            "claim_definition_key": "TAIL_POLICY_OBLIGATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent shall obtain, or cause to be obtained, as of the Effective Time, a “tail” insurance policy with a claims period of six (6) years from the Effective Time with respect to directors’ and officers’ liability insurance covering each person currently covered by the Company’s directors’ and officers’ liability insurance policy for acts or omissions occurring prior to the Effective Time on terms that are no less favorable than those of such policy of the Company in effect on the date of this Agreement",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b6f2a3fe6c6decdefb777c2967a1e4287cf3b1049f4ffdc7b80dc9ceafd79319"
+            ],
+            "attributes": {
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b6f2a3fe6c6decdefb777c2967a1e4287cf3b1049f4ffdc7b80dc9ceafd79319",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "abb677a720176a8d4b96eaf71eb1e4c8597be79add451b90c4a065a643304a32",
+                "document_ordinal": 0,
+                "absolute_start": 1452,
+                "absolute_end": 1971,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ba3744bd42250ef2eb091f99e170c6e6e30c5d2cbdb57a1d428c34265322cd93"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DNO",
+            "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+            "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+            "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+            "extraction_provenance_id": "19515e2c38b186cbae093d31837f12851066d893e552529795acd837bdb0151e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 85,
+        "materiality_label": "DNO_INDEMNIFICATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05(c)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "citation_context": {
+        "parent_section_reference": "5.05",
+        "child_section_reference": "5.05",
+        "parent_chapeau_quote": "Section 5.05 Indemnification, Exculpation and Insurance.",
+        "child_clause_quote": "in no event shall Parent or the Surviving Corporation be required to pay, with respect to the entire six (6)-year period following the Effective Time, premiums for insurance under this Section 5.05(c) which in the aggregate exceed 300% of the aggregate premiums paid by the Company for the period in its most recent fiscal year for such purpose"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "edb57273ff7c05eeca9a0c2f4e74ae86420b43685f78b10766761643c6cd4043",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 189504,
+        "absolute_end": 192483,
+        "concept_key": "DNO-TAIL",
+        "ordinal": 2,
+        "source_anchor_id": "2bd120891a4beafb4b14120ed399392baa227cdeafef92d43c2a8d67fcde4c06",
+        "provision_instance_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+        "closure_id": "35ad4043e947b84999f5319a7353d947d5ec46986c8525794f8b0847cc32cde3"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a0e4b19c058a25050bc2ff9cec56137b830b4d1164348e925cfb5ab292f40444",
+        "claim_occurrence_id": "7ff10666061e5e612723ca6c30016753e43e6d462e6e35b22fa75caa24396d18",
+        "subject_occurrence_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+        "claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "in no event shall Parent or the Surviving Corporation be required to pay, with respect to the entire six (6)-year period following the Effective Time, premiums for insurance under this Section 5.05(c) which in the aggregate exceed 300% of the aggregate premiums paid by the Company for the period in its most recent fiscal year for such purpose",
+        "canonical_value": "300",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7c8d21a1bc8c1854b3b3ad7e3cd683a6f46bc4c8ab94ce7aede236de380c1e41"
+        ],
+        "attributes": {
+          "cap_basis_ref": "the aggregate premiums paid by the Company for the period in its most recent fiscal year",
+          "cap_term_ref": "300%",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7c8d21a1bc8c1854b3b3ad7e3cd683a6f46bc4c8ab94ce7aede236de380c1e41",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "be4a7e7ccc2ee071e20a0bcb3f8ca2682dc47ef7456750081edc92400340f140",
+            "document_ordinal": 0,
+            "absolute_start": 2087,
+            "absolute_end": 2431,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "e6c5206985bb807987d9905df9c7d7dbbd0d5f4987e8c892d567b640cd789b7d"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.05",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a0e4b19c058a25050bc2ff9cec56137b830b4d1164348e925cfb5ab292f40444",
+            "claim_occurrence_id": "7ff10666061e5e612723ca6c30016753e43e6d462e6e35b22fa75caa24396d18",
+            "subject_occurrence_id": "a64e07a693eb3591a16c45ee8150ce6c5bfe6e74d3d96239b39f8bd02a9cefb4",
+            "claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "in no event shall Parent or the Surviving Corporation be required to pay, with respect to the entire six (6)-year period following the Effective Time, premiums for insurance under this Section 5.05(c) which in the aggregate exceed 300% of the aggregate premiums paid by the Company for the period in its most recent fiscal year for such purpose",
+            "canonical_value": "300",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7c8d21a1bc8c1854b3b3ad7e3cd683a6f46bc4c8ab94ce7aede236de380c1e41"
+            ],
+            "attributes": {
+              "cap_basis_ref": "the aggregate premiums paid by the Company for the period in its most recent fiscal year",
+              "cap_term_ref": "300%",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7c8d21a1bc8c1854b3b3ad7e3cd683a6f46bc4c8ab94ce7aede236de380c1e41",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "be4a7e7ccc2ee071e20a0bcb3f8ca2682dc47ef7456750081edc92400340f140",
+                "document_ordinal": 0,
+                "absolute_start": 2087,
+                "absolute_end": 2431,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "e6c5206985bb807987d9905df9c7d7dbbd0d5f4987e8c892d567b640cd789b7d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DNO",
+            "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+            "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+            "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+            "extraction_provenance_id": "19515e2c38b186cbae093d31837f12851066d893e552529795acd837bdb0151e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 85,
+        "materiality_label": "DNO_INDEMNIFICATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.05",
+          "normalized_citation": "5.05",
+          "derived_citation": "5.05(c)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "provided that Parent shall nevertheless be obligated to provide such coverage, with respect to the entire six (6)-year period following the Effective Time, as may be obtained for such 300% amount",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e0b9fa12131bb77c9d5f2bfdbeb6ecaaba9a36118a2bc948c0ae99f35111281e",
+      "closure_id": "35dc6ff7b524437fbdb1e4827e51b407b1e4ee223bb2d00643c31d8ccdaa5283",
+      "normalised_phrase": "provided that Parent shall nevertheless be obligated to provide such coverage, with respect to the entire six (6)-year period following the Effective Time, as may be obtained for such 300% amount",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ff3ffba1602c9b6893e03d9a7fda55c626c93a27f6a38a66291d7060c2495fd4",
+      "closure_id": "39c0b8734216df949e89557494566c398ae308fdc41a4292beca8a7dc92f5cab",
+      "normalised_phrase": "all rights to indemnification, advancement of expenses and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time now existing in favor of the current or former directors or officers of the Company and its Subsidiaries as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents) and any indemnification or other agreements of the Company as in effect on the date of this Agreement shall be assumed by the Surviving Corporation in the Merger, without further action, at the Effective Time, and shall survive the Merger and shall continue in full force and effect in accordance with their terms",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0b6fc997b6da35033a795b12f48aec86ea4632df3857697213b101d39f1cd510",
+      "closure_id": "565dddc9d89efb099abed5398988fc32a87097780f2a716b6fa1056b62a8c32a",
+      "normalised_phrase": "as provided in their respective certificate of incorporation or bylaws (or comparable organizational documents)",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(c)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "with a claims period of six (6) years from the Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c2870d5594687c1460dbfdca868f8643ec72b0c65e7167aa839707e1d71f5ad1",
+      "closure_id": "56b39fbe53d52a7be362150391e215f9ca8ff3f5f6c16e3fd5b231cbf544d08f",
+      "normalised_phrase": "with a claims period of six (6) years from the Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "ADVANCEMENT_OF_EXPENSES",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "20f2e900d13f93da7dff4fff23712badfffb40197ae32467e453153734f80ad5",
+      "closure_id": "5c0e3a54188c3bdba91836b6200220bd189bbcdbe28bcfff82f5e19948ad5b9b",
+      "normalised_phrase": "advancement of expenses",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM"
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05(d)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-BENEF",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The provisions of this Section 5.05 (i) are intended to be for the benefit of, and will be enforceable by, each indemnified party, his or her heirs and his or her representatives and (ii) are in addition to, and not in substitution for, any other rights to indemnification or contribution that any such person may have by contract or otherwise.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0b0a0aaba99a5a5a3ee2d5943bf1a07845b12a016110314a720774ee13ef5893",
+      "closure_id": "830e0f6d9774c4e35172a422280038f41d2c2b2091d153b4e32eea93e4ac1aea",
+      "normalised_phrase": "The provisions of this Section 5.05 (i) are intended to be for the benefit of, and will be enforceable by, each indemnified party, his or her heirs and his or her representatives and (ii) are in addition to, and not in substitution for, any other rights to indemnification or contribution that any such person may have by contract or otherwise.",
+      "attachment_position": null,
+      "concept_family": "DNO-BENEF"
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_OBLIGATION",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3244cfb67616e8102ce20ace681736321af7707ed37b914b25b66c48dc213402",
+      "closure_id": "ba3744bd42250ef2eb091f99e170c6e6e30c5d2cbdb57a1d428c34265322cd93",
+      "normalised_phrase": "Parent shall obtain, or cause to be obtained, as of the Effective Time, a “tail” insurance policy with a claims period of six (6) years from the Effective Time with respect to directors’ and officers’ liability insurance covering each person currently covered by the Company’s directors’ and officers’ liability insurance policy for acts or omissions occurring prior to the Effective Time on terms that are no less favorable than those of such policy of the Company in effect on the date of this Agreement",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    },
+    {
+      "section_reference": "5.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a0e4b19c058a25050bc2ff9cec56137b830b4d1164348e925cfb5ab292f40444",
+      "closure_id": "e6c5206985bb807987d9905df9c7d7dbbd0d5f4987e8c892d567b640cd789b7d",
+      "normalised_phrase": "in no event shall Parent or the Surviving Corporation be required to pay, with respect to the entire six (6)-year period following the Effective Time, premiums for insurance under this Section 5.05(c) which in the aggregate exceed 300% of the aggregate premiums paid by the Company for the period in its most recent fiscal year for such purpose",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that the Surviving Corporation or any of its successors or assigns (i) consolidates with or merges into any other person and is not the continuing or surviving corporation or entity of such consolidation or merger or (ii) transfers or conveys all or substantially all its properties and assets to any person, or if Parent dissolves the Surviving Corporation, then, and in each such case, Parent shall cause proper provision to be made so that the successors and assigns of the Surviving Corporation assume the obligations set forth in this Section 5.05.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "SUCCESSOR_ASSUMPTION: Requires Parent to ensure that any successor or assign of the Surviving Corporation, arising from a merger where it is not the survivor, an asset transfer, or a dissolution, assumes the Section 5.05 obligations.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "79b2b22e87a8270d9f287c5632200144e1a4ee7645dbc9e43957e4d7b37ec599",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "be348178763982bfe56e1aee105d5ade7b8902ac476dae64c8f0e025227dc2c1",
+          "document_ordinal": 0,
+          "absolute_start": 881,
+          "absolute_end": 1447,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9a3c5d6fe8fa0094ee06409cb88aac8fe9d8b07abc130ebf9d3e72ec89360d31",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+        "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+        "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+        "extraction_provenance_id": "d4fb3946e50eb4f35055365bd8d391cf1a8fdcc4d9aeebd75d96ce8104657ed9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.05",
+      "source_citation": "5.05",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any indemnification or other agreements of the Company as in effect on the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "INDEMNIFICATION_AGREEMENT: Existing indemnification agreements of the Company as of the signing date are among the sources of rights assumed and continued by the Surviving Corporation.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "312cf3a8f20d21cbeb88308dae30c88f38b8088b8f1e22f1d6217a704cc427cb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f1d2c93a107f7a2b237061240b190edd321831bbce7378cce67a6644ca6d0109",
+          "document_ordinal": 0,
+          "absolute_start": 462,
+          "absolute_end": 559,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4d52302d5d8ffd244ec1c13f32861f9f8c347d4bb0e6835d052f303994d23f9e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b7d0265d2c54bf716c4d9ec5e7ea316291467be51e63a02040f7e461e58e6b25",
+        "producer_receipt_id": "ca2665173b978d19536625a2f480c47e699e034590620fa2a21ed32e48884c9b",
+        "governed_scope_digest": "3f4bd740ae9488ca6fb1ef5863079542059e9475d5a641f315433ae13542f80c",
+        "extraction_provenance_id": "d4fb3946e50eb4f35055365bd8d391cf1a8fdcc4d9aeebd75d96ce8104657ed9"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "7eed39271b8765ebe9253ae81e394b32e8948ceba42eefb5cc018655baac7945",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 10,
+      "resolved": 5,
+      "auto_pass": 0,
+      "review_queue": 8,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "70fd3d470036147b1de4522b7e1dc71c8843fc2635d3a57c0d5beae6bc734854"
+  }
+}

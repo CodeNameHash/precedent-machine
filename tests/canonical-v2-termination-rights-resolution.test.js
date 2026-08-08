@@ -344,7 +344,7 @@ test('the trigger_kind -> concept map covers all eight registered triggers', () 
 // Corroboration unit checks.
 // ═══════════════════════════════════════════════════════════════════════
 
-test('trigger_kind corroboration: NO_SOLICITATION_BREACH has NO pattern -- always false (audit M-3)', () => {
+test('trigger_kind corroboration: NO_SOLICITATION_BREACH still refuses generic text carrying neither alternative (audit M-3; widened Step 3A, see tests/canonical-v2-termination-trigger-kind-vocabulary.test.js)', () => {
   assert.equal(terminationTriggerKindCorroborated('NO_SOLICITATION_BREACH', 'anything at all, even the word breach'), false);
 });
 

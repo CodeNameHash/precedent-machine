@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:01:40.604Z",
+  "section_reference": "2.6",
+  "note": "General extraction run: deal=concho, family=MERGER_STRUCTURE_CLOSING, section_references=[\"2.1\",\"2.2\",\"2.3\",\"2.4\",\"2.5\",\"2.6\",\"2.7\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"structure_assertions\":[{\"assertion_kind\":\"DIRECTORS\",\"quote\":\"the directors of Merger Sub shall be the directors of the Surviving Corporation and the officers of Merger Sub shall be the officers of the Surviving Corporation\"}],\"structure_mechanics\":[{\"surface\":\"DIRECTORS\",\"quote\":\"such directors and officers shall serve until their successors have been duly elected or appointed and qualified or until their death, resignation or removal in accordance with the Organizational Documents of the Surviving Corporation\",\"detail\":\"Tenure of the carried-over directors and officers: they continue until successors are duly elected or appointed and qualified, or until death, resignation, or removal under the Surviving Corporation's organizational documents.\"}],\"open_world_candidates\":[]}\n```"
+}

@@ -68,6 +68,38 @@ test('hybrid mismatch "thirty (45) days" ABSTAINs SPELLED_DIGIT_MISMATCH', () =>
   assert.equal(result.reason, 'SPELLED_DIGIT_MISMATCH');
 });
 
+// PLAN.md Step 3B: "forty-five (45) days" was refused as SPELLED_DIGIT_
+// MISMATCH -- the preceding-word scan stopped at the hyphen and read back
+// only "five" out of "forty-five", comparing 45 against 5. This is the
+// Modiv 7.1(d)(i) CURE_PERIOD quote verbatim.
+test('hyphenated hybrid "forty-five (45) days" -> "45", no SPELLED_DIGIT_MISMATCH', () => {
+  const result = parseCurePeriod(
+    'is not cured or cannot be cured prior to the earlier of (x) forty-five (45) days following notice '
+    + 'to the Company from Parent of such breach or failure and (y) the Outside Date',
+  );
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '45');
+  assert.notEqual(result.reason, 'SPELLED_DIGIT_MISMATCH');
+});
+
+test('hyphenated hybrid mismatch "forty-five (46) days" ABSTAINs SPELLED_DIGIT_MISMATCH', () => {
+  const result = parseCurePeriod('shall not have been cured within forty-five (46) days after written notice thereof');
+  assert.equal(result.outcome, 'ABSTAIN');
+  assert.equal(result.reason, 'SPELLED_DIGIT_MISMATCH');
+});
+
+test('hyphenated compound with no adjacent digit, "twenty-one days", ABSTAINs NON_LITERAL_NUMERAL', () => {
+  const result = parseCurePeriod('shall not have been cured within twenty-one days after written notice thereof');
+  assert.equal(result.outcome, 'ABSTAIN');
+  assert.equal(result.reason, 'NON_LITERAL_NUMERAL');
+});
+
+test('hyphenated hybrid at the other end of the range, "ninety-nine (99) days" -> "99"', () => {
+  const result = parseCurePeriod('shall not have been cured within ninety-nine (99) days after written notice thereof');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '99');
+});
+
 test('spelled-only "thirty days" (no adjacent digit) ABSTAINs NON_LITERAL_NUMERAL', () => {
   const result = parseCurePeriod('shall not have been cured within thirty days after written notice thereof');
   assert.equal(result.outcome, 'ABSTAIN');

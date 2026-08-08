@@ -12,6 +12,7 @@ const {
   shapeMiscBoilerplateProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { classifyQualifierQuote } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 const {
   AUTHORITY_STATE: REPRESENTATIONS_AUTHORITY_STATE,
   projectRepresentationClaims,
@@ -68,8 +69,23 @@ test('V31 read-only production corpus excerpts replay each M3 carrier across two
     assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.id);
     if (item.family === 'REPRESENTATIONS') {
       assert.equal(resolution.resolved.length, 0, item.id);
-      assert.equal(resolution.open_world.length, 1, item.id);
-      assert.equal(resolution.open_world[0].reason, 'REPRESENTATION_QUALIFIER_KIND_NOT_EXACT', item.id);
+      // PLAN.md Step 3G, defect 3: an ACCURACY-tagged qualifier whose
+      // deterministic classification is REVIEW (the classifier recognised
+      // marker text and deliberately declined to pick a family, e.g.
+      // QUALIFIER_KIND_UNCLASSIFIED or QUALIFIER_KIND_DISAGREEMENT) now
+      // routes to review_queue, never open_world -- refusing and asking for
+      // review are different answers. Every other non-CLASSIFIED outcome
+      // (SPLIT, or CLASSIFIED with the wrong kind) is unaffected and still
+      // lands in open_world with REPRESENTATION_QUALIFIER_KIND_NOT_EXACT.
+      const classification = classifyQualifierQuote({ quote: item.source_excerpt, modelKind: 'ACCURACY' });
+      if (classification.outcome === 'REVIEW') {
+        assert.equal(resolution.open_world.length, 0, item.id);
+        assert.equal(resolution.review_queue.length, 1, item.id);
+        assert.ok(['REP-T-QUALIFIER', 'REP-B-QUALIFIER'].includes(resolution.review_queue[0].concept_key), item.id);
+      } else {
+        assert.equal(resolution.open_world.length, 1, item.id);
+        assert.equal(resolution.open_world[0].reason, 'REPRESENTATION_QUALIFIER_KIND_NOT_EXACT', item.id);
+      }
       byFamily.set(item.family, (byFamily.get(item.family) || 0) + 1);
       continue;
     }
@@ -344,7 +360,15 @@ test('real Skechers SEC and disclosure-letter chapeau remains open-world', async
   assert.equal(resolution.open_world[0].raw_value, chapeau);
 });
 
-test('V31 separates a grounded knowledge qualifier and retains trailing accuracy evidence open-world', async () => {
+test('V31 separates a grounded knowledge qualifier, and the trailing accuracy standard now RESOLVES with its attachment recorded (Stage 3, Ben ruling: qualifiers always attach to their host)', async () => {
+  // HISTORY: this test originally pinned the TRAILING accuracy qualifier
+  // routing open-world as REPRESENTATION_ACCURACY_NOT_CHAPEAU. Ben has
+  // since ruled that qualifiers ALWAYS attach to their host and no bare
+  // qualifier rows exist -- a TRAILING/ITEM accuracy standard is a real
+  // fact whose attachment (position + governs_path) travels on the claim
+  // -- so the resolver now mints it with the attachment recorded rather
+  // than discarding it to open world (candidate-resolution.js's
+  // handleRepresentationQualifierCarrier, Stage 3).
   const quote = 'to the actual Knowledge of Parent, the representations and warranties of Parent are true and correct in all material respects.';
   const source = `ARTICLE V\nSection 5.1 Representations and Warranties.\n${quote}\n`;
   const { resolution } = await replay({ source, sectionReference: '5.1', dealKey: 'm3-representations-v31', shape: shapeRepresentationQualifierProposals, parsed: {
@@ -353,16 +377,21 @@ test('V31 separates a grounded knowledge qualifier and retains trailing accuracy
       { kind: 'ACCURACY', code: 'MAT_ALL_MATERIAL', quote: 'true and correct in all material respects', attachment: { position: 'TRAILING', governs_path: null } },
     ] }], bring_down_conditions: [], open_world_candidates: [],
   } });
-  assert.equal(resolution.open_world.length, 1);
-  assert.equal(resolution.open_world[0].reason, 'REPRESENTATION_ACCURACY_NOT_CHAPEAU');
-  assert.equal(resolution.resolved.length, 1);
+  assert.equal(resolution.open_world.length, 0, 'the trailing accuracy standard no longer routes open world');
+  assert.equal(resolution.resolved.length, 2);
   assert.deepEqual(new Set(resolution.resolved.map((row) => row.concept_key)), new Set(['REP-B-QUALIFIER']));
-  assert.equal(resolution.resolved[0].resolved_claim_definition_key, 'KNOWLEDGE_QUALIFIER');
-  assert.equal(resolution.resolved[0].claim.canonical_value, true);
-  assert.equal(resolution.resolved[0].claim.attributes.knowledge_standard, 'ACTUAL');
-  assert.deepEqual(resolution.resolved[0].provision_instance.party, {
+  const knowledge = resolution.resolved.find((row) => row.resolved_claim_definition_key === 'KNOWLEDGE_QUALIFIER');
+  assert.ok(knowledge);
+  assert.equal(knowledge.claim.canonical_value, true);
+  assert.equal(knowledge.claim.attributes.knowledge_standard, 'ACTUAL');
+  assert.deepEqual(knowledge.provision_instance.party, {
     role: 'REPRESENTATION_MAKER', value: 'Parent', capacity: 'BUYER',
   });
+  const accuracy = resolution.resolved.find((row) => row.resolved_claim_definition_key === 'REPRESENTATION_ACCURACY_STANDARD');
+  assert.ok(accuracy, 'the trailing accuracy standard resolves');
+  assert.equal(accuracy.claim.canonical_value, 'MAT_ALL_MATERIAL');
+  assert.equal(accuracy.claim.attributes.attachment.position, 'TRAILING',
+    'the attachment travels on the claim -- rep-level vs limb-level stays distinguishable');
   assert.ok(resolution.resolved.every((row) => row.concept_key !== 'REP-T-CAP'));
 });
 

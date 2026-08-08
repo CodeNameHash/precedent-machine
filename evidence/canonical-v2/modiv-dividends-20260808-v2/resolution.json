@@ -1,0 +1,202 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "DIVIDEND_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_DIVIDENDS_CANDIDATE",
+      "raw_value": "the Company and any Company Subsidiary may make distributions (i) in the case of any Company Subsidiary, to the Company to allow the Company to make distributions to its stockholders and (ii) in each case, in accordance with clause (ii) of Section 5.1(c).",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.10",
+        "assertion_kind": "COORDINATION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "acd741c5ea9535c8354b60467c5798a2636d0ccf5aed418e34f74be735806c9c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4581547084e00b71a0279dd66087d9fa8772d98f00c05b7513a1153e91ec73ce",
+          "document_ordinal": 0,
+          "absolute_start": 393,
+          "absolute_end": 648,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f6f905e4e897b1ae4f1405dad2b4c998d8cb6680a15d91fb6b0df52d52cc36e2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "DIVIDENDS",
+        "prompt_digest": "cd3ce787ff24243630b33f272181aa856bae25999e29d258ad26e462134890c5",
+        "producer_receipt_id": "8fc78005667a616b1e9e0db9e5ddceb1c4bb478f58de9c70e84593ffbe1f3308",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "27ac6fd4558e9d7f3ae81eb9841fcaabc303c903a94c5f2e1ac6b08ada2dcb3a"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.10",
+        "normalized_citation": "5.10",
+        "derived_citation": "5.10"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In the event that a distribution with respect to the Company Common Shares, Company Preferred Shares or Partnership Units permitted under the terms of this Agreement has a record date prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable, and has not been paid prior to the Closing Date, such distribution shall be paid to the holders of such Company Common Shares, Company Preferred Shares or Partnership Units on the Closing Date immediately prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DIVIDEND_FINAL_PERIOD: Distributions already declared with a record date before the applicable merger effective time, but unpaid as of the Closing Date, are paid to holders of Company Common Shares, Company Preferred Shares, or Partnership Units on the Closing Date immediately before the applicable effective time.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ada064ac19df52ad4cd96894e164500d5515f405aeb68144556bdfbeafc1f6c7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0d0e426efc38ca30776b4efa4a8f6e34061f6e219fdc633fdf6f978c70497ba0",
+          "document_ordinal": 0,
+          "absolute_start": 649,
+          "absolute_end": 1215,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "372d83525626801a281ca7aae676b3615520d425bf85d1ff2b098b22da0f982b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cd3ce787ff24243630b33f272181aa856bae25999e29d258ad26e462134890c5",
+        "producer_receipt_id": "8fc78005667a616b1e9e0db9e5ddceb1c4bb478f58de9c70e84593ffbe1f3308",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "6bec9324dcb34425d60441edf708f66f985327aa931d9a6bcf728f91e58f15fd"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company and any Company Subsidiary that is a REIT may make distributions to its stockholders reasonably necessary for the Company or any such Company Subsidiary to maintain its status as a REIT under the Code, or avoid the payment of income or excise tax under Sections 857 or 4981 of the Code (or any other entity-level Tax)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Recurring mandated distribution tied to ongoing REIT tax-qualification requirements, not a one-time pre-closing special dividend or a coordination covenant; recurring mandated dividends stay open world.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cb9482a551712b7e5c0bc88e5690b503fa1923999883b8055f40bc5ed4b2f6d5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f3031630af93b5ccb04698d85e2fb58da14d01fa54047e213aa9df67591719ed",
+          "document_ordinal": 0,
+          "absolute_start": 55,
+          "absolute_end": 384,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f5f1ee8508bf9ae44df789c19901b4e0089db234e2a93a94abe0d0f59567b53e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cd3ce787ff24243630b33f272181aa856bae25999e29d258ad26e462134890c5",
+        "producer_receipt_id": "8fc78005667a616b1e9e0db9e5ddceb1c4bb478f58de9c70e84593ffbe1f3308",
+        "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+        "extraction_provenance_id": "6bec9324dcb34425d60441edf708f66f985327aa931d9a6bcf728f91e58f15fd"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "312e1aaa5e77cf4369298daf1c1bfe9952479945cfdab85ba7505e290fbdd80d",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "8558aaf146fb35616169b0aa84e9c38d46916771f53dd14f844d392a4463a0b2"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "run_wall_clock_ms": 460712,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "9.8",
+      "wall_clock_ms": 460292,
+      "duration_ms_reported": 455875,
+      "duration_api_ms_reported": 452739,
+      "total_cost_usd_cli": 1.4830160999999997,
+      "usage": {
+        "input_tokens": 36,
+        "cache_creation_input_tokens": 60096,
+        "cache_read_input_tokens": 1379437,
+        "output_tokens": 47084,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 60096,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 2620,
+            "cache_read_input_tokens": 87190,
+            "cache_creation_input_tokens": 4617,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4617
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2161,
+          "outputTokens": 16,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.002241,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 36,
+          "outputTokens": 47084,
+          "cacheReadInputTokens": 1379437,
+          "cacheCreationInputTokens": 60096,
+          "webSearchRequests": 0,
+          "costUSD": 1.4807750999999996,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    }
+  ]
+}

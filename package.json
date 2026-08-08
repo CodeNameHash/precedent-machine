@@ -9,8 +9,10 @@
     "generate:query-registry": "node scripts/generate-query-serving-registry.js",
     "generate:codebase-inventory": "node scripts/generate-codebase-inventory.js",
     "start": "next start",
-    "test": "node --test tests/*.test.js \"tests/**/*.spec.js\"",
+    "test": "node --test \"tests/**/*.test.js\" \"tests/**/*.spec.js\"",
     "verify:codex-program": "node scripts/verify-codex-program-spec.mjs",
+  "gate:baseline": "node scripts/canonical-v2-baseline-manifest.mjs --check",
+  "generate:baseline": "node scripts/canonical-v2-baseline-manifest.mjs",
     "ingest-qa": "node scripts/ingest-qa.js",
     "eval": "node scripts/eval.js"
   },

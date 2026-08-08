@@ -1,0 +1,143 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "8fd9c45841f7f463f48fd9a0966ac384800afa45d9529711ebcbb8e1e476ef51",
+      "deal_key": "deal:metsera-specific-performance-remedies:9db5e4cb091442c7",
+      "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 267346,
+        "absolute_start": 265967,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "ff5e8b5311de5e54306e4e833543d83810d64c0524a4d193399c984c2286625f",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "exact_bytes_digest": "9470a51be31a5ee7924ad9bc02f57ba9482d9ec106539a72c289ed2357197e68",
+        "exact_text": "The parties acknowledge and agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with its specific terms or were otherwise breached, and that monetary damages, even if available, would not be an adequate remedy therefor. It is accordingly agreed that the parties shall be entitled to an injunction or injunctions, or any other appropriate form of equitable relief, to prevent breaches of this Agreement and to enforce specifically the performance of the terms and provisions of this Agreement in any court referred to in Section 9.10(b), without the necessity of proving the inadequacy of money damages as a remedy (and each party hereby waives any requirement for the securing or posting of any bond in connection with such remedy), this being in addition to any other remedy to which they are entitled at law or in equity. The right to specific enforcement shall include the right of the Company to cause Parent and Merger Sub to cause the Merger and the other Transactions to be consummated on the terms and subject to the conditions set forth in this Agreement. The parties further agree not to assert that a remedy of specific enforcement is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "b0a1fe40ffa723499cd8ab88eb3fc0b87d35530593b2ed64f1b0906c177851b9",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "a8d2ed8111083687ecdf5efc9f2506e4d4fc6ee5693706c959b7ab32c41b2aa5"
+          }
+        ],
+        "output_text_hash": "9470a51be31a5ee7924ad9bc02f57ba9482d9ec106539a72c289ed2357197e68",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "f242e6b4299de0162c25a22318bd3e136c2595c97d166dfe2eb04c79498d71d3",
+        "source_occurrence_id": "c784fbff5bb8e3286c282ee76df5b34aafb6d9b1920dc78984dad94b33bf35e2",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 269710,
+        "absolute_start": 265913,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "30b9b72c6c3d5482f8670fe468c3bfb168895bedc0a3b52544468073829f84e2",
+        "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "ordinal": 1,
+        "provision_instance_id": "731e33009905f91ae2df74b7adefec7d3d88d87599521de7e7d2f144ded8e489",
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_anchor_id": "b5d9be5a0a1695fca48948dde441ef7b8f2dbdd7cf65b6e86168b6dedf77b35d",
+        "source_occurrence_id": "c784fbff5bb8e3286c282ee76df5b34aafb6d9b1920dc78984dad94b33bf35e2"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "assertion_kind": "SPECIFIC_PERFORMANCE"
+        },
+        "canonical_value": true,
+        "claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "3a6a82e980a35dc87123349574bebf3480d86b82019a7330f86ad04b945829e9",
+        "claim_revision_id": "99b98f4621a0ad7d5cb70084bc89816367d157e4fb06bf3948ff9cde1dbc6a4b",
+        "closure_id": "d7ac861285265e3ee9afc2a39a8615a50347be6e061d00f5f6e4d4fe1556fc96",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 267346,
+            "absolute_start": 265967,
+            "claim_evidence_id": "9c8f300684f5801935c48eb107aa4c10ec4d7a9a8edf70aceceb2ebea4236cf3",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b0a1fe40ffa723499cd8ab88eb3fc0b87d35530593b2ed64f1b0906c177851b9",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "9c8f300684f5801935c48eb107aa4c10ec4d7a9a8edf70aceceb2ebea4236cf3"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "The parties acknowledge and agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with its specific terms or were otherwise breached, and that monetary damages, even if available, would not be an adequate remedy therefor. It is accordingly agreed that the parties shall be entitled to an injunction or injunctions, or any other appropriate form of equitable relief, to prevent breaches of this Agreement and to enforce specifically the performance of the terms and provisions of this Agreement in any court referred to in Section 9.10(b), without the necessity of proving the inadequacy of money damages as a remedy (and each party hereby waives any requirement for the securing or posting of any bond in connection with such remedy), this being in addition to any other remedy to which they are entitled at law or in equity. The right to specific enforcement shall include the right of the Company to cause Parent and Merger Sub to cause the Merger and the other Transactions to be consummated on the terms and subject to the conditions set forth in this Agreement. The parties further agree not to assert that a remedy of specific enforcement is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "731e33009905f91ae2df74b7adefec7d3d88d87599521de7e7d2f144ded8e489",
+        "taxonomy_codes": {
+          "assertion_kind": "SPECIFIC_PERFORMANCE"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "deal_admission_id": "8fd9c45841f7f463f48fd9a0966ac384800afa45d9529711ebcbb8e1e476ef51",
+        "governed_deal_key": "deal:metsera-specific-performance-remedies:9db5e4cb091442c7",
+        "immutable_source_document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "c5da88d0e5b2478b4971fd1d9ee6320d9aa2abe4d05bb6b07bfc39b71a132dc7",
+        "source_admission_manifest_id": "88343a8a7bb7b095d952f5456a4981748934b55b01e454ad7d3f06a47d7e836c",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

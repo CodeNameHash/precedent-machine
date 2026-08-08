@@ -1,0 +1,72 @@
+{
+  "run_wall_clock_ms": 32398,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "3.4",
+      "wall_clock_ms": 32125,
+      "duration_ms_reported": 28590,
+      "duration_api_ms_reported": 28039,
+      "total_cost_usd_cli": 0.28913099999999997,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 41643,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 2553,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 41643,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 2553,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 41643,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 41643
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 882,
+          "outputTokens": 18,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.000972,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 2,
+          "outputTokens": 2553,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 41643,
+          "webSearchRequests": 0,
+          "costUSD": 0.288159,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    }
+  ]
+}

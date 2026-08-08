@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T03:57:02.564Z",
+  "section_reference": "2.13",
+  "note": "General extraction run: deal=skechers, family=TAX_MATTERS, section_references=[\"2.13\",\"2.14\",\"3.17\",\"4.14\",\"6.18\"] (all dispatched as TAX_MATTERS via section_family_assignments), prompt_id=native-producer-tax-matters/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "Section 2.13 is a standard \"Required Withholding\" provision — it only authorizes deduction/withholding of Tax amounts from payments and deems withheld amounts as paid to the payee. There is no cooperation-with-tax-counsel covenant, no intended-treatment or treatment-protection language, no transfer allocation/cooperation, and no FIRPTA certificate. The rubric explicitly places withholding mechanics in open world, so nothing here qualifies for `tax_assertions` or `mechanics`.\n\n```json\n{\"tax_assertions\":[],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

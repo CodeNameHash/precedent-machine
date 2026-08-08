@@ -7,7 +7,7 @@
   "summary": {
     "section_families": 25,
     "product_projection_modules": 16,
-    "resolver_exports": 90,
+    "resolver_exports": 97,
     "review_table_configs": 26,
     "dark_bridge_leaves": 4,
     "dark_bridge_aggregators": 1,
@@ -247,7 +247,9 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
             "tests/canonical-v2-consideration-wave-a.test.js"
           ],
@@ -300,7 +302,8 @@
           "lib": [],
           "scripts": [],
           "tests": [
-            "tests/canonical-v2-financing-guaranty-product-projection.test.js"
+            "tests/canonical-v2-financing-guaranty-product-projection.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -351,9 +354,12 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
-            "tests/canonical-v2-ioc-parent-child-resolution.test.js"
+            "tests/canonical-v2-ioc-parent-child-resolution.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -380,12 +386,15 @@
           "components": [],
           "pages": [],
           "lib": [],
-          "scripts": [],
+          "scripts": [
+            "scripts/canonical-v2-reader-resolution-contract-check.js"
+          ],
           "tests": [
             "tests/canonical-v2-defined-terms-family-seam.test.js",
             "tests/canonical-v2-defined-terms-later-slices.test.js",
             "tests/canonical-v2-key-terms-mae-product-projection.test.js",
-            "tests/canonical-v2-mae-definition-resolution.test.js"
+            "tests/canonical-v2-mae-definition-resolution.test.js",
+            "tests/canonical-v2-step-2f-breaks-5-6.test.js"
           ],
           "other": []
         },
@@ -424,6 +433,7 @@
         "exports": [
           "AUTHORITY_STATE",
           "LABELS",
+          "NoOtherRepsFraudProductProjectionError",
           "PRODUCT_PROJECTION_SCHEMA",
           "projectNoOtherRepsFraudProduct"
         ],
@@ -443,7 +453,9 @@
             "tests/canonical-v2-legacy-card-bridge.test.js",
             "tests/canonical-v2-no-other-reps-fraud-dark-bridge.test.js",
             "tests/canonical-v2-no-other-reps-fraud-follow-on.test.js",
-            "tests/canonical-v2-representations-dark-bridge.test.js"
+            "tests/canonical-v2-no-other-reps-fraud-negation-investigation.test.js",
+            "tests/canonical-v2-representations-dark-bridge.test.js",
+            "tests/canonical-v2-step-2f-breaks-5-6.test.js"
           ],
           "other": []
         },
@@ -477,11 +489,13 @@
         "path": "lib/canonical-v2/remedies-misc-product-projection.js",
         "exports": [
           "EVIDENCE_SOURCE",
+          "MISC_CONCEPT_KEY",
           "MISC_DEFINITIONS",
           "NATIVE_SOURCE",
           "PROJECTION_SCHEMA",
           "REMEDIES_CONCEPTS",
           "REMEDIES_DEFINITIONS",
+          "RemediesMiscProjectionError",
           "projectRemediesMiscProductSurfaces"
         ],
         "projection_entry_points": [
@@ -495,6 +509,7 @@
           "tests": [
             "tests/canonical-v2-remedies-misc-product-parity.test.js",
             "tests/canonical-v2-sole-remedy-resolution.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js",
             "tests/termination-fee-card-selection.test.js"
           ],
           "other": []
@@ -529,7 +544,8 @@
             "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js",
             "tests/canonical-v2-representations-dark-bridge.test.js",
             "tests/canonical-v2-representations-product-projection.test.js",
-            "tests/canonical-v2-review-preview-end-to-end.test.js"
+            "tests/canonical-v2-review-preview-end-to-end.test.js",
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js"
           ],
           "other": []
         },
@@ -556,6 +572,7 @@
           "lib": [],
           "scripts": [],
           "tests": [
+            "tests/canonical-v2-step-2d1-defects-3-4.test.js",
             "tests/canonical-v2-tax-dividends-appraisal-product-projection.test.js"
           ],
           "other": []
@@ -567,11 +584,24 @@
         "exports": [
           "EVIDENCE_SOURCE",
           "FEE_EVIDENCE_SURFACES",
+          "LEGACY_PAYMENT_TIMING_MIGRATION_V1",
           "NATIVE_SOURCE",
+          "PAYMENT_TIMING_QUOTE_CLASSIFICATION_V1",
+          "PAYMENT_TRIGGER_EVENT_QUOTE_CLASSIFICATION_V2",
           "PROJECTION_SCHEMA",
           "RIGHT_EVIDENCE_SURFACES",
+          "SUPERIOR_PROPOSAL_TRIGGER_CODE",
+          "assertPaymentTriggerEventAgreesWithFeeRequired",
+          "classifyFeeRequiredProse",
+          "classifyPaymentTimingQuote",
+          "classifyPaymentTimingQuoteV4",
+          "classifyPaymentTriggerEventQuoteV4",
           "conditionalFeeHeadline",
+          "feeRequiredStatus",
           "formatBranchCitations",
+          "migrateLegacyPaymentTiming",
+          "parsePaymentDelayQuote",
+          "paymentTriggerEventAgreesWithFeeRequired",
           "projectTerminationFeeProductSurfaces",
           "projectTerminationRightsProductSurfaces",
           "waveBEvidenceFeatures"
@@ -588,6 +618,11 @@
           ],
           "scripts": [],
           "tests": [
+            "tests/canonical-v2-fee-required-prose-classification.test.js",
+            "tests/canonical-v2-payment-timing-guard-wiring.test.js",
+            "tests/canonical-v2-payment-timing-split.test.js",
+            "tests/canonical-v2-run-projects-to-product-cards.test.js",
+            "tests/canonical-v2-skechers-payment-timing-v4.test.js",
             "tests/canonical-v2-sole-remedy-resolution.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
             "tests/canonical-v2-termination-product-parity.test.js",
@@ -603,7 +638,7 @@
     "method": "extracts module.exports identifiers from lib/canonical-v2/native-producer/candidate-resolution.js, the single module every registered family's proposals resolve through. 'tables' is every export ending _TABLE or _LEXICON (per-concept corroboration/lookup tables); 'helper_functions' is every export starting with a lowercase letter.",
     "module": "lib/canonical-v2/native-producer/candidate-resolution.js",
     "dispatch_entry_point": "resolveCandidates",
-    "total_exports": 90,
+    "total_exports": 97,
     "tables": [
       "FEE_SIDE_CORROBORATION_TABLE",
       "FEE_TRIGGER_CORROBORATION_TABLE",
@@ -636,6 +671,7 @@
       "feeTriggerCorroboratedCodes",
       "findTerminationLimbChapeau",
       "findTerminationLimbGrantContext",
+      "findTerminationSectionEitherGrantContext",
       "indexFeeAmountCandidatesBySection",
       "indexFeeTriggerCandidatesBySection",
       "indexMaeLabelledCandidatesBySection",
@@ -665,11 +701,14 @@
       "resolveCandidates",
       "resolveCitationFollowupTriggerCode",
       "resolveFeeAmountGrounds",
+      "resolveJointPartyCapacities",
+      "resolveParty",
       "resolvePartyCapacity",
       "sectionReferenceDepth",
       "shareCountKindCorroborated",
       "terminatingPartyPositionCorroborated",
       "terminationLimbLetter",
+      "terminationPartyScopeFromRoleAlias",
       "terminationTriggerKindCorroborated"
     ],
     "other_constants": [
@@ -679,15 +718,18 @@
       "CONSIDERATION_RESOLUTION_MAP",
       "CandidateResolutionError",
       "EITHER_PRINCIPAL_PARTY_CAPACITY",
+      "JOINT_MULTI_PARTY_CAPACITY",
       "LEXICAL_DISAGREEMENT_RECEIPT_SCHEMA",
       "MAE_CORROBORATION_TABLE_VERSION",
       "MAE_DISPROPORTIONALITY_CORROBORATION_PATTERN",
       "MAPPING_TABLE_VERSION",
       "MATERIALITY_DEFINITION_KEY_OVERRIDES",
+      "MATERIAL_CONTRACT_ANY_THRESHOLD_CONTRADICTION",
       "NO_SHOP_ACTION_CORROBORATION_TABLE_VERSION",
       "NO_SHOP_COVENANT_OBLIGOR_PARTY",
       "NO_SHOP_PREREQUISITE_CORROBORATION_TABLE_VERSION",
       "NO_SHOP_WAVE_B_RESOLUTION_MAP",
+      "PARTY_CAPACITY_SIDE_OF",
       "PROXY_MEETING_ASSERTION_MAP",
       "PROXY_MEETING_COMPATIBLE_KIND_PAIRS",
       "PROXY_MEETING_KIND_CORROBORATION",
@@ -886,27 +928,33 @@
             "pages/api/review/[id]/cards.js"
           ],
           "lib": [
+            "lib/canonical-v2/local-staging-deal-reader.js",
             "lib/canonical-v2/native-producer/m3-family-parity-register.js",
             "lib/canonical-v2/phase1-authority-boundary-inventory.js",
             "lib/queries/review-deal-wire.js"
           ],
           "scripts": [
+            "scripts/canonical-v2-conditional-fee-two-deal-isolation-proof.js",
+            "scripts/canonical-v2-modiv-termination-fee-serving-proof.js",
             "scripts/generate-qxo-termination-fee-excerpt-module.js"
           ],
           "tests": [
             "tests/canonical-v2-parity-serving-boundary.test.js",
+            "tests/canonical-v2-run-projects-to-product-cards.test.js",
             "tests/canonical-v2-termination-fee-both-sources.test.js",
             "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
+            "tests/canonical-v2-termination-fee-modiv-database-source.test.js",
             "tests/canonical-v2-termination-fee-serving-switch.test.js",
             "tests/programme-gates/m3-family-parity-register.spec.js"
           ],
           "other": []
         },
-        "reference_count": 11
+        "reference_count": 16
       }
     ],
     "generic_serving_infrastructure": [
       "lib/canonical-v2/metric-serving-admission.js",
+      "lib/canonical-v2/open-world-evidence-serving.js",
       "lib/canonical-v2/process-serving-contract-input-validator.js",
       "lib/canonical-v2/product-query-result-active-serving.js",
       "lib/canonical-v2/product-query-result-serving-record.js",

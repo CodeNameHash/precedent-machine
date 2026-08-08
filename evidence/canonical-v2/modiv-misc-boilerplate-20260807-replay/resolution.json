@@ -1,0 +1,2630 @@
+{
+  "resolved": [
+    {
+      "section_reference": "8.2",
+      "source_citation": "8.2",
+      "citation_context": {
+        "parent_section_reference": "8.2",
+        "child_section_reference": "8.2",
+        "parent_chapeau_quote": "Section 8.2 Entire Agreement; Assignment.",
+        "child_clause_quote": "Neither this Agreement nor any of the rights, interests or obligations hereunder shall be assigned or transferred, in whole or in part, by operation of Law (including by merger or consolidation) or otherwise by any of the parties hereto without the prior written consent of the other parties."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 340936,
+        "absolute_end": 342016,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "5faae3efbfb5acfd03eeb6609dac92971f5a395124c00415d8467643959fb8ab",
+        "provision_instance_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "closure_id": "d0d35b89181b2add5732210eceffe904eaf33a5e4e571119519c15f7ef967ff1"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "2be9517cf2d6455e7109e49de12eafa4506631b3def0fa2759c49a792598e8aa",
+        "claim_occurrence_id": "a712898c4dfd48aced80a8ecb27c5e50110b89a7a7027385c60929d593ef1f57",
+        "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Neither this Agreement nor any of the rights, interests or obligations hereunder shall be assigned or transferred, in whole or in part, by operation of Law (including by merger or consolidation) or otherwise by any of the parties hereto without the prior written consent of the other parties.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b8bb7b0cba2ca9c0f2d60960f31418ff64e0b9c9c942e4797265bcfd3eb15320"
+        ],
+        "attributes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b8bb7b0cba2ca9c0f2d60960f31418ff64e0b9c9c942e4797265bcfd3eb15320",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b7f110fc1f2b646c63bda2d2d907e503310750f17ed3a1d0ae213be91b86f9e6",
+            "document_ordinal": 0,
+            "absolute_start": 534,
+            "absolute_end": 826,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "e3ac5b0e993f4e5dbce559cb7b025841d5059dd0bbdb71426614ae43fa868c9b"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.2",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "2be9517cf2d6455e7109e49de12eafa4506631b3def0fa2759c49a792598e8aa",
+            "claim_occurrence_id": "a712898c4dfd48aced80a8ecb27c5e50110b89a7a7027385c60929d593ef1f57",
+            "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Neither this Agreement nor any of the rights, interests or obligations hereunder shall be assigned or transferred, in whole or in part, by operation of Law (including by merger or consolidation) or otherwise by any of the parties hereto without the prior written consent of the other parties.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b8bb7b0cba2ca9c0f2d60960f31418ff64e0b9c9c942e4797265bcfd3eb15320"
+            ],
+            "attributes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b8bb7b0cba2ca9c0f2d60960f31418ff64e0b9c9c942e4797265bcfd3eb15320",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b7f110fc1f2b646c63bda2d2d907e503310750f17ed3a1d0ae213be91b86f9e6",
+                "document_ordinal": 0,
+                "absolute_start": 534,
+                "absolute_end": 826,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "e3ac5b0e993f4e5dbce559cb7b025841d5059dd0bbdb71426614ae43fa868c9b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "5b3a63632ca35066344cce4f2d6c106961f1d924c0841619784aaefdb8143942",
+            "producer_receipt_id": "a5c938703a49c6ad9123c00ac6375321745c8ffbd0d5d5d59ba4ef323495a88e",
+            "governed_scope_digest": "df87f1f11bd591ffede869ccd9acabb72c4afadd7a53a839c076543cfc7e8b5e",
+            "extraction_provenance_id": "30ff6b5bc622607cf499ab5a6ec656dcdc1852d014584e0f2e5b42a10b9f096a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.2",
+      "source_citation": "8.2",
+      "citation_context": {
+        "parent_section_reference": "8.2",
+        "child_section_reference": "8.2",
+        "parent_chapeau_quote": "Section 8.2 Entire Agreement; Assignment.",
+        "child_clause_quote": "Any assignment in violation of this Section 8.2(b) shall be void."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 340936,
+        "absolute_end": 342016,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "5faae3efbfb5acfd03eeb6609dac92971f5a395124c00415d8467643959fb8ab",
+        "provision_instance_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "closure_id": "d0d35b89181b2add5732210eceffe904eaf33a5e4e571119519c15f7ef967ff1"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e765fb7459358424e6e38c92c192891da4095c89c58f7dbd176a2cb43e808739",
+        "claim_occurrence_id": "413a43c758df33c9549c60675d0314f4bdd6949a40a59c4ebd61ee2ccd0f6bad",
+        "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "Any assignment in violation of this Section 8.2(b) shall be void.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b8f3a69b2a9b2600961b7e96afaf9803c97f36d8777719ebcafe4e3151f8f65e"
+        ],
+        "attributes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b8f3a69b2a9b2600961b7e96afaf9803c97f36d8777719ebcafe4e3151f8f65e",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "77f7eff8847d87375393538fd905f81f3f6dcdb2a13ca01ae9b27733860eab63",
+            "document_ordinal": 0,
+            "absolute_start": 827,
+            "absolute_end": 892,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "94ee380d0fc005912677106c64993ea8fc96cc016da33cd5bc0054c0ed2988d6"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.2",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e765fb7459358424e6e38c92c192891da4095c89c58f7dbd176a2cb43e808739",
+            "claim_occurrence_id": "413a43c758df33c9549c60675d0314f4bdd6949a40a59c4ebd61ee2ccd0f6bad",
+            "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "Any assignment in violation of this Section 8.2(b) shall be void.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b8f3a69b2a9b2600961b7e96afaf9803c97f36d8777719ebcafe4e3151f8f65e"
+            ],
+            "attributes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b8f3a69b2a9b2600961b7e96afaf9803c97f36d8777719ebcafe4e3151f8f65e",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "77f7eff8847d87375393538fd905f81f3f6dcdb2a13ca01ae9b27733860eab63",
+                "document_ordinal": 0,
+                "absolute_start": 827,
+                "absolute_end": 892,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "94ee380d0fc005912677106c64993ea8fc96cc016da33cd5bc0054c0ed2988d6"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "5b3a63632ca35066344cce4f2d6c106961f1d924c0841619784aaefdb8143942",
+            "producer_receipt_id": "a5c938703a49c6ad9123c00ac6375321745c8ffbd0d5d5d59ba4ef323495a88e",
+            "governed_scope_digest": "df87f1f11bd591ffede869ccd9acabb72c4afadd7a53a839c076543cfc7e8b5e",
+            "extraction_provenance_id": "30ff6b5bc622607cf499ab5a6ec656dcdc1852d014584e0f2e5b42a10b9f096a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.2",
+      "source_citation": "8.2",
+      "citation_context": {
+        "parent_section_reference": "8.2",
+        "child_section_reference": "8.2",
+        "parent_chapeau_quote": "Section 8.2 Entire Agreement; Assignment.",
+        "child_clause_quote": "Subject to the preceding sentence, this Agreement will be binding upon, inure to the benefit of, and be enforceable by, the parties and their respective successors and permitted assigns."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 340936,
+        "absolute_end": 342016,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "5faae3efbfb5acfd03eeb6609dac92971f5a395124c00415d8467643959fb8ab",
+        "provision_instance_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "closure_id": "d0d35b89181b2add5732210eceffe904eaf33a5e4e571119519c15f7ef967ff1"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "376c2635fe97b27f31bab6486ef5e6b3ed0e0fe52c386953068840664e6ed41b",
+        "claim_occurrence_id": "acbcb08d9c7d8c3ba250cd03342b79aa1efb21115fa7f706ac65a1c9cbc3fabe",
+        "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "Subject to the preceding sentence, this Agreement will be binding upon, inure to the benefit of, and be enforceable by, the parties and their respective successors and permitted assigns.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "49854dd982a358451c8b6bc7a0a690f43ce6d3bc832d7715eed215c0997c393f"
+        ],
+        "attributes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ASSIGNMENT_DETAIL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "49854dd982a358451c8b6bc7a0a690f43ce6d3bc832d7715eed215c0997c393f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "15030b23e99c41b6313429c32f61e65335a41e0118cb1a80d8500e442a0af453",
+            "document_ordinal": 0,
+            "absolute_start": 893,
+            "absolute_end": 1079,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "76314de5350eda8064e99e9bdd452907561e11cb879f5f523e0d426bdb41d812"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.2",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "376c2635fe97b27f31bab6486ef5e6b3ed0e0fe52c386953068840664e6ed41b",
+            "claim_occurrence_id": "acbcb08d9c7d8c3ba250cd03342b79aa1efb21115fa7f706ac65a1c9cbc3fabe",
+            "subject_occurrence_id": "ce55dafe733eaa521b450528934dbf90c6ef477c0443314b8d127d412bf37e17",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "Subject to the preceding sentence, this Agreement will be binding upon, inure to the benefit of, and be enforceable by, the parties and their respective successors and permitted assigns.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "49854dd982a358451c8b6bc7a0a690f43ce6d3bc832d7715eed215c0997c393f"
+            ],
+            "attributes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ASSIGNMENT_DETAIL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "49854dd982a358451c8b6bc7a0a690f43ce6d3bc832d7715eed215c0997c393f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "15030b23e99c41b6313429c32f61e65335a41e0118cb1a80d8500e442a0af453",
+                "document_ordinal": 0,
+                "absolute_start": 893,
+                "absolute_end": 1079,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "76314de5350eda8064e99e9bdd452907561e11cb879f5f523e0d426bdb41d812"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "5b3a63632ca35066344cce4f2d6c106961f1d924c0841619784aaefdb8143942",
+            "producer_receipt_id": "a5c938703a49c6ad9123c00ac6375321745c8ffbd0d5d5d59ba4ef323495a88e",
+            "governed_scope_digest": "df87f1f11bd591ffede869ccd9acabb72c4afadd7a53a839c076543cfc7e8b5e",
+            "extraction_provenance_id": "30ff6b5bc622607cf499ab5a6ec656dcdc1852d014584e0f2e5b42a10b9f096a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3",
+      "citation_context": {
+        "parent_section_reference": "8.3",
+        "child_section_reference": "8.3",
+        "parent_chapeau_quote": "Section 8.3 Notices. All notices and other communications given or made pursuant hereto shall be in writing and shall be deemed to have been duly given or made",
+        "child_clause_quote": "shall be deemed to have been duly given or made (a) as of the date delivered if delivered personally or as of the date sent if sent by email (notice deemed given upon transmission so long as there is no return error message or other notification of non-delivery received by the sender) and (b) on the next Business Day if sent by prepaid overnight carrier (providing proof of delivery)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 342016,
+        "absolute_end": 343913,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "81fb8f781d79acd3c0fe6c741d776400595e6768058d2d1e109ab42f7bf8efbc",
+        "provision_instance_id": "40be8f5a4f8b9a39d5317ce00df8d0e69befbc0054ed3250d37f5a2e225289f8",
+        "closure_id": "22214e3d3485dfbc7c2427ea95bc2027ebb709dcebef53375c3923912280c0b7"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4babd521e1561418b88b79b8eef55da24b8a4c3658586d4a9301b773053d7404",
+        "claim_occurrence_id": "a446a482e8e7adca0385362e1ce126220441a4a8486fa7a2e77013e097ffa9c3",
+        "subject_occurrence_id": "40be8f5a4f8b9a39d5317ce00df8d0e69befbc0054ed3250d37f5a2e225289f8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "shall be deemed to have been duly given or made (a) as of the date delivered if delivered personally or as of the date sent if sent by email (notice deemed given upon transmission so long as there is no return error message or other notification of non-delivery received by the sender) and (b) on the next Business Day if sent by prepaid overnight carrier (providing proof of delivery)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3bb902c1b183ebc5d6e4d771db796eabb041a9a0ccf958d53e1c6fff5a72b73a"
+        ],
+        "attributes": {
+          "assertion_kind": "NOTICE",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "NOTICE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3bb902c1b183ebc5d6e4d771db796eabb041a9a0ccf958d53e1c6fff5a72b73a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "557b7f62d36d797b03892cc4a7cf0c54d5fa619a0f3f241b5f2c010f2bd16235",
+            "document_ordinal": 0,
+            "absolute_start": 112,
+            "absolute_end": 497,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "74822d0294f854e9f95ae46edc634f600938c80cfa7b55f92397e3f0332ef49b"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.3",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4babd521e1561418b88b79b8eef55da24b8a4c3658586d4a9301b773053d7404",
+            "claim_occurrence_id": "a446a482e8e7adca0385362e1ce126220441a4a8486fa7a2e77013e097ffa9c3",
+            "subject_occurrence_id": "40be8f5a4f8b9a39d5317ce00df8d0e69befbc0054ed3250d37f5a2e225289f8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "shall be deemed to have been duly given or made (a) as of the date delivered if delivered personally or as of the date sent if sent by email (notice deemed given upon transmission so long as there is no return error message or other notification of non-delivery received by the sender) and (b) on the next Business Day if sent by prepaid overnight carrier (providing proof of delivery)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3bb902c1b183ebc5d6e4d771db796eabb041a9a0ccf958d53e1c6fff5a72b73a"
+            ],
+            "attributes": {
+              "assertion_kind": "NOTICE",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "NOTICE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3bb902c1b183ebc5d6e4d771db796eabb041a9a0ccf958d53e1c6fff5a72b73a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "557b7f62d36d797b03892cc4a7cf0c54d5fa619a0f3f241b5f2c010f2bd16235",
+                "document_ordinal": 0,
+                "absolute_start": 112,
+                "absolute_end": 497,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "74822d0294f854e9f95ae46edc634f600938c80cfa7b55f92397e3f0332ef49b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "70d224e13836303a8a9ccba21fb65727abae347601952b6168239cabdcd33104",
+            "producer_receipt_id": "adf5ac0a7e3fa2f83a3d4b8bf45649af8f229187df5999f3c8822239f4ae6c45",
+            "governed_scope_digest": "efdc953fb3b77256b23e0b346b6fdfdd0473de6eac0ab28ae5914be598f6fab5",
+            "extraction_provenance_id": "cfba58d5ee9e464a38983c7d279f6b0bd2983475e1014e4bf63000064fac6383"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "citation_context": {
+        "parent_section_reference": "8.4",
+        "child_section_reference": "8.4",
+        "parent_chapeau_quote": "Section 8.4 Governing Law and Venue; Waiver of Jury Trial.",
+        "child_clause_quote": "shall be governed by and construed in accordance with the Laws of the State of Maryland (other than with respect to issues relating to the Company Merger and the OpCo Merger that are required to be governed by the DRULPA or DLLCA), in each case without regard to its rules of conflict of laws that would result in the application of any laws other than those specified above."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 343913,
+        "absolute_end": 347945,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "4df2b0c8c6908057cb6f815b530ceb3cd680fc1446231cb6572708cbcdd53c66",
+        "provision_instance_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "closure_id": "ae3fcb884def0220bfed0a6bb8b2218872a25651b4fbaefd3c25af815fdc6aec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "378b1e7c15eb235cd087af9c396d750d211e3c0bb9f7b9c80bf1dd34ce327647",
+        "claim_occurrence_id": "0ce27fdf0d615d32eeb6e61abbc1a9fc9c5bef8d0fe40f06670ba7168bc02d30",
+        "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "shall be governed by and construed in accordance with the Laws of the State of Maryland (other than with respect to issues relating to the Company Merger and the OpCo Merger that are required to be governed by the DRULPA or DLLCA), in each case without regard to its rules of conflict of laws that would result in the application of any laws other than those specified above.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3fc9c21c4cee5f75440872fc9f347539a24cb0356526466d4ba6b2aceef0bb28"
+        ],
+        "attributes": {
+          "assertion_kind": "GOVERNING_LAW",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "GOVERNING_LAW"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3fc9c21c4cee5f75440872fc9f347539a24cb0356526466d4ba6b2aceef0bb28",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "46fa8ee7d02a919e5e27fe243ecd254e49398e4fdae97f4001e0298694ad8388",
+            "document_ordinal": 0,
+            "absolute_start": 296,
+            "absolute_end": 671,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "eba566499bfae6545cb27460c4aa65f7f59fada6ff247cfcd5e714888884abcb"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "378b1e7c15eb235cd087af9c396d750d211e3c0bb9f7b9c80bf1dd34ce327647",
+            "claim_occurrence_id": "0ce27fdf0d615d32eeb6e61abbc1a9fc9c5bef8d0fe40f06670ba7168bc02d30",
+            "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "shall be governed by and construed in accordance with the Laws of the State of Maryland (other than with respect to issues relating to the Company Merger and the OpCo Merger that are required to be governed by the DRULPA or DLLCA), in each case without regard to its rules of conflict of laws that would result in the application of any laws other than those specified above.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3fc9c21c4cee5f75440872fc9f347539a24cb0356526466d4ba6b2aceef0bb28"
+            ],
+            "attributes": {
+              "assertion_kind": "GOVERNING_LAW",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "GOVERNING_LAW"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3fc9c21c4cee5f75440872fc9f347539a24cb0356526466d4ba6b2aceef0bb28",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "46fa8ee7d02a919e5e27fe243ecd254e49398e4fdae97f4001e0298694ad8388",
+                "document_ordinal": 0,
+                "absolute_start": 296,
+                "absolute_end": 671,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "eba566499bfae6545cb27460c4aa65f7f59fada6ff247cfcd5e714888884abcb"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "92ee792f013bc82bdffcb003b6d3b00a221498093c5393c128e74644c70afece",
+            "producer_receipt_id": "caf6559cf1b149918a3f0e25097da21b28357e22d8178754467df6647e07e9d7",
+            "governed_scope_digest": "0f382babede30ee8838059c2459d383d6b2caee7703871a85a72f3a312bbcd9e",
+            "extraction_provenance_id": "4126f2ca8ff5fa3bc11da5aac89f864b403a410f7b01fb98fb73ce75a215a223"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "citation_context": {
+        "parent_section_reference": "8.4",
+        "child_section_reference": "8.4",
+        "parent_chapeau_quote": "Section 8.4 Governing Law and Venue; Waiver of Jury Trial.",
+        "child_clause_quote": "expressly, irrevocably and unconditionally submits to and agrees to be subject to the exclusive personal jurisdiction of the Circuit Court of Baltimore City, Maryland and/or the U.S. District Court for the District of Maryland, Northern Division (the “Chosen Courts”)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 343913,
+        "absolute_end": 347945,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "4df2b0c8c6908057cb6f815b530ceb3cd680fc1446231cb6572708cbcdd53c66",
+        "provision_instance_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "closure_id": "ae3fcb884def0220bfed0a6bb8b2218872a25651b4fbaefd3c25af815fdc6aec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "41052176ec3c4dfc97e261b6d4b2f3244c80d3294eb7dd1bb6eddb219e861bb1",
+        "claim_occurrence_id": "ec376e2445508b7c50d2a80f23d0bb2ba737907d17bdb26f497f6e717afb8eae",
+        "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "expressly, irrevocably and unconditionally submits to and agrees to be subject to the exclusive personal jurisdiction of the Circuit Court of Baltimore City, Maryland and/or the U.S. District Court for the District of Maryland, Northern Division (the “Chosen Courts”)",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "950fef96676e74e4968434495d91530e355394124f46b9a16177113644e9af8f"
+        ],
+        "attributes": {
+          "assertion_kind": "FORUM_FALLBACK",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "FORUM_FALLBACK"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "950fef96676e74e4968434495d91530e355394124f46b9a16177113644e9af8f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "4b850862db3b58db5e8396d5a4801dab28bb26f6bd27424ba8f7edc106833e2c",
+            "document_ordinal": 0,
+            "absolute_start": 717,
+            "absolute_end": 988,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "d5b874753800e6f009aa41e79c780eff5122088a9316dc5fca88d4faf3271c7e"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "41052176ec3c4dfc97e261b6d4b2f3244c80d3294eb7dd1bb6eddb219e861bb1",
+            "claim_occurrence_id": "ec376e2445508b7c50d2a80f23d0bb2ba737907d17bdb26f497f6e717afb8eae",
+            "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "expressly, irrevocably and unconditionally submits to and agrees to be subject to the exclusive personal jurisdiction of the Circuit Court of Baltimore City, Maryland and/or the U.S. District Court for the District of Maryland, Northern Division (the “Chosen Courts”)",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "950fef96676e74e4968434495d91530e355394124f46b9a16177113644e9af8f"
+            ],
+            "attributes": {
+              "assertion_kind": "FORUM_FALLBACK",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "FORUM_FALLBACK"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "950fef96676e74e4968434495d91530e355394124f46b9a16177113644e9af8f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "4b850862db3b58db5e8396d5a4801dab28bb26f6bd27424ba8f7edc106833e2c",
+                "document_ordinal": 0,
+                "absolute_start": 717,
+                "absolute_end": 988,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "d5b874753800e6f009aa41e79c780eff5122088a9316dc5fca88d4faf3271c7e"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "92ee792f013bc82bdffcb003b6d3b00a221498093c5393c128e74644c70afece",
+            "producer_receipt_id": "caf6559cf1b149918a3f0e25097da21b28357e22d8178754467df6647e07e9d7",
+            "governed_scope_digest": "0f382babede30ee8838059c2459d383d6b2caee7703871a85a72f3a312bbcd9e",
+            "extraction_provenance_id": "4126f2ca8ff5fa3bc11da5aac89f864b403a410f7b01fb98fb73ce75a215a223"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "citation_context": {
+        "parent_section_reference": "8.4",
+        "child_section_reference": "8.4",
+        "parent_chapeau_quote": "Section 8.4 Governing Law and Venue; Waiver of Jury Trial.",
+        "child_clause_quote": "a final judgment in any claim, suit, action or proceeding shall be conclusive and may be enforced in other jurisdictions by suit on the judgment or in any other manner provided by Law."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 343913,
+        "absolute_end": 347945,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "4df2b0c8c6908057cb6f815b530ceb3cd680fc1446231cb6572708cbcdd53c66",
+        "provision_instance_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "closure_id": "ae3fcb884def0220bfed0a6bb8b2218872a25651b4fbaefd3c25af815fdc6aec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "113c22381785a413ef3420acd45d5986bfeeab9ccb21e06850e9ca980945bbb6",
+        "claim_occurrence_id": "99c091a4881e71141ada1f3b5fb12ad22d983e68f9ad8ae7df117c23f6ab57ba",
+        "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "a final judgment in any claim, suit, action or proceeding shall be conclusive and may be enforced in other jurisdictions by suit on the judgment or in any other manner provided by Law.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "150e76070ca0d6229dd515801b64e56f59e55ad45270d6c933516c98f9bf95fe"
+        ],
+        "attributes": {
+          "assertion_kind": "FORUM_FALLBACK",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "FORUM_FALLBACK"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "150e76070ca0d6229dd515801b64e56f59e55ad45270d6c933516c98f9bf95fe",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9aaeda32a8a96ea5dfe4fde534cb8ea40c7a266a84a2fa038a907f6671110d5e",
+            "document_ordinal": 0,
+            "absolute_start": 2633,
+            "absolute_end": 2817,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "315a42aca1d456a31b31052c924ed6b16c6e3acda97f2b3daabd75e55ac27b0d"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "113c22381785a413ef3420acd45d5986bfeeab9ccb21e06850e9ca980945bbb6",
+            "claim_occurrence_id": "99c091a4881e71141ada1f3b5fb12ad22d983e68f9ad8ae7df117c23f6ab57ba",
+            "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "a final judgment in any claim, suit, action or proceeding shall be conclusive and may be enforced in other jurisdictions by suit on the judgment or in any other manner provided by Law.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "150e76070ca0d6229dd515801b64e56f59e55ad45270d6c933516c98f9bf95fe"
+            ],
+            "attributes": {
+              "assertion_kind": "FORUM_FALLBACK",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "FORUM_FALLBACK"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "150e76070ca0d6229dd515801b64e56f59e55ad45270d6c933516c98f9bf95fe",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9aaeda32a8a96ea5dfe4fde534cb8ea40c7a266a84a2fa038a907f6671110d5e",
+                "document_ordinal": 0,
+                "absolute_start": 2633,
+                "absolute_end": 2817,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "315a42aca1d456a31b31052c924ed6b16c6e3acda97f2b3daabd75e55ac27b0d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "92ee792f013bc82bdffcb003b6d3b00a221498093c5393c128e74644c70afece",
+            "producer_receipt_id": "caf6559cf1b149918a3f0e25097da21b28357e22d8178754467df6647e07e9d7",
+            "governed_scope_digest": "0f382babede30ee8838059c2459d383d6b2caee7703871a85a72f3a312bbcd9e",
+            "extraction_provenance_id": "4126f2ca8ff5fa3bc11da5aac89f864b403a410f7b01fb98fb73ce75a215a223"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "citation_context": {
+        "parent_section_reference": "8.4",
+        "child_section_reference": "8.4",
+        "parent_chapeau_quote": "Section 8.4 Governing Law and Venue; Waiver of Jury Trial.",
+        "child_clause_quote": "irrevocably consents to the service of the summons and complaint and any other process in any other claim, action, suit, proceeding or counterclaim relating to the Transactions, on behalf of itself or its property, in the manner provided by Section 8.3"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 343913,
+        "absolute_end": 347945,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "4df2b0c8c6908057cb6f815b530ceb3cd680fc1446231cb6572708cbcdd53c66",
+        "provision_instance_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "closure_id": "ae3fcb884def0220bfed0a6bb8b2218872a25651b4fbaefd3c25af815fdc6aec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "f0b20dad6cbbce429ab6a522e7bb48062259a13e0dfc2fbdfdf85a4d5f83f551",
+        "claim_occurrence_id": "98efaf81dd6471464a6c9df84152e92f8553d54c76e8792d7d2621076d3c9589",
+        "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 3,
+        "state": "PRESENT",
+        "raw_value": "irrevocably consents to the service of the summons and complaint and any other process in any other claim, action, suit, proceeding or counterclaim relating to the Transactions, on behalf of itself or its property, in the manner provided by Section 8.3",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7b36563d681605eb3fc7eaffe5de20680ef94171d5a5f3f1e6c5c527a1d8e860"
+        ],
+        "attributes": {
+          "assertion_kind": "NOTICE",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "NOTICE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7b36563d681605eb3fc7eaffe5de20680ef94171d5a5f3f1e6c5c527a1d8e860",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "de63b82fb3e6c5601f979936827d94cf3f66aff49a5d9e784e39213f4755ae95",
+            "document_ordinal": 0,
+            "absolute_start": 2210,
+            "absolute_end": 2462,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "4bb74202e412deb7fc41d1d804d79808868372fdf678087cf51a8f94cb3494e6"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "f0b20dad6cbbce429ab6a522e7bb48062259a13e0dfc2fbdfdf85a4d5f83f551",
+            "claim_occurrence_id": "98efaf81dd6471464a6c9df84152e92f8553d54c76e8792d7d2621076d3c9589",
+            "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 3,
+            "state": "PRESENT",
+            "raw_value": "irrevocably consents to the service of the summons and complaint and any other process in any other claim, action, suit, proceeding or counterclaim relating to the Transactions, on behalf of itself or its property, in the manner provided by Section 8.3",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7b36563d681605eb3fc7eaffe5de20680ef94171d5a5f3f1e6c5c527a1d8e860"
+            ],
+            "attributes": {
+              "assertion_kind": "NOTICE",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "NOTICE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7b36563d681605eb3fc7eaffe5de20680ef94171d5a5f3f1e6c5c527a1d8e860",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "de63b82fb3e6c5601f979936827d94cf3f66aff49a5d9e784e39213f4755ae95",
+                "document_ordinal": 0,
+                "absolute_start": 2210,
+                "absolute_end": 2462,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "4bb74202e412deb7fc41d1d804d79808868372fdf678087cf51a8f94cb3494e6"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "92ee792f013bc82bdffcb003b6d3b00a221498093c5393c128e74644c70afece",
+            "producer_receipt_id": "caf6559cf1b149918a3f0e25097da21b28357e22d8178754467df6647e07e9d7",
+            "governed_scope_digest": "0f382babede30ee8838059c2459d383d6b2caee7703871a85a72f3a312bbcd9e",
+            "extraction_provenance_id": "4126f2ca8ff5fa3bc11da5aac89f864b403a410f7b01fb98fb73ce75a215a223"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.4",
+      "source_citation": "8.4",
+      "citation_context": {
+        "parent_section_reference": "8.4",
+        "child_section_reference": "8.4",
+        "parent_chapeau_quote": "Section 8.4 Governing Law and Venue; Waiver of Jury Trial.",
+        "child_clause_quote": "EACH SUCH PARTY HEREBY IRREVOCABLY AND UNCONDITIONALLY WAIVES, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANY RIGHT SUCH PARTY MAY HAVE TO A TRIAL BY JURY IN ANY ACTION, SUIT OR PROCEEDING OR COUNTERCLAIM (WHETHER BASED ON CONTRACT, TORT OR OTHERWISE), DIRECTLY OR INDIRECTLY, ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE TRANSACTIONS, OR THE ACTIONS OF THE PARTIES HERETO IN THE NEGOTIATION, ADMINISTRATION, PERFORMANCE AND ENFORCEMENT THEREOF."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 343913,
+        "absolute_end": 347945,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "4df2b0c8c6908057cb6f815b530ceb3cd680fc1446231cb6572708cbcdd53c66",
+        "provision_instance_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "closure_id": "ae3fcb884def0220bfed0a6bb8b2218872a25651b4fbaefd3c25af815fdc6aec"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a09a94681a86504d17411989649c1bd16ad0d139ef814b732aa0ddd7aec255c1",
+        "claim_occurrence_id": "30c8affb9fbef827267f27883e0a6405866013ead6a6ee1e6f92435c67b3342d",
+        "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 4,
+        "state": "PRESENT",
+        "raw_value": "EACH SUCH PARTY HEREBY IRREVOCABLY AND UNCONDITIONALLY WAIVES, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANY RIGHT SUCH PARTY MAY HAVE TO A TRIAL BY JURY IN ANY ACTION, SUIT OR PROCEEDING OR COUNTERCLAIM (WHETHER BASED ON CONTRACT, TORT OR OTHERWISE), DIRECTLY OR INDIRECTLY, ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE TRANSACTIONS, OR THE ACTIONS OF THE PARTIES HERETO IN THE NEGOTIATION, ADMINISTRATION, PERFORMANCE AND ENFORCEMENT THEREOF.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "25d6432b7685876b5d09484fcfa5d27bee2ae878eea5159f95a600e3bedbdf70"
+        ],
+        "attributes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "25d6432b7685876b5d09484fcfa5d27bee2ae878eea5159f95a600e3bedbdf70",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b87241956db1b5bb72ae3f986ed46c2b7e70bbc33b44833c0229f19c72b83136",
+            "document_ordinal": 0,
+            "absolute_start": 3014,
+            "absolute_end": 3474,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "1ee3a489651e3778750ec12ee4e9ccfe795cd4ce42241d1bae4a91435392e469"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.4",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a09a94681a86504d17411989649c1bd16ad0d139ef814b732aa0ddd7aec255c1",
+            "claim_occurrence_id": "30c8affb9fbef827267f27883e0a6405866013ead6a6ee1e6f92435c67b3342d",
+            "subject_occurrence_id": "6be66257452dc0dfb2803bef5a4b5d900205b7e802859facc4a216326f6f3ae8",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 4,
+            "state": "PRESENT",
+            "raw_value": "EACH SUCH PARTY HEREBY IRREVOCABLY AND UNCONDITIONALLY WAIVES, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANY RIGHT SUCH PARTY MAY HAVE TO A TRIAL BY JURY IN ANY ACTION, SUIT OR PROCEEDING OR COUNTERCLAIM (WHETHER BASED ON CONTRACT, TORT OR OTHERWISE), DIRECTLY OR INDIRECTLY, ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE TRANSACTIONS, OR THE ACTIONS OF THE PARTIES HERETO IN THE NEGOTIATION, ADMINISTRATION, PERFORMANCE AND ENFORCEMENT THEREOF.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "25d6432b7685876b5d09484fcfa5d27bee2ae878eea5159f95a600e3bedbdf70"
+            ],
+            "attributes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "25d6432b7685876b5d09484fcfa5d27bee2ae878eea5159f95a600e3bedbdf70",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b87241956db1b5bb72ae3f986ed46c2b7e70bbc33b44833c0229f19c72b83136",
+                "document_ordinal": 0,
+                "absolute_start": 3014,
+                "absolute_end": 3474,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "1ee3a489651e3778750ec12ee4e9ccfe795cd4ce42241d1bae4a91435392e469"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "92ee792f013bc82bdffcb003b6d3b00a221498093c5393c128e74644c70afece",
+            "producer_receipt_id": "caf6559cf1b149918a3f0e25097da21b28357e22d8178754467df6647e07e9d7",
+            "governed_scope_digest": "0f382babede30ee8838059c2459d383d6b2caee7703871a85a72f3a312bbcd9e",
+            "extraction_provenance_id": "4126f2ca8ff5fa3bc11da5aac89f864b403a410f7b01fb98fb73ce75a215a223"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.7",
+      "source_citation": "8.7",
+      "citation_context": {
+        "parent_section_reference": "8.7",
+        "child_section_reference": "8.7",
+        "parent_chapeau_quote": "Section 8.7 Severability. If any term or other provision of this Agreement is held by a court of competent jurisdiction or other authority to be invalid, illegal or incapable of being enforced by any rule of Law or public policy,",
+        "child_clause_quote": "all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner materially adverse to any party"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 353341,
+        "absolute_end": 354191,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "f944956aaccdab02d463b962442f51a4a9dcd812c5468bfeb7dff33fffa1f0b1",
+        "provision_instance_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+        "closure_id": "c1fbe15c960c2ecdbdda25899661ef50e0b54e486d9470b499e7406f62c1904c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c896559205adb065e60bfcb6112fb5dd2e30b3fbb710f3aba23f3984a89f2339",
+        "claim_occurrence_id": "2e3c76703623b1596ce1149f2d8f9b8a1b0e367203e6741c9230b0ca315ea1ee",
+        "subject_occurrence_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner materially adverse to any party",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ea7a4027c743cfebf47999cf64b66b2d9af0e3251384cd6c8f51278a3d70cb83"
+        ],
+        "attributes": {
+          "assertion_kind": "CONSTRUCTION_OR_EXPENSES",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CONSTRUCTION_OR_EXPENSES"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ea7a4027c743cfebf47999cf64b66b2d9af0e3251384cd6c8f51278a3d70cb83",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "dbf5768189a728edb96abebe4637387547c61b0bf09f2277171727b4806adbe6",
+            "document_ordinal": 0,
+            "absolute_start": 230,
+            "absolute_end": 459,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "bf2eb1f758c209902660c3ba77879c77b9cc70cce2fd9570dffff1598818aa0c"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.7",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c896559205adb065e60bfcb6112fb5dd2e30b3fbb710f3aba23f3984a89f2339",
+            "claim_occurrence_id": "2e3c76703623b1596ce1149f2d8f9b8a1b0e367203e6741c9230b0ca315ea1ee",
+            "subject_occurrence_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner materially adverse to any party",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ea7a4027c743cfebf47999cf64b66b2d9af0e3251384cd6c8f51278a3d70cb83"
+            ],
+            "attributes": {
+              "assertion_kind": "CONSTRUCTION_OR_EXPENSES",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CONSTRUCTION_OR_EXPENSES"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ea7a4027c743cfebf47999cf64b66b2d9af0e3251384cd6c8f51278a3d70cb83",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "dbf5768189a728edb96abebe4637387547c61b0bf09f2277171727b4806adbe6",
+                "document_ordinal": 0,
+                "absolute_start": 230,
+                "absolute_end": 459,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "bf2eb1f758c209902660c3ba77879c77b9cc70cce2fd9570dffff1598818aa0c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "14c4237f194013c7d371c587b65c56658195c952022339385e565b28e6715487",
+            "producer_receipt_id": "ec16d1ac417d41e3485fc27557a6822cf246f876d547cf7fcb4ee450be080206",
+            "governed_scope_digest": "6f55977e9acb0f6dfe5a931265569f524c099cdbbe15ba7945fa841a81770b98",
+            "extraction_provenance_id": "dfcfd7b3c2d229602c6339bf06ddb95c41a7179422eec24adb773cc8665979f1"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.7",
+      "source_citation": "8.7",
+      "citation_context": {
+        "parent_section_reference": "8.7",
+        "child_section_reference": "8.7",
+        "parent_chapeau_quote": "Section 8.7 Severability. If any term or other provision of this Agreement is held by a court of competent jurisdiction or other authority to be invalid, illegal or incapable of being enforced by any rule of Law or public policy, all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner materially adverse to any party. Upon such determination that any term or other provision is invalid, illegal or incapable of being enforced,",
+        "child_clause_quote": "the parties hereto shall negotiate in good faith to modify this Agreement so as to effect the original intent of the parties as closely as possible"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 353341,
+        "absolute_end": 354191,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "f944956aaccdab02d463b962442f51a4a9dcd812c5468bfeb7dff33fffa1f0b1",
+        "provision_instance_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+        "closure_id": "c1fbe15c960c2ecdbdda25899661ef50e0b54e486d9470b499e7406f62c1904c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "26cd119214031adbbd56fe600f660f823a219a5eb8e3a8c0f20b29dbc9102eed",
+        "claim_occurrence_id": "cf0f8bf4100a70367790fdccb67058c4577ed98ee50d6527678d74323b8300e6",
+        "subject_occurrence_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the parties hereto shall negotiate in good faith to modify this Agreement so as to effect the original intent of the parties as closely as possible",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9f0eb34e9e7e3a12b57f5d3aa1a5e8e9955eca6e89ba64cab57047e96eddca03"
+        ],
+        "attributes": {
+          "assertion_kind": "CONSTRUCTION_OR_EXPENSES",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CONSTRUCTION_OR_EXPENSES"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9f0eb34e9e7e3a12b57f5d3aa1a5e8e9955eca6e89ba64cab57047e96eddca03",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "d1f5e14b0d789d2ff2a6291ab5793feeafda7e12d5518a2b6f87251411c3da9c",
+            "document_ordinal": 0,
+            "absolute_start": 570,
+            "absolute_end": 717,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "997e7613c32faa1b4a826557f6ae57bf1abe20e06176d7c62615cc996232e4ff"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.7",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "26cd119214031adbbd56fe600f660f823a219a5eb8e3a8c0f20b29dbc9102eed",
+            "claim_occurrence_id": "cf0f8bf4100a70367790fdccb67058c4577ed98ee50d6527678d74323b8300e6",
+            "subject_occurrence_id": "6554f5b9115b9b24544afae11c2902c08783e73862deb541f3fa19bfeacccca9",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the parties hereto shall negotiate in good faith to modify this Agreement so as to effect the original intent of the parties as closely as possible",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9f0eb34e9e7e3a12b57f5d3aa1a5e8e9955eca6e89ba64cab57047e96eddca03"
+            ],
+            "attributes": {
+              "assertion_kind": "CONSTRUCTION_OR_EXPENSES",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CONSTRUCTION_OR_EXPENSES"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9f0eb34e9e7e3a12b57f5d3aa1a5e8e9955eca6e89ba64cab57047e96eddca03",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "d1f5e14b0d789d2ff2a6291ab5793feeafda7e12d5518a2b6f87251411c3da9c",
+                "document_ordinal": 0,
+                "absolute_start": 570,
+                "absolute_end": 717,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "997e7613c32faa1b4a826557f6ae57bf1abe20e06176d7c62615cc996232e4ff"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "14c4237f194013c7d371c587b65c56658195c952022339385e565b28e6715487",
+            "producer_receipt_id": "ec16d1ac417d41e3485fc27557a6822cf246f876d547cf7fcb4ee450be080206",
+            "governed_scope_digest": "6f55977e9acb0f6dfe5a931265569f524c099cdbbe15ba7945fa841a81770b98",
+            "extraction_provenance_id": "dfcfd7b3c2d229602c6339bf06ddb95c41a7179422eec24adb773cc8665979f1"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.10",
+      "source_citation": "8.10",
+      "citation_context": {
+        "parent_section_reference": "8.10",
+        "child_section_reference": "8.10",
+        "parent_chapeau_quote": "Section 8.10 Extension; Waiver. At any time prior to the Closing Date, each party hereto may",
+        "child_clause_quote": "each party hereto may (a) extend the time for the performance of any of the obligations or other acts of the other parties, (b) waive any breaches or inaccuracies in the representations and warranties of the other parties contained herein or in any document, certificate or writing delivered pursuant hereto, or (c) subject to Section 8.9, waive compliance by the other parties with any of the agreements or conditions contained herein"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 358046,
+        "absolute_end": 359246,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "9f61f14cd12d352015cb25162aeeb7a24f956f72e830baf0462ba74b1602eb2f",
+        "provision_instance_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "closure_id": "e5124a7c44ca06f26ed44df07fa2c210bbc6e8c6e937a700534442234b534413"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "7c3e9e69e6b8927354d562ffe1981d90a4e1c8a29877a3d82c675b624ba1be26",
+        "claim_occurrence_id": "25a3c7a9d53152dd07147ff113474a89f106af69a467f5f5586efdd8333ef4f3",
+        "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "each party hereto may (a) extend the time for the performance of any of the obligations or other acts of the other parties, (b) waive any breaches or inaccuracies in the representations and warranties of the other parties contained herein or in any document, certificate or writing delivered pursuant hereto, or (c) subject to Section 8.9, waive compliance by the other parties with any of the agreements or conditions contained herein",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b11d9391df780a4fc1fb72e8deec80941828b03f18254b5a6e9d11c7ca85a802"
+        ],
+        "attributes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b11d9391df780a4fc1fb72e8deec80941828b03f18254b5a6e9d11c7ca85a802",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "027cd67595e47165f1aacbe39912111b7105f3a38d842d92c6ee62b74bd73fd9",
+            "document_ordinal": 0,
+            "absolute_start": 71,
+            "absolute_end": 506,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3c0c2e1d6f7b0d8ff14d871e6007605848a491e15178f181b08ced697b757313"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.10",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "7c3e9e69e6b8927354d562ffe1981d90a4e1c8a29877a3d82c675b624ba1be26",
+            "claim_occurrence_id": "25a3c7a9d53152dd07147ff113474a89f106af69a467f5f5586efdd8333ef4f3",
+            "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "each party hereto may (a) extend the time for the performance of any of the obligations or other acts of the other parties, (b) waive any breaches or inaccuracies in the representations and warranties of the other parties contained herein or in any document, certificate or writing delivered pursuant hereto, or (c) subject to Section 8.9, waive compliance by the other parties with any of the agreements or conditions contained herein",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b11d9391df780a4fc1fb72e8deec80941828b03f18254b5a6e9d11c7ca85a802"
+            ],
+            "attributes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b11d9391df780a4fc1fb72e8deec80941828b03f18254b5a6e9d11c7ca85a802",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "027cd67595e47165f1aacbe39912111b7105f3a38d842d92c6ee62b74bd73fd9",
+                "document_ordinal": 0,
+                "absolute_start": 71,
+                "absolute_end": 506,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3c0c2e1d6f7b0d8ff14d871e6007605848a491e15178f181b08ced697b757313"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "915c88c06266936359b5012b4564eff07342a6eee2ba099721763f7d8d05bd6a",
+            "producer_receipt_id": "6eb1cb8ac07cd7b11afdea0879c3081fa9b218b8e87850efbe19d5c4bb786f33",
+            "governed_scope_digest": "f90076ae8d7b00a9839800b281da2f9b046943c906ef578ab1965e81487570ce",
+            "extraction_provenance_id": "ac75ed9fc9a320d5fb43be637c6dde884441c3cc6a7fc8017dc1eb729283e4f2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.10",
+      "source_citation": "8.10",
+      "citation_context": {
+        "parent_section_reference": "8.10",
+        "child_section_reference": "8.10",
+        "parent_chapeau_quote": "Section 8.10 Extension; Waiver. At any time prior to the Closing Date, each party hereto may",
+        "child_clause_quote": "Any agreement on the part of any party hereto to any such extension or waiver shall be valid only if set forth in an instrument in writing signed by the party or parties to be bound thereby."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 358046,
+        "absolute_end": 359246,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "9f61f14cd12d352015cb25162aeeb7a24f956f72e830baf0462ba74b1602eb2f",
+        "provision_instance_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "closure_id": "e5124a7c44ca06f26ed44df07fa2c210bbc6e8c6e937a700534442234b534413"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "087a3bb4d43cbadae16f29280bec7ffd9b021e2502dc7ffe021e39939c0a37a7",
+        "claim_occurrence_id": "96c51b0060c6b3c3cfd66e2b3cca88a20ab294114de758bf3a2ebf7e47e7f4bb",
+        "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "Any agreement on the part of any party hereto to any such extension or waiver shall be valid only if set forth in an instrument in writing signed by the party or parties to be bound thereby.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fbaabce999336e425d24694b9926141bb60531176edac2c82b7f762e438dc940"
+        ],
+        "attributes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fbaabce999336e425d24694b9926141bb60531176edac2c82b7f762e438dc940",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "69856b204e0535db8458afbb2120166089e906f6b2cc137ca7feee7b9df13439",
+            "document_ordinal": 0,
+            "absolute_start": 508,
+            "absolute_end": 698,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f4eca9ea383375a34dd1102dbdfea9c6c6f1effe246483d2457b385c42688ef8"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.10",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "087a3bb4d43cbadae16f29280bec7ffd9b021e2502dc7ffe021e39939c0a37a7",
+            "claim_occurrence_id": "96c51b0060c6b3c3cfd66e2b3cca88a20ab294114de758bf3a2ebf7e47e7f4bb",
+            "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "Any agreement on the part of any party hereto to any such extension or waiver shall be valid only if set forth in an instrument in writing signed by the party or parties to be bound thereby.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fbaabce999336e425d24694b9926141bb60531176edac2c82b7f762e438dc940"
+            ],
+            "attributes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fbaabce999336e425d24694b9926141bb60531176edac2c82b7f762e438dc940",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "69856b204e0535db8458afbb2120166089e906f6b2cc137ca7feee7b9df13439",
+                "document_ordinal": 0,
+                "absolute_start": 508,
+                "absolute_end": 698,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f4eca9ea383375a34dd1102dbdfea9c6c6f1effe246483d2457b385c42688ef8"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "915c88c06266936359b5012b4564eff07342a6eee2ba099721763f7d8d05bd6a",
+            "producer_receipt_id": "6eb1cb8ac07cd7b11afdea0879c3081fa9b218b8e87850efbe19d5c4bb786f33",
+            "governed_scope_digest": "f90076ae8d7b00a9839800b281da2f9b046943c906ef578ab1965e81487570ce",
+            "extraction_provenance_id": "ac75ed9fc9a320d5fb43be637c6dde884441c3cc6a7fc8017dc1eb729283e4f2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    },
+    {
+      "section_reference": "8.10",
+      "source_citation": "8.10",
+      "citation_context": {
+        "parent_section_reference": "8.10",
+        "child_section_reference": "8.10",
+        "parent_chapeau_quote": "Section 8.10 Extension; Waiver. At any time prior to the Closing Date, each party hereto may",
+        "child_clause_quote": "no failure or delay by the Company, the Partnership, Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub in exercising any right, power or privilege hereunder shall operate as a waiver thereof nor shall any single or partial exercise thereof preclude any other or further exercise of any other right, power or privilege hereunder"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "bd835f1cfd274662158e0cb20016ff6e14987c910102be40a9929fc02e0c5ace",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 358046,
+        "absolute_end": 359246,
+        "concept_key": "MISC-BOILERPLATE",
+        "ordinal": 1,
+        "source_anchor_id": "9f61f14cd12d352015cb25162aeeb7a24f956f72e830baf0462ba74b1602eb2f",
+        "provision_instance_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "closure_id": "e5124a7c44ca06f26ed44df07fa2c210bbc6e8c6e937a700534442234b534413"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "8112a5a4a5d889179d64b4a77a5afe3af1c76ff0f06b4beaffe37fad7a01e33a",
+        "claim_occurrence_id": "564df2239611ce7b3c2876b6fa0f3a5a7d7d4b5f371d28b763cdb92d101ede59",
+        "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+        "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "no failure or delay by the Company, the Partnership, Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub in exercising any right, power or privilege hereunder shall operate as a waiver thereof nor shall any single or partial exercise thereof preclude any other or further exercise of any other right, power or privilege hereunder",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "bf93306405957dfb7238bc8c178b9186c32b6ac8b7192e5c7467dfb481ba9f2f"
+        ],
+        "attributes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "WAIVER_OR_SURVIVAL"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "bf93306405957dfb7238bc8c178b9186c32b6ac8b7192e5c7467dfb481ba9f2f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a9cfa7691772f03e445dd55e0380b4ab402fbb55f27be412a4530d2be7507003",
+            "document_ordinal": 0,
+            "absolute_start": 730,
+            "absolute_end": 1066,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3cc81c5ddc264789f75d732a34e35adee1e1aeca1118fd8903f6c2cff69886e9"
+      },
+      "compiled_candidate": {
+        "section_reference": "8.10",
+        "ok": true,
+        "citation_validation": null,
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "8112a5a4a5d889179d64b4a77a5afe3af1c76ff0f06b4beaffe37fad7a01e33a",
+            "claim_occurrence_id": "564df2239611ce7b3c2876b6fa0f3a5a7d7d4b5f371d28b763cdb92d101ede59",
+            "subject_occurrence_id": "f2214a6beee0e531cadf642bde88d998d0546b2d6d022df778551e5b63748a0e",
+            "claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "no failure or delay by the Company, the Partnership, Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub in exercising any right, power or privilege hereunder shall operate as a waiver thereof nor shall any single or partial exercise thereof preclude any other or further exercise of any other right, power or privilege hereunder",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "bf93306405957dfb7238bc8c178b9186c32b6ac8b7192e5c7467dfb481ba9f2f"
+            ],
+            "attributes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "WAIVER_OR_SURVIVAL"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "bf93306405957dfb7238bc8c178b9186c32b6ac8b7192e5c7467dfb481ba9f2f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a9cfa7691772f03e445dd55e0380b4ab402fbb55f27be412a4530d2be7507003",
+                "document_ordinal": 0,
+                "absolute_start": 730,
+                "absolute_end": 1066,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3cc81c5ddc264789f75d732a34e35adee1e1aeca1118fd8903f6c2cff69886e9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MISC_BOILERPLATE",
+            "prompt_digest": "915c88c06266936359b5012b4564eff07342a6eee2ba099721763f7d8d05bd6a",
+            "producer_receipt_id": "6eb1cb8ac07cd7b11afdea0879c3081fa9b218b8e87850efbe19d5c4bb786f33",
+            "governed_scope_digest": "f90076ae8d7b00a9839800b281da2f9b046943c906ef578ab1965e81487570ce",
+            "extraction_provenance_id": "ac75ed9fc9a320d5fb43be637c6dde884441c3cc6a7fc8017dc1eb729283e4f2"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 90,
+        "materiality_label": "NOTICES_ADMINISTRATIVE",
+        "known_defect": null,
+        "citation_validation": null
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "8.10",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7c3e9e69e6b8927354d562ffe1981d90a4e1c8a29877a3d82c675b624ba1be26",
+      "closure_id": "3c0c2e1d6f7b0d8ff14d871e6007605848a491e15178f181b08ced697b757313",
+      "normalised_phrase": "each party hereto may (a) extend the time for the performance of any of the obligations or other acts of the other parties, (b) waive any breaches or inaccuracies in the representations and warranties of the other parties contained herein or in any document, certificate or writing delivered pursuant hereto, or (c) subject to Section 8.9, waive compliance by the other parties with any of the agreements or conditions contained herein",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.10",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8112a5a4a5d889179d64b4a77a5afe3af1c76ff0f06b4beaffe37fad7a01e33a",
+      "closure_id": "3cc81c5ddc264789f75d732a34e35adee1e1aeca1118fd8903f6c2cff69886e9",
+      "normalised_phrase": "no failure or delay by the Company, the Partnership, Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub in exercising any right, power or privilege hereunder shall operate as a waiver thereof nor shall any single or partial exercise thereof preclude any other or further exercise of any other right, power or privilege hereunder",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.10",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "087a3bb4d43cbadae16f29280bec7ffd9b021e2502dc7ffe021e39939c0a37a7",
+      "closure_id": "f4eca9ea383375a34dd1102dbdfea9c6c6f1effe246483d2457b385c42688ef8",
+      "normalised_phrase": "Any agreement on the part of any party hereto to any such extension or waiver shall be valid only if set forth in an instrument in writing signed by the party or parties to be bound thereby.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.2",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "376c2635fe97b27f31bab6486ef5e6b3ed0e0fe52c386953068840664e6ed41b",
+      "closure_id": "76314de5350eda8064e99e9bdd452907561e11cb879f5f523e0d426bdb41d812",
+      "normalised_phrase": "Subject to the preceding sentence, this Agreement will be binding upon, inure to the benefit of, and be enforceable by, the parties and their respective successors and permitted assigns.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.2",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e765fb7459358424e6e38c92c192891da4095c89c58f7dbd176a2cb43e808739",
+      "closure_id": "94ee380d0fc005912677106c64993ea8fc96cc016da33cd5bc0054c0ed2988d6",
+      "normalised_phrase": "Any assignment in violation of this Section 8.2(b) shall be void.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.2",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2be9517cf2d6455e7109e49de12eafa4506631b3def0fa2759c49a792598e8aa",
+      "closure_id": "e3ac5b0e993f4e5dbce559cb7b025841d5059dd0bbdb71426614ae43fa868c9b",
+      "normalised_phrase": "Neither this Agreement nor any of the rights, interests or obligations hereunder shall be assigned or transferred, in whole or in part, by operation of Law (including by merger or consolidation) or otherwise by any of the parties hereto without the prior written consent of the other parties.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4babd521e1561418b88b79b8eef55da24b8a4c3658586d4a9301b773053d7404",
+      "closure_id": "74822d0294f854e9f95ae46edc634f600938c80cfa7b55f92397e3f0332ef49b",
+      "normalised_phrase": "shall be deemed to have been duly given or made (a) as of the date delivered if delivered personally or as of the date sent if sent by email (notice deemed given upon transmission so long as there is no return error message or other notification of non-delivery received by the sender) and (b) on the next Business Day if sent by prepaid overnight carrier (providing proof of delivery)",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a09a94681a86504d17411989649c1bd16ad0d139ef814b732aa0ddd7aec255c1",
+      "closure_id": "1ee3a489651e3778750ec12ee4e9ccfe795cd4ce42241d1bae4a91435392e469",
+      "normalised_phrase": "EACH SUCH PARTY HEREBY IRREVOCABLY AND UNCONDITIONALLY WAIVES, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANY RIGHT SUCH PARTY MAY HAVE TO A TRIAL BY JURY IN ANY ACTION, SUIT OR PROCEEDING OR COUNTERCLAIM (WHETHER BASED ON CONTRACT, TORT OR OTHERWISE), DIRECTLY OR INDIRECTLY, ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE TRANSACTIONS, OR THE ACTIONS OF THE PARTIES HERETO IN THE NEGOTIATION, ADMINISTRATION, PERFORMANCE AND ENFORCEMENT THEREOF.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "113c22381785a413ef3420acd45d5986bfeeab9ccb21e06850e9ca980945bbb6",
+      "closure_id": "315a42aca1d456a31b31052c924ed6b16c6e3acda97f2b3daabd75e55ac27b0d",
+      "normalised_phrase": "a final judgment in any claim, suit, action or proceeding shall be conclusive and may be enforced in other jurisdictions by suit on the judgment or in any other manner provided by Law.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f0b20dad6cbbce429ab6a522e7bb48062259a13e0dfc2fbdfdf85a4d5f83f551",
+      "closure_id": "4bb74202e412deb7fc41d1d804d79808868372fdf678087cf51a8f94cb3494e6",
+      "normalised_phrase": "irrevocably consents to the service of the summons and complaint and any other process in any other claim, action, suit, proceeding or counterclaim relating to the Transactions, on behalf of itself or its property, in the manner provided by Section 8.3",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "41052176ec3c4dfc97e261b6d4b2f3244c80d3294eb7dd1bb6eddb219e861bb1",
+      "closure_id": "d5b874753800e6f009aa41e79c780eff5122088a9316dc5fca88d4faf3271c7e",
+      "normalised_phrase": "expressly, irrevocably and unconditionally submits to and agrees to be subject to the exclusive personal jurisdiction of the Circuit Court of Baltimore City, Maryland and/or the U.S. District Court for the District of Maryland, Northern Division (the “Chosen Courts”)",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.4",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "378b1e7c15eb235cd087af9c396d750d211e3c0bb9f7b9c80bf1dd34ce327647",
+      "closure_id": "eba566499bfae6545cb27460c4aa65f7f59fada6ff247cfcd5e714888884abcb",
+      "normalised_phrase": "shall be governed by and construed in accordance with the Laws of the State of Maryland (other than with respect to issues relating to the Company Merger and the OpCo Merger that are required to be governed by the DRULPA or DLLCA), in each case without regard to its rules of conflict of laws that would result in the application of any laws other than those specified above.",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.7",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "26cd119214031adbbd56fe600f660f823a219a5eb8e3a8c0f20b29dbc9102eed",
+      "closure_id": "997e7613c32faa1b4a826557f6ae57bf1abe20e06176d7c62615cc996232e4ff",
+      "normalised_phrase": "the parties hereto shall negotiate in good faith to modify this Agreement so as to effect the original intent of the parties as closely as possible",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    },
+    {
+      "section_reference": "8.7",
+      "generic_claim_key": "NATIVE_MISC_BOILERPLATE_CANDIDATE",
+      "resolved_claim_definition_key": "MISC_BOILERPLATE_MECHANIC_PRESENT",
+      "concept_key": "MISC-BOILERPLATE",
+      "reasons": [],
+      "materiality_rank": 90,
+      "materiality_label": "NOTICES_ADMINISTRATIVE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c896559205adb065e60bfcb6112fb5dd2e30b3fbb710f3aba23f3984a89f2339",
+      "closure_id": "bf2eb1f758c209902660c3ba77879c77b9cc70cce2fd9570dffff1598818aa0c",
+      "normalised_phrase": "all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner materially adverse to any party",
+      "attachment_position": null,
+      "concept_family": "MISC-BOILERPLATE"
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "7cd0f66763033c39c9f9dfa95b976bcf1ec10c11e72a4aac0e4dd92748e660ab",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 14,
+      "resolved": 14,
+      "auto_pass": 0,
+      "review_queue": 14,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 5,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "4d38b123469a06ed4324132eea0bb1d6e647ab9aeca9b416a42835bbe5f7a178"
+  }
+}

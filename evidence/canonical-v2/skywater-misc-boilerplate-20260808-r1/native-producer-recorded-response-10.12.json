@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:16:32.046Z",
+  "section_reference": "10.12",
+  "note": "General extraction run: deal=skywater, family=MISC_BOILERPLATE, section_references=[\"10.1\",\"10.2\",\"10.3\",\"10.4\",\"10.7\",\"10.8\",\"10.9\",\"10.10\",\"10.11\",\"10.12\",\"10.13\",\"10.14\",\"10.15\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"Except for the provisions of (a) Articles II and III (including, for the avoidance of doubt, the rights of the former holders of Company Common Stock to receive the Merger Consideration), and (b) Section 6.3 (which from and after the Effective Time are intended for the benefit of, and shall be enforceable by, the Persons referred to therein and by their respective heirs and representatives), no provision of this Agreement or any other agreement contemplated hereby is intended to confer on any Person other than the parties hereto any rights or remedies.\"}],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

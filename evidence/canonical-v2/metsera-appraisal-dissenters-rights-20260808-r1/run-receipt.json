@@ -1,0 +1,699 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "source_byte_length": 348692,
+  "root_section_id": "410154e958abb541763453319b67e678175ca4416aa50744fa3dd7fe3e93c3d8",
+  "requested_section_references": [
+    "2.01"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "2.01",
+      "section_id": "9bbfbefebf3ee7598ace50356f8a26808be90b85973a9129233c3f52c77f9b1d",
+      "parent_section_id": "3c203dc9860728cfbc799a62d4dece40401d4e98475ddec9027e9990ecd4d408",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 14279,
+      "end": 18426,
+      "text_sha256": "388d26e263c7841bbf27b63c0b812f328b058eb116045adece4db7ee252c8be1",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-appraisal/v1",
+      "prompt_version": 1,
+      "prompt_digest": "51fd935b260e7950f6962927c99b9e71df749489c67cf718b0ecc4c6e87467dc",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+        "input_scope_digest": "0fc5b4a3b2b3702b6d837402a397632f2da98268ef7e1e8db900c2f8855ef443",
+        "proposal_count": 6,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "2.01",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "2.01",
+        "normalized_citation": "2.01",
+        "derived_citation": "2.01(d)"
+      },
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "27f6ece2c248fbf6eab9d86b530531a75a13f8290c5e2c5f84df069d1bed69cc",
+          "claim_occurrence_id": "e9f4f4b6c578bafdf446d23b8487dacb97194631c6617f58edaa81d715aad83e",
+          "subject_occurrence_id": "75a0418fde9ecfeda70c3f71a2e2b70667fd7a07d57b63a3a7e11c697f55ff22",
+          "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "if any such holder shall fail to perfect or otherwise shall waive, withdraw or lose the right to appraisal under Section 262, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262, then such Appraisal Shares shall be deemed to",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "659549970609a6a6a702a2325660a108e36c18386ed7ad4fd1578ddae33b47e9"
+          ],
+          "attributes": {
+            "section_reference": "2.01",
+            "assertion_kind": "WITHDRAWAL_RECONVERSION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": "Section 262"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "659549970609a6a6a702a2325660a108e36c18386ed7ad4fd1578ddae33b47e9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "cd6e9abd6c20562112e71e9f6531b2583066892b3c709ba01d6f1c3f22283952",
+              "document_ordinal": 0,
+              "absolute_start": 3149,
+              "absolute_end": 3448,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "512c2e9a50e181f86f7772fad77f3bc44d6dc28c3de050b0f6e9ffc55247c8ee"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "APPRAISAL",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "9cbe427c418ef955fc047577e31f546a04be300aaa91c10e1197092b46d2c2aa"
+        }
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "2.01",
+        "normalized_citation": "2.01",
+        "derived_citation": "2.01(d)"
+      },
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e5e5371ee850eb7d7a0544582c38b630af8f949a3b57fc4f2b9c164eaf01892c",
+          "claim_occurrence_id": "0b8c921c4af49833b22d84762174a6b6e85add326dd806691eaf466f6c0e15a0",
+          "subject_occurrence_id": "e826d194b5435967e4d1a61dc5830c8e276b0acd3dc399535d5a6aa24245224f",
+          "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Prior to the Effective Time, the Company shall not, without the prior written consent of Parent, make any payment with respect to, or settle or offer to settle or otherwise negotiate, any such demands, or agree to do any of the foregoing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "58c66e7db30c188cb532541b076261447facff6bd1eb44ed26f57ffefa553bdd"
+          ],
+          "attributes": {
+            "section_reference": "2.01",
+            "assertion_kind": "SETTLEMENT_CONSENT",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "58c66e7db30c188cb532541b076261447facff6bd1eb44ed26f57ffefa553bdd",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a37159bf2376c857cb8ace30551b5375355173fd71d57c10f3b3843d5a290b05",
+              "document_ordinal": 0,
+              "absolute_start": 3908,
+              "absolute_end": 4146,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "17556ee72dd60ffe252f9b6fa1505b267eb6ef2544deb466703a8b52d606bf11"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "APPRAISAL",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "9cbe427c418ef955fc047577e31f546a04be300aaa91c10e1197092b46d2c2aa"
+        }
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "citation_validation": null,
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "22f70fae52424743fe0c658f027d56fbb03c7cb9fefbd73089edb6ae366760e9",
+          "claim_occurrence_id": "9b011206111fb200a4e7d9b0f49a28c186af61d04014e2f41ab4916aae83934e",
+          "subject_occurrence_id": "43580cd6b756a87aa3b681354a8508a0f1ac4c8bad3ef3ec70dde0ff21f96797",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall serve prompt notice to Parent of any demands received by the Company for appraisal of any shares of Company Common Stock and any withdrawals of such demands",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7a70e348e0719c48551b152b9fcd178e0694e157118ee615def1729f93970c71"
+          ],
+          "attributes": {
+            "why_unmapped": "APPRAISAL_NOTICE: Company must give Parent prompt notice of appraisal demands received and any withdrawals of such demands.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7a70e348e0719c48551b152b9fcd178e0694e157118ee615def1729f93970c71",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1e6eb4b4d5ebcb6c37208e06e36f07d805fcb85942fc698f8279b98a8eb755cc",
+              "document_ordinal": 0,
+              "absolute_start": 3608,
+              "absolute_end": 3782,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ac841024a8e3b7a77b2764ea3f79c24aa74ebaa7e7d4b3224ee787a32b4c8878"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "5012f9e7c8881f5db8967dbf46be26f59c7f6dbf639a01622bd6a66271d5db6f"
+        }
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "citation_validation": null,
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f0d9ae31ef4bbead735871c440acfb2d05c103554fb3430f2c9774eaa8fe6ab3",
+          "claim_occurrence_id": "03c1778a011372083ecd42e09903093f7e2e89e1c50095ca16d4b0624afca09c",
+          "subject_occurrence_id": "5d48751081f90c38543dbcee18510ae10750212e92d36b307005493cf9b04368",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall have the right to participate in and direct all negotiations and Proceedings with respect to such demands.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b7740c2bd9232f783bb072b90f12cc8437a5c743f0275a59d158ea5e036eec7e"
+          ],
+          "attributes": {
+            "why_unmapped": "APPRAISAL_INFORMATION_RIGHT: Parent has the right to participate in and direct all negotiations and Proceedings relating to appraisal demands.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b7740c2bd9232f783bb072b90f12cc8437a5c743f0275a59d158ea5e036eec7e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0f167bd2f849216d16147883c11dbabcf985a091fd48cb7daa8eece1270f9b51",
+              "document_ordinal": 0,
+              "absolute_start": 3788,
+              "absolute_end": 3907,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8e6fbbdb5877f28e91e0ac85cb06abfe2ea64cfab675845c6d36e4d23af9076f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "5012f9e7c8881f5db8967dbf46be26f59c7f6dbf639a01622bd6a66271d5db6f"
+        }
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "citation_validation": null,
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "139015460bea0b7bbb90942780715c9a3aea85f2754e6469df729aeedca27899",
+          "claim_occurrence_id": "be23ed292ca44aef0e827faaef3186c1c995daad2ebd656dc1c6121335d1d8bf",
+          "subject_occurrence_id": "6c071bf0e995152b38a0fee127b2cfb1219f36b53d2b750570a57a00c3b8e3e1",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "properly demands appraisal of such shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4d9d43faae26f028b14c89d3980a8e919f57b134d412501754d796c4fb7175e9"
+          ],
+          "attributes": {
+            "why_unmapped": "APPRAISAL_MODALITY: Appraisal eligibility turns on the holder properly demanding appraisal and complying in all respects with DGCL Section 262.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4d9d43faae26f028b14c89d3980a8e919f57b134d412501754d796c4fb7175e9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "462d5dbe42b7988c7a259d5730d4d6d370854ba8c79bc9cb6f6a7128f3d7ce58",
+              "document_ordinal": 0,
+              "absolute_start": 2655,
+              "absolute_end": 2772,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "abd558a480fc9756b7d9131425197dc4010fd7816024a95848f2b9ad5a20663a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "5012f9e7c8881f5db8967dbf46be26f59c7f6dbf639a01622bd6a66271d5db6f"
+        }
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "citation_validation": null,
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "391ccb34af0b2206c7e63d35e27fac6e5474b77b24cd50725b8c9e07a0e3bab2",
+          "claim_occurrence_id": "d839828739c7c13881ebc730da0400d395f7282695f888341e54eb8aa57a631f",
+          "subject_occurrence_id": "c31a28665461a7988971b43f8c48fac5de00123b288813c6403d03a3b0bc8f98",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "entitled only to receive such consideration as is determined to be due with respect to such Appraisal Shares pursuant to Section 262",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4fb2d6397da28b3685e08bdec8687962bf8af5d7b673d6e0b346bf40dae2ce3b"
+          ],
+          "attributes": {
+            "why_unmapped": "APPRAISAL_STATUTE: Consideration payable on Appraisal Shares is determined under DGCL Section 262 rather than the Merger Consideration.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4fb2d6397da28b3685e08bdec8687962bf8af5d7b673d6e0b346bf40dae2ce3b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e2ceaf520a4443ef676e20369432f52996f6e428e5558fe66dd2af7159e4dd98",
+              "document_ordinal": 0,
+              "absolute_start": 2991,
+              "absolute_end": 3123,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ca6ffd88e6157842331da12644798a5fa7fd0d9069370336addec6191b84a9de"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "47afe922cbd942d948a1d6ca2d6482d02b992f5e513ce18c7457d6a93a8fdbd6",
+          "producer_receipt_id": "ea35e38dba1ef55b5786c838231f9883c41484a2ecf8bcfdd45e0dcaa8a0f828",
+          "governed_scope_digest": "3732f179cff81a9824dcb1e1b267acc1a912cc40fe2449321e1ebb206475be62",
+          "extraction_provenance_id": "5012f9e7c8881f5db8967dbf46be26f59c7f6dbf639a01622bd6a66271d5db6f"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "2.01",
+      "source_byte_length": 4147,
+      "covered_byte_length": 1079,
+      "coverage_share": 0.2601880877742947,
+      "marker_counts": {
+        "as of": 2,
+        "except": 1,
+        "knowledge": 0,
+        "material": 0,
+        "total": 3
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.2601880877742947,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 3,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "2.01",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 290,
+          "end": 293
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 540,
+          "end": 543
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1489,
+          "end": 1492
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1559,
+          "end": 1562
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1571,
+          "end": 1574
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1679,
+          "end": 1682
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1749,
+          "end": 1753
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1971,
+          "end": 1974
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1979,
+          "end": 1983
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2419,
+          "end": 2422
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2911,
+          "end": 2914
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3603,
+          "end": 3606
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 6,
+        "section_paragraph_marker": 3,
+        "cross_reference_marker": 3
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1571,
+          "end": 1574
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1571,
+          "end": 1574
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1679,
+          "end": 1682
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1749,
+          "end": 1753
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1971,
+          "end": 1974
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1979,
+          "end": 1983
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2419,
+          "end": 2422
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2419,
+          "end": 2422
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2911,
+          "end": 2914
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3603,
+          "end": 3606
+        }
+      ],
+      "disagreement_count": 10
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 6,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "0bcea09c19cd46cd2829f1e69025aa7c676154efe070ba9d37981134510ded37"
+}

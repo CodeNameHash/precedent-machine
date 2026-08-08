@@ -63,7 +63,11 @@ test('prompt and provider shaping retain a single evidenced regulatory assertion
   const quote = 'Each of Parent and the Company shall use reasonable best efforts to obtain all approvals.';
   const prompt = buildAntitrustRegulatoryProducerPrompt({ source_text: quote, governed_scope: {} });
   assert.equal(prompt.prompt_id, 'native-producer-antitrust-regulatory/v1');
-  assert.equal(prompt.prompt_version, 5);
+  // 5 -> 6 on 2026-08-08: the Step 2F2 probe added the open_world_candidates
+  // element schema to RESPONSE_SHAPE. Instructions byte-identical -- the
+  // assertions below still pin every one of them, which is what makes the
+  // probe's yield change attributable to the shape and nothing else.
+  assert.equal(prompt.prompt_version, 6);
   assert.match(prompt.messages[0].content, /MANDATORY_DEFEND/);
   assert.match(prompt.messages[0].content, /PARENT_CONTROL/);
   assert.match(prompt.messages[0].content, /burden_term_ref/);

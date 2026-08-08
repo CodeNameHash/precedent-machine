@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-07T15:49:06.266Z",
+  "section_reference": "2.6",
+  "note": "General extraction run: deal=modiv, family=CONSIDERATION, section_references=[\"2.6\"] (all dispatched as CONSIDERATION via section_family_assignments), prompt_id=native-producer-consideration/v1, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"consideration_assertions\": [\n    {\n      \"section_reference\": \"2.6\",\n      \"assertion_kind\": \"APPRAISAL_STATUS\",\n      \"consideration_term\": null,\n      \"ratio_term\": null,\n      \"issuer_stock\": null,\n      \"appraisal_status\": \"NOT_AVAILABLE\",\n      \"statute\": null,\n      \"quote\": \"No dissenters’ or appraisal rights shall be available with respect to the Mergers.\"\n    }\n  ],\n  \"consideration_mechanics\": [],\n  \"open_world_candidates\": []\n}\n```"
+}

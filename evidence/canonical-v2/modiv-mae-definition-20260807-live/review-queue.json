@@ -1,0 +1,3681 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3c4c093ea33b0392befbdb567f9900b588bed877e65ee202ba07641e864c2303",
+  "review_queue": [
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the taking of any action expressly required or prohibited by this Agreement or the omission of any action expressly prohibited by this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a935070ec7725fdc3cb9339ddc440535315e22fbf68155791281563bfa7788aa",
+      "closure_id": "08095af4f8967d46fc9b08424a99baaaa52b992a814445be7af2a0ad7b589fbe",
+      "normalised_phrase": "the taking of any action expressly required or prohibited by this Agreement or the omission of any action expressly prohibited by this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "33ec82ae55ace3cb324d7a3104ec09c9a635c1d71bf75a505ae49980fa670a4c",
+      "closure_id": "0ecca494a9e7e0ff942b5bb14c5ae6baccc9a7d3cf092b692c33ec6d890e8ce9",
+      "normalised_phrase": "any change in the price or trading volume of the Company and the Company Subsidiaries’ securities or other financial instruments, in and of itself",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the taking of any action expressly required or prohibited by this Agreement or the omission of any action expressly prohibited by this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "795bb24392f6dfbfd93eb7d8a7c74c7132106b6c4506a770fceb41bf9f0e7e72",
+      "closure_id": "11472e2154288125182cd1705e1d0133534348c2e26c05ca9cf7f7daac5cd008",
+      "normalised_phrase": "the taking of any action expressly required or prohibited by this Agreement or the omission of any action expressly prohibited by this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change generally affecting the industrial real estate, real estate investment, real estate management or asset management industries",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1244ebd8d181868b591b00efb538071702ca4a6f9b1dd3a5e5032406c082f3d8",
+      "closure_id": "187ef3e1a7b738eda120d78fad40fc78d3355fec4d1386751dbc6cc8841ea7ab",
+      "normalised_phrase": "any change generally affecting the industrial real estate, real estate investment, real estate management or asset management industries",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change generally affecting the industrial real estate, real estate investment, real estate management or asset management industries",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ac80320132c995d9a30d1c5f658c53f152e7e557c1e6ff19c18f00fa42f06e86",
+      "closure_id": "18a61d1e287efb4cd52206b80fdd607fed18ccaccc411d6e478198691f0a95ff",
+      "normalised_phrase": "any change generally affecting the industrial real estate, real estate investment, real estate management or asset management industries",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "epidemics or pandemics, or disease outbreak",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "746f6ec48bbf57aedcaff45b66afb38a4b71a04afea722561e8efbff0dafaf75",
+      "closure_id": "1cd2f4fe5ee734db99746111657288c605863f4e1d240a038a22f162f91c7003",
+      "normalised_phrase": "epidemics or pandemics, or disease outbreak",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "05cd66bce1a0fd09ea4bd54d57fdbe4f67021fdc585a9028c7f531666c2b8a51",
+      "closure_id": "22e25aebba2a83fa03c92ed77a35791675b5878613031ccd231b76c599e5d579",
+      "normalised_phrase": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f7670dc2ccf230b2427cec8b847dd395ee18bdfa403a89c1528e14f2d5907c76",
+      "closure_id": "2636d8ffd539aead38b390baedb556161973f8576c885603fa827a4c463b155b",
+      "normalised_phrase": "resulting from the negotiation, execution, announcement, performance, consummation or existence of this Agreement, the announcement, pendency or consummation of the Transactions or the performance of this Agreement (including (x) any proceeding threatened or initiated by any Person with respect to this Agreement or the Transactions and (y) the impact thereof on the Company and Company Subsidiaries’ officers, employees, tenants, customers, suppliers, distributors, partners, lenders, investors or financing sources or Governmental Entities or others having business relationships with the Company and Company Subsidiaries); provided that this clause (e) shall not apply to any representation or warranty set forth in Section 3.3 or Section 3.4 (or any condition to any party’s obligation to consummate the Transactions relating to such representation and warranty)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "general economic, political, regulatory or business conditions or changes therein",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ad798367351cdf9273ff9f535a3f85b31d5e546c36f064a1c0e51b845b609f40",
+      "closure_id": "4a7cb75cd4e52f6302fcad50d714ac2aa104f9b13568c7b39a3b228bc87c3a73",
+      "normalised_phrase": "general economic, political, regulatory or business conditions or changes therein",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "epidemics or pandemics, or disease outbreak",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f8fe5123c97a658e6aa858c7d66f8d0173dfce7477c522579007ebbf1848eaa8",
+      "closure_id": "4c953ce56c8473433db30e0c00afc7a4c4f1b89003554ac14505b221bd5a5e67",
+      "normalised_phrase": "epidemics or pandemics, or disease outbreak",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "general economic, political, regulatory or business conditions or changes therein",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5a39a8c9db01ca5d5796f65241f17cf3314e05717e3124829de8db5b384cd5ec",
+      "closure_id": "4d6088ef4698e8ebd1cdfcd04f0cf70b12b0c76738580b3cbb1147c7e3b9b53b",
+      "normalised_phrase": "general economic, political, regulatory or business conditions or changes therein",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any changes or developments in or affecting domestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "30bc39b84f96a2932fcfc9078b531214bed2189aed54df874b49f9453a9398eb",
+      "closure_id": "628d60f108ef63e40d1ed45bebbda7e90f590bd58737b2c1a70c2d4c2a2152b4",
+      "normalised_phrase": "any changes or developments in or affecting domestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons, lightening, hail storms, blizzards, tornadoes, droughts, floods, cyclones, arctic frosts, mudslides and wildfires, manmade disasters, including any material worsening of such matters existing as of the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5ec3c6b7ad863409658ad83b514724a4c6f010c13c4114993f3679bd425445f6",
+      "closure_id": "66a5215a717362e676ab5a839040bc768eace7a3b0c3a2ba16edba522ef3255d",
+      "normalised_phrase": "any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons, lightening, hail storms, blizzards, tornadoes, droughts, floods, cyclones, arctic frosts, mudslides and wildfires, manmade disasters, including any material worsening of such matters existing as of the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the identity of Parent or any of its Affiliates as the acquiror of the Company and the Partnership",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1163e7fd36c4d3ebc2687720d14e26d011a454731b01f273606ae84099eb0331",
+      "closure_id": "71eb6b8a8e925e98516c7a25586d8cfd175513e6cebb54924a93457a2513bf8f",
+      "normalised_phrase": "the identity of Parent or any of its Affiliates as the acquiror of the Company and the Partnership",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c9234ebe81fecf2373125fa478000692a5351d00289f7e7d7052afcb4ad5fb60",
+      "closure_id": "73f68971f517dd7d2404a0dc6d11b6104a897d1453ff46a312a2b9ffc0017e16",
+      "normalised_phrase": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(ll)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the identity of the Company or any of its Affiliates as the target of the Mergers",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3d72fd6dcf8c5f67aba1215bf23cabba2f2020448e77a021e971bc9b2a4048dd",
+      "closure_id": "7d23598111aaeb645a39c7d01b1e4bf5f1865495f59be3513fcbfd99fa97b992",
+      "normalised_phrase": "the identity of the Company or any of its Affiliates as the target of the Mergers",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "trade wars, tariffs or sanctions",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2b9d677de3ad28ef9346bfbd398b0bd5db793cd393ff790aa7fafd6b810d6a22",
+      "closure_id": "8667605ed13a597149902227f3fadc19afd545f240dc596dea6cd3e5ffe0147f",
+      "normalised_phrase": "trade wars, tariffs or sanctions",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any changes or developments in or affecting domestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b570891e00190a574bb167e677a0eb7fafff6031d651b1ff82a64360aef18695",
+      "closure_id": "8ced5d3799158652ab26ce712676e9802273d75552d89064138235ecc904de3e",
+      "normalised_phrase": "any changes or developments in or affecting domestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons, lightening, hail storms, blizzards, tornadoes, droughts, floods, cyclones, arctic frosts, mudslides and wildfires, manmade disasters, including any material worsening of such matters existing as of the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a101de548db1f9ea7b19cc82ccd96c5b87c3b193f525b581290afce5fb79f655",
+      "closure_id": "930c39bd0d6a2ec4848654f4a812ab5692bc7251abb1e8849dabef0f4454995d",
+      "normalised_phrase": "any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons, lightening, hail storms, blizzards, tornadoes, droughts, floods, cyclones, arctic frosts, mudslides and wildfires, manmade disasters, including any material worsening of such matters existing as of the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f9b095997043f6f84fb1cb2edbfeeef6114cc0e81ed650b11719b01b719d6cb8",
+      "closure_id": "a526bb357191ad73163eb76f17662cd0b8d52bb35f648a6985f02198fd8b84e8",
+      "normalised_phrase": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "acts of terrorism, civil unrest, riots",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ae3772c715fccb3fc7e53ecc09490176370926d641971567fcfb1546c85a1b82",
+      "closure_id": "ae7fd2fb80a70fc8aa57fa4cbced21ce4fe64af7e01fa76bf1b4e4b27c262181",
+      "normalised_phrase": "acts of terrorism, civil unrest, riots",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9224b8b9118a3a7d1a773c39d215d5562822f239b07569bbb89ef104aada7897",
+      "closure_id": "b75d04013a0372edd20045b3caeeb8dd6b76375607a2f4d9c3e0ff0508a8854e",
+      "normalised_phrase": "any change in the price or trading volume of Parent and the Parent Subsidiaries’ securities or other financial instruments, in and of itself",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "acts of terrorism, civil unrest, riots",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6ee66d1337addd23d49657fc3a1e9d8c8797b0a3dabaaade14983cdd637e8ee9",
+      "closure_id": "b99ea5ed9e9749445d600e03723938fc8342b5ba18ecb3b342908711cfa6eb9d",
+      "normalised_phrase": "acts of terrorism, civil unrest, riots",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any failure of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9866bdb9f080509f0405a6c89a61b0c876f5d443641cd27a6fb36ec2e9fe9e61",
+      "closure_id": "bf1c2d5d7cc12916d836dffa97f1f2a97279a322bf9c5bfe530f285770135f35",
+      "normalised_phrase": "any failure of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(ll)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "352f560a0667354b59fa42ef7965c603d7170d5159dfcc8ae3f8d5e9457007f5",
+      "closure_id": "d54926eea8ba896a936122242bd1b06b08420c3f8c0e7b29311749742c3aaa41",
+      "normalised_phrase": "any failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ba9161f0d5454e20546899180e4746467b3817461ccc6c3111546de18e3a858e",
+      "closure_id": "d84a2aed587afc3a5142feec08e9ea4869ebb7007915f36fb6953344c68abf3b",
+      "normalised_phrase": "any change in applicable Law, GAAP or any applicable accounting standards or any interpretation thereof following the date hereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e561d60340f2643d77601083b84519d8a219f7dff04c8ee5afa5a950f357e63b",
+      "closure_id": "e61c522b4a7ff7607d82ab4f26d6632315c841381955e0695ecd12fc77dc8426",
+      "normalised_phrase": "resulting from the negotiation, execution, announcement, performance, consummation or existence of this Agreement, the announcement, pendency or consummation of the Transactions or the performance of this Agreement (including (x) any proceeding threatened or initiated by any Person with respect to this Agreement or the Transactions and (y) the impact thereof on Parent and Parent Subsidiaries’ officers, employees, tenants, customers, suppliers, distributors, partners, lenders, investors or financing sources or Governmental Entities or others having business relationships with Parent and the Parent Subsidiaries); provided that this clause (e) shall not apply to any representation or warranty set forth in Section 4.3 or Section 4.4 (or any condition to any party’s obligation to consummate the Transactions relating to such representation and warranty)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(g)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "CLAUSE_LABEL_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "trade wars, tariffs or sanctions",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7d989c497a76eae4f714bcff3a67ef1171b825958414d1e862d91a62cb12c29f",
+      "closure_id": "ec45d9e06ecd31dda7c6de29820f83163acb9ec820afa54e9a16c99ae4ea918a",
+      "normalised_phrase": "trade wars, tariffs or sanctions",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "75be0dcc00e952f9895e9d223080842744790fc091d3c8a5a6301bf411a2d5fd",
+      "closure_id": "75c41d2a9e7e6119015af36fb7bf295dc3dc135fca26589eebf30b2307df574b",
+      "normalised_phrase": "has resulted in, or would reasonably be expected to have, a material adverse effect on the business, properties, condition (financial or otherwise), results of operations of the Company and the Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7b408e65f8af8f749aea3bd26445341ba2a2716ddc97c6c115efc2fdc1853c4f",
+      "closure_id": "7ad03797a3232c514e29af865aacbc98b0bc02d6714c01ae2c066805d84ab1ab",
+      "normalised_phrase": "has or would reasonably be expected to prevent or materially delay beyond the Outside Date the ability of Parent, Company Merger Sub, Parent OpCo, or OpCo Merger Sub to consummate the Transactions",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e9708e81915f8114e629d4bd2511ccf53f802dbfa1c9528049d700caae2aebdf",
+      "closure_id": "d5bb5e7194264efbb3bb9b6ebaac414cfc5bf8e3ab4290b8c2298bb1292af4bc",
+      "normalised_phrase": "has or would reasonably be expected to prevent or materially delay beyond the Outside Date the ability of the Company or the Partnership to consummate the Transactions",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3cb375260108a3b1134b2fb52187cc03248680e4b78f398f1435ec3fe60124cb",
+      "closure_id": "e3e8128e01744cd485f667a011eaad942c09dad95b6562459ca4130a9692ac7b",
+      "normalised_phrase": "has resulted in, or would reasonably be expected to have, a material adverse effect on the business, properties, condition (financial or otherwise), results of operations of Parent and the Parent Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6d8c1d857ed8dca195cc0e7d4dae1d8ae34fb80c5a9584a433f47d8c42c7101c",
+      "closure_id": "3721dd78352469391a4b635cf141e3e30c43c22f84a8660ceda725de3c9cb00c",
+      "normalised_phrase": "provided, further, that in the case of the foregoing clauses (a), (b), (c), (d), (g) or (k), except to the extent that such matters disproportionately and adversely impact the Company and the Company Subsidiaries, taken as a whole, relative to other similarly situated businesses in the industries in which the Company and the Subsidiaries conduct their business, in which case, the incremental disproportionate and adverse impact may be taken into account in determining whether there has been, or would reasonably be expected to be, a Company Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.12",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bbb1daf1fe0b0e8de6f74b1e957ca522535da5a781b2597fa0d4f6a9b6506cb9",
+      "closure_id": "f662795ac05cd887cc4151b3e8e6d56486d51fbe3bc4132ca00a2d46cc09b8f3",
+      "normalised_phrase": "provided, further, that in the case of the foregoing clauses (a), (b), (c), (d), (g) or (k), except to the extent that such matters disproportionately and adversely impact Parent and the Parent Subsidiaries, taken as a whole, relative to other similarly situated businesses in the industries in which Parent and the Parent Subsidiaries conduct their business, in which case, the incremental disproportionate and adverse impact may be taken into account in determining whether there has been, or would reasonably be expected to be, a Parent Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7800,
+          "end": 7823,
+          "excerpt": " to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.\n102\n(g) “Company Material Adverse Effect” means any effect, change, development, condition, occurrence or event (each,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 8524,
+          "end": 8557,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Company Mater",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 8632,
+          "end": 8655,
+          "excerpt": "ining whether there has been or would reasonably be expected to be a “Company Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 8950,
+          "end": 8963,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 8980,
+          "end": 8989,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 9012,
+          "end": 9021,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 9025,
+          "end": 9034,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 9039,
+          "end": 9055,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 9160,
+          "end": 9171,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 9398,
+          "end": 9413,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 10669,
+          "end": 10686,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11230,
+          "end": 11241,
+          "excerpt": "e of the Company and the Company Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 11558,
+          "end": 11573,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 11574,
+          "end": 11585,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11625,
+          "end": 11648,
+          "excerpt": " in price or failure to meet projections or forecasts has resulted in a Company Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 11744,
+          "end": 11767,
+          "excerpt": "such change or effect is not otherwise excluded from this definition of Company Material Adverse Effect)); (j) the identity of Parent or any of its Affiliates as the acquiror of the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 24902,
+          "end": 24913,
+          "excerpt": "the Company or the fact that the Company meets or exceeds internal or published projections, budgets, forecasts or estimates of revenues, earnings or other financial resul",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 27662,
+          "end": 27685,
+          "excerpt": "dments, modifications, addenda, renewals and extensions thereto.\n(ll) “Parent Material Adverse Effect” means any Effect that, individually or in the aggregate, (i) has resulted in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 28332,
+          "end": 28365,
+          "excerpt": "e or in combination, be deemed to constitute, nor shall any of the following be taken into account in determining whether there has been or would reasonably be expected to be a “Parent Materi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 28439,
+          "end": 28462,
+          "excerpt": "mining whether there has been or would reasonably be expected to be a “Parent Material Adverse Effect” under clause (i) above: (a) any change in applicable Law, GAAP or any applic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FORCE_MAJEURE",
+          "start": 28757,
+          "end": 28770,
+          "excerpt": "ess conditions or changes therein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or dise",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TERRORISM",
+          "start": 28787,
+          "end": 28796,
+          "excerpt": "ein (including trade wars, tariffs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 28819,
+          "end": 28828,
+          "excerpt": "fs or sanctions), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (includ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 28832,
+          "end": 28841,
+          "excerpt": "ns), force majeure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 28846,
+          "end": 28862,
+          "excerpt": "eure events, acts of terrorism, civil unrest, riots, epidemics or pandemics, or disease outbreak or changes in geopolitical conditions (including commencement, continuation or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:HOSTILITIES",
+          "start": 28967,
+          "end": 28978,
+          "excerpt": "al conditions (including commencement, continuation or escalation of war, armed hostilities or national or international calamity) or any escalation or worsening relating ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:CAPITAL_MARKETS",
+          "start": 29205,
+          "end": 29220,
+          "excerpt": "omestic or any foreign securities, equity, credit, real estate or financial and capital markets conditions, including interest rates and currency exchange rates; (d) any chang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:NATURAL_DISASTERS",
+          "start": 30468,
+          "end": 30485,
+          "excerpt": "ssion of any action expressly prohibited by this Agreement; (g) any act of God, natural disasters or weather developments, including earthquakes, hurricanes, tsunamis, typhoons,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31017,
+          "end": 31028,
+          "excerpt": "failure of Parent and the Parent Subsidiaries to meet any internal or published projections, estimates or forecasts for any period, any changes in credit ratings and any c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:FAILURE_TO_MEET",
+          "start": 31339,
+          "end": 31354,
+          "excerpt": "nt a determination that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:PROJECTIONS",
+          "start": 31355,
+          "end": 31366,
+          "excerpt": "on that any change or effect underlying such change in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent su",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31405,
+          "end": 31428,
+          "excerpt": "e in price or failure to meet projections or forecasts has resulted in a Parent Material Adverse Effect (to the extent such change or effect is not otherwise excluded from this defini",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 31523,
+          "end": 31546,
+          "excerpt": " such change or effect is not otherwise excluded from this definition of Parent Material Adverse Effect)); (j) the identity of the Company or any of its Affiliates as the target of th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "3594c8b6606a6df3ef19be25715d975bd5978af360ab8bb046105063c61f9bb7"
+}

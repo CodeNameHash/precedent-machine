@@ -568,7 +568,7 @@ already governed elsewhere.
 
 **Whether anything still references it.** `grep -rl "P9-ACCEPTANCE-
 DEFINITIONS" docs/codex-program/*.md lib/ scripts/ tests/` finds it cited
-from `docs/codex-program/EXECUTION-LEDGER.md` and `docs/codex-program/
+from `docs/parked/process-intelligence/EXECUTION-LEDGER.md` and `docs/codex-program/
 ROADMAP.md`, both outside this exercise's file constraint to check or
 correct; no code anywhere reads or depends on it.
 
@@ -850,6 +850,112 @@ abandoned code, but that is a hypothesis from a partial trace, not a
 verified conclusion the way the other fourteen entries in this document
 are. Treat this entry as a pointer to where the next graveyard pass should
 start, not as a finished assessment.
+
+---
+
+## 16. `TERMINATION_FEE_TRIGGER_PATH_SCHEMA_V3`, `FIXTURE_CONTRACT_INPUT_V39` -- built, validated, and deliberately not registered to serve
+
+**What it is.** `lib/canonical-v2/contract-bundle.js`'s `TERMINATION_FEE_
+TRIGGER_PATH_SCHEMA_V3` (the payment-timing split: `payment_trigger_event` +
+`payment_delay` in place of the frozen V2's single `payment_timing`),
+`FIXTURE_CONTRACT_INPUT_V39` (the fixture-contract version that carries V2
+and V3 side by side), `compileFixtureContractV39()`, and
+`lib/canonical-v2/termination-fee-trigger-path.js`'s schema-version-aware
+`validateTerminationFeeTriggerEffect` / `EFFECT_KEYS_V3`. Built PLAN.md Step
+3J (DECISIONS.md decision 5, "RULED 2026-08-07: split the field. Option B"),
+touched again by Step 3J1.
+
+**When and why it was built.** Two of QXO's `payment_timing` values could
+not express Modiv's real §7.3(b) drafting (decision 5's own account, and
+`docs/codex-program/notes/step-3j-payment-timing.md`). Splitting the field
+required a new schema version rather than editing the frozen V2 in place,
+because three files this step does not own (`shared-serving-row.js`,
+`canonical-contract-technical-relationship-validator.js`,
+`qxo-buyer-termination-fee-trigger-detail.js`) import `EFFECT_KEYS` and
+`TERMINATION_FEE_TRIGGER_PATH_SCHEMA_V2` directly, unmodified, and editing
+either in place would have broken all three.
+
+**Why it does not serve anything today, and why that is deliberate, not an
+oversight.** Three things are required for Canonical V2 to actually serve a
+V3-shaped trigger effect to a reviewer, and none of the three exists:
+
+1. **A metric-operation binding declaring `trigger_path_schema_version: 3`.**
+   Every binding in `V4_METRIC_OPERATION_BINDINGS` -- the set every fixture
+   version from V4 through V39 inherits unchanged -- pins
+   `trigger_path_schema_version: 2`. This is a `contract-bundle.js` edit
+   (owned by this step), but it is pointless on its own: nothing downstream
+   of it would ever construct an effect matching the new binding.
+2. **Registration in `FIXTURE_CONTRACT_FINGERPRINTS`,
+   `FIXTURE_SERVING_CONTRACT_FINGERPRINTS` and
+   `FIXTURE_CONTRACTS_BY_FINGERPRINT`.** Also a `contract-bundle.js` edit
+   (owned by this step). **Tried once, reverted once**: the first attempt at
+   Step 3J added `FIXTURE_CONTRACT_FINGERPRINT_V39` to these structures and
+   broke `tests/canonical-v2-contract-bundle-versions.test.js`'s exhaustive
+   equality check against the fingerprint list -- a test this step does not
+   own. Reverted rather than edited, because registering a fingerprint
+   nothing produces is a production-wiring decision (should Canonical V2
+   serve the new schema to a reviewer), not a bug in that test.
+3. **A producer that actually emits a V3-shaped effect** --
+   `payment_trigger_event` / `payment_delay` instead of `payment_timing`,
+   for a real deal. This is `lib/canonical-v2/native-producer/candidate-
+   resolution.js` (or `native-write-set-adapter.js`) territory, neither
+   owned by this step, and as of Step 3J1 neither has been changed to
+   produce one. `classifyPaymentTimingQuote` and
+   `migrateLegacyPaymentTiming` (`termination-product-projection.js`) exist
+   and are tested against real Modiv and QXO patterns, but nothing calls
+   them from inside the resolution/write-set pipeline; they are reachable
+   only from this file's own projection code (Step 3J1's guard wiring, see
+   `feeFeatures`) and from tests.
+
+Steps 1 and 2 are both inside this step's owned file and could be done
+today; step 3 is not, and doing 1-2 without 3 would register a fingerprint
+that still serves nothing real -- exactly the state the first attempt
+produced before it was reverted. **The correct order is 3 before 1-2**,
+which is why neither has been redone since the revert.
+
+**Whether anything still references it.** Fully wired into this file's own
+tests (`tests/canonical-v2-contract-bundle-v39.test.js`,
+`tests/canonical-v2-termination-fee-trigger-path-v3.test.js`,
+`tests/canonical-v2-payment-timing-split.test.js`,
+`tests/canonical-v2-payment-timing-guard-wiring.test.js`) and compiles,
+validates and round-trips correctly. `grep -rl
+"TERMINATION_FEE_TRIGGER_PATH_SCHEMA_V3\|FIXTURE_CONTRACT_INPUT_V39" lib/
+pages/ scripts/ --include="*.js"` outside `contract-bundle.js` and
+`termination-fee-trigger-path.js` themselves returns nothing -- no serving
+code, no producer, no route.
+
+**Recommendation: keep, and treat step 3 above as the actual blocker.**
+This is not dead code in the sense of "built and abandoned" -- it is a
+correct, tested, additive schema version one committed step (2026-08-07)
+past its own production wiring, waiting on a producer change outside this
+step's ownership boundary. The risk this entry exists to head off is the
+one `CLAUDE.md` opens with: a future pass reading "V3 exists and is
+tested" and concluding it already serves, or concluding the split needs to
+be rebuilt because nothing appears to consume it. Once a producer emits a
+V3-shaped effect for a real deal, steps 1 and 2 above are the entire
+remaining path to serving it.
+
+**Update, Step 3J2, same day.** A second, one-version-further instance of
+the identical pattern was added: `TERMINATION_FEE_TRIGGER_PATH_SCHEMA_V4`
+(the CONSUMMATION trigger event and the structured, measured `payment_delay`
+-- `{count, unit, bound_type}` in place of V3's two-value enum) and
+`FIXTURE_CONTRACT_INPUT_V40`. Same three requirements, same status: a
+metric-operation binding declaring `trigger_path_schema_version: 4` and
+registration in the three fingerprint structures are both inside
+`contract-bundle.js` (owned) but deliberately not done, for the same reason
+-- no producer emits a V4-shaped effect (Skechers' real CONSUMMATION pattern
+and structured delays are classified by `lib/canonical-v2/termination-product-projection.js`'s
+`classifyPaymentTimingQuoteV4` / `parsePaymentDelayQuote`, proven against the
+real, filed Skechers text in `tests/canonical-v2-skechers-payment-timing-v4
+.test.js`, but nothing calls that classifier from inside the resolution/
+write-set pipeline either). `FIXTURE_CONTRACT_FINGERPRINT_V40` is compiled
+and exported, not registered in `FIXTURE_CONTRACT_FINGERPRINTS` /
+`FIXTURE_CONTRACTS_BY_FINGERPRINT` -- `grep -rl
+"TERMINATION_FEE_TRIGGER_PATH_SCHEMA_V4\|FIXTURE_CONTRACT_INPUT_V40" lib/
+pages/ scripts/ --include="*.js"` outside `contract-bundle.js` and
+`termination-fee-trigger-path.js` returns nothing. Same recommendation:
+keep, treat "a producer that emits a V4-shaped effect" as the actual
+blocker, and do not register the fingerprint ahead of one.
 
 ---
 

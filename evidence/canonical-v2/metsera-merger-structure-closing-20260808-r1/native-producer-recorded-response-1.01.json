@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T10:56:17.013Z",
+  "section_reference": "1.01",
+  "note": "General extraction run: deal=metsera, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.01\",\"1.02\",\"1.03\",\"1.04\",\"1.05\",\"1.06\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"structure_assertions\":[{\"assertion_kind\":\"ACTIONS\",\"quote\":\"Merger Sub shall be merged with and into the Company at the Effective Time\",\"section_reference\":\"1.01\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"the separate corporate existence of Merger Sub shall cease and the Company shall continue as the surviving corporation\",\"section_reference\":\"1.01\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}"
+}

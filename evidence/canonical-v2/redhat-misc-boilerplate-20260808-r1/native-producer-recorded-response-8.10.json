@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:08:27.771Z",
+  "section_reference": "8.10",
+  "note": "General extraction run: deal=redhat, family=MISC_BOILERPLATE, section_references=[\"8.01\",\"8.02\",\"8.04\",\"8.05\",\"8.06\",\"8.07\",\"8.08\",\"8.09\",\"8.10\",\"8.12\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\"boilerplate_assertions\":[{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"Each party hereto hereby waives, to the fullest extent permitted by applicable Law, any right it may have to a trial by jury in respect of any suit, action or other proceeding directly or indirectly arising out of, under or in connection with this Agreement.\"},{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"certifies that no representative, agent or attorney of any other party has represented, expressly or otherwise, that such party would not, in the event of any action, suit or proceeding, seek to enforce the foregoing waiver\"}],\"mechanics\":[],\"open_world_candidates\":[]}"
+}

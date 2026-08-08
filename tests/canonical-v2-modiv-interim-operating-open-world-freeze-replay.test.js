@@ -250,7 +250,13 @@ test('resolveCandidates no longer throws on the real Modiv 5.1 IOC response, and
   // Measured against this exact fixture with both fixes applied -- see the
   // file header. Not a guess: re-derive by re-running this file if the
   // upstream fixture, prompt, or resolver logic ever legitimately changes.
-  assert.equal(resolution.resolved.length, 10);
+  // Re-measured after Stage 4 (V1 IOC category vocabulary consumed as
+  // second-chance corroboration, ioc-corroboration.js): five previously
+  // CATEGORY_UNCORROBORATED rows on this same fixture now corroborate
+  // through lib/vocab/ioc-categories.js and resolve (10 -> 15); review and
+  // open-world totals are unchanged in size because the five resolved rows
+  // are replaced in the queue by their own lexical-net companion rows.
+  assert.equal(resolution.resolved.length, 15);
   assert.equal(resolution.review_queue.length, 54);
   assert.equal(resolution.open_world.length, 46);
   // The specific mechanism that crashed: IOC mechanic items must actually be

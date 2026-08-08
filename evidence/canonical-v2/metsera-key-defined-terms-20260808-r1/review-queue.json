@@ -1,0 +1,297 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "aaee99b62d0777a2fc2df59e330fd79ea4a8b1404ba96d3bdcf292d13c4c9485",
+  "review_queue": [
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "a material breach of, or a material failure to perform, any representation, warranty or covenant set forth in this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bf7286138637b9762c56b2d7d816ae2808d9f3c2b4a14c39e2b089ded7e5ea65",
+      "closure_id": "5d4e5879bb0eb2ccf4f35e820b5440d338627567eee1d5c450a2b540b292a677",
+      "normalised_phrase": "a material breach of, or a material failure to perform, any representation, warranty or covenant set forth in this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7d976348e4ac051f8abf0913263aff9d3058299b27465a7713b8fd1246a92e06",
+      "closure_id": "e42571eebe0b17a0e83a5d5af870a23b634530838d3e0fad31334a3c1df2f26d",
+      "normalised_phrase": "in each case that is the consequence of an intentional act or intentional omission by a party with the actual knowledge that the taking of such act or failure to take such act would result in such material breach of this or material failure to perform",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5ff586618c44d2322befe1c288a097d2c78ee68d60f86dce9e9e4bb2f237b981",
+      "closure_id": "1876ae2ffc7a25db2db05ead6551d8c1fdd1ec3db6c53ffd1ec743cbd4e68784",
+      "normalised_phrase": "on terms which the Company Board determines, in good faith, after consultation with its outside counsel and financial advisor, would result in greater value to the stockholders of the Company from a financial point of view than the Transactions, taking into account all the terms and conditions (including all financial, regulatory, financing, conditionality, legal and other terms and conditions) of such proposal and this Agreement (taking into account amendments and modifications to this Agreement proposed by Parent pursuant to Section 5.02(e))",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ac3541f8156b3bd6a27ed1e8317a766c9519d1165630583e2433128c8343030b",
+      "closure_id": "23065f01f08733575b797fab773ebd2177335271c143870ad843a74d726fee76",
+      "normalised_phrase": "“Intervening Event” means a material event, fact, circumstance, development, occurrence or change not known to or reasonably foreseeable by the Company Board at the time the Company Board initially resolved to make the Company Board Recommendation (or if known or reasonably foreseeable, the consequences of which were not known or reasonably foreseeable), which event, fact, circumstance, development, occurrence or change becomes known to the Company Board prior to the date on which the Company Stockholder Approval is obtained",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ebc6d87a92f563a1f805c3e2e8ecbd76389b615ae4b84d6e04cba5bec0ea48b2",
+      "closure_id": "519ad66278999f13415073cf0f351a28b604c2e6f2b5a6658196453b0792eec4",
+      "normalised_phrase": "assets to which twenty percent (20%) or more of the revenues, earnings or assets of Company and Company Subsidiaries, taken as a whole and on a consolidated basis, are attributable",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "5.02",
+      "source_citation": "5.02(h)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "NON_LITERAL_PERCENT"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "twenty percent (20)% or more of the aggregate voting power of the capital stock of the Company or of the surviving entity or the resulting direct or indirect parent of the Company or such surviving entity",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "20909bf63e95102d1499ad87ffeab0584f58445bf0350b74e2fb31192afad067",
+      "closure_id": "526b0d34db24cec6ed7ab69106cfc67a683ccc3c98e3581ced1efe70f571f881",
+      "normalised_phrase": "twenty percent (20)% or more of the aggregate voting power of the capital stock of the Company or of the surviving entity or the resulting direct or indirect parent of the Company or such surviving entity",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "76304eb35b01104d7c02caac2d5e75dab31bf21a3056c69a07072853cccd5ce5",
+      "closure_id": "5bf73f563b606ec7ea0776ab6d65bf7667e0e2717ff7ef502159882af4df1b1b",
+      "normalised_phrase": "twenty percent (20%) or more (based on the fair market value thereof, as determined in good faith by the Company Board) of the assets (including capital stock of the Company Subsidiaries) of the Company and Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "767499339354bf62e3a1f2243ef73af40522dc26b01101b89fbe2f9397ad9f94",
+      "closure_id": "647243f2a63cbfb7cfa297bb7ac1569a9cbd18757ef8aacb3384e6a45b1ba218",
+      "normalised_phrase": "fifty percent (50%) or more (based on the fair market value thereof, as determined in good faith by the Company Board) of the assets (including capital stock of the Company Subsidiaries) of the Company and Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5084ba88c719fc42cdeb5707c378caad99ebed67656c0376f6350aea661dc797",
+      "closure_id": "6d1ec6baefd895f61bf1858bc6c48a8a9db2621928f9d1ce670d520b08cec021",
+      "normalised_phrase": "fifty percent (50%) or more of the aggregate voting power of the capital stock of the Company or of the surviving entity or the resulting direct or indirect parent of the Company or such surviving entity",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "820ffd898eea009bfc02a6cf549bb62a827792fdc545f2dac98faa2e1409d56a",
+      "closure_id": "73faa241ef5e57ca05b893bc91a6ef931da9f06d796361f4bb406d12ab9ed8db",
+      "normalised_phrase": "changes in the market price or trading volume of Company Common Stock",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e5fb1dc9257cd58762333da637f0c39cac72f3f0f877250f767bf51479b53734",
+      "closure_id": "9390ba0fb8be446683169f7ac9cb69729202404034b3326d392cd24863efe04c",
+      "normalised_phrase": "that, relative to the Transactions, is reasonably likely to be completed on the terms proposed, taking into account all financial, regulatory, financing, timing, conditionality, legal and other aspects of such proposal",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "49c647e87b9fa166f1e9aa03f10cd65663d438f4081e7c10ea57f29fd360b714",
+      "closure_id": "f93688a191d6e39ba56f3f36d894bb2c7a2eb91a6c7f8532c05d6e95f60f216a",
+      "normalised_phrase": "any Company Takeover Proposal",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING"
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(iii)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "NO_SUBSTITUTION_GRAMMAR"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except that all references to twenty percent (20%) in such definition shall be deemed references to fifty percent (50%)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0c18d6f00ef9f10d6c0913e67928061a0d0377e4b9e759b0bde85b400c617b67",
+      "closure_id": "cf36eb89a423c43e16da1fa347b5689f6ddd078bbef70f530fd2b84773ca0a23",
+      "normalised_phrase": "except that all references to twenty percent (20%) in such definition shall be deemed references to fifty percent (50%)",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR"
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "STANDARD_CODE_OUT_OF_ENUM"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "actual knowledge",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e4c6fa5184b9349f25ede7f2bf5a44f73d3c31ad837fc9ed205d05f7796b8af3",
+      "closure_id": "1113fec7d0f69a4db0be3b889f53f10afe6fd400eea0c4f0ae396d09da019d89",
+      "normalised_phrase": "actual knowledge",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f31c1a71d197e2d36db856d757b464f3f93732874136a40746c0d275c4d17f56",
+      "closure_id": "68aa938a6f78a6de3852e7efdd3ae9c445cb1bf18b75f476f0d8a68b036b5edb",
+      "normalised_phrase": "executive officers",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    }
+  ],
+  "review_queue_artifact_id": "727e80f81d8d068c1c1fd4c5ab3ad248bd735302730011c0c2efa634b7c98326"
+}

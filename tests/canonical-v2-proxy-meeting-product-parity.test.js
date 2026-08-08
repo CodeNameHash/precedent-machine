@@ -187,3 +187,39 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
   assert.equal(JSON.stringify(projection).includes('tenderOfferMinimumCondition'), false);
   assert.equal(JSON.stringify(projection).includes('boardChangeForSuperiorProposal'), false);
 });
+
+// ─────────────────────────────────────────────────────────────────────────
+// Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
+// meetingParty()'s `adjournmentRights[].party` field is COMPANY/PARENT-
+// shaped and rendered directly to a user. A JOINT_MULTI_PARTY_CAPACITY (or
+// any other unrecognised) capacity must never leak through as a raw
+// internal marker string. Built directly against
+// projectProxyMeetingProductSurfaces rather than the full extraction
+// pipeline, since no committed evidence reaches this path with a joint
+// capacity today (the point of the test is to prove the guard, not to
+// reproduce a live symptom).
+// ─────────────────────────────────────────────────────────────────────────
+
+test('JOINT_MULTI_PARTY capacity: adjournmentRights[].party is null, never the raw internal marker string', () => {
+  const resolution = {
+    resolved: [{
+      resolved_claim_definition_key: 'MEETING_ADJOURNMENT_MAX_COUNT',
+      concept_key: 'COV-MEETING',
+      section_reference: SECTION_REFERENCE,
+      party: { role: 'MEETING_ADJOURNMENT_CONTROL', value: 'Parent and Company Merger Sub', capacity: 'JOINT_MULTI_PARTY' },
+      provision_instance: { provision_instance_id: 'joint-adjournment' },
+      claim: {
+        claim_revision_id: 'joint-adjournment:MEETING_ADJOURNMENT_MAX_COUNT',
+        canonical_value: '2',
+        raw_value: 'Parent and Company Merger Sub may adjourn the Stockholders Meeting no more than two (2) such adjournments.',
+        attributes: {},
+      },
+    }],
+    open_world: [],
+  };
+  const projection = projectProxyMeetingProductSurfaces({ resolution, deal_id: 'proxy-meeting-joint-capacity' });
+  assert.equal(projection.cards.length, 1, 'the row itself must still project -- only the party field is refused');
+  const [card] = projection.cards;
+  assert.equal(card.features.adjournmentRights[0].party, null);
+  assert.equal(JSON.stringify(card.features).includes('JOINT_MULTI_PARTY'), false, 'the raw internal marker must never reach a served field');
+});

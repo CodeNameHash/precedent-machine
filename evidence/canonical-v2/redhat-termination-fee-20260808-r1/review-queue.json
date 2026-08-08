@@ -1,0 +1,222 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b2c96242976cd5e11848e129d28b87e01218e2e8425ff2fbbf33ad1317395047",
+  "review_queue": [
+    {
+      "section_reference": "5.06",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d4e148abb08082827d5e7681aeeb0e62d8a7d1166d1efd812615f170ee80f32a",
+      "closure_id": "d624ab65cd8dbb26f8542df1372af5565c9c1d568bddf51e094ceb8cc8c5dd58",
+      "normalised_phrase": "the Company shall pay (or cause to be paid) to Parent a fee equal to $975,000,000 (the “Termination Fee”) by wire transfer of same-day funds",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2451,
+          "end": 2466,
+          "excerpt": "e right to terminate this Agreement, Parent shall be entitled to receipt of any Termination Fee that would have been (or would have subsequently become) payable had Parent ter",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2636,
+          "end": 2651,
+          "excerpt": "is Agreement at such time. In no event shall the Company be required to pay the Termination Fee on more than one occasion.\n41\n(c) Notwithstanding any other provision of this A",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2812,
+          "end": 2827,
+          "excerpt": "reement, but subject to Section 8.11, the parties agree that the payment of the Termination Fee, as liquidated damages and not as a penalty, shall be the sole and exclusive mo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:LIQUIDATED_DAMAGES",
+          "start": 2832,
+          "end": 2850,
+          "excerpt": " to Section 8.11, the parties agree that the payment of the Termination Fee, as liquidated damages and not as a penalty, shall be the sole and exclusive monetary remedy available",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3145,
+          "end": 3160,
+          "excerpt": "in the event any such payment becomes due and payable, and, upon payment of the Termination Fee, the Company (and the Company’s affiliates and its and their respective direc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3479,
+          "end": 3494,
+          "excerpt": "nder this Agreement except that, Parent shall be entitled to the payment of the Termination Fee (to the extent owed pursuant to Section 5.06(b)) and to any Damages, to the ext",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3743,
+          "end": 3758,
+          "excerpt": "greement by the Company (as such Damages are determined taking into account any Termination Fee previously paid by the Company). If the Company fails promptly to pay the amoun",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "5.06",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c7c159748a7b18726d84989a692288d0c7ff2e691b91cb462c7314c788e9be81",
+      "closure_id": "e4c870f804a6c1f1fb1588941a3170d8c75da62857f7865671661fed8db58ccb",
+      "normalised_phrase": "prior to the date that is 12 months after such termination",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL"
+    },
+    {
+      "section_reference": "5.06",
+      "source_citation": "5.06(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by the Company pursuant to Section 7.01(f)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9c7df5796c84ad548bac781d1d6970357ada6cf85476fe69e42d6c33b54f764e",
+      "closure_id": "01f35d850a75605ccb3d6fd1e046d7314e3a0820b9cf2e2d86a8da698cd970af",
+      "normalised_phrase": "this Agreement is terminated by the Company pursuant to Section 7.01(f)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "5.06",
+      "source_citation": "5.06(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by Parent pursuant to Section 7.01(c)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c5a6fe2dd788db120c48b29e81d1ac6ae2ee1c0c7c5c7dd020769973665f9544",
+      "closure_id": "a8312db879c5ec28eabecbee8a99213867beef82dfca7fe0ab71ed3b93d7671a",
+      "normalised_phrase": "this Agreement is terminated by Parent pursuant to Section 7.01(c)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "5.06",
+      "source_citation": "5.06(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by either Parent or the Company pursuant to Section 7.01(b)(i), Section 7.01(b)(iii) or Section 7.01(d)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "30c8a9ed11ab176f5b770efc0ae677f0f36dd6b588a4b4e95c9f54421f6c7470",
+      "closure_id": "db8edc21a6380b91acf4aacf969fd444fc99091199162c1c734a49ac79ae899b",
+      "normalised_phrase": "this Agreement is terminated by either Parent or the Company pursuant to Section 7.01(b)(i), Section 7.01(b)(iii) or Section 7.01(d)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "7.01",
+      "source_citation": "7.01(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company has received a Superior Proposal after the date of this Agreement that did not result from a breach of Section 4.02 or any other provision of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d3694d671fe87d9b35d7d1a34714a84233f032c9fa65d115ccd35d9dc63dad92",
+      "closure_id": "bbff3506764dcdddbf9a92cdf60792b23512748f1c450c55c9408dd1aae2c6bd",
+      "normalised_phrase": "the Company has received a Superior Proposal after the date of this Agreement that did not result from a breach of Section 4.02 or any other provision of this Agreement",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "5.06",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1140e9aaf8379d96f0bb7cfa5ab5bcf37e25bb2b752cf76bad0bc1421766f311",
+      "closure_id": "7f1a17c89b140e14c814f7782a5de2ac2461a0fead3c82d3c26e1c8284b99c7f",
+      "normalised_phrase": "any pre-termination willful breach of this agreement by the company",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    },
+    {
+      "section_reference": "5.06",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9c5f995470aa7eb91d7f46993c25293f94e1041c46ae499b989ea3d4f8c296c0",
+      "closure_id": "ac509f465dd4bedeb97b1ff4ca3d464e9ac5951bee1c5aea2864e74af25c64f7",
+      "normalised_phrase": "shall be the sole and exclusive monetary remedy available to the parent, sub and their respective affiliates with respect to this agreement and the transactions contemplated by this agreement",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    }
+  ],
+  "review_queue_artifact_id": "6240475d712222c92b88fea59168bcf1e71fc04b8a4666dde636ddbe4df5ef75"
+}

@@ -369,6 +369,55 @@ test('grounds-to-amount mapping: each Modiv Company Base Amount limb resolves wi
 });
 
 // ─────────────────────────────────────────────────────────────────────────
+// PLAN.md Step 3I ("payment timing"). The Modiv-specific payment-timing
+// sidecar (modiv-termination-fee-payment-timing-parser.js), replayed
+// against this SAME committed run -- the same six fee-trigger branches the
+// grounds-to-amount test above already exercises, so the branch-presence
+// gate that fires this sidecar is proven against real, dispatched data,
+// not a hand-built fixture.
+// ─────────────────────────────────────────────────────────────────────────
+
+test('payment timing: the real Modiv run yields one payment-timing fact per branch, verbatim and cited', async () => {
+  const { resolution } = await runReplay();
+
+  assert.ok(Array.isArray(resolution.termination_fee_payment_timings), 'the sidecar must fire on this real, all-six-branches-present run');
+  const byBranch = new Map(resolution.termination_fee_payment_timings.map((row) => [row.triggering_branch, row]));
+  assert.deepEqual(
+    [...byBranch.keys()].sort(),
+    ['7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)', '7.3(b)(iv)', '7.3(b)(v)', '7.3(c)'],
+  );
+
+  for (const branch of ['7.3(b)(i)', '7.3(b)(iv)', '7.3(b)(v)']) {
+    const row = byBranch.get(branch);
+    assert.equal(row.fee_side, 'SELLER');
+    assert.equal(row.payment_timing_quote, 'within two (2) Business Days after the date of such termination by Parent');
+    assert.deepEqual(row.source_citations, [branch]);
+  }
+  const branchTwo = byBranch.get('7.3(b)(ii)');
+  assert.equal(branchTwo.fee_side, 'SELLER');
+  assert.equal(branchTwo.payment_timing_quote, 'prior to or substantially concurrently with such termination by the Company');
+  const branchThree = byBranch.get('7.3(b)(iii)');
+  assert.equal(branchThree.fee_side, 'SELLER');
+  assert.equal(
+    branchThree.payment_timing_quote,
+    'within two (2) Business Days after the earlier of entry into a definitive agreement relating to the Company Acquisition Proposal referred to in clause (B) of Section 7.3(b)(iii) and consummation of such Company Acquisition Proposal',
+  );
+  const branchC = byBranch.get('7.3(c)');
+  assert.equal(branchC.fee_side, 'BUYER');
+  assert.equal(branchC.payment_timing_quote, 'within two (2) Business Days after the date of such termination by the Company');
+
+  // Each row's own id is content-addressed and every row is frozen -- the
+  // sidecar's own contract (modiv-termination-fee-payment-timing-parser.js),
+  // re-checked here against the REAL resolved output, not only its own
+  // isolated unit tests.
+  for (const row of resolution.termination_fee_payment_timings) {
+    assert.equal(row.schema_version, 'TERMINATION_FEE_PAYMENT_TIMING/V1');
+    assert.ok(typeof row.termination_fee_payment_timing_id === 'string' && row.termination_fee_payment_timing_id.length > 0);
+    assert.ok(Object.isFrozen(row));
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────
 // Acceptance criterion 2: no quarantined relationship, achieved by not
 // minting a dangling one.
 // ─────────────────────────────────────────────────────────────────────────

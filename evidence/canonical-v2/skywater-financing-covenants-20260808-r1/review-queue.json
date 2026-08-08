@@ -1,0 +1,49 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3850a3d71d4e94653c5ae1b74e60606d898ba7bd0282a8d23ee2ea5954a37339",
+  "review_queue": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(b)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e0950490c9a2ecb53b7397e40e167ee305411acae6d2ea9729c30e5f2e3fb23b",
+      "closure_id": "72ecdd517a880a0b586292a3ea59eaf8287fa61d60c08bb3e88c96de6860eedd",
+      "normalised_phrase": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING"
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8f5758a62d4b3c8d24cc3c09193ff75b3622e70af8d938b10466fdffc765db5d",
+      "closure_id": "dfba1b878373149d4c661b753df67d6bc08def27dfb50c2f3adf7315b89fa6eb",
+      "normalised_phrase": "at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF"
+    }
+  ],
+  "review_queue_artifact_id": "25bd862bc02d764944fcd8a9e1567072bbc346a10f181e4e2189264d0608efef"
+}

@@ -1,0 +1,1082 @@
+{
+  "resolved": [
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(a)",
+      "citation_context": {
+        "parent_section_reference": "9.1",
+        "child_section_reference": "9.1(a)",
+        "parent_chapeau_quote": "Section 9.1 Termination. This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Effective Time (notwithstanding the obtaining of the Company Stockholder Approval):",
+        "child_clause_quote": "(a) by mutual written consent of the Company and Parent;"
+      },
+      "governing_context_quote": "(a) by mutual written consent of the Company and Parent;",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-MUTUAL",
+      "party": {
+        "role": "TERMINATION_RIGHT_HOLDER",
+        "value": "the Company and Parent",
+        "capacity": "EITHER_PRINCIPAL_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "3b2c17590b82988805ac2b21ebe342e9954d68f4f9857aff8e67c175905b1950",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 284667,
+        "absolute_end": 290065,
+        "concept_key": "TERMR-MUTUAL",
+        "party": {
+          "role": "TERMINATION_RIGHT_HOLDER",
+          "value": "the Company and Parent",
+          "capacity": "EITHER_PRINCIPAL_PARTY"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "58d6fa25fe610bd738647697a461d5b6b6a95c81671c93c3332a3eee84b53253",
+        "provision_instance_id": "181e62cbb988c42d89fcb1f74d22f727ee9624b218090a587e1ee5ea8ef91c91",
+        "closure_id": "23d0d1119b7a872d1dd64f7284ed2fb5a2b437c9bfcc5694d65d09d653c31f93"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "44a3e4071b5c9ec6105b163767db7d2d7c396ae9daa610c79e6192658e62b7fa",
+        "claim_occurrence_id": "595ca7667b98d1bf117733b999f515666e520a1fbe7553a34ddd668f06a2c6c8",
+        "subject_occurrence_id": "181e62cbb988c42d89fcb1f74d22f727ee9624b218090a587e1ee5ea8ef91c91",
+        "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "by mutual written consent of the Company and Parent",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fc5b47b38d9fefa84fa0719c0abff2dccf8e210303c18f44e9d6275982590ded"
+        ],
+        "attributes": {
+          "section_reference": "9.1",
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "MUTUAL_CONSENT",
+          "terminating_party_scope": "EITHER_PARTY",
+          "terminating_party": "the Company and Parent",
+          "deadline_term": null,
+          "day_kind": null,
+          "period_kind": null,
+          "terminating_party_ref": "the Company and Parent",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RIGHT_GRANT",
+          "trigger_kind": "MUTUAL_CONSENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fc5b47b38d9fefa84fa0719c0abff2dccf8e210303c18f44e9d6275982590ded",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e348103233732b48b6c42e2b1678bce71239815e75ec44f912be5559f47431cd",
+            "document_ordinal": 0,
+            "absolute_start": 204,
+            "absolute_end": 255,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "333bf4e3a998a589e619490dee3b4f2db84422f7362e9ca032974290b006d850"
+      },
+      "compiled_candidate": {
+        "section_reference": "9.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "9.1",
+          "normalized_citation": "9.1",
+          "derived_citation": "9.1(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "44a3e4071b5c9ec6105b163767db7d2d7c396ae9daa610c79e6192658e62b7fa",
+            "claim_occurrence_id": "595ca7667b98d1bf117733b999f515666e520a1fbe7553a34ddd668f06a2c6c8",
+            "subject_occurrence_id": "181e62cbb988c42d89fcb1f74d22f727ee9624b218090a587e1ee5ea8ef91c91",
+            "claim_definition_key": "TERMINATION_RIGHT_GRANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "by mutual written consent of the Company and Parent",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fc5b47b38d9fefa84fa0719c0abff2dccf8e210303c18f44e9d6275982590ded"
+            ],
+            "attributes": {
+              "section_reference": "9.1",
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "MUTUAL_CONSENT",
+              "terminating_party_scope": "EITHER_PARTY",
+              "terminating_party": "the Company and Parent",
+              "deadline_term": null,
+              "day_kind": null,
+              "period_kind": null,
+              "terminating_party_ref": "the Company and Parent",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RIGHT_GRANT",
+              "trigger_kind": "MUTUAL_CONSENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fc5b47b38d9fefa84fa0719c0abff2dccf8e210303c18f44e9d6275982590ded",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e348103233732b48b6c42e2b1678bce71239815e75ec44f912be5559f47431cd",
+                "document_ordinal": 0,
+                "absolute_start": 204,
+                "absolute_end": 255,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "333bf4e3a998a589e619490dee3b4f2db84422f7362e9ca032974290b006d850"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TERMINATION_RIGHT",
+            "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+            "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+            "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+            "extraction_provenance_id": "37b688a75acfca284c134c441b7a79b5d4a36150e74b78d87e5d9811131d4396"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 10,
+        "materiality_label": "TERMINATION_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "9.1",
+          "normalized_citation": "9.1",
+          "derived_citation": "9.1(a)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "in order to enter into a definitive written agreement providing for a Superior Proposal",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6b1840f974c2c8267d3e33071175e432ae2a8a742702e315de9cdc49fc64e02f",
+      "closure_id": "2650c72ef5266cc9af405935ea8a32720b090cddc29dfadac3b6c6385048ec13",
+      "normalised_phrase": "in order to enter into a definitive written agreement providing for a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-MUTUAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "44a3e4071b5c9ec6105b163767db7d2d7c396ae9daa610c79e6192658e62b7fa",
+      "closure_id": "333bf4e3a998a589e619490dee3b4f2db84422f7362e9ca032974290b006d850",
+      "normalised_phrase": "by mutual written consent of the Company and Parent",
+      "attachment_position": null,
+      "concept_family": "TERMR-MUTUAL"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at a duly held meeting of stockholders or any adjournment thereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0520f56df2d2356005d380f7d13e32494222b72a12cc053a0c561dfccfd9a91a",
+      "closure_id": "4a8b0ba8fd20e7288334649a4931fe644d8cd6e795f7d9ad00ee5b2beab3e417",
+      "normalised_phrase": "if the Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at a duly held meeting of stockholders or any adjournment thereof",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the Mergers have not been consummated by the twelve-month anniversary of the date of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "753d7d0823a67c06430124ea2f451351b4047200cd85ebf7db8d316ea2dc2640",
+      "closure_id": "8d19e65904472e7fd923f2ed15cf1b9226d53b0287dc1a709e1a1749ef88cab0",
+      "normalised_phrase": "if the Mergers have not been consummated by the twelve-month anniversary of the date of this Agreement",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(d)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if there shall have been a Change in the Company Recommendation, whether or not permitted by the terms hereof (or the Board of Directors of the Company or any committee thereof shall resolve to effect a Change in the Company Recommendation)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7585fa6eeedf39b8b831b0e63814f0f3618662122b04adbeeedd4280b362d58b",
+      "closure_id": "b1857fe82d6f383ffc53eb027fecc9592fc3673245c9b4bdfa9e8cd2b70b57bf",
+      "normalised_phrase": "if there shall have been a Change in the Company Recommendation, whether or not permitted by the terms hereof (or the Board of Directors of the Company or any committee thereof shall resolve to effect a Change in the Company Recommendation)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such breach shall be incapable of being cured or, if capable of being cured, shall not have been cured within 30 days after written notice thereof shall have been received by the party alleged to be in breach",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bb3c3522fa81c87045eeb2543228add332f2fe9b98327c14d3101ef65f792b10",
+      "closure_id": "c3f66268186bbe6f3afe1a53a80b557e9ebe58cbaa9317158fb330ad7ac5f5fa",
+      "normalised_phrase": "such breach shall be incapable of being cured or, if capable of being cured, shall not have been cured within 30 days after written notice thereof shall have been received by the party alleged to be in breach",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if there shall be any law or regulation that makes consummation of the Mergers illegal or otherwise prohibited which is enacted or enforced by a Governmental Authority or if any judgment, injunction, order or decree enjoining or otherwise prohibiting Parent or the Company from consummating the Mergers is entered by a Governmental Authority",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e1dda8201f88c01d8d77b80813162a0916cc3ec4c3cf5351bfa273833d04c317",
+      "closure_id": "cb8d76f6997873a6d7f494252801452001fa2448e5f00d30d15b5cb5742b1e06",
+      "normalised_phrase": "if there shall be any law or regulation that makes consummation of the Mergers illegal or otherwise prohibited which is enacted or enforced by a Governmental Authority or if any judgment, injunction, order or decree enjoining or otherwise prohibiting Parent or the Company from consummating the Mergers is entered by a Governmental Authority",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the Mergers have not been consummated by the twelve-month anniversary of the date of this Agreement (the “End Date”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ce412d90e16cab433ad068740c1a4524b07338dc21e5f7fd82cabba5b3ed3c89",
+      "closure_id": "df50d73eea0e686faf26c53a674e044b16844400cdd1d8502d05eee9d3bb83e5",
+      "normalised_phrase": "if the Mergers have not been consummated by the twelve-month anniversary of the date of this Agreement (the “End Date”)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if there shall have been a breach by the other of any of its representations, warranties, covenants or agreements contained in this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8681053a5e188e6b81896c9a8286fa1239500b4299ce0af79d5eea9391400749",
+      "closure_id": "ebc200fd555be49ae0e9e6538d6e8a25d648ac25cff0796d626a0170a7cc145b",
+      "normalised_phrase": "if there shall have been a breach by the other of any of its representations, warranties, covenants or agreements contained in this Agreement",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "if on such date, the conditions to the Closing set forth in Section 8.1(b) or Section 8.1(c) (where the failure of such condition set forth in Section 8.1(c) to be satisfied is a result of any law, regulation, judgment, injunction, order or decree arising under any Antitrust Law) shall not have been satisfied, but all other conditions to the Closing set forth in Article VIII shall have been satisfied or validly waived (except for those conditions that by their terms must be satisfied at the Closing; provided, that such conditions are capable of being satisfied at the Closing), then the End Date shall be automatically extended for a period of 90 days",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "OUTSIDE_DATE_EXTENSION: First automatic 90-day extension of the End Date, available only if the Section 8.1(b)/(c) antitrust-related conditions remain unsatisfied while every other Article VIII closing condition is satisfied or validly waived.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "OUTSIDE_DATE_EXTENSION",
+          "section_reference": "9.1",
+          "extension_mode": "AUTOMATIC",
+          "electing_party": null,
+          "consent_requirement_quote": null,
+          "trigger_quote": "the conditions to the Closing set forth in Section 8.1(b) or Section 8.1(c) (where the failure of such condition set forth in Section 8.1(c) to be satisfied is a result of any law, regulation, judgment, injunction, order or decree arising under any Antitrust Law) shall not have been satisfied, but all other conditions to the Closing set forth in Article VIII shall have been satisfied or validly waived",
+          "maximum_exercises": null,
+          "extension_period_quote": "extended for a period of 90 days",
+          "explicit_clause_cross_reference": {
+            "clause_reference": "Section 8.1(b) or Section 8.1(c)",
+            "quote": "Section 8.1(b) or Section 8.1(c)"
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "41010ff0ea870ac0df5d7e32b656deee240761cd7fe978d8f39e4343824229cc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "701fc480789342dcafe4ed489f8a9b463580a54cf330c7050931d4c37f997116",
+          "document_ordinal": 0,
+          "absolute_start": 442,
+          "absolute_end": 1099,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2a2006fd9be92e168b5ae1f5f90a4d7f75f7b719acf41363a994849e9ea4bf1f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "if on such date as extended pursuant to the foregoing clause (A), the conditions to the Closing set forth in Section 8.1(b) or Section 8.1(c) (where the failure of such condition set forth in Section 8.1(c) to be satisfied is a result of any law, regulation, judgment, injunction, order or decree arising under any Antitrust Law) shall not have been satisfied, but all other conditions to the Closing set forth in Article VIII shall have been satisfied or validly waived (except for those conditions that by their terms must be satisfied at the Closing; provided, that such conditions are capable of being satisfied at the Closing), then the End Date shall be automatically extended for an additional period of 90 days",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "OUTSIDE_DATE_EXTENSION: Second automatic 90-day extension of the End Date (yielding the Extended End Date), available if the same Section 8.1(b)/(c) antitrust-related condition shortfall persists after the first extension.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "OUTSIDE_DATE_EXTENSION",
+          "section_reference": "9.1",
+          "extension_mode": "AUTOMATIC",
+          "electing_party": null,
+          "consent_requirement_quote": null,
+          "trigger_quote": "the conditions to the Closing set forth in Section 8.1(b) or Section 8.1(c) (where the failure of such condition set forth in Section 8.1(c) to be satisfied is a result of any law, regulation, judgment, injunction, order or decree arising under any Antitrust Law) shall not have been satisfied, but all other conditions to the Closing set forth in Article VIII shall have been satisfied or validly waived",
+          "maximum_exercises": null,
+          "extension_period_quote": "extended for an additional period of 90 days",
+          "explicit_clause_cross_reference": {
+            "clause_reference": "Section 8.1(b) or Section 8.1(c)",
+            "quote": "Section 8.1(b) or Section 8.1(c)"
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8bbedb8779f22a5fad6b5608541d3f6c21c1a05a18a19510c53c4ed3c62de221",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2427e546ae4068fc49afbbfdfbe8a105a6a4907e6419a29f36a4acaf8e146c70",
+          "document_ordinal": 0,
+          "absolute_start": 1108,
+          "absolute_end": 1826,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "24258586aafa67bb2d6cf0966a2620142555d36d260a8122db9bcf6f7d5de105",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "such judgment, injunction, order or decree shall become final and nonappealable",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RESTRAINT_FINALITY: The legal restraint must become final and nonappealable before either party may terminate on that ground.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "RESTRAINT_FINALITY",
+          "section_reference": "9.1",
+          "finality_terms_present": [
+            "FINAL",
+            "NONAPPEALABLE"
+          ],
+          "other_finality_terms": []
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0dfc0a44fafc9d17b41fc57c684cc1e508115cdd4d62ca6dcc283cd0ddb3cc51",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "84cea3884e2928b80cdb380021bad16bb022a838c7af8830bdedb4b61527975c",
+          "document_ordinal": 0,
+          "absolute_start": 2836,
+          "absolute_end": 2915,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "604339dbda3ea4e658cdce5038ee11d925586aff9cf333d8862e365f2b560997",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "prior to receipt of the Company Stockholder Approval",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRE_VOTE_LIMIT: Parent's recommendation-change termination right is exercisable only before the Company Stockholder Approval is obtained.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRE_VOTE_LIMIT",
+          "section_reference": "9.1"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b3dac63607256382f1d4a87f4a7dfdd94e6011a217c0e81f1709fe8256f34bd2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "98da58ce3c56f5da197de6fe2510c835d4cf9ecaf5d6f8c7f69d2ebb5ccef59c",
+          "document_ordinal": 0,
+          "absolute_start": 3260,
+          "absolute_end": 3312,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ea7861bd6d0cdc9c525babc1ed3fc329c7abb2ff92a3f212f763731a7c43d23b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "which breach would result in the failure to satisfy one or more of the conditions set forth in Section 8.2(a) (in the case of a breach by the Company) or Section 8.3(a) (in the case of a breach by Parent)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "BREACH_STANDARD: The breach termination right requires the breach to be material enough to cause the failure of the closing condition in Section 8.2(a) (breach by the Company) or Section 8.3(a) (breach by Parent).",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "BREACH_STANDARD",
+          "section_reference": "9.1"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eeabd8f21ee1ff66ad166592a4067a06e75ab8b81d3b2debb2d91fec432dac5e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "553f2097a656fbe33b210a11e5a85d1e9c2e73647c3d5e1cb09a77dd5f58ae10",
+          "document_ordinal": 0,
+          "absolute_start": 3736,
+          "absolute_end": 3940,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8416be45e5050e60ae64bbb3c8f1b4bd921e00e6b41d39c1850ffcf8351c5970",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "at any time prior to receipt of the Company Stockholder Approval",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "PRE_VOTE_LIMIT: The Company's superior-proposal termination right is exercisable only before the Company Stockholder Approval is obtained.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "PRE_VOTE_LIMIT",
+          "section_reference": "9.1"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "46e02f53b7c53e179925559a4a5a95c20c71697534a1ca972d6abae118734e8a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "245e1231986af82aaf8900ace67c8b6bbe5507bbc9f80a43436055eac4620ece",
+          "document_ordinal": 0,
+          "absolute_start": 4196,
+          "absolute_end": 4260,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c4df2cae1bd40e31780387a312e2f540be24520732e1fe4a3e3ff0640cbd2405",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "This Agreement may be terminated and the Mergers may be abandoned at any time prior to the Effective Time (notwithstanding the obtaining of the Company Stockholder Approval)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A general chapeau stating termination rights remain available even after the Company Stockholder Approval is obtained; resembles a PRE_VOTE_LIMIT but states the opposite of a limit and frames every clause rather than one right.",
+        "nearest_concept": "PRE_VOTE_LIMIT"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "26f6ae18657d123df2776bdde4cfd9f5a727bdfdca5c683189ae0557e7b00422",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e742665e6e7a189a933af78dada4b4bd0be269d0af965200ddc44bfde9d36033",
+          "document_ordinal": 0,
+          "absolute_start": 25,
+          "absolute_end": 198,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "30d23ed56c413c74d272dca2c18ac282c16503e6c4f882d49d2c2ac59a986b98",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "provided, however, that the right to terminate this Agreement under this Section 9.1(b)(i) shall not be available to any party whose failure to fulfill any obligation under this Agreement has principally caused or resulted in the failure of the Effective Time to occur on or before the End Date or the Extended End Date, as applicable",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A carve-out disqualifying a party whose own failure caused the delay from exercising the End Date termination right; not itself a right grant, deadline, or cure period.",
+        "nearest_concept": "RIGHT_GRANT (OUTSIDE_DATE) qualification"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "aa8f7fd2e3c99178b8b49854d75a52ad0694ecf3a53a712fb5690405910df7e0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b0ef885d4eb222ce3d4851b939e3dfcce09d7cf6562bc3fb58e3ed01aa45627",
+          "document_ordinal": 0,
+          "absolute_start": 1924,
+          "absolute_end": 2258,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5624714e69348b367be6962e8a3b3c7749b5c6d86f14c47f18fcd546004aafbb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "provided, that the right to terminate this Agreement under this Section 9.1(c) shall not be available to any party whose failure to fulfill any obligation under Section 7.1 has principally caused or resulted in the imposition of such legal restraint or the failure of such legal restraint to be resisted, resolved or lifted",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A carve-out disqualifying a party whose own failure caused or failed to resolve the legal restraint from exercising the legal-restraint termination right; not itself a right grant, deadline, or cure period.",
+        "nearest_concept": "RIGHT_GRANT (LEGAL_RESTRAINT) qualification"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1cdf10daf21cc898b2a7d299b9b7a2319f1272908193dfc195b297245155c954",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "df6e63294f35689de44f63f98ad7d3713891638573c4e7c42f4ce68a11c80444",
+          "document_ordinal": 0,
+          "absolute_start": 2917,
+          "absolute_end": 3240,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "35ab27e9bd4312494abd4fa60d3a532e7e04091075d3658dda9513b707a80920",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company has received a Superior Proposal after the date of this Agreement that did not result from a breach of Section 5.2 or Section 5.3, (ii) the Company has complied with Section 5.3(b)(i) with respect to such Superior Proposal, (iii) concurrently with, and as a condition to, any such termination the Company pays or causes to be paid to Parent (or its designee) the Termination Fee pursuant to Section 10.5 and (iv) the Board of Directors of the Company has authorized the Company to enter into, and the Company concurrently enters into, a definitive written agreement providing for such Superior Proposal",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A set of conditions precedent to exercising the Company's superior-proposal termination right (no-breach sourcing of the proposal, compliance with the matching procedure, concurrent termination-fee payment, and board authorization); not itself a right grant, deadline, cure period, or one of the wave-B evidence surfaces.",
+        "nearest_concept": "RIGHT_GRANT (SUPERIOR_PROPOSAL) qualification"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6ca45158ac83fb6c4d1ca791f304a72bf1a1ca13e6db196034bfcff27f2b7796",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e7407744d4902075c94250f5073c0d4ceb75505b84cf1b456e0e48d6a113f6ae",
+          "document_ordinal": 0,
+          "absolute_start": 4369,
+          "absolute_end": 4983,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "035a1bbeb5e8b0a7b9961c3136043213cf6f31030a3b497a0e5c85ddec404716",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.1",
+      "source_citation": "9.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The party desiring to terminate this Agreement pursuant to clause (b), (c), (d), (e) or (f) of this Section 9.1 shall give written notice of such termination to the other party in accordance with Section 10.1, specifying the provision hereof pursuant to which such termination is effected.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A general procedural requirement to give written notice specifying the operative termination clause; no day count is stated, so it does not fit the CURE_PERIOD (NOTICE) shape.",
+        "nearest_concept": "CURE_PERIOD (NOTICE) -- but no day count is stated"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4bd141465c39f8c363c4a37277efec049968c23ecff2afbd442448f8409856d0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f2634df6eef0dee96b4773fddf237996abfeae65070b4714cf32008458cc3734",
+          "document_ordinal": 0,
+          "absolute_start": 5108,
+          "absolute_end": 5397,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "bee30bab01134c1d8a33a42a9e8089b85dd6120e4e20c1dc43a093f27f5f61d2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "8f9a895c789a1f9d3115ddf8d27c0f9fc863889976e47d86d6fda0123a6ad563",
+        "producer_receipt_id": "0c55ffb82df1c4bef6cd33045097d6575421a97c33fc8e027978b1c9e6b1ebd9",
+        "governed_scope_digest": "445adaf9e042ffc6884811f738698c24c2a227480d9634cb81b7c818af4d3684",
+        "extraction_provenance_id": "ae91e5ac7e29d4abd8ee2ac74c106a378dba10267598883606181d5e84644bdb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.2",
+      "source_citation": "9.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the agreements contained in this Section 9.2, in Section 10.4, Section 10.5 and Section 10.6, and in the Confidentiality Agreement shall survive the termination hereof",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States which provisions survive termination (a general survival clause naming cross-referenced sections), not a termination right, outside date, cure period, or any Wave B surface",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9d5a30427843564fcf40db760b07d90f269918d0ac368a7e208bd79cbb85b8c8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa293b1632702a7917563948acaa296e9e490d2781f922dd38219fec4792a8b9",
+          "document_ordinal": 0,
+          "absolute_start": 209,
+          "absolute_end": 376,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "14cef3ea929d47ba5ce539e591a69ade0a972b4af1db316ccc2b2baf895479c4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cd817a2473f347223a7074a9545847e0ead890adacb8de59fd5cd3ea00458f4e",
+        "producer_receipt_id": "934e9ca0f888a6665e965052fa8d80e44a5466a962d7c9ea2cb48727b20f3f7d",
+        "governed_scope_digest": "61b84ca3727c6c51c7db8680073737aa1b0bab8785b96312e87d23986278267a",
+        "extraction_provenance_id": "c9f6706772513cfe8fa1ba3f6f1474d34bd8237e5aafc75d8401af6a157706af"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.2",
+      "source_citation": "9.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "no such termination shall relieve any party of any liability or damages resulting from any material and intentional breach by that party of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a post-termination liability carve-out keyed to a 'material and intentional' breach standard, but this qualifies surviving liability after termination rather than the breach standard governing a termination right or closing condition",
+        "nearest_concept": "BREACH_STANDARD"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cc300bd5386edc7b400fb2714a2334295527b6f944e225ff3af9ae38c017b130",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "178485dad3c7719715d52c9a98d485d4e81540a248ccedc87cfe313cb528f598",
+          "document_ordinal": 0,
+          "absolute_start": 385,
+          "absolute_end": 539,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f08e4ba63c08339eb154617cf96d348e47e6351dd562ad24738289be43303940",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "cd817a2473f347223a7074a9545847e0ead890adacb8de59fd5cd3ea00458f4e",
+        "producer_receipt_id": "934e9ca0f888a6665e965052fa8d80e44a5466a962d7c9ea2cb48727b20f3f7d",
+        "governed_scope_digest": "61b84ca3727c6c51c7db8680073737aa1b0bab8785b96312e87d23986278267a",
+        "extraction_provenance_id": "c9f6706772513cfe8fa1ba3f6f1474d34bd8237e5aafc75d8401af6a157706af"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "c007cbefbd846f70c7e95b9c30ef24c3db5b6409a3a118917d8c60eda72a7e4c",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 22,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 9,
+      "open_world": 13,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "b94f131156e8c89abd1764bab02d5148df0c9da3c348367f690d349b3ca8a316"
+  }
+}

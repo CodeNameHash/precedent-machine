@@ -1,0 +1,392 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "5.10"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "5.10",
+      "section_id": "0c13fa57c60b740263772376671c152af67f7fcae5051d327f130147488ac5fb",
+      "parent_section_id": "bb1bf77bd0520f64dba9256ece1aad278429f50897ff19a87aea337a10679151",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 288832,
+      "end": 290051,
+      "text_sha256": "b121d223dceccdacf5a14857adf0ada3a6e5a94ef183eeec37beb491fbe069da",
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-dividends/v1",
+      "prompt_version": 1,
+      "prompt_digest": "e8aef6fc39255d91fb61fcd4ac02cb217b6522c0447950efaf17b498c2ae097e",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "replay(evidence/canonical-v2/modiv-dividends-20260806)",
+        "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+        "input_scope_digest": "6d923d80ba3a211acee63c80ce46ad65dfdb3cef6d9e4ff7d544731b31c04a7f",
+        "proposal_count": 3,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "5.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.10",
+        "normalized_citation": "5.10",
+        "derived_citation": "5.10"
+      },
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "77c24f61b3093d04e64edb7c129a746b6ccaeb9a2b4f5bfd07db487a1438ab9b",
+          "claim_occurrence_id": "83c1a5725ca64147621f37ddbbb18050b7a7a1fa7a51037c73425166791a284d",
+          "subject_occurrence_id": "c8b94924ec108d2a6d84399e28426c541fb8e1cc57f31ecc7247ab3db620f3cd",
+          "claim_definition_key": "NATIVE_DIVIDENDS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and any Company Subsidiary that is a REIT may make distributions to its stockholders reasonably necessary for the Company or any such Company Subsidiary to maintain its status as a REIT under the Code, or avoid the payment of income or excise tax under Sections 857 or 4981 of the Code (or any other entity-level Tax) and (b) the Company and any Company Subsidiary may make distributions (i) in the case of any Company Subsidiary, to the Company to allow the Company to make distributions to its stockholders",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f1656eb91b91d61e0d28fc096fa499f6f50a0acf10b4883785d0569bdc869f14"
+          ],
+          "attributes": {
+            "section_reference": "5.10",
+            "assertion_kind": "COORDINATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f1656eb91b91d61e0d28fc096fa499f6f50a0acf10b4883785d0569bdc869f14",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "88f0ef460691509c40404ed4c82f3783b5f647fd8820e5885af0eb812a38a205",
+              "document_ordinal": 0,
+              "absolute_start": 55,
+              "absolute_end": 575,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ebcd3a42bbab3ff175bd09db1214c2ac1adab56fdd521fa10726f28360f0043e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DIVIDENDS",
+          "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+          "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "99aecf6fe5c23654bd15f0fdcb16154e6fb03a34617da3f76f3eacf643ddc5d3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cee8cea36bdee3ba4a41d0a2feed20f7c1b7638864f390ce7fc98344e2ec70b5",
+          "claim_occurrence_id": "781bb4677e63cf1b96acc5dda2c520351a88126d3ef5a9075ff87e248bca7968",
+          "subject_occurrence_id": "45e9d3caa3a2b6db69f71453c8d1f448a298c680160eaf1424b78a81b1389dfe",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(ii) in each case, in accordance with clause (ii) of Section 5.1(c).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f181bbad20e0e90a10d83142ee44560330ecd8ba9d55c5a9aac8fa51f612da12"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_COORDINATION: The permitted coordination distributions are made in accordance with clause (ii) of Section 5.1(c).",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f181bbad20e0e90a10d83142ee44560330ecd8ba9d55c5a9aac8fa51f612da12",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e0693c9f9135369c3723687b513b9089887c0b3a2f564c4e331303fa17752bc3",
+              "document_ordinal": 0,
+              "absolute_start": 580,
+              "absolute_end": 648,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "98e2f631c0d8d26202e7ef831ac6c14916c464243419e5c380a5892598edb592"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+          "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "669cadb9a76f3c237c4bb652a48341b846af2e0e004fdebcd490368d42ce57a3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2413271c51fa7e7827e3082f42dad917100500c3e74b3539429eeec7b348c63a",
+          "claim_occurrence_id": "55808dfda13d782bfbe2a4fbbf7d81ed9f9ab88f29d0de848ba2ec478776a078",
+          "subject_occurrence_id": "162ac318351d693cf924af6e932c6816c446a639fb4408628ca3f3c234520907",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "In the event that a distribution with respect to the Company Common Shares, Company Preferred Shares or Partnership Units permitted under the terms of this Agreement has a record date prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable, and has not been paid prior to the Closing Date, such distribution shall be paid to the holders of such Company Common Shares, Company Preferred Shares or Partnership Units on the Closing Date immediately prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "23f149e907e34f0d82b6ea5fdbdeba430dbe0d214fe86a009b8ff8d9d44028d3"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_FINAL_PERIOD: A distribution with a record date before the applicable Effective Time that remains unpaid as of the Closing Date is paid to the relevant holders on the Closing Date, immediately prior to the applicable Effective Time.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "23f149e907e34f0d82b6ea5fdbdeba430dbe0d214fe86a009b8ff8d9d44028d3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0d0e426efc38ca30776b4efa4a8f6e34061f6e219fdc633fdf6f978c70497ba0",
+              "document_ordinal": 0,
+              "absolute_start": 649,
+              "absolute_end": 1215,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4637b291d23dc8c4593cc433c0db326058f5f6c27e5f002942b1bdc1ed14af28"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "b0f6de109c733ba8027f291b6f592c65f4e86f6d04305d2cfd1cb227357376d9",
+          "producer_receipt_id": "df2fcd66b5d7491698521fb71cf84620340160f3bf5bb2e0198fc2e9b04f0f61",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "669cadb9a76f3c237c4bb652a48341b846af2e0e004fdebcd490368d42ce57a3"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "5.10",
+      "source_byte_length": 1219,
+      "covered_byte_length": 1154,
+      "coverage_share": 0.9466776045939295,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "5.10",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 51,
+          "end": 54
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 455,
+          "end": 458
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 580,
+          "end": 584
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 625,
+          "end": 629
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 644,
+          "end": 647
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 5,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 51,
+          "end": 54
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 455,
+          "end": 458
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 580,
+          "end": 584
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 625,
+          "end": 629
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 644,
+          "end": 647
+        }
+      ],
+      "disagreement_count": 6
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 3,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "cf67c8383be0607f66e285c73a0941d8d2a6fb6b0653a73cedd940d3121da173"
+}

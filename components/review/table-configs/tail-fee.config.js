@@ -1,6 +1,7 @@
 import React from 'react';
 import { normalizeTermfFeatures } from '../../../lib/termf.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
@@ -279,7 +280,7 @@ const tailFeeConfig = {
     { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
-  empty: { copy: 'No tail-fee mechanics found.' },
+  empty: { copy: CONDITION_ABSENT_COPY },
 };
 
 export { formatTriggerScope, renderSignals, tailFeeConfig };

@@ -245,21 +245,21 @@ const conditionsMConfig = createConditionsConfig({
   id: 'conditions-m',
   title: 'Closing Conditions — Mutual',
   rows: CANONICAL_CONDITIONS_M,
-  empty: 'No mutual closing-condition cards found.',
+  empty: CONDITION_ABSENT_COPY,
 });
 
 const conditionsBConfig = createConditionsConfig({
   id: 'conditions-b',
   title: 'Closing Conditions — Buyer',
   rows: CANONICAL_CONDITIONS_B,
-  empty: 'No buyer closing-condition cards found.',
+  empty: CONDITION_ABSENT_COPY,
 });
 
 const conditionsSConfig = createConditionsConfig({
   id: 'conditions-s',
   title: 'Closing Conditions — Seller',
   rows: CANONICAL_CONDITIONS_S,
-  empty: 'No seller closing-condition cards found.',
+  empty: CONDITION_ABSENT_COPY,
 });
 
 export { cardToConditionProvisions, cardToProvision, conditionSignals, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig, renderDetail, renderSignals };

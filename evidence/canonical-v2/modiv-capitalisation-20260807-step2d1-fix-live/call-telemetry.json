@@ -1,0 +1,141 @@
+{
+  "run_wall_clock_ms": 1187278,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "3.2",
+      "wall_clock_ms": 550888,
+      "duration_ms_reported": 548532,
+      "duration_api_ms_reported": 548478,
+      "total_cost_usd_cli": 1.6701051000000002,
+      "usage": {
+        "input_tokens": 18,
+        "cache_creation_input_tokens": 76607,
+        "cache_read_input_tokens": 824677,
+        "output_tokens": 63729,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 76607,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 10221,
+            "cache_read_input_tokens": 115706,
+            "cache_creation_input_tokens": 11459,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 11459
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 7001,
+          "outputTokens": 14,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.007071,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 18,
+          "outputTokens": 63729,
+          "cacheReadInputTokens": 824677,
+          "cacheCreationInputTokens": 76607,
+          "webSearchRequests": 0,
+          "costUSD": 1.6630341000000004,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    },
+    {
+      "call_index": 1,
+      "section_reference": "4.2",
+      "wall_clock_ms": 636088,
+      "duration_ms_reported": 633833,
+      "duration_api_ms_reported": 633188,
+      "total_cost_usd_cli": 1.6094226999999997,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 83150,
+        "cache_read_input_tokens": 82509,
+        "output_tokens": 71907,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 83150,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 7907,
+            "cache_read_input_tokens": 50798,
+            "cache_creation_input_tokens": 64063,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 64063
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 7078,
+          "outputTokens": 15,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.0071530000000000005,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 4,
+          "outputTokens": 71907,
+          "cacheReadInputTokens": 82509,
+          "cacheCreationInputTokens": 83150,
+          "webSearchRequests": 0,
+          "costUSD": 1.6022697,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    }
+  ],
+  "failed": true,
+  "error": "native producer model call failed after 1 attempt(s): model response contains 58 independent JSON objects; expected exactly one and cannot guess which is authoritative"
+}

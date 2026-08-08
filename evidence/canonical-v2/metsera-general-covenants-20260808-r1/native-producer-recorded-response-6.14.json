@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:08:52.645Z",
+  "section_reference": "6.14",
+  "note": "General extraction run: deal=metsera, family=GENERAL_COVENANTS, section_references=[\"6.02\",\"6.03\",\"6.06\",\"6.07\",\"6.08\",\"6.09\",\"6.12\",\"6.13\",\"6.14\",\"6.15\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"6.14\",\n      \"covenant_obligor\": \"Parent\",\n      \"covenant_code\": \"COV-CVR\",\n      \"definition_cross_references\": [],\n      \"quote\": \"Parent shall authorize and duly adopt, execute and deliver, and will ensure that a duly qualified Rights Agent executes and delivers, the CVR Agreement\"\n    },\n    {\n      \"section_reference\": \"6.14\",\n      \"covenant_obligor\": \"Parent and the Company\",\n      \"covenant_code\": \"COV-CVR\",\n      \"definition_cross_references\": [],\n      \"quote\": \"Parent and the Company shall cooperate, including by making changes to the form of CVR Agreement, as necessary to ensure that the CVRs are not subject to registration under the Securities Act, the Exchange Act or any applicable state securities or “blue sky” laws.\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

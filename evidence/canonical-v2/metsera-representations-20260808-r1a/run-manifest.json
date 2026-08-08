@@ -1,0 +1,109 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "metsera",
+  "deal_label": "Pfizer Inc. / Metsera, Inc.",
+  "section_family": "REPRESENTATIONS",
+  "purpose": "General extraction run: family REPRESENTATIONS on deal metsera.",
+  "section_references": [
+    "3.01",
+    "3.02",
+    "3.03",
+    "3.04",
+    "3.05",
+    "3.06",
+    "3.07",
+    "3.08",
+    "3.09",
+    "3.10",
+    "3.11",
+    "3.12"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.01",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.02",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.03",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.04",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.05",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.06",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.07",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.08",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.09",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.10",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.11",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "3.12",
+      "family_id": "REPRESENTATIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "agreement_date": "2025-09-21",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T13:10:49.917Z",
+  "total_elapsed_ms": 2292631,
+  "extraction_wall_clock_ms": 2284326,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/metsera-representations-20260808-r1a/recording.json",
+  "code_provenance": {
+    "commit": "8159ba09c2a9af64d3fcd2d5054dc78ce75c8d90",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 12,
+  "run_receipt_id": "3f588bc76357df477ee615fe8323817f65723939eb51af68c6cf66191286aa38",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "source_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 12,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

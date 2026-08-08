@@ -132,7 +132,8 @@ test('TopBuild 7.6 rejects a bare equitable-relief grant and retains the operati
   ]);
   assert.equal(complete.proposals.length, 1);
   assert.deepEqual(complete.evidence_residuals, []);
-  assert.equal(prompt.prompt_version, 2);
+  // 2 -> 3 on 2026-08-08: Step 2F2 probe, response shape only.
+  assert.equal(prompt.prompt_version, 3);
   assert.match(prompt.messages[0].content, /irreparable harm would occur and money damages would not be an adequate remedy/);
   assert.match(prompt.messages[0].content, /condition gates, termination limits, non-waiver language, bond or security waivers/);
 });
@@ -176,6 +177,69 @@ test('TopBuild 7.6 publishes only the governed specific-performance assertion an
   assert.equal(resolution.open_world.length, 1);
   assert.equal(resolution.open_world[0].attributes.assertion_kind, 'LITIGATION_EXTENSION');
   assert.equal(resolution.open_world[0].reason, 'M3_CARRIER_ASSERTION_KIND_OUT_OF_ENUM');
+});
+
+// Step 3C (docs/core/PLAN.md): `isIncompleteSpecificPerformanceGrant` used a
+// stricter premise regex on the quote than `sourceHasSpecificPerformanceOperativePremise`
+// used on the source for the identical premise, so a verbatim, well-formed
+// SPECIFIC_PERFORMANCE grant was discarded whenever it phrased the premise
+// in ordinary variant wording (an intervening clause between "irreparable
+// harm" and "would occur", or "monetary damages" instead of "money
+// damages"). Measured on `evidence/canonical-v2/modiv-specific-performance-20260807-replay`:
+// proposal_count 0, evidence_residual_count 1, reason
+// SPECIFIC_PERFORMANCE_OPERATIVE_PREMISE_UNVERIFIED, even though the source
+// text of Modiv Section 8.8(a) states the premise twice over. These two
+// tests pin that section's real text, byte-for-byte from the committed SEC
+// filing (tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm).
+function modivSpecificPerformance88Text() {
+  const source = MANIFEST.sources.find((item) => item.source_id === 'modiv-full');
+  const admitted = diagnosticAdmittedSource({ source, root_dir: ROOT });
+  const node = findSectionByReference(admitted.tree, '8.8');
+  assert.ok(node, 'Modiv 8.8 section exists');
+  return Buffer.from(admitted.context.canonical_text.text, 'utf8').subarray(node.start, node.end).toString('utf8');
+}
+
+test('Modiv 8.8(a) resolves once the quote-side premise check is as tolerant as the source-side one', () => {
+  const text = modivSpecificPerformance88Text();
+  // The full, real recorded grant: the premise clause splits "irreparable
+  // harm" from "would occur" with "for which monetary damages (even if
+  // available) would not be an adequate remedy", and says "monetary" where
+  // the old regex demanded "money". This is the exact quote the model
+  // returned for Modiv 8.8 (evidence/canonical-v2/modiv-specific-performance-20260806/
+  // native-producer-recorded-response-8.8.json).
+  const fullGrant = exact(text, /The parties hereto agree that irreparable harm[\s\S]*?would provide an adequate remedy\./);
+  const shaped = shapeSpecificPerformanceRemedyProposals({
+    remedy_assertions: [{ assertion_kind: 'SPECIFIC_PERFORMANCE', quote: fullGrant }],
+    open_world_candidates: [],
+  }, text);
+  assert.equal(shaped.proposals.length, 1);
+  assert.deepEqual(shaped.evidence_residuals, []);
+  assert.equal(shaped.proposals[0].attributes.assertion_kind, 'SPECIFIC_PERFORMANCE');
+});
+
+test('HOSTILE: Modiv 8.8(a) bare "acknowledge and agree ... shall be entitled" clause is still excluded without the premise in the quote', () => {
+  const text = modivSpecificPerformance88Text();
+  // Real filed text, quoted from the *second* sentence of Section 8.8(a)
+  // onward -- it carries the operative grant ("shall be entitled to an
+  // injunction, specific performance or other equitable relief") and even
+  // the word "acknowledge", but omits the first sentence's irreparable-harm
+  // / inadequate-remedy premise entirely. This is exactly the shape the
+  // loosened premise regex must still reject: a non-operative
+  // acknowledgement of entitlement, dressed in the same "acknowledge and
+  // agree" language as a genuine grant, but with no premise wording at all
+  // for the tolerant regex to find. If this test ever passes with
+  // proposals.length === 1, the premise check has been loosened into a
+  // rubber stamp and the false-negative fix has traded itself for a false
+  // positive.
+  const bareAcknowledgement = exact(text, /Accordingly, the parties acknowledge and agree[\s\S]*?entitled at Law or in equity\./);
+  const shaped = shapeSpecificPerformanceRemedyProposals({
+    remedy_assertions: [{ assertion_kind: 'SPECIFIC_PERFORMANCE', quote: bareAcknowledgement }],
+    open_world_candidates: [],
+  }, text);
+  assert.equal(shaped.proposals.length, 0);
+  assert.deepEqual(shaped.evidence_residuals.map((entry) => entry.reason), [
+    'SPECIFIC_PERFORMANCE_OPERATIVE_PREMISE_UNVERIFIED',
+  ]);
 });
 
 test('a source-exact specific-performance grant resolves when its governed source has no operative premise', () => {

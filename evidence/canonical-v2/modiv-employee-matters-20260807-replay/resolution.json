@@ -1,0 +1,188 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "3.11",
+      "source_citation": "3.11",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "that is intended to be “qualified” within the meaning of Section 401(a) of the Code has received a favorable opinion letter, advisory or determination letter from the IRS and, to the Company’s knowledge, there is no fact which would adversely affect the qualified status of any such Company Employee Benefit Plan or PEO Plan.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "RETIREMENT_401K: Tax-qualification representation for retirement plans intended to qualify under Code Section 401(a): IRS opinion, advisory, or determination letter received, with no known fact adversely affecting qualified status.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fd560690b46a32b442cf5da3423f8d2cd4dbae0586ec46dc04f24b38edcc8b23",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d07bfac86d3ac0035acc8b6d17d1b6d5af4389b956b40f361f3e0be5e7d30dde",
+          "document_ordinal": 0,
+          "absolute_start": 5944,
+          "absolute_end": 6275,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f5ff373595bda7df08b12bf75d81694ad5ea473e9dcb471ed0b8bda82b6a2b01",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "acc039f05bbed4fb7e7b0df2ac1d5073a1ed81c25f66852b0b1925342e5264bb",
+        "producer_receipt_id": "1d471d8be44afd7b1fb696249fa5e5f1d388011482392121bf4af7d77c804b70",
+        "governed_scope_digest": "f531bcd81c1fa71a1e31a7b4621fc8b13118e595ca0162bc0939de74cfcbcad7",
+        "extraction_provenance_id": "a3dafda155d5c65616a8ce14afa7a13d0346b82ce2c3f3b52b1bb3ef279d187a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.12",
+      "source_citation": "3.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Neither the Company nor any Company Subsidiary is party to any collective bargaining agreement or similar labor agreement (excluding personal services contracts).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WARN_OR_CBA: Company and Company Subsidiaries have no collective bargaining agreement or similar labor agreement (personal services contracts excluded).",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4e52a1c733fb0e27d84c1b433476ce10eda55963225970874e9eee5a9628ea55",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e506d09e8c53d073a946a8d62459da4d95b414d56ce59a0d13ac79fe51da4671",
+          "document_ordinal": 0,
+          "absolute_start": 32,
+          "absolute_end": 194,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5b80d82bfc7e09e297693ede8b6982880f306fe13afc1b1b8da2caf4eb0565c3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d73b446d5c315f183f152f18c9c26b3428268d19fd4a618be7d1c047f1f222e",
+        "producer_receipt_id": "638aca7561b19453605874b8d77fd0ee2c5be59b51dc248a23e141317224bfe3",
+        "governed_scope_digest": "61f47e0795f79346a0ada04f898a099545f0ebb02482d5a03d3cc1a3f98b88ec",
+        "extraction_provenance_id": "bd665591c161ea3ea6ab22e16a15051c9b524c48160dcd8be944b530da83dc98"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.12",
+      "source_citation": "3.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company and each Company Subsidiary is in compliance in all material respects with all Laws relating to the Worker Adjustment and Retraining Notification Act and any similar state or local “mass layoff” or “plant closing” Law (“WARN”); and (ii) since January 1, 2023, the Company has not incurred any material liability or obligation under the WARN Act that remains unsatisfied. There has been no “mass layoff” or “plant closing” as defined by WARN with respect to the Company or any Company Subsidiary within the last six (6) months.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WARN_OR_CBA: Company is WARN-compliant, has no unsatisfied WARN Act liability since January 1, 2023, and has had no mass layoff or plant closing within the prior six months.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "874789711dfb05a8b8692ec48d62a3811e72217e7059b064886dcdd40ca62881",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "daf6ea0022e1598e2403e447789903d88499380c43020480ca98a1cc914cea0b",
+          "document_ordinal": 0,
+          "absolute_start": 3811,
+          "absolute_end": 4369,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "563c9428c9b0a132429e39c5a528b99db6f58f950e4408d06f483468c46e1704",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d73b446d5c315f183f152f18c9c26b3428268d19fd4a618be7d1c047f1f222e",
+        "producer_receipt_id": "638aca7561b19453605874b8d77fd0ee2c5be59b51dc248a23e141317224bfe3",
+        "governed_scope_digest": "61f47e0795f79346a0ada04f898a099545f0ebb02482d5a03d3cc1a3f98b88ec",
+        "extraction_provenance_id": "bd665591c161ea3ea6ab22e16a15051c9b524c48160dcd8be944b530da83dc98"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "6045c2c1d4e8d3579a82d7e41cb9888b1dce12681fdda17e4acff2f03674a4d8",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "d63afec2a6f81fdf469247392d018a7be1edfd289e21626e32cac1499947d609"
+  }
+}

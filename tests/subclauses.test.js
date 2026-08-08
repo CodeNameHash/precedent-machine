@@ -143,3 +143,253 @@ test('hard-wrapped marker case: markers survive mid-clause line wraps from fixed
   assert.match(leaves[0].text, /certifying as to the matters set forth herein\.\s*$/);
   assert.match(leaves[1].text, /prior to the Closing\.\s*$/);
 });
+
+// ---------------------------------------------------------------------------
+// Colon-introduced inline enumeration — the Concho fix. CONCHO_COMPETING_
+// PROPOSAL_TEXT is the real, verbatim "Company Competing Proposal" definition
+// from Concho's Annex A (Certain Definitions), fetched read-only and pinned
+// here as a static string, matching the shape blocking 12 held MAE carve-out
+// rows on Metsera and Concho: a chapeau ending in a colon mid-paragraph,
+// immediately followed by a bracketed (a)/(b)/(c) enumeration.
+// ---------------------------------------------------------------------------
+const CONCHO_COMPETING_PROPOSAL_TEXT = "“Company Competing Proposal” means any contract, proposal, offer or indication of interest relating to any transaction or series of related transactions (other than transactions only with Parent or any of its Subsidiaries) involving, directly or indirectly: (a) any acquisition (by asset purchase, stock purchase, merger, or otherwise) by any Person or group of any business or assets of the Company or any of its Subsidiaries (including capital stock of or ownership interest in any Subsidiary) that generated 20% or more of the Company’s and its Subsidiaries’ assets (by fair market value), net revenue or earnings before interest, Taxes, depreciation and amortization for the preceding twelve (12) months, or any license, lease or long-term supply agreement having a similar economic effect, (b) any acquisition of beneficial ownership by any Person or group of 20% or more of the outstanding shares of Company Common Stock or any other securities entitled to vote on the election of directors or any tender or exchange offer that if consummated would result in any Person or group beneficially owning 20% or more of the outstanding shares of Company Common Stock or any other securities entitled to vote on the election of directors or (c) any merger, consolidation, share exchange, business combination, recapitalization, liquidation, dissolution or similar transaction involving the Company or any of its Subsidiaries.";
+
+test('Concho "Company Competing Proposal": colon-introduced inline (a)/(b)/(c) enumeration splits into three items', () => {
+  const leaves = segmentSubClauses(CONCHO_COMPETING_PROPOSAL_TEXT);
+  assertLeavesPartition(null, leaves, CONCHO_COMPETING_PROPOSAL_TEXT);
+
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'b', 'c']);
+
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+  assert.match(byMarker['a'].text, /any acquisition \(by asset purchase/);
+  assert.match(byMarker['b'].text, /any acquisition of beneficial ownership/);
+  assert.match(byMarker['c'].text, /any merger, consolidation, share exchange/);
+});
+
+// Metsera's real "Company Material Adverse Effect" definition (SECTION 9.03,
+// deal source-referenced in evidence/canonical-v2/metsera-mae-definition-
+// 20260808-r1/recording.json), pinned verbatim. This is the definitive guard
+// test for the colon rule: its (i)/(ii) prong markers are ambiguous
+// (single-char roman-or-alpha tokens, e.g. "i" also reads as alphaLower) and
+// sit at a WEAK position (mid-sentence, following a comma) rather than
+// start-of-line, so the existing SIBLING rule's ambiguity guard (see
+// findStructuralMarkers) rejects "(ii)" outright — the frame never advances
+// past "(i)". That forecloses BOTH other CHILD-OPEN paths for the "(A)"
+// carve-out list that follows: it is not the first marker in the section
+// (": (i)" already claimed that), and it is not adjacent to any prior
+// marker's closing paren (a full sentence of prose sits in between). Only
+// the colon rule can open it — this text splits solely because of this
+// change, which is what the guard-proof step below (neutering
+// isColonIntroduced and re-running this file) demonstrates.
+const METSERA_MAE_TEXT = "“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occurrence that, individually or in the aggregate, (i) has had, or would reasonably be expected to have, a material adverse effect on the business, assets, condition (financial or otherwise) or results of operations of the Company and the Company Subsidiaries, taken as a whole, or (ii) would or would reasonably be expected to prevent the consummation of, or materially impair the ability of the Company to consummate, the Merger by the Outside Date; provided, however, that, in the case of clause (i), no change, event, condition, development, circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting the biopharmaceutical industry, (B) changes in general economic or regulatory, legislative or political conditions (including the imposition of new or increased trade restrictions, tariffs or trade policies) or securities, credit, financial or other capital markets conditions (including changes generally in prevailing interest rates, currency exchange rates, credit markets and price levels or trading volumes), in each case in the United States or elsewhere in the world, (C) changes after the date hereof in applicable Law or GAAP (or the authoritative interpretation thereof), (D) geopolitical conditions, the outbreak or escalation of hostilities, any acts of war, sabotage, cyber-terrorism or terrorism, or any escalation or worsening of any such acts of war, sabotage, cyber-terrorism or terrorism, (E) any hurricane, tornado, flood, volcano, earthquake or other natural or manmade disaster, (F) the failure, in and of itself, of the Company to meet any internal or external projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics before, on or after the date of this Agreement, or changes or prospective changes in the market price or trading volume of the Company Common Stock or the credit rating of the Company (it being understood that the underlying facts giving rise or contributing to such failure or change may be taken into account in determining whether there has been a Company Material Adverse Effect if such facts are not otherwise excluded under this definition), (G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions), (H) any action taken by the Company or any of the Company Subsidiaries at Parent’s written request or with Parent’s written consent or that is expressly required by this Agreement, (I) any epidemic, pandemic or disease outbreak (including COVID-19) or any COVID-19 Measures or any change in such COVID-19 Measures or authoritative interpretations thereof and (J) the matters set forth on Section 9.03(a) of the Company Disclosure Letter, except in the case of clause (A), (B), (C), (D), (E) or (I), to the extent that the Company and the Company Subsidiaries, taken as a whole, are disproportionately affected thereby as compared with other participants in the industries in which the Company and the Company Subsidiaries operate (in which case the incremental disproportionate impact or impacts may be taken into account in determining whether there has been a Company Material Adverse Effect).";
+
+test('Metsera "Company Material Adverse Effect": colon-introduced (A)-(J) carve-out list opens only via the colon rule', () => {
+  const leaves = segmentSubClauses(METSERA_MAE_TEXT);
+  assertLeavesPartition(null, leaves, METSERA_MAE_TEXT);
+
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['i', 'i.A', 'i.B', 'i.C', 'i.D', 'i.E', 'i.F', 'i.G', 'i.H', 'i.I', 'i.J']);
+
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.match(byMarker['i.A'].text, /biopharmaceutical industry/);
+  assert.match(byMarker['i.J'].text, /Company Disclosure Letter/);
+  // The mid-paragraph back-reference "clause (i)" and the trailing back-
+  // reference "clauses (A), (B), (C), (D), (E) or (I)" must not fragment
+  // any leaf or spawn spurious markers.
+  assert.ok(!markers.includes('i.A.A'));
+});
+
+test('hostile: cross-reference "Section 3.1(b)" does not split even when a colon appears earlier in the sentence', () => {
+  const text = 'The Company shall comply with the covenants set forth below: as provided in Section 3.1(b), the Company shall deliver the certificate.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a colon earlier in the sentence must not turn a section cross-reference into a marker');
+});
+
+// ---------------------------------------------------------------------------
+// MAX_DEPTH raise (3 -> 5) and (x)/(y)/(z) corroborated CHILD-OPEN — see
+// docs/codex-program/notes/subclauses-depth-and-xyz.md for the corpus
+// measurement backing both changes.
+// ---------------------------------------------------------------------------
+
+test('four-level outline nest: (a) -> (i) -> (A) -> (1) resolves to depth 4', () => {
+  const text = '6.1 Representations. The Company hereby represents and warrants to Parent and Merger Sub '
+    + 'that, as of the date of this Agreement and as of the Closing Date: (a) each of the following '
+    + 'statements concerning the Company and its Subsidiaries is true and correct in all material '
+    + 'respects: (i) the entity referred to in this Section is validly existing and in good standing '
+    + 'under the laws of the jurisdiction of its organization: (A) specifically, in the case of the '
+    + 'Company, in the State of Delaware, and has all requisite corporate power and authority to own '
+    + 'its properties and to carry on its business as presently conducted: (1) as evidenced by a long-'
+    + 'form certificate of good standing issued by the Delaware Secretary of State no more than thirty '
+    + 'days prior to the Closing Date.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'a.i', 'a.i.A', 'a.i.A.1']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.equal(byMarker['a.i.A.1'].depth, 4);
+  assert.match(byMarker['a.i.A.1'].text, /certificate of good standing/);
+});
+
+test('five-level outline nest: (a) -> (i) -> (A) -> (1) -> (a) resolves to depth 5 — the "five occurs" case', () => {
+  const text = '6.1 Representations. The Company hereby represents and warrants to Parent and Merger Sub '
+    + 'that, as of the date of this Agreement and as of the Closing Date: (a) each of the following '
+    + 'statements concerning the Company and its Subsidiaries is true and correct in all material '
+    + 'respects: (i) the entity referred to in this Section is validly existing and in good standing '
+    + 'under the laws of the jurisdiction of its organization: (A) specifically, in the case of the '
+    + 'Company, in the State of Delaware, and has all requisite corporate power and authority to own '
+    + 'its properties and to carry on its business as presently conducted: (1) which corporate power '
+    + 'and authority is evidenced by two independent items of documentary proof: (a) a long-form '
+    + 'certificate of good standing issued by the Delaware Secretary of State no more than thirty days '
+    + 'prior to the Closing Date.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'a.i', 'a.i.A', 'a.i.A.1', 'a.i.A.1.a']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.equal(byMarker['a.i.A.1.a'].depth, 5);
+  assert.match(byMarker['a.i.A.1.a'].text, /certificate of good standing/);
+});
+
+test('real corpus (x)/(y) enumeration: "other than (x) Permitted Encumbrances or (y) as would not..." splits into two items', () => {
+  // Grounded in the real corpus fragment quoted in the task brief (28
+  // occurrences across 5 of the 7 corpus deals), embedded in a full
+  // sentence so segmentSubClauses has a complete section to work with.
+  const text = 'No Lien shall attach to the Purchased Assets, other than (x) Permitted Encumbrances or '
+    + '(y) as would not reasonably be expected to have a material adverse effect on the value of such assets.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['x', 'y']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+  assert.match(byMarker['x'].text, /Permitted Encumbrances/);
+  assert.match(byMarker['y'].text, /material adverse effect/);
+});
+
+test('uncorroborated lone "(x)" does NOT open a list — no "(y)" anywhere in the span', () => {
+  const text = 'The Company has consented to (x) the assignment of this Agreement, which shall remain '
+    + 'in full force and effect notwithstanding such assignment.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a single "(x)" with no corroborating "(y)" must not open an xyz list');
+});
+
+test('genuine alpha list running (w) -> (x) continues as alpha and is not stolen by the xyz rule', () => {
+  const letters = 'abcdefghijklmnopqrstuvwx'.split('');
+  const text = letters.map((l) => `(${l}) item number ${l} in the Company Disclosure Letter, `
+    + 'each of which the Company represents and warrants is true and correct as of the date hereof.').join('\n');
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, letters, '"(x)" must continue the alpha list (24th letter), not open a new xyz frame');
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+});
+
+test('hostile: mid-paragraph back-reference "clauses (x), (y) and (z) above" does not split even though a "(y)" genuinely follows the "(x)"', () => {
+  // Corroboration alone is not sufficient to open a list — this back-
+  // reference sits inside an ALREADY-OPEN "(a)" frame, mid-paragraph, not
+  // colon-introduced and not adjacent to the prior marker, so the ordinary
+  // CHILD-OPEN eligibility gate rejects it exactly as it rejects the
+  // structurally identical "(A), (B), (C) and (D) above" case above — even
+  // though xyzCorroborated(text, tokenStart) genuinely returns true here
+  // (a "(y)" really does follow within the span). Corroboration narrows an
+  // ambiguous token; it does not bypass the existing CHILD-OPEN gate.
+  const text = 'The obligations of Parent are subject to satisfaction of the following: (a) each '
+    + 'representation shall be true, and, with respect to clauses (x), (y) and (z) above, only as of '
+    + 'the applicable date.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a'], 'a mid-paragraph "clauses (x), (y) and (z) above" back-reference must stay unsplit');
+});
+
+test('hostile: "Section 5.2(x)" cross-reference does not split — "(x)" glued to a digit is not an eligible position', () => {
+  const text = 'The Company shall comply with Section 5.2(x) of the Agreement, and with Section 5.2(y) thereof.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a cross-reference "(x)" glued to a section number must not be read as a marker');
+});
+
+test('hostile: mid-paragraph back-reference "clauses (A), (B), (C) and (D) above" does not split even after a colon', () => {
+  // The back-reference is embedded inside an already-open (a) frame — as it
+  // would be in a real agreement — rather than being the very first bracket
+  // in the text, so this exercises the colon predicate itself rather than
+  // the pre-existing (and separately correct) "first marker in the section"
+  // CHILD-OPEN path.
+  const text = 'The obligations of Parent are subject to satisfaction of the following: (a) each representation shall be true, and, with respect to clauses (A), (B), (C) and (D) above, only as of the applicable date.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a'], 'prose ("clauses") between the colon and the bracket must block the colon rule, and a mid-paragraph back-reference must stay unsplit');
+});
+
+// ---------------------------------------------------------------------------
+// Limb markers as BACK-REFERENCES inside a clause's own text — three shapes,
+// only one of which is a real hole. All three cite prior limbs by letter
+// ("(A) and (B) above") rather than opening new ones.
+// ---------------------------------------------------------------------------
+
+test('back-reference shape 1 (protected): mid-paragraph "as described in (A) and (B) above" stays inside the citing clause', () => {
+  // (A) and (B) are matched to their OWN limbs earlier in the list; by the
+  // time (C) is reached and cites them back, "markers.length" is already
+  // non-zero, so CHILD-OPEN's "first marker overall" path cannot re-fire,
+  // and the back-reference is neither colon-introduced nor line-adjacent to
+  // the prior marker. Protected by the existing adjacency requirement.
+  const text = 'The Company shall, to the extent required by applicable Law: (A) file all Tax Returns '
+    + 'required to be filed by it on or before the Closing Date; (B) pay all Taxes shown as due and '
+    + 'owing on any such Tax Return; (C) cooperate with Parent and its Representatives after the '
+    + 'Closing Date in each case as described in (A) and (B) above, including by providing reasonable '
+    + 'access to books and records.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['A', 'B', 'C'], 'the back-reference inside (C) must not spawn C.A/C.B');
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.match(byMarker['C'].text, /as described in \(A\) and \(B\) above/);
+  assert.match(byMarker['A'].text, /Tax Returns/);
+});
+
+test('back-reference shape 2 (protected): "Section 3.1(b) and Section 4.2(a)" cross-references do not split', () => {
+  // Both brackets are glued to a digit ("3.1(b)", "4.2(a)"), so
+  // isEligiblePosition rejects them outright — the same protection that
+  // guards every other section cross-reference in this module.
+  const text = 'The representations set forth in Section 3.1(b) and Section 4.2(a) shall survive the '
+    + 'Closing for a period of eighteen months.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'digit-glued cross-references must not be read as markers');
+});
+
+test('back-reference shape 3 (real, pre-existing hole in the colon rule): colon-introduced "(A) and (B) above" is detectable via the same-style mis-nest signature', () => {
+  // The colon rule opens on ANY colon immediately before a bracket, with no
+  // sense of "citation" vs "introduction" — "comply with the following:"
+  // reads identically to "as described in ... above:" would. This predates
+  // both changes in this file (MAX_DEPTH and xyz) and is not fixed by
+  // either; it is documented in docs/codex-program/notes/subclauses-depth-
+  // and-xyz.md and left as a known limitation, on the corpus evidence
+  // recorded there (zero observed real instances, and the same-style
+  // detector already flags every synthetic case tried). Rather than assert
+  // a specific (possibly change-sensitive) split, assert the DETECTABLE
+  // consequence that makes this catchable downstream: whatever nests here
+  // carries a same-style parent-child link — real outlining never nests a
+  // style under itself, so this signature is exactly what marks the
+  // structure as untrustworthy.
+  const text = 'The Company shall: (A) do one thing; (B) do a second; (C) comply with the following: '
+    + '(A) and (B) above.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  const nested = markers.filter((m) => m.includes('.'));
+  assert.ok(nested.length > 0, 'expected the colon rule to nest something under C (this is the known hole)');
+  const styleOfSingleLetter = (label) => (/^[A-Z]$/.test(label) ? 'upper' : (/^[a-z]$/.test(label) ? 'lower' : 'other'));
+  for (const path of nested) {
+    const segs = path.split('.');
+    const parentLabel = segs[segs.length - 2];
+    const childLabel = segs[segs.length - 1];
+    assert.equal(
+      styleOfSingleLetter(childLabel),
+      styleOfSingleLetter(parentLabel),
+      `expected a same-style parent-child link at ${path} (the mis-nest signature)`,
+    );
+  }
+});

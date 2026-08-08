@@ -1,0 +1,157 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "9.07",
+      "source_citation": "9.07(b)",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+      "raw_value": "Except in the case of fraud",
+      "canonical_value": true,
+      "attributes": {
+        "section_reference": "9.07",
+        "representation_side": "TARGET"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3f305c4510c744e3ad48c8568611a594b3ef2ac4e3b9401ebafac1060e09d893",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "435d65624b29a3fdea4a583af5b6ea02c319951d409bc4aa356e6476a00e5bb5",
+          "document_ordinal": 0,
+          "absolute_start": 1895,
+          "absolute_end": 1922,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a78a78a73b07d5001f873d3ece67b8fea7a614714adea6649ce53dc70648371d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "NO_OTHER_REPS_FRAUD",
+        "prompt_digest": "6898761dbe44ada581114cb9cffa47a19d708773781d5446be70b8bf6b7ba8f9",
+        "producer_receipt_id": "e7c0b58ec2fbc86e2e01731ca3cefb6ce07eb144e3890de27b56b0735023b5a7",
+        "governed_scope_digest": "5c2aa273bec1c37d2f227f19c4df2e26048df6c2c2900251e1761232a313a418",
+        "extraction_provenance_id": "8485ccddad4c4bad4926a4730375a1b9ba1cc1b80236f3f93fa6e9c62032816c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "9.07",
+        "normalized_citation": "9.07",
+        "derived_citation": "9.07(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.07",
+      "source_citation": "9.07(c)",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+      "raw_value": "Without limiting the Company’s remedies in the case of fraud",
+      "canonical_value": true,
+      "attributes": {
+        "section_reference": "9.07",
+        "representation_side": "BUYER"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "76c057cf944b17e73c7b51a1a15313736cbb9cdc189d211a585d1974f3fdb8dc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "54fc59d10a33146f608d5e272c8433837aec0a8d24b118e635627729e1a604d3",
+          "document_ordinal": 0,
+          "absolute_start": 2552,
+          "absolute_end": 2614,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f04edf2efe92a4db876ad2546e6a80009c6db418d0fdda2e568e0b04328c5f5a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "NO_OTHER_REPS_FRAUD",
+        "prompt_digest": "6898761dbe44ada581114cb9cffa47a19d708773781d5446be70b8bf6b7ba8f9",
+        "producer_receipt_id": "e7c0b58ec2fbc86e2e01731ca3cefb6ce07eb144e3890de27b56b0735023b5a7",
+        "governed_scope_digest": "5c2aa273bec1c37d2f227f19c4df2e26048df6c2c2900251e1761232a313a418",
+        "extraction_provenance_id": "8485ccddad4c4bad4926a4730375a1b9ba1cc1b80236f3f93fa6e9c62032816c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "9.07",
+        "normalized_citation": "9.07",
+        "derived_citation": "9.07(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "824f1db4237d9ff9b1c69a1c10c74bb9658f79080f990b05f861e6a9aba9831d",
+    "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "14c5613886809d573510a3ee156ef90505e545e53178164447f63e56a7e13c48"
+  }
+}

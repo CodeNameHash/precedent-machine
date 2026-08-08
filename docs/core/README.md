@@ -23,7 +23,25 @@ root). Read in this order.
    delete, or still live but obscure. Assumes `CODEBASE-GUIDE.md`'s
    vocabulary, so read that one first.
 
+**Returning after time away?** Read
+`docs/codex-program/notes/handoff-2026-08-07.md` first. It is a dated working
+note, not a seventh core document: it records where things stood on that date
+and what is waiting on a decision. If its date is old, trust the six documents
+above over it.
+
 Everything enumerable (registered families, product-projection modules,
 review table configs, dark bridges, serving sources, live-run scripts) is
 generated, not hand-maintained here: run `npm run generate:codebase-inventory`
 to derive it fresh from the current code.
+
+---
+
+## Current work — read this before touching the branch
+
+`claude/codex-handoff-plan-status-77wn7n` is 189 commits ahead of `main`. The
+merge is split: docs land now, code is held on three named blockers.
+
+**`docs/codex-program/notes/HANDOFF-2026-08-08.md`** says where every artefact
+lives, what is blocked and why, the traps this session hit, and what to do next
+in order. Read it first. The plan step it implements is **Step 2X-0** in
+`PLAN.md`; the work it precedes is Step 2X, sub-steps A to L.

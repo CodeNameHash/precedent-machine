@@ -19,7 +19,59 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'bf4e1468b01d63d14e676e7a123dc37dbe9ae74e978fab849bce848c69271fee',
+  // Repinned again 2026-08-07 for PLAN.md Step 2D1 defect 2, found by the
+  // Modiv fan-out: canonical_v2_write's excerpt-identity guard compared a
+  // whole-payload digest where it should compare only the seven fields
+  // that define excerpt_id (excerpt_definition_key,
+  // excerpt_definition_version, excerpt_definition_payload_digest,
+  // ordered_component_assignments, excerpt_purpose,
+  // transformation_or_redaction_version, output_text_hash). TERMINATION and
+  // TERMINATION_FEE legitimately quote the identical sentence and share
+  // excerpt_id by design, per ADR-001, while their source_occurrence_id
+  // legitimately differs between the two families' independent runs; the
+  // whole-payload comparison read that difference as a conflict and rolled
+  // back whichever family's write reached the excerpt loop second in its
+  // entire transaction, silently dropping TERMINATION's 12 resolved claims.
+  // This is one of three digest guards a schema edit must update --
+  // scripts/canonical-v2-optiona-authority-partition.mjs pins the
+  // canonical_v2_write function body separately (also repinned), and
+  // scripts/canonical-v2-staging-writer-structure-identity.mjs pins exact
+  // error message strings its probes assert on (unaffected by this edit --
+  // no message text changed). See docs/codex-program/notes/step-2d1-
+  // runner-and-writer.md for the local-container proof: TERMINATION then
+  // TERMINATION_FEE both COMMITTED against the same excerpt_id with
+  // differing source_occurrence_id, and a genuine identity collision
+  // (mismatched output_text_hash under the same excerpt_id) was still
+  // refused.
+  //
+  // Previously repinned 2026-08-07 for PLAN.md Step 2C1, found by Step 2C:
+  // canonical_v2_staging.conditional_termination_fee_values had NO deal-
+  // scoping column at all, so Step 2C's serving read the WHOLE table --
+  // correct only because Modiv was the only deal that had ever written to
+  // it, and Step 2D's second deal would have silently mixed both deals'
+  // fee amounts in every served payload. This adds a `document_hash`
+  // column, populated in DEAL_SCOPE_RUN from the write-set's own
+  // deal.document_hash (never from canonical_payload -- this kind's 11-key
+  // schema has no document_hash field, and adding one would change every
+  // existing row's content-addressed id under the same schema version),
+  // plus a document_hash cross-check in the identity-conflict guard
+  // alongside the existing payload-digest check. This is one of three
+  // digest guards a schema edit must update -- scripts/canonical-v2-
+  // optiona-authority-partition.mjs pins the canonical_v2_write function
+  // body separately, and scripts/canonical-v2-staging-writer-structure-
+  // identity.mjs pins exact error message strings its probes assert on
+  // (unaffected by this edit -- no message text changed). See docs/codex-
+  // program/notes/step-2c1-fee-value-deal-scope.md for the local-container
+  // proof, including two deals' conditional fee values written and read
+  // back isolated.
+  //
+  // Previously repinned 2026-08-07 for PLAN.md Step 4A2, which added the
+  // canonical_v2_staging.conditional_termination_fee_values table and taught
+  // public.canonical_v2_write's DEAL_SCOPE_RUN branch to accept, shape-check,
+  // recompute the identity of, and durably write that write-set object kind.
+  // See docs/codex-program/notes/step-4a2-conditional-fee-table.md for that
+  // local-container proof.
+  'canonical-v2-foundation.sql': '831efd09d016f204ca474e316efc83d2a42ab0acf01dd044232381d87d8c637e',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.

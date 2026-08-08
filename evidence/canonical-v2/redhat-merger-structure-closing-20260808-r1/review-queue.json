@@ -1,0 +1,211 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "63adea8c7e6c63fd717a704c78df7c3052a841c6d293c3f296d034b7facb22b6",
+  "review_queue": [
+    {
+      "section_reference": "1.01",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "00ce7066fbb890f8ecbf4d49100d99f226aee52ed3ca20ec7c7a771f97aa1253",
+      "closure_id": "96ec1d903540a85a4efb4b9c5aaacd8086c43188b9cce29430e056b07a9c5046",
+      "normalised_phrase": "At the Effective Time, the separate corporate existence of Sub shall cease and the Company shall continue as the surviving corporation (the “Surviving Corporation”) and a wholly owned subsidiary of Parent.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.01",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6304956d67cebe74e2fa929fb1805d0720e5de6d1f915ffe9e230dc7c16d67d5",
+      "closure_id": "a031368d1c2433ff2382e821cbec99c6d479c7d01096d5735421950eb3d95005",
+      "normalised_phrase": "Sub shall be merged with and into the Company at the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.02",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0de61c2e0d006b59b0afe050f08e0afc15b36d8d0ec2593b1ad3c03ca574c36c",
+      "closure_id": "0fa7277e1bb04af25783a37dce7f06f414ac4284bbc2e44e60918a3fb4772f31",
+      "normalised_phrase": "will take place at 7:45 a.m., New York time, on a date to be specified by the parties, which shall be not later than the fourth Business Day after satisfaction or (to the extent permitted by applicable Law) waiver of the conditions set forth in Article VI",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.02",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "61097d75ea428e4fb661bb19c0091c9baebc76be708e6f28d86aba91d7641844",
+      "closure_id": "cce1de08465b21d0e205804fa26f5ab064cb3fa8ee8dfdcd77d94d2690aef2fa",
+      "normalised_phrase": "at the offices of Paul, Weiss, Rifkind, Wharton & Garrison LLP, 1285 Avenue of the Americas, New York, New York 10019, or remotely by exchange of documents and signatures (or their electronic counterparts)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.03",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bc3e87747686dd1bdce1838dd0df11ea8ec272a59e397b9a7d0f09dfa25bfd58",
+      "closure_id": "1a46fc39b69772b93f81a6d256f570732f0d43aa3ec13f78bdd1e5ab25a6d530",
+      "normalised_phrase": "The Merger shall become effective at such date and time as the Certificate of Merger is duly filed with the Delaware Secretary of State",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 13,
+          "end": 27,
+          "excerpt": "Section 1.03 Effective Time of the Merger. Upon the terms and subject to the conditions set forth in this A",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 827,
+          "end": 841,
+          "excerpt": "t which the Merger becomes effective is referred to in this Agreement as the “Effective Time.”\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.03",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "268c265bba30aa18e9996852e4e7c0e4518b015da913549d3efc2759e5c62d3a",
+      "closure_id": "bebdd8480ca280d2f12498f32cadba80e6b400bf3d117c064f4f4fb3418e2d60",
+      "normalised_phrase": "as soon as practicable on the Closing Date, the parties shall properly file with the Secretary of State of the State of Delaware (the “Delaware Secretary of State”) a certificate of merger in customary form and substance (the “Certificate of Merger”) in accordance with the relevant provisions of the DGCL.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 13,
+          "end": 27,
+          "excerpt": "Section 1.03 Effective Time of the Merger. Upon the terms and subject to the conditions set forth in this A",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 827,
+          "end": 841,
+          "excerpt": "t which the Merger becomes effective is referred to in this Agreement as the “Effective Time.”\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "1.04",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c87c9285ad7c5bb46a3ec47fa8ff8769cac9d3c47d35d1165511d67ab4b542b9",
+      "closure_id": "43ce663d1ee3b685e3246acc89fe8d046c31663d3f486639c6d48d879169da9d",
+      "normalised_phrase": "at the Effective Time all of the property, rights, privileges, powers and franchises of the Company and Sub shall vest in the Surviving Corporation, and all debts, liabilities and duties of the Company and Sub shall become the debts, liabilities and duties of the Surviving Corporation.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.05",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "23b6dc384dbd384c1db062a06f518ecb719c5348a0904a04fec5adb5dea75ab5",
+      "closure_id": "6c3f6b5b77e6ceb616257a7d6b54ec4d3fe13be157c49845c9ecd589fdf8ff6e",
+      "normalised_phrase": "At the Effective Time, the Company Bylaws shall be amended and restated in its entirety to be the bylaws of Sub as in effect immediately prior to the Effective Time, except that (i) all references therein to Sub shall be automatically amended and shall become references to the Surviving Corporation and (ii) changes necessary so that the bylaws shall be in compliance with Section 5.05 shall have been made, and such amended and restated bylaws shall become the bylaws of the Surviving Corporation until thereafter amended in accordance with the applicable provisions of the DGCL, the certificate of incorporation of the Surviving Corporation and such bylaws.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.05",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9476c5ae7cd41b5eb3403eaa7490afdc60a3a0c00b7b363f2fddd7d473085380",
+      "closure_id": "938ecfc9981befa3ab0f6e8ca692ce26bc7d134d90291a0d6d89a382c0b59b40",
+      "normalised_phrase": "At the Effective Time, the Company Charter shall be amended and restated in its entirety to be the certificate of incorporation of Sub as in effect immediately prior to the Effective Time, except that (i) all references therein to Sub’s name, date of incorporation, registered office and registered agent shall be automatically amended and shall become references to the name, date of incorporation, registered office and registered agent of the Company as provided in the Company Charter immediately prior to the Effective Time, (ii) the provisions of the certificate of incorporation relating to the incorporator of Sub shall be omitted, and (iii) changes necessary so that the certificate of incorporation shall be in compliance with Section 5.05 shall have been made, and such amended and restated certificate of incorporation shall become the certificate of incorporation of the Surviving Corporation until thereafter amended in accordance with the applicable provisions of the DGCL and such certificate of incorporation.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    },
+    {
+      "section_reference": "1.06",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bfda662c1ae920b52d198a1b9d1a62f127ae1435e4ed413c7f8f3d706094a4ab",
+      "closure_id": "4748de7d91b59c9fef574ba6130f41f6a49c4966badfe19ad6b19484a88f7fb5",
+      "normalised_phrase": "The directors of Sub immediately prior to the Effective Time shall be the initial directors of the Surviving Corporation until the earlier of their resignation or removal or until their respective successors are duly elected and qualified, as the case may be.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE"
+    }
+  ],
+  "review_queue_artifact_id": "46012aea726aeacdbfaf3167301d007e6f33eddde6d31bbbce1276bad7aee314"
+}

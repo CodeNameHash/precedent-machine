@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "concho",
+  "deal_label": "ConocoPhillips / Concho Resources Inc.",
+  "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+  "purpose": "General extraction run: family SPECIFIC_PERFORMANCE_REMEDIES on deal concho.",
+  "section_references": [
+    "9.11"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "9.11",
+      "family_id": "SPECIFIC_PERFORMANCE_REMEDIES"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-specific-performance-remedies/v1",
+  "prompt_version": 2,
+  "agreement_date": "2020-10-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T08:40:43.716Z",
+  "total_elapsed_ms": 49741,
+  "extraction_wall_clock_ms": 44302,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/concho-specific-performance-remedies-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "ac0f1c2f74c19b332be6bb458f975b36169a4d12",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "141ec88280e80bd35d24c32ffe1ede001dda572b573a8b5a6f3c6d6c74f5a834",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

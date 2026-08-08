@@ -1,0 +1,115 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3a60491e76ecd228078f36593a291e12d92b9806c4ed2d88d83ee6d76bbc07b5",
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b772d17f6b8e9e014e58b4a993c8e06af22abd3b8deebe50e220d62ab9ce0845",
+      "closure_id": "1a12117679bc2dc73b3e04d6a221c2865b8f34465c10fe5caf17f2de22ef5118",
+      "normalised_phrase": "shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio, without interest",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-RATIO",
+          "pattern_id": "CONS-RATIO:PHRASE:IN_LIEU_OF_FRACTIONAL_SHARES",
+          "start": 1749,
+          "end": 1777,
+          "excerpt": "r Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "539041c274c33db64449b85417f8eb3fe5a422a2e5af590c3d1d0cfb26bc5c1f",
+      "closure_id": "2498da47065d8248a50045a9381c78d1103a501897b392dcef536ed4773ccab4",
+      "normalised_phrase": "shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4a2221c209345f232da18118044eb1d862dd71c5ef7422f3e4059127c41d44df",
+      "closure_id": "a123ef52f0f3d81b0dccbbe09339131a9c5e287c5b32bc4358b2eac8658884eb",
+      "normalised_phrase": "OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO"
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an aggregate amount of cash equal to the Company Preferred Share Merger Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9f6ab6c13c85dfb66b3f1a2d5bebb74ea7ffa76d87b659924ab35dd4df7ee3a5",
+      "closure_id": "baae442eed5f9fe84d0fe27bc28acae627e993de88b254c686bff0dc53220d9a",
+      "normalised_phrase": "an aggregate amount of cash equal to the Company Preferred Share Merger Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.6",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4e90cd1cb9e0d5f896984285747f1829efb7252231bed67df3e427790a3a846c",
+      "closure_id": "67a2c0b87d5614f6bb5749073f2d5c509f9aa563d8bdb5de4a77f5bb002ab0de",
+      "normalised_phrase": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT"
+    }
+  ],
+  "review_queue_artifact_id": "be1aaa87215d52f0e1785d162ab95a3b2d86e594c8e211654604b0372cad390e"
+}

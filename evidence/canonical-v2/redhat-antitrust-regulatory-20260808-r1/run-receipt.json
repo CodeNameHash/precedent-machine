@@ -1,0 +1,4409 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "source_byte_length": 264358,
+  "root_section_id": "3d90818eb9590ab0940e2daff9eb6c2a5579fbc2ed81c4fe940f54c10c670113",
+  "requested_section_references": [
+    "5.03"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "5.03",
+      "section_id": "f2bebcae22d9a3fdb56a9e92f4b196fe9b162e1a10187a704fc511de242058b8",
+      "parent_section_id": "bf3e07e0bb856e2dd5d2e4721d914373eb85a80df8387d9ffcfa0690054f4509",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 158972,
+      "end": 176417,
+      "text_sha256": "46723ba06e24aad7e0fbd330f7333fa83dc6a8bef0fc9378630058304fb5a6b8",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-antitrust-regulatory/v1",
+      "prompt_version": 5,
+      "prompt_digest": "6033ee4af6a2d1e5d193ae20aca2424e6a70b744152fd458c25d5dc92213d743",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+        "input_scope_digest": "da3bb40294047a5df3a805b166b8bdf87589171e1f62d299edd8c7a8db196902",
+        "proposal_count": 32,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a9a62c27b769376a632f8c5d870eee777050e0debd2c3667864ba0d97a3dd571",
+          "claim_occurrence_id": "93b0fc2fc22bd77c035bb6f166ccba433cbc38516d19b6f0267a83fea233093b",
+          "subject_occurrence_id": "e715c93ac4cd5d05ae86b1bde7387fcedab2a7b6dc8eee9f129775dabe7d27a2",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of the parties hereto agrees to (and shall cause their respective Subsidiaries to) use its and their respective reasonable best efforts to take, or cause to be taken, all actions and to do, or cause to be done, all things necessary, proper or advisable under applicable Laws to consummate the Merger and the other transactions contemplated by this Agreement as soon as practicable and in any event no later than the Termination Date",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9f5832f902f814166720fa2e188881f881d0e46aed30f2c85b8472d998682a7d"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "EFFORTS_STANDARD",
+            "proposed_canonical_value": "REASONABLE_BEST_EFFORTS",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of the parties hereto",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EFFORTS_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9f5832f902f814166720fa2e188881f881d0e46aed30f2c85b8472d998682a7d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b4597381dbde9b6e688a6c3f87aee0dafa249652ad3daab9644ab02158c2abb0",
+              "document_ordinal": 0,
+              "absolute_start": 145,
+              "absolute_end": 582,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4c8d41f33e69672831486f6ba9dda0f485447d1daaebe0de5dadeccef7518ede"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(ii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "58f370f971aeae16d60baac6953b2cf93400a3c34b6cbed4a9313bd71e855a97",
+          "claim_occurrence_id": "634139ed81f9ec905d5d5abb40b69220a9585d38d74a4d3e4e40637383dcbf23",
+          "subject_occurrence_id": "cf4228867dead8e5fb2e4dad7760ed52565f509b236b23fbfc69ae08723cc541",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ea9a20deabdc7a5bf81a6902ae0258471e7e5ed52b9dc7142b2927a70c18b1dc"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "REGULATORY_FILING_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of Parent and the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": "HSR Act",
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "REGULATORY_FILING_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ea9a20deabdc7a5bf81a6902ae0258471e7e5ed52b9dc7142b2927a70c18b1dc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8bb88a6df842bb3d0a9d81deb07ff959898db6ac215dc3b58385a8a58506304f",
+              "document_ordinal": 0,
+              "absolute_start": 1813,
+              "absolute_end": 2343,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "3ac6471207beac7dc8b0683d96b35b772eb1a84e57cbb1c1bacb9a426b70b20e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(ii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0ea4cd98eb174015973ea7c7c6a6ca8db9934708d64490e4c5861042c3486ff9",
+          "claim_occurrence_id": "98423a5d238ce91db68f56d8da6c9a4b9befc7918d89c74bce35267cf8ac932d",
+          "subject_occurrence_id": "65bf7cbfddc6fddb3577d1681a75bf57ce7ccb2185a3908cd558d7180808d785",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a5a557fff30d8bca28c4e9cde71bdd02f3a179d18d8c6e6a344fa5dbb901c84c"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "REGULATORY_FILING_TIMING_STANDARD",
+            "proposed_canonical_value": "AS_PROMPTLY_AS_REASONABLY_PRACTICABLE",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of Parent and the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": "HSR Act",
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "REGULATORY_FILING_TIMING_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a5a557fff30d8bca28c4e9cde71bdd02f3a179d18d8c6e6a344fa5dbb901c84c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8bb88a6df842bb3d0a9d81deb07ff959898db6ac215dc3b58385a8a58506304f",
+              "document_ordinal": 0,
+              "absolute_start": 1813,
+              "absolute_end": 2343,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "72e75775dfec0f05956f59a3355dc11d77051702e73eec4404db52ed2f110b1f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(ii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "fc3486a436609260a4ad1a1dad53dd42a66ad5b3030c3f992e53fa7b1338163b",
+          "claim_occurrence_id": "67137bd557addfb8afff9e84491edf52d5a4c74dfaa46c6dbd52d12ba6eaf5a6",
+          "subject_occurrence_id": "477e80abd9778fb966ced18cb9326693f579bbe6c10091171464d1bcf543345a",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable, (B) provide or cause to be provided as promptly as reasonably practicable and advisable any information and documentary material that may be requested by the DOJ or FTC under the HSR Act or by other Governmental Entities under applicable Antitrust Laws (if any)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6f5c163f936bff5ac870b131c7be70aefde263a780d67aa437c6b0b3b99c1b60"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "INFORMATION_SHARING_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of Parent and the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": "any information and documentary material that may be requested by the DOJ or FTC under the HSR Act or by other Governmental Entities under applicable Antitrust Laws (if any)",
+            "information_protection_kind": null,
+            "information_protection_kinds": [],
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "INFORMATION_SHARING_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6f5c163f936bff5ac870b131c7be70aefde263a780d67aa437c6b0b3b99c1b60",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d33eec767e68b10948a66189d5bf1b1271ac77778fd3421dbbc8a4a1fe66107f",
+              "document_ordinal": 0,
+              "absolute_start": 1813,
+              "absolute_end": 2606,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "65030369845932379d24e951827e204104dded7851b266aa0bf5ca125bb5fe6b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(ii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "13c26f0c7493eef3e9c87dc2b8fba7f36782563b180aca63cf09ae03fba41de3",
+          "claim_occurrence_id": "beada6a98a2bcc19370697770d766d0cf0cb548ced64231c1c7d3ae40c865523",
+          "subject_occurrence_id": "281d6ac341f25b013684f3b3a0714e4ad910bae0c166bece38067a26ca8780ab",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable, (B) provide or cause to be provided as promptly as reasonably practicable and advisable any information and documentary material that may be requested by the DOJ or FTC under the HSR Act or by other Governmental Entities under applicable Antitrust Laws (if any) and (C) use its reasonable best efforts to obtain prompt expiration or termination of any applicable waiting period or other approval of consummation of the transactions contemplated by this Agreement by the DOJ or FTC or other applicable Governmental Entities.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "50f07f5098c6a2baf63eed45cfeba5c2bce126966e5b2a1c7ef88fbde31b094b"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "EFFORTS_STANDARD",
+            "proposed_canonical_value": "REASONABLE_BEST_EFFORTS",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of Parent and the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EFFORTS_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "50f07f5098c6a2baf63eed45cfeba5c2bce126966e5b2a1c7ef88fbde31b094b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b046bc8ce3bd2d3bcc3119ba310926be17dae0f9a31a0b16a458ef2e28aa4391",
+              "document_ordinal": 0,
+              "absolute_start": 1813,
+              "absolute_end": 2868,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "739cb69f3a74f99d7324ada5de73c4f9f6f673c315c1e850cfa071deba5f422a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ad09ec53cb06dfde81d316c6ebbf0a953cc674fd1eefd1020342d2b4b571d2ab",
+          "claim_occurrence_id": "e36c3442e801ca03925fe76eb9d93739d91237689fe5f3bf537e0deaf586e77d",
+          "subject_occurrence_id": "a6e92e2dcd55d6f2f9e16847acd344960162a84548dfae093859368515cc92f4",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent and the Company (if requested by Parent), along with their respective Subsidiaries, shall use their reasonable best efforts to obtain clearance under any applicable Antitrust Laws so as to enable the parties hereto to consummate the Merger and the other transactions contemplated by this Agreement as promptly as practicable, and in any event prior to the Termination Date",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "34939bff16c5ad3fe5b848cea20f3927f208b47f8c61e8286e335af73fbb52d1"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "EFFORTS_STANDARD",
+            "proposed_canonical_value": "REASONABLE_BEST_EFFORTS",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "Parent and the Company (if requested by Parent)",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EFFORTS_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "34939bff16c5ad3fe5b848cea20f3927f208b47f8c61e8286e335af73fbb52d1",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "52620f82954e4e55f220059ff95fee5fe18ca58397870dedd78c4979239caae6",
+              "document_ordinal": 0,
+              "absolute_start": 2982,
+              "absolute_end": 3361,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "eae3c0fca58a01821d220526c8aa0725ad70d93ffe158e890ccd93164ff8704b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4676e04fe2f3685f71f3fd5960ec6f7ee5227c5833e143e38dd9a3b6b54de188",
+          "claim_occurrence_id": "5668e82418d90d2dd4c8a2b242576b887c2fe543e81813f2bcd5b479318459a8",
+          "subject_occurrence_id": "60fe246f18ac9e7fcb74871434cc233645988220067d20b2500648f802677bc0",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall not, unless requested to do so by Parent, commit to or effect any action contemplated in clause (A), (B), (C) or (D) of the immediately preceding sentence.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e6663b95ad67d569f3dbc4b53e9d1daebfae00f238cbf980d3586b82a3158d6b"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "STRATEGY_CONTROL",
+            "proposed_canonical_value": "PARENT_CONTROL",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": "Parent",
+            "strategy_scope_ref": "any action contemplated in clause (A), (B), (C) or (D) of the immediately preceding sentence",
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STRATEGY_CONTROL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e6663b95ad67d569f3dbc4b53e9d1daebfae00f238cbf980d3586b82a3158d6b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b242c739f1f439dc5e809f5cfba5285e8b4e88a99e6bb7980419a737661c1370",
+              "document_ordinal": 0,
+              "absolute_start": 5264,
+              "absolute_end": 5437,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e09a0c103567e5a09ded1a6e59c95b6b99b9d261d04b0855ff79e35f027eed6c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "66b45bc01a0d1131335553b18fcb5e25d992ba361c884c2404c8bbcbf04d4ad2",
+          "claim_occurrence_id": "c77787c947a5e7c03d687cb0a8e22e1091e98732fc37972d857cb5be780cd266",
+          "subject_occurrence_id": "986d1c1660c8101483de2dd425d93e87e40cca9d14d8e50f211376126bce74d4",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "none of Parent, the Company or any of their respective Subsidiaries shall be required to take any action, or commit to take any action, or agree to any condition or limitation that (x) is not conditioned on the consummation of the Merger or (y) that would result in, or would reasonably be expected to result in, individually or in the aggregate, (1) a material adverse effect on the Company and its Subsidiaries, taken as a whole, or (2) a material adverse effect on Parent and its Subsidiaries, taken as a whole, measured on a scale relative to the size of the Company and its Subsidiaries, taken as a whole (any of the foregoing, a “Burdensome Condition”).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0d5da33922e22e4e5d34ceb93e42ae62fe05611b523a691b03180ffa2e37ad2e"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "BURDEN_COMMITMENT",
+            "proposed_canonical_value": "BURDENSOME_CONDITION",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "none of Parent, the Company or any of their respective Subsidiaries",
+            "burden_term_ref": "Burdensome Condition",
+            "burden_baseline": "TARGET_ONLY",
+            "burden_baseline_ref": "a material adverse effect on the Company and its Subsidiaries, taken as a whole",
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "BURDEN_COMMITMENT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0d5da33922e22e4e5d34ceb93e42ae62fe05611b523a691b03180ffa2e37ad2e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4db95aea7bff915432afaef778317e52a93fe7427edac0199ac05e7727da0ff9",
+              "document_ordinal": 0,
+              "absolute_start": 5637,
+              "absolute_end": 6300,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f3ab571e9624ca2c3f976210664dda25875799fdd3ea489bd20dfa07202c089c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ce4a5c0ce302674ed8e9dd09466b446a5e9e09eb394b2b5e97ea2623a73329f7",
+          "claim_occurrence_id": "cf6c6959ae20fa626ebd780f9a3b91264419d3b6f4c127d08e2a8293e00ffdec",
+          "subject_occurrence_id": "7015d31f30d6cd6985e53782e8295f849ca428e225958eb1d6c141ad8bff5cb4",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "none of Parent, the Company or any of their respective Subsidiaries shall be required to take any action, or commit to take any action, or agree to any condition or limitation that (x) is not conditioned on the consummation of the Merger or (y) that would result in, or would reasonably be expected to result in, individually or in the aggregate, (1) a material adverse effect on the Company and its Subsidiaries, taken as a whole, or (2) a material adverse effect on Parent and its Subsidiaries, taken as a whole, measured on a scale relative to the size of the Company and its Subsidiaries, taken as a whole (any of the foregoing, a “Burdensome Condition”).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "daf30ed2cf525564f7c83b55262e741a9a2254f1bf9d965fc9ad6495c977db4f"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "BURDEN_COMMITMENT",
+            "proposed_canonical_value": "BURDENSOME_CONDITION",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "none of Parent, the Company or any of their respective Subsidiaries",
+            "burden_term_ref": "Burdensome Condition",
+            "burden_baseline": "SIZE_NORMALIZED",
+            "burden_baseline_ref": "measured on a scale relative to the size of the Company and its Subsidiaries, taken as a whole",
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "BURDEN_COMMITMENT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "daf30ed2cf525564f7c83b55262e741a9a2254f1bf9d965fc9ad6495c977db4f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4db95aea7bff915432afaef778317e52a93fe7427edac0199ac05e7727da0ff9",
+              "document_ordinal": 0,
+              "absolute_start": 5637,
+              "absolute_end": 6300,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7381df5aa61cbd3b5e755d31fe3ed249370d1875632cba40a3aad9048914b538"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iv)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d7fd2afe780ba9ecf0eb0f928cd9298409bcc463d056593b1ba622a5ade78655",
+          "claim_occurrence_id": "44bef3eb74600dba981d9d71470a7e09444be30571b9fd6b79ec442faba38f6b",
+          "subject_occurrence_id": "781e1c7b2e69291367c532b17b4d6a077c0cee0d31e9622a0c546ab527cc49a6",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, any such action or proceeding, (B) pursue vigorously all available avenues of administrative and judicial appeal and (C) seek to have vacated, lifted, reversed or overturned any judgment that is in effect that prohibits, prevents or restricts consummation of the transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d79378feb65d93bbb5a86fe45bf557596ab1d90199d8c3d93d4ea43a77492655"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "LITIGATION_OBLIGATION",
+            "proposed_canonical_value": "MANDATORY_DEFEND",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "each of Parent and the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "LITIGATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d79378feb65d93bbb5a86fe45bf557596ab1d90199d8c3d93d4ea43a77492655",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0989b98e8bdc04b756dae1a932ee0907fefb049881d5b4ae75fdf168f2bd2670",
+              "document_ordinal": 0,
+              "absolute_start": 6612,
+              "absolute_end": 7067,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "efddd2397d0773ef5887447c5225681b1b67e4716ab239c5c4cef8257efb0ec8"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iv)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a936b9bd741b99b41a90f597b5c7f13e87e1080bb4aa1dd6839e723ddae67526",
+          "claim_occurrence_id": "5ea7ae1c79aebcf244933ef04b7742e99babbdb7cc05de6ea740139afb47d090",
+          "subject_occurrence_id": "5ef6afadcf967074195a3f270064981391a408f8c0c667cb96848b45cf6c52cc",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "none of Parent, the Company or any of their respective Subsidiaries shall be required to (and the Company and its Subsidiaries shall not, without the prior written consent of Parent) take any action, or commit to take any action, under this Section 5.03(a)(iv) that (x) is not conditioned on the consummation of the Merger or (y) would result in, or would reasonably be expected to result in, individually or in the aggregate, a Burdensome Condition.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f87f961ed0093cdf17ee8ed978aa251dc754840fb2e5f9fa9d304c52953fa9c1"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "BURDEN_COMMITMENT",
+            "proposed_canonical_value": "BURDENSOME_CONDITION",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "none of Parent, the Company or any of their respective Subsidiaries",
+            "burden_term_ref": "Burdensome Condition",
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "BURDEN_COMMITMENT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f87f961ed0093cdf17ee8ed978aa251dc754840fb2e5f9fa9d304c52953fa9c1",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "bc51de10842bb8ee10659a064f12b197a443f95956e73337d029d15a35ada70b",
+              "document_ordinal": 0,
+              "absolute_start": 7262,
+              "absolute_end": 7712,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "57a9d8a5a67c02e2c9a3cddef44967f61bd34f33f95b88fefe528e841992f4e4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(iv)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7a0f35e0282b254f594527093e9f19f63b23580f0fddf20e2c40dd0764b867ac",
+          "claim_occurrence_id": "cf4a6b2bdd986e7c4ecfb8c0fbb9dd5f59a0b5f504c74e0ebc08f33f5dc15fde",
+          "subject_occurrence_id": "12b9a6bc781a706e974e226d24c015f26ece7a3da3f5f222fbcb139718ea29d9",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "none of Parent, the Company or any of their respective Subsidiaries shall be required to (and the Company and its Subsidiaries shall not, without the prior written consent of Parent) take any action, or commit to take any action, under this Section 5.03(a)(iv) that (x) is not conditioned on the consummation of the Merger or (y) would result in, or would reasonably be expected to result in, individually or in the aggregate, a Burdensome Condition.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7a3cb84f301c1821278fe80de9556d96e67bd0355b8e70714e1d4a1ddfa0bd36"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "STRATEGY_CONTROL",
+            "proposed_canonical_value": "PARENT_CONTROL",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "the Company and its Subsidiaries",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": "Parent",
+            "strategy_scope_ref": "any action, or commit to take any action, under this Section 5.03(a)(iv)",
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STRATEGY_CONTROL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7a3cb84f301c1821278fe80de9556d96e67bd0355b8e70714e1d4a1ddfa0bd36",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "bc51de10842bb8ee10659a064f12b197a443f95956e73337d029d15a35ada70b",
+              "document_ordinal": 0,
+              "absolute_start": 7262,
+              "absolute_end": 7712,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "02bd6341ed0fdc2faaa8fe20dc0683afb59ef13c715ec4dbacb9095ef7bf4f55"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a1b9c0d37ef85e068246a62b526dde5b4534c1791329f848f2dfe2960fe23a4a",
+          "claim_occurrence_id": "53efd0acee9334eaf1cf8d16499087e098d0d20f7f41ae73ada6aafaaa24af17",
+          "subject_occurrence_id": "56b2a2461a85e56b88cc8d5445bc6b1b13adf0640b6987c1cf64411e78e00c8b",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent and their respective counsel shall, in connection with the efforts referenced in Sections 5.03(a)(i) and (a)(ii), (A) cooperate in all respects with each other in connection with any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "dd733bc8887c3b9185dfeca7a2d4e422b58327ce60cd7682eddb89ab46665654"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "COOPERATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent and their respective counsel",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": "any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person",
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "COOPERATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "dd733bc8887c3b9185dfeca7a2d4e422b58327ce60cd7682eddb89ab46665654",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3bc0c32e5f0702b26dd2eb84622f3223e2fda3674ad919e9bd1338d99590bdfc",
+              "document_ordinal": 0,
+              "absolute_start": 8020,
+              "absolute_end": 8549,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "acd174dcc373919569b454b863d847dd2ef7948b519ab9bfa16b8cf94407ac33"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "70febb81dcc49d8806a39d3600007096b246f7ef3e59b843bfba13118b41cef0",
+          "claim_occurrence_id": "302676e43b4d2f8dcc9dce1f631b7769685981189b3c33a6754911643bdde75a",
+          "subject_occurrence_id": "610786fb9268aba6dc8eca0fa9906de515f2acf13e54f6370ebd676d4a8395be",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent and their respective counsel shall, in connection with the efforts referenced in Sections 5.03(a)(i) and (a)(ii), (A) cooperate in all respects with each other in connection with any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person, (B) where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e58bc84bc12cc84c01a98251b2c315ad72007db7fd6e38819439047f28ed1613"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "GOOD_FAITH_VIEWS",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent and their respective counsel",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "the other",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e58bc84bc12cc84c01a98251b2c315ad72007db7fd6e38819439047f28ed1613",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "da075bbc1c725200dc1965ed346d358c24d6209994bcff7cc7a2160b0dada710",
+              "document_ordinal": 0,
+              "absolute_start": 8020,
+              "absolute_end": 9076,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5943f2dfaaf64aba7cec733980483d757f5e70d8408a35cceb2bc4cc4e55bff2"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6c4b9538905d387be096f7ec1c3b0dd0137d2cc711e819f9307f21e8d9fd7fe3",
+          "claim_occurrence_id": "0a83d0f32b8d1d82c0d6b61cf6c33377c891ac57f36f57a911f374ba5dafb719",
+          "subject_occurrence_id": "878dc958da5c17ee49fd24a9d0bfe8d5381ff7d5cca629d409ab5c0cd21e3513",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent and their respective counsel shall, in connection with the efforts referenced in Sections 5.03(a)(i) and (a)(ii), (A) cooperate in all respects with each other in connection with any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person, (B) where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement, (C) promptly inform each other of any material\n35\ncommunication (or any other material correspondence or memoranda) received from, or given to, the Antitrust Division of the Department of Justice (the “DOJ”) or the Federal Trade Commission (the “FTC”) or any other applicable Governmental Entity",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4b13a31a0864c2599a07c38ec74112093aa6c449caa6ffaa89a8491b6dcb2e0c"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NOTIFICATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent and their respective counsel",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": "any material\n35\ncommunication (or any other material correspondence or memoranda) received from, or given to, the Antitrust Division of the Department of Justice (the “DOJ”) or the Federal Trade Commission (the “FTC”) or any other applicable Governmental Entity",
+            "notification_timing_ref": "promptly",
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NOTIFICATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4b13a31a0864c2599a07c38ec74112093aa6c449caa6ffaa89a8491b6dcb2e0c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "33d8c28b7736963debc93be50dde5dd72dcc743d8ead0ea881e4f6dede40dd9e",
+              "document_ordinal": 0,
+              "absolute_start": 8020,
+              "absolute_end": 9381,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a9f38d004a8e32052f3498a6b7e87c57f41d5fed98e8500663b997ae52d4d2b3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "489ea260adfd6343e7c3928b21af98c17fb207f7895d8e91d4758a84fcabaca2",
+          "claim_occurrence_id": "a3393d4e9ac234ecb1167e5a14f80404896e0742cd8ff21dbd46c163ce3bf572",
+          "subject_occurrence_id": "450aa3f2fe18565948b79b9f8aa7f9127222421f6aa80465bd9c8a515707c60a",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent and their respective counsel shall, in connection with the efforts referenced in Sections 5.03(a)(i) and (a)(ii), (A) cooperate in all respects with each other in connection with any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person, (B) where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement, (C) promptly inform each other of any material\n35\ncommunication (or any other material correspondence or memoranda) received from, or given to, the Antitrust Division of the Department of Justice (the “DOJ”) or the Federal Trade Commission (the “FTC”) or any other applicable Governmental Entity and (D) where legally permissible, promptly furnish each other with copies of all correspondence, filings and written communications between them or their Subsidiaries or affiliates, on the one hand, and any Governmental Entity or its respective staff, on the other hand, with respect to the transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "73d7bfee9f86d8f1772af56ca4572c44e5c2d1168c6ccfdcfe1a1be95a7ab082"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "INFORMATION_SHARING_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent and their respective counsel",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": "all correspondence, filings and written communications between them or their Subsidiaries or affiliates, on the one hand, and any Governmental Entity or its respective staff, on the other hand, with respect to the transactions contemplated by this Agreement",
+            "information_protection_kind": null,
+            "information_protection_kinds": [],
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "INFORMATION_SHARING_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "73d7bfee9f86d8f1772af56ca4572c44e5c2d1168c6ccfdcfe1a1be95a7ab082",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "00f0a625f0af688e6192a2d35a48e9d8c1dd99cd848db6319a88e70cca7be9be",
+              "document_ordinal": 0,
+              "absolute_start": 8020,
+              "absolute_end": 9718,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d18d0d20267edfca941c2c81b5b1fe5084b2d1abfcdc38c528ab64300f9c5643"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7db983b4ce603035d122d51ee553772206c88cb9dc523b4280e062eb53b70c4c",
+          "claim_occurrence_id": "589e94866bf94cc1e335c98bea6ab3268504fd3a34e97b574571c064f9c4e23b",
+          "subject_occurrence_id": "cace8fcc27868478b05531a867294c953e3222e92797d58072c87e8d86a54c49",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent shall (with respect to any in-person discussion or meeting), and shall to the extent practicable (with respect to any telephonic discussion or meeting), provide the other party and its counsel with advance notice of and the opportunity to participate in any material discussion or meeting with any Governmental Entity in respect of any filing, investigation or other inquiry in connection with the transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1a1ea85b3e97551cfc66fafe358a5e317975f59e2065457c0af18935157e237a"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NOTIFICATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": "any material discussion or meeting with any Governmental Entity in respect of any filing, investigation or other inquiry in connection with the transactions contemplated by this Agreement",
+            "notification_timing_ref": "advance",
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NOTIFICATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1a1ea85b3e97551cfc66fafe358a5e317975f59e2065457c0af18935157e237a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ec033064fd51822d2a8ab36536a388518427b5facdd4e2bebe2239d8c699f631",
+              "document_ordinal": 0,
+              "absolute_start": 9803,
+              "absolute_end": 10268,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f5d19fde3f27359c1548b8c055aff5b4e53a9dadd9bbba00fe2efc1d0a63fa3e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6fe973a3fe3d1648d6dcc56ef363fe3edcb2ae15d91043699e6b295c9029fe77",
+          "claim_occurrence_id": "592b0cd8bd42e7374687daa65b51e5c395c7c009e6954b36f18dad68b1f6caee",
+          "subject_occurrence_id": "0f7bbabb6ea5fa3f07d082b4f4633718e3e2a7f073d3b252b486773af6b8cd81",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and Parent shall (with respect to any in-person discussion or meeting), and shall to the extent practicable (with respect to any telephonic discussion or meeting), provide the other party and its counsel with advance notice of and the opportunity to participate in any material discussion or meeting with any Governmental Entity in respect of any filing, investigation or other inquiry in connection with the transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3f0a478b4cb6feb1dc986d7052ceb9551edc17711b63a59d15296337d57f03de"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "PARTICIPATE",
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "the Company and Parent",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "the other party and its counsel",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3f0a478b4cb6feb1dc986d7052ceb9551edc17711b63a59d15296337d57f03de",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ec033064fd51822d2a8ab36536a388518427b5facdd4e2bebe2239d8c699f631",
+              "document_ordinal": 0,
+              "absolute_start": 9803,
+              "absolute_end": 10268,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ed2d0760b5dfc417b9baa0e202c9cc6f607b146aba6afa0e24e9f5d1aa8c439d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "607a7a1479490b212247aff0045b9a370af16f6f32301e2a8599215bb3a82fbb",
+          "claim_occurrence_id": "5b0a9531a95109d376ab1e98fafb1c0a9a571835663624d6340cf600c8ac5f57",
+          "subject_occurrence_id": "0f15e078395b7276980315605201e3dd335e46bcfdd5c77b6837bc2238a47bd3",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company and Parent shall jointly develop, consult and cooperate with one another with respect to the strategy for obtaining any necessary approvals under the Antitrust Laws or responding to any request from, inquiry by, or investigation by (including directing the timing, nature and substance of all such responses) any Governmental Entity in connection with this Agreement and the transactions contemplated hereby",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "01dbed8afa9443b339593c23144bf4281feb4b61568e7bb9d8d802637ed4e68f"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "COOPERATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "MUTUAL",
+            "obligor_party": "The Company and Parent",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": "the strategy for obtaining any necessary approvals under the Antitrust Laws or responding to any request from, inquiry by, or investigation by (including directing the timing, nature and substance of all such responses) any Governmental Entity in connection with this Agreement and the transactions contemplated hereby",
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "COOPERATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "01dbed8afa9443b339593c23144bf4281feb4b61568e7bb9d8d802637ed4e68f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "52a0fed416a68832ec64b7d60627d43b6339487c2c20aa7218b106f0507c2b94",
+              "document_ordinal": 0,
+              "absolute_start": 10269,
+              "absolute_end": 10688,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "520dbe0710519e0a5326befca7bd924ed58e559a3a72717630e34de8655181e9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "160f739cf5d2685fe6967452a78716b5c8d1687e35aef523fed9319687611193",
+          "claim_occurrence_id": "d7a42eea3c8a712fc2284f6d419b072e5df01ef98b1024f1b1c9caa273378424",
+          "subject_occurrence_id": "ca00dd49ef1b051de6b01bc1c1b8b88685184f579966956680c9b1457f51ec7c",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company and Parent shall jointly develop, consult and cooperate with one another with respect to the strategy for obtaining any necessary approvals under the Antitrust Laws or responding to any request from, inquiry by, or investigation by (including directing the timing, nature and substance of all such responses) any Governmental Entity in connection with this Agreement and the transactions contemplated hereby",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d22fa331a2e0478d6971b283157014931894267d89f397d6941b8ac17ba73c9c"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "STRATEGY_CONTROL",
+            "proposed_canonical_value": "SHARED_CONTROL",
+            "obligor_party_scope": null,
+            "obligor_party": null,
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": "The Company and Parent",
+            "strategy_scope_ref": "the timing, nature and substance of all such responses",
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STRATEGY_CONTROL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d22fa331a2e0478d6971b283157014931894267d89f397d6941b8ac17ba73c9c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "52a0fed416a68832ec64b7d60627d43b6339487c2c20aa7218b106f0507c2b94",
+              "document_ordinal": 0,
+              "absolute_start": 10269,
+              "absolute_end": 10688,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "587d0147e6d8ea0ba62c0c923591d00fc4f7d71ce2ee20a3828febf9875760f6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "68eb1dc5d297ce21b8a1ed2f523c5e9081672bd5ef581221d90318f8a22579ef",
+          "claim_occurrence_id": "9141f4a31f189c324915877fd526adc4fe046b276345127f96c1e30ceeeaf439",
+          "subject_occurrence_id": "4b30ec7da8ca9ede1787be5fc2ee327fb0426a4ea24cf3e4e4b16c0a0309512e",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in the event of any dispute between the parties relating to the strategy or appropriate course of action or content of any submission made in connection with obtaining any clearances under applicable Antitrust Laws with respect to the Merger, the parties shall escalate such dispute to the general counsels of the Company and Parent for resolution. If such dispute is not resolved pursuant to the preceding sentence, Parent shall have the right to make the final determination with respect to such matter.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "25379cca8c31a6e31eba32c52e4b969b0e85c5d149141acc88fb6d2b2b5314c3"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "STRATEGY_CONTROL",
+            "proposed_canonical_value": "PARENT_CONTROL",
+            "obligor_party_scope": null,
+            "obligor_party": null,
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": "Parent",
+            "strategy_scope_ref": "the strategy or appropriate course of action or content of any submission made in connection with obtaining any clearances under applicable Antitrust Laws with respect to the Merger",
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STRATEGY_CONTROL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "25379cca8c31a6e31eba32c52e4b969b0e85c5d149141acc88fb6d2b2b5314c3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0b53a551b9fb8c6c2d3b71d34d5be11ce214a9b8305d0f6be2cabe3b86412c77",
+              "document_ordinal": 0,
+              "absolute_start": 11022,
+              "absolute_end": 11527,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e85397a66b028b72a514df46d67976f2bda4448373a4dc51324a6ee5a86263ff"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "bc05ce4a87b860787b28c84f7d1bf4f732fda39db8d9e8f393f9e0e98b51f67e",
+          "claim_occurrence_id": "fb3270e7e9cb6ecb0aa4f16141254347869059324c7bfefb2ef1923b00168f5e",
+          "subject_occurrence_id": "c6addd04f3677df7bb2ba10bd5d1b3bbc0dbd3643c7a33e2c75b6d794c616106",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall, on behalf of the parties and in reasonable consultation with the Company, have the right, in its sole discretion, to determine the nature and timing of any divestitures or other remedial undertakings made for the purpose of securing any required approvals under the Antitrust Laws to the extent any such divestitures or other remedial undertakings would be conditioned upon and only be effective after the Closing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d65dd446ed8a0bfceef72a307e488cdb7dc7950396dbfd52587855bd89693b26"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "STRATEGY_CONTROL",
+            "proposed_canonical_value": "PARENT_CONTROL",
+            "obligor_party_scope": null,
+            "obligor_party": null,
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": "Parent",
+            "strategy_scope_ref": "the nature and timing of any divestitures or other remedial undertakings made for the purpose of securing any required approvals under the Antitrust Laws to the extent any such divestitures or other remedial undertakings would be conditioned upon and only be effective after the Closing",
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STRATEGY_CONTROL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d65dd446ed8a0bfceef72a307e488cdb7dc7950396dbfd52587855bd89693b26",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3d83bbb663fe2120e3aec8e1ac6dafc7e9aa11946ba01914a7b58d73b843c307",
+              "document_ordinal": 0,
+              "absolute_start": 11641,
+              "absolute_end": 12069,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d45cb636f4c0da036b924c1d7cd1717f056705ae157840e3e4db287c6c42bc9c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(v)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f41610ecd0cfc2483cfe63cd234c23be4f56c7aee8257b21d9476042ed0fd177",
+          "claim_occurrence_id": "8d7e05b28aa9daedad619f9469177449edf6b25cd63b5648e6bd24e0c4f6f86e",
+          "subject_occurrence_id": "4d584b86ec0bb25f51b423183f4077f43b53511b69e489a9d0687f8d547a80c4",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent shall, on behalf of the parties and in reasonable consultation with the Company, have the right, in its sole discretion, to determine the nature and timing of any divestitures or other remedial undertakings made for the purpose of securing any required approvals under the Antitrust Laws to the extent any such divestitures or other remedial undertakings would be conditioned upon and only be effective after the Closing.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ad70c33bd45e97038edae1ff532c8d44ff3cc856291fab7ad0c40e29045eb477"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "NOTICE_CONSULT",
+            "obligor_party_scope": null,
+            "obligor_party": null,
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "the Company",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ad70c33bd45e97038edae1ff532c8d44ff3cc856291fab7ad0c40e29045eb477",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3d83bbb663fe2120e3aec8e1ac6dafc7e9aa11946ba01914a7b58d73b843c307",
+              "document_ordinal": 0,
+              "absolute_start": 11641,
+              "absolute_end": 12069,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2441a9ad4fd44eef472b063b367e0f0aa9e89bf8d4b42688955edc082801090b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(a)(vi)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "5e816c346217f6b4a5b59b05fd6f37c87ff9581a656518a1eb17b3c1762d48eb",
+          "claim_occurrence_id": "7e82ec9838f401583fa034d38909cfad8f8ab19f6468b0c4aa8006f8e3ec9ab9",
+          "subject_occurrence_id": "714b87a030d7913bc49822c3a13eae2af7bc3f5181aa82ad028808ab3429aa82",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Neither Parent nor Sub shall, nor shall they permit their respective Subsidiaries to, acquire or agree to acquire any rights, assets, business, person or division thereof (through acquisition, license, joint venture, collaboration or otherwise), if such acquisition would reasonably be expected to increase the risk of not obtaining, or the risk of materially delaying the obtaining of, the consent, approval order or authorization of any Governmental Entity with respect to the Merger or the other transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9dd11cbf428109656a823e331f4ad0e550acaecf563a73b1827d548646585545"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NON_IMPEDIMENT_COVENANT",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "Neither Parent nor Sub",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": "acquire or agree to acquire any rights, assets, business, person or division thereof",
+            "impairment_effect_ref": "increase the risk of not obtaining, or the risk of materially delaying the obtaining of, the consent, approval order or authorization of any Governmental Entity with respect to the Merger or the other transactions contemplated by this Agreement",
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NON_IMPEDIMENT_COVENANT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9dd11cbf428109656a823e331f4ad0e550acaecf563a73b1827d548646585545",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c565789c9bda162d4654d5446f80836856d0084341205f12aa0a332e6dfd6d9a",
+              "document_ordinal": 0,
+              "absolute_start": 13231,
+              "absolute_end": 13774,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8b3d3c9174d34b7d6b8d6898704e14be29bf0dd3d85129759c5c31377c2004d1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(b)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "67645f8a00ec60237c4c82689458df6b918f7776a4bec6dbf777d3918d81c22a",
+          "claim_occurrence_id": "968d68b4fb77ed9383783b404f351d4618472b424c943bfdca6b37eac23347b9",
+          "subject_occurrence_id": "a835c6244d0627f19f31a7c78bd3ed37308df99697460a9950c057cbcfd49d91",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each of the Company and Company Board shall, if any state takeover statute or similar statute or regulation, including the DGCL, is or becomes applicable to this Agreement, or to any of the Merger and the\n36\nother transactions contemplated by this Agreement, take all actions necessary to ensure that the Merger and the other transactions contemplated by this Agreement may be consummated as promptly as practicable on the terms contemplated by this Agreement and otherwise to minimize the effect of such statute or regulation on this Agreement, the Merger and the other transactions contemplated by this Agreement.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "25c422efbe0602b4d5ae8fb840390f313b202dfab932321d36d3e6f48ad28496"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "EFFORTS_STANDARD",
+            "proposed_canonical_value": "FLAT_OBLIGATION",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "each of the Company and Company Board",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EFFORTS_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "25c422efbe0602b4d5ae8fb840390f313b202dfab932321d36d3e6f48ad28496",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "31944a5524fc26ece6b33beb6a1a76e3ee4b2048f6acf1253188d942d111ad5d",
+              "document_ordinal": 0,
+              "absolute_start": 13890,
+              "absolute_end": 14505,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "60595070bc22c71febcb4c3a4430e49208a043dd94a3c8020b4176e3a6606f22"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(b)(ii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "fd79efc35c95c74a270e5c809bc49220f7ad2e3fa2601c16ad526e7208ac1659",
+          "claim_occurrence_id": "57b9b8973d1acae16f37e9344bf23186bd0413b41ec1946e9ac7c5f343ee4fbd",
+          "subject_occurrence_id": "8daf53fab9958305735c14da870dd05b8571357dd00ceefe1d9a4d92945a9cde",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company, upon having knowledge, shall give prompt notice to Parent of any Effect that has had or would reasonably be expected to have, individually or taken together with all other Effects, a Material Adverse Effect",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7ef4aa46ec37ac234062d3fc975df9b599c4357398b6aa27c505281db2c56767"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NOTIFICATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": "any Effect that has had or would reasonably be expected to have, individually or taken together with all other Effects, a Material Adverse Effect",
+            "notification_timing_ref": "prompt",
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NOTIFICATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7ef4aa46ec37ac234062d3fc975df9b599c4357398b6aa27c505281db2c56767",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "2de68fa771634e2eb09c76351132087fb9d1debf9399e3e6c11cf939ba8aa66d",
+              "document_ordinal": 0,
+              "absolute_start": 14511,
+              "absolute_end": 14730,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5dc5d91e52aec6583fc242efabd73d04b77e8a3bd7bd614ae1062083fb7996b9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(b)(iii)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "dce2d5dfe2366c773addf925d108e1351e9306a791367f36c1a6287a93d9e6a9",
+          "claim_occurrence_id": "e748f3c255bcc8a65da204d4609e9c12cbe786c5e2ad9e91e08f2e50d8ebfc2c",
+          "subject_occurrence_id": "d225d8d619291655965d4dfc047f38c4250da61a47121a893f28cabd677d919e",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent, upon having knowledge, shall give prompt notice to the Company of any Effect that has had or would reasonably be expected to, individually or taken together with all other Effects, impair in any material respect the ability of Parent and Sub to perform its obligations under this Agreement or prevent or materially impeded or materially delay the consummation of the Merger and the other transactions contemplated by this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "891da637e85a5051827e0afda890374071ae077fbc117dbc737b40d700211bc7"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NOTIFICATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "Parent",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": "any Effect that has had or would reasonably be expected to, individually or taken together with all other Effects, impair in any material respect the ability of Parent and Sub to perform its obligations under this Agreement or prevent or materially impeded or materially delay the consummation of the Merger and the other transactions contemplated by this Agreement",
+            "notification_timing_ref": "prompt",
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NOTIFICATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "891da637e85a5051827e0afda890374071ae077fbc117dbc737b40d700211bc7",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "77c05b4b8bddca8042781239bb4adff56921980ba468dc86f9bb5494a7fd85ff",
+              "document_ordinal": 0,
+              "absolute_start": 15261,
+              "absolute_end": 15700,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "da89cc1e8727504f7aa3c203fa0c9d6ce84540d181a919df0af05aaed5a53961"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(c)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b5c1b90251c1674c30e0a94d261984cf9c19014ad793d4470cc71ef7a75407b4",
+          "claim_occurrence_id": "978cf8f08a4051fac1254c47fa8211694e01d457a6634a44aabfac76c389720d",
+          "subject_occurrence_id": "88720749354130a0b4be39d601f4b097a810152f791cb330660b8a2e54a18f4d",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company shall give Parent prompt notice of any litigation against the Company and/or its directors relating to the Merger or the other transactions contemplated by this Agreement (“Transaction Litigation”) (including by providing copies of all pleadings with respect thereto) and keep Parent reasonably informed with respect to the status thereof.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d69a451056a69dd2a4b84b304b15541959bb6aaed51232e38e61ee12706308a8"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "NOTIFICATION_OBLIGATION",
+            "proposed_canonical_value": true,
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "the Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": null,
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": "any litigation against the Company and/or its directors relating to the Merger or the other transactions contemplated by this Agreement (“Transaction Litigation”)",
+            "notification_timing_ref": "prompt",
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "NOTIFICATION_OBLIGATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d69a451056a69dd2a4b84b304b15541959bb6aaed51232e38e61ee12706308a8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7c2bb09e4c71761f35f6fb9f9cc567888828ee40d62dc87db57cc6e00cb89e02",
+              "document_ordinal": 0,
+              "absolute_start": 16253,
+              "absolute_end": 16608,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "94ff1352b1f5ae99bace4549df398b41c2d9f8db8a07c272c4a65f3c6c89b49e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(c)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e5a9c41f4b7140d140a8e83adaa70542fce508052f901996ceb3df9f2f1e324f",
+          "claim_occurrence_id": "a3c0809a60199ef1b5ba3c2cff94e247ad5666ba9cb214d8276bfc9b80ee6830",
+          "subject_occurrence_id": "068f4f6c2b715a7d3f007faffff415123f317e16e35537ccc49067244ee3d92c",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company will (i) give Parent the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "12d73d1235a3cb0062a6557c09f6370f7ae48ce77e569585b7615f3933c1f7e3"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "PARTICIPATE",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "Parent",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "12d73d1235a3cb0062a6557c09f6370f7ae48ce77e569585b7615f3933c1f7e3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "529dc4c19f2a208678f383cc0461170f81375a06a40477d38ffa385139092237",
+              "document_ordinal": 0,
+              "absolute_start": 16609,
+              "absolute_end": 16744,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e4c0adb697de9e4de5e5ac7ccaf02fb87a981054b7289433b259c89b479e4d21"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(c)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4d78f65aea29f2532641613aa39a04a1e2eebb1d3f564f7c45dde73b6d3b5bc6",
+          "claim_occurrence_id": "b3054c125c1f26ab66e4c1b98846de919396a0551820f79cd3198b7045b010c1",
+          "subject_occurrence_id": "5112167feb76dba01dfb36435ed1c2d75cdabb13b814696d5dd1d1bde72151b3",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company will (i) give Parent the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation, (ii) consult with Parent with respect to the defense, settlement and prosecution of any Transaction Litigation",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4bd109bf14731e9587718545485f15d28c9f1b96c42bf193d64ef2385229f506"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "NOTICE_CONSULT",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "Parent",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4bd109bf14731e9587718545485f15d28c9f1b96c42bf193d64ef2385229f506",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "27d90b880c53eb55408030d7d01c3a3f61ea01a7f00b18af5eb1d53bf6e8b0d2",
+              "document_ordinal": 0,
+              "absolute_start": 16609,
+              "absolute_end": 16856,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5ca6bbb0775c635e14b5909bf33345440744b9ebfb6e3dfe7b20c6aaf9fa8a80"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(c)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4e00a20e66ac7b30e473d060c72e754df18bb3c3eb0123b8207fbf2174293ba7",
+          "claim_occurrence_id": "914e5145a4194cd9bb270520890af2ebfe9377eef1aa02ad7e079c613298ed3e",
+          "subject_occurrence_id": "1192cc56d7299bbf6a5a5aa80960d3bbf910425b8b33412bedcb5ce59b461218",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company will (i) give Parent the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation, (ii) consult with Parent with respect to the defense, settlement and prosecution of any Transaction Litigation and (iii) consider in good faith Parent’s advice with respect to such Transaction Litigation.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b55e27648968acbb947e0cdb89b07422101c14e3b24f759929fa721024b81541"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "GOOD_FAITH_VIEWS",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "Parent",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b55e27648968acbb947e0cdb89b07422101c14e3b24f759929fa721024b81541",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "69de7ce4245114f0f6c42da4056219ed4171ccd0066bd2a5513a47e21ecbddf1",
+              "document_ordinal": 0,
+              "absolute_start": 16609,
+              "absolute_end": 16952,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "bdc7109f0fdcfb8685a459ce1f27e366ba8ca7faed7e67ead9d94d33058259e7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.03",
+        "normalized_citation": "5.03",
+        "derived_citation": "5.03(c)"
+      },
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0eeb0a015c0ee810ef26a95431c39041303da93bd469ce3ca60251f5c46bdedf",
+          "claim_occurrence_id": "9e7bc230709492a283d6f02ebd8814708a0209532325f8e0e587a7bf474cb1ab",
+          "subject_occurrence_id": "3fbcf66c35a5534a4ff80a3ef9e686e134754ffa3806ec155222f5c56dcca888",
+          "claim_definition_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company will obtain the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) prior to settling or satisfying any such claim.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f71b9c5b7870eaf3366d331e3eff23e31dab1f5c0e915583cca3939e0ed26e99"
+          ],
+          "attributes": {
+            "section_reference": "5.03",
+            "assertion_kind": "CONSULTATION_RIGHT",
+            "proposed_canonical_value": "CONSENT_NOT_UNREASONABLE",
+            "obligor_party_scope": "ONE_PARTY",
+            "obligor_party": "The Company",
+            "burden_term_ref": null,
+            "burden_baseline": null,
+            "burden_baseline_ref": null,
+            "day_kind": null,
+            "filing_regime_ref": null,
+            "timing_relation": null,
+            "timing_trigger": null,
+            "fixed_date_ref": null,
+            "control_holder_party": null,
+            "strategy_scope_ref": null,
+            "right_holder_party": "Parent",
+            "cooperation_scope_ref": null,
+            "information_scope_ref": null,
+            "information_protection_kind": null,
+            "information_protection_kinds": null,
+            "notification_event_ref": null,
+            "notification_timing_ref": null,
+            "prohibited_action_ref": null,
+            "impairment_effect_ref": null,
+            "withdrawal_exception_ref": null,
+            "withdrawal_refile_period_days": null,
+            "withdrawal_refile_day_kind": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CONSULTATION_RIGHT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f71b9c5b7870eaf3366d331e3eff23e31dab1f5c0e915583cca3939e0ed26e99",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8eea2885fa48dd6d5c00858a1071306cb86f60d53a15b2c087b6f848b0116d92",
+              "document_ordinal": 0,
+              "absolute_start": 16953,
+              "absolute_end": 17131,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "bfaa29c8a3094ec19b90349065a2ec03205efaf72148a5f266406edfac450a38"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "REGULATORY_EFFORTS",
+          "prompt_digest": "2a866b728a98824fc16da8bc400243a09f6ca7559afebff82d8ef7af9b57f6f5",
+          "producer_receipt_id": "1787d9f54d3dc0496446b564fc435de82ba197ac6cf452cd3c9a45162a1869eb",
+          "governed_scope_digest": "8322bb5e15ea52161f37c601ead1722228d19504d200631ea2fd9effbb2ab2f9",
+          "extraction_provenance_id": "7b63a966224e04f17aaaf6c0148cebe70ddd4929366b1fbab28c83352570be58"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "5.03",
+      "source_byte_length": 17445,
+      "covered_byte_length": 9819,
+      "coverage_share": 0.5628546861564918,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 2,
+        "material": 19,
+        "total": 21
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 21,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "5.03",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 63,
+          "end": 66
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 67,
+          "end": 70
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 667,
+          "end": 670
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 741,
+          "end": 744
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1157,
+          "end": 1160
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1454,
+          "end": 1457
+        },
+        {
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1601,
+          "end": 1604
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1717,
+          "end": 1721
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1808,
+          "end": 1811
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1850,
+          "end": 1853
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2081,
+          "end": 2084
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2084,
+          "end": 2088
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2345,
+          "end": 2348
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2611,
+          "end": 2614
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2869,
+          "end": 2874
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2962,
+          "end": 2965
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2965,
+          "end": 2968
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2973,
+          "end": 2976
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2976,
+          "end": 2980
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3407,
+          "end": 3410
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3773,
+          "end": 3776
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4201,
+          "end": 4204
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4654,
+          "end": 4657
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5378,
+          "end": 5381
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5383,
+          "end": 5386
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5388,
+          "end": 5391
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5395,
+          "end": 5398
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5509,
+          "end": 5512
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5512,
+          "end": 5517
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5605,
+          "end": 5608
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5608,
+          "end": 5613
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5818,
+          "end": 5821
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5878,
+          "end": 5881
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6301,
+          "end": 6305
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6405,
+          "end": 6408
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6684,
+          "end": 6687
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6791,
+          "end": 6794
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6877,
+          "end": 6880
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7139,
+          "end": 7142
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7230,
+          "end": 7233
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7233,
+          "end": 7238
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7515,
+          "end": 7518
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7518,
+          "end": 7522
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7528,
+          "end": 7531
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7588,
+          "end": 7591
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7794,
+          "end": 7797
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7932,
+          "end": 7935
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8137,
+          "end": 8140
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8140,
+          "end": 8143
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8148,
+          "end": 8151
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8151,
+          "end": 8155
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8157,
+          "end": 8160
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8551,
+          "end": 8554
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9078,
+          "end": 9081
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9386,
+          "end": 9389
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10986,
+          "end": 10989
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 11589,
+          "end": 11592
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11592,
+          "end": 11595
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 12240,
+          "end": 12243
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 12347,
+          "end": 12350
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13226,
+          "end": 13230
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 13775,
+          "end": 13778
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13779,
+          "end": 13782
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 13882,
+          "end": 13885
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13885,
+          "end": 13888
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14506,
+          "end": 14510
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 14899,
+          "end": 14902
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14902,
+          "end": 14906
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 14965,
+          "end": 14968
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14977,
+          "end": 14980
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 15222,
+          "end": 15225
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15234,
+          "end": 15237
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15255,
+          "end": 15260
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 15869,
+          "end": 15872
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15872,
+          "end": 15877
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 15935,
+          "end": 15938
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 16178,
+          "end": 16181
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16199,
+          "end": 16202
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16626,
+          "end": 16629
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16746,
+          "end": 16750
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16861,
+          "end": 16866
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 17182,
+          "end": 17185
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 17276,
+          "end": 17279
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 57,
+        "section_paragraph_marker": 3,
+        "cross_reference_marker": 23
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 67,
+          "end": 70
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 667,
+          "end": 670
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 741,
+          "end": 744
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 1157,
+          "end": 1160
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 1454,
+          "end": 1457
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "start": 1601,
+          "end": 1604
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1717,
+          "end": 1721
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 1850,
+          "end": 1853
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2084,
+          "end": 2088
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2345,
+          "end": 2348
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 2611,
+          "end": 2614
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2869,
+          "end": 2874
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2965,
+          "end": 2968
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 2973,
+          "end": 2976
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2976,
+          "end": 2980
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3407,
+          "end": 3410
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3773,
+          "end": 3776
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 4201,
+          "end": 4204
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 4654,
+          "end": 4657
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 5378,
+          "end": 5381
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 5383,
+          "end": 5386
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 5388,
+          "end": 5391
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 5395,
+          "end": 5398
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 5512,
+          "end": 5517
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 5608,
+          "end": 5613
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 5818,
+          "end": 5821
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 5878,
+          "end": 5881
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 6301,
+          "end": 6305
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 6684,
+          "end": 6687
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 6791,
+          "end": 6794
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 6877,
+          "end": 6880
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 7233,
+          "end": 7238
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 7518,
+          "end": 7522
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 7528,
+          "end": 7531
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 7588,
+          "end": 7591
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7932,
+          "end": 7935
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 7932,
+          "end": 7935
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 8140,
+          "end": 8143
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 8148,
+          "end": 8151
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 8151,
+          "end": 8155
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 8157,
+          "end": 8160
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 8551,
+          "end": 8554
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 9078,
+          "end": 9081
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 9386,
+          "end": 9389
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11592,
+          "end": 11595
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 11592,
+          "end": 11595
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 13226,
+          "end": 13230
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 13779,
+          "end": 13782
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 13885,
+          "end": 13888
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 14506,
+          "end": 14510
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 14902,
+          "end": 14906
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14977,
+          "end": 14980
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 14977,
+          "end": 14980
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15234,
+          "end": 15237
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 15234,
+          "end": 15237
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 15255,
+          "end": 15260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 15872,
+          "end": 15877
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16199,
+          "end": 16202
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 16199,
+          "end": 16202
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 16626,
+          "end": 16629
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 16746,
+          "end": 16750
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 16861,
+          "end": 16866
+        }
+      ],
+      "disagreement_count": 62
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 32,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "0068677a176c02c7aa054f6b2069332ce9c193ef4d63cbc85d006bb5accf8401"
+}

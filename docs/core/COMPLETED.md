@@ -625,9 +625,600 @@ the documentation against the running system, 28 findings", one file,
 
 Read this before quoting any of it.
 
-Extraction is proven across 25 families on essentially one agreement. **Nothing
-has been imported into the product's database.** The schema for it is 8,686
-lines and has never been executed. **Nothing V2 renders on the live site.** One
-family serves V2 data on a preview deployment, from a hand-typed fixture file.
+Extraction is proven across 25 families on essentially one agreement, and four
+of those 25 runs did not complete. **Nothing has been imported durably into the
+product's database.** The schema for it is 8,686 lines; it has been executed
+against isolated staging and rolled back (`docs/parked/process-intelligence/EXECUTION-LEDGER.md`,
+P8), never durably. A previous version of this paragraph said it had "never been
+executed", which was false — see `CODEBASE-GUIDE.md` section 9. **Nothing V2
+renders on the live site**, and that is by construction: production is denied
+outright by `isPermittedCanonicalV2Runtime`. One family serves V2 data on a
+preview deployment, from a hand-typed fixture file.
 
 The volume of work here is real and it has not reached a user.
+
+---
+
+## Step 6A. Tables no longer steal each other's cards
+
+**Closed 2026-08-07 by moving it here, not by implementing it.** The work was
+already done on 2026-08-05 in commit `7042085`, which added
+`isClaimedByAnotherFamily` guards to all four review-table configs Step 6A
+listed as "Remaining" — `misc-boilerplate`, `antitrust-regulatory`,
+`termination-rights`, `mae-definitions` — plus `advisers-fees-expenses`, a
+sixth the step never named.
+
+**What it was for.** Five review tables decided which cards belonged to them
+partly by searching the card's text for a phrase, which pulled other families'
+cards into the wrong table. One real corpus card leaked: a buyer financing
+representation appearing as the evidence behind a termination-fee row. The
+worse reachable case was a sole-remedy card landing in the fee table and
+flipping "Sole and exclusive remedy" from No to Yes depending on card order.
+
+**Evidence.** Commit `7042085`, plus the per-table tests that already assert
+the criteria: `tests/misc-boilerplate-card-selection.test.js`,
+`tests/termination-fee-card-selection.test.js` and siblings. Each asserts both
+halves — a card another family owns is refused, and a genuine subtype-less
+card is still caught.
+
+**Why it is worth recording rather than quietly deleting.** The step was
+written into a plan dated 2026-08-06 describing the state of 2026-08-05, and
+would have "gone green" with zero work done. That is this project's documented
+failure mode occurring inside the document that warns about it.
+
+## Step 8B. The search field registry was already correct
+
+**Closed 2026-08-07 by moving it here, not by implementing it.** Same commit,
+`7042085`.
+
+**What it was for.** The step asserted 104 of the search registry's entries
+were shadowed — that `resolveKey(entry.key)` did not return `entry.key`.
+**Measured at HEAD: 0 of 699 shadowed, not 104.** The test passes, 8
+assertions.
+
+**The constraint that outlived the step**, carried into
+`CODEBASE-GUIDE.md` rather than lost with it: the registry must be fixed
+through its generator. Hand-editing `lib/query/serving-registry-v1.json`
+passes a naive test and the next regeneration reinstates every error. That is
+a live constraint on anyone touching it, not a fact about a closed step.
+
+---
+
+# Stage 1, the Stage 2 prerequisite, Stage 3 and the first of Stage 4
+
+All closed on 2026-08-07. Each moved here when its own proof passed, per this
+document's rule. Steps 4A2 and 4A3 are closed too but stay in `PLAN.md` until
+their adversarial review returns.
+
+## Step 1A. Every gate is bound to a step, mechanically
+
+`tests/programme-gates/gates-bound-to-plan.test.js` reads
+`programme-gates.yaml` and fails unless each gate identifier appears next to a
+step label or "Retired" in `PLAN.md` or `COMPLETED.md`, on one line. The YAML
+stays frozen and is bound from outside, because `governing-registry.js:422`
+throws unless it deep-equals a hardcoded contract and 14 files read it.
+
+**Evidence.** Exit 0, and **deleting any one disposition row makes it fail** —
+run, not reasoned about, then restored.
+
+**It found something.** The first implementation bound 25 of 32 identifiers and
+disclosed the gap. The seven omitted were `phase_12_security_gates`: bare ids
+with a state, no acceptance criteria, mentioned nowhere in either document.
+Step 7D dispositions them; the test now binds all 32 with its matching rule
+unchanged, because loosening it to admit a bare "Deferred" would have reopened
+the hole from the other side.
+
+## Prerequisite. Both M3 auto-pass conditions are wired
+
+`lexical_disagreement` evaluates. `v1v2_comparison` is wired and cannot be
+evaluated — all three committed V1 snapshot fixtures lack
+`snapshot_identity_evidence`, which `v1v2-comparator.js:557` requires — so
+**Ben released it explicitly on 2026-08-07** (`DECISIONS.md` decision 4). Every
+run records `m3_auto_pass_conditions` naming each condition `EVALUATED` or
+`NOT_EVALUATED`; a rung whose evidence lacks that record is incomplete.
+
+**What wiring it proved.** Replaying `modiv-no-shop` left the counts unchanged
+at 42 resolved and replaced `LEXICAL_DISAGREEMENT_NET_ABSENT` on **all 42**
+claims with real outcomes. **The gate had been green on 42 claims it had never
+examined.**
+
+`PLAN.md` named both modules at paths that do not exist, missing
+`native-producer/`. Corrected.
+
+## Steps 3A and 3A1. Termination trigger vocabulary, widened then made safe
+
+Four real Modiv phrasings matched nothing, so six legitimate grounds queued.
+Replay through the real resolver: **resolved 8 to 12**, the step's exact
+target, with the two null-`trigger_kind` candidates still queuing rather than
+forced.
+
+**3A opened a wrong-answer path, and 3A1 closed it.** `enters?` also matches
+"enter", so `NO_SOLICITATION_BREACH` corroborated the Company's own
+fiduciary-out — the adjacent ground in every Article VII. A mislabel that used
+to queue *resolved* as a no-shop breach by the target. **Not hypothetical: the
+same false positive was found live in Skechers' filed agreement, §5.3(d).**
+Closed by excluding quotes carrying "Superior Proposal", which is always the
+fiduciary-out ground. Replay still resolves 12.
+
+**The transferable lesson.** All eight original hostile tests were
+*quote-fixed, kind-varied* against vocabulary disjoint across kinds, so they
+passed by construction. **A hostile test that varies the label rather than the
+text tests the wrong axis.**
+
+## Step 3B. The number parser reads hyphenated compounds
+
+The preceding-word scan stopped at hyphens, so "forty-five (45)" read back
+"five" and compared 5 against 45. `SPELLED_DIGIT_MISMATCH` on the Modiv replay
+goes 1 to 0.
+
+**Not a pure widening, and the header says so.** "twenty-five (5) days" used to
+resolve and now abstains — the genuine contradiction the table exists to
+detect, which reading only the last component was hiding. Checked by running
+both strings, not by reading the code. No compound above one hundred exists in
+the corpus; searched, not assumed, so none was invented.
+
+## Step 3C. Specific Performance's grant is no longer discarded
+
+`isIncompleteSpecificPerformanceGrant` tested the quote for the operative
+premise with a stricter regex than the source-side check twelve lines above
+tested the source for the same premise. Modiv §8.8 splits the clause and writes
+"monetary" for "money", so a verbatim grant was discarded. Replay: **0
+proposals and 1 residual before, 1 proposal and 0 residuals after.**
+
+**Adversarial review: merge**, having found the old predicate failed **two of
+the three real premise drafts in the corpus** — it was testing house style, not
+the premise.
+
+## Step 3D. A trimmed governing negation is refused at the resolver
+
+`claimGoverningNegationTrimmed` uses a claim's byte-verified evidence span plus
+its section's absolute start to locate it in the filed document, then checks
+the negation guard against a bounded byte window before it. Wired into
+`BRING_DOWN_TIER_CLAIM_KEY`, the one path with no check tying `raw_value` to
+`canonical_value`.
+
+Measured against the pre-fix resolver on real TopBuild text: the attack
+resolved clean with no review flag, and is now refused.
+
+**Deliberately partial.** Not wired into the other ACCURACY path, because
+Modiv's "(y) that are not qualified by materiality" legitimately trips the
+guard on the only quote shape that path resolves. Recorded at the function.
+
+## Step 3E. Stopped, deliberately, and found more than it fixed
+
+Re-running the rejected negation fix reproduced the known false positive **and
+found a second one the design note did not have**. The blocker is broader than
+recorded, so nothing shipped half-right and the measurements are pinned as
+runnable tests. The step's own escape hatch, used as written.
+
+## Steps 3F and 3F1. Joint obligations, and the trap that escaped quarantine
+
+`resolvePartyCapacity` took the first match on a string naming five parties. It
+now segments on the string's own conjunctions and returns
+`JOINT_MULTI_PARTY_CAPACITY` when segments span more than one **side**. Keying
+on side rather than capacity is load-bearing: a capacity-keyed version wrongly
+flagged "Each of Parent and Merger Sub".
+
+**The step's own named safety net did not exist.** Before this change **no test
+file referenced `resolvePartyCapacity` at all** — checked with `git grep`
+against the parent commit. The Parent OpCo ordering trap lived in a commit
+message and in prose, enforced by nothing, so any reordering would have
+silently attributed the buyer's representations to the target.
+
+**3F1 closed what 3F opened.** Per-segment scanning sent "Company Merger Sub"
+to TARGET, so **Modiv's real buyer group read as spanning both sides**. The
+merger-sub trap's quarantine — "not currently reached by any single-party
+candidate" — was true when written and stopped being true the moment 3F built
+a path reaching it on every multi-party string. Also gave
+`JOINT_MULTI_PARTY_CAPACITY` a downstream contract: projections refuse it
+explicitly rather than dropping or leaking it to a page.
+
+## Step 3G. Four located resolver defects
+
+Open-world across the four families **67 to 32, a fall of 35** against a bar of
+30, by replaying committed evidence through the real resolver.
+
+**Adversarial review re-derived all four counts independently and returned
+merge with four conditions, all closed.** The conditions mattered more than the
+counts: the Material Contracts contradiction gate caught only digits, so "ten
+largest customers" and "two hundred fifty thousand dollars" slipped through; a
+Transaction Litigation quote corroborated as **both** `COV-NOTIFY` and
+`COV-LITNOTIFY`, which route to different owners, with nothing detecting the
+double fire; the transfer-tax gate had silently dropped its mandatory
+cooperation conjunction, so a unilateral filing clause read as a cooperation
+covenant; and a comment stated the classifier's contract wrongly.
+
+**None of the four moved a count.** The shapes do not appear in this evidence
+pack, so no measurement could have surfaced them. That is why the review
+checked predicates rather than numbers.
+
+## Step 3I. Payment timing and grounds naming
+
+**The grounds-naming half was already built** — committed 6 August in
+`c42ceae7`, the day before, while the plan listed it as open. Verified by
+replaying real Modiv evidence.
+
+Payment timing needed real work, and the coded form needed a codebook decision
+reserved to Ben. A Modiv-only sidecar emits each of the six fee-trigger
+branches' payment-timing text verbatim and cited. Ben later ruled the coded
+form (`DECISIONS.md` decision 5); that is Steps 3J, 3J1 and 3J2.
+
+## Step 4A. The schema executes durably, and the two writers disagreed
+
+`foundation.sql` applied to `postgres:16-alpine` with **no errors**. A real
+bridge-composed write-set went through `canonical_v2_write` **committed, never
+rolled back**: 3 claims in, 3 rows in `claim_revisions`, JS and SQL receipt
+identities identical, reproduced on a second fresh container.
+
+**The finding it existed to produce:** `STRUCTURAL_PROVISION_INSTANCE/V1`
+appeared **zero times** in all 8,686 lines of schema while four `lib/` files
+build it. Six of fifteen claim-publishing families could not be imported at
+all. That is Step 4A1.
+
+Also learned: a `DEAL_SCOPE_RUN` call needs its source chain persisted by three
+prior writes. The JS bridge never needed this because it rebuilds in memory.
+
+## Step 4A1. The SQL writer learned that a provision can have no party
+
+Two strict branches keyed on `schema_version`, not one relaxed branch. An
+unrecognised version falls to the party-bearing branch and fails, so the split
+is fail-closed. All six previously rejected families import durably with
+matching JS and SQL receipt identities: `CONSIDERATION` 1, `PROXY_MEETING` 2,
+`DNO_INDEMNIFICATION` 4, `TERMINATION_FEE` 4, `MISC_BOILERPLATE` 14,
+`MERGER_STRUCTURE_CLOSING` 20. **Fifteen of fifteen now importable, up from
+nine.**
+
+**Adversarial review: merge with one condition**, having stood up its own
+container, re-derived two families, and failed to find an extra-key hole. The
+condition was a real miss — a staging script pinned the *old* error message for
+two probes that now hit the new shape check, and **no CI test exercises it
+because it needs a live database.**
+
+## Steps 4A2 and 4A3. The headline number reaches the database
+
+**Closed 2026-08-07.** Ben's decision 3: `conditional_termination_fee_values`
+gets a table, because two of the ten cards a termination-fee run projects come
+from that kind — **including the Modiv headline number**, the figure a user
+looks at first.
+
+**4A2, the database side.** The table exists, shaped to the JS kind, with
+`DEAL_SCOPE_RUN` shape-checking it, recomputing its identity in the database
+and writing it. Six real Modiv values written durably; `count(*)` returned 6
+from a fresh connection after the writer exited; JS and SQL receipt identities
+matched. Four hostile probes: a well-formed control accepted; extra-key,
+missing-key and wrong-enum rows refused naming the **shape** rather than the
+lineage; a duplicate id refused separately.
+
+**The headline round trip nearly produced a false alarm**, and that is the
+part worth keeping. A naive `JSON.stringify` comparison first reported a
+mismatch, because **Postgres `jsonb` reorders object keys on output**. The
+real comparison uses this codebase's own `canonicalJson`, the same sorted-key
+form `content_id` hashes. Documented so a future session does not read it as
+corruption.
+
+**4A3, the pipeline side, which 4A2 disclosed was missing.** The adapter and
+the write-set validator contained **zero** references to the kind — checked by
+grep. The resolver produced the values and the projection read them, and the
+write-set never carried them. So 4A2 alone meant "the database *can hold* the
+headline number", not "the headline number *reaches* the database".
+
+Closed by carrying the kind through the adapter and both validators. A real
+run's own write-set — re-derived through `buildNativeWriteSet`, **with no
+manual splicing** — put six values in the table, and the `$10,000,000` row
+round-tripped byte-identical with a digest matching 4A2's hand-built harness.
+The harness proved the SQL; this proved the pipeline; the two agree.
+
+**The wiring pin was verified to fail, not merely to exist.** Reverting the
+adapter change alone takes the test from 10 passing to 5 passing and 5
+failing; restoring returns 10.
+
+**A third shape gate had to be widened, and that is the finding.**
+`canonical-writer.js`'s `assertDealScopeWriteSetShape` runs its own
+independent closed-key check **before** the validator runs at all, and
+rejected the new key until widened. Had it been missed, **the real bridge
+would have stayed silently blocked while every targeted test passed.** So an
+optional write-set key needs updating in **three** places, and nothing keeps
+them in sync but tests — the same shape as the three digest guards over a
+schema edit, found the same day.
+
+**Adversarial review: merge**, having re-derived two families on its own fresh
+container and failed to find an extra-key hole. Its one condition — a staging
+script pinning the old error message, which **no CI test exercises because it
+needs a live database** — was fixed at `02ebc588`.
+
+## Step 2F-BREAK-5/6. Two families that wrote claims and could not serve one
+
+**What it was.** `MAE_DEFINITION` resolved 38 claims on TopBuild, wrote all of
+them durably, and **threw on every attempt to render them**. `NO_OTHER_REPS_FRAUD`
+threw on all three committed runs of the family, across both documents.
+
+**MAE was a validator encoding one drafter's style as a rule.** The projection
+required every clause label to appear inside the claim quote. That is true of a
+`TRAILING_LIST` proviso, which recites the clauses it reaches — the recitation is
+the only evidence of its scope — and false of a `PER_LIMB` enumeration marker,
+which precedes the clause body, so a correctly narrowed quote can never contain
+it.
+
+**The resolver had already been corrected for exactly this, on 2026-08-07, and
+the projection was never updated.** `handleMaeDisproportionalityCandidate` had
+carried the identical rule; `mae-clause-label.md` replaced it with a three-tier
+check for `PER_LIMB` only, deliberately leaving `TRAILING_LIST` alone, for
+BREAK 5's reason. That change is what turned the 0806 run's 2 resolved claims
+into the 0807 replay's 19. The projection kept the old rule for another day.
+
+**Replacement, not deletion.** Tier 1 is the original substring check, so every
+existing fixture takes a byte-identical path. Tier 2 is `PER_LIMB` only and
+requires the label to appear in the entry's `governing_context_quote`, that
+context to contain the quote verbatim, and the label to sit at or before where
+the quote starts. New typed code `CARVEBACK_CLAUSE_LABEL_UNGROUNDED`.
+
+**Evidence.**
+
+| Family | Run | Before | After |
+|---|---|---|---|
+| `MAE_DEFINITION` | TopBuild rung 4 | **THROWS** | 38 records, 2 rollups, 2 cards |
+| `MAE_DEFINITION` | TopBuild 0807 replay | **THROWS** | 19 records, 1 rollup, 1 card |
+| `MAE_DEFINITION` | Modiv 0807 live | 8 records, 2 rollups, 2 cards | **unchanged** |
+| `KEY_DEFINED_TERMS` (same module) | TopBuild / Modiv | 21 / 10 | **unchanged** |
+| `NO_OTHER_REPS_FRAUD` | all three runs | **THROWS x3** | 3 facts x 4 surfaces on all three |
+
+All 10 guards were proved to fire by neutering each in turn and watching the new
+test fail, then restoring. That exercise caught two real problems: two guards
+shared one error code, so neutering the first changed nothing; and a hostile test
+using a nonsense label never reached the guard at all, because the rollup builder
+quarantines it first.
+
+**Also found, not fixed.** Modiv's MAE disproportionality relationship is
+**entirely unestablished and always has been** — 0 covered limbs, 6
+`UNRESOLVED_CARVEOUT_LIMB_NO_OPEN_WORLD_EVIDENCE` per rollup. The document where
+this check appeared to pass was never producing a relationship at all. TopBuild
+now produces 10.
+
+**Verification.** `tests/canonical-v2-step-2f-breaks-5-6.test.js` 11/11 exit 0;
+19 consumer files 315/315 exit 0; authority-boundary and readiness 24/24 exit 0;
+`forbidden-patterns.sh` exit 0. Commit `e967df5f`.
+
+## Step 2F-BREAK-2/3. Two families that returned three empty arrays on text containing their content
+
+**What it was.** `GUARANTY_FINANCING_PARTY` returned
+`{"guaranty_assertions":[],"financing_mechanics":[],"open_world_candidates":[]}`
+on TopBuild §7.16 "Waiver of Claims Against Financing Sources" — a textbook
+non-recourse clause on a $600,000,000 debt-financed acquisition. `DIVIDENDS`
+returned the same three empty arrays on §4.1 and §4.2, which plainly contain
+"declare, set aside or pay any dividend".
+
+**Step 2F's falsifiable prediction is resolved: the guaranty family was broken,
+not correctly quiet.** Its instruction opened "Extract quoted positive guaranty
+facts only", which scoped the entire response including
+`FINANCING_PARTY_PROTECTION` — the surface that exists to carry exactly this
+content. The model followed that scope and said so verbatim in the recording:
+"it's a lender-liability waiver, a distinct mechanism". v2 scopes "positive facts
+only" to `guaranty_assertions`. The "never infer" list is unchanged: a guaranty
+family that invents a cap is worse than one that finds nothing.
+
+**BREAK 3's recorded diagnosis was wrong and is corrected.** Step 2F said the
+family "does not find its own content when the content is a limb rather than a
+section". In fact v1 already excluded IOC restrictions by design, TopBuild's
+dividend language **is** one — limb (vi)(A) of a thirty-limb covenant — and
+`INTERIM_OPERATING` resolved 29 claims from the same two sections. The governed
+emptiness was correct. The real defect was the empty third array, which lost the
+Series B / Convertible Perpetual Preferred carve-out that v1's own text says
+"remain open world".
+
+**Evidence — verified by live extraction on both documents, not by reasoning.**
+
+| Family | Document | v1 claims / excerpts / open-world | v2 |
+|---|---|---|---|
+| `GUARANTY_FINANCING_PARTY` | TopBuild §7.16 | 0 / 0 / 0 | 0 / **4** / **4** |
+| `DIVIDENDS` | TopBuild §4.1, §4.2 | 0 / 0 / 0 | 0 / **6** / **6** |
+| `DIVIDENDS` | Modiv §5.10 | 0 / 0 / 0 | 0 / **4** / **4** |
+| `GUARANTY_FINANCING_PARTY` | Modiv §5.11 | 0 / 0 / 0 | 0 / 0 / 0 — correct |
+
+**14 rows recovered across two deals, and nothing invented where zero is right.**
+That last row is the regression test that mattered: Modiv is unfinanced, and a
+prompt change that pushes a model to fill an empty list is how "a family
+returning zero can be correct" gets violated. It held. Modiv's §5.10 was losing
+content too — the false zero was never TopBuild-specific.
+
+**Still open, recorded as Steps 2F2 and 2F3:** all four TopBuild rows resolved to
+open world rather than governed claims, because the taxonomy has no governed home
+for a standalone financing-source protection; and Modiv's guaranty family is
+pinned to a section headed "Other Transactions". Commit `e967df5f`,
+`docs/codex-program/notes/step-2f-breaks-2-3.md`.
+
+## Step 2F-CLOSURE-ID. Replay reported itself as the model, so claim identity depended on a filesystem path
+
+**What it was.** `model_id` under replay was the string `replay(<path>)`. It
+feeds `producer_receipt_id`, which feeds `closure_id`. So the same recorded
+evidence replayed from two directories minted two different identities for
+identical claims. This was already shipped, not hypothetical: committed evidence
+carried `replay(evidence/canonical-v2/modiv-antitrust-20260806)` for most runs and
+a `/tmp/.../scratchpad/replay-src-consideration` path for two others.
+
+**Replay is a transport, not a producer.** The text it serves was produced by the
+live model, so it now reports that model's identity, read from the replayed run's
+own `run-receipt.json`. `resolveOriginalProviderModelId` is the single place that
+question is answered, and it throws rather than guess:
+`REPLAY_MODEL_IDENTITY_UNKNOWN` for a receipt-less run,
+`REPLAY_MODEL_IDENTITY_AMBIGUOUS` for a run produced by two models,
+`REPLAY_MODEL_IDENTITY_CONFLICT` when an operator contradicts the record.
+
+**Evidence.** One run replayed from two different directories: 33 `closure_id`s,
+1 `producer_receipt_id`, 21 `excerpt_id`s, 1 `input_scope_digest` — **identical
+across both**. Against the original live run, `model_id` and `prompt_digest` now
+match; the residual `input_scope_digest` difference is real content drift in the
+contract bundle since 6 August, which is what `closure_id` exists to detect.
+
+Recordings gain `provider_model_id` (schema V2; V1 stays readable — 24 exist and
+re-recording costs real model calls, and every one of them has a sibling receipt
+carrying the true identity). `--replay-model-id` lets an operator state the
+identity of a hand-assembled fixture set, checked against the record rather than
+trusted over it. 19/19 tests, `forbidden-patterns.sh` exit 0. Commit `e967df5f`.
+
+## Step 2F-OVERFLOW. A response over the output ceiling parsed and presented as complete
+
+**What it was.** Four calls produced what looked like multiple top-level JSON
+objects and were refused as malformed. They were tail fragments of **one** answer
+whose head the transport destroyed: all four exceeded the CLI's 64,000-token
+output ceiling (71,907 / 71,430 / 65,210 / 74,080), and each recorded response's
+length matched the final `usage.iterations` entry exactly, because the runner
+takes only the CLI's last message. The counted "objects" were heterogeneous array
+*elements* — 18 qualifiers, 17 quote/target pairs, 16 share counts — not
+candidate answers, so neither accumulating nor superseding them has a valid
+reading. The parser's refusal was correct under a wrong diagnosis.
+
+**The fifth data point closed it.** Modiv NO_SHOP §5.6 used 65,008 tokens and
+**succeeded**, because its truncation boundary fell inside thinking rather than
+inside JSON. Over-ceiling success is a coin flip.
+
+**Change.** Overflow is a typed, non-retryable failure
+(`RESPONSE_TRUNCATED_BY_OUTPUT_CEILING`), checked **before** parsing and before
+the response-size check, from the predicate `output_tokens >= maxOutputTokens`
+that telemetry already recorded and nothing read. It is arithmetic only — content
+is never inspected, because a family returning zero can be correct — and it fires
+even when the last message parses cleanly, which is the whole point.
+
+**Verification.** 11 hostile tests including: fires on a cleanly-parseable
+response; never retried, by call count; wins over `MALFORMED_RESPONSE` on garbage
+text, proving it precedes parsing; an empty-but-well-formed response under the
+ceiling still succeeds, proving content-independence; exact `>=` boundary at
+63999/64000; an under-ceiling ambiguous response still refuses as `AMBIGUOUS`,
+untouched. 44/44 and 178/178 exit 0. Commit `e967df5f`.
+
+**The ruling's other half — raising the ceiling — works, and was nearly recorded
+here as impossible.** A static read of the installed CLI's minified per-model
+resolver says `upperLimit` is 64,000 on every branch including the fallback the
+runner takes. Two independent readings agreed, and it was written up as
+established. The experiment refuted it: TopBuild NO_SHOP §4.3 under
+`CLAUDE_CODE_MAX_OUTPUT_TOKENS=128000` returned **69,576 output tokens** and
+**67 publishable claims**, on a family that had never extracted anything on that
+document. `CLI_MAX_OUTPUT_TOKENS = 128000` now ships in `childEnv()`.
+
+**The guard could not fire, which is why none of this was caught by it.** The
+overflow check reads `response.provider_usage ?? response.usage`; the runner's
+measured CLI client returned content with no `usage`, recording it to telemetry
+only. So the check read `null` on every real run — including the 69,576-token one
+— and the 11 tests that prove it works all inject usage the production path never
+supplied. Fixed by carrying `usage` on the response and setting the provider's
+`maxOutputTokens` to the same figure the CLI is asked for.
+
+Two lessons, both already in CLAUDE.md and both re-learnt the hard way: a
+minified table is not the behaviour, and a guard proven by tests is not a guard
+proven in production. Remaining questions are Step 2F1.
+
+---
+
+## Step 2X-PRE. Four resolver fixes, a segmenter adopted, and absence copy made honest
+
+**Closed 2026-08-08.** Gates, run on a clean machine with nothing else on it,
+exit codes captured to files and read back rather than piped:
+`CI=true npm test` exit 0 — 8,300 tests, 8,255 pass, 0 fail, 45 skipped;
+`npm run build` exit 0; `scripts/lint/forbidden-patterns.sh` exit 0,
+INVARIANT-4 PASS.
+
+**What landed.**
+
+*Termination.* Two new limb grammars, a third grant tier for section-chapeau
+mutual grants, and party-scope derived when the model emits null — limb
+direction, then section either-grant, then `PARTY_ROLE_ALIASES` from
+`lib/vocab/party-role-aliases.js`. Trigger corroboration now consumes
+`TERMF_TRIGGER_META` through an explicit V2→V1 code map with the AND and
+exclusion gates preserved. `TERMINATING_PARTY_REF_NOT_IN_QUOTE` fell from 60 to
+about 3 corpus-wide. Modiv held at 12 → 12 as the regression pin.
+
+*IOC.* `ioc-corroboration.js` consumes `ioc-categories.js` as a fail-closed
+second chance, tried only when the primary test matches nothing, refusing on
+cross-vocabulary ambiguity and carrying typed provenance.
+`CATEGORY_UNCORROBORATED` fell from 105 to 33; Concho went 20 → 34, which is
+card 04 and both its siblings — "Organizational Documents" now reaches
+IOC-CHARTER.
+
+*MAE carve-out scoping.* Scoped to the candidate's own definition record before
+adjacency verification, plus a structural containment tier over
+`segmentSubClauses`. SkyWater 18 → 28, Modiv 10 → 24, TopBuild unchanged at 19
+as required.
+
+*Qualifier host-composition.* The lexicon now consumes `MATERIALITY_CODES` from
+`lib/taxonomy.js` with a load-time membership assertion. Red Hat 13 → 32,
+Metsera 6 → 13, TopBuild 0 → 7.
+
+*Sub-clause segmentation.* `segmentSubClauses` gained a third CHILD-OPEN
+condition: a colon-introduced inline enumeration opens a child when the colon is
+the immediate lead-up, whitespace aside. The decisive check was whether Redfin
+§2.10's pinned un-split runs are colon-introduced — they are not, both are plain
+prose lead-ins, verified against the fixture, so the pinned expectation did not
+have to be weakened. **Guard proof:** neutering the predicate fails the Metsera
+colon-introduced (A)-(J) carve-out test; restoring it returns 8/8.
+
+*Absence copy.* 14 unsafe wordings across 11 config files now reuse
+`CONDITION_ABSENT_COPY`. The count was re-derived rather than trusted; the
+earlier sweep's "11 across 10 files" missed a per-cell string in
+`termination-rights.config.js` `keyTermsNode()` that a table-level grep could
+not see.
+
+**Acceptance evidence.** The blind 96-card sample re-scored: 21 now resolve,
+concentrated entirely in the four staged reason codes —
+`TERMINATING_PARTY_REF_NOT_IN_QUOTE` 7/8, `CLAUSE_LABEL_NOT_IN_QUOTE` 6/8,
+`QUALIFIER_KIND_UNCLASSIFIED` 4/8, `CATEGORY_UNCORROBORATED` 4/8 — and every one
+of the eight untouched strata at 0/8. The eight zeros are the result that
+matters: nothing moved by accident. Re-derived by joining the re-score to the
+blind key on card id rather than accepting the reported table.
+
+**Two errors corrected in the record.** `review_queue` is the full attempted
+claim set, not a reject pile alongside `resolved`; adding the two together
+produced a reported 34.6% corpus rate and 18.3% for representations, both wrong.
+The correct figures are 52.8% and 22.4%, using `resolved / review_queue`. And
+process liveness was twice reported from `pgrep -fc`, which matches the checking
+shell's own argv — the same self-match that produced false "still running"
+reports overnight. Counting via `/proc` with the checking shell excluded gives
+the real answer.
+
+---
+
+## Steps 2X-D, 2X-L and 2X-E. The first limb tree, and the MAE split reverted
+
+**Closed 2026-08-08**, later the same day as Step 2X-PRE.
+
+**2X-D — the MAE materiality split reverted.** `MAT_MAE_AGGREGATE` no longer
+emitted; the duplicate key in `lib/taxonomy.js` documented rather than deleted,
+since deleting either entry would break stored V1 claims. The proof is a replay
+at zero model calls against post-revert code: **resolved count unchanged at 32,
+all 13 affected claims reclassify to `MAT_MAE_QUALIFIED`, zero residuals, zero
+quarantines, validation accepted.** Nothing was lost by collapsing the two
+codes, which is exactly what Ben's ruling predicted — the two drafting variants
+are one legal standard.
+
+Two corrections belong in the record. The affected figure is **13 claims, not
+26**; the larger number counted raw string occurrences across three files rather
+than distinct claims. And the change arrived with a stale premise: its own
+comment justified narrowing the allowed-value set on the grounds that no
+committed evidence carried the retired code. True on the branch that authored
+it, false here, because 2X-L's replay evidence landed first. Re-validating that
+evidence produces `INVALID_CANONICAL_VALUE` residuals and quarantines rather
+than silent acceptance — the loud failure, which is the one we want.
+
+**2X-L — the limb tree minted, for the first time in 202 runs.** The Red Hat
+replay carries 2 `limb_component_trees` with 7 path nodes and 6 assertion nodes.
+Path nodes carry the outline skeleton and no span of their own; assertion nodes
+carry the byte-verified facts. So a fact knows its limb and the limb knows its
+lineage.
+
+**It is not accepted yet, and Step 2X-L1 exists to hold it to account.** The
+model emitted **69 limbs** across those two sections; six assertion nodes were
+minted; `residuals` is zero. A shortfall with zero residuals is indistinguishable
+from a silent drop — the same signature as the open-world defect fixed earlier
+the same day. Many of the 69 may be genuine cross-references correctly declined,
+which the receipt's `limb_enumeration_scan` could show, but "correctly declined"
+and "silently dropped" look identical from outside when nothing is recorded.
+
+**2X-E — absence copy.** 14 unsafe wordings across 11 config files now use
+`CONDITION_ABSENT_COPY`, verified as zero remaining. The termination-fees
+provenance pill was deliberately **not** ported: no other family has a genuine
+second extraction source, and inventing one would fabricate a signal.
+
+**Segmenter improvements**, both measured against a 538-section corpus harness
+rather than assumed. `(x)/(y)/(z)` list opening: **zero** added mis-nests, 19
+markers newly captured. `MAX_DEPTH` 3 → 5: **+0.186 percentage points** of
+mis-nest rate against **+62** markers newly captured across 7 sections. The
+first is free; the second is a real trade, taken because a flagged marker is
+visible rather than wrong.

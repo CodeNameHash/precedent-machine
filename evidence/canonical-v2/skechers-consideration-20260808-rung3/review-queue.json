@@ -1,0 +1,300 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "2bf29849b4fea94c58b77ec64a3e520750a182a6eeaa020580d9d9392bf2de07",
+  "review_queue": [
+    {
+      "section_reference": "2.10",
+      "source_citation": "2.10(c)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "will be deemed from and after the Effective Time to evidence only the right to receive the Cash Election Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "84efcd9191215dc5435618b33f487485edb2f443dfdf48038a5ba5da3954542e",
+      "closure_id": "c0a1d4ae5deb1e2b1d0cab9cd02ca9e57b1be371dba8ffbe7b53e9920c3a3da3",
+      "normalised_phrase": "will be deemed from and after the Effective Time to evidence only the right to receive the Cash Election Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.7",
+      "source_citation": "2.7(b)(iii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall be converted automatically into the right to receive the Cash Election Consideration",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "00a9bff61a1607a8363a49837e4792c835cd898e26581b10724de80fadae1b56",
+      "closure_id": "02df20551c8a004b1bd22d6957cc3db5f16214b0814f38774ef20dff51593ba8",
+      "normalised_phrase": "shall be converted automatically into the right to receive the Cash Election Consideration",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.7",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "076ec275d6b2ae683f107f69089ca3376ccbd8d42597c59d2cf2d7069eb483a9",
+      "closure_id": "5fd25993499b262041fa7ad8c1ae152043c4d162f61f194c03160f0d44cae0ae",
+      "normalised_phrase": "who shall have properly and validly exercised their statutory rights of appraisal in respect of such shares of Company Common Stock in accordance with Section 262 of the DGCL",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 1051,
+          "end": 1076,
+          "excerpt": " of immediately prior to the Effective Time (other than Owned Company Shares or Dissenting Company Shares) will be cancelled and extinguished and automatically converted into the right ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 4196,
+          "end": 4221,
+          "excerpt": "h Section 262 of the DGCL (such shares being referred to collectively as the “Dissenting Company Shares” until such time as the holder thereof fails to perfect, withdraws or otherwi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:PHRASE:APPRAISAL_RIGHTS",
+          "start": 4326,
+          "end": 4342,
+          "excerpt": "e holder thereof fails to perfect, withdraws or otherwise loses such holder’s appraisal rights under the Laws of the State of Delaware with respect to such shares) will not b",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 4541,
+          "end": 4566,
+          "excerpt": "t to receive, the Merger Consideration pursuant to this Section 2.7. Holders of Dissenting Company Shares will be entitled to receive payment of the appraised value of such Dissenting C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 4634,
+          "end": 4659,
+          "excerpt": "mpany Shares will be entitled to receive payment of the appraised value of such Dissenting Company Shares in accordance with the provisions of Section 262 of the DGCL (and in such case,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 4766,
+          "end": 4791,
+          "excerpt": "visions of Section 262 of the DGCL (and in such case, at the Effective Time the Dissenting Company Shares will no longer be outstanding and will automatically be canceled and cease to e",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 4896,
+          "end": 4921,
+          "excerpt": "nding and will automatically be canceled and cease to exist, and each holder of Dissenting Company Shares will cease to have any rights with regard thereto except such holder’s right ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 5040,
+          "end": 5065,
+          "excerpt": "ard thereto except such holder’s right to receive the appraised value of such Dissenting Company Shares to the extent afforded by Section 262 of the DGCL), except that all Dissenting ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 5134,
+          "end": 5159,
+          "excerpt": "pany Shares to the extent afforded by Section 262 of the DGCL), except that all Dissenting Company Shares held by Company Stockholders who shall have failed to perfect or who shall have",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 5304,
+          "end": 5329,
+          "excerpt": " who shall have effectively withdrawn or lost their rights to appraisal of such Dissenting Company Shares pursuant to Section 262 of the DGCL will cease to be Dissenting Company Shares ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 5383,
+          "end": 5408,
+          "excerpt": " Dissenting Company Shares pursuant to Section 262 of the DGCL will cease to be Dissenting Company Shares and will thereupon be deemed to have been converted into, and to have become ex",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 5606,
+          "end": 5631,
+          "excerpt": "me, the right to receive the Cash Election Consideration (unless such holder of Dissenting Company Shares shall thereafter, but prior to the Election Deadline, otherwise make a Mixed El",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 6185,
+          "end": 6210,
+          "excerpt": "struments served pursuant to the DGCL and received by the Company in respect of Dissenting Company Shares; and (B) the opportunity to lead all negotiations and Legal Proceedings with re",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_COMPANY_SHARES",
+          "start": 6356,
+          "end": 6381,
+          "excerpt": "edings with respect to demands for appraisal pursuant to the DGCL in respect of Dissenting Company Shares. The Company may not, except with the prior written consent of Parent, make any",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.7",
+      "source_citation": "2.7(b)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "one Parent Unit (the “Mixed Election Equity Consideration” and together with the Mixed Election Cash Consideration, the “Mixed Election Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "923ef84b6a10f59a0a9f4825b3d529a310e8367898bf5681a03471da50cb17ed",
+      "closure_id": "7eb1cbeeddba9be05a60236b3b6cd77ee0d008987655b2912a177b2a40ca73ce",
+      "normalised_phrase": "one Parent Unit (the “Mixed Election Equity Consideration” and together with the Mixed Election Cash Consideration, the “Mixed Election Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO"
+    },
+    {
+      "section_reference": "2.7",
+      "source_citation": "2.7(b)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an amount in cash equal to $57.00 (the “Mixed Election Cash Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2873de144a65ae2bd72a1b99285282aaf57f51491a6c2994dc4c3613b3408ba3",
+      "closure_id": "9a01698ae45d876e91771af0eca0b38ee11affd5255583a3917028a2379f52d3",
+      "normalised_phrase": "an amount in cash equal to $57.00 (the “Mixed Election Cash Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.7",
+      "source_citation": "2.7(b)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "cash in an amount equal to $63.00, without interest thereon (the “Cash Election Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "05f3689a4d9670397174d8894a2d26819ac6cef7f0d5ec4fc6294b29e10a5aee",
+      "closure_id": "ad32aa0dace48baf95ee794850c1d144c88d87a93879b0ddc9356b97d85c064e",
+      "normalised_phrase": "cash in an amount equal to $63.00, without interest thereon (the “Cash Election Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.8",
+      "source_citation": "2.8(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "converted into the right to receive the Cash Election Consideration for each share of Company Common Stock subject to such Company RSA",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c9e39b78690e872737f695d3f71cfd27d43870f2090ebb1092a25d81391af8e4",
+      "closure_id": "8c2453392ac342e8f3d928a60bc1aa48198883a78860f01232df8a92989a0f4e",
+      "normalised_phrase": "converted into the right to receive the Cash Election Consideration for each share of Company Common Stock subject to such Company RSA",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.8",
+      "source_citation": "2.8(c)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "converted into the right to receive the Cash Election Consideration for each share of Company Common Stock subject to such Company RSU",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d042bc9a99f38ca9766d1e1fd87ff3c861bf9a612aae31cb07f9e88d1fc2a0f1",
+      "closure_id": "dcd32a8ff91d5059f7d9b51114c68d0b8a82e46056271d51833eb027f8198e60",
+      "normalised_phrase": "converted into the right to receive the Cash Election Consideration for each share of Company Common Stock subject to such Company RSU",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    }
+  ],
+  "review_queue_artifact_id": "0a290703aff01c77d5f280871350f1e509726c6cb60fb07d467cfe1d6a350cb9"
+}

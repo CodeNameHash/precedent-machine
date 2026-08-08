@@ -36,10 +36,15 @@ const {
 
 // ─── Version ───
 
-test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 2', () => {
+test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 4', () => {
   // P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
-  // section 1): 1 -> 2.
-  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 2);
+  // section 1): 1 -> 2. Stage 3 (structural-inheritance-diagnosis.md;
+  // Ben's never-alias materiality ruling): 2 -> 3 -- two qualifier-only
+  // whitelist pairs and the MAE-qualifier idiom front door.
+  // Step 2X-D / DECISIONS.md entry 14 (2026-08-08): 3 -> 4 -- revert the
+  // MAT_MAE_AGGREGATE / MAT_MAE_QUALIFIED split; aggregate phrase classifies
+  // as MAT_MAE_QUALIFIED.
+  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 4);
 });
 
 test('QUALIFIER_KINDS enumerates the six families', () => {
@@ -421,4 +426,93 @@ test('a comma inside a parenthetical never cuts a part: the TEMPORAL claim is ne
     cursor = part.end;
   }
   assert.equal(cursor, quote.length);
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Stage 3 (lexicon version 3): qualifier-only whitelist pairs and the
+// MAE-qualifier idiom front door. Real quotes from the committed Red Hat
+// REPRESENTATIONS run (evidence/canonical-v2/redhat-representations-
+// 20260808-r1/run-receipt.json), not invented shapes.
+// ═══════════════════════════════════════════════════════════════════════
+
+test('Stage 3: the two qualifier-only materiality phrases classify with SEPARATE codes, never aliased (Ben ruling 1)', () => {
+  const allMaterial = classifyQualifierQuote({ quote: 'in all material respects', modelKind: 'ACCURACY' });
+  assert.equal(allMaterial.outcome, 'CLASSIFIED');
+  assert.equal(allMaterial.kind, 'ACCURACY');
+  assert.equal(allMaterial.code, 'MAT_ALL_MATERIAL');
+
+  const anyMaterial = classifyQualifierQuote({ quote: 'in any material respect', modelKind: 'ACCURACY' });
+  assert.equal(anyMaterial.outcome, 'CLASSIFIED');
+  assert.equal(anyMaterial.kind, 'ACCURACY');
+  assert.equal(anyMaterial.code, 'MAT_MATERIAL_INLINE');
+  assert.notEqual(anyMaterial.code, allMaterial.code, 'the two phrases must never share a code');
+});
+
+test('Stage 3 / Step 2X-D: the MAE-qualifier idiom front door classifies Red Hat chapeau and item forms as MAT_MAE_QUALIFIED (aggregate phrase is not a separate code)', () => {
+  // Justified edit (Step 2X-D): Stage 3 asserted MAT_MAE_AGGREGATE for the
+  // "individually or in the aggregate" form. Ben's 2026-08-08 reversal
+  // (DECISIONS.md entry 14) treats that phrase as a drafting variant of
+  // MAT_MAE_QUALIFIED — same legal standard, same code.
+  const chapeau = classifyQualifierQuote({
+    quote: 'Except for matters that would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(chapeau.outcome, 'CLASSIFIED');
+  assert.equal(chapeau.kind, 'ACCURACY');
+  assert.equal(chapeau.code, 'MAT_MAE_QUALIFIED');
+
+  const item = classifyQualifierQuote({
+    quote: 'would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
+    modelKind: null,
+  });
+  assert.equal(item.outcome, 'CLASSIFIED');
+  assert.equal(item.code, 'MAT_MAE_QUALIFIED');
+
+  const bare = classifyQualifierQuote({
+    quote: 'except as would not reasonably be expected to have a Material Adverse Effect',
+    modelKind: null,
+  });
+  assert.equal(bare.outcome, 'CLASSIFIED');
+  assert.equal(bare.code, 'MAT_MAE_QUALIFIED', 'bare and aggregate forms share MAT_MAE_QUALIFIED');
+});
+
+test('Step 2X-D pin: "individually or in the aggregate" MAE idiom classifies as MAT_MAE_QUALIFIED (DECISIONS.md entry 14, Ben 2026-08-08)', () => {
+  // Pins the reversal explicitly: the aggregate drafting variant must not
+  // emit MAT_MAE_AGGREGATE from the V2 lexicon.
+  const result = classifyQualifierQuote({
+    quote: 'would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(result.outcome, 'CLASSIFIED');
+  assert.equal(result.kind, 'ACCURACY');
+  assert.equal(result.code, 'MAT_MAE_QUALIFIED');
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(ACCURACY_CODES, 'MAT_MAE_AGGREGATE'),
+    false,
+    'MAT_MAE_AGGREGATE must not be emittable from ACCURACY_CODES',
+  );
+});
+
+test('Stage 3 HOSTILE: the affirmative MAE form never classifies through the idiom door, and a longer quote merely CONTAINING the idiom never front-door classifies', () => {
+  // Affirmative ("would reasonably be expected to have") is a different
+  // legal assertion from the negative tolerance -- must not classify here.
+  const affirmative = classifyQualifierQuote({
+    quote: 'that would reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
+    modelKind: 'ACCURACY',
+  });
+  assert.notEqual(affirmative.outcome, 'CLASSIFIED');
+
+  // Whole-quote anchoring: extra operative content around the idiom must
+  // fall through to the ordinary pipeline, never match the door.
+  const embedded = classifyQualifierQuote({
+    quote: 'the Company shall have performed its obligations except as would not reasonably be expected to have a Material Adverse Effect',
+    modelKind: null,
+  });
+  assert.notEqual(embedded.outcome === 'CLASSIFIED' && embedded.code === 'MAT_MAE_QUALIFIED', true);
+});
+
+test('Stage 3 HOSTILE: a definite non-ACCURACY model hint on a front-door ACCURACY fire still routes to review, never overridden', () => {
+  const result = classifyQualifierQuote({ quote: 'in all material respects', modelKind: 'KNOWLEDGE' });
+  assert.equal(result.outcome, 'REVIEW');
+  assert.equal(result.reason, QUALIFIER_KIND_DISAGREEMENT);
 });

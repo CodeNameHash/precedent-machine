@@ -4,6 +4,7 @@ import { nosolNoshopConfig, renderDetail as noshopRenderDetail, renderSignals as
 import { nosolSuperiorConfig, renderSignals as superiorRenderSignals } from './nosol-superior.config.js';
 import { nosolInterveningConfig, renderDetail as interveningRenderDetail, renderSignals as interveningRenderSignals } from './nosol-intervening.config.js';
 import { nosolFiduciaryConfig, renderSignals as fiduciaryRenderSignals } from './nosol-fiduciary.config.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 // Rebuilt per FEEDBACK-2-PUNCHLIST.md #41-#43, reordered again per
 // FEEDBACK-4-PUNCHLIST.md WS-G. Old site: NO-SOLICITATION was ONE section on
@@ -670,7 +671,7 @@ const nosolSectionConfig = {
         const groups = buildGroups(row.reviewDeal, ctx);
         return React.createElement(GroupedSubRows, {
           groups,
-          emptyCopy: 'No no-solicitation provisions found.',
+          emptyCopy: CONDITION_ABSENT_COPY,
           // Item 17 (r4): wire each sub-row to the ClauseSidebar via the
           // resolver/selection ProvisionTable.jsx puts on ctx.
           onSelectCard: ctx?.onSelectCard,
@@ -683,7 +684,7 @@ const nosolSectionConfig = {
       },
     },
   ],
-  empty: { copy: 'No no-solicitation provisions found.' },
+  empty: { copy: CONDITION_ABSENT_COPY },
 };
 
 export { buildAcquisitionProposalGroup, buildGroups, extractPctTriggers, nosolSectionConfig };

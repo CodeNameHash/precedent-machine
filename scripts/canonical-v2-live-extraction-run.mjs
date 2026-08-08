@@ -117,8 +117,37 @@
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
  *     [--model <claude CLI model alias, default "sonnet">] \
  *     [--no-follow-citations] \
- *     [--call-timeout-ms <positive integer, default 600000>] \
+ *     [--call-timeout-ms <positive integer. Default is DERIVED from the \
+ *        output ceiling via derivedCallTimeoutMs(): 4.3s + 8.23ms/token + 25%%, \
+ *        so raising the ceiling cannot silently outrun the timeout>] \
+ *     [--v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON, \
+ *        default: none -- condition 1 (v1<->v2 comparator) then stays \
+ *        unevaluated for every claim, recorded explicitly in run-manifest.json>] \
+ *     [--replay-model-id <the producer model_id the replayed run used. Only \
+ *        for hand-assembled fixture sets that carry no run-receipt.json; a \
+ *        replay of a real run reads the identity from that run's receipt and \
+ *        REFUSES this flag if it disagrees>] \
  *     [--dry-run]
+ *
+ * REPLAY REPORTS THE LIVE RUN'S MODEL, NOT ITSELF. Replay is a transport: the
+ * text it serves was produced by the live model, so `model_id` -- which feeds
+ * `producer_receipt_id` and therefore `closure_id` -- is that model's. This
+ * used to be `replay(<path>)`, which made claim identity a function of where
+ * the operator put the files; the committed evidence still shows one Modiv
+ * run carrying two identities for the same claims.
+ *
+ * M3 AUTO-PASS CONDITIONS. Every resolveCandidates() call below wires both
+ * of Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite."):
+ * condition 2 (lexical-disagreement net, lexical-disagreement-net.js) is
+ * always built, one receipt per resolved section, from this run's own
+ * resolved candidates -- no extra input needed. Condition 1 (v1<->v2
+ * comparator, v1v2-comparator.js) needs a committed V1_PROVISION_SNAPSHOT/V1
+ * for the SAME deal, which this script never fetches on its own (that is
+ * scripts/export-v1-provision-snapshot.mjs's separately-gated job) -- pass
+ * one via --v1-snapshot to evaluate it. Absent, condition 1 stays
+ * unevaluated (`V1_V2_COMPARATOR_ABSENT` on every claim), and this run's
+ * `run-manifest.json.m3_auto_pass_conditions.v1v2_comparison` records that
+ * fact plainly rather than omitting it.
  *
  * --follow-citations dispatches an extra single-section call for each
  * section a fee trigger cites by bare cross-reference, so the model can
@@ -132,10 +161,10 @@
  */
 
 import {
-  readFileSync, writeFileSync, mkdirSync, existsSync,
+  readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync,
 } from 'node:fs';
-import { resolve } from 'node:path';
-import { spawn } from 'node:child_process';
+import { resolve, dirname } from 'node:path';
+import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
@@ -148,6 +177,9 @@ const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-can
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const {
+  retrievalPolicyDigestFor, sourceMapPayloadPathFor,
+} = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
 // V38, not V34. The runner sat on V34 while the resolver dispatch table and
@@ -156,8 +188,27 @@ const {
 // governed home that existed. Replaying the committed antitrust run with V38
 // gives all eleven a home, two resolving and nine queueing honestly, with no
 // change to anything that already resolved.
-const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
+// V41 (Stage 3, as amended by Step 2X-D): V38 plus the two strictly-
+// additive trigger-path schema versions (V39/V40) and
+// REPRESENTATION_ACCURACY_STANDARD's widened allowed-value set
+// (MAT_MATERIAL_INLINE -- Ben's never-alias materiality ruling for
+// "in any" vs "in all" material respects). MAT_MAE_AGGREGATE was briefly
+// admitted under the same Stage 3 split and was REMOVED 2026-08-08
+// (DECISIONS.md entry 14): the "individually or in the aggregate" form
+// classifies as MAT_MAE_QUALIFIED. See contract-bundle.js's V41 comment.
+// Same reason the V34 -> V38 move recorded above: resolving against an
+// older bundle turns already-governed vocabulary into open-world rows
+// for want of a home that exists.
+const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const {
+  createRecordingClient,
+  createReplayClient,
+  createOrderedReplayClient,
+  buildRecordingFromSectionFixtures,
+  replayCoverage,
+  resolveOriginalProviderModelId,
+} = require('../lib/canonical-v2/native-producer/provider-record-replay');
 const {
   getProducerPromptModule, listRegisteredSectionFamilies,
 } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
@@ -171,7 +222,19 @@ const { runNativeExtraction, NativeExtractionRunError } = require('../lib/canoni
 // TERMINATION_FEE bare-citation fee triggers specifically -- inert for every
 // other family (see this file's own header note above).
 const { runNativeExtractionWithCitationFollowup } = require('../lib/canonical-v2/native-producer/native-extraction-run-citation-followup');
-const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const {
+  resolveCandidates, computeSectionCandidatesForLexicalDigest,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
+// Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite. Wire
+// Ben's two M3 auto-pass conditions before rung 1"). Both are pure,
+// deterministic, no-model-call modules -- see each file's own header.
+// Condition 2 (lexical-disagreement) is ALWAYS built from this run's own
+// data, no extra input needed. Condition 1 (v1<->v2 comparator) needs a
+// committed V1_PROVISION_SNAPSHOT/V1 the caller supplies via --v1-snapshot;
+// absent that, condition 1 stays unevaluated and this run's evidence records
+// that explicitly (see "Step 4" below), never silently.
+const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
+const { buildV1V2ComparisonReceipt } = require('../lib/canonical-v2/native-producer/v1v2-comparator');
 const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
 const {
@@ -191,9 +254,40 @@ const DEFAULT_FAMILY = 'TERMINATION_FEE';
  * it means a future rename of this file keeps every manifest it writes
  * afterwards accurate automatically, with nothing to remember to update.
  */
+// Relative to the repository root, or absolute if it lies outside it.
+//
+// `startsWith`, not `includes`. With `includes`, a path that merely CONTAINS
+// the working directory somewhere in the middle was sliced from the front by
+// the working directory's length, producing a mangled path; and a path under
+// a different root was recorded absolute, which is machine-specific and fails
+// to resolve anywhere else. Both matter now that source-reference.json's
+// recorded paths are read back to rebuild the source chain.
+function repoRelative(absolutePath) {
+  const root = `${process.cwd()}/`;
+  return absolutePath.startsWith(root) ? absolutePath.slice(root.length) : absolutePath;
+}
+
 function scriptRelativePath() {
-  const absolutePath = fileURLToPath(import.meta.url);
-  return absolutePath.includes(process.cwd()) ? absolutePath.slice(process.cwd().length + 1) : absolutePath;
+  return repoRelative(fileURLToPath(import.meta.url));
+}
+
+// UTF-8 BYTE offsets, never UTF-16 code units (CLAUDE.md's own standing
+// trap note) -- `section.start`/`section.end` on a `resolved_sections` entry
+// are byte offsets into the canonical text, so this slices via `Buffer`,
+// matching scripts/nets-eligibility-report.mjs's own `sectionBodyText`.
+function sectionBodyText(canonicalText, section) {
+  return Buffer.from(canonicalText, 'utf8').slice(section.start, section.end).toString('utf8');
+}
+
+// A run directory's own receipt, which is where the model identity of that
+// run is recorded. Returns null when the directory has no receipt -- a run
+// whose extraction failed writes none -- and the caller turns that into a
+// refusal, because a replay with no identity to reproduce must not proceed
+// under an invented one.
+function readRunReceiptIfPresent(runDir) {
+  const receiptPath = resolve(runDir, 'run-receipt.json');
+  if (!existsSync(receiptPath)) return null;
+  return JSON.parse(readFileSync(receiptPath, 'utf8'));
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -223,6 +317,10 @@ function scriptRelativePath() {
 // -- both hashes and both byte lengths match that pin exactly. No pin below
 // is invented without that kind of corroboration from something already
 // committed.
+// Every capture this script builds declares the same content type. Named so
+// the rebuilder and the run's own recorded inputs cannot drift from it.
+const CAPTURE_CONTENT_TYPE = 'text/html; charset=UTF-8';
+
 const DEAL_PINS = Object.freeze({
   modiv: Object.freeze({
     label: 'Modiv, Inc. / Global Net Lease, Inc.',
@@ -230,12 +328,116 @@ const DEAL_PINS = Object.freeze({
     raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm',
     raw_bytes_sha256: '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968',
     canonical_text_sha256: '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e',
+    // The PINNING FETCH's timestamp, copied verbatim from
+    // tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json. See
+    // the note on `retrieved_at` below `DEAL_PINS`.
+    retrieved_at: '2026-08-01T15:05:49.024Z',
     agreement_date: '2026-05-03',
     pin_corroboration: 'tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json, and the prior '
       + 'TERMINATION_FEE run receipt at evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/'
       + 'execution-result.json (work_item_id modiv-termination-fee-7-3, run_receipt.source_sha256 / .document_hash)',
+    // All 25 registered families (PLAN.md Step 2A). Twenty-four are HARVESTED
+    // from the section lists previous sweeps actually used -- twenty from
+    // run-manifest.json's `section_references`, four from
+    // section-location-scan.json's `requested_section_references` for the
+    // directories that have no manifest. That is human judgement already
+    // spent, and it is what the committed baseline was produced against, so
+    // rung 1-4 diffs compare like with like.
+    //
+    // The stage-1 generator
+    // (scripts/canonical-v2-generate-family-section-refs.mjs --compare)
+    // disagrees with the harvest on 17 families. Those disagreements are NOT
+    // resolved here: settling them needs the document read, which is Step 2A's
+    // review pass. Pinning the harvest keeps the ladder runnable and keeps the
+    // baseline comparable; the generator's proposal is committed alongside at
+    // docs/codex-program/notes/family-section-refs-modiv-20260807-generated.json
+    // so the difference stays visible.
     default_section_refs_by_family: Object.freeze({
-      TERMINATION_FEE: Object.freeze(['7.1', '7.3', '8.12']),
+      ANTITRUST_REGULATORY: Object.freeze(["5.5"]),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(["2.6"]),
+      CAPITALISATION: Object.freeze(["3.2","4.2"]),
+      CLOSING_CONDITIONS: Object.freeze(["6.1","6.2","6.3","6.4"]),
+      // 2.6 CORRECTED IN 2026-08-07, as PLAN.md Step 2A required and as no
+      // previous sweep did. Section 2.6 "Dissenters' Rights" reads in full:
+      // "No dissenters' or appraisal rights shall be available with respect to
+      // the Mergers." 119 bytes, verified against the document.
+      //
+      // It belongs to THIS family, not to Appraisal. The appraisal producer
+      // prompt (native-producer/appraisal-producer-prompt.js) says in terms
+      // "Never assert a negative" and that availability "remain[s] with
+      // Consideration", so the appraisal run requesting 2.6 and declining to
+      // assert anything from it was correct by design -- which is why that
+      // family's zero is a correct zero and not a taxonomy gap.
+      //
+      // NOT YET RUN: there are no recorded responses for 2.6 under this
+      // family, so this needs a live call before it produces anything. The
+      // committed baseline entry still reflects the 2.1/2.2/2.3 run.
+      CONSIDERATION: Object.freeze(["2.1","2.2","2.3","2.6"]),
+      DIVIDENDS: Object.freeze(["5.10"]),
+      DNO_INDEMNIFICATION: Object.freeze(["5.8"]),
+      EMPLOYEE_MATTERS: Object.freeze(["3.11","3.12"]),
+      FINANCING_COVENANTS: Object.freeze(["4.13","5.20"]),
+      GENERAL_COVENANTS: Object.freeze(["5.3","5.7","5.9"]),
+      GUARANTY_FINANCING_PARTY: Object.freeze(["5.11"]),
+      INTERIM_OPERATING: Object.freeze(["5.1"]),
+      // CORRECTED 2026-08-07, and the correction is the reason this family
+      // produced nothing. The harvested pin was ["8.5"] alone. Section 8.5 is
+      // "Interpretation; Certain Definitions" -- 3,391 bytes of construction
+      // conventions -- while Section 8.12 is "Definitions", 54,682 bytes and
+      // the actual defined terms. So the run was pointed at the wrong section
+      // and correctly found only construction rules: the fifteen terms it
+      // proposed were "include", "hereof", "extent", "dollars", "or",
+      // "shall", "days", "from", "to and until", "through" and five others,
+      // every one of which fell out as an ungoverned DEFINITION_ENVELOPE.
+      //
+      // That is a pin defect, not a resolver defect, and it was invisible
+      // because a family finding nothing looks the same either way. The
+      // stage-1 generator proposed ["8.5","8.12"] and was right; the harvest
+      // from a previous sweep was wrong. 8.5 is kept because the run that
+      // produced the baseline used it and the containment check requires it.
+      //
+      // NOT YET RUN against 8.12: there are no recorded responses for that
+      // section under this family, so the corrected pin needs a live call
+      // before it produces anything. Until then this family's zero is
+      // explained, not fixed.
+      KEY_DEFINED_TERMS: Object.freeze(["8.5", "8.12"]),
+      // Never run against Modiv: the only 2026-08-06 MAE run is TopBuild, so
+      // this list began as the stage-1 generator's PROPOSAL rather than
+      // judgement harvested from a run that happened.
+      //
+      // REVIEWED AGAINST THE DOCUMENT 2026-08-07, as PLAN.md Step 2A required,
+      // and the proposal is correct. Section 8.12 "Definitions" spans bytes
+      // 360,030-414,712 of the Modiv canonical text and contains BOTH
+      // definition sites: "Company Material Adverse Effect" means at byte
+      // 367,819 and "Parent Material Adverse Effect" means at byte 387,682.
+      // Each appears exactly once; of the document's 77 mentions of the
+      // phrase, 75 are uses. Pinned by
+      // tests/canonical-v2-mae-definition-pin-review.test.js, so a sectionizer
+      // change that moved the boundary would fail rather than silently narrow
+      // the run.
+      //
+      // (Those two offsets were first recorded as 366,186 and 385,847, which
+      // were UTF-16 character indices mislabelled as bytes. The test now
+      // asserts them rather than only stating them.)
+      //
+      // Cost note, not a defect: 8.12 is the whole definitions article at
+      // ~55 KB, so this is one expensive call over a section mostly not about
+      // MAE. Narrowing needs evidence about the producer's behaviour on a
+      // narrower anchor, which does not exist until the family runs once.
+      // Rung 4 is where it first runs, creating a baseline rather than
+      // checking one.
+      MAE_DEFINITION: Object.freeze(['8.12']),
+      MATERIAL_CONTRACTS: Object.freeze(["3.17"]),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(["1.1","1.4","1.5","1.6"]),
+      MISC_BOILERPLATE: Object.freeze(["8.2","8.3","8.4","8.7","8.9","8.10"]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(["3.25"]),
+      NO_SHOP: Object.freeze(["5.6"]),
+      PROXY_MEETING: Object.freeze(["5.4"]),
+      REPRESENTATIONS: Object.freeze(["3.1","3.3","3.4"]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(["8.8"]),
+      TAX_MATTERS: Object.freeze(["3.13","4.15","5.12"]),
+      TERMINATION: Object.freeze(["7.1","7.2"]),
+      TERMINATION_FEE: Object.freeze(["7.1","7.3","8.12"]),
     }),
     // Verified empirically against this exact filing before this script was
     // first written: "7.1" -> SECTION heading "Termination"; "7.3" ->
@@ -259,16 +461,616 @@ const DEAL_PINS = Object.freeze({
     raw_html_path: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm',
     raw_bytes_sha256: '146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f',
     canonical_text_sha256: '7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d',
-    // Not pinned in this repo yet: pass --agreement-date explicitly for a
-    // TopBuild run that needs it (e.g. for deadline/date resolution).
-    agreement_date: null,
+    // The PINNING FETCH's timestamp from
+    // tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json,
+    // normalised to the millisecond form the capture contract requires
+    // (that file records `2026-08-03T02:20:00Z`).
+    retrieved_at: '2026-08-03T02:20:00.000Z',
+    // PINNED 2026-08-08 by PLAN.md Step 2F, read out of the committed raw
+    // HTML rather than taken from prose: the preamble reads "...and TOPBUILD
+    // CORP. Dated as of April 18, 2026". Previously null, with a note to pass
+    // --agreement-date explicitly. It is needed rather than optional:
+    // parseMeasurementDate (measurement-date-parse.js) resolves the symbolic
+    // phrases "the date of this Agreement" / "the Capitalization Date" ONLY
+    // from this value, so a null date silently drops every deadline claim
+    // that states itself relative to signing -- a false zero that looks
+    // exactly like a family with nothing to find.
+    agreement_date: '2026-04-18',
     pin_corroboration: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json -- both '
       + 'raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed '
       + 'raw HTML and match that pin file exactly (raw_bytes_length 732686, canonical_text_byte_length '
       + '412860, verification_status PASS)',
-    default_section_refs_by_family: Object.freeze({}),
+    // PINNED 2026-08-08 by PLAN.md Step 2F, from the hand-reviewed mapping in
+    // docs/codex-program/notes/step-2e-topbuild-mapping.md. Every list below
+    // was read against the filed text section by section (2E), then EXERCISED
+    // LIVE by Step 2F -- these are not proposals. 24 of the 25 registered
+    // families ran; CAPITALISATION is deliberately absent because Ben parked
+    // the family on 2026-08-08 (PLAN.md Step 2D2, now Step 9F). Do not add it
+    // back without reopening that decision.
+    //
+    // WHY SO MANY OF THESE DISAGREE WITH THE STAGE-1 GENERATOR. Modiv's
+    // Article III is granular -- one numbered section per rep topic. TopBuild's
+    // is TWO sections, 3.1 (Company, 83,756 bytes) and 3.2 (Parent/Merger Subs,
+    // 47,618 bytes), each running to lettered sub-paragraphs (a)-(w).
+    // Capitalisation, material contracts, no-other-reps, employee benefits and
+    // the MAE definition all live INSIDE those two as sub-paragraphs with no
+    // section-level title of their own, and the generator classifies by title.
+    // Same pattern at 4.1/4.2 (dividends inside interim operations), 4.3/4.4
+    // (superior-proposal and intervening-event definitions inside no-shop) and
+    // 4.6 (the antitrust covenant is sub-paragraph (b) of a section titled
+    // about efforts generally).
+    //
+    // TWO PINS BELOW ARE PROVEN AND STILL PRODUCE NOTHING, and the pin is not
+    // the reason -- see Step 2F BREAK 2 and BREAK 3. GUARANTY_FINANCING_PARTY
+    // resolves 7.16 "Waiver of Claims Against Financing Sources" correctly and
+    // the producer prompt's guaranty-only framing excludes it; DIVIDENDS
+    // resolves 4.1/4.2 correctly and returns empty on text that contains
+    // "declare, set aside or pay any dividend" twice. Both are producer-prompt
+    // defects. Do not "fix" either by changing the sections.
+    //
+    // TWO FAMILIES HAVE NO RUN AT ALL. REPRESENTATIONS (3.1, 3.2) and NO_SHOP
+    // (4.3, 4.4) are pinned and correct, and both overflow the model's output
+    // budget on their first call (74,080 and 65,210 tokens against 64,000), so
+    // the single-JSON-object producer contract fails. Step 2F BREAK 1 and
+    // BREAK 4. Pinned here so the lists survive; they are not runnable today.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['4.6']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.1']),
+      CLOSING_CONDITIONS: Object.freeze(['5.1', '5.2', '5.3']),
+      CONSIDERATION: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5']),
+      DIVIDENDS: Object.freeze(['4.1', '4.2']),
+      DNO_INDEMNIFICATION: Object.freeze(['4.13']),
+      EMPLOYEE_MATTERS: Object.freeze(['3.1', '4.11']),
+      FINANCING_COVENANTS: Object.freeze(['4.17']),
+      GENERAL_COVENANTS: Object.freeze(['4.8', '4.9', '4.10', '4.18', '4.19', '4.21']),
+      GUARANTY_FINANCING_PARTY: Object.freeze(['7.16']),
+      INTERIM_OPERATING: Object.freeze(['4.1', '4.2']),
+      // NOT 7.12, which the generator proposed. 7.12 reads, in full: "Each of
+      // the terms set forth in Annex C is defined in the Section of this
+      // Agreement set forth opposite such term." One sentence, no definitions.
+      // TopBuild defines inline at first use; these four sections are where
+      // this family's own assertion kinds actually live (superior-proposal and
+      // intervening-event definitions at 4.3(f)/4.4(f), the Knowledge standard
+      // at 3.1(g)(iii), willful-and-material-breach at 6.5(a)).
+      KEY_DEFINED_TERMS: Object.freeze(['3.1', '4.3', '4.4', '6.5']),
+      MAE_DEFINITION: Object.freeze(['3.1', '3.2']),
+      // 3.2's sub-paragraph (p) is "Solvency", not Contracts: Parent gives no
+      // Material Contracts rep in this agreement, so 3.2 is correctly absent.
+      MATERIAL_CONTRACTS: Object.freeze(['3.1']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8']),
+      MISC_BOILERPLATE: Object.freeze(['7.1', '7.2', '7.3', '7.4', '7.5', '7.7', '7.8', '7.9', '7.13', '7.14', '7.15']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.1', '3.2']),
+      NO_SHOP: Object.freeze(['4.3', '4.4']),
+      PROXY_MEETING: Object.freeze(['4.5']),
+      REPRESENTATIONS: Object.freeze(['3.1', '3.2']),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['7.6']),
+      TAX_MATTERS: Object.freeze(['4.23', '7.11']),
+      TERMINATION: Object.freeze(['6.1', '6.2', '6.3', '6.4']),
+      TERMINATION_FEE: Object.freeze(['6.5']),
+    }),
+    // Verified empirically against this exact filing by Step 2F's live runs:
+    // each heading below is what `findSectionByReference` actually returned.
+    section_expectations: Object.freeze({
+      '3.1': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of the Company/i }),
+      '6.5': Object.freeze({ kind: 'SECTION', heading: /Effect of Termination and Abandonment/i }),
+      '7.16': Object.freeze({ kind: 'SECTION', heading: /Waiver of Claims Against Financing Sources/i }),
+    }),
+    debug_related_node_pattern: null,
+  }),
+  skechers: Object.freeze({
+    label: 'Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm',
+    // PINNED 2026-08-08 by PLAN.md Step 2G. Independently re-derived from the
+    // committed raw HTML via THIS script's own loadAndVerifySource() path
+    // (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText ->
+    // verifySecHtmlCanonicalText), not copied from a prior fixture. Both
+    // values match tests/fixtures/canonical-v2/skechers-first-live-run/
+    // intake-pin.json exactly (raw_bytes_length 604740, canonical_text_byte_length
+    // 380704, verification_status PASS) -- that pin was produced by the older,
+    // narrower scripts/canonical-v2-skechers-first-live-extraction-run.mjs
+    // (F28 breadth slice) against the same committed bytes, so the two
+    // independent derivations agreeing is corroboration, not the basis for
+    // the pin itself.
+    raw_bytes_sha256: '3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833',
+    canonical_text_sha256: 'a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660',
+    // The PINNING FETCH's timestamp, copied verbatim from
+    // tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json.
+    retrieved_at: '2026-08-01T12:34:55.229Z',
+    // Read out of the filing's own preamble, not the title-block signature
+    // line and not the fixture directory name: "THIS AGREEMENT AND PLAN OF
+    // MERGER (this "Agreement") is made and entered into as of May 4, 2025,
+    // by and among Beach Acquisition Co Parent, LLC ... Beach Acquisition
+    // Merger Sub, Inc. ... and Skechers U.S.A., Inc."
+    agreement_date: '2025-05-04',
+    pin_corroboration: 'tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json -- both '
+      + 'raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed '
+      + 'raw HTML via this script\'s own loadAndVerifySource() path and match that pin file exactly',
+    // PINNED 2026-08-08 by PLAN.md Step 2G, from the hand-reviewed mapping in
+    // docs/codex-program/notes/step-2g-skechers-onboarding.md. Every list
+    // below was read against the filed text section by section -- headings
+    // AND body content, never titles alone -- and every reference was
+    // confirmed to resolve via --dry-run before being pinned here. All 25
+    // registered families mapped; none left out. Unlike TopBuild, Skechers'
+    // Article III (28 sections, 3.1-3.28) and Article IV (17 sections,
+    // 4.1-4.17) are BOTH granular -- one topic per numbered section, no
+    // sub-paragraph burial -- so this document reads much closer to Modiv's
+    // structure than TopBuild's, and almost nothing here needed correcting
+    // against a stage-1 title-rule guess.
+    //
+    // REPRESENTATIONS is intentionally broad: ALL 45 Article III/IV sections
+    // (every rep both parties give), not a curated subset. The family's own
+    // producer prompt scope is "one complete, admitted representations-and-
+    // warranties section" with no topic restriction, so a section already
+    // claimed by a topic family (e.g. 3.7 Capitalisation, 3.17 Tax Matters)
+    // is included here too -- REPRESENTATIONS extracts accuracy/knowledge
+    // qualifiers, a different fact shape than the topic family extracts from
+    // the same text, which is the same overlap design already used for
+    // TERMINATION/TERMINATION_FEE and CONSIDERATION/APPRAISAL_DISSENTERS_RIGHTS
+    // elsewhere in this table. This means a live run of REPRESENTATIONS
+    // against this pin is 45 separate model calls -- by far the most
+    // expensive family here -- recorded plainly rather than trimmed quietly.
+    //
+    // DIVIDENDS pins to 5.2 "Forbearance Covenants", the same section
+    // INTERIM_OPERATING is pinned to, because -- exactly as on TopBuild --
+    // there is no standalone dividends-coordination section: the dividend
+    // restriction is sub-limb (B) of a thirty-clause forbearance covenant,
+    // and DIVIDENDS' own producer prompt (v2, 2026-08-08) explicitly excludes
+    // "Consideration and IOC restrictions... even when their text is about
+    // dividends". This pin is expected to resolve few or zero governed
+    // dividend_assertions for exactly that reason; the section is still
+    // correct to pin, per that same family's own documented design.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.2']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.7']),
+      CAPITALISATION: Object.freeze(['3.7', '4.15']),
+      CLOSING_CONDITIONS: Object.freeze(['7.1', '7.2', '7.3']),
+      CONSIDERATION: Object.freeze(['2.7', '2.8', '2.9', '2.10', '2.11', '2.12']),
+      DIVIDENDS: Object.freeze(['5.2']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.10']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.11']),
+      FINANCING_COVENANTS: Object.freeze(['6.5', '6.6', '6.19']),
+      GENERAL_COVENANTS: Object.freeze([
+        '6.1', '6.7', '6.8', '6.9', '6.12', '6.13', '6.14', '6.15', '6.16', '6.20', '6.21',
+      ]),
+      GUARANTY_FINANCING_PARTY: Object.freeze(['4.13', '9.15']),
+      INTERIM_OPERATING: Object.freeze(['5.1', '5.2']),
+      KEY_DEFINED_TERMS: Object.freeze(['1.1', '1.2']),
+      MAE_DEFINITION: Object.freeze(['1.1']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.13']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5', '2.6']),
+      MISC_BOILERPLATE: Object.freeze([
+        '1.3', '8.4', '8.5', '9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7',
+        '9.9', '9.10', '9.11', '9.12', '9.13', '9.14', '9.16',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.28', '4.17']),
+      NO_SHOP: Object.freeze(['5.3']),
+      PROXY_MEETING: Object.freeze(['6.3', '6.4', '6.17']),
+      REPRESENTATIONS: Object.freeze([
+        '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26', '3.27', '3.28',
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16', '4.17',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.8']),
+      TAX_MATTERS: Object.freeze(['2.13', '2.14', '3.17', '4.14', '6.18']),
+      TERMINATION: Object.freeze(['8.1', '8.2']),
+      TERMINATION_FEE: Object.freeze(['8.3']),
+    }),
+    // Verified empirically against this exact filing by Step 2G's own
+    // --dry-run resolutions.
+    section_expectations: Object.freeze({
+      '1.1': Object.freeze({ kind: 'SECTION', heading: /Certain Definitions/i }),
+      '3.7': Object.freeze({ kind: 'SECTION', heading: /Company Capitalization/i }),
+      '8.3': Object.freeze({ kind: 'SECTION', heading: /Fees and Expenses/i }),
+    }),
+    debug_related_node_pattern: null,
+  }),
+  skywater: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:09.000Z',
+    label: 'IonQ, Inc. / SkyWater Technology, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1819974/000119312526022750/d32015dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/skywater-first-live-run/skywater-raw-fetched.htm',
+    raw_bytes_sha256: 'd65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a',
+    canonical_text_sha256: 'ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1',
+    agreement_date: '2026-01-25',
+    pin_corroboration: 'raw_bytes_sha256 corroborated by docs/codex-program/notes/four-deal-sources-2026-08-08.md; '
+      + 'canonical_text_sha256 independently re-derived through THIS script\'s own loadAndVerifySource() code '
+      + 'path (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), read '
+      + 'from a --dry-run report against a placeholder digest, then pinned -- see '
+      + 'docs/codex-program/notes/step-2g-skywater-onboarding.md.',
+    // TWO-STEP MERGER. Two merger subs (Merger Subsidiary 1 Inc., a Delaware
+    // corporation, and Merger Subsidiary 2 LLC, a Delaware LLC), a "First
+    // Surviving Corporation" (Merger Sub 1 merges into the Company), and a
+    // Second Merger (the First Surviving Corporation merges into Merger Sub
+    // 2, an LLC, with Merger Sub 2 as the final "Surviving Company"). Every
+    // other pinned deal in this table is a single reverse triangular merger.
+    // Section 1.1 ("The Mergers") carries BOTH the Effective Time and the
+    // Second Effective Time, and both certificates of merger, in one section
+    // -- so MERGER_STRUCTURE_CLOSING's single dispatch of 1.1 (plus 1.2/1.3)
+    // already covers both steps; there was no second "Article I" to miss.
+    // Section 1.4 ("Effect on Capital Stock") converts Company Common Stock
+    // into Merger Consideration at the FIRST Effective Time (1.4(a)-(d)),
+    // then separately cancels the First Surviving Corporation's shares with
+    // NO further consideration at the SECOND Effective Time (1.4(e)) -- the
+    // consideration-producer-prompt's own instructions ("Never treat Merger
+    // Sub or Surviving Corporation internal share conversion as merger
+    // consideration") already anticipate exactly this shape. See
+    // docs/codex-program/notes/step-2g-skywater-onboarding.md section 2 for
+    // the full read.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['7.1']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['1.6']),
+      CAPITALISATION: Object.freeze(['3.5', '4.5', '4.14']),
+      CLOSING_CONDITIONS: Object.freeze(['8.1', '8.2', '8.3', '8.4']),
+      CONSIDERATION: Object.freeze(['1.4', '1.5', '2.1', '2.2', '2.3', '2.4']),
+      DIVIDENDS: Object.freeze(['5.1']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.3']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.5']),
+      FINANCING_COVENANTS: Object.freeze(['5.8']),
+      GENERAL_COVENANTS: Object.freeze([
+        '5.4', '5.5', '5.6', '5.7', '6.2', '6.4', '7.2', '7.3', '7.5', '7.6', '7.7', '7.8', '7.9',
+      ]),
+      // GUARANTY_FINANCING_PARTY: deliberately absent -- no committed pin.
+      // No guaranty, no "Financing Sources"/"Financing Parties" defined
+      // term, and no non-recourse/financing-party-protection clause appears
+      // anywhere in this filing (grepped for "guarant", "debt financing",
+      // "financing sources", "commitment letter", "no recourse" and
+      // "non-recourse" against the full canonical text -- only unrelated
+      // hits, e.g. Pension Benefit Guaranty Corporation, real-property lease
+      // guaranties, existing-debt payoff guarantees). This is a cash-and-
+      // stock strategic acquisition with no acquisition debt financing
+      // condition, so the family has no section to point at -- left
+      // unmapped rather than guessed.
+      INTERIM_OPERATING: Object.freeze(['5.1', '6.1']),
+      KEY_DEFINED_TERMS: Object.freeze(['Annex-A']),
+      MAE_DEFINITION: Object.freeze(['Annex-A']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.20']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.1', '1.2', '1.3']),
+      MISC_BOILERPLATE: Object.freeze([
+        '10.1', '10.2', '10.3', '10.4', '10.7', '10.8', '10.9',
+        '10.10', '10.11', '10.12', '10.13', '10.14', '10.15',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.30', '4.16']),
+      // NO_SHOP covers BOTH 5.2 ("No Solicitation") and 5.3 ("Company
+      // Stockholder Meeting; Proxy Material"): on this filing the fiduciary-
+      // out / Change-in-Company-Recommendation mechanism (5.3(a)-(b)) is
+      // filed under the *meeting* section, not the no-solicit section --
+      // 5.2 cross-references "Section 5.3(b)" for its own carve-out. A
+      // mapping that used only 5.2 would silently drop every
+      // RECOMMENDATION_CHANGE_ACTION/TRIGGER fact on this deal.
+      NO_SHOP: Object.freeze(['5.2', '5.3']),
+      PROXY_MEETING: Object.freeze(['5.3']),
+      REPRESENTATIONS: Object.freeze([
+        '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26', '3.27', '3.28', '3.29', '3.30',
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['10.9']),
+      TAX_MATTERS: Object.freeze(['7.4']),
+      TERMINATION: Object.freeze(['9.1', '9.2']),
+      TERMINATION_FEE: Object.freeze(['10.5']),
+    }),
     section_expectations: Object.freeze({}),
     debug_related_node_pattern: null,
+  }),
+  metsera: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:07.000Z',
+    label: 'Pfizer Inc. / Metsera, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm',
+    raw_bytes_sha256: 'd0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac',
+    canonical_text_sha256: '4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3',
+    agreement_date: '2025-09-21',
+    pin_corroboration: 'docs/codex-program/notes/four-deal-sources-2026-08-08.md -- raw_bytes_sha256 above '
+      + 'matches that note\'s table exactly (583764 raw bytes). canonical_text_sha256 was computed through '
+      + 'this script\'s own loadAndVerifySource() code path via --dry-run, not reimplemented separately.',
+    // Every reference below was read against the actual sectionizer tree and
+    // body text for THIS filing -- none copied from another deal's numbering.
+    // Full per-family rationale, quotes and dry-run verification in
+    // docs/codex-program/notes/step-2g-metsera-onboarding.md. 23 of 25
+    // registered families mapped; FINANCING_COVENANTS and
+    // GUARANTY_FINANCING_PARTY are deliberately absent (correct zero -- Pfizer
+    // self-funds per Section 4.09 "Available Funds", no Debt Commitment
+    // Letter, no guarantor, no non-recourse/financing-source-protection
+    // clause anywhere in this filing).
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.03']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.01']),
+      CAPITALISATION: Object.freeze(['3.02', '4.02']),
+      CLOSING_CONDITIONS: Object.freeze(['7.01', '7.02', '7.03', '7.04']),
+      CONSIDERATION: Object.freeze(['2.01', '2.02', '2.03']),
+      DIVIDENDS: Object.freeze(['5.01']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.05']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.04']),
+      GENERAL_COVENANTS: Object.freeze([
+        '6.02', '6.03', '6.06', '6.07', '6.08', '6.09', '6.12', '6.13', '6.14', '6.15',
+      ]),
+      INTERIM_OPERATING: Object.freeze(['5.01']),
+      KEY_DEFINED_TERMS: Object.freeze(['9.03', '5.02', '8.02']),
+      MAE_DEFINITION: Object.freeze(['9.03']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.13']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.01', '1.02', '1.03', '1.04', '1.05', '1.06']),
+      MISC_BOILERPLATE: Object.freeze([
+        '9.01', '9.02', '9.04', '9.05', '9.06', '9.07', '9.08', '9.09', '9.10', '9.11', '8.04',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['9.07']),
+      NO_SHOP: Object.freeze(['5.02']),
+      PROXY_MEETING: Object.freeze(['6.01', '6.10', '6.11']),
+      REPRESENTATIONS: Object.freeze([
+        '3.01', '3.02', '3.03', '3.04', '3.05', '3.06', '3.07', '3.08', '3.09', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26',
+        '4.01', '4.02', '4.03', '4.04', '4.05', '4.06', '4.07', '4.08', '4.09',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.10']),
+      TAX_MATTERS: Object.freeze(['3.09']),
+      TERMINATION: Object.freeze(['8.01', '8.02', '8.05']),
+      TERMINATION_FEE: Object.freeze(['8.01', '8.02', '8.05']),
+    }),
+    section_expectations: Object.freeze({}),
+    debug_related_node_pattern: null,
+  }),
+  concho: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:08.000Z',
+    label: 'ConocoPhillips / Concho Resources Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1358071/000119312520271642/d32162dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm',
+    raw_bytes_sha256: '3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6',
+    canonical_text_sha256: '30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5',
+    agreement_date: '2020-10-18',
+    pin_corroboration: 'tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm (552,099 bytes) '
+      + 'sourced per docs/codex-program/notes/four-deal-sources-2026-08-08.md; canonical_text_sha256 above is '
+      + 'independently re-derived through this runner\'s own loadAndVerifySource() code path '
+      + '(buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), not copied '
+      + 'from anywhere else -- see docs/codex-program/notes/step-2g-concho-onboarding.md section 1.',
+    // Method and per-family evidence: docs/codex-program/notes/step-2g-concho-onboarding.md.
+    // All-stock, two-sided (merger-of-equals-shaped) oil & gas deal --
+    // Article IV (Company reps, 27 sections) and Article V (Parent reps, 19
+    // sections) both exist, No Solicitation and Proxy/Meeting covenants run
+    // both directions (6.3/6.4, and both sides hold their own stockholder
+    // vote via one Joint Proxy Statement/Form S-4), and there is a real,
+    // standalone Coordination-of-Quarterly-Dividends section (6.21) rather
+    // than a forbearance-covenant limb. GUARANTY_FINANCING_PARTY is
+    // deliberately absent from the table below: zero hits anywhere in this
+    // filing for "Guaranty", "Financing Sources", "Debt Financing" or
+    // "Non-Recourse"/"No Recourse" -- there is no debt financing and no
+    // sponsor guaranty on an all-stock strategic deal, so this is a correct
+    // absence, not a mapping gap. Definitions (including "Material Adverse
+    // Effect" itself, with its full carve-out proviso, and "Willful and
+    // Material Breach") live in "Annex A" at the end of the document, not in
+    // Article I -- Article I's 1.1/1.2 are a one-line pointer to Annex A
+    // plus a "terms defined elsewhere" locator table, not the definitions
+    // themselves.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.8']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['3.4']),
+      CAPITALISATION: Object.freeze(['4.2', '5.2']),
+      CLOSING_CONDITIONS: Object.freeze(['7.1', '7.2', '7.3', '7.4']),
+      CONSIDERATION: Object.freeze(['3.1', '3.2', '3.3']),
+      DIVIDENDS: Object.freeze(['6.21']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.10']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.9']),
+      FINANCING_COVENANTS: Object.freeze(['6.17']),
+      GENERAL_COVENANTS: Object.freeze(['6.7', '6.11', '6.12', '6.14', '6.15', '6.16', '6.19', '6.20']),
+      INTERIM_OPERATING: Object.freeze(['6.1', '6.2']),
+      KEY_DEFINED_TERMS: Object.freeze(['Annex-A']),
+      MAE_DEFINITION: Object.freeze(['Annex-A']),
+      MATERIAL_CONTRACTS: Object.freeze(['4.19']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7']),
+      MISC_BOILERPLATE: Object.freeze(['9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7', '9.8', '9.9', '9.10', '9.12', '9.13']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['4.27', '5.19']),
+      NO_SHOP: Object.freeze(['6.3', '6.4']),
+      PROXY_MEETING: Object.freeze(['6.5', '6.6']),
+      REPRESENTATIONS: Object.freeze([
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16', '4.17', '4.18', '4.19', '4.20',
+        '4.21', '4.22', '4.23', '4.24', '4.25', '4.26', '4.27',
+        '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10',
+        '5.11', '5.12', '5.13', '5.14', '5.15', '5.16', '5.17', '5.18', '5.19',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.11']),
+      TAX_MATTERS: Object.freeze(['4.12', '5.11', '6.18']),
+      TERMINATION: Object.freeze(['8.1', '8.2']),
+      TERMINATION_FEE: Object.freeze(['8.1', '8.3', 'Annex-A']),
+    }),
+    // Verified empirically against this exact filing (sectionizeAdmittedSource
+    // node dump, 441 nodes: ROOT 1, ARTICLE 10, SECTION 109, SUBSECTION 321):
+    // every SECTION reference below resolves to kind SECTION with the given
+    // heading, except "Annex-A" which is itself a SECTION node (heading
+    // "Certain Definitions") nested under the wrapper ARTICLE node "ARTICLE A".
+    section_expectations: Object.freeze({
+      '6.8': Object.freeze({ kind: 'SECTION', heading: /HSR and Other Approvals/i }),
+      '3.4': Object.freeze({ kind: 'SECTION', heading: /No Appraisal Rights/i }),
+      '4.2': Object.freeze({ kind: 'SECTION', heading: /Capital Structure/i }),
+      '5.2': Object.freeze({ kind: 'SECTION', heading: /Capital Structure/i }),
+      '7.1': Object.freeze({ kind: 'SECTION', heading: /Conditions to Each Party/i }),
+      '7.2': Object.freeze({ kind: 'SECTION', heading: /Additional Conditions to Obligations of Parent/i }),
+      '7.3': Object.freeze({ kind: 'SECTION', heading: /Additional Conditions to Obligations of the Company/i }),
+      '7.4': Object.freeze({ kind: 'SECTION', heading: /Frustration of Closing Conditions/i }),
+      '3.1': Object.freeze({ kind: 'SECTION', heading: /Effect of the Merger on Capital Stock/i }),
+      '3.2': Object.freeze({ kind: 'SECTION', heading: /Treatment of Equity Compensation Awards/i }),
+      '3.3': Object.freeze({ kind: 'SECTION', heading: /Payment for Securities/i }),
+      '6.21': Object.freeze({ kind: 'SECTION', heading: /Coordination of Quarterly Dividends/i }),
+      '6.10': Object.freeze({ kind: 'SECTION', heading: /Indemnification.*Officers.*Insurance/i }),
+      '6.9': Object.freeze({ kind: 'SECTION', heading: /Employee Matters/i }),
+      '6.17': Object.freeze({ kind: 'SECTION', heading: /Certain Indebtedness/i }),
+      '6.7': Object.freeze({ kind: 'SECTION', heading: /Access to Information/i }),
+      '6.11': Object.freeze({ kind: 'SECTION', heading: /Transaction Litigation/i }),
+      '6.12': Object.freeze({ kind: 'SECTION', heading: /Public Announcements/i }),
+      '6.14': Object.freeze({ kind: 'SECTION', heading: /Reasonable Best Efforts; Notification/i }),
+      '6.15': Object.freeze({ kind: 'SECTION', heading: /Section 16 Matters/i }),
+      '6.16': Object.freeze({ kind: 'SECTION', heading: /Stock Exchange Listing and Delistings/i }),
+      '6.19': Object.freeze({ kind: 'SECTION', heading: /Takeover Laws/i }),
+      '6.20': Object.freeze({ kind: 'SECTION', heading: /Obligations of Merger Sub/i }),
+      '6.1': Object.freeze({ kind: 'SECTION', heading: /Conduct of Company Business Pending the Merger/i }),
+      '6.2': Object.freeze({ kind: 'SECTION', heading: /Conduct of Parent Business Pending the Merger/i }),
+      'Annex-A': Object.freeze({ kind: 'SECTION', heading: /Certain Definitions/i }),
+      '4.19': Object.freeze({ kind: 'SECTION', heading: /Material Contracts/i }),
+      '2.1': Object.freeze({ kind: 'SECTION', heading: /The Merger/i }),
+      '2.2': Object.freeze({ kind: 'SECTION', heading: /Closing/i }),
+      '2.3': Object.freeze({ kind: 'SECTION', heading: /Effect of the Merger/i }),
+      '2.4': Object.freeze({ kind: 'SECTION', heading: /Certificate of Incorporation of the Surviving Corporation/i }),
+      '2.5': Object.freeze({ kind: 'SECTION', heading: /Bylaws of the Surviving Corporation/i }),
+      '2.6': Object.freeze({ kind: 'SECTION', heading: /Directors and Officers of the Surviving Corporation/i }),
+      '2.7': Object.freeze({ kind: 'SECTION', heading: /Directors of Parent/i }),
+      '9.1': Object.freeze({ kind: 'SECTION', heading: /Schedule Definitions/i }),
+      '9.2': Object.freeze({ kind: 'SECTION', heading: /Survival/i }),
+      '9.3': Object.freeze({ kind: 'SECTION', heading: /Notices/i }),
+      '9.4': Object.freeze({ kind: 'SECTION', heading: /Rules of Construction/i }),
+      '9.5': Object.freeze({ kind: 'SECTION', heading: /Counterparts/i }),
+      '9.6': Object.freeze({ kind: 'SECTION', heading: /Entire Agreement/i }),
+      '9.7': Object.freeze({ kind: 'SECTION', heading: /Governing Law/i }),
+      '9.8': Object.freeze({ kind: 'SECTION', heading: /Severability/i }),
+      '9.9': Object.freeze({ kind: 'SECTION', heading: /Assignment/i }),
+      '9.10': Object.freeze({ kind: 'SECTION', heading: /Affiliate Liability/i }),
+      '9.12': Object.freeze({ kind: 'SECTION', heading: /Amendment/i }),
+      '9.13': Object.freeze({ kind: 'SECTION', heading: /Extension; Waiver/i }),
+      '4.27': Object.freeze({ kind: 'SECTION', heading: /No Additional Representations/i }),
+      '5.19': Object.freeze({ kind: 'SECTION', heading: /No Additional Representations/i }),
+      '6.3': Object.freeze({ kind: 'SECTION', heading: /No Solicitation by the Company/i }),
+      '6.4': Object.freeze({ kind: 'SECTION', heading: /No Solicitation by Parent/i }),
+      '6.5': Object.freeze({ kind: 'SECTION', heading: /Preparation of Joint Proxy Statement/i }),
+      '6.6': Object.freeze({ kind: 'SECTION', heading: /Stockholders Meetings/i }),
+      '9.11': Object.freeze({ kind: 'SECTION', heading: /Specific Performance/i }),
+      '4.12': Object.freeze({ kind: 'SECTION', heading: /Taxes/i }),
+      '5.11': Object.freeze({ kind: 'SECTION', heading: /Taxes/i }),
+      '6.18': Object.freeze({ kind: 'SECTION', heading: /Tax Matters/i }),
+      '8.1': Object.freeze({ kind: 'SECTION', heading: /Termination/i }),
+      '8.2': Object.freeze({ kind: 'SECTION', heading: /Notice of Termination; Effect of Termination/i }),
+      '8.3': Object.freeze({ kind: 'SECTION', heading: /Expenses and Other Payments/i }),
+    }),
+    // Debugging aid, same purpose as modiv's: every node in Articles VI, VIII
+    // or the Annex-A definitions run, for a reviewer to see neighbours
+    // without re-running the sectionizer.
+    debug_related_node_pattern: /^6\.[0-9]+|^8\.[0-9]+|^Annex-A/,
+  }),
+  redhat: Object.freeze({
+    // The mtime of the committed fixture, which IS when this session
+    // fetched it from EDGAR. Not a wall clock read at run time.
+    retrieved_at: '2026-08-08T03:43:09.000Z',
+    label: 'International Business Machines Corporation / Red Hat, Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1087423/000119312518310577/d640856dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/redhat-first-live-run/redhat-raw-fetched.htm',
+    raw_bytes_sha256: 'ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e',
+    canonical_text_sha256: 'dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e',
+    agreement_date: '2018-10-28',
+    pin_corroboration: 'docs/codex-program/notes/four-deal-sources-2026-08-08.md (raw_bytes_sha256 and '
+      + 'raw_bytes_length 464782 both match this pin exactly); canonical_text_sha256 above was independently '
+      + 're-derived through this script\'s own loadAndVerifySource path (loadAndVerifySource -> '
+      + 'buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText) via a '
+      + '--dry-run probe, read from its own CANONICAL_TEXT_HASH_MISMATCH report, and pinned from that value '
+      + 'verbatim -- never reimplemented or hand-computed.',
+    // Section mapping done by driving the deterministic sectionizer over
+    // this deal's own canonical text and reading headings + body text --
+    // never copied from another deal's section numbers (Modiv's no-shop is
+    // 7.x/8.12, TopBuild's and Skechers' section numbers are their own;
+    // Red Hat's are these, verified against ITS OWN preamble/body).
+    // See docs/codex-program/notes/step-2g-redhat-onboarding.md for the
+    // full family-by-family evidence table (heading + quoted phrase).
+    //
+    // Two known sectionizer artefacts on THIS filing, both worked around
+    // the same way Modiv's 8.12/"(z)" collision was (pin the whole node
+    // rather than a guessed sub-reference):
+    //  - MATERIAL_CONTRACTS: the agreement's own "(h) Contracts." heading
+    //    opens with a single roman-numeral sub-item "(i)" introducing
+    //    lettered criteria (A)-(M). The sectionizer's letter-depth heuristic
+    //    reads that "(i)" as 3.01's NEXT top-level letter sibling rather
+    //    than 3.01(h)'s own child, so what is printed as "Section 3.01(h)(i)"
+    //    resolves under this tree as "3.01(i)" (and "3.01(i)(A)".."3.01(i)(M)"
+    //    for the printed "(h)(i)(A)".."(h)(i)(M)"). Both "3.01(h)" (the
+    //    heading) and "3.01(i)" (the mislabeled body) are pinned together.
+    //  - TERMINATION_FEE: Section 5.06(b) states four of its five triggers
+    //    as BARE cross-references into Section 7.01 ("pursuant to Section
+    //    7.01(c)", "pursuant to Section 7.01(f)", etc.) with no operative
+    //    description of the ground itself at 5.06 -- the same
+    //    TRIGGER_UNCORROBORATED shape as Modiv's original narrow run (see
+    //    this file's own "ORIGINAL MODIV RUN" note above). Section 7.01 is
+    //    pinned alongside 5.06 so the actual grounds are in governed scope;
+    //    unlike Modiv, no separate Definitions section is needed because
+    //    the fee amount ($975,000,000, defined inline as "the Termination
+    //    Fee") is stated directly in 5.06(b) itself.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['5.03']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.01(d)']),
+      CAPITALISATION: Object.freeze(['3.01(c)']),
+      CLOSING_CONDITIONS: Object.freeze(['6.01', '6.02', '6.03', '6.04']),
+      CONSIDERATION: Object.freeze(['2.01', '2.02', '5.04']),
+      DNO_INDEMNIFICATION: Object.freeze(['5.05']),
+      EMPLOYEE_MATTERS: Object.freeze(['5.11']),
+      // Confidently mapped to the follow-on covenant codes this deal's own
+      // Article V headings name unambiguously (COV-ACCESS, COV-PUBLICITY,
+      // COV-MERGESUB, COV-DELIST/COV-LIST, COV-DEBT -- see
+      // p0-product-surface-routing.js's GENERAL_COVENANT_FOLLOW_ON_OWNERS).
+      // GENERAL_COVENANTS is a residual router over many possible codes
+      // (16b, access, consent-delivery, CVR, existing-debt, delisting, FDA
+      // comms, further-assurances, indemnification, litigation-notify,
+      // merger-sub, notification, payment-agent, publicity, resignation,
+      // SEC-reporting, takeover-law) and this list is NOT a claim that every
+      // possible GENERAL_COVENANT code has a home here -- only that these
+      // five sections are confidently, not guessed, identified. Section
+      // 5.12 ("Restructuring") was read and left out: its content (a
+      // pre-closing tax-restructuring indemnity) did not confidently match
+      // any one follow-on code.
+      GENERAL_COVENANTS: Object.freeze(['5.02', '5.07', '5.08', '5.09', '5.10']),
+      INTERIM_OPERATING: Object.freeze(['4.01']),
+      KEY_DEFINED_TERMS: Object.freeze(['8.03']),
+      MAE_DEFINITION: Object.freeze(['8.03(l)']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.01(h)', '3.01(i)']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.01', '1.02', '1.03', '1.04', '1.05', '1.06', '1.07']),
+      // Article VIII's boilerplate cluster, excluding 8.03 (owned by
+      // KEY_DEFINED_TERMS) and 8.11 (owned by SPECIFIC_PERFORMANCE_REMEDIES).
+      MISC_BOILERPLATE: Object.freeze(['8.01', '8.02', '8.04', '8.05', '8.06', '8.07', '8.08', '8.09', '8.10', '8.12']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.01(v)', '3.02(f)', '8.03(p)']),
+      NO_SHOP: Object.freeze(['4.02']),
+      PROXY_MEETING: Object.freeze(['5.01']),
+      REPRESENTATIONS: Object.freeze(['3.01', '3.02']),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['8.11']),
+      TAX_MATTERS: Object.freeze(['3.01(m)']),
+      TERMINATION: Object.freeze(['7.01', '7.02']),
+      TERMINATION_FEE: Object.freeze(['5.06', '7.01']),
+      // DIVIDENDS, FINANCING_COVENANTS, GUARANTY_FINANCING_PARTY: no entry.
+      // All three were searched for in the canonical text and found absent
+      // as their own family's content on this filing (see the onboarding
+      // note for what WAS found and why it does not qualify) -- correct
+      // zeros for a self-funded, non-financing-contingent, no-guarantor
+      // all-cash acquisition, not mapping gaps.
+    }),
+    section_expectations: Object.freeze({
+      '5.03': Object.freeze({ kind: 'SECTION', heading: /Reasonable Best Efforts/i }),
+      '3.01(c)': Object.freeze({ kind: 'SUBSECTION' }),
+      '2.01': Object.freeze({ kind: 'SECTION', heading: /Conversion of Capital Stock/i }),
+      '2.02': Object.freeze({ kind: 'SECTION', heading: /Exchange of Certificates/i }),
+      '5.04': Object.freeze({ kind: 'SECTION', heading: /Equity Awards/i }),
+      '5.05': Object.freeze({ kind: 'SECTION', heading: /Indemnification, Exculpation and Insurance/i }),
+      '5.11': Object.freeze({ kind: 'SECTION', heading: /Employee Matters/i }),
+      '4.01': Object.freeze({ kind: 'SECTION', heading: /Conduct of Business/i }),
+      '8.03': Object.freeze({ kind: 'SECTION', heading: /Definitions/i }),
+      '4.02': Object.freeze({ kind: 'SECTION', heading: /No Solicitation/i }),
+      '5.01': Object.freeze({ kind: 'SECTION', heading: /Preparation of the Proxy Statement/i }),
+      '3.01': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of the Company/i }),
+      '3.02': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of Parent/i }),
+      '8.11': Object.freeze({ kind: 'SECTION', heading: /Enforcement/i }),
+      '7.01': Object.freeze({ kind: 'SECTION', heading: /Termination/i }),
+      '7.02': Object.freeze({ kind: 'SECTION', heading: /Effect of Termination/i }),
+      '5.06': Object.freeze({ kind: 'SECTION', heading: /Fees and Expenses/i }),
+      '1.01': Object.freeze({ kind: 'SECTION', heading: /The Merger/i }),
+      '1.02': Object.freeze({ kind: 'SECTION', heading: /Closing/i }),
+      '6.01': Object.freeze({ kind: 'SECTION' }),
+      '6.02': Object.freeze({ kind: 'SECTION' }),
+      '6.03': Object.freeze({ kind: 'SECTION' }),
+      '6.04': Object.freeze({ kind: 'SECTION' }),
+    }),
+    debug_related_node_pattern: /^3\.01|^8\.03/,
   }),
 });
 
@@ -285,6 +1087,7 @@ function parseArgs(argv) {
     timeoutMs: null,
     dryRun: false,
     outDir: null,
+    v1SnapshotPath: null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -306,10 +1109,27 @@ function parseArgs(argv) {
         break;
       }
       case '--dry-run': out.dryRun = true; break;
+      case '--record': out.recordPath = argv[++i]; break;
+      case '--replay': out.replayPath = argv[++i]; break;
+      case '--replay-from-run': out.replayFromRunDir = argv[++i]; break;
+      // An operator assertion of the producer identity, for hand-assembled
+      // fixture sets that carry no receipt. Checked against the record, never
+      // trusted over it.
+      case '--replay-model-id': out.replayModelId = argv[++i]; break;
+      case '--v1-snapshot': out.v1SnapshotPath = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
+  if (out.replayModelId && !out.replayPath && !out.replayFromRunDir) {
+    throw new Error('--replay-model-id states which model produced a REPLAYED run; it means nothing on a live run');
+  }
   if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
+  if ([out.recordPath, out.replayPath, out.replayFromRunDir].filter(Boolean).length > 1) {
+    throw new Error('MUTUALLY_EXCLUSIVE: --record captures live responses, --replay consumes them; pick one');
+  }
+  if (out.dryRun && (out.recordPath || out.replayPath || out.replayFromRunDir)) {
+    throw new Error('--dry-run never reaches a model, so it cannot --record or --replay');
+  }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   return out;
 }
@@ -373,8 +1193,14 @@ function resolveRunConfig(args) {
     agreementDate,
     model: args.model,
     followCitations: args.followCitations,
+    timeoutMs: args.timeoutMs,
     dryRun: args.dryRun,
     outDir: args.outDir,
+    recordPath: args.recordPath || null,
+    replayPath: args.replayPath || null,
+    replayFromRunDir: args.replayFromRunDir || null,
+    replayModelId: args.replayModelId || null,
+    v1SnapshotPath: args.v1SnapshotPath || null,
   });
 }
 
@@ -442,15 +1268,38 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
     );
   }
 
-  const retrievalPolicyDigest = sha256Hex(
-    `General extraction runner: reuse of the already-admitted, already-committed raw HTML for deal "${deal}"; no new network fetch performed.`,
-  );
+  // Imported, not restated. The digest is of a sentence, so one character's
+  // drift between this script and the rebuilder changes the capture receipt
+  // and every identity below it -- and the failure would surface only as an
+  // unexplained reference mismatch at import time.
+  const retrievalPolicyDigest = retrievalPolicyDigestFor(deal);
+  // PINNED, not wall-clock. This script does not fetch: it reuses raw HTML
+  // that was fetched once and committed, so `new Date()` here recorded the
+  // time of a retrieval that never happened, and recorded it nowhere.
+  //
+  // That cost more than tidiness. `retrieved_at` feeds
+  // `intake_capture_receipt_id`, which feeds `verification_manifest_id`,
+  // which feeds `immutable_source_document_id` -- the identity the canonical
+  // writer rebuilds and compares before it will accept a write. A run that
+  // does not record its own timestamp cannot rebuild its own source chain,
+  // and every run made before 2026-08-07 is in that position.
+  //
+  // The pinned value is the PINNING FETCH's timestamp, which is the one
+  // moment this document actually was retrieved.
+  const retrievedAt = dealPin.retrieved_at;
+  if (!retrievedAt) {
+    throw new Error(
+      `UNPINNED_RETRIEVAL_TIMESTAMP: deal "${deal}" has no pinned retrieved_at. Add the pinning fetch's `
+      + 'timestamp to DEAL_PINS rather than substituting a wall-clock value: an unrecorded timestamp '
+      + 'makes the run\'s admitted-source chain unrebuildable and the run unimportable.',
+    );
+  }
   const capture = buildSecEdgarIntakeCapture({
     retrieval_url: dealPin.retrieval_url,
     final_url: dealPin.retrieval_url,
     status_code: 200,
-    content_type: 'text/html; charset=UTF-8',
-    retrieved_at: new Date().toISOString(),
+    content_type: CAPTURE_CONTENT_TYPE,
+    retrieved_at: retrievedAt,
     retrieval_policy_digest: retrievalPolicyDigest,
     redirect_count: 0,
     response_bytes: rawBytes,
@@ -469,7 +1318,20 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
   }
 
   return {
-    rawHtmlPath: absoluteRawHtmlPath, rawBytes, rawBytesSha256, capture, conversion, verification,
+    rawHtmlPath: absoluteRawHtmlPath,
+    rawBytes,
+    rawBytesSha256,
+    capture,
+    conversion,
+    verification,
+    // Every input the capture was built from, so the run can record them and
+    // rebuild its own chain later without re-deriving anything by guess.
+    captureInputs: {
+      retrieval_url: dealPin.retrieval_url,
+      content_type: CAPTURE_CONTENT_TYPE,
+      retrieved_at: retrievedAt,
+      retrieval_policy_digest: retrievalPolicyDigest,
+    },
   };
 }
 
@@ -600,9 +1462,106 @@ function buildDryRunReport({
   };
 }
 
+// Records what code produced a run, so a later run can answer "did anything
+// this depends on change?" without re-running. PLAN.md Stage 2's
+// change-triggered re-run policy needs this: the manifest previously carried
+// prompt_version, contract_bundle_version and section_references but no
+// commit and no resolved model, so neither "did the code change" nor "did the
+// model change" was answerable from a receipt.
+function runProvenance() {
+  const read = (args) => {
+    try {
+      const out = spawnSync('git', args, { encoding: 'utf8' });
+      return out.status === 0 ? String(out.stdout).trim() : null;
+    } catch {
+      return null;
+    }
+  };
+  const commit = read(['rev-parse', 'HEAD']);
+  const dirty = read(['status', '--porcelain']);
+  return {
+    // Null rather than a guess when git is unavailable. A wrong commit is
+    // worse than a missing one: it would make a changed run look unchanged.
+    commit: commit || null,
+    // A dirty tree means the commit does not describe what actually ran, so
+    // change-detection against it is unsound. Say so rather than imply the
+    // commit is sufficient.
+    working_tree_clean: dirty === null ? null : dirty.length === 0,
+  };
+}
+
+// The output ceiling the CLI is asked for, and the figure the provider's
+// overflow guard measures against. They must be the same number: the guard's
+// question is "did we get back everything we asked for, or was generation cut
+// at the limit", and a guard set to a different limit answers a different
+// question.
+//
+// 64,000 is Claude Code's own per-model default and was the ceiling four
+// TopBuild/Modiv calls hit (71,907 / 71,430 / 65,210 / 74,080 attempted),
+// producing tail fragments of one answer that the parser correctly refused.
+// Raising it was ruled on 2026-08-08 and then MEASURED, because a static read
+// of the CLI's minified per-model table says `upperLimit` is 64,000 on every
+// branch and that read predicted this would not work. It does: TopBuild
+// NO_SHOP §4.3 returned **69,576 output tokens** under this setting and
+// extracted 67 publishable claims, a family that had never extracted on that
+// document at all. The table is not the behaviour; the run is.
+const CLI_MAX_OUTPUT_TOKENS = 128000;
+
+// ONE function derives the ceiling, for both the child environment and the
+// guard that measures against it. Two derivations would be two sources of
+// truth for one number, which is the shape of the defect this whole area
+// exists to close.
+//
+// A malformed override fails the run at startup rather than being forwarded.
+// The alternative -- pass the string to the CLI and let the guard reject it
+// numerically -- silently splits the two apart: the CLI would generate under
+// one ceiling while the guard measured another, and the guard would be wrong
+// exactly when it mattered.
+// The call timeout is DERIVED from the output ceiling, not fixed alongside it.
+//
+// Fable's latency ruling measured duration = 4.3s + 8.23ms per output token,
+// R^2 = 0.993. So a call permitted to emit N tokens can legitimately take
+// 4.3s + 8.23N milliseconds, and a timeout shorter than that does not protect
+// against a hung call -- it guarantees failure on the largest legitimate ones.
+//
+// This was not hypothetical for ten minutes. Raising the ceiling from 64,000
+// to 128,000 doubled the longest legitimate call while the timeout stayed at
+// its 600,000ms default, and Skechers KEY_DEFINED_TERMS -- 1.1 plus 1.2, the
+// definitions article -- died at exactly 600,000ms on the first attempt after
+// the change. Two numbers that must move together, kept in one place so they
+// cannot drift, the same fix applied to the ceiling itself above.
+const MS_PER_OUTPUT_TOKEN = 8.23;
+const CALL_FIXED_OVERHEAD_MS = 4300;
+const CALL_TIMEOUT_SAFETY = 1.25;
+
+function derivedCallTimeoutMs(maxOutputTokens) {
+  return Math.ceil(
+    (CALL_FIXED_OVERHEAD_MS + (MS_PER_OUTPUT_TOKEN * maxOutputTokens)) * CALL_TIMEOUT_SAFETY,
+  );
+}
+
+function effectiveMaxOutputTokens() {
+  const raw = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS;
+  if (raw === undefined || raw === '') return CLI_MAX_OUTPUT_TOKENS;
+  const override = Number(raw);
+  if (!Number.isInteger(override) || override <= 0) {
+    throw new Error(
+      `INVALID_OUTPUT_CEILING: CLAUDE_CODE_MAX_OUTPUT_TOKENS is "${raw}", which is not a positive `
+      + 'integer. Refusing rather than forwarding it: the CLI and the overflow guard must generate '
+      + 'and measure against the SAME number, and a value only one of them understands puts them '
+      + 'quietly out of step.',
+    );
+  }
+  return override;
+}
+
 function childEnv() {
   const env = { ...process.env };
   delete env.ANTHROPIC_API_KEY; // force subscription auth, not metered billing
+  // Set from the same resolver the guard uses, so the ceiling asked for and
+  // the ceiling measured cannot drift. An operator override still works --
+  // that is how the 64,000 figure was falsified in the first place.
+  env.CLAUDE_CODE_MAX_OUTPUT_TOKENS = String(effectiveMaxOutputTokens());
   return env;
 }
 
@@ -659,10 +1618,36 @@ function makeMeasuredCliClient({
     messages: {
       async create(params) {
         const callIndex = telemetry.calls.length;
-        const sectionReference = orderedSectionRefs[callIndex] || `unknown-call-${callIndex}`;
+        // Attribution is BY CALL ORDER against the pinned section list, and
+        // that is only sound while the run issues exactly one call per pinned
+        // section. --follow-citations dispatches additional calls beyond that
+        // list, so the index overruns and every extra call used to be labelled
+        // `unknown-call-N`. The committed
+        // modiv-termination-fee-citation-following-20260806 run has 11 of its
+        // 14 calls labelled that way. They are not unknown: they are citation
+        // follow-ups, a known and expected category, and calling them unknown
+        // both loses that information and implies a defect where there is none.
+        //
+        // The section reference is NOT recoverable from the prompt at this
+        // seam -- checked -- so this records the attribution basis alongside
+        // the label rather than pretending to a precision it does not have.
+        // A consumer that needs per-call section identity for follow-up calls
+        // must get it from the citation-following module, not from here.
+        const withinPinnedList = callIndex < orderedSectionRefs.length;
+        const sectionReference = withinPinnedList
+          ? orderedSectionRefs[callIndex]
+          : `citation-followup-${callIndex - orderedSectionRefs.length + 1}`;
+        const attributionBasis = withinPinnedList
+          ? 'ORDERED_PINNED_SECTION'
+          : 'CITATION_FOLLOWUP_UNATTRIBUTED';
         const prompt = flattenMessages(params);
         const startedAt = Date.now();
-        const rawCliOutput = await runClaudeCli(prompt, { model, ...(config.timeoutMs ? { timeoutMs: config.timeoutMs } : {}) });
+        // An explicit --call-timeout-ms wins; otherwise the timeout follows the
+        // ceiling, so raising one can never silently outrun the other.
+        const rawCliOutput = await runClaudeCli(prompt, {
+          model,
+          timeoutMs: config.timeoutMs || derivedCallTimeoutMs(effectiveMaxOutputTokens()),
+        });
         const wallClockMs = Date.now() - startedAt;
         const parsed = JSON.parse(rawCliOutput);
         if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
@@ -676,6 +1661,7 @@ function makeMeasuredCliClient({
           usage: parsed.usage,
           model_usage: parsed.modelUsage,
           served_model: parsed.model || null,
+          attribution_basis: attributionBasis,
           session_id: parsed.session_id,
         });
         const rawResponseText = parsed.result || '';
@@ -692,13 +1678,24 @@ function makeMeasuredCliClient({
             + '```json fence, byte-for-byte as returned.',
           raw_response_text: rawResponseText,
         }, null, 2));
-        return { content: [{ type: 'text', text: rawResponseText }] };
+        // `usage` travels ON THE RESPONSE, not only into telemetry. The
+        // provider's overflow guard reads `response.provider_usage ?? usage`,
+        // and this client used to return content alone -- so the guard read
+        // `null` and could not fire on a single real run. The 69,576-token
+        // NO_SHOP call that proved the ceiling raise works is exactly the call
+        // it should have caught if the ceiling had still been 64,000, and it
+        // said nothing. A guard whose input never arrives is not a guard.
+        return { content: [{ type: 'text', text: rawResponseText }], usage: parsed.usage };
       },
     },
   };
 }
 
 async function main() {
+  // Before anything else, including --dry-run. A malformed ceiling is a
+  // configuration error, and finding it at the first model call -- minutes in,
+  // on a path a dry run never reaches -- is finding it too late.
+  effectiveMaxOutputTokens();
   const args = parseArgs(process.argv.slice(2));
   const config = resolveRunConfig(args);
   const promptInfo = resolvePromptVersionInfo(config.family);
@@ -727,11 +1724,41 @@ async function main() {
   process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
   process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
 
+  // Persist the compressed source map before writing the reference that names
+  // it, so a run directory never points at a payload that is not there.
+  //
+  // WHY AT ALL. IMMUTABLE_SOURCE_DOCUMENT/V2 includes a digest of DEFLATE
+  // OUTPUT, and DEFLATE output differs between zlib builds for identical
+  // input at identical settings. Without the payload, a run's identity is
+  // reproducible only on the machine that produced it -- including only on
+  // this machine until the next Node upgrade, since zlib ships inside Node.
+  // A rebuild adopts these bytes only after proving they inflate to the map
+  // it independently derived from the document.
+  //
+  // Content-addressed by canonical_text_id, so every run over a given
+  // document shares one file rather than committing a copy each.
+  //
+  // NOT ON A DRY RUN. The store is content-addressed under the repository, so
+  // a dry run -- which makes no model call and produces nothing importable --
+  // was writing a 1.4 MB file into committed evidence every time the test
+  // suite exercised the runner's argument parsing. A dry run needs no
+  // payload, because it has no write-set to import.
+  let sourceMapPayloadPath = null;
+  if (outDir && !config.dryRun) {
+    sourceMapPayloadPath = sourceMapPayloadPathFor(verified.conversion.canonical_text_id);
+    const absolutePayloadPath = resolve(sourceMapPayloadPath);
+    if (!existsSync(absolutePayloadPath)) {
+      mkdirSync(dirname(absolutePayloadPath), { recursive: true });
+      writeFileSync(absolutePayloadPath, Buffer.from(verified.conversion.source_map_payload_base64, 'base64'));
+      process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
+    }
+  }
+
   if (outDir) {
     writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
       schema_version: 'GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1',
       deal: config.deal,
-      reused_committed_raw_html: verified.rawHtmlPath.includes(process.cwd()) ? verified.rawHtmlPath.slice(process.cwd().length + 1) : verified.rawHtmlPath,
+      reused_committed_raw_html: repoRelative(verified.rawHtmlPath),
       retrieval_url: config.dealPin.retrieval_url,
       raw_bytes_length: verified.rawBytes.length,
       raw_bytes_sha256: verified.rawBytesSha256,
@@ -741,6 +1768,29 @@ async function main() {
       document_hash: documentHash,
       pin_corroboration: config.dealPin.pin_corroboration || null,
       note: 'REUSE, not a pinning fetch. No network call was made by this script.',
+      // Everything needed to rebuild this run's admitted-source chain, which
+      // the canonical writer requires before it will accept a write: it
+      // rebuilds the chain from these primitives and refuses unless the
+      // result matches the write-set's own source_references.
+      //
+      // Runs before 2026-08-07 recorded none of this and used a wall-clock
+      // retrieved_at, so they cannot rebuild. See
+      // lib/canonical-v2/admitted-source-chain-rebuild.js.
+      admitted_source_capture_inputs: {
+        schema_version: 'ADMITTED_SOURCE_CAPTURE_INPUTS/V1',
+        raw_html_path: repoRelative(verified.rawHtmlPath),
+        raw_bytes_sha256: verified.rawBytesSha256,
+        retrieval_url: verified.captureInputs.retrieval_url,
+        content_type: verified.captureInputs.content_type,
+        retrieved_at: verified.captureInputs.retrieved_at,
+        retrieval_policy_digest: verified.captureInputs.retrieval_policy_digest,
+        // The identity the rebuild must land on. Recorded so a divergence
+        // can be seen here rather than only as a writer refusal.
+        immutable_source_document_id: admittedSourceContext.immutable_source_document_id,
+        source_map_payload_path: sourceMapPayloadPath,
+        source_map_compressed_sha256: verified.conversion.source_map_compressed_sha256,
+        source_map_digest: verified.conversion.source_map_digest,
+      },
     }, null, 2));
   }
 
@@ -788,7 +1838,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV38();
+  const contractBundle = compileFixtureContractV41();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -797,11 +1847,75 @@ async function main() {
     family_id: config.family,
   }));
 
+  // Record/replay (PLAN.md Stage 2 prerequisite). The ladder's gate compares
+  // resolved counts across rounds; without replay it cannot tell a regression
+  // from a fresh sample of a nondeterministic model.
+  let liveClient = makeMeasuredCliClient({
+    model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
+  });
+  let replayClientRef = null;
+  // The producer model identity a replay must present: the LIVE model that
+  // produced the recorded text, never the replay mechanism and never a path.
+  // Resolved before the client is built so an unidentifiable replay fails
+  // before it does any work.
+  let replayProviderModelId = null;
+  const liveProviderModelId = `claude-sonnet-5-via-claude-code-cli(${config.model})`;
+  if (config.replayFromRunDir) {
+    // Replay a HISTORICAL run from the per-section fixtures it already wrote.
+    // Weaker keying than --replay (ordered, not request-hashed) because those
+    // fixtures carry no request messages -- see the module header.
+    const fixtures = readdirSync(resolve(config.replayFromRunDir))
+      .filter((name) => /^native-producer-recorded-response-.+\.json$/.test(name))
+      .map((name) => JSON.parse(readFileSync(resolve(config.replayFromRunDir, name), 'utf8')));
+    replayProviderModelId = resolveOriginalProviderModelId({
+      runReceipt: readRunReceiptIfPresent(config.replayFromRunDir),
+      declared: config.replayModelId,
+      source: `the run in ${config.replayFromRunDir}`,
+    });
+    const recording = buildRecordingFromSectionFixtures({
+      fixtures,
+      orderedSectionRefs: config.sectionRefs,
+      model: `legacy-fixtures(${config.replayFromRunDir})`,
+      providerModelId: replayProviderModelId,
+    });
+    replayClientRef = createOrderedReplayClient({ recording });
+    replayClientRef.recording = recording;
+    liveClient = replayClientRef;
+  } else if (config.replayPath) {
+    const recording = JSON.parse(readFileSync(resolve(config.replayPath), 'utf8'));
+    // A V1 recording carries only the CLI alias, so fall back to the receipt
+    // of the run the recording sits beside -- the same run that produced it.
+    replayProviderModelId = resolveOriginalProviderModelId({
+      recording,
+      runReceipt: readRunReceiptIfPresent(dirname(resolve(config.replayPath))),
+      declared: config.replayModelId,
+      source: `the recording at ${config.replayPath}`,
+    });
+    replayClientRef = createReplayClient({ recording });
+    replayClientRef.recording = recording;
+    liveClient = replayClientRef;
+  } else if (config.recordPath) {
+    liveClient = createRecordingClient({
+      client: liveClient,
+      model: config.model,
+      providerModelId: liveProviderModelId,
+      // Written after every call rather than at the end, so a run that dies
+      // partway still leaves a usable recording of what it did ask.
+      sink: (recording) => {
+        writeFileSync(resolve(config.recordPath), `${JSON.stringify(recording, null, 2)}\n`);
+      },
+    });
+  }
+
   const providerOptions = {
-    model: `claude-sonnet-5-via-claude-code-cli(${config.model})`,
-    client: makeMeasuredCliClient({
-      model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
-    }),
+    // Replay reproduces the live run, so it reports the live run's model.
+    // This used to be `replay(<path>)`, which made producer_receipt_id -- and
+    // therefore closure_id -- a function of where the files happened to sit:
+    // the same Modiv evidence replayed from evidence/ and from a scratchpad
+    // copy minted two different identities for identical claims.
+    model: replayProviderModelId || liveProviderModelId,
+    maxOutputTokens: effectiveMaxOutputTokens(),
+    client: liveClient,
     maxRetries: 0,
   };
   const provider = createAnthropicProvider(providerOptions);
@@ -835,16 +1949,99 @@ async function main() {
   const extractionWallClockMs = Date.now() - extractionStart;
   process.stderr.write(`${logPrefix} extraction complete in ${extractionWallClockMs}ms, ${telemetry.calls.length} model call(s)\n`);
 
+  // A replay that used fewer recorded calls than were captured means the run
+  // stopped asking something. That is a behaviour change and a finding, not
+  // a pass -- report it loudly rather than letting a green run hide it.
+  let replayReport = null;
+  if (replayClientRef) {
+    replayReport = replayCoverage({
+      recording: replayClientRef.recording,
+      served: replayClientRef.served,
+    });
+    process.stderr.write(
+      `${logPrefix} REPLAY: ${replayReport.replayed_calls}/${replayReport.recorded_calls} recorded call(s) used`
+      + `${replayReport.complete ? '' : `, ${replayReport.unused_recorded_requests} recorded request(s) never asked`}\n`,
+    );
+    if (!replayReport.complete) {
+      process.stderr.write(
+        `${logPrefix} REPLAY INCOMPLETE: this run issued a different set of calls than the recording. `
+        + 'Treat any comparison against the recorded run as invalid until that is explained.\n',
+      );
+    }
+  }
+
   writeFileSync(resolve(outDir, 'run-receipt.json'), JSON.stringify(receipt, null, 2));
   writeFileSync(resolve(outDir, 'call-telemetry.json'), JSON.stringify({ run_wall_clock_ms: extractionWallClockMs, calls: telemetry.calls }, null, 2));
 
   // ─── Step 4: resolveCandidates -> buildNativeWriteSet (WITH resolution context) -> validate ───
+
+  // PLAIN PASS (no M3 conditions wired yet): needed as the input BOTH M3
+  // conditions are built from -- the lexical net keys its per-section
+  // candidates off `plainResolution.resolved`, and the comparator's
+  // `attempted_section_scope` is derived the same way. This pass is never
+  // written to disk on its own; `resolution.json` below is always the fully
+  // wired result.
+  const plainResolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: contractBundle,
+    admitted_source_context: admittedSourceContext,
+    agreement_date: config.agreementDate,
+  });
+
+  // Condition 2: lexical-disagreement net (Ben's M3 auto-pass condition 2,
+  // docs/core/PLAN.md prerequisite). ALWAYS built -- one
+  // LEXICAL_DISAGREEMENT_RECEIPT/V1 per resolved section, from THIS run's
+  // own resolved candidates via candidate-resolution.js's own
+  // `computeSectionCandidatesForLexicalDigest` (the exact digest formula
+  // `resolveCandidates`'s wiring itself re-verifies), never an external
+  // input. No model cost, no extra call.
+  const lexicalDisagreement = {};
+  for (const section of receipt.resolved_sections) {
+    const sectionCandidates = computeSectionCandidatesForLexicalDigest(plainResolution.resolved, section.section_reference);
+    const governedSection = {
+      section_ref: section.section_reference,
+      text: sectionBodyText(fullText, section),
+      text_sha256: section.text_sha256,
+    };
+    lexicalDisagreement[section.section_reference] = buildLexicalDisagreementReceipt({
+      governed_section: governedSection, candidates: sectionCandidates,
+    });
+  }
+  writeFileSync(resolve(outDir, 'lexical-disagreement.json'), JSON.stringify(lexicalDisagreement, null, 2));
+
+  // Condition 1: v1<->v2 comparator (Ben's M3 auto-pass condition 1). Only
+  // built when the caller supplies --v1-snapshot; STAYS UNEVALUATED
+  // otherwise (V1_V2_COMPARATOR_ABSENT on every claim), and that fact is
+  // recorded on run-manifest.json below rather than silently omitted.
+  let v1v2Comparison = null;
+  let v1v2ComparisonSkippedReason = null;
+  if (config.v1SnapshotPath) {
+    const v1Snapshot = JSON.parse(readFileSync(resolve(config.v1SnapshotPath), 'utf8'));
+    const attemptedSectionScope = [...new Set(plainResolution.resolved.map((entry) => {
+      const citationValidation = entry.compiled_candidate && entry.compiled_candidate.citation_validation;
+      if (!citationValidation) return null;
+      if (citationValidation.validation_source === 'CORROBORATED_BY_DOCUMENT_TEXT'
+        && typeof citationValidation.normalized_citation === 'string') return citationValidation.normalized_citation;
+      return typeof citationValidation.derived_citation === 'string' ? citationValidation.derived_citation : null;
+    }).filter(Boolean))];
+    v1v2Comparison = buildV1V2ComparisonReceipt({
+      v1_snapshot: v1Snapshot, v2_side: plainResolution, attempted_section_scope: attemptedSectionScope,
+    });
+    writeFileSync(resolve(outDir, 'v1v2-comparison.json'), JSON.stringify(v1v2Comparison, null, 2));
+    process.stderr.write(`${logPrefix} v1v2_comparison: SUPPLIED from ${config.v1SnapshotPath} (${v1v2Comparison.provision_outcomes.length} v1 card outcome(s))\n`);
+  } else {
+    v1v2ComparisonSkippedReason = 'NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> '
+      + 'to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then.';
+    process.stderr.write(`${logPrefix} v1v2_comparison: NOT SUPPLIED -- ${v1v2ComparisonSkippedReason}\n`);
+  }
 
   const resolution = resolveCandidates({
     run_receipt: receipt,
     contract_vocabulary: contractBundle,
     admitted_source_context: admittedSourceContext,
     agreement_date: config.agreementDate,
+    v1v2_comparison: v1v2Comparison,
+    lexical_disagreement: lexicalDisagreement,
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 
@@ -896,7 +2093,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV38',
+    contract_bundle_version: 'compileFixtureContractV41',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,
@@ -906,10 +2103,43 @@ async function main() {
     run_started_at: new Date(runStartedAt).toISOString(),
     total_elapsed_ms: totalElapsedMs,
     extraction_wall_clock_ms: extractionWallClockMs,
+    replay: replayReport,
+    recorded_to: config.recordPath || null,
+    // Change-detection inputs (PLAN.md Stage 2). With these a later run can
+    // decide whether a (deal, family) pair needs re-running at all, instead
+    // of re-running everything and comparing samples of a nondeterministic
+    // model. `model_cli_alias` above is the alias the operator typed;
+    // `resolved_models` is what the CLI reported actually serving each call,
+    // which is the one that matters -- a model swap behind an unchanged
+    // alias would otherwise trigger no re-run at all.
+    code_provenance: runProvenance(),
+    resolved_models: Object.freeze([...new Set(
+      telemetry.calls.map((call) => call.served_model).filter(Boolean),
+    )]),
     model_call_count: telemetry.calls.length,
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,
     source_sha256: verified.conversion.canonical_text_sha256,
+    // Ben's two M3 auto-pass conditions (docs/core/PLAN.md prerequisite):
+    // whether each condition was evaluated on THIS rung, and its outcome,
+    // recorded here rather than left implicit in resolution.json alone --
+    // "a rung that skipped them looks identical, in its evidence directory,
+    // to a rung that ran them" is exactly the failure this field exists to
+    // rule out.
+    m3_auto_pass_conditions: {
+      v1v2_comparison: v1v2Comparison ? {
+        supplied: true,
+        source: config.v1SnapshotPath,
+        v1v2_comparison_receipt_id: v1v2Comparison.v1v2_comparison_receipt_id,
+        counts: v1v2Comparison.counts,
+      } : { supplied: false, reason: v1v2ComparisonSkippedReason },
+      lexical_disagreement: {
+        supplied: true,
+        sections_covered: Object.keys(lexicalDisagreement).length,
+        resolution_receipt_counts: resolution.resolution_receipt.lexical_disagreement_counts || null,
+      },
+      claims_both_nets_clean: resolution.resolved.filter((entry) => entry.triage.both_nets_clean).length,
+    },
   }, null, 2));
 
   process.stderr.write(`${logPrefix} === SUMMARY ===\n`);
@@ -920,6 +2150,7 @@ async function main() {
   process.stderr.write(`citation_residuals: ${receipt.citation_residual_count} -- ${JSON.stringify((receipt.citation_residuals || []).map((r) => r.reason))}\n`);
   process.stderr.write(`undispatched_sections: ${receipt.undispatched_section_count}\n`);
   process.stderr.write(`resolution: resolved=${resolution.resolved.length} auto_pass=${resolution.resolved.filter((e) => e.triage.auto_pass).length} review_queue=${resolution.review_queue.length} open_world=${resolution.open_world.length} residuals=${resolution.residuals.length}\n`);
+  process.stderr.write(`m3_auto_pass_conditions: v1v2_comparison=${v1v2Comparison ? 'EVALUATED' : 'NOT_EVALUATED'} lexical_disagreement=EVALUATED (${Object.keys(lexicalDisagreement).length} section(s)) both_nets_clean=${resolution.resolved.filter((e) => e.triage.both_nets_clean).length}\n`);
   process.stderr.write(`conditional_termination_fee_values: ${(resolution.conditional_termination_fee_values || []).length}\n`);
   process.stderr.write(`write_set claims: ${adapterResult.write_set.claims.length}, components: ${(adapterResult.write_set.components || []).length}, adapter residuals: ${adapterResult.residuals.length}\n`);
   process.stderr.write(`validation accepted: ${validation.accepted}, residuals: ${validation.residuals.length}, quarantines: ${validation.quarantines.length}\n`);

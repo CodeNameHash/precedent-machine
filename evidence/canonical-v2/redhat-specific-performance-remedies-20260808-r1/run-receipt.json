@@ -1,0 +1,191 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "source_byte_length": 264358,
+  "root_section_id": "3d90818eb9590ab0940e2daff9eb6c2a5579fbc2ed81c4fe940f54c10c670113",
+  "requested_section_references": [
+    "8.11"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "8.11",
+      "section_id": "e966ee5261879ae0432d1529e80fde21913546913878d8e139dd529bb73b95a1",
+      "parent_section_id": "381bbad404d6e75c3eacd5b65006ca8a5a1e3313c842b4f64d4fe690aa79f048",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 260908,
+      "end": 263174,
+      "text_sha256": "fb4543acb95ada02b3dc5b69d91bce0ed03492d99a21a1c0e04627088a5b976e",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-specific-performance-remedies/v1",
+      "prompt_version": 2,
+      "prompt_digest": "993f4e248406d94c9e8f18973ec26a96dfd4a5235f7c870089b8b54ff7f0bc06",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "252ec573cb7f0f9a868ee3387388cee11948af0fe7d09f2858740191baa0c7d7",
+        "input_scope_digest": "1141917583cede06929e8c45507c59afb1139a62ab38bebdba55e010abd1ce5f",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "eb1263169cd6ffd810294f548db5e70ac290d1172e624b23060de7a749e68b39"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "8.11",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2dc76cee71df26c9b397ee261ee733186d9d68c2b3a535e32443a56be099991f",
+          "claim_occurrence_id": "db98a1752d4dfef550e6ffab7e90b6313421e8d1b1e5899195143642de707f69",
+          "subject_occurrence_id": "6ef5fd4537216434fb58e4d76fa7cd83353893b2aabf0e9560d5c0ee413a2d03",
+          "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The parties agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached. It is accordingly agreed that the parties hereto shall be entitled to an injunction or injunctions to prevent breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement in the Chosen Courts, this being in addition to any other remedy to which they are entitled at Law or in equity. The parties further agree not to assert that a remedy of specific enforcement is unenforceable, invalid, contrary to Law or inequitable for any reason, nor to assert that a remedy of monetary damages would provide an adequate remedy for any such breach.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c1144ef19742025b29713917e9797a303c050500f61cae39f8d4cbf9f1ddcfc6"
+          ],
+          "attributes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c1144ef19742025b29713917e9797a303c050500f61cae39f8d4cbf9f1ddcfc6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a21c7f6ce966eb8a5568388a21453ef09bbc1f72ab4854aa8ae74cfa30b40ab3",
+              "document_ordinal": 0,
+              "absolute_start": 26,
+              "absolute_end": 799,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "354df6727a50d9ba21b4115cd439022fecb3c993ffa2095f5fcae57e98bcb431"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+          "prompt_digest": "252ec573cb7f0f9a868ee3387388cee11948af0fe7d09f2858740191baa0c7d7",
+          "producer_receipt_id": "eb1263169cd6ffd810294f548db5e70ac290d1172e624b23060de7a749e68b39",
+          "governed_scope_digest": "e65fff41e0ac9ade70e2eb4cf1613f54569639f0082ec65c1f75bc6966114593",
+          "extraction_provenance_id": "9181d7e52cf6b4f1b7524bb339f4da9589015b43ebbbe7f2282f0d4cc650439e"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "8.11",
+      "source_byte_length": 2266,
+      "covered_byte_length": 773,
+      "coverage_share": 0.3411297440423654,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.3411297440423654,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "8.11",
+      "markers_found": [
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1064,
+          "end": 1067
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1211,
+          "end": 1215
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 2,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1064,
+          "end": 1067
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1211,
+          "end": 1215
+        }
+      ],
+      "disagreement_count": 2
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "feeff899a1b0a7d612b3b6044468233953287bebe44f70b9906480f3a60682ce"
+}

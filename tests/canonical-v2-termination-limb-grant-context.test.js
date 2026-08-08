@@ -47,6 +47,7 @@ const {
   findTerminationLimbChapeau,
   parseTerminationLimbDirection,
   findTerminationLimbGrantContext,
+  findTerminationSectionEitherGrantContext,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
 const RAW_HTML_PATH = path.join(__dirname, 'fixtures', 'canonical-v2', 'mae-definition-family', 'modiv-raw-fetched.htm');
@@ -150,7 +151,13 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   const resolution = runReplay(runReceipt, manifest);
 
   assert.equal(resolution.resolution_receipt.counts.compiled_candidates, 29);
-  assert.equal(resolution.resolved.length, 8, 'resolved rises from the committed 1 to 8 -- measured by replay, not asserted');
+  // 8 at the time this fix landed (fix 2, party-scope corroboration only).
+  // Step 3A (docs/core/PLAN.md; tests/canonical-v2-termination-trigger-kind-
+  // vocabulary.test.js) separately widened
+  // TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE and took the same replay to
+  // 12 -- this assertion tracks that later count since it replays the
+  // CURRENT resolver, not resolver-as-of-fix-2.
+  assert.equal(resolution.resolved.length, 12, 'resolved rises from the committed 1 to 8 by this fix, then to 12 by Step 3A -- measured by replay, not asserted');
   assert.ok(
     resolution.review_queue.every((item) => !item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE')),
     'no candidate anywhere in the review queue may still carry this reason after the fix',
@@ -190,24 +197,39 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   assert.deepEqual(parentBreach[0].party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'Parent', capacity: 'BUYER' });
 
   const adverseRecChange = bySourceCitation.get('7.1(d)(ii)');
-  assert.ok(adverseRecChange && adverseRecChange.length >= 1, 'the Adverse Recommendation Change ground under (d)(ii) resolves (its RECOMMENDATION_CHANGE siblings under the same limb still queue TRIGGER_KIND_UNCORROBORATED for an unrelated, pre-existing reason -- see the design note)');
-  assert.equal(adverseRecChange[0].party.capacity, 'BUYER');
+  // Pre-Step-3A this held only the Adverse Recommendation Change ground; its
+  // three RECOMMENDATION_CHANGE/NO_SOLICITATION_BREACH siblings under the
+  // same (d)(ii) limb queued TRIGGER_KIND_UNCORROBORATED for an unrelated
+  // vocabulary gap (see the design note). Step 3A widened that table
+  // (tests/canonical-v2-termination-trigger-kind-vocabulary.test.js), so all
+  // four now resolve under this same limb and party.
+  assert.equal(adverseRecChange && adverseRecChange.length, 4, 'all four (d)(ii) grounds resolve post-Step-3A');
+  for (const entry of adverseRecChange) {
+    assert.equal(entry.party.capacity, 'BUYER');
+  }
 
   const superiorProposal = bySourceCitation.get('7.1(c)(i)');
   assert.ok(superiorProposal && superiorProposal.length === 1, 'the pre-existing TERMINATING_PARTY_REF_UNCORROBORATED candidate also now resolves');
   assert.deepEqual(superiorProposal[0].party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'the Company', capacity: 'TARGET' });
 });
 
-test('REPLAY: the remaining 6 (b)/(c)/(d) candidates queue for reasons entirely unrelated to the terminating party (TRIGGER_KIND_UNCORROBORATED, SPELLED_DIGIT_MISMATCH), never for the party gate this fix touches', () => {
+test('REPLAY: the remaining candidates among (b)/(c)/(d) queue for reasons entirely unrelated to the terminating party (TRIGGER_KIND_UNCORROBORATED), never for the party gate this fix touches', () => {
   const runReceipt = loadJson('run-receipt.json');
   const manifest = loadJson('run-manifest.json');
   const resolution = runReplay(runReceipt, manifest);
   const stillQueued = resolution.review_queue.filter((item) => item.reasons.length > 0
     && ['7.1(b)(iii)', '7.1(c)(iii)', '7.1(d)(ii)', '7.1(d)(iii)'].includes(item.source_citation));
-  assert.ok(stillQueued.length >= 5);
+  // Pre-Step-3A this was >=5 (a vocabulary gap in
+  // TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE queued 6 real grounds).
+  // Step 3A (tests/canonical-v2-termination-trigger-kind-vocabulary.test.js)
+  // closed that gap for four of them; only the two candidates whose
+  // trigger_kind is `null` from the model itself -- not vocabulary, and
+  // deliberately not forced -- remain: 7.1(c)(iii) and 7.1(d)(iii).
+  assert.equal(stillQueued.length, 2);
+  assert.deepEqual(stillQueued.map((item) => item.source_citation).sort(), ['7.1(c)(iii)', '7.1(d)(iii)']);
   for (const item of stillQueued) {
     assert.ok(!item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE') && !item.reasons.includes('TERMINATING_PARTY_REF_UNCORROBORATED'));
-    assert.ok(item.reasons.every((reason) => reason === 'TRIGGER_KIND_UNCORROBORATED' || reason === 'SPELLED_DIGIT_MISMATCH'), JSON.stringify(item.reasons));
+    assert.deepEqual(item.reasons, ['TRIGGER_KIND_UNCORROBORATED']);
   }
 });
 
@@ -312,9 +334,155 @@ test('unit: parseTerminationLimbDirection recognises "from X to Y" and "either X
   );
   assert.deepEqual(
     parseTerminationLimbDirection('(b) by either the Company, on the one hand, or Parent, on the other hand, by written notice to the other, if:'),
-    { outcome: 'EITHER_PARTY', party_a: 'the Company', party_b: 'Parent' },
+    {
+      outcome: 'EITHER_PARTY',
+      party_a: 'the Company',
+      party_b: 'Parent',
+      either_phrase: 'either the Company, on the one hand, or Parent, on the other hand',
+    },
   );
   assert.deepEqual(parseTerminationLimbDirection('(e) if the sky is blue, if:'), { outcome: 'UNRECOGNISED' });
+});
+
+// Stage 1 (docs/codex-program/notes/structural-inheritance-diagnosis.md):
+// the corpus's single most common mutual form -- plain "by either X or Y",
+// no "on the one hand" -- plus the bare one-party limb head. Real drafting
+// verbatim from Concho 8.1(b) and SkyWater's Article VIII, not invented.
+test('unit: parseTerminationLimbDirection recognises the plain "by either X or Y" mutual head and the bare "(x) by X:" one-party head', () => {
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by either the Company or Parent:'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'the Company', party_b: 'Parent', either_phrase: 'either the Company or Parent',
+    },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by either Parent or the Company, if:'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'Parent', party_b: 'the Company', either_phrase: 'either Parent or the Company',
+    },
+  );
+  // Skechers: an "at any time prior to ... if" continuation after the pair.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(c) by either Parent or the Company, at any time prior to the Effective Time if'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'Parent', party_b: 'the Company', either_phrase: 'either Parent or the Company',
+    },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(c) by the Company:'),
+    { outcome: 'ONE_PARTY', granting_party: 'the Company' },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(e) by Parent, if'),
+    { outcome: 'ONE_PARTY', granting_party: 'Parent' },
+  );
+});
+
+test('HOSTILE unit: the bare one-party grammar never reads a mutual head as a one-party grant, and never fires off the limb marker anchor', () => {
+  // "by Parent or the Company" without "either" -- a mutual head; reading
+  // it ONE_PARTY(Parent) would mint a one-sided right from mutual text.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by Parent or the Company, if:'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by the Company and Parent;'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  // Mid-chapeau "by Parent" (not anchored at the limb marker) must not fire
+  // the bare grammar: the marker anchor is what scopes it to a genuine
+  // limb-head grant rather than any "by X" phrase inside the limb's prose.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(d) upon written notice delivered by Parent within five Business Days;'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  // The mutual-consent leaf limb carries no "by <party>" grant at all.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(a) by mutual written consent of the Company and Parent;'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  // Compound party name (Step 2X-0 WIP remediation for fc0362bb): must not
+  // truncate "the Company Stockholders' Representative" to "the Company".
+  assert.deepEqual(
+    parseTerminationLimbDirection('(f) by the Company Stockholders\' Representative, if:'),
+    { outcome: 'UNRECOGNISED' },
+  );
+});
+
+// Step 2X-0 WIP remediation (fc0362bb): three behaviours landed without
+// unit coverage. Pins below.
+
+test('unit: findTerminationLimbChapeau bounds a terminal leaf at newline/section-end when neither colon nor semicolon is present', () => {
+  // Concho 8.1(f) shape: a lettered limb that ends with a period at the
+  // section's own end, carrying neither ':' nor ';'.
+  const sectionText = '(a) by mutual written consent;\n(f) by Parent upon written notice to the Company.';
+  const admittedSourceContext = {
+    // canonical_text_id is asserted as a full SHA-256 digest on this branch's
+    // code path (assertDigest), so the fixture carries the REAL digest of its
+    // own text rather than a placeholder — a fabricated digest would pass the
+    // format check while lying about what it identifies.
+    canonical_text: { text: sectionText, canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')) },
+    canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')),
+  };
+  const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
+  const chapeau = findTerminationLimbChapeau({
+    section,
+    admittedSourceContext,
+    sectionReference: '8.1',
+    citationReference: '8.1(f)',
+  });
+  assert.ok(chapeau, 'terminal leaf must bound, not fail closed for want of :/;');
+  assert.match(chapeau.chapeau_text, /^\(f\) by Parent/);
+});
+
+test('unit: findTerminationSectionEitherGrantContext returns the section-chapeau mutual grant when limbs carry grounds only', () => {
+  // TopBuild 6.2 shape: party grant lives in the section chapeau; lettered
+  // limbs are grounds-only.
+  const sectionText = [
+    'This Agreement may be terminated at any time prior to the Effective Time',
+    ' by either Parent or the Company if:',
+    '\n(a) the Company Stockholder Approval shall not have been obtained;',
+    '\n(b) any Governmental Entity shall have issued an order.',
+  ].join('');
+  const admittedSourceContext = {
+    // canonical_text_id is asserted as a full SHA-256 digest on this branch's
+    // code path (assertDigest), so the fixture carries the REAL digest of its
+    // own text rather than a placeholder — a fabricated digest would pass the
+    // format check while lying about what it identifies.
+    canonical_text: { text: sectionText, canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')) },
+    canonical_text_id: sha256Hex(Buffer.from(sectionText, 'utf8')),
+  };
+  const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
+  // Trigger span starts at limb (a) -- grant must sit entirely before it.
+  const limbA = sectionText.indexOf('\n(a)');
+  const beforeAbsoluteStart = section.start + Buffer.byteLength(sectionText.slice(0, limbA), 'utf8');
+  const hit = findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'either Parent or the Company',
+    partyScope: 'EITHER_PARTY',
+  });
+  assert.ok(hit);
+  assert.ok(hit.span.absolute_end <= beforeAbsoluteStart);
+
+  // Fail closed: ONE_PARTY scope never uses this tier.
+  assert.equal(findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'Parent',
+    partyScope: 'ONE_PARTY',
+  }), null);
+
+  // Fail closed: claimed ref must appear verbatim in the grant text.
+  assert.equal(findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'either Buyer or the Seller',
+    partyScope: 'EITHER_PARTY',
+  }), null);
 });
 
 test('unit: findTerminationLimbGrantContext never rescues a party/scope combination the chapeau does not structurally support', () => {

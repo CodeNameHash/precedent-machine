@@ -1,0 +1,1464 @@
+{
+  "resolved": [
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(a)",
+      "citation_context": {
+        "parent_section_reference": "4.27",
+        "child_section_reference": "4.27(a)",
+        "parent_chapeau_quote": "4.27 No Additional Representations.",
+        "child_clause_quote": "(a) Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV."
+      },
+      "governing_context_quote": "(a) Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV.",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 106095,
+        "absolute_end": 108778,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "6a1716368e2dbf62f038177c1e199fbf069177b46224f68ab8d068729bb13ce0",
+        "provision_instance_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+        "closure_id": "3d74c6d5a1909f8a4f238a33a4f39bb4a2b39727c716be1e00c9ae4bef9db6c8"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6892d437e94654c1630c11009c58ddc992d92126ee48d324d744695d8322b085",
+        "claim_occurrence_id": "4f0317ee5ceadd7eaeaeef744c2ff48e488b3bae7d2753495b1e2f2ce17870fd",
+        "subject_occurrence_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "cf03705307b93c9116008f9d09c68e63ce2dec0d6f67b661ad8dbd93cf705ca2"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "neither the Company nor any other Person",
+          "agreement_scope_quote": "the representations and warranties made in this Article IV",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "cf03705307b93c9116008f9d09c68e63ce2dec0d6f67b661ad8dbd93cf705ca2",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "36039ae759f3a70c9822e0c1bbfe0643ded59ef639c417147f574bd091b308e2",
+            "document_ordinal": 0,
+            "absolute_start": 40,
+            "absolute_end": 492,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ec62cbc1ef7a8b1a258e6553fe698477ebab9c9b8c15ff957a06fa69c96c1134"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.27",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6892d437e94654c1630c11009c58ddc992d92126ee48d324d744695d8322b085",
+            "claim_occurrence_id": "4f0317ee5ceadd7eaeaeef744c2ff48e488b3bae7d2753495b1e2f2ce17870fd",
+            "subject_occurrence_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "cf03705307b93c9116008f9d09c68e63ce2dec0d6f67b661ad8dbd93cf705ca2"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "neither the Company nor any other Person",
+              "agreement_scope_quote": "the representations and warranties made in this Article IV",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "cf03705307b93c9116008f9d09c68e63ce2dec0d6f67b661ad8dbd93cf705ca2",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "36039ae759f3a70c9822e0c1bbfe0643ded59ef639c417147f574bd091b308e2",
+                "document_ordinal": 0,
+                "absolute_start": 40,
+                "absolute_end": 492,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ec62cbc1ef7a8b1a258e6553fe698477ebab9c9b8c15ff957a06fa69c96c1134"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+            "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+            "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+            "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(a)",
+      "citation_context": {
+        "parent_section_reference": "4.27",
+        "child_section_reference": "4.27(a)",
+        "parent_chapeau_quote": "4.27 No Additional Representations.",
+        "child_clause_quote": "(a) Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV."
+      },
+      "governing_context_quote": "(a) Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV.",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 106095,
+        "absolute_end": 108778,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "6a1716368e2dbf62f038177c1e199fbf069177b46224f68ab8d068729bb13ce0",
+        "provision_instance_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+        "closure_id": "3d74c6d5a1909f8a4f238a33a4f39bb4a2b39727c716be1e00c9ae4bef9db6c8"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0109d2a9ad7c29cae5cd9fbd51f24de237e1b54fce54d3715de15061389f6ec5",
+        "claim_occurrence_id": "1a3e4c2eaad09515cfbee0eefb677d57514c2f8f1e95ffa4b4beecea57c49b08",
+        "subject_occurrence_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "823bccabff56c75691ad0e959c952af094e7b7734779f4217d236e11bd457dee"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "neither the Company nor any other Person",
+          "agreement_scope_quote": "except for the representations and warranties made by the Company in this Article IV",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "823bccabff56c75691ad0e959c952af094e7b7734779f4217d236e11bd457dee",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0e811c45b934a74dc35bffff1992a321c978dcf0b166446453ec6cb577935d23",
+            "document_ordinal": 0,
+            "absolute_start": 493,
+            "absolute_end": 1256,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "453702da3bc75ab2980cdcb51130be75da4b751d509ebf90964b3715171351ed"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.27",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0109d2a9ad7c29cae5cd9fbd51f24de237e1b54fce54d3715de15061389f6ec5",
+            "claim_occurrence_id": "1a3e4c2eaad09515cfbee0eefb677d57514c2f8f1e95ffa4b4beecea57c49b08",
+            "subject_occurrence_id": "bada5f3de9dead2795c82f466f50cf560945ad012a4b2b4013a2d6e98a309422",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "823bccabff56c75691ad0e959c952af094e7b7734779f4217d236e11bd457dee"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "neither the Company nor any other Person",
+              "agreement_scope_quote": "except for the representations and warranties made by the Company in this Article IV",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "823bccabff56c75691ad0e959c952af094e7b7734779f4217d236e11bd457dee",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0e811c45b934a74dc35bffff1992a321c978dcf0b166446453ec6cb577935d23",
+                "document_ordinal": 0,
+                "absolute_start": 493,
+                "absolute_end": 1256,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "453702da3bc75ab2980cdcb51130be75da4b751d509ebf90964b3715171351ed"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+            "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+            "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+            "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(b)",
+      "citation_context": {
+        "parent_section_reference": "4.27",
+        "child_section_reference": "4.27(b)",
+        "parent_chapeau_quote": "4.27 No Additional Representations.",
+        "child_clause_quote": "(b) Notwithstanding anything contained in this Agreement to the contrary, the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives and that the Company has not relied on any such other\n-31-\nrepresentation or warranty not set forth in this Agreement. Without limiting the generality of the foregoing, the Company acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to the Company or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions)."
+      },
+      "governing_context_quote": "(b) Notwithstanding anything contained in this Agreement to the contrary, the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives and that the Company has not relied on any such other",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 106095,
+        "absolute_end": 108778,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "6a1716368e2dbf62f038177c1e199fbf069177b46224f68ab8d068729bb13ce0",
+        "provision_instance_id": "00003e497cf01c252dc9a0db52c59fd7c62ac66058577efa210400845d1f7731",
+        "closure_id": "f3cd5e297caffb31ac3ea0f6c53c288a46b78da4acf58d6e65fba291c51914fe"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5030aec73d94abaf18257c4552d021a12ad1826bed8b8e94b477daa800d73ebe",
+        "claim_occurrence_id": "4ffe9fd906a7ab246ca71d6ee1676f4a17da8c8f0296e66089cf35c4da2c4c8f",
+        "subject_occurrence_id": "00003e497cf01c252dc9a0db52c59fd7c62ac66058577efa210400845d1f7731",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "77ee9bd98791439b7a1f89f6755a82e9879f96423ffb28e95d33bfcd024325c4"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "none of Parent, Merger Sub or any other Person",
+          "agreement_scope_quote": "beyond those expressly given by Parent and Merger Sub in Article V",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "77ee9bd98791439b7a1f89f6755a82e9879f96423ffb28e95d33bfcd024325c4",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8c265cae97fc66dc0ff2ec00a63abea7cd1dd9380a1c9ed946acd16357081438",
+            "document_ordinal": 0,
+            "absolute_start": 1584,
+            "absolute_end": 2082,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "da77044c8aa594bd635c385731f3cad97efe925db4f82074db03b08df1bd4e8b"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.27",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5030aec73d94abaf18257c4552d021a12ad1826bed8b8e94b477daa800d73ebe",
+            "claim_occurrence_id": "4ffe9fd906a7ab246ca71d6ee1676f4a17da8c8f0296e66089cf35c4da2c4c8f",
+            "subject_occurrence_id": "00003e497cf01c252dc9a0db52c59fd7c62ac66058577efa210400845d1f7731",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "77ee9bd98791439b7a1f89f6755a82e9879f96423ffb28e95d33bfcd024325c4"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "none of Parent, Merger Sub or any other Person",
+              "agreement_scope_quote": "beyond those expressly given by Parent and Merger Sub in Article V",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "77ee9bd98791439b7a1f89f6755a82e9879f96423ffb28e95d33bfcd024325c4",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8c265cae97fc66dc0ff2ec00a63abea7cd1dd9380a1c9ed946acd16357081438",
+                "document_ordinal": 0,
+                "absolute_start": 1584,
+                "absolute_end": 2082,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "da77044c8aa594bd635c385731f3cad97efe925db4f82074db03b08df1bd4e8b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+            "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+            "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+            "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.27",
+          "normalized_citation": "4.27",
+          "derived_citation": "4.27(b)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "source_citation": "5.19(a)",
+      "citation_context": {
+        "parent_section_reference": "5.19",
+        "child_section_reference": "5.19(a)",
+        "parent_chapeau_quote": "5.19 No Additional Representations.",
+        "child_clause_quote": "(a) Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V."
+      },
+      "governing_context_quote": "(a) Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V.",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 133368,
+        "absolute_end": 135940,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "6dc4b63a96164d7581241e2225bbaa4b1114885015f549b95f1ed5e10c56bc5f",
+        "provision_instance_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+        "closure_id": "12e9cc5c8486669068929a2b238a810ae0239adba144176dbcd221ebf8b28449"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "31706f20d88aacfee45a5cdcf8bffa21d7d3d7ef9f41321284b007258d5c6c13",
+        "claim_occurrence_id": "0ed955ddabed4950869c02b85a151561c6b9a2f0dcfedaa2d044a33fc1ac60cf",
+        "subject_occurrence_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "81c1affab0ac377748dc77815b53a92d6d28daf4de63194adf7dc67326dfbcb9"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "neither Parent nor any other Person",
+          "agreement_scope_quote": "Except for the representations and warranties made in this Article V",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "81c1affab0ac377748dc77815b53a92d6d28daf4de63194adf7dc67326dfbcb9",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0b2e4c60933b3c6a2849d2efbf3558125bc40356a1da1194309b6de87e9e7c06",
+            "document_ordinal": 0,
+            "absolute_start": 40,
+            "absolute_end": 481,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "15ccbedc3787b41903e0c1f6c1146a417e65e86d472acfdd1f12a99a2e4c4aed"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "31706f20d88aacfee45a5cdcf8bffa21d7d3d7ef9f41321284b007258d5c6c13",
+            "claim_occurrence_id": "0ed955ddabed4950869c02b85a151561c6b9a2f0dcfedaa2d044a33fc1ac60cf",
+            "subject_occurrence_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "81c1affab0ac377748dc77815b53a92d6d28daf4de63194adf7dc67326dfbcb9"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "neither Parent nor any other Person",
+              "agreement_scope_quote": "Except for the representations and warranties made in this Article V",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "81c1affab0ac377748dc77815b53a92d6d28daf4de63194adf7dc67326dfbcb9",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0b2e4c60933b3c6a2849d2efbf3558125bc40356a1da1194309b6de87e9e7c06",
+                "document_ordinal": 0,
+                "absolute_start": 40,
+                "absolute_end": 481,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "15ccbedc3787b41903e0c1f6c1146a417e65e86d472acfdd1f12a99a2e4c4aed"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+            "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+            "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+            "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "source_citation": "5.19(a)",
+      "citation_context": {
+        "parent_section_reference": "5.19",
+        "child_section_reference": "5.19(a)",
+        "parent_chapeau_quote": "5.19 No Additional Representations.",
+        "child_clause_quote": "(a) Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V."
+      },
+      "governing_context_quote": "Transactions, and Parent hereby disclaims any such other representations or warranties. In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions. Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V.",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 133368,
+        "absolute_end": 135940,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "6dc4b63a96164d7581241e2225bbaa4b1114885015f549b95f1ed5e10c56bc5f",
+        "provision_instance_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+        "closure_id": "12e9cc5c8486669068929a2b238a810ae0239adba144176dbcd221ebf8b28449"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "591b4990db45ac1987e0138d273b2c304c33d61a2291aeb0b77734fa90bed0fb",
+        "claim_occurrence_id": "a55281597e49bdf68140aa0f0d262a83d36bf57c5be9db1dca43166465bb5f74",
+        "subject_occurrence_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ef3e49f806406994ad51c6120038307703d69efd2921f60b92b3408a0abaab9a"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "neither Parent nor any other Person",
+          "agreement_scope_quote": "except for the representations and warranties made by Parent in this Article V",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ef3e49f806406994ad51c6120038307703d69efd2921f60b92b3408a0abaab9a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0c2dd2b396d30748da83f3a2a9eae0d3c2cfc5320feeee3f1de646ec30bc54b3",
+            "document_ordinal": 0,
+            "absolute_start": 482,
+            "absolute_end": 1181,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3f8f9daba155b3aae8c6039d2e3e9bacd2a12f822c5edd3dc87b8d23e4f49758"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(a)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "591b4990db45ac1987e0138d273b2c304c33d61a2291aeb0b77734fa90bed0fb",
+            "claim_occurrence_id": "a55281597e49bdf68140aa0f0d262a83d36bf57c5be9db1dca43166465bb5f74",
+            "subject_occurrence_id": "574f7d75d50ced243f4c3a2c991bd053aaf76e961096ef0abd701d6d0a747aeb",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ef3e49f806406994ad51c6120038307703d69efd2921f60b92b3408a0abaab9a"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "neither Parent nor any other Person",
+              "agreement_scope_quote": "except for the representations and warranties made by Parent in this Article V",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ef3e49f806406994ad51c6120038307703d69efd2921f60b92b3408a0abaab9a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0c2dd2b396d30748da83f3a2a9eae0d3c2cfc5320feeee3f1de646ec30bc54b3",
+                "document_ordinal": 0,
+                "absolute_start": 482,
+                "absolute_end": 1181,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3f8f9daba155b3aae8c6039d2e3e9bacd2a12f822c5edd3dc87b8d23e4f49758"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+            "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+            "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+            "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "source_citation": "5.19(b)",
+      "citation_context": {
+        "parent_section_reference": "5.19",
+        "child_section_reference": "5.19(b)",
+        "parent_chapeau_quote": "5.19 No Additional Representations.",
+        "child_clause_quote": "(b) Notwithstanding anything contained in this Agreement to the contrary, Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives and that neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement. Without limiting the generality of the foregoing, Parent acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to Parent or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions)."
+      },
+      "governing_context_quote": "(b) Notwithstanding anything contained in this Agreement to the contrary, Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives and that neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement. Without limiting the generality of the foregoing, Parent acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to Parent or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "fbbcdabe7036263f56b702a3b3bc8bfbdf5ee6f197b37edcb2d37ce2aa0c89e0",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 133368,
+        "absolute_end": 135940,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 4,
+        "source_anchor_id": "6dc4b63a96164d7581241e2225bbaa4b1114885015f549b95f1ed5e10c56bc5f",
+        "provision_instance_id": "9a5ea197495d4168f3148b321d7beb50ef8cee1c001843dc839a27863a5b1da1",
+        "closure_id": "05b83cc227fc9bc4c4bea43f064519aca1c80dc75ea99829fc5f865cd67340aa"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a498b11bcf811a118a76f4c965942eb65eb5e4f8e8dba9e30aa3c0ef26bae62e",
+        "claim_occurrence_id": "bdaaea03d4629e9caac1c5b37397ea3ffba5b7e65ed98421d80e71536ab5daeb",
+        "subject_occurrence_id": "9a5ea197495d4168f3148b321d7beb50ef8cee1c001843dc839a27863a5b1da1",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8c179521e73c77f971c78829aa759ab2fdb8fecff00a00e7199b0f9d4dd2bea0"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "none of the Company or any other Person",
+          "agreement_scope_quote": "beyond those expressly given by the Company in Article IV",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8c179521e73c77f971c78829aa759ab2fdb8fecff00a00e7199b0f9d4dd2bea0",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6247d7b88fb9553cca86afa5693efad62c7ad1340b8be73285fec9253fa73827",
+            "document_ordinal": 0,
+            "absolute_start": 1513,
+            "absolute_end": 1972,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "306d8ea828bc056f1f094a00399f9b4e0da263df2fbbcf4c77361c32a2ec8d06"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(b)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a498b11bcf811a118a76f4c965942eb65eb5e4f8e8dba9e30aa3c0ef26bae62e",
+            "claim_occurrence_id": "bdaaea03d4629e9caac1c5b37397ea3ffba5b7e65ed98421d80e71536ab5daeb",
+            "subject_occurrence_id": "9a5ea197495d4168f3148b321d7beb50ef8cee1c001843dc839a27863a5b1da1",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8c179521e73c77f971c78829aa759ab2fdb8fecff00a00e7199b0f9d4dd2bea0"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "none of the Company or any other Person",
+              "agreement_scope_quote": "beyond those expressly given by the Company in Article IV",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8c179521e73c77f971c78829aa759ab2fdb8fecff00a00e7199b0f9d4dd2bea0",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6247d7b88fb9553cca86afa5693efad62c7ad1340b8be73285fec9253fa73827",
+                "document_ordinal": 0,
+                "absolute_start": 1513,
+                "absolute_end": 1972,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "306d8ea828bc056f1f094a00399f9b4e0da263df2fbbcf4c77361c32a2ec8d06"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+            "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+            "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+            "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.19",
+          "normalized_citation": "5.19",
+          "derived_citation": "5.19(b)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(b)",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "REPRESENTATION_SIDE_PARTY_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to the Company or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions).",
+      "canonical_value": true,
+      "original_claim_occurrence_id": "2084e2d92cd69a332c9109d3adc8d2e02d0fc3375a71005e038a7ea30c3a0df8",
+      "closure_id": "1b86fd3182b3a154f6338ffa08f635083457945af78b74111f2f357da5c3efdb",
+      "normalised_phrase": "the Company acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to the Company or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions).",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS"
+    },
+    {
+      "section_reference": "4.27",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0109d2a9ad7c29cae5cd9fbd51f24de237e1b54fce54d3715de15061389f6ec5",
+      "closure_id": "453702da3bc75ab2980cdcb51130be75da4b751d509ebf90964b3715171351ed",
+      "normalised_phrase": "In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS"
+    },
+    {
+      "section_reference": "4.27",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5030aec73d94abaf18257c4552d021a12ad1826bed8b8e94b477daa800d73ebe",
+      "closure_id": "da77044c8aa594bd635c385731f3cad97efe925db4f82074db03b08df1bd4e8b",
+      "normalised_phrase": "the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS"
+    },
+    {
+      "section_reference": "4.27",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6892d437e94654c1630c11009c58ddc992d92126ee48d324d744695d8322b085",
+      "closure_id": "ec62cbc1ef7a8b1a258e6553fe698477ebab9c9b8c15ff957a06fa69c96c1134",
+      "normalised_phrase": "Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS"
+    },
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(b)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-B-NONRELIANCE",
+      "reasons": [
+        "REPRESENTATION_SIDE_PARTY_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company has not relied on any such other\n-31-\nrepresentation or warranty not set forth in this Agreement.",
+      "canonical_value": true,
+      "original_claim_occurrence_id": "61c1cc3a11bebd14e95bf1098825cbd2a9c1bed6f3d18c9ab865d9775f53be84",
+      "closure_id": "9f27b34cbc79dc1d665ab93e0418673bc0c74a31a11636dc9d9ab8f76ad7b36e",
+      "normalised_phrase": "the Company has not relied on any such other\n-31-\nrepresentation or warranty not set forth in this Agreement.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NONRELIANCE"
+    },
+    {
+      "section_reference": "5.19",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "31706f20d88aacfee45a5cdcf8bffa21d7d3d7ef9f41321284b007258d5c6c13",
+      "closure_id": "15ccbedc3787b41903e0c1f6c1146a417e65e86d472acfdd1f12a99a2e4c4aed",
+      "normalised_phrase": "Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS"
+    },
+    {
+      "section_reference": "5.19",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a498b11bcf811a118a76f4c965942eb65eb5e4f8e8dba9e30aa3c0ef26bae62e",
+      "closure_id": "306d8ea828bc056f1f094a00399f9b4e0da263df2fbbcf4c77361c32a2ec8d06",
+      "normalised_phrase": "Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS"
+    },
+    {
+      "section_reference": "5.19",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "591b4990db45ac1987e0138d273b2c304c33d61a2291aeb0b77734fa90bed0fb",
+      "closure_id": "3f8f9daba155b3aae8c6039d2e3e9bacd2a12f822c5edd3dc87b8d23e4f49758",
+      "normalised_phrase": "In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS"
+    },
+    {
+      "section_reference": "5.19",
+      "source_citation": "5.19(b)",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [
+        "REPRESENTATION_SIDE_PARTY_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement",
+      "canonical_value": true,
+      "original_claim_occurrence_id": "2471670502dab84ec0a90345db78c21ec42cf3a9fdf862b1e1607d875387abdb",
+      "closure_id": "5d2b04ef0525ebe2ed52e2c483545a58190198bde7b3df21192194916a380e03",
+      "normalised_phrase": "neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.27",
+      "source_citation": "4.27(a)",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+      "raw_value": "Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV.",
+      "canonical_value": true,
+      "attributes": {
+        "section_reference": "4.27",
+        "representation_side": "TARGET"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc16ca4ddb7135f842041c3dff1d5fbe8915aeaea4c49ea4a2dff4cb91c7cddc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "854312f8d16bd459c351cf68c4ad1ccb3d2c62c655d93c896bbee6c8e698ae3b",
+          "document_ordinal": 0,
+          "absolute_start": 1257,
+          "absolute_end": 1509,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7c7beab27f54693c2895e8c7ef99cedfed3a1d7e940f18dd1897f7eb74ca667d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "NO_OTHER_REPS_FRAUD",
+        "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+        "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+        "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+        "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.19",
+      "source_citation": "5.19(a)",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+      "raw_value": "Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V.",
+      "canonical_value": true,
+      "attributes": {
+        "section_reference": "5.19",
+        "representation_side": "BUYER"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f3adb4fd95b7b1a81039c257a0853573ae5f1b3628b9730684b5dd801bfd0b81",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e25b64ebe20d5817ae53d77f864ae4f3e761f948dd7e5365fbc55520dd951fb9",
+          "document_ordinal": 0,
+          "absolute_start": 1182,
+          "absolute_end": 1438,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "cac44c0558776c1d950a95fa174d3f95a1c880e50eb1195c3a5f0fea5ecb5381",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "NO_OTHER_REPS_FRAUD",
+        "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+        "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+        "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+        "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "f4c70e81d269d0c2cf8a47b00c78e5d9756cb15a895cf261601d902ff84dc8c4",
+    "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 11,
+      "resolved": 6,
+      "auto_pass": 0,
+      "review_queue": 9,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 4,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "d08d0130de208e1a0bcdc964d6bb98d5e97663329ef12aef840ee02d4d95dd28"
+  }
+}

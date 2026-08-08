@@ -3,7 +3,7 @@
 ## Generated Registry Baseline
 
 - Features generated: 569
-- Tags generated: 172
+- Tags generated: 182
 - TODO descriptions pending hand-audit: 552
 - Benchmarkable hints retained: 217
 - Generated baseline has been copied into `lib/schema/features.js` and `lib/schema/tags.js` so Phase 4+ can import the populated registry.

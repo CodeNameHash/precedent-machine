@@ -1,0 +1,1077 @@
+{
+  "resolved": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "citation_context": {
+        "parent_section_reference": "4.13",
+        "child_section_reference": "4.13",
+        "parent_chapeau_quote": "4.13 Guaranty. Concurrently with the execution of this Agreement,",
+        "child_clause_quote": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+      "concept_key": "GTY-DELIVERY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "a5a0c38576585d1ba6eeefa3297b5e8854cf15d1cbf95a2cfecf2d55a7334c9e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 198037,
+        "absolute_end": 198823,
+        "concept_key": "GTY-DELIVERY",
+        "ordinal": 1,
+        "source_anchor_id": "7bb9476b12fed74136c9092a39d94e7248cf884e1ec4ae501e9b6c4a4f831cb1",
+        "provision_instance_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+        "closure_id": "11a7934ac8d135fd7dea7da13314b7a11e44122a12839e985060d1bcf0ff8301"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c6630af2b9d3d5f0ee34d73f3f0a36999fc34920ed598d62e0a7995ac0452d21",
+        "claim_occurrence_id": "865f4b6621b9df12d4b40a4955ee66303658449f82aa9095fedde29e0c749bd1",
+        "subject_occurrence_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+        "claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "972d78e56d8288b14865c3e0967f5bc1548a6589f1060ebd42fe4deda0644cc8"
+        ],
+        "attributes": {
+          "guarantor_ref": "3G Fund VI, L.P.",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "972d78e56d8288b14865c3e0967f5bc1548a6589f1060ebd42fe4deda0644cc8",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "48a3838dada3ac5fad19088f27639c8245959685afbec6513e738c2e6d20e8e1",
+            "document_ordinal": 0,
+            "absolute_start": 66,
+            "absolute_end": 230,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a58bfbced9a7c776deb3d095b4b85d5e21f779e01894ace290e44f3f17281fbc"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.13",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.13",
+          "normalized_citation": "4.13",
+          "derived_citation": "4.13"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c6630af2b9d3d5f0ee34d73f3f0a36999fc34920ed598d62e0a7995ac0452d21",
+            "claim_occurrence_id": "865f4b6621b9df12d4b40a4955ee66303658449f82aa9095fedde29e0c749bd1",
+            "subject_occurrence_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+            "claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "972d78e56d8288b14865c3e0967f5bc1548a6589f1060ebd42fe4deda0644cc8"
+            ],
+            "attributes": {
+              "guarantor_ref": "3G Fund VI, L.P.",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "972d78e56d8288b14865c3e0967f5bc1548a6589f1060ebd42fe4deda0644cc8",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "48a3838dada3ac5fad19088f27639c8245959685afbec6513e738c2e6d20e8e1",
+                "document_ordinal": 0,
+                "absolute_start": 66,
+                "absolute_end": 230,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a58bfbced9a7c776deb3d095b4b85d5e21f779e01894ace290e44f3f17281fbc"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GUARANTY",
+            "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+            "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+            "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+            "extraction_provenance_id": "a8a82331d610910bef4ef908dd4c1e52c8b8e33989a12cc9bc130af7144207e4"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 74,
+        "materiality_label": "GUARANTY_FINANCING_PARTY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.13",
+          "normalized_citation": "4.13",
+          "derived_citation": "4.13"
+        }
+      }
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "citation_context": {
+        "parent_section_reference": "4.13",
+        "child_section_reference": "4.13",
+        "parent_chapeau_quote": "4.13 Guaranty. Concurrently with the execution of this Agreement, Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+        "child_clause_quote": "The Guaranty is in full force and effect and constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions, and has not been (and will not be except in accordance with its terms) amended or modified."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_IN_EFFECT",
+      "concept_key": "GTY-DELIVERY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "a5a0c38576585d1ba6eeefa3297b5e8854cf15d1cbf95a2cfecf2d55a7334c9e",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 198037,
+        "absolute_end": 198823,
+        "concept_key": "GTY-DELIVERY",
+        "ordinal": 1,
+        "source_anchor_id": "7bb9476b12fed74136c9092a39d94e7248cf884e1ec4ae501e9b6c4a4f831cb1",
+        "provision_instance_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+        "closure_id": "11a7934ac8d135fd7dea7da13314b7a11e44122a12839e985060d1bcf0ff8301"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "cf64f80b88f1f3cdb7de625b53d47d282d6473d4bc1686e3b42033eb5693d578",
+        "claim_occurrence_id": "8a98fecacc36e57e7f974b18a718e19da463bfaaa11fdf9cd6eb3e2a916ebb84",
+        "subject_occurrence_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+        "claim_definition_key": "LIMITED_GUARANTY_IN_EFFECT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Guaranty is in full force and effect and constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions, and has not been (and will not be except in accordance with its terms) amended or modified.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "cf22f83c56efef3430b5a019ac865f4b80474990f298f226061852a01a6c54e1"
+        ],
+        "attributes": {
+          "guarantor_ref": "Guarantor",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "cf22f83c56efef3430b5a019ac865f4b80474990f298f226061852a01a6c54e1",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "5eccbcaacfed3a1f4b9702ad053d87dd596f2f0bffaaedc2197439c2e0c818bb",
+            "document_ordinal": 0,
+            "absolute_start": 231,
+            "absolute_end": 573,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9561f501fa36c47d170e953900161cc1f63878dee47c72653b3ecfc283600e10"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.13",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.13",
+          "normalized_citation": "4.13",
+          "derived_citation": "4.13"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "cf64f80b88f1f3cdb7de625b53d47d282d6473d4bc1686e3b42033eb5693d578",
+            "claim_occurrence_id": "8a98fecacc36e57e7f974b18a718e19da463bfaaa11fdf9cd6eb3e2a916ebb84",
+            "subject_occurrence_id": "0007536a0595ff5d150bb9ccf772bf6d12cf306ffde0cec3b6255980a732b6aa",
+            "claim_definition_key": "LIMITED_GUARANTY_IN_EFFECT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Guaranty is in full force and effect and constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions, and has not been (and will not be except in accordance with its terms) amended or modified.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "cf22f83c56efef3430b5a019ac865f4b80474990f298f226061852a01a6c54e1"
+            ],
+            "attributes": {
+              "guarantor_ref": "Guarantor",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "cf22f83c56efef3430b5a019ac865f4b80474990f298f226061852a01a6c54e1",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5eccbcaacfed3a1f4b9702ad053d87dd596f2f0bffaaedc2197439c2e0c818bb",
+                "document_ordinal": 0,
+                "absolute_start": 231,
+                "absolute_end": 573,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9561f501fa36c47d170e953900161cc1f63878dee47c72653b3ecfc283600e10"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GUARANTY",
+            "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+            "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+            "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+            "extraction_provenance_id": "a8a82331d610910bef4ef908dd4c1e52c8b8e33989a12cc9bc130af7144207e4"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 74,
+        "materiality_label": "GUARANTY_FINANCING_PARTY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.13",
+          "normalized_citation": "4.13",
+          "derived_citation": "4.13"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_IN_EFFECT",
+      "concept_key": "GTY-DELIVERY",
+      "reasons": [],
+      "materiality_rank": 74,
+      "materiality_label": "GUARANTY_FINANCING_PARTY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cf64f80b88f1f3cdb7de625b53d47d282d6473d4bc1686e3b42033eb5693d578",
+      "closure_id": "9561f501fa36c47d170e953900161cc1f63878dee47c72653b3ecfc283600e10",
+      "normalised_phrase": "The Guaranty is in full force and effect and constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions, and has not been (and will not be except in accordance with its terms) amended or modified.",
+      "attachment_position": null,
+      "concept_family": "GTY-DELIVERY"
+    },
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+      "concept_key": "GTY-DELIVERY",
+      "reasons": [],
+      "materiality_rank": 74,
+      "materiality_label": "GUARANTY_FINANCING_PARTY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c6630af2b9d3d5f0ee34d73f3f0a36999fc34920ed598d62e0a7995ac0452d21",
+      "closure_id": "a58bfbced9a7c776deb3d095b4b85d5e21f779e01894ace290e44f3f17281fbc",
+      "normalised_phrase": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+      "attachment_position": null,
+      "concept_family": "GTY-DELIVERY"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Concurrently with the execution of this Agreement, Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "GUARANTY_DELIVERY: Guaranty delivered concurrently with signing of the Agreement, running from 3G Fund VI, L.P. to the Company as beneficiary.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fad5450d55b4dd59e3932dea22528067d300df8a1533d20c2030c4be221c13e3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a3de48cd7621d9ae8bc9ec3a13b5d2f9c59e94aa2498c0ed177f672ce0ca67fa",
+          "document_ordinal": 0,
+          "absolute_start": 15,
+          "absolute_end": 230,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c3ebc58985431530a21cd41737486c3e9367f91f2875eb9f07ae5f2fef01e2d6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+        "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+        "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+        "extraction_provenance_id": "3712866d1566a65afe45855120f30c175c47d7153c918a0dc971736d6f4e554e"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Guaranty is in full force and effect and constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "GUARANTY_CORE_TERM: Enforceability representation for the Guaranty, subject to the standard bankruptcy and equity exceptions carve-out.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "619c4a65f3d7577de751a6ec0fabdcdc81d2f76218444e855c31a05474b70186",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f5903abd9f643b09167f7318290c813d5fe6a10158ef9c906f23d7bc7b71c215",
+          "document_ordinal": 0,
+          "absolute_start": 231,
+          "absolute_end": 480,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "417a27d4dee7fea42e006bcdac3340c20c8fa7ff07a95b4ad71d3013bef359d3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+        "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+        "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+        "extraction_provenance_id": "3712866d1566a65afe45855120f30c175c47d7153c918a0dc971736d6f4e554e"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "has not been (and will not be except in accordance with its terms) amended or modified",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "GUARANTY_CORE_TERM: Representation that the Guaranty has not been and will not be amended or modified outside its own terms.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "db748ed9cc5ab993b08b52c524aa1727c55afbc42daca35ad9a311a70cad7911",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d6ab7133fecb741493ee2b6faf764cc22aea237b00f09774bb5d251927007c1b",
+          "document_ordinal": 0,
+          "absolute_start": 486,
+          "absolute_end": 572,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e326ef5993d9b9148971fadf8a264e6910f0c05dda5667cfce60e8f261cd3bc4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+        "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+        "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+        "extraction_provenance_id": "3712866d1566a65afe45855120f30c175c47d7153c918a0dc971736d6f4e554e"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "No event has occurred which, with or without notice, lapse of time or both, could constitute or would reasonably be expected to constitute or result in a default on the part of the Guarantor under such Guaranty.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "GUARANTY_CORE_TERM: Representation regarding absence of any current or reasonably expected default by the Guarantor under the Guaranty.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f6033b91e5aaca2f00a3ba1b911174789de6123157256fcf3dd7c842d09fcee9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "666da36fb542ae9da29ef7a754da2a27aac007214a3ab4281b5ae2cb31474ab4",
+          "document_ordinal": 0,
+          "absolute_start": 574,
+          "absolute_end": 785,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3649cffd596ff6b780b411355ddb038ff0a436107a64eb988bf9f8f3bf790ad7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "dfab6979c9a53ed4a0545ce0e78f17cdad87aa40186bacd485781a40ba1db1d9",
+        "producer_receipt_id": "41dddfeb51e40875129222cbdb43639c467221cee3d9f3d1562d5ca267960395",
+        "governed_scope_digest": "e9405aedce7dbe2bb6f0afdd301d6065ab5f7b5c061ddabe29de88076cec89a2",
+        "extraction_provenance_id": "3712866d1566a65afe45855120f30c175c47d7153c918a0dc971736d6f4e554e"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "shall be subject to the exclusive jurisdiction of any federal or state court in the Borough of Manhattan, New York, New York",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Company submits suits, actions, audits, investigations, examinations, inquiries or proceedings involving the Debt Financing Sources to the exclusive jurisdiction of federal or state courts in the Borough of Manhattan, New York.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1babc82977271f6683ca08309250e1059d614b763538b4bf9418068c20662929",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d9239a81b78f8fc6b6adb9fa2e7b44a6cc8480d2489efff5dd0282c58a16e8e8",
+          "document_ordinal": 0,
+          "absolute_start": 628,
+          "absolute_end": 752,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "bbb06736f91a333595081c85fe47ae7e88975b0c7618bd37b21f2fcea82d6ed0",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each party hereto irrevocably submits itself and its property with respect to any such suit, action, audits, investigations, examinations, inquiries or proceeding to the exclusive jurisdiction of such court",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Each party irrevocably submits itself and its property to the exclusive jurisdiction of the designated New York court for matters involving the Debt Financing Sources.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6bc7bca7e8740d60838992b805773b5ba067774519042cad4a5987885fc2bd42",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "eab5d3157ed4816c52f4e19bb0606c608046da90d747bf0e1b629af5846187c1",
+          "document_ordinal": 0,
+          "absolute_start": 838,
+          "absolute_end": 1044,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "39dc9018a2a41edd455b0003250ae5109022da0baacffad6697a4ce5fd43be0c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any such suit, action, audits, investigations, examinations, inquiries or proceeding shall be governed by the laws of the State of New York (without giving effect to any conflicts of law principles that would result in the application of the laws of another state)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Choice-of-law provision applying New York law, without regard to conflicts-of-law principles, to suits involving the Debt Financing Sources.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "500f0b5d4f43d442b5d554a180b797c9da9f89d2d40949fc40fbc3b2063177b6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a179e6789e075f1024168fe3660816cc437cec3c378d2aa377b75c215c2c64fb",
+          "document_ordinal": 0,
+          "absolute_start": 1061,
+          "absolute_end": 1325,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "be5d5b4459c9d757255e196f6fd780940d75fdd4f2e00a8a0a8d39595e32c1c7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "agree not to bring or support any suits, claims, charges, actions, audits, investigations, examinations or inquiries of any kind or description, whether in law or in equity, whether in contract or in tort or otherwise, against any Debt Financing Sources in any way arising out of or relating to, this Agreement, the Debt Financing or any of the transactions contemplated hereby or thereby or the performance of any services thereunder in any forum other than any federal or state court in the Borough of Manhattan, New York, New York",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Company covenants not to bring or support any claim against the Debt Financing Sources in any forum other than the designated New York court.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "86ee5aa0396cc02f42d4ac17c4b5941866e4e87985ec9bd6c5c80931685c6b6d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "163110498bbf11b8c580f6788e19c8e17fcf853b2c0bf67450426dcacf94c4c3",
+          "document_ordinal": 0,
+          "absolute_start": 1331,
+          "absolute_end": 1864,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "aaf24474e49374632e33782aec5e305136ebaba5f1fc179c779cc19f505c0f66",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "irrevocably waive, to the fullest extent that they may effectively do so, the defense of an inconvenient forum to the maintenance of such suit, action, audits, investigations, examinations, inquiries or proceeding in any such court",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Waiver of the inconvenient-forum defense for suits maintained in the designated court involving the Debt Financing Sources.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ff5ef0dfb0f92d51d342a00484d018edde3d9a77c907bac90fc8e4817e39c67e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5a39471d949def091507112a1c08dd54c8a67a99e45b65c226a931df5823ce92",
+          "document_ordinal": 0,
+          "absolute_start": 1870,
+          "absolute_end": 2101,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8a62be2a9f8edc6843230e676c112834ca7703b246499ee53f98fd558142713b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "knowingly, intentionally and voluntarily waive to the fullest extent permitted by applicable law trial by jury in any suit, action, audits, investigations, examinations, inquiries or proceeding brought against any Debt Financing Source in any way arising out of or relating to this Agreement, the Debt Financing, the Debt Commitment Letter or any of the transactions contemplated hereby or thereby or the performance of any services thereunder",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Waiver of jury trial for proceedings brought against any Debt Financing Source arising out of the Agreement, the Debt Financing, or the Debt Commitment Letter.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "65cc747feb179ac173820270f23634b6858eb7e6cd3aff5b9360ec42e9811322",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a387fbd7a4b5d305c103c437965de1cb18dbeaa87af3ea65f445b81c410939b3",
+          "document_ordinal": 0,
+          "absolute_start": 2107,
+          "absolute_end": 2550,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "22c5c0a2786b25fc165da2fed3a47260ef0b4de95ebd186185605d0555d46db2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "none of the Debt Financing Sources will have any liability or obligation to the Company Group or their respective Affiliates relating to or arising out of this Agreement, the Debt Financing, the Debt Commitment Letter or any of the transactions contemplated hereby or thereby or the performance of any services thereunder, whether in law or in equity, whether in contract or in tort or otherwise",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Non-recourse provision stating the Debt Financing Sources have no liability or obligation to the Company Group or its Affiliates.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c2a317a149974121166c11a784bccd0063ec9f4bd76677e6dd79e1a16cf1667e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "584c518be9f4ecee03d0e89d068fbcae8d587c7167aba761b2c1636d5d8a0bac",
+          "document_ordinal": 0,
+          "absolute_start": 2567,
+          "absolute_end": 2962,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "265dcb529e37450eeb96f4277e196e8912548e6adcf7f1d3aee1f4aafc70ff0d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Debt Financing Sources are express third-party beneficiaries of, and may enforce, Section 8.3(f), the last sentence of Section 9.3 and this Section 9.15 (collectively, the “Lender Protective Provisions”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Grants the Debt Financing Sources express third-party beneficiary status with the right to enforce the Lender Protective Provisions.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "36bf22a112b563715336d79613bd5cc9a7947343cdcc51293800057bb08b098d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a385399fa753d64a50223cebd7cf432578dc584542d192fd4f5a71524fcbfd1a",
+          "document_ordinal": 0,
+          "absolute_start": 2979,
+          "absolute_end": 3190,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4954eee0f157033e2248e7ae5344cf4d2f09348fbeda86121bb226446af61acb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "shall not be amended, waived or otherwise modified, in each case, in any way that is adverse to the Debt Financing Sources without the prior written consent of Debt Financing Sources party to the Debt Commitment Letter.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "FINANCING_PARTY_PROTECTION: Bars any amendment, waiver, or modification of the Lender Protective Provisions that is adverse to the Debt Financing Sources without their prior written consent.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e55b7044a41c458ffd4b07b18eda17bd0501daca61e47003646eee8ca48679cf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6300d578f7fcf24f82f51f25b35fa6fee53457ceefd1cc6dc4834c79d9b4830f",
+          "document_ordinal": 0,
+          "absolute_start": 3417,
+          "absolute_end": 3636,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7f4cb0e8b17eca4987cade7ab3c207b15be0cf43b36b7012b17573544057262a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "9.15",
+      "source_citation": "9.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "nothing in this Agreement shall impact the rights of Parent, Merger Sub and their respective Affiliates, or the obligations of the Debt Financing Sources, under the Debt Commitment Letter, the Debt Financing Fee Letter or any Definitive Debt Financing Agreements.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "A savings/carve-out clause preserving Parent's and Merger Sub's rights and the Debt Financing Sources' own obligations under separate financing documents; it is not a guaranty fact and does not itself grant a protection to the financing sources.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eeba1dc9f52b663d3a9853d8b4716637911bf05ea5b4fda746a9e9ef056cbb9c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8db0dbe5c3ef9f930110ef777de46b9ec083200b37843fb6a5050333761a4d98",
+          "document_ordinal": 0,
+          "absolute_start": 3686,
+          "absolute_end": 3949,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "64db70b51d09fbd76e2b0e448b71ca7785e4df82f7125661dbf607fdc0e676d1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a6d2338fddf5ba989909aa3c99c7f2f6db94fa330ff011786e0bde1d3e9fd810",
+        "producer_receipt_id": "da9d644af137ade908010281b0b9ff32c1fe183b161391cf32225b5b295067cd",
+        "governed_scope_digest": "51ce5823eee23360201449d8076d2dcea5e813c53956ad5464ffe5fecc154e28",
+        "extraction_provenance_id": "5e3fde99c196452b8555831fa23d6937822cdce12967846ae2fc085d01dbf22a"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "ade7b59966e0a96e1aafe7a5bdfd7531ff97ac945374b014b51c1b06ddae4078",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 16,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 14,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "6af50e33ca450b23d48e0aadad25890d01c15a0911a191f7d1a7f59fe9e332f3"
+  }
+}

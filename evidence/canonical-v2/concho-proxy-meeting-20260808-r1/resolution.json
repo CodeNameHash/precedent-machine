@@ -1,0 +1,2194 @@
+{
+  "resolved": [
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "citation_context": {
+        "parent_section_reference": "6.6",
+        "child_section_reference": "6.6",
+        "parent_chapeau_quote": "6.6 Stockholders Meetings.",
+        "child_clause_quote": "the Joint Proxy Statement shall include the Company Board Recommendation"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "a9fd7f5b786b97efee700fb4190c68f0424ed0246a814b09eaac8b148ac5d530",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 202395,
+        "absolute_end": 212640,
+        "concept_key": "COV-PROXY",
+        "ordinal": 1,
+        "source_anchor_id": "9f3659b698455c549a41d9ae7c08cff3b771a8ffbec984330121e0473f7dd318",
+        "provision_instance_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+        "closure_id": "307b287e015d29c34aee6576c084e953d83ae2816d5e0c815b968fa84f07ca0e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ccc1b67912137c280f5b460b693885ed63cb2fe9e89b19b39d342ae6a9d0cebd",
+        "claim_occurrence_id": "ce1aed825a5c8beceabc7cad31aac9212edf6a6ddda8a6158885833fd6e0747d",
+        "subject_occurrence_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+        "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Joint Proxy Statement shall include the Company Board Recommendation",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "10cdbf78690289ec9664972247548448b62f59c9d0fd9cbd8f9dcaa697e86d93"
+        ],
+        "attributes": {
+          "section_reference": "6.6",
+          "assertion_kind": "RECOMMENDATION_INCLUSION",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": null,
+          "document_ref": "Joint Proxy Statement",
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECOMMENDATION_INCLUSION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "10cdbf78690289ec9664972247548448b62f59c9d0fd9cbd8f9dcaa697e86d93",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8d7fe39de3f97a42416a2d97bc4f62864467adbceae1cde751c664c453f545d9",
+            "document_ordinal": 0,
+            "absolute_start": 958,
+            "absolute_end": 1030,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "5838412533c7e75a53ac800a31822e198e034fdd2cb109b75a5c3986dc500dee"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ccc1b67912137c280f5b460b693885ed63cb2fe9e89b19b39d342ae6a9d0cebd",
+            "claim_occurrence_id": "ce1aed825a5c8beceabc7cad31aac9212edf6a6ddda8a6158885833fd6e0747d",
+            "subject_occurrence_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+            "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Joint Proxy Statement shall include the Company Board Recommendation",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "10cdbf78690289ec9664972247548448b62f59c9d0fd9cbd8f9dcaa697e86d93"
+            ],
+            "attributes": {
+              "section_reference": "6.6",
+              "assertion_kind": "RECOMMENDATION_INCLUSION",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": null,
+              "document_ref": "Joint Proxy Statement",
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECOMMENDATION_INCLUSION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "10cdbf78690289ec9664972247548448b62f59c9d0fd9cbd8f9dcaa697e86d93",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8d7fe39de3f97a42416a2d97bc4f62864467adbceae1cde751c664c453f545d9",
+                "document_ordinal": 0,
+                "absolute_start": 958,
+                "absolute_end": 1030,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "5838412533c7e75a53ac800a31822e198e034fdd2cb109b75a5c3986dc500dee"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+            "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+            "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+            "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "citation_context": {
+        "parent_section_reference": "6.6",
+        "child_section_reference": "6.6",
+        "parent_chapeau_quote": "6.6 Stockholders Meetings.",
+        "child_clause_quote": "the Company shall not change such record date or establish a different record date for the Company Stockholders Meeting without the prior written consent of Parent"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "a9fd7f5b786b97efee700fb4190c68f0424ed0246a814b09eaac8b148ac5d530",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 202395,
+        "absolute_end": 212640,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "9f3659b698455c549a41d9ae7c08cff3b771a8ffbec984330121e0473f7dd318",
+        "provision_instance_id": "9e19822f2f250e8e5c4fb7bbf0a00ddd65695fc62acf993778ff93be8de107aa",
+        "closure_id": "a054da3ff5864f4d3cc90f5e606a75718b5cb8a539beae5ac3273586d31d1e40"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4f2487473f0a797f5871d3b5f8138139139597cdd045428f26b3f9fd6f563d92",
+        "claim_occurrence_id": "86f9b4f9d65e4bd4d526cd2863d222726cef9587587f8d5ff7a344acf9d47676",
+        "subject_occurrence_id": "9e19822f2f250e8e5c4fb7bbf0a00ddd65695fc62acf993778ff93be8de107aa",
+        "claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company shall not change such record date or establish a different record date for the Company Stockholders Meeting without the prior written consent of Parent",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "c86027cbe5626c82d94dca9c52e32d7bc8f80586c1acc65c34d5146b31345080"
+        ],
+        "attributes": {
+          "section_reference": "6.6",
+          "assertion_kind": "RECORD_DATE_ESTABLISHMENT",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": "Parent",
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": "Company Stockholders Meeting",
+          "document_ref": null,
+          "obligated_party": "the Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECORD_DATE_ESTABLISHMENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "c86027cbe5626c82d94dca9c52e32d7bc8f80586c1acc65c34d5146b31345080",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9c70b58f722f62fba0cae92823cbfafb3dc7fe45460ca14d8e520fddfab45554",
+            "document_ordinal": 0,
+            "absolute_start": 3522,
+            "absolute_end": 3685,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9e2e7d008b907be02a319d913a4d45f8025e7922ea0d5a4b1d0e917f2cf60312"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4f2487473f0a797f5871d3b5f8138139139597cdd045428f26b3f9fd6f563d92",
+            "claim_occurrence_id": "86f9b4f9d65e4bd4d526cd2863d222726cef9587587f8d5ff7a344acf9d47676",
+            "subject_occurrence_id": "9e19822f2f250e8e5c4fb7bbf0a00ddd65695fc62acf993778ff93be8de107aa",
+            "claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company shall not change such record date or establish a different record date for the Company Stockholders Meeting without the prior written consent of Parent",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "c86027cbe5626c82d94dca9c52e32d7bc8f80586c1acc65c34d5146b31345080"
+            ],
+            "attributes": {
+              "section_reference": "6.6",
+              "assertion_kind": "RECORD_DATE_ESTABLISHMENT",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": "Parent",
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": "Company Stockholders Meeting",
+              "document_ref": null,
+              "obligated_party": "the Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECORD_DATE_ESTABLISHMENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "c86027cbe5626c82d94dca9c52e32d7bc8f80586c1acc65c34d5146b31345080",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9c70b58f722f62fba0cae92823cbfafb3dc7fe45460ca14d8e520fddfab45554",
+                "document_ordinal": 0,
+                "absolute_start": 3522,
+                "absolute_end": 3685,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9e2e7d008b907be02a319d913a4d45f8025e7922ea0d5a4b1d0e917f2cf60312"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+            "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+            "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+            "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6(a)"
+        }
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "citation_context": {
+        "parent_section_reference": "6.6",
+        "child_section_reference": "6.6",
+        "parent_chapeau_quote": "6.6 Stockholders Meetings.",
+        "child_clause_quote": "the Joint Proxy Statement shall include the Parent Board Recommendation"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "a9fd7f5b786b97efee700fb4190c68f0424ed0246a814b09eaac8b148ac5d530",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 202395,
+        "absolute_end": 212640,
+        "concept_key": "COV-PROXY",
+        "ordinal": 1,
+        "source_anchor_id": "9f3659b698455c549a41d9ae7c08cff3b771a8ffbec984330121e0473f7dd318",
+        "provision_instance_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+        "closure_id": "307b287e015d29c34aee6576c084e953d83ae2816d5e0c815b968fa84f07ca0e"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "47975005e02ef4b0d23dadeb838b274080efbcba1be542c1804facb16e180f9d",
+        "claim_occurrence_id": "911767d12bf738c152070b01d41d322d6fc4ffd835d7eff1d0d1620c42523841",
+        "subject_occurrence_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+        "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the Joint Proxy Statement shall include the Parent Board Recommendation",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "87b52407803abd67edc752d48af2420904e9e1be6d1a9340bf73806f6b667c02"
+        ],
+        "attributes": {
+          "section_reference": "6.6",
+          "assertion_kind": "RECOMMENDATION_INCLUSION",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": null,
+          "document_ref": "Joint Proxy Statement",
+          "obligated_party": null,
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECOMMENDATION_INCLUSION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "87b52407803abd67edc752d48af2420904e9e1be6d1a9340bf73806f6b667c02",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "0d48d24908f7042d191070c78c68357737bf45f1b322ec6d630b594cdf95b1b1",
+            "document_ordinal": 0,
+            "absolute_start": 5636,
+            "absolute_end": 5707,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3c21318caf4ba47ba51c7633732403a6522b67e3be4d4cec00caaaccde889dfc"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "47975005e02ef4b0d23dadeb838b274080efbcba1be542c1804facb16e180f9d",
+            "claim_occurrence_id": "911767d12bf738c152070b01d41d322d6fc4ffd835d7eff1d0d1620c42523841",
+            "subject_occurrence_id": "10dcbb4f6e14f85ba617c66fa847669c54c865da3f4cf86abe50080b31fce8b6",
+            "claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the Joint Proxy Statement shall include the Parent Board Recommendation",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "87b52407803abd67edc752d48af2420904e9e1be6d1a9340bf73806f6b667c02"
+            ],
+            "attributes": {
+              "section_reference": "6.6",
+              "assertion_kind": "RECOMMENDATION_INCLUSION",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": null,
+              "document_ref": "Joint Proxy Statement",
+              "obligated_party": null,
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECOMMENDATION_INCLUSION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "87b52407803abd67edc752d48af2420904e9e1be6d1a9340bf73806f6b667c02",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "0d48d24908f7042d191070c78c68357737bf45f1b322ec6d630b594cdf95b1b1",
+                "document_ordinal": 0,
+                "absolute_start": 5636,
+                "absolute_end": 5707,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3c21318caf4ba47ba51c7633732403a6522b67e3be4d4cec00caaaccde889dfc"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+            "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+            "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+            "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.6",
+          "normalized_citation": "6.6",
+          "derived_citation": "6.6(b)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "cause to be filed with the SEC within thirty (30) days of the date of this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bac6986c3447c533f789f98a35126481f843354bd8ba57afd72296c2d0e13f67",
+      "closure_id": "83aaa887b32b97d80995687b92447f1185542aec489f7626f05fab1e70ccf2e4",
+      "normalised_phrase": "cause to be filed with the SEC within thirty (30) days of the date of this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall be required to adjourn or postpone the Company Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to the Company’s stockholders",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0da0369159ede68958bb620f9f09700bb75adae4576b30344d05d9847c1b75f5",
+      "closure_id": "03606754819abac5587535e3e89fa9f2ec5aef49f5b13d86f38a07b29405cd68",
+      "normalised_phrase": "shall be required to adjourn or postpone the Company Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to the Company’s stockholders",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "may adjourn or postpone the Company Stockholders Meeting if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented (either in person or by proxy) to obtain the Company Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ecbd0896791d7813fb3d3dccbea33fe7e84d54efb722d4b9410931999e972cef",
+      "closure_id": "087db92f7978885a92c343f1e6365d0ea2866759514ab6dc34b39f1f478ffa35",
+      "normalised_phrase": "may adjourn or postpone the Company Stockholders Meeting if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented (either in person or by proxy) to obtain the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "ADJOURNMENT_REASON_NOT_DIRECTLY_GROUNDED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented (either in person or by proxy) to constitute a quorum necessary to conduct business at such Parent Stockholders Meeting",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d079d355ef764d7f6e2f4713ded240d1bcc4da2b9577f00a560be2f2f09f9052",
+      "closure_id": "1a56f95f481e0910e4bb052203b954497c46649a5e9141e336bc9682d9e8c7f7",
+      "normalised_phrase": "if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented (either in person or by proxy) to constitute a quorum necessary to conduct business at such Parent Stockholders Meeting",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "unless otherwise agreed to by the Parties, the Company Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Business Days after the date for which the meeting was previously scheduled",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "24c12cbb07adc744c1f3f815cf0ce248a808ac3d03be1329209c6743ae746da6",
+      "closure_id": "2a1a40424946832202e5d50640e56fa6f946cb925b357b813b028117f70907f5",
+      "normalised_phrase": "unless otherwise agreed to by the Parties, the Company Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Business Days after the date for which the meeting was previously scheduled",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "unless otherwise agreed to by the Parties, the Parent Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Business Days after the date for which the meeting was previously scheduled",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4f30a83026471f61ae514ea495ac4d1b8303de97d2dc90bfd4aa1714d2e66624",
+      "closure_id": "30f3925e92c601d40afa562de26c33d8eadcb79d3a3844b74bbccab5f7680791",
+      "normalised_phrase": "unless otherwise agreed to by the Parties, the Parent Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Business Days after the date for which the meeting was previously scheduled",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "will use reasonable best efforts to convene such meeting within forty-five (45) days thereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2385885fc8c76d597aec1493ea5837b3dd20d5089726f800e2d5f6f2b42e1acb",
+      "closure_id": "3a118c79402ae2344e02f69fc633ecfceb86f5f03af8e438f8c104de173fdf03",
+      "normalised_phrase": "will use reasonable best efforts to convene such meeting within forty-five (45) days thereof",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "47975005e02ef4b0d23dadeb838b274080efbcba1be542c1804facb16e180f9d",
+      "closure_id": "3c21318caf4ba47ba51c7633732403a6522b67e3be4d4cec00caaaccde889dfc",
+      "normalised_phrase": "the Joint Proxy Statement shall include the Parent Board Recommendation",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 438,
+          "end": 453,
+          "excerpt": "held as promptly as reasonably practicable following the clearance of the Joint Proxy Statement by the SEC and the Registration Statement is declared effective by the SEC (and",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1293,
+          "end": 1308,
+          "excerpt": "essary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to the Company’s stockholders or (B) if, as of the time for which",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5150,
+          "end": 5165,
+          "excerpt": "held as promptly as reasonably practicable following the clearance of the Joint Proxy Statement by the SEC and the Registration Statement is declared effective by the SEC (and",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5964,
+          "end": 5979,
+          "excerpt": "essary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to Parent’s stockholders or (B) if, as of the time for which the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall duly approve and adopt this Agreement in its capacity as the sole stockholder of Merger Sub in accordance with applicable Law and the Organizational Documents of Merger Sub",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "08216b31bea02b5a25e760ca9000a0776890746285b040ac677ade3cc32d970d",
+      "closure_id": "473bcea14e9b2a21bd7d5bb7bfd5e7097a91ad596c769e9c02cf318d8d31bdc9",
+      "normalised_phrase": "Parent shall duly approve and adopt this Agreement in its capacity as the sole stockholder of Merger Sub in accordance with applicable Law and the Organizational Documents of Merger Sub",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Parties shall cooperate and use their reasonable best efforts to set the record dates for and hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, on the same day.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5ee295441a1a1c7bbad1c92baa09c8ddbabc5a682e7390689bd9028b6d61a031",
+      "closure_id": "4b142a4df759cb2c9e088732bf56a1e66860f576265dd90641244e75f2b2a2a8",
+      "normalised_phrase": "The Parties shall cooperate and use their reasonable best efforts to set the record dates for and hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, on the same day.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall not change such record date or establish a different record date for the Parent Stockholders Meeting without the prior written consent of the Company",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "19fda6cf3ee62a29936ffbe423ba919fa77e02ff72fb8704c252fb0c6fc4cbfe",
+      "closure_id": "4ffe4a92d50e4ac72253690a80ccd105f51161459fedd54cfc31314884d21bd5",
+      "normalised_phrase": "Parent shall not change such record date or establish a different record date for the Parent Stockholders Meeting without the prior written consent of the Company",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days prior to the End Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "96369117cf1a1a6352c2e9eaca46a251590b932a8fd42be430a086ca2af015bd",
+      "closure_id": "502e5b04eb72c5b7044b22a99f6b7d96b248a4f80b10d67e04135fbd0edf14a4",
+      "normalised_phrase": "the Company Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days prior to the End Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ccc1b67912137c280f5b460b693885ed63cb2fe9e89b19b39d342ae6a9d0cebd",
+      "closure_id": "5838412533c7e75a53ac800a31822e198e034fdd2cb109b75a5c3986dc500dee",
+      "normalised_phrase": "the Joint Proxy Statement shall include the Company Board Recommendation",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 438,
+          "end": 453,
+          "excerpt": "held as promptly as reasonably practicable following the clearance of the Joint Proxy Statement by the SEC and the Registration Statement is declared effective by the SEC (and",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1293,
+          "end": 1308,
+          "excerpt": "essary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to the Company’s stockholders or (B) if, as of the time for which",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5150,
+          "end": 5165,
+          "excerpt": "held as promptly as reasonably practicable following the clearance of the Joint Proxy Statement by the SEC and the Registration Statement is declared effective by the SEC (and",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5964,
+          "end": 5979,
+          "excerpt": "essary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to Parent’s stockholders or (B) if, as of the time for which the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "will use reasonable best efforts to convene such meeting within forty-five (45) days thereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5958e7f94f9a871006b20423afa256a83de5ed81bc20c0bc29a43ee59c58f7b7",
+      "closure_id": "602a96be34e946d03f1f11cf8f2aea15013d4817c7617217e08b2aabc8dca91c",
+      "normalised_phrase": "will use reasonable best efforts to convene such meeting within forty-five (45) days thereof",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Parent Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days prior to the End Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "94fcfe4f25e8b33f7c6d5aaa0de0ccf37d3223928a0340126b53e8e7baecf673",
+      "closure_id": "66917817bdaba9dfe47c346bb9484c578812b5d125a14465b08820dd5734557c",
+      "normalised_phrase": "the Parent Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days prior to the End Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4f2487473f0a797f5871d3b5f8138139139597cdd045428f26b3f9fd6f563d92",
+      "closure_id": "9e2e7d008b907be02a319d913a4d45f8025e7922ea0d5a4b1d0e917f2cf60312",
+      "normalised_phrase": "the Company shall not change such record date or establish a different record date for the Company Stockholders Meeting without the prior written consent of Parent",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 812,
+          "end": 832,
+          "excerpt": "s of the Company vote in favor of the adoption of this Agreement at the Company Stockholders Meeting and the Company Board shall solicit from stockholders of the Company proxies in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 1139,
+          "end": 1158,
+          "excerpt": " the contrary contained in this Agreement, the Company (i) shall be required to adjourn or postpone the Company Stockholders Meeting (A) to the extent necessary to ensure that any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1171,
+          "end": 1191,
+          "excerpt": "Agreement, the Company (i) shall be required to adjourn or postpone the Company Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1401,
+          "end": 1421,
+          "excerpt": "to the Company’s stockholders or (B) if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1602,
+          "end": 1622,
+          "excerpt": " by proxy) to constitute a quorum necessary to conduct business at such Company Stockholders Meeting and (ii) may adjourn or postpone the Company Stockholders Meeting if, as of the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 1636,
+          "end": 1655,
+          "excerpt": "necessary to conduct business at such Company Stockholders Meeting and (ii) may adjourn or postpone the Company Stockholders Meeting if, as of the time for which the Company Stock",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1668,
+          "end": 1688,
+          "excerpt": " such Company Stockholders Meeting and (ii) may adjourn or postpone the Company Stockholders Meeting if, as of the time for which the Company Stockholders Meeting is scheduled, the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1730,
+          "end": 1750,
+          "excerpt": "tpone the Company Stockholders Meeting if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1985,
+          "end": 2005,
+          "excerpt": " provided, however, that unless otherwise agreed to by the Parties, the Company Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Busine",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 2194,
+          "end": 2214,
+          "excerpt": "ich the meeting was previously scheduled (it being understood that such Company Stockholders Meeting shall be adjourned or postponed every time the circumstances described in the f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 2379,
+          "end": 2399,
+          "excerpt": "ing clauses (i)(A) and (i)(B) exist, and, with Parent’s consent, such Company Stockholders Meeting may be adjourned or postponed every time the circumstances described in the for",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 2544,
+          "end": 2564,
+          "excerpt": "ibed in the foregoing clause (ii) exist); and provided further that the Company Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 2781,
+          "end": 2801,
+          "excerpt": "ny shall promptly provide all voting tabulation reports relating to the Company Stockholders Meeting that have been prepared by the Company or the Company’s\n-59-\ntransfer agent, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 3472,
+          "end": 3483,
+          "excerpt": "ny Stockholder Approval from being obtained. Once the Company has established a record date for the Company Stockholders Meeting, the Company shall not change such record ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 3500,
+          "end": 3520,
+          "excerpt": " being obtained. Once the Company has established a record date for the Company Stockholders Meeting, the Company shall not change such record date or establish a different record ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4349,
+          "end": 4369,
+          "excerpt": " shall propose to be acted on by the stockholders of the Company at the Company Stockholders Meeting and the Company shall not submit any other proposal to such stockholders in con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4474,
+          "end": 4494,
+          "excerpt": "t submit any other proposal to such stockholders in connection with the Company Stockholders Meeting or otherwise (including any proposal inconsistent with the adoption of this Agr",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4728,
+          "end": 4748,
+          "excerpt": " not call any meeting of the stockholders of the Company other than the Company Stockholders Meeting.\n(b) Parent shall take all action necessary in accordance with applicable Laws ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 5811,
+          "end": 5830,
+          "excerpt": "ng to the contrary contained in this Agreement, Parent (i) shall be required to adjourn or postpone the Parent Stockholders Meeting (A) to the extent necessary to ensure that any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 5842,
+          "end": 5862,
+          "excerpt": " this Agreement, Parent (i) shall be required to adjourn or postpone the Parent Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6066,
+          "end": 6086,
+          "excerpt": "vided to Parent’s stockholders or (B) if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6265,
+          "end": 6285,
+          "excerpt": "r by proxy) to constitute a quorum necessary to conduct business at such Parent Stockholders Meeting and (ii) may adjourn or postpone the Parent Stockholders Meeting if, as of the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 6299,
+          "end": 6318,
+          "excerpt": " necessary to conduct business at such Parent Stockholders Meeting and (ii) may adjourn or postpone the Parent Stockholders Meeting if, as of the time for which the Parent Stockho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6330,
+          "end": 6350,
+          "excerpt": "at such Parent Stockholders Meeting and (ii) may adjourn or postpone the Parent Stockholders Meeting if, as of the time for which the Parent Stockholders Meeting is scheduled, ther",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6391,
+          "end": 6411,
+          "excerpt": "ostpone the Parent Stockholders Meeting if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6643,
+          "end": 6663,
+          "excerpt": "; provided, however, that unless otherwise agreed to by the Parties, the Parent Stockholders Meeting shall not be adjourned or postponed to a date that is more than ten (10) Busine",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 6851,
+          "end": 6871,
+          "excerpt": "hich the meeting was previously scheduled (it being understood that such Parent Stockholders Meeting shall be adjourned or postponed every time the circumstances described in the f",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 7040,
+          "end": 7060,
+          "excerpt": "clauses (i)(A) and (i)(B) exist, and, with the Company’s consent, such Parent Stockholders Meeting may be adjourned or postponed every\n-60-\ntime the circumstances described in th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 7209,
+          "end": 7229,
+          "excerpt": "ribed in the foregoing clause (ii) exist); and provided further that the Parent Stockholders Meeting shall not be adjourned or postponed to a date on or after two (2) Business Days",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 7445,
+          "end": 7465,
+          "excerpt": "ent shall promptly provide all voting tabulation reports relating to the Parent Stockholders Meeting that have been prepared by Parent or Parent’s transfer agent, proxy solicitor",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8113,
+          "end": 8124,
+          "excerpt": " Parent Stockholder Approval from being obtained. Once Parent has established a record date for the Parent Stockholders Meeting, Parent shall not change such record date o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8140,
+          "end": 8160,
+          "excerpt": "l from being obtained. Once Parent has established a record date for the Parent Stockholders Meeting, Parent shall not change such record date or establish a different record date ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8191,
+          "end": 8202,
+          "excerpt": "a record date for the Parent Stockholders Meeting, Parent shall not change such record date or establish a different record date for the Parent Stockholders Meeting withou",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8228,
+          "end": 8239,
+          "excerpt": "ders Meeting, Parent shall not change such record date or establish a different record date for the Parent Stockholders Meeting without the prior written consent of the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8255,
+          "end": 8275,
+          "excerpt": "not change such record date or establish a different record date for the Parent Stockholders Meeting without the prior written consent of the Company (which consent shall not be un",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8668,
+          "end": 8688,
+          "excerpt": " their reasonable best efforts to set the record dates for and hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, on the same day.\n(d) Withou",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8704,
+          "end": 8724,
+          "excerpt": "t the record dates for and hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, on the same day.\n(d) Without limiting the generality of the for",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8891,
+          "end": 8911,
+          "excerpt": " each of the Company and Parent agrees that its obligations to hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, pursuant to this Section 6.",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8927,
+          "end": 8947,
+          "excerpt": "es that its obligations to hold the Company Stockholders Meeting and the Parent Stockholders Meeting, as applicable, pursuant to this Section 6.6 shall not be affected by the makin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9808,
+          "end": 9828,
+          "excerpt": "nt shall hold or convene any meeting of its stockholders other than the Company Stockholders Meeting or the Parent Stockholders Meeting, as applicable.\n(f) Immediately after the ex",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9843,
+          "end": 9863,
+          "excerpt": "g of its stockholders other than the Company Stockholders Meeting or the Parent Stockholders Meeting, as applicable.\n(f) Immediately after the execution of this Agreement, Parent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall take all action necessary in accordance with applicable Laws and the Organizational Documents of Parent to duly give notice of, convene and hold (in person or virtually, in accordance with applicable Law) a meeting of its stockholders for the purpose of obtaining the Parent Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1d2ea3fad093a4eb256a388e450604cb60aad517e5f64ea437aeecdad06dc1ac",
+      "closure_id": "a7934d899a786545ac2680fcef4baf61e1846c7b9b23d3d9c444bfcb235a5735",
+      "normalised_phrase": "Parent shall take all action necessary in accordance with applicable Laws and the Organizational Documents of Parent to duly give notice of, convene and hold (in person or virtually, in accordance with applicable Law) a meeting of its stockholders for the purpose of obtaining the Parent Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Immediately after the execution of this Agreement, Parent shall duly approve and adopt this Agreement in its capacity as the sole stockholder of Merger Sub",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "84b13f90a59d195af94c63dec4044697545ea3bc9533a717f2df342ef5663935",
+      "closure_id": "b795f4a0a2b7b551fe43c0dc04bb15aca0429407a24e1ac2c8c49b04dacb2b20",
+      "normalised_phrase": "Immediately after the execution of this Agreement, Parent shall duly approve and adopt this Agreement in its capacity as the sole stockholder of Merger Sub",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "shall be required to adjourn or postpone the Parent Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to Parent’s stockholders",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e35144a3ce428bfb0670bc90da6d81a8779dc82cae194c2eb4c053b570dba849",
+      "closure_id": "c5a709b300dc0b74ab9f345a494ba6c48e60611ded8d2fcfa0b16b7a1a997b6b",
+      "normalised_phrase": "shall be required to adjourn or postpone the Parent Stockholders Meeting (A) to the extent necessary to ensure that any legally required supplement or amendment to the Joint Proxy Statement is provided to Parent’s stockholders",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "ADJOURNMENT_REASON_NOT_DIRECTLY_GROUNDED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented (either in person or by proxy) to constitute a quorum necessary to conduct business at such Company Stockholders Meeting",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "406b24052d725102dfcfd38f34e7a55aae7c58296ac9c9d5749adedcb3099bd9",
+      "closure_id": "c8911ac022992b2df859e2de7cb0ae87919ca2ae96667619f8f657d90082bfab",
+      "normalised_phrase": "if, as of the time for which the Company Stockholders Meeting is scheduled, there are insufficient shares of Company Common Stock represented (either in person or by proxy) to constitute a quorum necessary to conduct business at such Company Stockholders Meeting",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "may adjourn or postpone the Parent Stockholders Meeting if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented (either in person or by proxy) to obtain the Parent Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "eee91ac88ed2ff241fcc5829fd6b6944871e4210060ae4762ab9916ff8291be7",
+      "closure_id": "da7ade6ac3f2986a4588ec9ade59ff9a248a7dd406225358af1112a9b848fcff",
+      "normalised_phrase": "may adjourn or postpone the Parent Stockholders Meeting if, as of the time for which the Parent Stockholders Meeting is scheduled, there are insufficient shares of Parent Common Stock represented (either in person or by proxy) to obtain the Parent Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "deliver to the Company evidence of its vote or action by written consent so approving and adopting this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b2a91ad89f231426b752b98a1a5436ec981b66082325d0b9270bc38b3e0e3440",
+      "closure_id": "dace98dc7011945b8928da169716cac7d2f9ab9820e6fef63cc261e4eb233064",
+      "normalised_phrase": "deliver to the Company evidence of its vote or action by written consent so approving and adopting this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall take all action necessary in accordance with applicable Laws and the Organizational Documents of the Company to duly give notice of, convene and hold (in person or virtually, in accordance with applicable Law) a meeting of its stockholders for the purpose of obtaining the Company Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1a6c589046837268177d24f799cc3918a7f67915b8416c36a409f75c651c4fa2",
+      "closure_id": "ecbefe98a9ab588e6c3dd9eca490da8406da00b2f7503bdd3ca0ebc620ba7930",
+      "normalised_phrase": "The Company shall take all action necessary in accordance with applicable Laws and the Organizational Documents of the Company to duly give notice of, convene and hold (in person or virtually, in accordance with applicable Law) a meeting of its stockholders for the purpose of obtaining the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-PARENT-APPROVAL",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "a meeting of its stockholders for the purpose of obtaining the Parent Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "42c7543f75b61f82a859c34ca7687cc0a7b75def05a5e5b133ab58ce744f6d7f",
+      "closure_id": "ffcac155083ae371beea1204086a0e9a8a9ea742ca033fc819c29c2c1bbf9607",
+      "normalised_phrase": "a meeting of its stockholders for the purpose of obtaining the Parent Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-PARENT-APPROVAL"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall use reasonable best efforts to keep the Registration Statement effective as long as is necessary to consummate the Merger",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Registration Statement effectiveness-maintenance covenant; not a filing/mailing/meeting deadline or an approval assertion, so assertion_kind is uncertain.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "55aad4e63c981918910a46506f742e0d133f7f7a8dac4751d08cec16693556d0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b0e639b32d9dbe1f1448db4da2357744bdff7c24d8e2caba8b85df97f66a01be",
+          "document_ordinal": 0,
+          "absolute_start": 1837,
+          "absolute_end": 1971,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6d220fea3adc68ee690e55a48b69026c6601b2301e01187359398493dd65af4a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fade82543280190fb4630efb89cec24b7d884be2b41c3c5ed694eea9627a3224",
+        "producer_receipt_id": "fb650c316a739fae006494489e2536537a84050b8376c56e8534eb1858c79a0c",
+        "governed_scope_digest": "b4cdb846768fe8a641e010f62055794824dbf4077b20460554d2c0578274ee46",
+        "extraction_provenance_id": "7298ae000b719d19f065ec985f9041f72cbe042ac5c09ea38bfab67856495550"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "shall not file or mail such document or respond to the SEC prior to receiving the approval of the other, which approval shall not be unreasonably withheld, conditioned or delayed",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Mutual Company/Parent consent before filing or mailing SEC documents; this is inter-party document-review approval, not stockholder, Parent, or Merger Sub approval, and not a deadline, so assertion_kind and party role are uncertain.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "597287d2431dac02f87758ee4e28c2d7f0797e67cdf60aeb356e57e497c29eba",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "25846461e6722f02db050ebaac81bda4783b706372f61dbee5a757a00d86c136",
+          "document_ordinal": 0,
+          "absolute_start": 3134,
+          "absolute_end": 3312,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "12c52c3a02c16d79b88a10b2553996f81a7b70de5f1d458eca76db3be0387d7d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fade82543280190fb4630efb89cec24b7d884be2b41c3c5ed694eea9627a3224",
+        "producer_receipt_id": "fb650c316a739fae006494489e2536537a84050b8376c56e8534eb1858c79a0c",
+        "governed_scope_digest": "b4cdb846768fe8a641e010f62055794824dbf4077b20460554d2c0578274ee46",
+        "extraction_provenance_id": "7298ae000b719d19f065ec985f9041f72cbe042ac5c09ea38bfab67856495550"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "an appropriate amendment or supplement describing such information shall be promptly filed with the SEC and, to the extent required by applicable Law, disseminated to the stockholders of the Company and Parent",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Corrective-disclosure amendment/supplement obligation triggered by discovery of misleading information; not a scheduled filing, mailing, or meeting deadline, so assertion_kind is uncertain.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4b219e9dd977a03985427ef6506f94b74369883fccde3ad03df5f428c2af4000",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "57c658489811cbc2cd2f14f74f171b883d547a37f6fe6b2fe5982053c36bd34a",
+          "document_ordinal": 0,
+          "absolute_start": 4698,
+          "absolute_end": 4907,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4334da29ecee604fe7e2a94b751a37eaf033dc39e0ea580585a95bd01968a189",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fade82543280190fb4630efb89cec24b7d884be2b41c3c5ed694eea9627a3224",
+        "producer_receipt_id": "fb650c316a739fae006494489e2536537a84050b8376c56e8534eb1858c79a0c",
+        "governed_scope_digest": "b4cdb846768fe8a641e010f62055794824dbf4077b20460554d2c0578274ee46",
+        "extraction_provenance_id": "7298ae000b719d19f065ec985f9041f72cbe042ac5c09ea38bfab67856495550"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "such Company Stockholders Meeting shall be adjourned or postponed every time the circumstances described in the foregoing clauses (i)(A) and (i)(B) exist",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.6",
+        "assertion_kind": "ADJOURNMENT_CONTROL",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "the Company",
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": "Company Stockholders Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "488860e29b5a553f22e24e6827f9542c42ba88585a636bd65ed65566cba5b3ea",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "eee71e4b844b55e7a6fcf9f342a9805e49d9b00a8e66a336ad8a93e88493d12a",
+          "document_ordinal": 0,
+          "absolute_start": 2181,
+          "absolute_end": 2334,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "dbe1f2784e953c6dd2a4411aa18cfd06b1371ca10f5476475c4cadd805634f08",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.6",
+        "normalized_citation": "6.6",
+        "derived_citation": "6.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "with Parent’s consent, such Company Stockholders Meeting may be adjourned or postponed every time the circumstances described in the foregoing clause (ii) exist",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.6",
+        "assertion_kind": "ADJOURNMENT_CONSENT_OVERRIDE",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": "Parent",
+        "reason_kind": null,
+        "meeting_ref": "Company Stockholders Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0072b02bf38c891b1852b65674c7a55ccd097a53bfff770d6467b25e8582ae81",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "455a901a04ad6b59b1d9c2ab5e6262e600d3ae3b5d2c9a480631f7df711ef956",
+          "document_ordinal": 0,
+          "absolute_start": 2341,
+          "absolute_end": 2503,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "bea386739ad9db084856dd8a62f8613065eb4e3ec3ffcfa36d4788a2a791dff5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.6",
+        "normalized_citation": "6.6",
+        "derived_citation": "6.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "such Parent Stockholders Meeting shall be adjourned or postponed every time the circumstances described in the foregoing clauses (i)(A) and (i)(B) exist",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.6",
+        "assertion_kind": "ADJOURNMENT_CONTROL",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "Parent",
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": "Parent Stockholders Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6f5230f7c59c6d85c6166727169be7dfc82e6f4a6e8b208eee70d83300a2c8d3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "06a873baa9b47a73871fee4e945059965526d7d552c126c75ef95cc07bc067ac",
+          "document_ordinal": 0,
+          "absolute_start": 6839,
+          "absolute_end": 6991,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5cba4b54fbb5976f06f5049cf4c02e1f5a8f712003feb1b1980d4d0a24c6932d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.6",
+        "normalized_citation": "6.6",
+        "derived_citation": "6.6(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(b)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "with the Company’s consent, such Parent Stockholders Meeting may be adjourned or postponed every\n-60-\ntime the circumstances described in the foregoing clause (ii) exist",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.6",
+        "assertion_kind": "ADJOURNMENT_CONSENT_OVERRIDE",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": "the Company",
+        "reason_kind": null,
+        "meeting_ref": "Parent Stockholders Meeting",
+        "document_ref": null,
+        "obligated_party": null,
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e9a2e358450e75c10453880faa31907f6c6e63129a24d4b77dc8ad3e19fe6f06",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d5d71b7409a1a0202cfc00573c6b970d3cff9222c9a896f6c993af28bca012c4",
+          "document_ordinal": 0,
+          "absolute_start": 6998,
+          "absolute_end": 7169,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e9bb02f9584b434a24613c2b5d420201287be9ca7b7b07ee0c6deba2519ed8da",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "faa861bc71b0e844cac198ec402650bca603b987350b4a671684261e68998e86"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.6",
+        "normalized_citation": "6.6",
+        "derived_citation": "6.6(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company Board shall recommend that the stockholders of the Company vote in favor of the adoption of this Agreement at the Company Stockholders Meeting and the Company Board shall solicit from stockholders of the Company proxies in favor of the adoption of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Board recommend-to-vote and proxy-solicitation obligation; no assertion_kind covers this — distinct from RECOMMENDATION_INCLUSION, which is limited to the proxy statement's content.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a70922dd3edab90c51ad810485cb7843f616b1d27a2640093366d4a8f317d15c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a88d690c108eaf4473f76cda512c21c7d2ccc8213fd371180848a56c635b5bc5",
+          "document_ordinal": 0,
+          "absolute_start": 678,
+          "absolute_end": 952,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7d2f3b37f30225e12f29d559baabcc2feae2c3fbbf4b3cb6e12dafb044c69175",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "e043c6c6f4b80563998b6d71d6df77c3571a9eaea800ec0a8ec384e399162ecc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company shall promptly provide all voting tabulation reports relating to the Company Stockholders Meeting that have been prepared by the Company or the Company’s",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Voting-tabulation reporting/cooperation covenant; no matching assertion_kind.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7b24bc5e23961c7191eb7cf297befaa451774144e2c066b87650b41f8f363c87",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "554588d6a55c3636308ae8b05975a5279d53e6b7f643ed28b7d7b2f7719e299b",
+          "document_ordinal": 0,
+          "absolute_start": 2692,
+          "absolute_end": 2859,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3a63ff162e032d9665752ef32425bd50a8116701a045bf4c6a86b670509be627",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "e043c6c6f4b80563998b6d71d6df77c3571a9eaea800ec0a8ec384e399162ecc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Parent Board shall recommend that the stockholders of Parent vote in favor of the issuance of Parent Common Stock in the Merger and the Parent Board shall solicit from stockholders of Parent proxies in favor of the Parent Stock Issuance",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Board recommend-to-vote and proxy-solicitation obligation; no assertion_kind covers this — distinct from RECOMMENDATION_INCLUSION, which is limited to the proxy statement's content.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c681718db7697decff92b8009710407f8fb0ffced4563157ff052a40214520bf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cfb858a2ab97f155a56cb8b7c0fa1328512764feeaf79ad3a9520477a4fddf54",
+          "document_ordinal": 0,
+          "absolute_start": 5390,
+          "absolute_end": 5630,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0b0d0caf9445c350a61a556be573133daf96ecaa38d04414c28a1c88e246c045",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "e043c6c6f4b80563998b6d71d6df77c3571a9eaea800ec0a8ec384e399162ecc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall promptly provide all voting tabulation reports relating to the Parent Stockholders Meeting that have been prepared by Parent or Parent’s transfer agent, proxy solicitor or other Representative, and shall otherwise keep the Company reasonably informed regarding the status of the solicitation and any material oral or written communications from or to Parent’s stockholders with respect thereto.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Voting-tabulation reporting/cooperation covenant; no matching assertion_kind.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c9cadb4e6278c142cfc21813acc114e35bb4b467edabbaed2b7024e1f284e8b8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "64f04eb3a355ad19ac275575199a848edc6c47361c2207894adc1f9d57bd216c",
+          "document_ordinal": 0,
+          "absolute_start": 7362,
+          "absolute_end": 7773,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5e2f87ab767a9ec9f37a6a32c44ea372ffb994dd147e27035f12db9bbfcd5bfd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "9d8ff607581df73c5d3ee13df92d04af492d626621c29d67e37aadd9a65dc20c",
+        "producer_receipt_id": "3b424a0905a86e83b305adc4e1e07d294b5a97cd2bef76273a9266e2002f1c01",
+        "governed_scope_digest": "463fce1a522fe2837fcccaee4ffbb1f7076f1d2d6c56daaea388d7ab831175df",
+        "extraction_provenance_id": "e043c6c6f4b80563998b6d71d6df77c3571a9eaea800ec0a8ec384e399162ecc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "e5483d1ba35d7de56e2a187dc9f57659f95b9facbabb2db10085eb2d8aaa12e5",
+    "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 35,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 24,
+      "open_world": 11,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "835cd0004eff91b0cc99f865e3588e939a788a4e13afc417e247d7a62c3cb497"
+  }
+}

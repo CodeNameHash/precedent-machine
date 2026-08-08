@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:01:18.694Z",
+  "section_reference": "1.04",
+  "note": "General extraction run: deal=redhat, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.01\",\"1.02\",\"1.03\",\"1.04\",\"1.05\",\"1.06\",\"1.07\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"structure_assertions\":[{\"assertion_kind\":\"EFFECTS\",\"quote\":\"at the Effective Time all of the property, rights, privileges, powers and franchises of the Company and Sub shall vest in the Surviving Corporation, and all debts, liabilities and duties of the Company and Sub shall become the debts, liabilities and duties of the Surviving Corporation.\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

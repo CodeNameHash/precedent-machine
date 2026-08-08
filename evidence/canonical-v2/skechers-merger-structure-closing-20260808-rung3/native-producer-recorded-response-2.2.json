@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T03:47:06.417Z",
+  "section_reference": "2.2",
+  "note": "General extraction run: deal=skechers, family=MERGER_STRUCTURE_CLOSING, section_references=[\"2.1\",\"2.2\",\"2.3\",\"2.4\",\"2.5\",\"2.6\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"structure_assertions\":[{\"assertion_kind\":\"ACTIONS\",\"quote\":\"Parent, Merger Sub and the Company will cause the Merger to be consummated pursuant to the DGCL by filing a certificate of merger in customary form and substance (the “Certificate of Merger”) with the Secretary of State of the State of Delaware in accordance with the applicable provisions of the DGCL\"},{\"assertion_kind\":\"EFFECTIVE_TIME\",\"quote\":\"the time of such filing and acceptance for record by the Secretary of State of the State of Delaware, or such later time as may be agreed in writing by Parent, Merger Sub and the Company and specified in the Certificate of Merger, being referred to herein as the “Effective Time”\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

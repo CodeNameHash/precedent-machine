@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "ANTITRUST_REGULATORY",
+  "purpose": "General extraction run: family ANTITRUST_REGULATORY on deal topbuild.",
+  "section_references": [
+    "4.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.6",
+      "family_id": "ANTITRUST_REGULATORY"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-antitrust-regulatory/v1",
+  "prompt_version": 6,
+  "agreement_date": "2026-04-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T11:50:44.334Z",
+  "total_elapsed_ms": 327585,
+  "extraction_wall_clock_ms": 318405,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/topbuild-antitrust-regulatory-20260808-probe2f2/recording.json",
+  "code_provenance": {
+    "commit": "c781c6061bf87af84a79ce737842575e52aaed58",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "225b5e614513125e33909ddc525270b24ded941a8375cb89b96660b51bb33edc",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

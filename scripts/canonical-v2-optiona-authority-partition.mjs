@@ -16,7 +16,73 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: '22421fa8be103e97ec60dde72fb102e00938a0db5771d23f71dc68bd91883950',
+    // Repinned again 2026-08-07 for PLAN.md Step 2D1 defect 2: the excerpt
+    // identity guard compared a whole-payload digest where it should
+    // compare only the fields that define excerpt_id (excerpt_definition_
+    // key, excerpt_definition_version, excerpt_definition_payload_digest,
+    // ordered_component_assignments, excerpt_purpose,
+    // transformation_or_redaction_version, output_text_hash -- exactly the
+    // `identity` object lib/canonical-v2/source-structure.js's
+    // buildExcerpt() hashes into EXCERPT/V1's content id). TERMINATION and
+    // TERMINATION_FEE legitimately quote the same sentence and therefore
+    // share excerpt_id by design, per ADR-001, while their
+    // source_occurrence_id legitimately differs between the two families'
+    // independent runs; the whole-payload comparison read that difference
+    // as a conflict and rolled back whichever family's write reached the
+    // excerpt loop second, silently dropping 12 of 211 resolved claims
+    // (TERMINATION's). Adds one new declaration (`existing_payload jsonb;`)
+    // and replaces both the pre-INSERT and post-INSERT excerpt comparisons
+    // with a jsonb_build_object(...) extraction of just those seven
+    // identity fields, hashed with the existing payload_digest() function.
+    // No RAISE EXCEPTION message text changed. Verified before repinning,
+    // by diffing the extracted body against the pre-edit extraction: the
+    // only changes are the new declaration and the excerpt loop's two
+    // comparisons, nothing else in this ~370k-character function moved.
+    // See docs/codex-program/notes/step-2d1-runner-and-writer.md.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 2C1, found by Step 2C:
+    // conditional_termination_fee_values had no deal-scoping column, so
+    // Step 2C's serving read the whole table -- correct only because Modiv
+    // was the only deal that had ever written to it. This adds a
+    // `document_hash` real column (declared `existing_document_hash text;`
+    // alongside the existing `existing_digest text;`), populates it in the
+    // INSERT from `p_write_set->'deal'->>'document_hash'` rather than from
+    // canonical_payload (this kind's 11-key schema has no document_hash
+    // field to read one from, and adding one would change every existing
+    // row's content-addressed id under the same schema version), and adds a
+    // document_hash equality check to the identity-conflict guard alongside
+    // the existing payload-digest check, both before and after the INSERT.
+    // Verified before repinning, by diffing the extracted body against the
+    // pre-edit extraction: the only changes are the new declaration and the
+    // one INSERT loop above, nothing else in this ~370k-character function
+    // moved.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 4A2, which added
+    // canonical_v2_staging.conditional_termination_fee_values and taught
+    // DEAL_SCOPE_RUN to shape-check, recompute the identity of and durably
+    // write it -- verified before repinning that the extracted body carries
+    // that change and nothing else: it contains
+    // 'conditional_termination_fee_values', the new
+    // 'DEAL_SCOPE_RUN conditional termination fee value shape is invalid'
+    // and 'DEAL_SCOPE_RUN contains duplicate conditional termination fee
+    // values' messages, and still contains Step 4A1's STRUCTURAL_PROVISION_
+    // INSTANCE branch and 'DEAL_SCOPE_RUN provision shape is invalid'
+    // message, unchanged.
+    //
+    // Previously repinned 2026-08-07 for PLAN.md Step 4A1, which split
+    // DEAL_SCOPE_RUN's provision check into shape then lineage so a
+    // partyless STRUCTURAL_PROVISION_INSTANCE/V1 stops being rejected as
+    // malformed -- six of fifteen claim-publishing families could not be
+    // imported at all before it.
+    //
+    // This is the SECOND digest guard over the same edit. Step 4A1 updated
+    // scripts/canonical-v2-staging-schema.mjs, which pins the whole schema
+    // file, and adversarial review caught a third consumer that pinned the
+    // old error message. Neither pass found this one, because it hashes the
+    // function body rather than the file and only the full suite runs it. A
+    // schema edit therefore has three separate places to update, and nothing
+    // tells you that at edit time.
+    digest: 'e7fc80609686a00338cdbb68eabfe332a419ecb3411114ebcda93ddd7297e354',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',

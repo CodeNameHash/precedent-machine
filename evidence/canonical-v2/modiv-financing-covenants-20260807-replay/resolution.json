@@ -1,0 +1,207 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f7b15af85b84a773a48517b41f989546a3ba222485229c59c5bc2ea923d36243",
+      "closure_id": "de53bff0e4a635e513fdb24c452717b1536c631fdbadfe269ef57e6c6110051a",
+      "normalised_phrase": "will have sufficient cash for the payment of the Company Preferred Share Merger Consideration, the cash portion of the Company Common Share Merger Consideration, the cash portion of the OpCo Common Unit Merger Consideration, the Payoff Amount, all other amounts required to be paid by Parent in connection with the consummation of the Transactions and all fees and expenses of Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub, the Company and the Partnership incurred in connection with the Transactions.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING"
+    },
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall cooperate with Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "dacde8473e0da2bde36af548b6a4535393a717bc88fd139b037ef99af7d7e0ee",
+      "closure_id": "536e17cb9ae0c54ad22e3f159c006a7ee3de3297464f1bb52d90160781a8177b",
+      "normalised_phrase": "the Company shall cooperate with Parent",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING"
+    },
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "075452c4e55aad0992fab09cc5c1d66c63b6005dcb1ed2e4293094fc2a5a32b9",
+      "closure_id": "bdaf8525289fd6b38d153e2583cefde572fd62aec4dd15c5097734832d70eacc",
+      "normalised_phrase": "use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C)",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the availability of the Parent Credit Facility",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Sufficiency of funds is stated to rest in part on availability under the Parent Credit Facility, a committed lender arrangement, alongside the Company's cash on hand.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b64c66e1cf14fbc72398087916fb68065700e103a7befb5b57b03a49c4bfbbea",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "85bbbd6c6bd393bc1dadf5e0fa6c5e3439c766f0273de368634fd91f49a803a0",
+          "document_ordinal": 0,
+          "absolute_start": 351,
+          "absolute_end": 397,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0847d09479d5a2b7cd0efeebcc8ff99342b4fb3be0365ac702f1fa8e32fd26eb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "d689a3217aa0fabfb0911e10527644ad23c84aedf4c31ead1d9f355ac9ceded2",
+        "producer_receipt_id": "a351bc307b05665ac918833e48121f540680c3f0a2dcb17aed0b57d9da41c3dd",
+        "governed_scope_digest": "6b104e15ad2d8ceb19b0f9dba3a876acb895e5696e0e88779008a8756bdf2ffc",
+        "extraction_provenance_id": "bd37d7efcec994dac4bc99b80f31d9da1cf47fdec73b724fa561eeb747770bf8"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the interest rate swap transactions described under Section 5. 1(v)(i)(A – C)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Company obligation runs to maintaining pre-existing interest rate swap transactions cross-referenced at Section 5.1(v)(i)(A-C), with cooperation and commercially reasonable efforts owed to Parent.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6bac388f197b4bdb0f68d73eb10a0ff70e6ec2d3ac068493375867168fea5663",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b727d01335691c1b59e8b3da3bab8971a29294c17f65c5b35ac9dbddb6183315",
+          "document_ordinal": 0,
+          "absolute_start": 339,
+          "absolute_end": 418,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "af3880ad25dd765e82ba32395793dcc8fe7ac6404fac55218ee54f6a395d5421",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b65b873c05fa8a67861b893309f76cd2fd812456d0d21eb78a81f08a657d5e5f",
+        "producer_receipt_id": "25da5afc99ed88492ad4b142200cda154b8ab56723746b3fbec8bac6c9ba08af",
+        "governed_scope_digest": "77225420edf6aeb5d24293e71ea6e086091d47d8161cf18bbf8004dd89a89782",
+        "extraction_provenance_id": "c0a3d5bc866efafeb14a37353a2f0c6eb40373c0528092bbe1cdfc66314a39b3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b0fa3326c7c1cbf29d0d89d5e8fca870210048acc6423356b1726bccda231efa",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 5,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 3,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "42ce882983ded53fc960393c01152f0053b0325ed81d3e2823d8411347985d5f"
+  }
+}

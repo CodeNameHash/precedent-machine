@@ -1,0 +1,150 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "e977d2a12f9bad937cd5351706c9c758bf3d2ec1080e91803e16a90687f53572",
+      "deal_key": "deal:modiv-consideration:32065211e4688625",
+      "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 50411,
+        "absolute_start": 50327,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "465a81e4e7dca1bb6d10478eeaf04276e1718bd0c3a226e1316f51fb344cf076",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "exact_bytes_digest": "1c7bcd2fefe9bd564cbcc8aca8c3ba7f64e7b864e824cf3203e8d4c7b91bd41a",
+        "exact_text": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "8330d70a87d3cdb8af73edf81849a16572898b1db00fded46cee6e5f16cc85a0",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "fe1e165a1247f7e53e0fa5d51c1511f8995535ae94d46f892c8a62ec7771d950"
+          }
+        ],
+        "output_text_hash": "1c7bcd2fefe9bd564cbcc8aca8c3ba7f64e7b864e824cf3203e8d4c7b91bd41a",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "0174701fd4c2d921098954888d530a00efabc017434a5bcd0c7b2ff91bc96a77",
+        "source_occurrence_id": "ab62abbd9fa4f3c93f586fd9181ccc9fad36a8256d0f63d18a53615b78cf31ea",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 50412,
+        "absolute_start": 50293,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "ba3e97390c2c98ba9f7d89671335e66a9b958cd158054bfe9003b35a9a580926",
+        "concept_key": "CONS-DISSENT",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "ordinal": 1,
+        "provision_instance_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_anchor_id": "8bfc286c593c47ef1091b33a20db326d478eb3069e213b044752ee4fedbfb558",
+        "source_occurrence_id": "ab62abbd9fa4f3c93f586fd9181ccc9fad36a8256d0f63d18a53615b78cf31ea"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            },
+            "tag": "MECHANICAL"
+          },
+          "appraisal_status": "NOT_AVAILABLE",
+          "assertion_kind": "APPRAISAL_STATUS",
+          "consideration_term_ref": null,
+          "issuer_stock_ref": null,
+          "ratio_term_ref": null,
+          "section_reference": "2.6",
+          "statute_ref": null
+        },
+        "canonical_value": "NOT_AVAILABLE",
+        "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "6fff561d1d22fed25434edc8cb592b83e96bcdc424b73422027f10efe4efc14f",
+        "claim_revision_id": "30d1d281810768140df740b659de52028549408cb8433c03767bba0d631e8efc",
+        "closure_id": "67a2c0b87d5614f6bb5749073f2d5c509f9aa563d8bdb5de4a77f5bb002ab0de",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 50411,
+            "absolute_start": 50327,
+            "claim_evidence_id": "01828a84ee92536b0b8a6088bbde3ec6c5b01ced3636b36b28b21551c314a257",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8330d70a87d3cdb8af73edf81849a16572898b1db00fded46cee6e5f16cc85a0",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "01828a84ee92536b0b8a6088bbde3ec6c5b01ced3636b36b28b21551c314a257"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "taxonomy_codes": {
+          "appraisal_status": "NOT_AVAILABLE",
+          "assertion_kind": "APPRAISAL_STATUS"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "deal_admission_id": "e977d2a12f9bad937cd5351706c9c758bf3d2ec1080e91803e16a90687f53572",
+        "governed_deal_key": "deal:modiv-consideration:32065211e4688625",
+        "immutable_source_document_id": "fb76ef57355bef7f05b3b8955f5f7da4f430964923fecce0c95156c6e0b04a5c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "05ca7582d6a8ae52caddab9e0875d1efc47704672fdcc6ee51ad815c15c3caa8",
+        "source_admission_manifest_id": "7a99b9cb562d4cc87ba208d6b41c9ebc7fec9988aa4a91136df4a1e4c5ad0739",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

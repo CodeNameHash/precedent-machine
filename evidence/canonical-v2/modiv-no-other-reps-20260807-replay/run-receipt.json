@@ -1,0 +1,386 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "3.25"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "3.25",
+      "section_id": "6db1a78a7b21b56619b40fa56a928e162589cad9a9a4856ec2487ef2eb0aa0b5",
+      "parent_section_id": "aa6c968a4d3b4efabaefa521fb8b4f550589feda8ff6bebe7fb32bd09a97a1c0",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 144571,
+      "end": 148688,
+      "text_sha256": "f355c77630c7f7075e9d778e95ffede750cf73d6ae8b644d6da8758c97aaf8c8",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-no-other-reps-fraud/v1",
+      "prompt_version": 1,
+      "prompt_digest": "c81108d08310e894f16bf38e6c32639dc4cfc4077e15a97e9f3d79dcb0175485",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "4d69832dfdf26616788ad356a0277c17089e73b22165ce0820ef16c9c5c87982",
+        "input_scope_digest": "b9bc3563f6a06e6a90525c1db2f99aeb6f767da9c2888d533517b775d6d918e1",
+        "proposal_count": 3,
+        "evidence_residual_count": 2,
+        "producer_receipt_id": "edbaa1b8885a6a67388f561e97be060892dfae96d71a79a2aa9d05fc25f0abee"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "3.25",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.25",
+        "normalized_citation": "3.25",
+        "derived_citation": "3.25"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "999a4f8cde428e4f91adde4ac8c1c560a2ffd97d69b4c72446bc853005dd36e9",
+          "claim_occurrence_id": "820d554a4aaaeb87c672ab1e50d2d2e2584b8c093a69a28527d17cc9426c169a",
+          "subject_occurrence_id": "c9e4c8e840f3a9c4eee28898e15088d09897ccd661f5d5ddb15e74f3259dee51",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Except for the representations and warranties in this Article III, neither the Company, the Partnership nor any Person on behalf of the Company or the Partnership makes any express or implied representation or warranty with respect to the Company, the Partnership or any other Company Subsidiaries or their respective affiliates, businesses, operations, properties, assets, liabilities, condition (financial or otherwise) or prospects, or any estimates, projections, forecasts and other forward-looking information or business and strategic plan information regarding the Company, the Partnership and the other Company Subsidiaries or with respect to any other information provided or made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in connection with the Mergers or the other Transactions (including any information, documents, projections, forecasts, estimates, predictions or other material made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in “data rooms,” management presentations or due diligence sessions in expectation of the Mergers or the other Transactions), and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "df067e50e18d078c7d4d3f3f3ac5a996f987c77d3dfe765aad598267f7826fef"
+          ],
+          "attributes": {
+            "section_reference": "3.25",
+            "representation_side": "TARGET",
+            "representation_maker_ref": "the Company, the Partnership",
+            "agreement_scope_quote": "the representations and warranties in this Article III"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "df067e50e18d078c7d4d3f3f3ac5a996f987c77d3dfe765aad598267f7826fef",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "eca22af16ae32f3a95b71997cb1aa1078f78bbe9ee93707ec6ca52e8e850c931",
+              "document_ordinal": 0,
+              "absolute_start": 72,
+              "absolute_end": 1372,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c0bad6e6b377784c7ee46637f648b67bd30e31326be44876a8a3b58e95267e13"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "4d69832dfdf26616788ad356a0277c17089e73b22165ce0820ef16c9c5c87982",
+          "producer_receipt_id": "edbaa1b8885a6a67388f561e97be060892dfae96d71a79a2aa9d05fc25f0abee",
+          "governed_scope_digest": "cf184cdceac4ef223d7a14ff35551c78c3bc1fde74797b5cec2cf38cb018cc5b",
+          "extraction_provenance_id": "0ce369fb7926d3dfc0efc0ff195830e2858d2b8c32066c78e102ac0c78f948cf"
+        }
+      }
+    },
+    {
+      "section_reference": "3.25",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.25",
+        "normalized_citation": "3.25",
+        "derived_citation": "3.25"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "451f177a35685e7398c33e6aad81eaae78c66a1e0c3b4ac6f7bcecf4f825d764",
+          "claim_occurrence_id": "aed357ef571eb6e77219f32d88260217b75b8c449bae9b8de495e222c90f8dff",
+          "subject_occurrence_id": "dc541d8882527c21f4fe099eafd43affbc37d9e903c0efc158a7d2e3e6395173",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "In particular, and without limiting the generality of the foregoing, except for the representations and warranties in this Article III, neither the Company, the Partnership nor any other Person makes or has made any express or implied representation or warranty to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives with respect to (a) any financial projection, forecast, estimate, budget or prospect information relating to the Company, the Partnership, any of the other Company Subsidiaries or their respective businesses or (b) any oral or written information presented to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives in the course of their due diligence investigation of the Company and the Partnership, the negotiation of this Agreement or the course of the Mergers or the other Transactions.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0872b71702bde9a3bad8d18dcbb2e4076e4cf9009d796c457258f0ed3bee134f"
+          ],
+          "attributes": {
+            "section_reference": "3.25",
+            "representation_side": "TARGET",
+            "representation_maker_ref": "the Company, the Partnership",
+            "agreement_scope_quote": "the representations and warranties in this Article III"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0872b71702bde9a3bad8d18dcbb2e4076e4cf9009d796c457258f0ed3bee134f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3f8ef2349ec155eb9925ab8d3f3b708706d88e8faa723d71d5a529f572cc1605",
+              "document_ordinal": 0,
+              "absolute_start": 1373,
+              "absolute_end": 2274,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "86e30531c52c686457082aa8136fc9987805395b4aec0d981fcdd623b778a60a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "4d69832dfdf26616788ad356a0277c17089e73b22165ce0820ef16c9c5c87982",
+          "producer_receipt_id": "edbaa1b8885a6a67388f561e97be060892dfae96d71a79a2aa9d05fc25f0abee",
+          "governed_scope_digest": "cf184cdceac4ef223d7a14ff35551c78c3bc1fde74797b5cec2cf38cb018cc5b",
+          "extraction_provenance_id": "0ce369fb7926d3dfc0efc0ff195830e2858d2b8c32066c78e102ac0c78f948cf"
+        }
+      }
+    },
+    {
+      "section_reference": "3.25",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.25",
+        "normalized_citation": "3.25",
+        "derived_citation": "3.25"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f93d1e058701c12fb55d603bf8414a8a90657637a8f31f0aa59affdd06d101c2",
+          "claim_occurrence_id": "d86a88ccd7d8e97eb763f8363d58b664d78f73534bafb4f18bc367a6513b93dc",
+          "subject_occurrence_id": "adecc0fc3cee21ab05069193022d5723d1d72a41b488b3462169cfe21b6b47c4",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 2,
+          "state": "PRESENT",
+          "raw_value": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9590d3a3854851924b602edb486122fa9ef46197da3958aaf79bf6c2147d2d56"
+          ],
+          "attributes": {
+            "section_reference": "3.25",
+            "representation_side": "BUYER",
+            "representation_maker_ref": "Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub",
+            "agreement_scope_quote": "the representations and warranties expressly set forth in Article IV"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9590d3a3854851924b602edb486122fa9ef46197da3958aaf79bf6c2147d2d56",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7ef799cefbf6f091b875edaba431a27413f205720b0db1f574e542072055c2aa",
+              "document_ordinal": 0,
+              "absolute_start": 2275,
+              "absolute_end": 2945,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1be79d45681804bb6a22d81ded933f49cb36ae6b1470f119e907aba4f783b9f9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "4d69832dfdf26616788ad356a0277c17089e73b22165ce0820ef16c9c5c87982",
+          "producer_receipt_id": "edbaa1b8885a6a67388f561e97be060892dfae96d71a79a2aa9d05fc25f0abee",
+          "governed_scope_digest": "cf184cdceac4ef223d7a14ff35551c78c3bc1fde74797b5cec2cf38cb018cc5b",
+          "extraction_provenance_id": "0ce369fb7926d3dfc0efc0ff195830e2858d2b8c32066c78e102ac0c78f948cf"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "3.25",
+      "reason": "OPEN_WORLD_CANDIDATE",
+      "quote_preview": "and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
+      "why_unmapped": "Acknowledgment of the no-other-reps disclaimer, but contains no reliance-limiting language (\"rely\"/\"reliance\" never appears in this scope), so it cannot be quote-backed as a non-reliance assertion.",
+      "evidence": [
+        {
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d5b96e09be74ecead51304a73fb761234e98fc30bd5c592e487564b1fd488bfc",
+          "document_ordinal": 0,
+          "absolute_start": 1274,
+          "absolute_end": 1372,
+          "ordinal": 0
+        }
+      ]
+    },
+    {
+      "section_reference": "3.25",
+      "reason": "OPEN_WORLD_CANDIDATE",
+      "quote_preview": "will have or be subject to any liability or indemnification obligation to the Company, the Partnership or any of their a",
+      "why_unmapped": "Liability/indemnification carve-out tied to Article IV and covenant breaches; describes remedy effect rather than one of the four defined disclaimer elements, and its scope/interaction with the fraud or non-reliance concepts is uncertain from this text alone.",
+      "evidence": [
+        {
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e97960b34d053ebf58d5b5406778b12d2953d98fd5712c743ba774517a9af7e",
+          "document_ordinal": 0,
+          "absolute_start": 3359,
+          "absolute_end": 3586,
+          "ordinal": 0
+        }
+      ]
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.25",
+      "source_byte_length": 4117,
+      "covered_byte_length": 2871,
+      "coverage_share": 0.6973524410978869,
+      "marker_counts": {
+        "as of": 0,
+        "except": 4,
+        "knowledge": 4,
+        "material": 2,
+        "total": 10
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 10,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.25",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1754,
+          "end": 1757
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1949,
+          "end": 1952
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 2,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1754,
+          "end": 1757
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1949,
+          "end": 1952
+        }
+      ],
+      "disagreement_count": 2
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 2,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 3,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "fe228fdf5e25d3021ca8c8f5a408d72296a2478e97680f9445c269afd3774c63"
+}

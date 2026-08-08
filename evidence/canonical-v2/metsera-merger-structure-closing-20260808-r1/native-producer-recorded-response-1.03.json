@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T10:57:51.052Z",
+  "section_reference": "1.03",
+  "note": "General extraction run: deal=metsera, family=MERGER_STRUCTURE_CLOSING, section_references=[\"1.01\",\"1.02\",\"1.03\",\"1.04\",\"1.05\",\"1.06\"] (all dispatched as MERGER_STRUCTURE_CLOSING via section_family_assignments), prompt_id=native-producer-merger-structure/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"structure_assertions\":[{\"assertion_kind\":\"ACTIONS\",\"quote\":\"on the Closing Date, the Company shall file with the Secretary of State of the State of Delaware, a certificate of merger (the “Certificate of Merger”)\"},{\"assertion_kind\":\"EFFECTIVE_TIME\",\"quote\":\"The Merger shall become effective at such time as the Certificate of Merger is duly filed with such Secretary of State or at such other time as Parent and the Company shall agree and specify in the Certificate of Merger (the time the Merger becomes effective being referred to herein as the “Effective Time”).\"}],\"structure_mechanics\":[],\"open_world_candidates\":[]}\n```"
+}

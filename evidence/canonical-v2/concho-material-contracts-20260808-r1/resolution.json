@@ -1,0 +1,4186 @@
+{
+  "resolved": [
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(i)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "“material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K under the Exchange Act)"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c3a82c3618bd8d52d34ab9903d6cac23fb67d480fa67661ddfe53bcc822837df",
+        "claim_occurrence_id": "6027613c5f3d1785daa07a908b055526ae30c054659b813cbf17ca342bab0617",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "“material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K under the Exchange Act)",
+        "canonical_value": "SEC_ITEM_601",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "205de6bbcfce5cc2c74548dda6d2351f7f4b1288e843c533cf92ad169d15a21f"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "SEC_ITEM_601",
+          "threshold_kind": null,
+          "threshold_value": null,
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "SEC_ITEM_601"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "205de6bbcfce5cc2c74548dda6d2351f7f4b1288e843c533cf92ad169d15a21f",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "faa78d0003b3d7a5e3278c7d526089fbfff1a770ec539a4a2f6a43d9c962538d",
+            "document_ordinal": 0,
+            "absolute_start": 240,
+            "absolute_end": 349,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a5d84f3e40fa7446f842d6b59243f51684fb1696f4269dc8cd5b9e81b9564be0"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c3a82c3618bd8d52d34ab9903d6cac23fb67d480fa67661ddfe53bcc822837df",
+            "claim_occurrence_id": "6027613c5f3d1785daa07a908b055526ae30c054659b813cbf17ca342bab0617",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "“material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K under the Exchange Act)",
+            "canonical_value": "SEC_ITEM_601",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "205de6bbcfce5cc2c74548dda6d2351f7f4b1288e843c533cf92ad169d15a21f"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "SEC_ITEM_601",
+              "threshold_kind": null,
+              "threshold_value": null,
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "SEC_ITEM_601"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "205de6bbcfce5cc2c74548dda6d2351f7f4b1288e843c533cf92ad169d15a21f",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "faa78d0003b3d7a5e3278c7d526089fbfff1a770ec539a4a2f6a43d9c962538d",
+                "document_ordinal": 0,
+                "absolute_start": 240,
+                "absolute_end": 349,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a5d84f3e40fa7446f842d6b59243f51684fb1696f4269dc8cd5b9e81b9564be0"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(i)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000"
+      },
+      "governing_context_quote": "(ii) each contract that provides for the acquisition, disposition, license, use, distribution or outsourcing of assets, services, rights or properties (other than Oil and Gas Properties) with respect to which the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "b3733fe0c232cc64fc2e1aac5a72d03262b3b86eada92991c3d5500dd3986654",
+        "claim_occurrence_id": "c9f61bf0e0ec0bfdc09fd0638428ceb3075a9b8ded151ec34f6c6c0de3cd7d75",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+        "canonical_value": "AGGREGATE_PAYMENTS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "16c820a05bc247f591bbb71559f50ce62f6476237ff7fc56ae61d1119a65a97a"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "AGGREGATE_PAYMENTS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": "ANNUAL",
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "AGGREGATE_PAYMENTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "16c820a05bc247f591bbb71559f50ce62f6476237ff7fc56ae61d1119a65a97a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b49ff07521a85c2b71b1fbb88ffc6cb80ef781b007337b60ab46d1e4e977ac5f",
+            "document_ordinal": 0,
+            "absolute_start": 560,
+            "absolute_end": 680,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "24d27680c750dc1ff5faadbd02d35e95bdf813765b6674518a2cac796cdec8d8"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "b3733fe0c232cc64fc2e1aac5a72d03262b3b86eada92991c3d5500dd3986654",
+            "claim_occurrence_id": "c9f61bf0e0ec0bfdc09fd0638428ceb3075a9b8ded151ec34f6c6c0de3cd7d75",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+            "canonical_value": "AGGREGATE_PAYMENTS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "16c820a05bc247f591bbb71559f50ce62f6476237ff7fc56ae61d1119a65a97a"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "AGGREGATE_PAYMENTS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": "ANNUAL",
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "AGGREGATE_PAYMENTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "16c820a05bc247f591bbb71559f50ce62f6476237ff7fc56ae61d1119a65a97a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b49ff07521a85c2b71b1fbb88ffc6cb80ef781b007337b60ab46d1e4e977ac5f",
+                "document_ordinal": 0,
+                "absolute_start": 560,
+                "absolute_end": 680,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "24d27680c750dc1ff5faadbd02d35e95bdf813765b6674518a2cac796cdec8d8"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(ii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000"
+      },
+      "governing_context_quote": "(ii) each contract that provides for the acquisition, disposition, license, use, distribution or outsourcing of assets, services, rights or properties (other than Oil and Gas Properties) with respect to which the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6900fa9006614b34528c46d025715d14e08b5fbee03ad78c763d5ff4cd8d1e39",
+        "claim_occurrence_id": "07c624e38c3e4ae49343374ce2adade231dadfca34b0be671565ddda009ef741",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+        "canonical_value": "USD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8e0a07b17125016fb3430f6f8f584f8f22680a61a587f7eae898af32a14f5111"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "AGGREGATE_PAYMENTS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": "ANNUAL",
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "threshold_kind": "USD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8e0a07b17125016fb3430f6f8f584f8f22680a61a587f7eae898af32a14f5111",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b49ff07521a85c2b71b1fbb88ffc6cb80ef781b007337b60ab46d1e4e977ac5f",
+            "document_ordinal": 0,
+            "absolute_start": 560,
+            "absolute_end": 680,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3b5ca137c58186776535792dfdcc4f9ef2b96afdd561c7fd10fef7297e3fc63d"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6900fa9006614b34528c46d025715d14e08b5fbee03ad78c763d5ff4cd8d1e39",
+            "claim_occurrence_id": "07c624e38c3e4ae49343374ce2adade231dadfca34b0be671565ddda009ef741",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+            "canonical_value": "USD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8e0a07b17125016fb3430f6f8f584f8f22680a61a587f7eae898af32a14f5111"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "AGGREGATE_PAYMENTS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": "ANNUAL",
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "threshold_kind": "USD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8e0a07b17125016fb3430f6f8f584f8f22680a61a587f7eae898af32a14f5111",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b49ff07521a85c2b71b1fbb88ffc6cb80ef781b007337b60ab46d1e4e977ac5f",
+                "document_ordinal": 0,
+                "absolute_start": 560,
+                "absolute_end": 680,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3b5ca137c58186776535792dfdcc4f9ef2b96afdd561c7fd10fef7297e3fc63d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(ii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(iii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000"
+      },
+      "governing_context_quote": "(iii) each contract that constitutes a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000, other than agreements solely between or among the Company and its Subsidiaries;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "facfbbe2ac9fede1ee19997293853174c59ac4788d02ef0ab3182a117cd903b8",
+        "claim_occurrence_id": "5a12739a77a37fce0d53e61a6aa6474596adc4f6c695a9bbab317093415c5b5a",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+        "canonical_value": "INDEBTEDNESS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a46d9f4e149dc54042b63e89b6f294c28054c3e2a5730dd8f6deeb1e3a589934"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "INDEBTEDNESS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "INDEBTEDNESS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a46d9f4e149dc54042b63e89b6f294c28054c3e2a5730dd8f6deeb1e3a589934",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a44e5b70953ddb28e8d9d917f7fcfb54285f269b0fe4d42992eeacad25d30521",
+            "document_ordinal": 0,
+            "absolute_start": 719,
+            "absolute_end": 931,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "376699303ce39732cf85f3faf690ee1bbdbd93974b3bbbf07c6415b4f585aa4c"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "facfbbe2ac9fede1ee19997293853174c59ac4788d02ef0ab3182a117cd903b8",
+            "claim_occurrence_id": "5a12739a77a37fce0d53e61a6aa6474596adc4f6c695a9bbab317093415c5b5a",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+            "canonical_value": "INDEBTEDNESS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a46d9f4e149dc54042b63e89b6f294c28054c3e2a5730dd8f6deeb1e3a589934"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "INDEBTEDNESS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "INDEBTEDNESS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a46d9f4e149dc54042b63e89b6f294c28054c3e2a5730dd8f6deeb1e3a589934",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a44e5b70953ddb28e8d9d917f7fcfb54285f269b0fe4d42992eeacad25d30521",
+                "document_ordinal": 0,
+                "absolute_start": 719,
+                "absolute_end": 931,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "376699303ce39732cf85f3faf690ee1bbdbd93974b3bbbf07c6415b4f585aa4c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(iii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(iii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000"
+      },
+      "governing_context_quote": "(iii) each contract that constitutes a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000, other than agreements solely between or among the Company and its Subsidiaries;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "696c6751eb96c4a4cf146d844fa9279aa67714953b4b438400a1494abf2a6d80",
+        "claim_occurrence_id": "f48f589d2a6cf39fbca106611f95059030c687eba71db2358e5b607ce8b0b5d4",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+        "canonical_value": "USD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e3814544406f477e033a1a6229cc2bd9aaa510b3b7720d41017254bec6d24644"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "INDEBTEDNESS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "threshold_kind": "USD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e3814544406f477e033a1a6229cc2bd9aaa510b3b7720d41017254bec6d24644",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a44e5b70953ddb28e8d9d917f7fcfb54285f269b0fe4d42992eeacad25d30521",
+            "document_ordinal": 0,
+            "absolute_start": 719,
+            "absolute_end": 931,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9cd8c9a4275000ca80f76867517347f7bbe6484aa4d82fd9466b62bdd1796e3a"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "696c6751eb96c4a4cf146d844fa9279aa67714953b4b438400a1494abf2a6d80",
+            "claim_occurrence_id": "f48f589d2a6cf39fbca106611f95059030c687eba71db2358e5b607ce8b0b5d4",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+            "canonical_value": "USD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e3814544406f477e033a1a6229cc2bd9aaa510b3b7720d41017254bec6d24644"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "INDEBTEDNESS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "threshold_kind": "USD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e3814544406f477e033a1a6229cc2bd9aaa510b3b7720d41017254bec6d24644",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a44e5b70953ddb28e8d9d917f7fcfb54285f269b0fe4d42992eeacad25d30521",
+                "document_ordinal": 0,
+                "absolute_start": 719,
+                "absolute_end": 931,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9cd8c9a4275000ca80f76867517347f7bbe6484aa4d82fd9466b62bdd1796e3a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(iii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(iv)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract"
+      },
+      "governing_context_quote": "(iv) each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract that are not terminable without penalty or other liability to the Company (other than any ongoing obligation pursuant to such contract that is not caused by any such termination) within sixty (60) days, other than contracts related to drilling rigs;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a267595f9321079340c16afaa037063891a0dc96ef783e0be48cb8a7e7dcae6f",
+        "claim_occurrence_id": "83a64788b2c20fe79981c810b8b2b6558d5eda95d1f478788035caf62c3cf3e4",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 3,
+        "state": "PRESENT",
+        "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+        "canonical_value": "REAL_ESTATE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "2164e98ca36ad894c423d55fb088bb9b8241194816ba825a21f3e621387f53bd"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "REAL_ESTATE",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "REAL_ESTATE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2164e98ca36ad894c423d55fb088bb9b8241194816ba825a21f3e621387f53bd",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c310e637db66053cb3296679921718f4695f184ce036c5b45052b6f3c1e36ac4",
+            "document_ordinal": 0,
+            "absolute_start": 1018,
+            "absolute_end": 1214,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9612f28c793ce9151218f7dbd5e4a7ddac106d1cfb807a45dc53212934e5bf78"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a267595f9321079340c16afaa037063891a0dc96ef783e0be48cb8a7e7dcae6f",
+            "claim_occurrence_id": "83a64788b2c20fe79981c810b8b2b6558d5eda95d1f478788035caf62c3cf3e4",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 3,
+            "state": "PRESENT",
+            "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+            "canonical_value": "REAL_ESTATE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "2164e98ca36ad894c423d55fb088bb9b8241194816ba825a21f3e621387f53bd"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "REAL_ESTATE",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "REAL_ESTATE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2164e98ca36ad894c423d55fb088bb9b8241194816ba825a21f3e621387f53bd",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "c310e637db66053cb3296679921718f4695f184ce036c5b45052b6f3c1e36ac4",
+                "document_ordinal": 0,
+                "absolute_start": 1018,
+                "absolute_end": 1214,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9612f28c793ce9151218f7dbd5e4a7ddac106d1cfb807a45dc53212934e5bf78"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(iv)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(iv)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract"
+      },
+      "governing_context_quote": "(iv) each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract that are not terminable without penalty or other liability to the Company (other than any ongoing obligation pursuant to such contract that is not caused by any such termination) within sixty (60) days, other than contracts related to drilling rigs;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "2ad36c32d3060a5fc9b838f18085a26c176efd5a8d9a99143e23df51177a8407",
+        "claim_occurrence_id": "ac53d283314612a1c92e574af71dd5d472fee917d653e92f6e6691b02072e0d7",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+        "canonical_value": "USD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b78af02ac0a4213e9ef0daf44fa307c68dee9b1ae78fd2878025ac4548e535d3"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "REAL_ESTATE",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "threshold_kind": "USD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b78af02ac0a4213e9ef0daf44fa307c68dee9b1ae78fd2878025ac4548e535d3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c310e637db66053cb3296679921718f4695f184ce036c5b45052b6f3c1e36ac4",
+            "document_ordinal": 0,
+            "absolute_start": 1018,
+            "absolute_end": 1214,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "1ee095c8793cd1e7b48d566e58cbe4f263bdf7a3e94aa8cc6bd7f30c69711a36"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "2ad36c32d3060a5fc9b838f18085a26c176efd5a8d9a99143e23df51177a8407",
+            "claim_occurrence_id": "ac53d283314612a1c92e574af71dd5d472fee917d653e92f6e6691b02072e0d7",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+            "canonical_value": "USD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b78af02ac0a4213e9ef0daf44fa307c68dee9b1ae78fd2878025ac4548e535d3"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "REAL_ESTATE",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "threshold_kind": "USD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b78af02ac0a4213e9ef0daf44fa307c68dee9b1ae78fd2878025ac4548e535d3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "c310e637db66053cb3296679921718f4695f184ce036c5b45052b6f3c1e36ac4",
+                "document_ordinal": 0,
+                "absolute_start": 1018,
+                "absolute_end": 1214,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "1ee095c8793cd1e7b48d566e58cbe4f263bdf7a3e94aa8cc6bd7f30c69711a36"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(iv)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(v)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision"
+      },
+      "governing_context_quote": "(v) each contract that is a non-competition contract or other contract that (A) purports to limit in any material respect either the type of business in which the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) may engage or the manner or locations in which any of them may so engage in any business (including any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision), (B) could require the disposition of any material assets or line of business of the Company or its Subsidiaries (or, after the Effective Time, Parent or its Subsidiaries) or (C) prohibits or limits the rights of the Company or any of its Subsidiaries to make, sell or distribute any products or services, or use, transfer or distribute, or enforce any of their rights with respect to, any of their material assets;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "94118cee5c29b96a992119e6d2ae2791db2d532057efe242b3b7142d0bde0d72",
+        "claim_occurrence_id": "37c52dc3c821444972bf137303e3e57193e183fe438820941bc2b317d8a9ded7",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 4,
+        "state": "PRESENT",
+        "raw_value": "any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision",
+        "canonical_value": "NONCOMPETE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "afd99383648362d7013b43e42ecc34fde248865c3fb4ff9930a36fe5757e8197"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "NONCOMPETE",
+          "threshold_kind": null,
+          "threshold_value": null,
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "NONCOMPETE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "afd99383648362d7013b43e42ecc34fde248865c3fb4ff9930a36fe5757e8197",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "31f9056844d3428232b730776f3173798f80fdcc28ecfd574c2a09950a85b126",
+            "document_ordinal": 0,
+            "absolute_start": 1815,
+            "absolute_end": 1955,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "6a847d699353275f403473cb0a09ad3ef7b53ec5d0fba5471de6c6ea433625cd"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "94118cee5c29b96a992119e6d2ae2791db2d532057efe242b3b7142d0bde0d72",
+            "claim_occurrence_id": "37c52dc3c821444972bf137303e3e57193e183fe438820941bc2b317d8a9ded7",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 4,
+            "state": "PRESENT",
+            "raw_value": "any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision",
+            "canonical_value": "NONCOMPETE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "afd99383648362d7013b43e42ecc34fde248865c3fb4ff9930a36fe5757e8197"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "NONCOMPETE",
+              "threshold_kind": null,
+              "threshold_value": null,
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "NONCOMPETE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "afd99383648362d7013b43e42ecc34fde248865c3fb4ff9930a36fe5757e8197",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "31f9056844d3428232b730776f3173798f80fdcc28ecfd574c2a09950a85b126",
+                "document_ordinal": 0,
+                "absolute_start": 1815,
+                "absolute_end": 1955,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "6a847d699353275f403473cb0a09ad3ef7b53ec5d0fba5471de6c6ea433625cd"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(v)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(vii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "each material partnership, joint venture or limited liability company agreement"
+      },
+      "governing_context_quote": "(vii) each material partnership, joint venture or limited liability company agreement, other than any customary joint operating agreements, unit agreements or participation agreements affecting the Oil and Gas Properties of the Company;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "527a639bafb2b910f990271774fea9b945685623a3559173083497219eeadac2",
+        "claim_occurrence_id": "82deb6f705a222b797fc9cda6cf60623426f10ff5fae8634663b0ad3a06e1ea9",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 5,
+        "state": "PRESENT",
+        "raw_value": "each material partnership, joint venture or limited liability company agreement",
+        "canonical_value": "JV_PARTNERSHIPS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "c5e8e200466f9baea5f52ea948d3e5c4f1c78ad9e4306c1c7dbd1f1742813f42"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "JV_PARTNERSHIPS",
+          "threshold_kind": null,
+          "threshold_value": null,
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "JV_PARTNERSHIPS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "c5e8e200466f9baea5f52ea948d3e5c4f1c78ad9e4306c1c7dbd1f1742813f42",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e8ee3393876dd1351f52afc3bd4f9a2cc343f29628bdd9e8adc4d55e4c2f9e5b",
+            "document_ordinal": 0,
+            "absolute_start": 2684,
+            "absolute_end": 2763,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3ae88e4d5a65b8d38e0d923c5ba932b612dc6ea46be6a56c4bdcdc9d2457a14d"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "527a639bafb2b910f990271774fea9b945685623a3559173083497219eeadac2",
+            "claim_occurrence_id": "82deb6f705a222b797fc9cda6cf60623426f10ff5fae8634663b0ad3a06e1ea9",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 5,
+            "state": "PRESENT",
+            "raw_value": "each material partnership, joint venture or limited liability company agreement",
+            "canonical_value": "JV_PARTNERSHIPS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "c5e8e200466f9baea5f52ea948d3e5c4f1c78ad9e4306c1c7dbd1f1742813f42"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "JV_PARTNERSHIPS",
+              "threshold_kind": null,
+              "threshold_value": null,
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "JV_PARTNERSHIPS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "c5e8e200466f9baea5f52ea948d3e5c4f1c78ad9e4306c1c7dbd1f1742813f42",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e8ee3393876dd1351f52afc3bd4f9a2cc343f29628bdd9e8adc4d55e4c2f9e5b",
+                "document_ordinal": 0,
+                "absolute_start": 2684,
+                "absolute_end": 2763,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3ae88e4d5a65b8d38e0d923c5ba932b612dc6ea46be6a56c4bdcdc9d2457a14d"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(vii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(ix)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract"
+      },
+      "governing_context_quote": "(ix) any contract (A) that provides for the sale by the Company or any of its Subsidiaries of Hydrocarbons (1) in excess of 20,000 barrels of oil equivalent of Hydrocarbons per day over a period of one month (calculated on a yearly average basis) or (2) for a term greater than ten (10) years or (B) which the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract that, in the case of (A) or (B), (x) has a remaining term of greater than sixty (60) days and does not allow the Company or such Subsidiary to terminate it without penalty to the Company or such Subsidiary within 60 days and (y) provides for a “take-or-pay” clause or any similar prepayment obligation and acreage dedication, minimum volume commitments or capacity reservation fees to a gathering, transportation or other arrangement downstream of the wellhead, that cover, guaranty or commit volumes;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "65f590b84db0f79ddcccbb42b945946100c4593751f9eb322af37c0ae8ad4629",
+        "claim_occurrence_id": "081b12ea733f4cd6e265ab88fc4fec3a8cf2b1faa07a03af476775dcce3cec66",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 6,
+        "state": "PRESENT",
+        "raw_value": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+        "canonical_value": "AGGREGATE_PAYMENTS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7e9a6962f085537b8e1ff19e99ab0b39ee2fc744ac7c7268679ade5876691d3e"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "AGGREGATE_PAYMENTS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "AGGREGATE_PAYMENTS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7e9a6962f085537b8e1ff19e99ab0b39ee2fc744ac7c7268679ade5876691d3e",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9fb818a2e00ff5ed939735003f974c64cdaa71e031f5497eed4c68b439af53a4",
+            "document_ordinal": 0,
+            "absolute_start": 3660,
+            "absolute_end": 3835,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "21a3532fecf21df265c2b4b07b8ffa72e7d3bdd34cfc89535890e7fe12f759cc"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "65f590b84db0f79ddcccbb42b945946100c4593751f9eb322af37c0ae8ad4629",
+            "claim_occurrence_id": "081b12ea733f4cd6e265ab88fc4fec3a8cf2b1faa07a03af476775dcce3cec66",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 6,
+            "state": "PRESENT",
+            "raw_value": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+            "canonical_value": "AGGREGATE_PAYMENTS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7e9a6962f085537b8e1ff19e99ab0b39ee2fc744ac7c7268679ade5876691d3e"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "AGGREGATE_PAYMENTS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "AGGREGATE_PAYMENTS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7e9a6962f085537b8e1ff19e99ab0b39ee2fc744ac7c7268679ade5876691d3e",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9fb818a2e00ff5ed939735003f974c64cdaa71e031f5497eed4c68b439af53a4",
+                "document_ordinal": 0,
+                "absolute_start": 3660,
+                "absolute_end": 3835,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "21a3532fecf21df265c2b4b07b8ffa72e7d3bdd34cfc89535890e7fe12f759cc"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(ix)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(ix)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract"
+      },
+      "governing_context_quote": "(ix) any contract (A) that provides for the sale by the Company or any of its Subsidiaries of Hydrocarbons (1) in excess of 20,000 barrels of oil equivalent of Hydrocarbons per day over a period of one month (calculated on a yearly average basis) or (2) for a term greater than ten (10) years or (B) which the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract that, in the case of (A) or (B), (x) has a remaining term of greater than sixty (60) days and does not allow the Company or such Subsidiary to terminate it without penalty to the Company or such Subsidiary within 60 days and (y) provides for a “take-or-pay” clause or any similar prepayment obligation and acreage dedication, minimum volume commitments or capacity reservation fees to a gathering, transportation or other arrangement downstream of the wellhead, that cover, guaranty or commit volumes;",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "53b8fa1b63afb26cc4240cd6326ae21e9f0cff6b2c93d2c2853e45f6694c584f",
+        "claim_occurrence_id": "5c94a9bf0e6ab84efd3440a0e01186b8415084277ad39f53dd3b2b5c010ace56",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+        "claim_definition_version": 1,
+        "ordinal": 3,
+        "state": "PRESENT",
+        "raw_value": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+        "canonical_value": "USD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9de5dea501b7fa205b9af07e6da577cdf715c0077e13328cbd54ca681e4c4000"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "AGGREGATE_PAYMENTS",
+          "threshold_kind": "USD",
+          "threshold_value": "$100,000,000",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "threshold_kind": "USD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9de5dea501b7fa205b9af07e6da577cdf715c0077e13328cbd54ca681e4c4000",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9fb818a2e00ff5ed939735003f974c64cdaa71e031f5497eed4c68b439af53a4",
+            "document_ordinal": 0,
+            "absolute_start": 3660,
+            "absolute_end": 3835,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "493e3c14a428376ae5b88aa4d8b944f15600becc1b06b4c030f9102b36d21405"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "53b8fa1b63afb26cc4240cd6326ae21e9f0cff6b2c93d2c2853e45f6694c584f",
+            "claim_occurrence_id": "5c94a9bf0e6ab84efd3440a0e01186b8415084277ad39f53dd3b2b5c010ace56",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_definition_version": 1,
+            "ordinal": 3,
+            "state": "PRESENT",
+            "raw_value": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+            "canonical_value": "USD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9de5dea501b7fa205b9af07e6da577cdf715c0077e13328cbd54ca681e4c4000"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "AGGREGATE_PAYMENTS",
+              "threshold_kind": "USD",
+              "threshold_value": "$100,000,000",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "threshold_kind": "USD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9de5dea501b7fa205b9af07e6da577cdf715c0077e13328cbd54ca681e4c4000",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "9fb818a2e00ff5ed939735003f974c64cdaa71e031f5497eed4c68b439af53a4",
+                "document_ordinal": 0,
+                "absolute_start": 3660,
+                "absolute_end": 3835,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "493e3c14a428376ae5b88aa4d8b944f15600becc1b06b4c030f9102b36d21405"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(ix)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xiii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "each agreement that contains any “most favored nation” or most favored customer provision"
+      },
+      "governing_context_quote": "(xiii) each agreement that contains any “most favored nation” or most favored customer provision, call or put option, preferential right or rights of first or last offer, negotiation or refusal, in each case other than those contained in (A) any agreement in which such provision is solely for the benefit of the Company or any of its Subsidiaries, (B) customary royalty pricing provisions in Oil and Gas Leases or (C) customary preferential rights in joint operating agreements, unit agreements or participation agreements affecting the business or the Oil and Gas Properties of the Company or any of its Subsidiaries, to which the Company or any of its Subsidiaries or any of their respective Affiliates is subject, and is material to the business of the Company and its Subsidiaries, taken as a whole.",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0d516e165cad5ceb9cc23384a673c7a076a6fbe3207052baeaa408d44108a948",
+        "claim_occurrence_id": "ef4726e5a3ea9ff1bd35f1d07d85f04cb5f2d91c07ae65ae89210c132076b444",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 7,
+        "state": "PRESENT",
+        "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision",
+        "canonical_value": "EXCLUSIVITY_MFN",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "a0ca9e8334c1c7f2105513c146ea5101e91b4bf247630765a010ea29963f06ad"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "EXCLUSIVITY_MFN",
+          "threshold_kind": "ANY",
+          "threshold_value": "any",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "bucket_code": "EXCLUSIVITY_MFN"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a0ca9e8334c1c7f2105513c146ea5101e91b4bf247630765a010ea29963f06ad",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "919f2c6fb085864ab2f85778133317bcc329a1faa516b0627d1d8f971396b04e",
+            "document_ordinal": 0,
+            "absolute_start": 4738,
+            "absolute_end": 4831,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "85072af05b618d78d905c448723a22e4876edc6be2e89d147f3a5057ac356696"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0d516e165cad5ceb9cc23384a673c7a076a6fbe3207052baeaa408d44108a948",
+            "claim_occurrence_id": "ef4726e5a3ea9ff1bd35f1d07d85f04cb5f2d91c07ae65ae89210c132076b444",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 7,
+            "state": "PRESENT",
+            "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision",
+            "canonical_value": "EXCLUSIVITY_MFN",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "a0ca9e8334c1c7f2105513c146ea5101e91b4bf247630765a010ea29963f06ad"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "EXCLUSIVITY_MFN",
+              "threshold_kind": "ANY",
+              "threshold_value": "any",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "bucket_code": "EXCLUSIVITY_MFN"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a0ca9e8334c1c7f2105513c146ea5101e91b4bf247630765a010ea29963f06ad",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "919f2c6fb085864ab2f85778133317bcc329a1faa516b0627d1d8f971396b04e",
+                "document_ordinal": 0,
+                "absolute_start": 4738,
+                "absolute_end": 4831,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "85072af05b618d78d905c448723a22e4876edc6be2e89d147f3a5057ac356696"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(xiii)"
+        }
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xiii)",
+      "citation_context": {
+        "parent_section_reference": "4.19",
+        "child_section_reference": "4.19",
+        "parent_chapeau_quote": "4.19 Material Contracts.",
+        "child_clause_quote": "each agreement that contains any “most favored nation” or most favored customer provision"
+      },
+      "governing_context_quote": "(xiii) each agreement that contains any “most favored nation” or most favored customer provision, call or put option, preferential right or rights of first or last offer, negotiation or refusal, in each case other than those contained in (A) any agreement in which such provision is solely for the benefit of the Company or any of its Subsidiaries, (B) customary royalty pricing provisions in Oil and Gas Leases or (C) customary preferential rights in joint operating agreements, unit agreements or participation agreements affecting the business or the Oil and Gas Properties of the Company or any of its Subsidiaries, to which the Company or any of its Subsidiaries or any of their respective Affiliates is subject, and is material to the business of the Company and its Subsidiaries, taken as a whole.",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "435e603748fc6c247d19c4cba5a413423ebf4370cc3a05d0d87017086bc30b4d",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 90856,
+        "absolute_end": 98165,
+        "concept_key": "REP-T-CONTRACTS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "1353c031780fa966246b8646beacb603d18c08904b659de42d15288fc8a908de",
+        "provision_instance_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "closure_id": "843d9aacd4034230973dda550b59564c0a01da1f15aad067de31d082c38932bb"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "8fdc258d672b0fc328ffa5a5b96c4c9aa112122a6643c5d57c5ea7695152b343",
+        "claim_occurrence_id": "a37f3c9cfb3d8e7f06195bfcc6e1e1cc60a1048c36098174b2be883435e754fa",
+        "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+        "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+        "claim_definition_version": 1,
+        "ordinal": 4,
+        "state": "PRESENT",
+        "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision",
+        "canonical_value": "ANY",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b0c84762ba99316c2010dbb1cf536b15dd3d4aae11efdadbf10cd11bd2c36b57"
+        ],
+        "attributes": {
+          "section_reference": "4.19",
+          "party_making": "the Company",
+          "bucket_code": "EXCLUSIVITY_MFN",
+          "threshold_kind": "ANY",
+          "threshold_value": "any",
+          "cadence_kind": null,
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "threshold_kind": "ANY"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b0c84762ba99316c2010dbb1cf536b15dd3d4aae11efdadbf10cd11bd2c36b57",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "919f2c6fb085864ab2f85778133317bcc329a1faa516b0627d1d8f971396b04e",
+            "document_ordinal": 0,
+            "absolute_start": 4738,
+            "absolute_end": 4831,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a588599980dcc9b6f78d2fc253d046cbdf7c9dac413b2da9937b4dff4041eed7"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.19",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "8fdc258d672b0fc328ffa5a5b96c4c9aa112122a6643c5d57c5ea7695152b343",
+            "claim_occurrence_id": "a37f3c9cfb3d8e7f06195bfcc6e1e1cc60a1048c36098174b2be883435e754fa",
+            "subject_occurrence_id": "e61191dcfcb81ddf46c119d59e1960e2acf0584e1ce3e1a40d378c0eff1ea0d8",
+            "claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+            "claim_definition_version": 1,
+            "ordinal": 4,
+            "state": "PRESENT",
+            "raw_value": "each agreement that contains any “most favored nation” or most favored customer provision",
+            "canonical_value": "ANY",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b0c84762ba99316c2010dbb1cf536b15dd3d4aae11efdadbf10cd11bd2c36b57"
+            ],
+            "attributes": {
+              "section_reference": "4.19",
+              "party_making": "the Company",
+              "bucket_code": "EXCLUSIVITY_MFN",
+              "threshold_kind": "ANY",
+              "threshold_value": "any",
+              "cadence_kind": null,
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "threshold_kind": "ANY"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b0c84762ba99316c2010dbb1cf536b15dd3d4aae11efdadbf10cd11bd2c36b57",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "919f2c6fb085864ab2f85778133317bcc329a1faa516b0627d1d8f971396b04e",
+                "document_ordinal": 0,
+                "absolute_start": 4738,
+                "absolute_end": 4831,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a588599980dcc9b6f78d2fc253d046cbdf7c9dac413b2da9937b4dff4041eed7"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "MATERIAL_CONTRACTS",
+            "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+            "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+            "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+            "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 54,
+        "materiality_label": "MATERIAL_CONTRACTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.19",
+          "normalized_citation": "4.19",
+          "derived_citation": "4.19(a)(xiii)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "65f590b84db0f79ddcccbb42b945946100c4593751f9eb322af37c0ae8ad4629",
+      "closure_id": "21a3532fecf21df265c2b4b07b8ffa72e7d3bdd34cfc89535890e7fe12f759cc",
+      "normalised_phrase": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b3733fe0c232cc64fc2e1aac5a72d03262b3b86eada92991c3d5500dd3986654",
+      "closure_id": "24d27680c750dc1ff5faadbd02d35e95bdf813765b6674518a2cac796cdec8d8",
+      "normalised_phrase": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "facfbbe2ac9fede1ee19997293853174c59ac4788d02ef0ab3182a117cd903b8",
+      "closure_id": "376699303ce39732cf85f3faf690ee1bbdbd93974b3bbbf07c6415b4f585aa4c",
+      "normalised_phrase": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "527a639bafb2b910f990271774fea9b945685623a3559173083497219eeadac2",
+      "closure_id": "3ae88e4d5a65b8d38e0d923c5ba932b612dc6ea46be6a56c4bdcdc9d2457a14d",
+      "normalised_phrase": "each material partnership, joint venture or limited liability company agreement",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "94118cee5c29b96a992119e6d2ae2791db2d532057efe242b3b7142d0bde0d72",
+      "closure_id": "6a847d699353275f403473cb0a09ad3ef7b53ec5d0fba5471de6c6ea433625cd",
+      "normalised_phrase": "any contract containing any area of mutual interest, joint bidding area, joint acquisition area, or non-compete or similar type of provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0d516e165cad5ceb9cc23384a673c7a076a6fbe3207052baeaa408d44108a948",
+      "closure_id": "85072af05b618d78d905c448723a22e4876edc6be2e89d147f3a5057ac356696",
+      "normalised_phrase": "each agreement that contains any “most favored nation” or most favored customer provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a267595f9321079340c16afaa037063891a0dc96ef783e0be48cb8a7e7dcae6f",
+      "closure_id": "9612f28c793ce9151218f7dbd5e4a7ddac106d1cfb807a45dc53212934e5bf78",
+      "normalised_phrase": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_BUCKET_PRESENT",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c3a82c3618bd8d52d34ab9903d6cac23fb67d480fa67661ddfe53bcc822837df",
+      "closure_id": "a5d84f3e40fa7446f842d6b59243f51684fb1696f4269dc8cd5b9e81b9564be0",
+      "normalised_phrase": "“material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K under the Exchange Act)",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2ad36c32d3060a5fc9b838f18085a26c176efd5a8d9a99143e23df51177a8407",
+      "closure_id": "1ee095c8793cd1e7b48d566e58cbe4f263bdf7a3e94aa8cc6bd7f30c69711a36",
+      "normalised_phrase": "each contract for lease of personal property or real property (other than Oil and Gas Properties) involving payments in excess of $100,000,000 in any calendar year or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6900fa9006614b34528c46d025715d14e08b5fbee03ad78c763d5ff4cd8d1e39",
+      "closure_id": "3b5ca137c58186776535792dfdcc4f9ef2b96afdd561c7fd10fef7297e3fc63d",
+      "normalised_phrase": "the Company reasonably expects that the Company and its Subsidiaries will make annual payments in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "53b8fa1b63afb26cc4240cd6326ae21e9f0cff6b2c93d2c2853e45f6694c584f",
+      "closure_id": "493e3c14a428376ae5b88aa4d8b944f15600becc1b06b4c030f9102b36d21405",
+      "normalised_phrase": "the Company reasonably expects that it will make aggregate payments in excess of $100,000,000 in any of the next three succeeding fiscal years or over the life of the contract",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "696c6751eb96c4a4cf146d844fa9279aa67714953b4b438400a1494abf2a6d80",
+      "closure_id": "9cd8c9a4275000ca80f76867517347f7bbe6484aa4d82fd9466b62bdd1796e3a",
+      "normalised_phrase": "a commitment relating to Indebtedness or the deferred purchase price of property by the Company or any of its Subsidiaries (whether incurred, assumed, guaranteed or secured by any asset) in excess of $100,000,000",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "resolved_claim_definition_key": "MATERIAL_CONTRACT_THRESHOLD_STRUCTURE",
+      "concept_key": "REP-T-CONTRACTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 54,
+      "materiality_label": "MATERIAL_CONTRACTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8fdc258d672b0fc328ffa5a5b96c4c9aa112122a6643c5d57c5ea7695152b343",
+      "closure_id": "a588599980dcc9b6f78d2fc253d046cbdf7c9dac413b2da9937b4dff4041eed7",
+      "normalised_phrase": "each agreement that contains any “most favored nation” or most favored customer provision",
+      "attachment_position": null,
+      "concept_family": "REP-T-CONTRACTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:MATERIAL_CONTRACTS",
+          "start": 5,
+          "end": 23,
+          "excerpt": "4.19 Material Contracts.\n(a) Schedule 4.19(a) of the Company Disclosure Letter, together with the lists",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6389,
+          "end": 6409,
+          "excerpt": ", neither the Company nor any of its Subsidiaries is in breach or default under any Company Contract nor, to the knowledge of the Company, is any other party to any such Company Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6845,
+          "end": 6865,
+          "excerpt": "isputes pending or, to the knowledge of the Company, threatened with respect to any Company Contract and neither the Company nor any of its Subsidiaries has received any written no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 6989,
+          "end": 7009,
+          "excerpt": "idiaries has received any written notice of the intention of any other party to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REP-T-CONTRACTS",
+          "pattern_id": "REP-T-CONTRACTS:PHRASE:ANY_COMPANY_CONTRACT",
+          "start": 7061,
+          "end": 7081,
+          "excerpt": "arty to any Company Contract to terminate for default, convenience or otherwise any Company Contract, nor to the knowledge of the Company, is any such party threatening to do so, i",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(vi)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "raw_value": "each contract involving the pending acquisition or sale of (or option to purchase or sell) any material amount of the assets or properties of the Company, taken as a whole",
+      "canonical_value": "MA_AGREEMENTS",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "MA_AGREEMENTS",
+        "threshold_kind": null,
+        "threshold_value": null,
+        "cadence_kind": null,
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "517bfcd9cf87450b454c35943013dba42b3b75ce5c2de06d9502df09985460f6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "61f1fd32bf7986a7e02fdf479665a10b7716f83d62f855e72ed3c9c5a86353c7",
+          "document_ordinal": 0,
+          "absolute_start": 2378,
+          "absolute_end": 2549,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "566a0b8932da5a3539a63e9b8aa3cd0e0adf5a9e46cd34cae96654130c9be87d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(vi)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(viii)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "raw_value": "requiring the Company or any of its Subsidiaries to make expenditures from and after January 1, 2020 that would reasonably be expected to be in excess of $100,000,000 in the aggregate",
+      "canonical_value": "CAPEX_COMMITMENTS",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "CAPEX_COMMITMENTS",
+        "threshold_kind": "USD",
+        "threshold_value": "$100,000,000",
+        "cadence_kind": "AGGREGATE",
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8d1200a3b19f49b3f155a5668bdd17e170725fb4de3c2e2b21fef7bb1f7bc4a6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "82c30d46ab5fbed2b95b44f22e2245457568a82eb177c29ae897ee2281d41983",
+          "document_ordinal": 0,
+          "absolute_start": 3056,
+          "absolute_end": 3239,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "43fa4f606158c840ffb2bdd0a39db66234a3bdc9d48ecf0a8383441dc4f9c735",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(viii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(viii)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "raw_value": "requiring the Company or any of its Subsidiaries to make expenditures from and after January 1, 2020 that would reasonably be expected to be in excess of $100,000,000 in the aggregate",
+      "canonical_value": "USD",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "CAPEX_COMMITMENTS",
+        "threshold_kind": "USD",
+        "threshold_value": "$100,000,000",
+        "cadence_kind": "AGGREGATE",
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fd308a23f0ea53f6ecf754e85f6c4a6ad0d82905792d940c6efdacf3fec4f832",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "82c30d46ab5fbed2b95b44f22e2245457568a82eb177c29ae897ee2281d41983",
+          "document_ordinal": 0,
+          "absolute_start": 3056,
+          "absolute_end": 3239,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1df173b545d0807b89d4606e8585665d65c6cdeb665af8f1b8047407fbf0cd83",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(viii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xi)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "raw_value": "has advanced or loaned any amount of money to any of its officers, directors, employees or consultants, in each case with a principal amount in excess of $120,000",
+      "canonical_value": "EMPLOYEE_LOANS",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "EMPLOYEE_LOANS",
+        "threshold_kind": "USD",
+        "threshold_value": "$120,000",
+        "cadence_kind": null,
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3f39be3ffa9e042c0a851c546475068e92844fda9963409e0eac863776ec8de8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "10bf95c347311308b2bd00bd00632b6d122b1c71518ba3bbf543359ece1a420a",
+          "document_ordinal": 0,
+          "absolute_start": 4501,
+          "absolute_end": 4663,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "898b9317829adc954bc6573d8a8c8cc09795ab7a38f5e3019b4cfe34e20b0d1d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(xi)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xi)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "raw_value": "has advanced or loaned any amount of money to any of its officers, directors, employees or consultants, in each case with a principal amount in excess of $120,000",
+      "canonical_value": "USD",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "EMPLOYEE_LOANS",
+        "threshold_kind": "USD",
+        "threshold_value": "$120,000",
+        "cadence_kind": null,
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0c06d78c6b95fea44fb89f6ba75c5a37886a4eb2d15d6545ea50581833ac76be",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "10bf95c347311308b2bd00bd00632b6d122b1c71518ba3bbf543359ece1a420a",
+          "document_ordinal": 0,
+          "absolute_start": 4501,
+          "absolute_end": 4663,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1621ec503a4b140df781485a62a7a6f030045b49c4cc2841ed34e79b7b8d3257",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(xi)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xii)",
+      "reason": "MATERIAL_CONTRACT_DEFINITION_REFERENCE_UNRESOLVED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "raw_value": "each contract for any Company Related Party Transaction",
+      "canonical_value": "AFFILIATE_TRANSACTIONS",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "AFFILIATE_TRANSACTIONS",
+        "threshold_kind": "ANY",
+        "threshold_value": "any",
+        "cadence_kind": null,
+        "definition_cross_references": [
+          "Company Related Party Transaction"
+        ]
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9a1b461976549f02d0f9830d48970e92fb25ce40ae5dbd29e0bba4b4848d3f80",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "addb3dbe94b7a0c4b7a86cf3c4f0461f70bb4b1f7a60e7335dddbc548460fb29",
+          "document_ordinal": 0,
+          "absolute_start": 4671,
+          "absolute_end": 4726,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "906663eb8c81be8df3f55525ca1f470d120b332448a064817bf3b8d6f70d1cd5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(xii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xii)",
+      "reason": "MATERIAL_CONTRACT_DEFINITION_REFERENCE_UNRESOLVED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_THRESHOLD_CANDIDATE",
+      "raw_value": "each contract for any Company Related Party Transaction",
+      "canonical_value": "ANY",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "AFFILIATE_TRANSACTIONS",
+        "threshold_kind": "ANY",
+        "threshold_value": "any",
+        "cadence_kind": null,
+        "definition_cross_references": [
+          "Company Related Party Transaction"
+        ]
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "610c4ea56ad3801d136e7f5b8dbe8a689110eb0c5f07cb2b808e57b0a69c3282",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "addb3dbe94b7a0c4b7a86cf3c4f0461f70bb4b1f7a60e7335dddbc548460fb29",
+          "document_ordinal": 0,
+          "absolute_start": 4671,
+          "absolute_end": 4726,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c5f570b233ff4c5c1e69577fc9d5a256ae918928d4503d8aea0c74714e385a30",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(xii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19(a)(xiii)",
+      "reason": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_MATERIAL_CONTRACT_BUCKET_CANDIDATE",
+      "raw_value": "preferential right or rights of first or last offer, negotiation or refusal",
+      "canonical_value": "ROFR_ROFN",
+      "attributes": {
+        "section_reference": "4.19",
+        "party_making": "the Company",
+        "bucket_code": "ROFR_ROFN",
+        "threshold_kind": null,
+        "threshold_value": null,
+        "cadence_kind": null,
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b1b564988d832779ed657afe03a9a6d5633791e2f90b927a1e939571ca0c893a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c57574b1a08388419b59368c27ba580191a7c27b30823f16eef91c02fab0f87c",
+          "document_ordinal": 0,
+          "absolute_start": 4853,
+          "absolute_end": 4928,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c337e4d6a64d3b86dcde51365172cf17094a13704dba09d425dd789a61519251",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "MATERIAL_CONTRACTS",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "3e625f1e969cdcd1894548bb77244de7a9d9212f1d40d71ccb80d6337927f33c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.19",
+        "normalized_citation": "4.19",
+        "derived_citation": "4.19(a)(xiii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "that provides for the sale by the Company or any of its Subsidiaries of Hydrocarbons (1) in excess of 20,000 barrels of oil equivalent of Hydrocarbons per day over a period of one month (calculated on a yearly average basis) or (2) for a term greater than ten (10) years",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "No bucket covers a commodity-sales volume threshold (boe/day) or a minimum contract-term threshold; THRESHOLD_KIND has no unit for volume-per-day or term-length.",
+        "nearest_concept": "REP-T-CONTRACTS"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fa5ef817629f68de4f23ed6c999a50400444691341433dcc6e1a188553d0ffff",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d18706d50b69bafd9d6901009dbc416281f0f6abddf70e58195a89292563ab0a",
+          "document_ordinal": 0,
+          "absolute_start": 3376,
+          "absolute_end": 3646,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e79a2675841e7261426e02c86feb7cd718201b29cf4677272aa190cfc238a3dc",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "404f8b9837d4b73245e1ec212ecda8a13de26d2ecf554628ba9120720cce40aa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each collective bargaining agreement to which the Company is a party or is subject",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "No MATERIAL_CONTRACT_BUCKET code exists for labor/collective-bargaining agreements.",
+        "nearest_concept": "REP-T-CONTRACTS"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "14f7e33105cead78d5b0e921c02bbcb619d912e441f8d6743323040d04f6407c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d04b65329ecc945cd970a2ccef0398e3528cba32516a2524c050024211647d90",
+          "document_ordinal": 0,
+          "absolute_start": 4346,
+          "absolute_end": 4428,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2db0dac89db50c8d3fc89f4edb185116f21050244bcbf6115ddb750107a318b7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "404f8b9837d4b73245e1ec212ecda8a13de26d2ecf554628ba9120720cce40aa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.19",
+      "source_citation": "4.19",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "provides for a “take-or-pay” clause or any similar prepayment obligation and acreage dedication, minimum volume commitments or capacity reservation fees to a gathering, transportation or other arrangement downstream of the wellhead, that cover, guaranty or commit volumes",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This midstream take-or-pay/minimum-volume-commitment criterion does not correspond to any listed bucket (not a supply, distribution, or aggregate-payments concept as vocabulary defines them).",
+        "nearest_concept": "REP-T-CONTRACTS"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bdcf61ecc42212d846268e3b0d895dd546199244c42dca1c6a5acc278d638606",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "aab5c2dc74452e2f63d52f6d4b5eb1f365c130fe79e039d1b452c0bb67c0e369",
+          "document_ordinal": 0,
+          "absolute_start": 4065,
+          "absolute_end": 4340,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "65c1c1ad5d74388526f9ac52726402de354b8944c20e29c9b6baf2eaeca81f2b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "c9cfc434ec77d291f0e63adcfd6b9914693a672c135cd4898c06adeafa912cc4",
+        "producer_receipt_id": "dbb5419cc5f4d34605a1cb1bd13b5047095be8bb849f0c286e65bd7e12e3b0c4",
+        "governed_scope_digest": "5900eb73eae30162420407a6782b3a3239d4234c9b46e361e81dffd8aeb9ab4d",
+        "extraction_provenance_id": "404f8b9837d4b73245e1ec212ecda8a13de26d2ecf554628ba9120720cce40aa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "e0aef124ee6094b7766d5e8337d489e031e182f247ec2f9888396700f835b7da",
+    "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 24,
+      "resolved": 13,
+      "auto_pass": 0,
+      "review_queue": 13,
+      "open_world": 11,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "d5ffd5eeb211b0eb1ef9cb7f8acb63bfc66ee2388f38493e16c8a9b7b1917c26"
+  }
+}

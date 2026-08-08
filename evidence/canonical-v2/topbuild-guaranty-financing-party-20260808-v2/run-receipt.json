@@ -1,0 +1,361 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "7.16"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "7.16",
+      "section_id": "2e77056fd0c24cba99989b4dac4372e15613a71e44e60c7ff90e367fda993fb4",
+      "parent_section_id": "1c24ef91a0fa2ba30952fc2f82d9d4242a7f724d8dd2b3a6795d7446a1392466",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 403992,
+      "end": 406279,
+      "text_sha256": "4f487a2f10ec7244758dc567247a78ba0575b03048eddffd1c7245f25196ab74",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-guaranty/v1",
+      "prompt_version": 2,
+      "prompt_digest": "53e6c5de5600be2f2d6e1fc944181104c17668bc8ba4362f17591512c4db3298",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "afdc8ff466abf403ab2521c2a6cd2da3db8009a99e13e0b753cd1b8d074f7511",
+        "input_scope_digest": "4cc46663d6eca3aa717a1f28c8f8664ebdddb163a25a8d471fffb91592740bc9",
+        "proposal_count": 4,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "ea26863533b07052d809bbd0fb5973099b9945e172a6c2905d00075583fb08af"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "7.16",
+      "citation_validation": null,
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e46bb76fc02c523f00b97ffacc40b8f8600fbb211961d85648f9266635329202",
+          "claim_occurrence_id": "a050209fb1a857ef16d9a64cc6cda9ae6bd183c43d0a489189bc930a96a334fe",
+          "subject_occurrence_id": "607ce1f0ba53bd71c87b9dfff0d7570180ada794a48c71cd5c3c6d26d85343eb",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "None of the Financing Sources shall have any liability to the Company, its Subsidiaries or its Affiliates arising out of, or relating to, this Agreement, the Commitment Letter, any definitive documentation related to the Financing (including the Debt Financing), the performance thereof or the transactions contemplated hereby or thereby, whether at law or equity, in contract, in tort or otherwise",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ec9ae45f13e4b2acaba3e82495534cc168bf92476d7689dac56469be946e4388"
+          ],
+          "attributes": {
+            "why_unmapped": "FINANCING_PARTY_PROTECTION: Blanket waiver of liability: the Financing Sources are stated to have no liability to the Company, its Subsidiaries or Affiliates arising out of or relating to the Agreement, the Commitment Letter, or Financing documentation, in law, equity, contract or tort.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ec9ae45f13e4b2acaba3e82495534cc168bf92476d7689dac56469be946e4388",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5003c3f1e9f55137dbe0203c0b92e05569438bcee79cdb8def3c70b06f60f011",
+              "document_ordinal": 0,
+              "absolute_start": 49,
+              "absolute_end": 447,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aec9a3ea46d6c23e3bed8b3d53ca206def29bf508cb523b3e54dcd3530871a06"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "afdc8ff466abf403ab2521c2a6cd2da3db8009a99e13e0b753cd1b8d074f7511",
+          "producer_receipt_id": "ea26863533b07052d809bbd0fb5973099b9945e172a6c2905d00075583fb08af",
+          "governed_scope_digest": "e7d67d4391d3e7347bf9f6d4406dce9c9181ea4a07938253b1c3f5557ac0e30f",
+          "extraction_provenance_id": "a41ce2b54784918f63a7f4a66aeb17219cb96452115b6f601b7a0c85fb0add6f"
+        }
+      }
+    },
+    {
+      "section_reference": "7.16",
+      "citation_validation": null,
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "255e7848d3c630fdbed802c1af56cc470918dcaed8123a0a6ef87fa5e2107f7b",
+          "claim_occurrence_id": "34779fce0f5052ab164921bcf4e9312733a8b146328a3f4f48531fc926728e99",
+          "subject_occurrence_id": "89fc9a12549fd7e8c736f2834393606e6973e709721ef118d4e87b03849428c7",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "neither the Company nor any of its Subsidiaries or Affiliates will have any rights or claims against any Financing Sources under, arising out of, or relating to, this Agreement, the Commitment Letter, any definitive documentation related to the Financing (including the Debt Financing), the performance thereof or the transactions contemplated hereby or thereby.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "84fffed1da983be91eda0d9c6fc5c44f62cfd57e24893a507e829f3ad2882d78"
+          ],
+          "attributes": {
+            "why_unmapped": "FINANCING_PARTY_PROTECTION: Mirror-image claims waiver: the Company and its Subsidiaries/Affiliates are stated to have no rights or claims against any Financing Sources under or relating to the Agreement, Commitment Letter, or Financing documentation.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "84fffed1da983be91eda0d9c6fc5c44f62cfd57e24893a507e829f3ad2882d78",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "96012eda46b58bfc577e48ba7893c3cd4e345cf7d0b53b3611259fae3f2f383f",
+              "document_ordinal": 0,
+              "absolute_start": 453,
+              "absolute_end": 815,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "0bc4768ecdff8b03a243a5c431b4de8de6273c77dab97d588747cc0d2136b4b5"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "afdc8ff466abf403ab2521c2a6cd2da3db8009a99e13e0b753cd1b8d074f7511",
+          "producer_receipt_id": "ea26863533b07052d809bbd0fb5973099b9945e172a6c2905d00075583fb08af",
+          "governed_scope_digest": "e7d67d4391d3e7347bf9f6d4406dce9c9181ea4a07938253b1c3f5557ac0e30f",
+          "extraction_provenance_id": "a41ce2b54784918f63a7f4a66aeb17219cb96452115b6f601b7a0c85fb0add6f"
+        }
+      }
+    },
+    {
+      "section_reference": "7.16",
+      "citation_validation": null,
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "003036500a29c1d58b322183f047467d595246f480f373b6d63b142eebba13a1",
+          "claim_occurrence_id": "b7d6d4beecaf17b0ffa6f1d43946617fdecdce841d76a32186af40af50cc9305",
+          "subject_occurrence_id": "047e008204b3e3a03e1537315a8ddb09be76487478034524a36b21bd9de15fa6",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in no event shall the Company, its Subsidiaries or its Affiliates be entitled to seek the remedy of specific performance of this Agreement against any of the Financing Sources",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e74026333001ae319b11b9aacc82da2f5d3644b71f42d1fdebd17f76766501bc"
+          ],
+          "attributes": {
+            "why_unmapped": "FINANCING_PARTY_PROTECTION: Remedy limitation: specific performance of the Agreement is stated to be unavailable against any Financing Sources, notwithstanding anything else in the Agreement.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e74026333001ae319b11b9aacc82da2f5d3644b71f42d1fdebd17f76766501bc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "83afcdc57e03774b6f94823276ba22be6e0ab5682d18748be5e10f57a5867f30",
+              "document_ordinal": 0,
+              "absolute_start": 865,
+              "absolute_end": 1040,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e9b229edb1a4d115f1c2974d4a30f3232a8765e48df94061d6e0e6d2b73af4b6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "afdc8ff466abf403ab2521c2a6cd2da3db8009a99e13e0b753cd1b8d074f7511",
+          "producer_receipt_id": "ea26863533b07052d809bbd0fb5973099b9945e172a6c2905d00075583fb08af",
+          "governed_scope_digest": "e7d67d4391d3e7347bf9f6d4406dce9c9181ea4a07938253b1c3f5557ac0e30f",
+          "extraction_provenance_id": "a41ce2b54784918f63a7f4a66aeb17219cb96452115b6f601b7a0c85fb0add6f"
+        }
+      }
+    },
+    {
+      "section_reference": "7.16",
+      "citation_validation": null,
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "19a5c8e880874021782c21314add749d52767608aef824061687028d2bed6139",
+          "claim_occurrence_id": "9d3c274c9020902db15565c9ee6f6db94df32b2955ba268eff35b7e1970b8309",
+          "subject_occurrence_id": "5e05c6942f554fb5f244457d8aadfa3205f6176d014729326e7d2579e56bd7e7",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "shall in any way limit or modify the rights and obligations of Parent and its Subsidiaries and Affiliates (which shall exclude, prior to the Closing, the Company and its Subsidiaries and shall include, from and after the Closing, the Company and its Subsidiaries) under this Agreement or any of the obligations of the Financing Sources who are party to the Commitment Letter to QXOBP under the Commitment Letter.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8f42160369378a032adfdb616672b68dce8440b00eadd985c4d4a6fc8f765dda"
+          ],
+          "attributes": {
+            "why_unmapped": "A carve-out preserving Parent's and the Commitment-Letter Financing Sources' rights/obligations toward QXOBP; it neither states a guaranty fact nor itself limits or protects a financing party -- it preserves obligations -- so it does not fit guaranty_assertions or the FINANCING_PARTY_PROTECTION/CORE_TERM/DELIVERY surfaces.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8f42160369378a032adfdb616672b68dce8440b00eadd985c4d4a6fc8f765dda",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "61a171b30f7c5537087d0184fe377437831d1cd58e03ed1ec5d2f5fa191f152b",
+              "document_ordinal": 0,
+              "absolute_start": 1105,
+              "absolute_end": 1517,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4b5d861c87d9ec4f0abafdb4c3290d2e6c27e3b403cbb7d38719d09460a1c830"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "afdc8ff466abf403ab2521c2a6cd2da3db8009a99e13e0b753cd1b8d074f7511",
+          "producer_receipt_id": "ea26863533b07052d809bbd0fb5973099b9945e172a6c2905d00075583fb08af",
+          "governed_scope_digest": "e7d67d4391d3e7347bf9f6d4406dce9c9181ea4a07938253b1c3f5557ac0e30f",
+          "extraction_provenance_id": "a41ce2b54784918f63a7f4a66aeb17219cb96452115b6f601b7a0c85fb0add6f"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "7.16",
+      "source_byte_length": 2287,
+      "covered_byte_length": 1347,
+      "coverage_share": 0.5889811980760822,
+      "marker_counts": {
+        "as of": 1,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 1
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 1,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "7.16",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 4,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "3caf25743eed970dd4ca3ed26ea6ddbb82f8a9c3934e6fb483c6015e97144462"
+}

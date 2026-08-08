@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T03:17:03.994Z",
+  "section_reference": "3.13",
+  "note": "General extraction run: deal=skechers, family=MATERIAL_CONTRACTS, section_references=[\"3.13\"] (all dispatched as MATERIAL_CONTRACTS via section_family_assignments), prompt_id=native-producer-material-contracts/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"material_contract_criteria\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"a true, correct and complete list of all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof\",\n      \"why_unmapped\": \"This clause covers all contracts falling within the defined term \\\"Material Contract,\\\" but the definition itself (including its bucket-specific clauses, referenced here only as \\\"clause (i) of the definition of Material Contract\\\") is not supplied in SOURCE TEXT or KNOWN DEFINITIONS. No bucket-specific synonym (e.g., indebtedness, real estate, IP license, government contract) appears directly in this section's text, so no MATERIAL_CONTRACT_BUCKET code can be assigned without inferring the unresolved definition.\",\n      \"nearest_concept\": \"REP-T-CONTRACTS\"\n    }\n  ]\n}\n```"
+}

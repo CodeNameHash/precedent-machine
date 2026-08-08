@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skechers",
+  "deal_label": "Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.",
+  "section_family": "MAE_DEFINITION",
+  "purpose": "General extraction run: family MAE_DEFINITION on deal skechers.",
+  "section_references": [
+    "1.1"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "1.1",
+      "family_id": "MAE_DEFINITION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "mae-definition-producer/v2",
+  "prompt_version": 2,
+  "agreement_date": "2025-05-04",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T08:53:52.567Z",
+  "total_elapsed_ms": 110518,
+  "extraction_wall_clock_ms": 104397,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/skechers-mae-definition-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "d2ccdb538a88729c2662dfbbb945243a5907559d",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "a6c677397d3aa5c2c01fb5e01741fa2f3edeb35d43a71b6fdedccf13a9c4ba4b",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

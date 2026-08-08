@@ -1,0 +1,1106 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "4.27",
+    "5.19"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.27",
+      "section_id": "980142faa84f8daf737ec81992fe9b4dc3597607ced37841f5f51609951da394",
+      "parent_section_id": "00cb6733b99cc0e653b09e03f3e64289a1fdd9a98969c000c8ad49babdb4d6fc",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 106095,
+      "end": 108778,
+      "text_sha256": "529c98107ef9a7c1e32a2857d75194c6dc969507d2929acdac875bca974d6c5b",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-no-other-reps-fraud/v1",
+      "prompt_version": 1,
+      "prompt_digest": "b787875e225e6063632b01993a51920bdd2f97d8afdc0c23298f552026cc447b",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+        "input_scope_digest": "ce82de2c6cb3b889a5b74c3e4080c3c20c8bcf92b37d0b54be2262c1d0a9582f",
+        "proposal_count": 6,
+        "evidence_residual_count": 1,
+        "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f"
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "section_id": "140ff3b5f64cb0a2e0e59b5b85f4220afa418fd8b08d2be6dbf907b19a9a964f",
+      "parent_section_id": "67bae03a68cfa3d9ddd1fd53da55d973428dfa9db30e4a453bd0c353c14d97d7",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 133368,
+      "end": 135940,
+      "text_sha256": "74ccb83b48aca8415e75288a3bcd1c8874d1bcef727a749203c99197f80dbc78",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-no-other-reps-fraud/v1",
+      "prompt_version": 1,
+      "prompt_digest": "20b447235dee086cb112b676c64b76913de2daedaa1c115ddaf1eafe8ba5152a",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+        "input_scope_digest": "827e0797e7463efdb08471791387577a26e0098c9ed5809688be4e233c32b8ea",
+        "proposal_count": 5,
+        "evidence_residual_count": 1,
+        "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "14f3c5a4f5d8ecccee6ba0b17e074588c28583d968ccf302ddc3db2dd2979dc0",
+          "claim_occurrence_id": "638062b6ea16b1a70d56187b5fee4fbe253987ff3c5eb403659d3616c8b399a2",
+          "subject_occurrence_id": "0c5419898ef8e5cd5128e27555e74dc4ba5dbc25872c2712db74457b984f04e6",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Except for the representations and warranties made in this Article IV, neither the Company nor any other Person makes any express or implied representation or warranty with respect to the Company or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the Transactions, and the Company hereby disclaims any such other representations or warranties.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f887dfbfeb30bd4280a960e2bdbec347b8657bb1795794bfaead3826a0e67aae"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "TARGET",
+            "representation_maker_ref": "neither the Company nor any other Person",
+            "agreement_scope_quote": "the representations and warranties made in this Article IV"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f887dfbfeb30bd4280a960e2bdbec347b8657bb1795794bfaead3826a0e67aae",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "36039ae759f3a70c9822e0c1bbfe0643ded59ef639c417147f574bd091b308e2",
+              "document_ordinal": 0,
+              "absolute_start": 40,
+              "absolute_end": 492,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "986ea9547f1e59e3155cbd89cf375258894b33afad023f485497ef9a384dff58"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6844d92fa481d1fb92d75099610581ac83e0678a38f8f5512ce68d4007795de3",
+          "claim_occurrence_id": "9d0ec43f210d078df77dbc33c33544163424b36a2b3da08f5c1d4da2f4e36cb9",
+          "subject_occurrence_id": "53d2b59bd381dfd3d93d6fb39b88ae649524877bad94ed24f1332acf26fd899d",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "In particular, without limiting the foregoing disclaimer, neither the Company nor any other Person makes or has made any representation or warranty to Parent, Merger Sub, or any of their respective Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by the Company in this Article IV, any oral or written information presented to Parent or Merger Sub or any of their respective Affiliates or Representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Transactions.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "06866c81e80ae5ea2a90233b8655ad71b2d68f1c8d009b9dd1763221d3862351"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "TARGET",
+            "representation_maker_ref": "neither the Company nor any other Person",
+            "agreement_scope_quote": "except for the representations and warranties made by the Company in this Article IV"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "06866c81e80ae5ea2a90233b8655ad71b2d68f1c8d009b9dd1763221d3862351",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0e811c45b934a74dc35bffff1992a321c978dcf0b166446453ec6cb577935d23",
+              "document_ordinal": 0,
+              "absolute_start": 493,
+              "absolute_end": 1256,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8b5d8b67625b3c65b5c18adc5380c94991a25930b620d80b4b482be0e99e0b15"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(b)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ea1815abe92cd013ace5e7d996f807e9db590b3ce82042bd599c0423bf566108",
+          "claim_occurrence_id": "7bc270e9a0e6e5f4d191b4314c7539acb68421f05a69c4d215014c7755b4f82d",
+          "subject_occurrence_id": "54097ea7e4626a4e79a01988902363bc05633de550a2603fa12ad41b589c1dba",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 2,
+          "state": "PRESENT",
+          "raw_value": "the Company acknowledges and agrees that none of Parent, Merger Sub or any other Person has made or is making any representations or warranties relating to Parent or its Subsidiaries (including Merger Sub) whatsoever, express or implied, beyond those expressly given by Parent and Merger Sub in Article V, including any implied representation or warranty as to the accuracy or completeness of any information regarding Parent furnished or made available to the Company or any of its Representatives",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "aed82bddb053999eb6decf9512f11061b60ea196209e97a2de3a93de3f74afc4"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "BUYER",
+            "representation_maker_ref": "none of Parent, Merger Sub or any other Person",
+            "agreement_scope_quote": "beyond those expressly given by Parent and Merger Sub in Article V"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "aed82bddb053999eb6decf9512f11061b60ea196209e97a2de3a93de3f74afc4",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8c265cae97fc66dc0ff2ec00a63abea7cd1dd9380a1c9ed946acd16357081438",
+              "document_ordinal": 0,
+              "absolute_start": 1584,
+              "absolute_end": 2082,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ffc0e5d3abe07f53df01f41b139c6f8e7e4344d788a382375a1b6767dd9af586"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(b)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cdc93d1d44146b429d80186bcfd669f7bba0a6e70459335628fb8dc31ed5d0d6",
+          "claim_occurrence_id": "2084e2d92cd69a332c9109d3adc8d2e02d0fc3375a71005e038a7ea30c3a0df8",
+          "subject_occurrence_id": "6c8af32ed2734b00a573933f419570325f3fbc3c96f54b9f6aa5b12f66bc3f2c",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 3,
+          "state": "PRESENT",
+          "raw_value": "the Company acknowledges that no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to the Company or any of its Representatives (including in certain “data rooms,” “virtual data rooms,” management presentations or in any other form in expectation of, or in connection with, the Merger or the other Transactions).",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "fc1d032906e141a556ec56ea602292296377cfaedd2a6e9e087eb4d7ba0c5283"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "BUYER",
+            "representation_maker_ref": null,
+            "agreement_scope_quote": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "fc1d032906e141a556ec56ea602292296377cfaedd2a6e9e087eb4d7ba0c5283",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c9d0b4a6c7373e840062b55f2a3ab4c37ce1cfe187d29d099fd220d2acbfc10a",
+              "document_ordinal": 0,
+              "absolute_start": 2252,
+              "absolute_end": 2682,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1b86fd3182b3a154f6338ffa08f635083457945af78b74111f2f357da5c3efdb"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(b)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ffdee484828b673535291d76eef78bf8ad2151dc3dfef6c54fd623a6a4c79c7e",
+          "claim_occurrence_id": "61c1cc3a11bebd14e95bf1098825cbd2a9c1bed6f3d18c9ab865d9775f53be84",
+          "subject_occurrence_id": "f7a9a0153c01d58daefa7d2ef2422db1af853d482ec2aafe781f53d6aee95a18",
+          "claim_definition_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 4,
+          "state": "PRESENT",
+          "raw_value": "the Company has not relied on any such other\n-31-\nrepresentation or warranty not set forth in this Agreement.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d3396528bc4a8cdc691b9c0dd545eba608443e48e673204b5bc4abbd30e4c4d1"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "BUYER",
+            "relying_party_ref": "the Company",
+            "disclaimed_representation_party_ref": null,
+            "agreement_scope_quote": "not set forth in this Agreement"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d3396528bc4a8cdc691b9c0dd545eba608443e48e673204b5bc4abbd30e4c4d1",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b0caa7eca2c74a03618515a419e39de8bde4cd294810e97ee965054513b6c53b",
+              "document_ordinal": 0,
+              "absolute_start": 2092,
+              "absolute_end": 2201,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9f27b34cbc79dc1d665ab93e0418673bc0c74a31a11636dc9d9ab8f76ad7b36e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "4.27",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.27",
+        "normalized_citation": "4.27",
+        "derived_citation": "4.27(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f3122ac5de1c0bc62ac2ccd8ee9767c7cef218b5454c18e00f53bc6ca8cbcaee",
+          "claim_occurrence_id": "abcbaeb5232e44174abeace5af1ebe7bc8f91c371d6bd284995c6c66279b9d75",
+          "subject_occurrence_id": "d6706c31982721c083438249fd1ebadbe8f5642b8d990892e737135465751258",
+          "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 5,
+          "state": "PRESENT",
+          "raw_value": "Notwithstanding the foregoing, nothing in this Section 4.27 shall limit Parent’s or Merger Sub’s remedies with respect to claims of fraud arising from or relating to the express representations and warranties made by the Company in this Article IV.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bc16ca4ddb7135f842041c3dff1d5fbe8915aeaea4c49ea4a2dff4cb91c7cddc"
+          ],
+          "attributes": {
+            "section_reference": "4.27",
+            "representation_side": "TARGET"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bc16ca4ddb7135f842041c3dff1d5fbe8915aeaea4c49ea4a2dff4cb91c7cddc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "854312f8d16bd459c351cf68c4ad1ccb3d2c62c655d93c896bbee6c8e698ae3b",
+              "document_ordinal": 0,
+              "absolute_start": 1257,
+              "absolute_end": 1509,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7c7beab27f54693c2895e8c7ef99cedfed3a1d7e940f18dd1897f7eb74ca667d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "6ff91b85cd3894ca3c707e3ea65f7e52ff3cf26ee838acb8a8c15342ef9122dc",
+          "producer_receipt_id": "afca4f32e0ba489b1a62119bd2f619fe261a4bef0d59e04f8ac55dca17344a8f",
+          "governed_scope_digest": "704d6db58b9e8e6e30724b086a714ebcc1af146d03a8c5d1533886b4bc67170e",
+          "extraction_provenance_id": "a1c1602b71770edd61f14c7307a8398eb0eb0ccdfa8f90654e8795fa0f7a0f53"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "95c7d8134f3fd3ace0bea3bba57748769d7066103856e5667c9bd863ee374be9",
+          "claim_occurrence_id": "32d212dc697577abf9386c98e0eeb05e8f15308e1135c0aa8ba432607ed9a445",
+          "subject_occurrence_id": "3c3cf1622678c1530167f8e747ef85e3d67db088148cdff0b88d3e0bcc3c29e8",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Except for the representations and warranties made in this Article V, neither Parent nor any other Person makes any express or implied representation or warranty with respect to Parent or its Subsidiaries or their respective businesses, operations, assets, liabilities or conditions (financial or otherwise) in connection with this Agreement or the\n-38-\nTransactions, and Parent hereby disclaims any such other representations or warranties.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "be1fa8ecef68fa12ae76f71a70e12cd13e4d1cfab9e2b1d25889f6484f8a516b"
+          ],
+          "attributes": {
+            "section_reference": "5.19",
+            "representation_side": "BUYER",
+            "representation_maker_ref": "neither Parent nor any other Person",
+            "agreement_scope_quote": "Except for the representations and warranties made in this Article V"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "be1fa8ecef68fa12ae76f71a70e12cd13e4d1cfab9e2b1d25889f6484f8a516b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0b2e4c60933b3c6a2849d2efbf3558125bc40356a1da1194309b6de87e9e7c06",
+              "document_ordinal": 0,
+              "absolute_start": 40,
+              "absolute_end": 481,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7eb7d5a65032a15b11ffb83b472303ad16e21f6b5fc671db0d3b63d725a0ca5d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+          "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+          "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+          "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6cb9df3c8eafbe443f3b047a3f1a4c16d6d84c089b5f567dc72aba8aba7e0e21",
+          "claim_occurrence_id": "c8e482e02a4d9593e355d408ccb70320d7bf41e77a8e8ed312eee79692f417fd",
+          "subject_occurrence_id": "059dbe3a0b6723f13eaa3cfcc4ccbe09ca1ad5a16731161340c81a3dfc742237",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "In particular, without limiting the foregoing disclaimer, neither Parent nor any other Person makes or has made any representation or warranty to the Company or any of its Affiliates or Representatives with respect to (i) any financial projection, forecast, estimate, budget or prospect information relating to Parent or any of its Subsidiaries or their respective businesses; or (ii) except for the representations and warranties made by Parent in this Article V, any oral or written information presented to the Company or any of its Affiliates or Representatives in the course of their due diligence investigation of Parent, the negotiation of this Agreement or in the course of the Transactions.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1dc53624a0c7892c0ff7cbd93c3470ea247e63ba180a1263d834d9e1770e0579"
+          ],
+          "attributes": {
+            "section_reference": "5.19",
+            "representation_side": "BUYER",
+            "representation_maker_ref": "neither Parent nor any other Person",
+            "agreement_scope_quote": "except for the representations and warranties made by Parent in this Article V"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1dc53624a0c7892c0ff7cbd93c3470ea247e63ba180a1263d834d9e1770e0579",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0c2dd2b396d30748da83f3a2a9eae0d3c2cfc5320feeee3f1de646ec30bc54b3",
+              "document_ordinal": 0,
+              "absolute_start": 482,
+              "absolute_end": 1181,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9f7c4e2a586f869de7de62708ecba10682cf9800547046be3f348d08dbad3bf5"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+          "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+          "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+          "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(b)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f2c4003aef55af3f4cedb59b6b8114c7ea9ba1e9107076a3c1c880faf57d68c3",
+          "claim_occurrence_id": "55fd719c1d6189456261172616092cc85c7394705e5f8220e6b57f9c38045baf",
+          "subject_occurrence_id": "f8e4dd5fe587400d3607d85492d7bd431b4938f55019178bc3f1934548bc6a84",
+          "claim_definition_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 2,
+          "state": "PRESENT",
+          "raw_value": "Parent acknowledges and agrees that none of the Company or any other Person has made or is making any representations or warranties relating to the Company or its Subsidiaries whatsoever, express or implied, beyond those expressly given by the Company in Article IV, including any implied representation or warranty as to the accuracy or completeness of any information regarding the Company furnished or made available to Parent or any of its Representatives",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4852953dd537e8833806517f4c6429566f57994619bfdc3f69a5c76dfe4e9643"
+          ],
+          "attributes": {
+            "section_reference": "5.19",
+            "representation_side": "TARGET",
+            "representation_maker_ref": "none of the Company or any other Person",
+            "agreement_scope_quote": "beyond those expressly given by the Company in Article IV"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4852953dd537e8833806517f4c6429566f57994619bfdc3f69a5c76dfe4e9643",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "6247d7b88fb9553cca86afa5693efad62c7ad1340b8be73285fec9253fa73827",
+              "document_ordinal": 0,
+              "absolute_start": 1513,
+              "absolute_end": 1972,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "73eec1a0988fd0dd30a97aca04c23df68316103742984faf5a7ccd8c2f9779f9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+          "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+          "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+          "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(b)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e0650be336a90a68b7908e712f70bf26721783d6cc884e14a852ebc66305a7f1",
+          "claim_occurrence_id": "2471670502dab84ec0a90345db78c21ec42cf3a9fdf862b1e1607d875387abdb",
+          "subject_occurrence_id": "0ed80f2170818c3997ae1afabb184d6f5b157f94ef575edca25a6f4c792d9046",
+          "claim_definition_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 3,
+          "state": "PRESENT",
+          "raw_value": "neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "45f096e4ad1235477ca7b9acb9864759e38f70d66669c5d689027effad1e36f6"
+          ],
+          "attributes": {
+            "section_reference": "5.19",
+            "representation_side": "TARGET",
+            "relying_party_ref": "neither Parent nor Merger Sub",
+            "disclaimed_representation_party_ref": null,
+            "agreement_scope_quote": "not set forth in this Agreement"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "45f096e4ad1235477ca7b9acb9864759e38f70d66669c5d689027effad1e36f6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3721bda76ac173788e8bc41be26c46145d5e4bf756244597d25cc6d76ac9ee55",
+              "document_ordinal": 0,
+              "absolute_start": 1982,
+              "absolute_end": 2099,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5d2b04ef0525ebe2ed52e2c483545a58190198bde7b3df21192194916a380e03"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+          "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+          "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+          "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.19",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.19",
+        "normalized_citation": "5.19",
+        "derived_citation": "5.19(a)"
+      },
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b57d517e1751b8cad39958df4ca8850ba0f3381f47924791c3c88b90ef89a5a7",
+          "claim_occurrence_id": "345a43f8c0fc9d6ccdb777664fc19b4741d2b49e2b0cd01c5216710865294608",
+          "subject_occurrence_id": "0003d1693a5bdaafcfd9e46696ad0331664c196b8705586ac1b3e899d534f05f",
+          "claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 5,
+          "state": "PRESENT",
+          "raw_value": "Notwithstanding the foregoing, nothing in this Section 5.19 shall limit the Company’s remedies with respect to claims of fraud arising from or relating to the express written representations and warranties made by Parent and Merger Sub in this Article V.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f3adb4fd95b7b1a81039c257a0853573ae5f1b3628b9730684b5dd801bfd0b81"
+          ],
+          "attributes": {
+            "section_reference": "5.19",
+            "representation_side": "BUYER"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f3adb4fd95b7b1a81039c257a0853573ae5f1b3628b9730684b5dd801bfd0b81",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e25b64ebe20d5817ae53d77f864ae4f3e761f948dd7e5365fbc55520dd951fb9",
+              "document_ordinal": 0,
+              "absolute_start": 1182,
+              "absolute_end": 1438,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "cac44c0558776c1d950a95fa174d3f95a1c880e50eb1195c3a5f0fea5ecb5381"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_OTHER_REPS_FRAUD",
+          "prompt_digest": "432a0f0c652bc467d56ff18508977d14e9e8bbbc3ba9bbee732f22098399e01e",
+          "producer_receipt_id": "1f85f6e035681a8191a2bf65b636eeebb20301288a66b63a518d96a7400fb2f8",
+          "governed_scope_digest": "c1290b8d1f13b3f8fc0064685e3b0a651b1615f73bae77c191b25a4c149e6461",
+          "extraction_provenance_id": "466730608abc29466355f19491bc83a57962b3bcc0cb66a516bff7b4440396b3"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "4.27",
+      "reason": "OPEN_WORLD_CANDIDATE",
+      "quote_preview": "beyond those expressly given by Parent and Merger Sub in Article V",
+      "why_unmapped": "Cross-references Parent/Merger Sub's representations in Article V, which is outside this scope; the content and limits of those representations cannot be verified from 4.27 alone.",
+      "evidence": [
+        {
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b13cb0d919521e8d9c6b3c17896a8ff7cd2c741aa23e12fe8815816523ed3c2c",
+          "document_ordinal": 0,
+          "absolute_start": 1822,
+          "absolute_end": 1888,
+          "ordinal": 0
+        }
+      ]
+    },
+    {
+      "section_reference": "5.19",
+      "reason": "ATTRIBUTE_NOT_IN_ASSERTION_QUOTE",
+      "quote_preview": "neither Parent nor Merger Sub has relied on any such other representation or warranty not set forth in this Agreement"
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.27",
+      "source_byte_length": 2683,
+      "covered_byte_length": 2504,
+      "coverage_share": 0.9332836377189713,
+      "marker_counts": {
+        "as of": 0,
+        "except": 2,
+        "knowledge": 2,
+        "material": 0,
+        "total": 4
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 4,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "5.19",
+      "source_byte_length": 2572,
+      "covered_byte_length": 1972,
+      "coverage_share": 0.7667185069984448,
+      "marker_counts": {
+        "as of": 0,
+        "except": 2,
+        "knowledge": 2,
+        "material": 0,
+        "total": 4
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 4,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.27",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 36,
+          "end": 39
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 737,
+          "end": 740
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 904,
+          "end": 908
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1510,
+          "end": 1513
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 2,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 737,
+          "end": 740
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 904,
+          "end": 908
+        }
+      ],
+      "disagreement_count": 2
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "5.19",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 36,
+          "end": 39
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 700,
+          "end": 703
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 862,
+          "end": 866
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1439,
+          "end": 1442
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 2,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 700,
+          "end": 703
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 862,
+          "end": 866
+        }
+      ],
+      "disagreement_count": 2
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 2,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 11,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "f4c70e81d269d0c2cf8a47b00c78e5d9756cb15a895cf261601d902ff84dc8c4"
+}

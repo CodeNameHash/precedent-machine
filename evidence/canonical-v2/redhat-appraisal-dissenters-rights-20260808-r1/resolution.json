@@ -1,0 +1,519 @@
+{
+  "resolved": [
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)(i)",
+      "citation_context": {
+        "parent_section_reference": "2.01(d)",
+        "child_section_reference": "2.01(d)",
+        "parent_chapeau_quote": null,
+        "child_clause_quote": "provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0529079a070eb0a4fa7ba4abaa3684df8a7c17d45e33acc594938ee76a60fdaa",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 16727,
+        "absolute_end": 19761,
+        "concept_key": "APPR-WITHDRAW",
+        "ordinal": 1,
+        "source_anchor_id": "d7978311abe940b6908766b095d92ab22cf68a89bff0db219a522c90fd8e7c83",
+        "provision_instance_id": "81f84f5b4513b014c0f3d5ab04e6393571e8762f58954e3f4a7afc8bcc372c77",
+        "closure_id": "119eb871871e1719136d379fc5d3be46a6d34f629e2a17c4cbe39f67a2c0446d"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "526073923afaa07eaa0e6e163f25270f993f5f650460e1cc6e4a40c08fcb31dd",
+        "claim_occurrence_id": "4a705f383f81eccc2aae546bb1312079466396e8324c7d0629f2205383cde86a",
+        "subject_occurrence_id": "81f84f5b4513b014c0f3d5ab04e6393571e8762f58954e3f4a7afc8bcc372c77",
+        "claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7353dd762ca823b6c907040fc28b030041e8f49739038916a48bc7573d207d05"
+        ],
+        "attributes": {
+          "section_reference": "2.01(d)",
+          "assertion_kind": "WITHDRAWAL_RECONVERSION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 20,
+              "qualifier_kind_lexicon_version": 2
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7353dd762ca823b6c907040fc28b030041e8f49739038916a48bc7573d207d05",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "bce836b461449b14f5403034e72abcd2728c908645e61ec16a8869fd2d4ae39b",
+            "document_ordinal": 0,
+            "absolute_start": 1533,
+            "absolute_end": 2053,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a36baf24f0b9f4f4ac7d9f8ae8e2a50b77b8d53109e677a465270b655ab3ddb2"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.01(d)",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.01(d)",
+          "normalized_citation": "2.01(d)",
+          "derived_citation": "2.01(d)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "526073923afaa07eaa0e6e163f25270f993f5f650460e1cc6e4a40c08fcb31dd",
+            "claim_occurrence_id": "4a705f383f81eccc2aae546bb1312079466396e8324c7d0629f2205383cde86a",
+            "subject_occurrence_id": "81f84f5b4513b014c0f3d5ab04e6393571e8762f58954e3f4a7afc8bcc372c77",
+            "claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7353dd762ca823b6c907040fc28b030041e8f49739038916a48bc7573d207d05"
+            ],
+            "attributes": {
+              "section_reference": "2.01(d)",
+              "assertion_kind": "WITHDRAWAL_RECONVERSION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7353dd762ca823b6c907040fc28b030041e8f49739038916a48bc7573d207d05",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "bce836b461449b14f5403034e72abcd2728c908645e61ec16a8869fd2d4ae39b",
+                "document_ordinal": 0,
+                "absolute_start": 1533,
+                "absolute_end": 2053,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a36baf24f0b9f4f4ac7d9f8ae8e2a50b77b8d53109e677a465270b655ab3ddb2"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "APPRAISAL",
+            "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+            "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+            "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+            "extraction_provenance_id": "a2cf7d0fcad9572f9952432574e2d858249d5af136121cafd823a7fd958e2a16"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 88,
+        "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.01(d)",
+          "normalized_citation": "2.01(d)",
+          "derived_citation": "2.01(d)(i)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "2.01(d)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "526073923afaa07eaa0e6e163f25270f993f5f650460e1cc6e4a40c08fcb31dd",
+      "closure_id": "a36baf24f0b9f4f4ac7d9f8ae8e2a50b77b8d53109e677a465270b655ab3ddb2",
+      "normalised_phrase": "provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01",
+      "attachment_position": null,
+      "concept_family": "APPR-WITHDRAW",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "APPR-WITHDRAW",
+          "pattern_id": "APPR-WITHDRAW:PHRASE:WITHDRAWAL",
+          "start": 742,
+          "end": 758,
+          "excerpt": "d to collectively as the “Dissenting Shares” until such time as such holder fails to perfect, withdraws or otherwise loses such holder’s appraisal rights under the Laws o",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)(ii)",
+      "reason": "APPRAISAL_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_APPRAISAL_CANDIDATE",
+      "raw_value": "Except with the prior written consent of Parent, the Company shall not make any payment with respect to, or offer to settle or settle, or approve the withdrawal of, any such demands or agree to do any of the foregoing.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "2.01(d)",
+        "assertion_kind": "SETTLEMENT_CONSENT",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "33c4b28fd45cb1c0c2c4c0b448ec163d895dc2a1b311b678cbf9887407c557c7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "497a598fb8c6fc10b2473ca954eca1ac42f1fe1e1886b9f070fea4531d0ccbef",
+          "document_ordinal": 0,
+          "absolute_start": 2815,
+          "absolute_end": 3033,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "bc7a008e9ed7c9c75792b491cb4e365a4524094f69374fe5e766024fdb94bfbd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "APPRAISAL",
+        "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+        "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "a2cf7d0fcad9572f9952432574e2d858249d5af136121cafd823a7fd958e2a16"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "2.01(d)",
+        "normalized_citation": "2.01(d)",
+        "derived_citation": "2.01(d)(ii)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company shall provide Parent prompt written notice of any demands received by the Company for appraisal of shares of Company Common Stock (or written threats thereof), any written withdrawal or purported withdrawal of any such demand and any other demand, notice or instrument delivered to the Company prior to the Effective Time pursuant to the Laws of the State of Delaware that relates to such demand",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_NOTICE: Company must give Parent prompt written notice of appraisal demands, threats thereof, withdrawals of demands, and other related demands/notices/instruments received before the Effective Time.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8779fc4baf042d9ef36deca2867c31585238876d97afaab56e441ed1eb471327",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bd2fd893235417bafbd0c2509d1446eaab525ba4f4b403a25f4df4c8591d8ea7",
+          "document_ordinal": 0,
+          "absolute_start": 2229,
+          "absolute_end": 2636,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "69bb0b08832313f308cef198c70e54e15b1cacc088b95ad2ca2dd4b5f493e2bd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+        "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "3253c79a82378114fc8b1540c6e09bdbe304f16b1879b7030982662ef2e117ff"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall have the opportunity and right to participate in and direct all negotiations and any litigation, suit, action or other proceeding with respect to such demands.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_INFORMATION_RIGHT: Parent has the right to participate in and direct negotiations and any litigation or proceeding relating to appraisal demands.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "072e173f601b6c0af9c24f1ecaddf8f5f414daa1b04facb09d1fe7ec23d25caf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2577762d5bdbd4e14c987172725de8f4e0e4db8226e4d70a9ff1cda776a804f9",
+          "document_ordinal": 0,
+          "absolute_start": 2642,
+          "absolute_end": 2814,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a1481da00451d2427b74d2fa71086c1b3166efa1cf78106164b445e5112c1b2c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+        "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "3253c79a82378114fc8b1540c6e09bdbe304f16b1879b7030982662ef2e117ff"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "who has neither voted in favor of adoption of this Agreement nor consented thereto in writing and who has properly and validly exercised its statutory rights of appraisal in respect of such shares of Company Common Stock",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_MODALITY: Defines the procedural conditions a shareholder must meet to hold Dissenting Shares: not voting for or consenting to the Agreement, and properly and validly exercising statutory appraisal rights.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "4b485637663bb3b268ff65aeb3b9e5188d9ae948f73a2a59d6a8776d59a839ab",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "de79457d6118814855b60530144e96638cd676efe63aa212a98ed9f913b28b3e",
+          "document_ordinal": 0,
+          "absolute_start": 372,
+          "absolute_end": 592,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7d51e6b54ae5f8392c873b1f4ff15ee3582a27dbb864ad759d91209d095de84b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+        "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "3253c79a82378114fc8b1540c6e09bdbe304f16b1879b7030982662ef2e117ff"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "2.01(d)",
+      "source_citation": "2.01(d)",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Such Company Shareholders shall be entitled to receive payment of the appraised value of such Dissenting Shares to the extent afforded by Section 262 of the DGCL",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_STATUTE: Ties the entitlement to appraised-value payment for Dissenting Shares to the extent afforded by DGCL Section 262.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "988c324cbd2c316b51874f8d9903a9d877811e26ecafb8bb687b95a88c856ebf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "39186ce33b1f96156f87bbbaadf925015fc2da7e77da1f453b8da36cfa587d4d",
+          "document_ordinal": 0,
+          "absolute_start": 1009,
+          "absolute_end": 1170,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9515f1993949664567ecbf6c6ff5e625f2f25861d5c837980d27442b2b5c0599",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "ce7fa0cd50c961f5adab0e93af1c54d30d33a450414f21eaa85cbd5997ceb2f8",
+        "producer_receipt_id": "651db0874c867a5d82de700859948fa9527bbd9a7e1ceb3e9ce88bee66e76e64",
+        "governed_scope_digest": "6fda8f519bbc327a9adb1d35d47829f3e245a812873e46f44bdfe604734dcb24",
+        "extraction_provenance_id": "3253c79a82378114fc8b1540c6e09bdbe304f16b1879b7030982662ef2e117ff"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "4478180ea887d58386b9b64930223a199e9f3c42e8d130234cdcdf5a7b2014e1",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 6,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 1,
+      "open_world": 5,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "88082ef205c5cd505d454ffdeb1c82f27927ea202f4f9fad5f706be74ba52310"
+  }
+}

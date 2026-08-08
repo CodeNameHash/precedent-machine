@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "redhat",
+  "deal_label": "International Business Machines Corporation / Red Hat, Inc.",
+  "section_family": "DNO_INDEMNIFICATION",
+  "purpose": "General extraction run: family DNO_INDEMNIFICATION on deal redhat.",
+  "section_references": [
+    "5.05"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "5.05",
+      "family_id": "DNO_INDEMNIFICATION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-dno/v1",
+  "prompt_version": 1,
+  "agreement_date": "2018-10-28",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T04:49:47.786Z",
+  "total_elapsed_ms": 111256,
+  "extraction_wall_clock_ms": 106911,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/redhat-dno-indemnification-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "491ba28b7a3245a90a1453907514d73a038d3c1f",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "7eed39271b8765ebe9253ae81e394b32e8948ceba42eefb5cc018655baac7945",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

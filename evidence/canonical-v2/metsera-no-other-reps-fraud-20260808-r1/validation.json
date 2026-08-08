@@ -1,0 +1,199 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "3f3f6e2c21be7cdbf813aab53e2d28552d0f094906a1e2343978d3d6129deb36",
+      "deal_key": "deal:metsera-no-other-reps-fraud:9db5e4cb091442c7",
+      "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 263770,
+        "absolute_start": 263743,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "af5f14a53444ea159fe90106d0482dfb20af5107c2adcc91a8b9586f8f636c28",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "exact_bytes_digest": "c4bee9f7c9378f67c37866075eb5e90aac3b99983098f455d1148588c9e7ba70",
+        "exact_text": "Except in the case of fraud",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "7d2de271f6e0e4310991ea3a69d927854ca881c882a45ab2e0c0d5580fbc4212",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "0da0ea39fd0073d573581d81d6aed6ea5f0b1216cabc73c19086302edf741ce8"
+          }
+        ],
+        "output_text_hash": "c4bee9f7c9378f67c37866075eb5e90aac3b99983098f455d1148588c9e7ba70",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "f242e6b4299de0162c25a22318bd3e136c2595c97d166dfe2eb04c79498d71d3",
+        "source_occurrence_id": "d3caa7e9262262369708c0ee4ae3edca31ee36e452392c5ac7fa8f52a8d41b1e",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      },
+      {
+        "absolute_end": 264462,
+        "absolute_start": 264400,
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "closure_id": "88713cb90e55217808505bb0e4f28e90bcf093cc5cd95b2b4c396e659a9f162a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "exact_bytes_digest": "151dfd9c950e4048070f560d5ece76a3eada6b9a6a5f60d2dacb27a31b7be863",
+        "exact_text": "Without limiting the Company’s remedies in the case of fraud",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "031d5b922063b8d1379df0eb45b2c8add4f44ce1ce8c320564f9603e8f17da22",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "388be6ef3c50cd104b418489094998e7b3691d588e905dafec646233c3f80e68"
+          }
+        ],
+        "output_text_hash": "151dfd9c950e4048070f560d5ece76a3eada6b9a6a5f60d2dacb27a31b7be863",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "f242e6b4299de0162c25a22318bd3e136c2595c97d166dfe2eb04c79498d71d3",
+        "source_occurrence_id": "d3caa7e9262262369708c0ee4ae3edca31ee36e452392c5ac7fa8f52a8d41b1e",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+        "candidate_id": "da529a9ece21957aae35a984a8e524cafdeed24ef5428eb5cfe51d31434dcd82",
+        "canonical_value": true,
+        "closure_id": "a78a78a73b07d5001f873d3ece67b8fea7a614714adea6649ce53dc70648371d",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "Except in the case of fraud",
+        "reason_code": "UNMAPPED_GENERIC_CLAIM_KEY",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "9.07"
+      },
+      {
+        "attempted_claim_definition_key": "NATIVE_FRAUD_CARVEOUT_CANDIDATE",
+        "candidate_id": "e6c60f06109cdf834c8b9901861671956f0819deaaa836277d268ea7a0f93a46",
+        "canonical_value": true,
+        "closure_id": "f04edf2efe92a4db876ad2546e6a80009c6db418d0fdda2e568e0b04328c5f5a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "Without limiting the Company’s remedies in the case of fraud",
+        "reason_code": "UNMAPPED_GENERIC_CLAIM_KEY",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "9.07"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "representation_side": "TARGET",
+          "section_reference": "9.07"
+        },
+        "candidate_id": "da529a9ece21957aae35a984a8e524cafdeed24ef5428eb5cfe51d31434dcd82",
+        "canonical_value": true,
+        "closure_id": "a78a78a73b07d5001f873d3ece67b8fea7a614714adea6649ce53dc70648371d",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "ebbc9f8fe8f428a8548127801d694a699924700f451b86606539cf0c072736d9",
+        "raw_value": "Except in the case of fraud",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      },
+      {
+        "attributes": {
+          "representation_side": "BUYER",
+          "section_reference": "9.07"
+        },
+        "candidate_id": "e6c60f06109cdf834c8b9901861671956f0819deaaa836277d268ea7a0f93a46",
+        "canonical_value": true,
+        "closure_id": "f04edf2efe92a4db876ad2546e6a80009c6db418d0fdda2e568e0b04328c5f5a",
+        "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "f315350a4df2bd0ed165e084e224879a614380dba270eb28644976bedbd8aff1",
+        "raw_value": "Without limiting the Company’s remedies in the case of fraud",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 263770,
+        "absolute_start": 263743,
+        "closure_id": "a78a78a73b07d5001f873d3ece67b8fea7a614714adea6649ce53dc70648371d",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "1febeaa19ec1896dabf984fc9ae54f1b5e8dbdb411ef667fecd87b944e281907",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "7d2de271f6e0e4310991ea3a69d927854ca881c882a45ab2e0c0d5580fbc4212",
+        "open_world_candidate_occurrence_id": "ebbc9f8fe8f428a8548127801d694a699924700f451b86606539cf0c072736d9",
+        "ordinal": 0
+      },
+      {
+        "absolute_end": 264462,
+        "absolute_start": 264400,
+        "closure_id": "f04edf2efe92a4db876ad2546e6a80009c6db418d0fdda2e568e0b04328c5f5a",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "348832444453cc5a4e1cc60b2f5b1f80993a7f2f99c8df5dd0916e97c446cd76",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "031d5b922063b8d1379df0eb45b2c8add4f44ce1ce8c320564f9603e8f17da22",
+        "open_world_candidate_occurrence_id": "f315350a4df2bd0ed165e084e224879a614380dba270eb28644976bedbd8aff1",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "a78a78a73b07d5001f873d3ece67b8fea7a614714adea6649ce53dc70648371d",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "86ae717a1674cd4dbecf62709d3a4898a6b0044cbc418617a84a80bc4256843c",
+        "open_world_candidate_occurrence_id": "ebbc9f8fe8f428a8548127801d694a699924700f451b86606539cf0c072736d9",
+        "reason_code": "UNMAPPED_GENERIC_CLAIM_KEY",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      },
+      {
+        "closure_id": "f04edf2efe92a4db876ad2546e6a80009c6db418d0fdda2e568e0b04328c5f5a",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "14560d34eb84e3d869e5bd4c87a547976daa4ae1674fcea668a175dbeaeb565d",
+        "open_world_candidate_occurrence_id": "f315350a4df2bd0ed165e084e224879a614380dba270eb28644976bedbd8aff1",
+        "reason_code": "UNMAPPED_GENERIC_CLAIM_KEY",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a",
+        "deal_admission_id": "3f3f6e2c21be7cdbf813aab53e2d28552d0f094906a1e2343978d3d6129deb36",
+        "governed_deal_key": "deal:metsera-no-other-reps-fraud:9db5e4cb091442c7",
+        "immutable_source_document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "c5da88d0e5b2478b4971fd1d9ee6320d9aa2abe4d05bb6b07bfc39b71a132dc7",
+        "source_admission_manifest_id": "88343a8a7bb7b095d952f5456a4981748934b55b01e454ad7d3f06a47d7e836c",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 10,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}
