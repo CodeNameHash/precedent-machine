@@ -544,6 +544,116 @@ const DEAL_PINS = Object.freeze({
     }),
     debug_related_node_pattern: null,
   }),
+  skechers: Object.freeze({
+    label: 'Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.',
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm',
+    raw_html_path: 'tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm',
+    // PINNED 2026-08-08 by PLAN.md Step 2G. Independently re-derived from the
+    // committed raw HTML via THIS script's own loadAndVerifySource() path
+    // (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText ->
+    // verifySecHtmlCanonicalText), not copied from a prior fixture. Both
+    // values match tests/fixtures/canonical-v2/skechers-first-live-run/
+    // intake-pin.json exactly (raw_bytes_length 604740, canonical_text_byte_length
+    // 380704, verification_status PASS) -- that pin was produced by the older,
+    // narrower scripts/canonical-v2-skechers-first-live-extraction-run.mjs
+    // (F28 breadth slice) against the same committed bytes, so the two
+    // independent derivations agreeing is corroboration, not the basis for
+    // the pin itself.
+    raw_bytes_sha256: '3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833',
+    canonical_text_sha256: 'a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660',
+    // The PINNING FETCH's timestamp, copied verbatim from
+    // tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json.
+    retrieved_at: '2026-08-01T12:34:55.229Z',
+    // Read out of the filing's own preamble, not the title-block signature
+    // line and not the fixture directory name: "THIS AGREEMENT AND PLAN OF
+    // MERGER (this "Agreement") is made and entered into as of May 4, 2025,
+    // by and among Beach Acquisition Co Parent, LLC ... Beach Acquisition
+    // Merger Sub, Inc. ... and Skechers U.S.A., Inc."
+    agreement_date: '2025-05-04',
+    pin_corroboration: 'tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json -- both '
+      + 'raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed '
+      + 'raw HTML via this script\'s own loadAndVerifySource() path and match that pin file exactly',
+    // PINNED 2026-08-08 by PLAN.md Step 2G, from the hand-reviewed mapping in
+    // docs/codex-program/notes/step-2g-skechers-onboarding.md. Every list
+    // below was read against the filed text section by section -- headings
+    // AND body content, never titles alone -- and every reference was
+    // confirmed to resolve via --dry-run before being pinned here. All 25
+    // registered families mapped; none left out. Unlike TopBuild, Skechers'
+    // Article III (28 sections, 3.1-3.28) and Article IV (17 sections,
+    // 4.1-4.17) are BOTH granular -- one topic per numbered section, no
+    // sub-paragraph burial -- so this document reads much closer to Modiv's
+    // structure than TopBuild's, and almost nothing here needed correcting
+    // against a stage-1 title-rule guess.
+    //
+    // REPRESENTATIONS is intentionally broad: ALL 45 Article III/IV sections
+    // (every rep both parties give), not a curated subset. The family's own
+    // producer prompt scope is "one complete, admitted representations-and-
+    // warranties section" with no topic restriction, so a section already
+    // claimed by a topic family (e.g. 3.7 Capitalisation, 3.17 Tax Matters)
+    // is included here too -- REPRESENTATIONS extracts accuracy/knowledge
+    // qualifiers, a different fact shape than the topic family extracts from
+    // the same text, which is the same overlap design already used for
+    // TERMINATION/TERMINATION_FEE and CONSIDERATION/APPRAISAL_DISSENTERS_RIGHTS
+    // elsewhere in this table. This means a live run of REPRESENTATIONS
+    // against this pin is 45 separate model calls -- by far the most
+    // expensive family here -- recorded plainly rather than trimmed quietly.
+    //
+    // DIVIDENDS pins to 5.2 "Forbearance Covenants", the same section
+    // INTERIM_OPERATING is pinned to, because -- exactly as on TopBuild --
+    // there is no standalone dividends-coordination section: the dividend
+    // restriction is sub-limb (B) of a thirty-clause forbearance covenant,
+    // and DIVIDENDS' own producer prompt (v2, 2026-08-08) explicitly excludes
+    // "Consideration and IOC restrictions... even when their text is about
+    // dividends". This pin is expected to resolve few or zero governed
+    // dividend_assertions for exactly that reason; the section is still
+    // correct to pin, per that same family's own documented design.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['6.2']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.7']),
+      CAPITALISATION: Object.freeze(['3.7', '4.15']),
+      CLOSING_CONDITIONS: Object.freeze(['7.1', '7.2', '7.3']),
+      CONSIDERATION: Object.freeze(['2.7', '2.8', '2.9', '2.10', '2.11', '2.12']),
+      DIVIDENDS: Object.freeze(['5.2']),
+      DNO_INDEMNIFICATION: Object.freeze(['6.10']),
+      EMPLOYEE_MATTERS: Object.freeze(['6.11']),
+      FINANCING_COVENANTS: Object.freeze(['6.5', '6.6', '6.19']),
+      GENERAL_COVENANTS: Object.freeze([
+        '6.1', '6.7', '6.8', '6.9', '6.12', '6.13', '6.14', '6.15', '6.16', '6.20', '6.21',
+      ]),
+      GUARANTY_FINANCING_PARTY: Object.freeze(['4.13', '9.15']),
+      INTERIM_OPERATING: Object.freeze(['5.1', '5.2']),
+      KEY_DEFINED_TERMS: Object.freeze(['1.1', '1.2']),
+      MAE_DEFINITION: Object.freeze(['1.1']),
+      MATERIAL_CONTRACTS: Object.freeze(['3.13']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5', '2.6']),
+      MISC_BOILERPLATE: Object.freeze([
+        '1.3', '8.4', '8.5', '9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7',
+        '9.9', '9.10', '9.11', '9.12', '9.13', '9.14', '9.16',
+      ]),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.28', '4.17']),
+      NO_SHOP: Object.freeze(['5.3']),
+      PROXY_MEETING: Object.freeze(['6.3', '6.4', '6.17']),
+      REPRESENTATIONS: Object.freeze([
+        '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10',
+        '3.11', '3.12', '3.13', '3.14', '3.15', '3.16', '3.17', '3.18', '3.19', '3.20',
+        '3.21', '3.22', '3.23', '3.24', '3.25', '3.26', '3.27', '3.28',
+        '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10',
+        '4.11', '4.12', '4.13', '4.14', '4.15', '4.16', '4.17',
+      ]),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['9.8']),
+      TAX_MATTERS: Object.freeze(['2.13', '2.14', '3.17', '4.14', '6.18']),
+      TERMINATION: Object.freeze(['8.1', '8.2']),
+      TERMINATION_FEE: Object.freeze(['8.3']),
+    }),
+    // Verified empirically against this exact filing by Step 2G's own
+    // --dry-run resolutions.
+    section_expectations: Object.freeze({
+      '1.1': Object.freeze({ kind: 'SECTION', heading: /Certain Definitions/i }),
+      '3.7': Object.freeze({ kind: 'SECTION', heading: /Company Capitalization/i }),
+      '8.3': Object.freeze({ kind: 'SECTION', heading: /Fees and Expenses/i }),
+    }),
+    debug_related_node_pattern: null,
+  }),
 });
 
 function parseArgs(argv) {
@@ -962,10 +1072,36 @@ function runProvenance() {
   };
 }
 
+// The output ceiling the CLI is asked for, and the figure the provider's
+// overflow guard measures against. They must be the same number: the guard's
+// question is "did we get back everything we asked for, or was generation cut
+// at the limit", and a guard set to a different limit answers a different
+// question.
+//
+// 64,000 is Claude Code's own per-model default and was the ceiling four
+// TopBuild/Modiv calls hit (71,907 / 71,430 / 65,210 / 74,080 attempted),
+// producing tail fragments of one answer that the parser correctly refused.
+// Raising it was ruled on 2026-08-08 and then MEASURED, because a static read
+// of the CLI's minified per-model table says `upperLimit` is 64,000 on every
+// branch and that read predicted this would not work. It does: TopBuild
+// NO_SHOP §4.3 returned **69,576 output tokens** under this setting and
+// extracted 67 publishable claims, a family that had never extracted on that
+// document at all. The table is not the behaviour; the run is.
+const CLI_MAX_OUTPUT_TOKENS = 128000;
+
 function childEnv() {
   const env = { ...process.env };
   delete env.ANTHROPIC_API_KEY; // force subscription auth, not metered billing
+  // Honour an operator override so the ceiling can be probed without a code
+  // change, which is how the 64,000 figure was falsified in the first place.
+  env.CLAUDE_CODE_MAX_OUTPUT_TOKENS = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS
+    || String(CLI_MAX_OUTPUT_TOKENS);
   return env;
+}
+
+function effectiveMaxOutputTokens() {
+  const override = Number(process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS);
+  return Number.isFinite(override) && override > 0 ? override : CLI_MAX_OUTPUT_TOKENS;
 }
 
 function runClaudeCli(promptText, { model, timeoutMs = 10 * 60 * 1000 } = {}) {
@@ -1076,7 +1212,14 @@ function makeMeasuredCliClient({
             + '```json fence, byte-for-byte as returned.',
           raw_response_text: rawResponseText,
         }, null, 2));
-        return { content: [{ type: 'text', text: rawResponseText }] };
+        // `usage` travels ON THE RESPONSE, not only into telemetry. The
+        // provider's overflow guard reads `response.provider_usage ?? usage`,
+        // and this client used to return content alone -- so the guard read
+        // `null` and could not fire on a single real run. The 69,576-token
+        // NO_SHOP call that proved the ceiling raise works is exactly the call
+        // it should have caught if the ceiling had still been 64,000, and it
+        // said nothing. A guard whose input never arrives is not a guard.
+        return { content: [{ type: 'text', text: rawResponseText }], usage: parsed.usage };
       },
     },
   };
@@ -1301,6 +1444,7 @@ async function main() {
     // the same Modiv evidence replayed from evidence/ and from a scratchpad
     // copy minted two different identities for identical claims.
     model: replayProviderModelId || liveProviderModelId,
+    maxOutputTokens: effectiveMaxOutputTokens(),
     client: liveClient,
     maxRetries: 0,
   };

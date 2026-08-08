@@ -282,3 +282,214 @@ transport at `scripts/canonical-v2-live-extraction-run.mjs:934–1034`;
 DECISIONS.md "Recently decided" latency ruling. Model output limits
 confirmed against current Anthropic model documentation: `claude-sonnet-5`
 maximum output is 128K; 64,000 is the CLI's per-model default cap.*
+
+---
+
+## CORRECTION 2026-08-08: the ceiling raise works, and the guard that should have caught it cannot fire. RULED 2026-08-08 by Fable, under the same delegation.
+
+**Sequence, for the record, in the order it happened.** (1) The ruling above
+chose the mechanism: raise `CLAUDE_CODE_MAX_OUTPUT_TOKENS`, honoured-not-
+assumed, plus an arithmetic overflow guard. (2) Later the same day a static
+read of the installed CLI's minified per-model table (`$i()`: `upperLimit`
+64,000 on every branch, clamped silently by `Lo()`) was presented as proof
+the raise was impossible, and a re-ruling of the mechanism was commissioned
+on that premise. (3) Measurement refuted the refutation before any such
+re-ruling was written: **no "ceiling unavailable" ruling was ever issued,
+and none should be inferred from drafts or briefs referencing one.** The
+mechanism chosen above is confirmed working. What follows corrects the one
+part of the original ruling that was genuinely wrong, and rules on a defect
+the confirming run exposed.
+
+### 1. The contradiction, resolved: the static read was of a program that does not run
+
+The file read for the refutation —
+`/opt/node22/lib/node_modules/@anthropic-ai/claude-code/cli.js` — is real,
+and its `$i()` table really does cap every branch at 64,000. It is also
+**v2.1.42, dated 2026-03-31, and it is not what executes**. Its model table
+predates `claude-sonnet-5` entirely (sonnet-5 falls to the fallback branch).
+The `claude` on PATH resolves `/opt/node22/bin/claude →
+/opt/claude-code/bin/claude`: a 295 MB native executable, **v2.1.224, built
+2026-08-07**, whose embedded strings include `claude-sonnet-5`,
+`claude-opus-5` and `claude-fable-5`, and whose resolver is compiled machine
+code that cannot be read as text at all. A stale npm install sat shadowed on
+disk looking exactly like the source of the running tool. CLAUDE.md's "read
+the code, not the comment" has a sibling now proven the hard way: **read the
+binary that executes, not the file that resembles it** — `which` and
+`readlink` before trusting any on-disk source for an installed tool, and
+prefer measurement over any static read of a minified or compiled artefact.
+
+**A second trap, which invalidates part of the original ruling.** The
+telemetry field `model_usage.claude-sonnet-5.maxOutputTokens` is **static
+model metadata, not the effective cap**: it reads 64,000 in the very run
+that emitted 69,576 output tokens in a single message. The original
+ruling's §3a acceptance — "one cheap call whose telemetry shows the raised
+`maxOutputTokens`" — is therefore **withdrawn**: that probe can never prove
+honouring, and when actually run (var=128,000, trivial prompt) it showed
+64,000 while the raise was demonstrably working. Nothing else in the
+original ruling is withdrawn.
+
+**The behavioural proof that replaces it**, three independent measurements:
+
+- **Downward**: `CLAUDE_CODE_MAX_OUTPUT_TOKENS=200` on a trivial long-output
+  prompt split generation into 200-token messages (total 800, `iterations`
+  `[200]`, `result` = the 155-char final fragment) — the entire truncation
+  phenomenon of this ruling reproduced in miniature, proving the variable is
+  wired to the effective per-message cap.
+- **Upward, the decisive one**: TopBuild NO_SHOP §4.3 re-run with
+  `CLAUDE_CODE_MAX_OUTPUT_TOKENS=128000`
+  (`evidence/canonical-v2/topbuild-no-shop-20260808-ceiling128k/`):
+  **69,576 output tokens in ONE message** — `usage.iterations` reads
+  `[69576]`, equal to the total. The iterations entry is the *final
+  message's* tokens (fixed by three committed runs: the §4.3 failure reads
+  `[1210]` of 65,210; Modiv §5.6 reads `[7617]` of 65,008; single-message
+  runs read `[total]`) — so under a 64,000 cap this run would have read
+  `[5576]`. It did not. One message carried 69,576 tokens; the cap in force
+  was above 64,000. The response opens at the beginning (` ```json { `),
+  parses as one object, and passed every gate: `validation.json`
+  `accepted: true`, 176 publishable, 0 residuals, 0 quarantined closures,
+  68 review-queue items — **the first NO_SHOP extraction TopBuild has ever
+  produced. BREAK 4 is cleared by the mechanism the original ruling chose.**
+- **Default**: with the variable unset the ceiling remains 64,000 — the four
+  recorded truncations at 65,210–74,080 and both sub-64K near-misses stand
+  as that measurement.
+
+**What the ceiling actually is now: unknown precisely, and to be recorded
+honestly as such.** Established: 64,000 with the variable unset; **at least
+69,576** with it set to 128,000. The clamp still exists in the new binary
+(its "Capped from" diagnostic string is present twice), so an upper limit
+exists somewhere; its sonnet-5 value is unmeasured, and 128,000 must not be
+recorded as established — the honest figure is "asked 128,000, proven
+≥ 69,576, bounded above by the API's documented 128K for sonnet-5". Run
+manifests should record `claude --version` (2.1.224 today): the ceiling
+landscape is a property of the installed binary and changes silently with
+it — the March binary genuinely was 64,000 everywhere.
+
+### 2. Sufficient, or merely bigger? Merely bigger, until REPRESENTATIONS §3.1 lands
+
+The worst measured demand is **74,080** (TopBuild REPS §3.1 — note the
+mid-day brief misquoted this as 71,907, which is Modiv CAP §4.2's figure;
+the table in §2 above is authoritative). If the effective cap is truly
+128,000, headroom over the worst observation is 42%. If the binary's clamp
+sits anywhere in (74,080, 128,000], all four recorded failures clear. Only
+a clamp inside (69,576, 74,080) would leave §3.1 stuck — and the §3.1
+re-run under var=128,000, in flight as this correction is written
+(`evidence/canonical-v2/topbuild-representations-20260808-ceiling128k/`,
+started 02:50Z), decides exactly that. Its acceptance criterion is
+unchanged from §3a above: completes, parses as one object, passes
+validation → durable write → projection. Whatever it shows, thinking volume
+remains stochastic and unbounded above, so the overflow guard — not the
+raised figure — is what keeps a future denser section from failing
+silently.
+
+**The named fallback if a section ever exceeds the raised ceiling** (and
+the answer to "is any of the ~88% invisible thinking steerable"): partly,
+and only at the extremes. Measured on the real binary: intermediate
+thinking budgets do **not** bind sonnet-5 — the 69,576-token run itself
+executed with `MAX_THINKING_TOKENS=31999` in its environment (verified from
+`/proc` while it ran) and still burned ~63K thinking in one message. But
+`MAX_THINKING_TOKENS=0` **is** honoured and disables thinking outright:
+286 vs 2,046 output tokens on an identical nontrivial prompt, measured
+today. Visible answers across all committed successful runs measure
+2,500–6,000 tokens, so with thinking off, overflow is arithmetically
+implausible. This is a **named fallback, not an adopted mechanism**:
+thinking-off changes the compute behind the answer, so adopting it requires
+a parity evaluation on known-good sections (Modiv REPS §3.1/3.3/3.4, Modiv
+NO_SHOP §5.6, thinking-on vs thinking-off, compared at adapter level) and
+its own ruling. Triggers for opening that evaluation: any live call
+measuring ≥ 100,000 output tokens, or any truncation with the variable at
+128,000. Chunking stays rejected on the original §5 grounds, unchanged and
+now also moot for the two affected sections.
+
+### 3. The defect this exposed: a guard that cannot fire — the third instance of this repository's signature failure
+
+Verified from committed code and the run itself. The overflow guard
+(`RESPONSE_TRUNCATED_BY_OUTPUT_CEILING`,
+`lib/canonical-v2/native-producer/anthropic-provider.js`, committed in
+e967df5f with its 11 hostile tests, exit 0) reads
+`response.provider_usage ?? response.usage` — and the runner's measured CLI
+client (`makeMeasuredCliClient`,
+`scripts/canonical-v2-live-extraction-run.mjs`) recorded usage into
+telemetry but, as committed, returned `{ content }` alone. **The guard's
+input never arrives on any real run.** The proof is behavioural and exact:
+during the 69,576-token run the committed guard was in force with its
+64,000 default and the runner passing no override — a fed guard would have
+thrown before parsing. The run sailed through every gate. (It would have
+been a *false* failure, as it happens, since the effective cap was raised —
+which proves two defects at once: the starved input, and a threshold that
+does not track the ceiling actually in force.)
+
+This is the pattern CLAUDE.md warns about, third instance in this
+programme: the classifier built, wired and bypassed; the telemetry recorded
+and read by nothing; now the guard implemented, tested and starved. The 11
+tests prove the guard's logic against synthetic responses that carry usage;
+no test proves the seam through which real usage arrives. **Rule: every
+guard gets a test at the seam where its input arrives, not only at its
+logic.**
+
+**The wiring, ruled** (uncommitted drafts of most of this already exist in
+the working tree; they land as an ordinary reviewed change, and this ruling
+is the spec they are reviewed against):
+
+1. **Usage travels on the response object** the provider sees, not only
+   into telemetry: the measured client returns
+   `{ content, usage: parsed.usage }`.
+2. **One function derives the ceiling; both consumers use it.** The figure
+   exported into the child's `CLAUDE_CODE_MAX_OUTPUT_TOKENS` and the
+   `maxOutputTokens` handed to the provider must be the same number by
+   construction — never two parallel defaults that can drift. The current
+   draft has exactly such a drift edge: a malformed operator override is
+   forwarded verbatim to the CLI (whose behaviour on garbage is the
+   binary's, not ours) while the guard numerically rejects it and checks
+   128,000 — a truncation at ~65K would then sail under the guard again. A
+   malformed override fails the run at startup, loudly; it does not fork
+   the two consumers.
+3. **`DEFAULT_MAX_OUTPUT_TOKENS_CEILING` stays 64,000.** It models the
+   CLI's measured unset-variable behaviour, which is what a caller that
+   exports nothing actually gets. Raising the default to 128,000 would
+   silently un-guard every such caller. The runner always passes its
+   effective figure explicitly; the default is the safety net for callers
+   that do not.
+4. **Second predicate, closing the residual hole.** The guard tests the
+   *asked-for* ceiling; if the binary's clamp caps below it, truncation
+   happens under the guard's threshold and is silent again — same hole,
+   one storey up. The content-independent signal is already recorded on
+   every call: **final-iteration `output_tokens` < total `output_tokens`**
+   means the transport delivered only the final of several messages. On
+   that signal, the §4.2 completeness audit above (begins at the beginning,
+   parses as one object, length consistent with the final iteration alone)
+   runs automatically; failing it is the same typed refusal. Calibration
+   against committed runs: Modiv §5.6 and Modiv REPS §3.3 (both
+   multi-message, both complete) pass it; every recorded truncation fails
+   it. No content is ever trusted for completeness — the audit checks
+   shape and arithmetic only, per the original §4.
+
+### 4. Acceptance and falsification
+
+**Acceptance for the wiring:** (a) the recorded 69,576-token call replayed
+through the provider with usage attached **must fail** with
+`RESPONSE_TRUNCATED_BY_OUTPUT_CEILING` at `maxOutputTokens` 64,000 and
+**must pass** at 128,000 — one committed artefact proving both directions
+of the same predicate; (b) a seam test that fails if the measured client's
+response omits usage; (c) TopBuild NO_SHOP §4.3 (done, cited above) and
+REPS §3.1 pass validation → durable write → projection; (d) the standing
+mechanical gates: `CI=true npm test`, `npm run build`,
+`bash scripts/lint/forbidden-patterns.sh`.
+
+**This correction is falsified if:** a var=128,000 run truncates below
+128,000 — multi-message with a failed completeness audit — which would
+measure the binary's real clamp; the response is then to lower the exported
+figure to the measured clamp, not to doubt the mechanism. And it is
+**escalated, not falsified**, if any single message exceeds 128,000: that
+opens the thinking-off parity evaluation named in §2, with chunking still
+behind it on the original §5 terms.
+
+**Standing after this correction:** the diagnosis (truncation, not a model
+format), never-accumulate, never-supersede, the parser's refusal,
+arithmetic-only content-independent detection, the §4.2 audit, and the
+chunking rejection — all unchanged. Withdrawn: only the telemetry-based
+honouring proof in §3a, replaced by the behavioural proof in §1 here. The
+mid-day static refutation is dead, and the general lesson it bought is
+recorded in §1: **measurement beats static analysis of artefacts that
+merely resemble the running system — and a "verification" that cannot
+distinguish success from failure (the metadata probe) is not verification
+at all.**

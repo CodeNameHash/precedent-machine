@@ -22,16 +22,16 @@
       "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
       "prompt_id": "native-producer-dividends/v1",
       "prompt_version": 2,
-      "prompt_digest": "265fa6dcc16be79c28a654c23b011b5cd349a82e323f0b6022988c23afe88429",
+      "prompt_digest": "5b4516174a1d3582dc05b039412badf8e5b7a2ae5466d0638c27c06376b77d4c",
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
         "provider_id": "native-producer-anthropic/v1",
         "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
-        "prompt_digest": "cd59240b74fda165fc78ee41737af6f2d223edc06e6f047159af3486b4db8d7c",
+        "prompt_digest": "6ba8255bdd1c90a0bd46a51f18ca8c16b75c52986513d4b68b177e9cc0299551",
         "input_scope_digest": "06200de36f3ddeadbc2fec0ac771597f06cebba537e4a5b1d747518fd6947b1b",
-        "proposal_count": 3,
+        "proposal_count": 0,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "fcae7817122e2883e6b35233bc13845f86cbb87e3bf6b349e4ad40ec8e224d6c"
+        "producer_receipt_id": "60459c395c91e84584387f4d00a0ca596de11b2dacacdeeefea47a44b21e5192"
       }
     },
     {
@@ -47,222 +47,21 @@
       "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
       "prompt_id": "native-producer-dividends/v1",
       "prompt_version": 2,
-      "prompt_digest": "df2e2756d25ac710646af85a160a88bd34817197ae2d52325b656b48af93600d",
+      "prompt_digest": "1b112b0c5b27a8c1534a0475646e7cb0b6c28116f862ab4e24a76e17e7295f38",
       "producer_receipt": {
         "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
         "provider_id": "native-producer-anthropic/v1",
         "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
-        "prompt_digest": "826eac74a295066cf17b2edb2b3cbb9087c334337da35eaa71749b12a267d322",
+        "prompt_digest": "188381d9204ffa7c188b35e498791cb80412ef422074e028d70f1dec8b81cc5a",
         "input_scope_digest": "d738278e7897f2df764afffceb1884226cc7cd363f4e696ab9dedba66583cae5",
-        "proposal_count": 3,
+        "proposal_count": 2,
         "evidence_residual_count": 0,
-        "producer_receipt_id": "15fbadf209250198510c61f5760e562a8eeaa7f40ae05fb7af29b3e664c8e86a"
+        "producer_receipt_id": "f319adaa6712b28ec9268f019ca3255c1d6ca92ab6417672aa12d29da523be16"
       }
     }
   ],
   "compiled_candidates": [
     {
-      "section_reference": "4.1",
-      "citation_validation": null,
-      "section_family": "DIVIDENDS",
-      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
-      "covenant_side": null,
-      "ok": true,
-      "candidate": {
-        "kind": "claim",
-        "claim": {
-          "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "a5e24531d30d2e9de52c4e123d2c8eb41f73388b6d972352d9494e68a6085229",
-          "claim_occurrence_id": "d4a243c6a38d9a7dbf150aea99b15a72260b66d1bf8a04a7ac21cc06e23c6f02",
-          "subject_occurrence_id": "ec8a672944b1c5b5c0901495745e323fb9327300f884a88cb3fd39a9c8bbf8af",
-          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
-          "claim_definition_version": 1,
-          "ordinal": 0,
-          "state": "PRESENT",
-          "raw_value": "declare, set aside or pay any dividend or other distribution, whether payable in cash, stock or other property, with respect to its capital stock, except for dividends by any wholly owned direct or indirect Subsidiary of the Company to the Company or any other wholly owned direct or indirect Subsidiary of the Company",
-          "canonical_value": null,
-          "unit": null,
-          "day_basis": null,
-          "denominator": null,
-          "scope": null,
-          "applicability": null,
-          "not_examined": null,
-          "failure": null,
-          "evidence_ids": [
-            "b40be068b1a82a1577283c6f10e6e186de7eabbc423f8096a738cac1158564b1"
-          ],
-          "attributes": {
-            "why_unmapped": "General interim-operations prohibition on declaring/paying dividends — a limb of the broader Section 4.1 operating covenant (clause (vi)(A)), not a coordination covenant or a one-time pre-closing special dividend.",
-            "nearest_concept": null
-          },
-          "taxonomy_codes": {},
-          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "evidence": [
-            {
-              "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "b40be068b1a82a1577283c6f10e6e186de7eabbc423f8096a738cac1158564b1",
-              "evidence_role": "OPERATIVE_TEXT",
-              "excerpt_id": "f5a138cb042fe4691b9bf285936c97775672199eada1c32f6e85b4433f2fcaec",
-              "document_ordinal": 0,
-              "absolute_start": 5032,
-              "absolute_end": 5350,
-              "ordinal": 0
-            }
-          ],
-          "publication_state": "VALIDATED",
-          "retained_residuals": [],
-          "quarantine": null,
-          "closure_id": "2f2d2a8192ae8b2e1862e3a6c20234c5b915fa783116b05f9ceacf69db03aa86"
-        },
-        "extraction_provenance": {
-          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
-          "extractor_id": "canonical-v2-native-extraction-run/v1",
-          "extractor_version": "1",
-          "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "cd59240b74fda165fc78ee41737af6f2d223edc06e6f047159af3486b4db8d7c",
-          "producer_receipt_id": "fcae7817122e2883e6b35233bc13845f86cbb87e3bf6b349e4ad40ec8e224d6c",
-          "governed_scope_digest": "cbe9fc07aa4fd85cd165de03e82190b9a87ab6d5652bd82c80e9845fd561a6d3",
-          "extraction_provenance_id": "aaa199990a78a87c515990c58c26b9d932588ee29637893b20efa08a5009a127"
-        }
-      }
-    },
-    {
-      "section_reference": "4.1",
-      "citation_validation": null,
-      "section_family": "DIVIDENDS",
-      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
-      "covenant_side": null,
-      "ok": true,
-      "candidate": {
-        "kind": "claim",
-        "claim": {
-          "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "f888cf81c25b17ab2b5455c69dab1481ee0952aaf80273fcc3a78e6d5efbb21e",
-          "claim_occurrence_id": "430e919701c08c1ee92330967e607109d1e240ae533fd363310bfaf127881ba7",
-          "subject_occurrence_id": "e330e2308a6a44d9af8866c23e839b7a6c7d207cb2c9c007832ad49a8493388a",
-          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
-          "claim_definition_version": 1,
-          "ordinal": 0,
-          "state": "PRESENT",
-          "raw_value": "provided that nothing contained herein shall prohibit dividends and distributions paid or made on a pro rata basis by direct or indirect Subsidiaries of the Company in the ordinary course consistent with past practice",
-          "canonical_value": null,
-          "unit": null,
-          "day_basis": null,
-          "denominator": null,
-          "scope": null,
-          "applicability": null,
-          "not_examined": null,
-          "failure": null,
-          "evidence_ids": [
-            "cd2ab285ddaeb8201e8c0771337cc92e07a1cde9070bf001208d147ecf4e8e82"
-          ],
-          "attributes": {
-            "why_unmapped": "Carve-out permitting ordinary-course, pro rata subsidiary dividends — a recurring/ordinary-course dividend exception, not coordination language or a one-time special dividend.",
-            "nearest_concept": null
-          },
-          "taxonomy_codes": {},
-          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "evidence": [
-            {
-              "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "cd2ab285ddaeb8201e8c0771337cc92e07a1cde9070bf001208d147ecf4e8e82",
-              "evidence_role": "OPERATIVE_TEXT",
-              "excerpt_id": "f847d2c6ef9c8c4817f889f859ab7b5d640efaffcc68589ff2a329008a274d7f",
-              "document_ordinal": 0,
-              "absolute_start": 6770,
-              "absolute_end": 6987,
-              "ordinal": 0
-            }
-          ],
-          "publication_state": "VALIDATED",
-          "retained_residuals": [],
-          "quarantine": null,
-          "closure_id": "d95cf05f587ac6af1072fcf520929fb016d1c2b59c6a32b2f7a5bef70c39dc0e"
-        },
-        "extraction_provenance": {
-          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
-          "extractor_id": "canonical-v2-native-extraction-run/v1",
-          "extractor_version": "1",
-          "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "cd59240b74fda165fc78ee41737af6f2d223edc06e6f047159af3486b4db8d7c",
-          "producer_receipt_id": "fcae7817122e2883e6b35233bc13845f86cbb87e3bf6b349e4ad40ec8e224d6c",
-          "governed_scope_digest": "cbe9fc07aa4fd85cd165de03e82190b9a87ab6d5652bd82c80e9845fd561a6d3",
-          "extraction_provenance_id": "aaa199990a78a87c515990c58c26b9d932588ee29637893b20efa08a5009a127"
-        }
-      }
-    },
-    {
-      "section_reference": "4.1",
-      "citation_validation": null,
-      "section_family": "DIVIDENDS",
-      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
-      "covenant_side": null,
-      "ok": true,
-      "candidate": {
-        "kind": "claim",
-        "claim": {
-          "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "74731e7ad58db1a975cff4b502fbf82dfa374537bdc72bc8ef80f95b3bca151b",
-          "claim_occurrence_id": "e0fad4dedfc824fc150ef56bf60b553443358bce5cdcac2ed0ec983e40897a79",
-          "subject_occurrence_id": "57a6d5f37971003b8e5fb69b8544ddd8974381b57a11760b3b6f109f8fb98ffe",
-          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
-          "claim_definition_version": 1,
-          "ordinal": 0,
-          "state": "PRESENT",
-          "raw_value": "dividend equivalents thereon, if applicable",
-          "canonical_value": null,
-          "unit": null,
-          "day_basis": null,
-          "denominator": null,
-          "scope": null,
-          "applicability": null,
-          "not_examined": null,
-          "failure": null,
-          "evidence_ids": [
-            "834487d373f4ce8fc12a3107db8d6295f925b7c1ec309f6ef78bf143931aebae"
-          ],
-          "attributes": {
-            "why_unmapped": "Reference to dividend equivalents accruing on RSU/PSU awards within an equity-issuance carve-out (clause (iv)); relates to award mechanics, not a dividend declaration, coordination, or special-dividend provision.",
-            "nearest_concept": null
-          },
-          "taxonomy_codes": {},
-          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "evidence": [
-            {
-              "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "834487d373f4ce8fc12a3107db8d6295f925b7c1ec309f6ef78bf143931aebae",
-              "evidence_role": "OPERATIVE_TEXT",
-              "excerpt_id": "09207e3e139af2b66b669da697803dee4d2daf6cc984fb5da063b80fdffc6153",
-              "document_ordinal": 0,
-              "absolute_start": 3985,
-              "absolute_end": 4028,
-              "ordinal": 0
-            }
-          ],
-          "publication_state": "VALIDATED",
-          "retained_residuals": [],
-          "quarantine": null,
-          "closure_id": "cfff0cd48328c5d37e5bb61b17de0f5daef6e1e50ef39d8d5f995d33110dc0c9"
-        },
-        "extraction_provenance": {
-          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
-          "extractor_id": "canonical-v2-native-extraction-run/v1",
-          "extractor_version": "1",
-          "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "cd59240b74fda165fc78ee41737af6f2d223edc06e6f047159af3486b4db8d7c",
-          "producer_receipt_id": "fcae7817122e2883e6b35233bc13845f86cbb87e3bf6b349e4ad40ec8e224d6c",
-          "governed_scope_digest": "cbe9fc07aa4fd85cd165de03e82190b9a87ab6d5652bd82c80e9845fd561a6d3",
-          "extraction_provenance_id": "aaa199990a78a87c515990c58c26b9d932588ee29637893b20efa08a5009a127"
-        }
-      }
-    },
-    {
       "section_reference": "4.2",
       "citation_validation": null,
       "section_family": "DIVIDENDS",
@@ -273,76 +72,9 @@
         "kind": "claim",
         "claim": {
           "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "9341d75917870e40480130b70f56e1ddeca8859b5193a70b1ab3e0407fed4e0c",
-          "claim_occurrence_id": "1bf718a10394872a44297d8b7d16a6451721643c2e11d9e513feb90553f3e05e",
-          "subject_occurrence_id": "1cd11d3303d99e059347f4af8a9323a416105f270624853768c1cd88c7b25d85",
-          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
-          "claim_definition_version": 1,
-          "ordinal": 0,
-          "state": "PRESENT",
-          "raw_value": "declare, set aside or pay any dividend or other distribution, whether payable in cash, stock or other property, with respect to its capital stock of Parent",
-          "canonical_value": null,
-          "unit": null,
-          "day_basis": null,
-          "denominator": null,
-          "scope": null,
-          "applicability": null,
-          "not_examined": null,
-          "failure": null,
-          "evidence_ids": [
-            "a4056ac814983c33c29e34021e0dca147139f07d4e13567bb470b368252b1549"
-          ],
-          "attributes": {
-            "why_unmapped": "General negative covenant prohibiting Parent from paying dividends during the interim period; a dividend restriction appearing as one limb (iv)(A) of the broader interim-operations covenant, not a coordination covenant or a one-time pre-closing special dividend.",
-            "nearest_concept": null
-          },
-          "taxonomy_codes": {},
-          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
-          "evidence": [
-            {
-              "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "a4056ac814983c33c29e34021e0dca147139f07d4e13567bb470b368252b1549",
-              "evidence_role": "OPERATIVE_TEXT",
-              "excerpt_id": "e6305407dc2638421a7fbd99eb57d3bf2fcac6ae5f9fbdf04c39d53ca3a37662",
-              "document_ordinal": 0,
-              "absolute_start": 3969,
-              "absolute_end": 4124,
-              "ordinal": 0
-            }
-          ],
-          "publication_state": "VALIDATED",
-          "retained_residuals": [],
-          "quarantine": null,
-          "closure_id": "4cc77744d3b49b7024704ab823c77220aa32aa7b13edbb2b27c646b21121e59f"
-        },
-        "extraction_provenance": {
-          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
-          "extractor_id": "canonical-v2-native-extraction-run/v1",
-          "extractor_version": "1",
-          "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "826eac74a295066cf17b2edb2b3cbb9087c334337da35eaa71749b12a267d322",
-          "producer_receipt_id": "15fbadf209250198510c61f5760e562a8eeaa7f40ae05fb7af29b3e664c8e86a",
-          "governed_scope_digest": "737a125bde4d3795c7d31852c62fe5b15debe27b8478c5caf211a62834620c3b",
-          "extraction_provenance_id": "35c07ac171213040b20ee300902ab72014811ff3ec3f121f1b16c871e9ad499f"
-        }
-      }
-    },
-    {
-      "section_reference": "4.2",
-      "citation_validation": null,
-      "section_family": "DIVIDENDS",
-      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
-      "covenant_side": null,
-      "ok": true,
-      "candidate": {
-        "kind": "claim",
-        "claim": {
-          "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "0a51dfd8bd61d3b97378b025085bfd208a26a6c6f2de7934d3a7e0f59c7b6a53",
-          "claim_occurrence_id": "e7fef509ab9f146a4424c781532020d50a558322b3a12b1725ce51b5fbedac2c",
-          "subject_occurrence_id": "c0a54487f65e1143f0e8eb244f74e1362a150b7872e83e99e19ebfad647b5998",
+          "claim_revision_id": "f3890d968b0e2b743fb17b1b1318bb92f9653647b5280e90a0559f0d0685ae65",
+          "claim_occurrence_id": "1dd69e34e3d0bfba22efc63e5caf2b3cfa0172e5886463f81bc00f9532a3b610",
+          "subject_occurrence_id": "ea04dde3a9192b823da6f9ed5f73c79983a990110c5d319e05225b8d9e544a66",
           "claim_definition_key": "OPEN_WORLD_PROPOSITION",
           "claim_definition_version": 1,
           "ordinal": 0,
@@ -357,10 +89,10 @@
           "not_examined": null,
           "failure": null,
           "evidence_ids": [
-            "4cc5d9de1631307d06afd843f7412598eb490158a13d741b1ee7a2bfedf6834b"
+            "1acfa77f1af2ba247bbebae857f91bb1031fd059840457f541f63b6442f39f19"
           ],
           "attributes": {
-            "why_unmapped": "Recurring mandated dividend required by the terms of outstanding preferred stock, not a coordination covenant or one-time special dividend.",
+            "why_unmapped": "Recurring dividend mandated by the terms of preferred stock, not a coordination covenant or one-time pre-closing special dividend.",
             "nearest_concept": null
           },
           "taxonomy_codes": {},
@@ -370,7 +102,7 @@
           "evidence": [
             {
               "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "4cc5d9de1631307d06afd843f7412598eb490158a13d741b1ee7a2bfedf6834b",
+              "claim_evidence_id": "1acfa77f1af2ba247bbebae857f91bb1031fd059840457f541f63b6442f39f19",
               "evidence_role": "OPERATIVE_TEXT",
               "excerpt_id": "fdd31a272212652eee453d2238fb9ab5e531a5e91f7c0618c4fa870a71a641d3",
               "document_ordinal": 0,
@@ -382,17 +114,17 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "53c7058f3a9be40675a309df9875e62a26387a539afe1e5c824e7bf1c0459cf2"
+          "closure_id": "b76a506d6b8d138c4b4a71e7bda106b32051ae1f28fc5ed18ebc84317d9c27dc"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "826eac74a295066cf17b2edb2b3cbb9087c334337da35eaa71749b12a267d322",
-          "producer_receipt_id": "15fbadf209250198510c61f5760e562a8eeaa7f40ae05fb7af29b3e664c8e86a",
+          "prompt_digest": "188381d9204ffa7c188b35e498791cb80412ef422074e028d70f1dec8b81cc5a",
+          "producer_receipt_id": "f319adaa6712b28ec9268f019ca3255c1d6ca92ab6417672aa12d29da523be16",
           "governed_scope_digest": "737a125bde4d3795c7d31852c62fe5b15debe27b8478c5caf211a62834620c3b",
-          "extraction_provenance_id": "35c07ac171213040b20ee300902ab72014811ff3ec3f121f1b16c871e9ad499f"
+          "extraction_provenance_id": "2b109fd7704ce31ec14b86290f5c676db975841d8f580645db58af58861d9fd1"
         }
       }
     },
@@ -407,9 +139,9 @@
         "kind": "claim",
         "claim": {
           "schema_version": "CLAIM_REVISION/V1",
-          "claim_revision_id": "beed5f24c3a47d104fcf5a8cf0e6e61e7df7658d43377875164e242b7a316cac",
-          "claim_occurrence_id": "d779492159345810d80cc9218d5b734ae811252fc0e75cf86b01e74b33de1fff",
-          "subject_occurrence_id": "2dbbde6e96fbd596005f5f4fe6de8ddaeb1d33915758afcc29183f1df2b80355",
+          "claim_revision_id": "977ec4799f59d6b31f864a6050fe66863ffdbe26161bc6a886f76f10e73149d4",
+          "claim_occurrence_id": "f3dbdb02f0ef3de2e42ca30a8553d3c3a287e59ea6220f0adc225497647c7d02",
+          "subject_occurrence_id": "0594929aad4d20bb2b82ac8e3ab524f399b7015f1e1a0b219ff4c3eb5168f526",
           "claim_definition_key": "OPEN_WORLD_PROPOSITION",
           "claim_definition_version": 1,
           "ordinal": 0,
@@ -424,10 +156,10 @@
           "not_examined": null,
           "failure": null,
           "evidence_ids": [
-            "d8a89f7585df7b8cb41c3e68418a287799a13318c6723540ba4ed3b549efb181"
+            "c6a923915b6f7303836605fdbdfe136c183a36328b94c3d715690b9389c68125"
           ],
           "attributes": {
-            "why_unmapped": "Recurring, ordinary-course dividend/distribution carve-out for pro rata subsidiary payments, not a coordination covenant or one-time special dividend.",
+            "why_unmapped": "Recurring, ordinary-course subsidiary dividend carve-out, not a coordination covenant or special dividend; the restriction it qualifies is the Section 4.2 interim-operating limb owned by another family.",
             "nearest_concept": null
           },
           "taxonomy_codes": {},
@@ -437,7 +169,7 @@
           "evidence": [
             {
               "schema_version": "CLAIM_EVIDENCE/V1",
-              "claim_evidence_id": "d8a89f7585df7b8cb41c3e68418a287799a13318c6723540ba4ed3b549efb181",
+              "claim_evidence_id": "c6a923915b6f7303836605fdbdfe136c183a36328b94c3d715690b9389c68125",
               "evidence_role": "OPERATIVE_TEXT",
               "excerpt_id": "36abf653ad72abee03845d17a9a3d1425c0b8c033b4994beadd63924364bf9cf",
               "document_ordinal": 0,
@@ -449,17 +181,17 @@
           "publication_state": "VALIDATED",
           "retained_residuals": [],
           "quarantine": null,
-          "closure_id": "21b15ff0e02e080a717f953b53e08db30327dc85f84f00948716622f85296733"
+          "closure_id": "b56bcc056d07f873b39c764bcba1428b6ad3f31e7234787696f68d98a53c91da"
         },
         "extraction_provenance": {
           "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
           "extractor_id": "canonical-v2-native-extraction-run/v1",
           "extractor_version": "1",
           "proposal_kind": "OPEN_WORLD",
-          "prompt_digest": "826eac74a295066cf17b2edb2b3cbb9087c334337da35eaa71749b12a267d322",
-          "producer_receipt_id": "15fbadf209250198510c61f5760e562a8eeaa7f40ae05fb7af29b3e664c8e86a",
+          "prompt_digest": "188381d9204ffa7c188b35e498791cb80412ef422074e028d70f1dec8b81cc5a",
+          "producer_receipt_id": "f319adaa6712b28ec9268f019ca3255c1d6ca92ab6417672aa12d29da523be16",
           "governed_scope_digest": "737a125bde4d3795c7d31852c62fe5b15debe27b8478c5caf211a62834620c3b",
-          "extraction_provenance_id": "35c07ac171213040b20ee300902ab72014811ff3ec3f121f1b16c871e9ad499f"
+          "extraction_provenance_id": "2b109fd7704ce31ec14b86290f5c676db975841d8f580645db58af58861d9fd1"
         }
       }
     }
@@ -472,8 +204,8 @@
       "schema_version": "COVERAGE_PROXY_REPORT/V1",
       "section_reference": "4.1",
       "source_byte_length": 15787,
-      "covered_byte_length": 578,
-      "coverage_share": 0.03661240260974219,
+      "covered_byte_length": 0,
+      "coverage_share": 0,
       "marker_counts": {
         "as of": 2,
         "except": 10,
@@ -487,7 +219,7 @@
         {
           "type": "COVERAGE_SUSPECT",
           "reason": "LOW_SPAN_COVERAGE",
-          "coverage_share": 0.03661240260974219,
+          "coverage_share": 0,
           "threshold": 0.5
         },
         {
@@ -504,8 +236,8 @@
       "schema_version": "COVERAGE_PROXY_REPORT/V1",
       "section_reference": "4.2",
       "source_byte_length": 5997,
-      "covered_byte_length": 517,
-      "coverage_share": 0.08620977155244289,
+      "covered_byte_length": 362,
+      "coverage_share": 0.06036351509087877,
       "marker_counts": {
         "as of": 0,
         "except": 5,
@@ -519,7 +251,7 @@
         {
           "type": "COVERAGE_SUSPECT",
           "reason": "LOW_SPAN_COVERAGE",
-          "coverage_share": 0.08620977155244289,
+          "coverage_share": 0.06036351509087877,
           "threshold": 0.5
         },
         {
@@ -1997,7 +1729,7 @@
   "scope_violation_count": 0,
   "citation_residual_count": 0,
   "undispatched_section_count": 0,
-  "compiled_candidate_count": 6,
+  "compiled_candidate_count": 2,
   "rejected_candidate_count": 0,
-  "run_receipt_id": "b3a7f2848c7c2ba46aa9a7bea1978f3ae89eb5dc1ca7fa544abce2730c8ef9bb"
+  "run_receipt_id": "4b61975064711a76db018fe4bcde5ffe7a71fe79d0457a0660addbcf102c9042"
 }

@@ -925,3 +925,183 @@ schema edit, found the same day.
 container and failed to find an extra-key hole. Its one condition — a staging
 script pinning the old error message, which **no CI test exercises because it
 needs a live database** — was fixed at `02ebc588`.
+
+## Step 2F-BREAK-5/6. Two families that wrote claims and could not serve one
+
+**What it was.** `MAE_DEFINITION` resolved 38 claims on TopBuild, wrote all of
+them durably, and **threw on every attempt to render them**. `NO_OTHER_REPS_FRAUD`
+threw on all three committed runs of the family, across both documents.
+
+**MAE was a validator encoding one drafter's style as a rule.** The projection
+required every clause label to appear inside the claim quote. That is true of a
+`TRAILING_LIST` proviso, which recites the clauses it reaches — the recitation is
+the only evidence of its scope — and false of a `PER_LIMB` enumeration marker,
+which precedes the clause body, so a correctly narrowed quote can never contain
+it.
+
+**The resolver had already been corrected for exactly this, on 2026-08-07, and
+the projection was never updated.** `handleMaeDisproportionalityCandidate` had
+carried the identical rule; `mae-clause-label.md` replaced it with a three-tier
+check for `PER_LIMB` only, deliberately leaving `TRAILING_LIST` alone, for
+BREAK 5's reason. That change is what turned the 0806 run's 2 resolved claims
+into the 0807 replay's 19. The projection kept the old rule for another day.
+
+**Replacement, not deletion.** Tier 1 is the original substring check, so every
+existing fixture takes a byte-identical path. Tier 2 is `PER_LIMB` only and
+requires the label to appear in the entry's `governing_context_quote`, that
+context to contain the quote verbatim, and the label to sit at or before where
+the quote starts. New typed code `CARVEBACK_CLAUSE_LABEL_UNGROUNDED`.
+
+**Evidence.**
+
+| Family | Run | Before | After |
+|---|---|---|---|
+| `MAE_DEFINITION` | TopBuild rung 4 | **THROWS** | 38 records, 2 rollups, 2 cards |
+| `MAE_DEFINITION` | TopBuild 0807 replay | **THROWS** | 19 records, 1 rollup, 1 card |
+| `MAE_DEFINITION` | Modiv 0807 live | 8 records, 2 rollups, 2 cards | **unchanged** |
+| `KEY_DEFINED_TERMS` (same module) | TopBuild / Modiv | 21 / 10 | **unchanged** |
+| `NO_OTHER_REPS_FRAUD` | all three runs | **THROWS x3** | 3 facts x 4 surfaces on all three |
+
+All 10 guards were proved to fire by neutering each in turn and watching the new
+test fail, then restoring. That exercise caught two real problems: two guards
+shared one error code, so neutering the first changed nothing; and a hostile test
+using a nonsense label never reached the guard at all, because the rollup builder
+quarantines it first.
+
+**Also found, not fixed.** Modiv's MAE disproportionality relationship is
+**entirely unestablished and always has been** — 0 covered limbs, 6
+`UNRESOLVED_CARVEOUT_LIMB_NO_OPEN_WORLD_EVIDENCE` per rollup. The document where
+this check appeared to pass was never producing a relationship at all. TopBuild
+now produces 10.
+
+**Verification.** `tests/canonical-v2-step-2f-breaks-5-6.test.js` 11/11 exit 0;
+19 consumer files 315/315 exit 0; authority-boundary and readiness 24/24 exit 0;
+`forbidden-patterns.sh` exit 0. Commit `e967df5f`.
+
+## Step 2F-BREAK-2/3. Two families that returned three empty arrays on text containing their content
+
+**What it was.** `GUARANTY_FINANCING_PARTY` returned
+`{"guaranty_assertions":[],"financing_mechanics":[],"open_world_candidates":[]}`
+on TopBuild §7.16 "Waiver of Claims Against Financing Sources" — a textbook
+non-recourse clause on a $600,000,000 debt-financed acquisition. `DIVIDENDS`
+returned the same three empty arrays on §4.1 and §4.2, which plainly contain
+"declare, set aside or pay any dividend".
+
+**Step 2F's falsifiable prediction is resolved: the guaranty family was broken,
+not correctly quiet.** Its instruction opened "Extract quoted positive guaranty
+facts only", which scoped the entire response including
+`FINANCING_PARTY_PROTECTION` — the surface that exists to carry exactly this
+content. The model followed that scope and said so verbatim in the recording:
+"it's a lender-liability waiver, a distinct mechanism". v2 scopes "positive facts
+only" to `guaranty_assertions`. The "never infer" list is unchanged: a guaranty
+family that invents a cap is worse than one that finds nothing.
+
+**BREAK 3's recorded diagnosis was wrong and is corrected.** Step 2F said the
+family "does not find its own content when the content is a limb rather than a
+section". In fact v1 already excluded IOC restrictions by design, TopBuild's
+dividend language **is** one — limb (vi)(A) of a thirty-limb covenant — and
+`INTERIM_OPERATING` resolved 29 claims from the same two sections. The governed
+emptiness was correct. The real defect was the empty third array, which lost the
+Series B / Convertible Perpetual Preferred carve-out that v1's own text says
+"remain open world".
+
+**Evidence — verified by live extraction on both documents, not by reasoning.**
+
+| Family | Document | v1 claims / excerpts / open-world | v2 |
+|---|---|---|---|
+| `GUARANTY_FINANCING_PARTY` | TopBuild §7.16 | 0 / 0 / 0 | 0 / **4** / **4** |
+| `DIVIDENDS` | TopBuild §4.1, §4.2 | 0 / 0 / 0 | 0 / **6** / **6** |
+| `DIVIDENDS` | Modiv §5.10 | 0 / 0 / 0 | 0 / **4** / **4** |
+| `GUARANTY_FINANCING_PARTY` | Modiv §5.11 | 0 / 0 / 0 | 0 / 0 / 0 — correct |
+
+**14 rows recovered across two deals, and nothing invented where zero is right.**
+That last row is the regression test that mattered: Modiv is unfinanced, and a
+prompt change that pushes a model to fill an empty list is how "a family
+returning zero can be correct" gets violated. It held. Modiv's §5.10 was losing
+content too — the false zero was never TopBuild-specific.
+
+**Still open, recorded as Steps 2F2 and 2F3:** all four TopBuild rows resolved to
+open world rather than governed claims, because the taxonomy has no governed home
+for a standalone financing-source protection; and Modiv's guaranty family is
+pinned to a section headed "Other Transactions". Commit `e967df5f`,
+`docs/codex-program/notes/step-2f-breaks-2-3.md`.
+
+## Step 2F-CLOSURE-ID. Replay reported itself as the model, so claim identity depended on a filesystem path
+
+**What it was.** `model_id` under replay was the string `replay(<path>)`. It
+feeds `producer_receipt_id`, which feeds `closure_id`. So the same recorded
+evidence replayed from two directories minted two different identities for
+identical claims. This was already shipped, not hypothetical: committed evidence
+carried `replay(evidence/canonical-v2/modiv-antitrust-20260806)` for most runs and
+a `/tmp/.../scratchpad/replay-src-consideration` path for two others.
+
+**Replay is a transport, not a producer.** The text it serves was produced by the
+live model, so it now reports that model's identity, read from the replayed run's
+own `run-receipt.json`. `resolveOriginalProviderModelId` is the single place that
+question is answered, and it throws rather than guess:
+`REPLAY_MODEL_IDENTITY_UNKNOWN` for a receipt-less run,
+`REPLAY_MODEL_IDENTITY_AMBIGUOUS` for a run produced by two models,
+`REPLAY_MODEL_IDENTITY_CONFLICT` when an operator contradicts the record.
+
+**Evidence.** One run replayed from two different directories: 33 `closure_id`s,
+1 `producer_receipt_id`, 21 `excerpt_id`s, 1 `input_scope_digest` — **identical
+across both**. Against the original live run, `model_id` and `prompt_digest` now
+match; the residual `input_scope_digest` difference is real content drift in the
+contract bundle since 6 August, which is what `closure_id` exists to detect.
+
+Recordings gain `provider_model_id` (schema V2; V1 stays readable — 24 exist and
+re-recording costs real model calls, and every one of them has a sibling receipt
+carrying the true identity). `--replay-model-id` lets an operator state the
+identity of a hand-assembled fixture set, checked against the record rather than
+trusted over it. 19/19 tests, `forbidden-patterns.sh` exit 0. Commit `e967df5f`.
+
+## Step 2F-OVERFLOW. A response over the output ceiling parsed and presented as complete
+
+**What it was.** Four calls produced what looked like multiple top-level JSON
+objects and were refused as malformed. They were tail fragments of **one** answer
+whose head the transport destroyed: all four exceeded the CLI's 64,000-token
+output ceiling (71,907 / 71,430 / 65,210 / 74,080), and each recorded response's
+length matched the final `usage.iterations` entry exactly, because the runner
+takes only the CLI's last message. The counted "objects" were heterogeneous array
+*elements* — 18 qualifiers, 17 quote/target pairs, 16 share counts — not
+candidate answers, so neither accumulating nor superseding them has a valid
+reading. The parser's refusal was correct under a wrong diagnosis.
+
+**The fifth data point closed it.** Modiv NO_SHOP §5.6 used 65,008 tokens and
+**succeeded**, because its truncation boundary fell inside thinking rather than
+inside JSON. Over-ceiling success is a coin flip.
+
+**Change.** Overflow is a typed, non-retryable failure
+(`RESPONSE_TRUNCATED_BY_OUTPUT_CEILING`), checked **before** parsing and before
+the response-size check, from the predicate `output_tokens >= maxOutputTokens`
+that telemetry already recorded and nothing read. It is arithmetic only — content
+is never inspected, because a family returning zero can be correct — and it fires
+even when the last message parses cleanly, which is the whole point.
+
+**Verification.** 11 hostile tests including: fires on a cleanly-parseable
+response; never retried, by call count; wins over `MALFORMED_RESPONSE` on garbage
+text, proving it precedes parsing; an empty-but-well-formed response under the
+ceiling still succeeds, proving content-independence; exact `>=` boundary at
+63999/64000; an under-ceiling ambiguous response still refuses as `AMBIGUOUS`,
+untouched. 44/44 and 178/178 exit 0. Commit `e967df5f`.
+
+**The ruling's other half — raising the ceiling — works, and was nearly recorded
+here as impossible.** A static read of the installed CLI's minified per-model
+resolver says `upperLimit` is 64,000 on every branch including the fallback the
+runner takes. Two independent readings agreed, and it was written up as
+established. The experiment refuted it: TopBuild NO_SHOP §4.3 under
+`CLAUDE_CODE_MAX_OUTPUT_TOKENS=128000` returned **69,576 output tokens** and
+**67 publishable claims**, on a family that had never extracted anything on that
+document. `CLI_MAX_OUTPUT_TOKENS = 128000` now ships in `childEnv()`.
+
+**The guard could not fire, which is why none of this was caught by it.** The
+overflow check reads `response.provider_usage ?? response.usage`; the runner's
+measured CLI client returned content with no `usage`, recording it to telemetry
+only. So the check read `null` on every real run — including the 69,576-token one
+— and the 11 tests that prove it works all inject usage the production path never
+supplied. Fixed by carrying `usage` on the response and setting the provider's
+`maxOutputTokens` to the same figure the CLI is asked for.
+
+Two lessons, both already in CLAUDE.md and both re-learnt the hard way: a
+minified table is not the behaviour, and a guard proven by tests is not a guard
+proven in production. Remaining questions are Step 2F1.

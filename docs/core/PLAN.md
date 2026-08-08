@@ -1666,6 +1666,130 @@ regression table per round: which families, which documents, incomplete count,
 resolved deltas against the previous round for that pair. And each document
 reaching the serving check, not only the extraction one.
 
+## Step 2F1. The two families the output ceiling blocks — NEEDS BEN
+
+**What it is.** `REPRESENTATIONS` (TopBuild §3.1) and `NO_SHOP` (TopBuild §4.3)
+extract nothing on TopBuild and work on Modiv. Both were diagnosed on
+2026-08-08 as transport truncation, not a model format: all four failing calls
+exceeded the CLI's 64,000-token output ceiling (71,907 / 71,430 / 65,210 /
+74,080), and what the parser saw was the tail of one answer whose head was
+destroyed. See `docs/codex-program/notes/multi-object-response-ruling.md`.
+
+**Detection is built and proven.** Overflow is now a typed, non-retryable
+failure, checked before parsing, from telemetry arithmetic alone — never from
+content, because a family returning zero can be correct. It fires even when the
+last message parses cleanly, which is the case that mattered: one over-ceiling
+call parsed only because the truncation landed in thinking rather than in JSON.
+
+**The remedy works, and a static analysis said it would not.** The ruling's
+mechanism was to raise `CLAUDE_CODE_MAX_OUTPUT_TOKENS`. Reading the installed
+CLI's minified per-model resolver `$i()` says `upperLimit` is 64,000 on **every**
+branch including the fallback the runner takes, and that reading was written up
+as establishing the raise to be impossible. **It was then measured, and the
+measurement refuted it**: TopBuild NO_SHOP §4.3 under `=128000` returned
+**69,576 output tokens** — 5,576 above the supposed hard cap — and extracted
+**67 publishable claims**, on a family that had never extracted a single claim on
+that document.
+
+The lesson is worth more than the fix: a minified table is not the behaviour, and
+"read the code, not the comment" extends to reading code you cannot execute. One
+cheap experiment beat two confident static readings, one of them mine.
+
+**Change, landed.** `CLI_MAX_OUTPUT_TOKENS = 128000` in
+`scripts/canonical-v2-live-extraction-run.mjs`, set through `childEnv()` and
+honouring an operator override so the ceiling stays probeable without a code
+change — which is how the 64,000 figure was falsified.
+
+**And the guard that should have caught all of this could not fire.** The
+overflow check reads `response.provider_usage ?? response.usage`, and the
+runner's measured CLI client returned `{content:[...]}` with no `usage` at all,
+recording it only into telemetry. So on every real run the check read `null` and
+said nothing — including on the 69,576-token call. Fixed by carrying `usage` on
+the response and setting the provider's `maxOutputTokens` to the same figure the
+CLI is asked for. This is the eighth guard found in this programme that was
+defined, exported and unable to fire.
+
+**Still open.** What the real ceiling actually is (established only as "at least
+69,576"), why the static reading and the behaviour disagree, and whether
+REPRESENTATIONS §3.1 — 83,756 bytes, the largest section in play, attempted
+71,907 tokens — fits under it. A re-ruling is in hand.
+
+**Proves it is done.** Both families extract TopBuild through the standard
+validation, write and projection gates. NO_SHOP has done so.
+
+## Step 2F2. Thirteen prompts that show the model an empty answer — NEEDS BEN
+
+**What it is.** A producer prompt whose `RESPONSE_SHAPE` shows
+`"open_world_candidates":[]` — a pre-filled empty array with no element schema —
+teaches the model that empty is the answer. Measured across TopBuild's 22 measurable family
+runs: the 11 prompts showing that averaged **2.5** open-world rows with **5
+returning zero**; the 11 not showing a pre-filled empty averaged **21.1** with
+**1** returning zero.
+
+Two of the thirteen were fixed on 2026-08-08 because they were also the two
+false zeros (Step 2F BREAKs 2 and 3), and both recovered evidence immediately:
+guaranty 0 → 4 rows on TopBuild, dividends 0 → 6 on TopBuild and 0 → 4 on Modiv.
+
+**Why it is not simply done.** The measurement is n=11 per arm on one document
+and it is confounded — the pre-filled-empty prompts are also the terse one-line
+prompts, so prompt richness is a rival explanation these data cannot separate.
+Changing the remaining thirteen bumps thirteen prompt digests and invalidates
+evidence across most of the corpus. That is Ben's call, not a sweep.
+
+The thirteen: antitrust-regulatory, appraisal, dno, employee-dno,
+employee-matters, financing, financing-guaranty, key-terms-mae-follow-on,
+merger-structure, remedies-misc, specific-performance-remedies,
+tax-dividend-appraisal, tax-matters.
+
+**Proves it is done.** Either a decision not to act with the reason recorded, or
+the thirteen changed with a before-and-after open-world count per family on both
+documents, and the invalidated evidence regenerated.
+
+## Step 2F3. Modiv's guaranty family is pinned to the wrong section
+
+**What it is.** `DEAL_PINS.modiv.GUARANTY_FINANCING_PARTY` is §5.11, which
+resolves to heading **"Other Transactions"** — Parent-requested pre-closing
+restructuring, subsidiary conversions, asset sales, tax carve-outs. There is no
+guaranty content in it and no financing-party content either.
+
+**Why it matters.** The family's Modiv zero has always been a mapping artefact,
+not evidence about the family, and commit `ae8b12de` reasoned from that zero.
+`GUARANTY_FINANCING_PARTY` has never been exercised against real guaranty text
+on Modiv.
+
+**Change.** Find the section that actually carries Modiv's guaranty and
+financing-party content, or establish that the agreement has none — it is an
+unfinanced REIT merger, so genuinely none is a live possibility. Re-pin or
+record the family as correctly absent for this deal.
+
+**Proves it is done.** Either a corrected pin with a run against it, or a
+written finding that Modiv has no such section, quoting the search that
+established it.
+
+## Step 2F4. Wire the replay invalidation planner, which is wired into nothing
+
+**What it is.** `lib/canonical-v2/native-producer/replay-invalidation-planner.js`
+defines `prompt_identity_digest`, `model_identity_digest` and a
+`REEXTRACT_REQUIRED` action for exactly the case where a replay would attribute
+an old response to a new prompt. **The only reference to it anywhere in the
+repository is a path string in `phase1-authority-boundary-inventory.js`.**
+Nothing calls it.
+
+**Why it matters.** Replay recomputes `prompt_digest` from the *current* prompt
+while serving a response produced under the *old* one, so the receipt records a
+prompt that never produced that text. This is the same class of defect as
+`replay(<path>)` as a model identity, fixed on 2026-08-08 — provenance that
+lies. It bit immediately: the DIVIDENDS and GUARANTY prompts moved to v2 while a
+regeneration of 28 evidence directories was mid-flight, and those two
+directories had to be held back by hand.
+
+**Change.** Refuse a replay whose current prompt identity differs from the one
+the replayed run recorded. No escape hatch: a changed prompt means re-extract.
+
+**Proves it is done.** A replay under a bumped prompt version refuses with a
+typed error, and a directory-by-directory audit says how far the drift already
+spread across committed evidence.
+
 ## Step 2H. Say which fixes generalised and which were Modiv-only
 
 **What it is.** One table. A row per fix landed since commit `bff5cd28`, with

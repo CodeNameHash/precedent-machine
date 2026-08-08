@@ -81,35 +81,53 @@ interim-operating restriction — limb (vi)(A) of a thirty-limb covenant.
 them. So the empty **governed** lists were correct, and the split between the two
 families worked exactly as designed.
 
-The real defect is the third array. §4.2(iv)(A) carves out *"dividends required
-to be declared and paid pursuant to the terms of the Convertible Perpetual
-Preferred Stock, Series B Preferred Stock"* — a recurring mandated dividend,
-which v1's own text says *"remain open world"* — and `open_world_candidates` came
-back empty anyway. **The prompt named the destination and the model did not use
-it.**
+The remaining candidate defect is the third array. §4.2(iv)(A) carves out
+*"dividends required to be declared and paid pursuant to the terms of the
+Convertible Perpetual Preferred Stock, Series B Preferred Stock"* — a recurring
+mandated dividend, which v1's own text says *"remain open world"* — and
+`open_world_candidates` came back empty anyway.
 
-v2 keeps the boundary sentence verbatim (the contract test in
-`tests/canonical-v2-follow-on-family-prompt-contract.test.js` pins it, correctly)
-and adds an instruction to *emit* rather than a statement of where such things
-belong. Under v2 the model returned six open-world rows, and the Series B /
-Convertible Perpetual Preferred carve-out — the exact provision this diagnosis
-predicted was being lost — is among them.
+**Adversarial review corrected this too, and the correction matters.** Three
+findings from `break-2-3-prompt-review.md`:
 
-**Modiv's §5.10 was losing content too**, 0 → 4. The false zero was never
-TopBuild-specific; TopBuild is just where it was noticed.
+1. **Nothing was ever lost from the corpus.** `INTERIM_OPERATING`'s own
+   open-world channel already carries the identical Series B / Series C carve-out
+   quote (candidate `e60cad0a…`, verified in its `adapter-result.json`). The
+   provision was absent from *this family*, not from the record. The earlier
+   claim in this note that it "was being lost" was wrong.
+2. **v1's zero was defensible, not clean non-compliance.** The carve-out is a
+   proviso *inside* an IOC limb, so v1's instructions pointed both ways at once.
+3. **v2's first draft broke the anti-double-extraction boundary while its own
+   header claimed not to.** It told the model to emit "a dividend restriction
+   appearing as a limb of a broader operating covenant" into open world — which
+   is exactly INTERIM_OPERATING's text. The rerun proved the cost: **all six
+   TopBuild rows duplicated content INTERIM_OPERATING had already published.**
+   A note claiming a boundary was preserved, over a diff that moved it, is the
+   stale-header failure this repository names as its most expensive habit — and
+   it was caught by review rather than by me.
+
+The instruction now names the boundary it must not cross: emit the dividend
+provisions this family owns, and never repeat another family's restriction
+because its text mentions dividends.
+
+**Where the recovery is genuine: Modiv §5.10**, 0 → 4, a real dividends section
+with no INTERIM_OPERATING overlap. On TopBuild the two families are pinned to the
+same two sections, because TopBuild has no standalone dividends section at all —
+so DIVIDENDS and INTERIM_OPERATING will keep meeting there. **That is a mapping
+question, not a prompt one**, and it is the honest residue of BREAK 3.
 
 ---
 
 ## The measured finding underneath both: a pre-filled empty array is a default
 
 Both v1 prompts showed `"open_world_candidates":[]` in the response shape — an
-empty array with **no element schema**. Measured across TopBuild's 24 family
+empty array with **no element schema**. Measured across TopBuild's 22 measurable family
 runs, counting `open_world_candidates` in each run's `adapter-result.json`:
 
 | Response shape shows | Families | Total open-world rows | Mean | Returned zero |
 |---|---|---|---|---|
 | `"open_world_candidates":[]` (pre-filled empty, no element schema) | 11 | 28 | **2.5** | **5 of 11** |
-| No pre-filled empty (element schema, or field absent from the literal shape) | 11 | 221 | **20.1** | 1 of 11 |
+| No pre-filled empty (element schema, or field absent from the literal shape) | 11 | 232 | **21.1** | 1 of 11 |
 
 An 8x difference in yield and five times the zero rate. The reading is that
 showing a model the field's "default value" teaches it that the default is the
