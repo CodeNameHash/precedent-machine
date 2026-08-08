@@ -208,6 +208,110 @@ test('hostile: cross-reference "Section 3.1(b)" does not split even when a colon
   assert.deepEqual(markers, [], 'a colon earlier in the sentence must not turn a section cross-reference into a marker');
 });
 
+// ---------------------------------------------------------------------------
+// MAX_DEPTH raise (3 -> 5) and (x)/(y)/(z) corroborated CHILD-OPEN — see
+// docs/codex-program/notes/subclauses-depth-and-xyz.md for the corpus
+// measurement backing both changes.
+// ---------------------------------------------------------------------------
+
+test('four-level outline nest: (a) -> (i) -> (A) -> (1) resolves to depth 4', () => {
+  const text = '6.1 Representations. The Company hereby represents and warrants to Parent and Merger Sub '
+    + 'that, as of the date of this Agreement and as of the Closing Date: (a) each of the following '
+    + 'statements concerning the Company and its Subsidiaries is true and correct in all material '
+    + 'respects: (i) the entity referred to in this Section is validly existing and in good standing '
+    + 'under the laws of the jurisdiction of its organization: (A) specifically, in the case of the '
+    + 'Company, in the State of Delaware, and has all requisite corporate power and authority to own '
+    + 'its properties and to carry on its business as presently conducted: (1) as evidenced by a long-'
+    + 'form certificate of good standing issued by the Delaware Secretary of State no more than thirty '
+    + 'days prior to the Closing Date.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'a.i', 'a.i.A', 'a.i.A.1']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.equal(byMarker['a.i.A.1'].depth, 4);
+  assert.match(byMarker['a.i.A.1'].text, /certificate of good standing/);
+});
+
+test('five-level outline nest: (a) -> (i) -> (A) -> (1) -> (a) resolves to depth 5 — the "five occurs" case', () => {
+  const text = '6.1 Representations. The Company hereby represents and warrants to Parent and Merger Sub '
+    + 'that, as of the date of this Agreement and as of the Closing Date: (a) each of the following '
+    + 'statements concerning the Company and its Subsidiaries is true and correct in all material '
+    + 'respects: (i) the entity referred to in this Section is validly existing and in good standing '
+    + 'under the laws of the jurisdiction of its organization: (A) specifically, in the case of the '
+    + 'Company, in the State of Delaware, and has all requisite corporate power and authority to own '
+    + 'its properties and to carry on its business as presently conducted: (1) which corporate power '
+    + 'and authority is evidenced by two independent items of documentary proof: (a) a long-form '
+    + 'certificate of good standing issued by the Delaware Secretary of State no more than thirty days '
+    + 'prior to the Closing Date.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'a.i', 'a.i.A', 'a.i.A.1', 'a.i.A.1.a']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.equal(byMarker['a.i.A.1.a'].depth, 5);
+  assert.match(byMarker['a.i.A.1.a'].text, /certificate of good standing/);
+});
+
+test('real corpus (x)/(y) enumeration: "other than (x) Permitted Encumbrances or (y) as would not..." splits into two items', () => {
+  // Grounded in the real corpus fragment quoted in the task brief (28
+  // occurrences across 5 of the 7 corpus deals), embedded in a full
+  // sentence so segmentSubClauses has a complete section to work with.
+  const text = 'No Lien shall attach to the Purchased Assets, other than (x) Permitted Encumbrances or '
+    + '(y) as would not reasonably be expected to have a material adverse effect on the value of such assets.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['x', 'y']);
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+  assert.match(byMarker['x'].text, /Permitted Encumbrances/);
+  assert.match(byMarker['y'].text, /material adverse effect/);
+});
+
+test('uncorroborated lone "(x)" does NOT open a list — no "(y)" anywhere in the span', () => {
+  const text = 'The Company has consented to (x) the assignment of this Agreement, which shall remain '
+    + 'in full force and effect notwithstanding such assignment.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a single "(x)" with no corroborating "(y)" must not open an xyz list');
+});
+
+test('genuine alpha list running (w) -> (x) continues as alpha and is not stolen by the xyz rule', () => {
+  const letters = 'abcdefghijklmnopqrstuvwx'.split('');
+  const text = letters.map((l) => `(${l}) item number ${l} in the Company Disclosure Letter, `
+    + 'each of which the Company represents and warrants is true and correct as of the date hereof.').join('\n');
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, letters, '"(x)" must continue the alpha list (24th letter), not open a new xyz frame');
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+});
+
+test('hostile: mid-paragraph back-reference "clauses (x), (y) and (z) above" does not split even though a "(y)" genuinely follows the "(x)"', () => {
+  // Corroboration alone is not sufficient to open a list — this back-
+  // reference sits inside an ALREADY-OPEN "(a)" frame, mid-paragraph, not
+  // colon-introduced and not adjacent to the prior marker, so the ordinary
+  // CHILD-OPEN eligibility gate rejects it exactly as it rejects the
+  // structurally identical "(A), (B), (C) and (D) above" case above — even
+  // though xyzCorroborated(text, tokenStart) genuinely returns true here
+  // (a "(y)" really does follow within the span). Corroboration narrows an
+  // ambiguous token; it does not bypass the existing CHILD-OPEN gate.
+  const text = 'The obligations of Parent are subject to satisfaction of the following: (a) each '
+    + 'representation shall be true, and, with respect to clauses (x), (y) and (z) above, only as of '
+    + 'the applicable date.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a'], 'a mid-paragraph "clauses (x), (y) and (z) above" back-reference must stay unsplit');
+});
+
+test('hostile: "Section 5.2(x)" cross-reference does not split — "(x)" glued to a digit is not an eligible position', () => {
+  const text = 'The Company shall comply with Section 5.2(x) of the Agreement, and with Section 5.2(y) thereof.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a cross-reference "(x)" glued to a section number must not be read as a marker');
+});
+
 test('hostile: mid-paragraph back-reference "clauses (A), (B), (C) and (D) above" does not split even after a colon', () => {
   // The back-reference is embedded inside an already-open (a) frame — as it
   // would be in a real agreement — rather than being the very first bracket
