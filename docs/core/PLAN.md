@@ -1829,113 +1829,66 @@ refused something real, and the agent doing the regeneration reported it rather
 than reaching for the `--replay-model-id` escape hatch it had not been
 authorised to use. That is the behaviour the refusal exists to produce.
 
-## Step 2G1. Thirty-seven per cent of what is extracted publishes — NEEDS BEN
+## Step 2G1. Fifty-seven per cent of what is extracted publishes — NEEDS BEN
 
-**What it is.** Measured across all six deals and every committed run, on
-2026-08-08:
+**CORRECTION, 2026-08-08.** This step was first written claiming **37%**, on
+the arithmetic `resolved / (resolved + review_queue)`. That was wrong, and the
+error is worth stating because it is the kind this programme keeps making. **A
+review-queue entry is not a rejected candidate.** 1,659 of 2,941 queue entries
+carry `has_resolution: true` and a `claim_revision_id` — they are PUBLISHED
+claims flagged for a human to look at. Counting them as failures double-counted
+every published claim into both sides of the ratio. The tell was there to read:
+`flagged-but-resolved` equals `resolved` exactly, on every deal, because every
+resolved claim is also listed for review.
 
-| Deal | Resolved | Review queue | Open world | Resolved % |
-|---|---|---|---|---|
-| modiv | 349 | 630 | 514 | 35.6% |
-| topbuild | 307 | 489 | 324 | 38.6% |
-| skechers | 129 | 250 | 208 | 34.0% |
-| skywater | 53 | 71 | 15 | 42.7% |
-| redhat | 46 | 77 | 31 | 37.4% |
-| metsera | 46 | 72 | 14 | 39.0% |
-| concho | 3 | 7 | 20 | 30.0% |
-| **Total** | **933** | **1,596** | **1,126** | **36.9%** |
+The dominant reason code, `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` at 685 entries and
+by far the largest single bucket, appears **only on entries that resolved**. It
+is a recall net — the lexical scanner noticing signal in scope — not a rejection.
 
-**Roughly two in three extracted candidates do not publish; they queue for a
-human.** The rate sits between 30% and 43% on every deal, across three
-decades of drafting convention and four different transaction shapes. That
-consistency is the finding: it is a property of the pipeline, not of any
-drafter.
+**Measured correctly**, across all seven deals and every committed run:
 
-**Why candidates queue.** The top reasons, corpus-wide:
+| Deal | Published | Not published | Publish % |
+|---|---|---|---|
+| topbuild | 307 | 182 | 62.8% |
+| metsera | 195 | 131 | 59.8% |
+| skywater | 204 | 144 | 58.6% |
+| modiv | 332 | 245 | 57.5% |
+| skechers | 202 | 152 | 57.1% |
+| redhat | 181 | 171 | 51.4% |
+| concho | 224 | 221 | 50.3% |
+| **Total** | **1,645** | **1,246** | **56.9%** |
+
+The rate holds between 50% and 63% across three decades of drafting convention
+and four transaction shapes. That consistency is still the finding: it is a
+property of the pipeline, not of any drafter.
+
+**Why the 1,246 do not publish.** These are the reason codes that appear ONLY on
+entries with no resolution:
 
 | Count | Reason |
 |---|---|
-| 417 | `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` |
-| 61 | `IOC_ATTACHMENT_TARGET_QUOTE_MISSING` |
-| 44 | `FEE_SIDE_UNCORROBORATED` |
-| 41 | `MULTI_SPAN_COMPOSED` |
-| 41 | `NESTED_OR_CROSS_REFERENCED_EVIDENCE` |
-| 37 | `IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED` |
-| 32 | `CLAUSE_LABEL_NOT_IN_QUOTE` |
-| 32 | `TRIGGER_UNCORROBORATED` |
+| 171 | `IOC_ATTACHMENT_TARGET_QUOTE_MISSING` |
+| 105 | `CATEGORY_UNCORROBORATED` |
+| 62 | `QUALIFIER_KIND_UNCLASSIFIED` |
+| 60 | `TERMINATING_PARTY_REF_NOT_IN_QUOTE` |
+| 59 | `IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED` |
+| 58 | `CLAUSE_LABEL_NOT_IN_QUOTE` |
 
-A large share share one shape: **the model quoted a fragment that omits the
-fact the resolver needs to corroborate**, so the resolver declines to guess.
-Two clean instances found the same night. SkyWater's termination fee,
-`$51,573,958.07`, is in the model's response and does not publish, because the
-quote is the bare figure and `FEE_SIDE_UNCORROBORATED` cannot tell payer from
-payee — while Red Hat's single-sided fee publishes at $975,000,000 because its
-quote carries "the Company shall pay (or cause to be paid) to Parent". Red Hat's
-termination article resolved **zero** of twelve, seven of them
-`TERMINATING_PARTY_REF_NOT_IN_QUOTE`.
+Nearly all share one shape: **the model quoted the operative clause and omitted
+the adjacent text the resolver checks it against**, so the resolver declines to
+guess and queues rather than drops. Nothing is lost. The families carrying most
+of it are `INTERIM_OPERATING` (164), `NO_SHOP` (129), `MAE_DEFINITION` (100) and
+`ANTITRUST_REGULATORY` (96).
 
-**The refusals are correct.** Every one of them declines to assert something the
-evidence does not contain, and queues it rather than dropping it. Nothing is
-lost. That is the design working.
+**The remaining question for Ben is narrower than it was.** At 37% the case for
+intervening looked urgent. At 57%, with every refusal correct and nothing lost,
+it is a question about reviewer effort rather than about correctness: is it worth
+a taxonomy change across four families to teach their prompts to quote wide
+enough to carry their own corroboration, knowing that invalidates their evidence?
 
-**The question for Ben is a product question, not a correctness one.** Is 37%
-the right publish rate? Two readings, and they lead to different work:
-
-1. **It is right.** The surface is a review tool; a queued item is a reviewer's
-   job, not a failure. Then the work is making the queue pleasant to work
-   through, and the number needs no change.
-2. **It is too strict.** A reviewer facing 1,596 queued items against 933
-   published ones will not read them. Then the work is teaching the producer
-   prompts to quote wide enough to carry their own corroboration — include the
-   acting party in the quote, not just the operative words — which is a
-   taxonomy change across many families and would invalidate evidence.
-
-**Do not act on this without Ben.** It was measured, not designed, and reading
-(2) would licence exactly the kind of corpus-wide prompt sweep that Step 2F2 is
-already holding back for want of evidence.
-
-**The three symptoms are ONE cause, established by a failed hypothesis on
-2026-08-08.** Concho's `CONSIDERATION` published nothing across 31 candidates,
-all `NO_RATIO_LITERAL`. I predicted the cause was scope — that the Exchange
-Ratio is a defined term whose value lives in the definitions section, outside
-the operative sections pinned to the family — and tested it by re-running with
-Annex-A "Certain Definitions" added.
-
-**The prediction was wrong.** Queued failures fell from 5 to 1 and open world
-rose from 26 to 36, but nothing resolved. The reason: the literal was never
-elsewhere. Concho §3.1 reads *"...equal to the Exchange Ratio (the 'Merger
-Consideration'). As used in this Agreement, **'Exchange Ratio' means 1.46**."*
-The definition sits in the same section, one sentence after the operative
-clause, and that section was in scope the whole time. The model quoted the
-operative sentence and stopped short of the next one.
-
-That makes it the same failure as `FEE_SIDE_UNCORROBORATED` on SkyWater's
-termination fee (quote is the bare figure, no payer or payee) and
-`TERMINATING_PARTY_REF_NOT_IN_QUOTE` on Concho and Red Hat's termination
-articles (quote is the trigger, not who may pull it). **Three families, four
-deals, one cause: the model quotes the operative words and omits the adjacent
-fact the resolver must corroborate against.** Not a scope problem, not a
-mapping problem, and not a resolver defect — every one of those refusals is
-correct on the evidence it was given.
-
-This raises the stakes on the choice above, because it is now a single
-identified mechanism rather than a diffuse rate. It also means reading (2) has
-a concrete, testable form: instruct producers to extend a quote to the sentence
-carrying the fact the claim asserts. That is a taxonomy change and stays Ben's
-call.
-
-**New evidence for Step 2F2, found while fanning out on 2026-08-08.** Red Hat's
-`TAX_MATTERS` returned `{"tax_assertions":[],"mechanics":[],"open_world_candidates":[]}`
-on §3.01(m) — 5,145 bytes that are the tax representation. Three empty arrays on
-a section that plainly contains the family's subject: **the same shape as BREAKs
-2 and 3, on a third deal, and `tax-matters-producer-prompt.js` is one of the
-thirteen prompts showing a pre-filled empty `open_world_candidates`.** That is
-now three independent instances of the same pattern across three drafters, which
-is materially stronger than the single-document correlation Step 2F2 was
-recorded on.
-
-**Proves it is done.** A decision recorded in `DECISIONS.md`, and if (2), a
-before-and-after publish rate on at least two deals.
+**Proves it is done.** A decision recorded in `DECISIONS.md`, and if the answer
+is to act, a before-and-after publish rate on at least two deals for the families
+changed.
 
 ## Step 2H. Say which fixes generalised and which were Modiv-only
 
