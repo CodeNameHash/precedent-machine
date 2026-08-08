@@ -462,3 +462,174 @@ follow-up session, to actually change the prompt and re-run extraction):**
   the prompt's existing `transaction_steps` scope-boundary sentence (5.2) — both are
   taxonomy/prompt-ownership decisions, Opus-level per `CLAUDE.md`'s routing guidance,
   not mechanical follow-ons.
+
+---
+
+## Task 7: Coordinator follow-up — does `lib/parser-v2/detectors/transaction-steps.js`
+## (the "distinct source" the prompt points to) already solve this without a prompt change?
+
+The coordinator's read of the prompt line is correct as far as it goes: the "distinct
+source" is real, not aspirational — `lib/parser-v2/detectors/transaction-steps.js`
+exists, is 146 lines of deterministic regex over section text (no LLM call), requires
+`deriveTopology`/`enforceTransactionStepInvariants` from `topology-detector.js`
+directly, and emits exactly the field set the detector wants. The open question was
+whether it actually *works* on real text, per the `findTerminationLimbGrantContext`
+precedent the coordinator named. It was tested, not assumed.
+
+### 7.1 Input contract, and what V2 has to feed it
+
+`extractTransactionSteps(sections)` wants `sections` shaped like the array
+`lib/parser-v2/structural.js`'s `parseStructure(cleanText).sections` produces —
+confirmed by direct inspection of a real section object, not inference: `{ number,
+heading, title, text, articleNumber, articleTitle, startChar, endChar, level,
+subItemCount, regionType, atomic, atomicReason, subClauses,
+definitionCompletenessWarnings }`. Two fields `extractTransactionSteps` reads
+(`provision_type`/`provisionType`/`type`, and `regionId`/`region_id`) are **not**
+present on `structural.js`'s own output — `provision_type` is assigned by a separate,
+later V1 classifier stage, and `region_id` by V1's storage layer. Neither blocks the
+detector: its own focus-section filter falls back to a title/number text regex when
+`provision_type` is absent, which is what actually fired in every test below.
+
+**Does canonical-V2 have an equivalent shape, or does it need an adapter?** V2 already
+computes the equivalent, every extraction run, and it is the *same* underlying
+function: `lib/canonical-v2/native-producer/deterministic-sectionizer.js`'s
+`sectionizeAdmittedSource` calls `parseStructure(clean)` directly (confirmed at its
+line ~877 — this is the "REQUIRED, imported, not copied" relationship
+`docs/core/CODEBASE-GUIDE.md` §4.2 describes) and wraps the result in `SECTION`/
+`ARTICLE` tree nodes with byte offsets. **A thin adapter from sectionizer nodes to the
+`{number, title, text, …}` shape is all that's needed — no new sectionizing work.**
+This is a materially different (better) answer than Task 5's spec assumed: wiring the
+detector does not require inventing a text-extraction step V2 lacks.
+
+### 7.2 Tested against real text for all 7 deals — methodology
+
+Ground truth cannot be manufactured from claim quotes alone this time; it needs to run
+against the actual document. Real, hash-verified canonical text was rebuilt for each
+deal via the actual production chain already in this repo —
+`lib/canonical-v2/admitted-source-chain-rebuild.js`'s `rebuildAdmittedSourcePrimitives`
+reads the deal's committed raw SEC-filing HTML fixture (`tests/fixtures/canonical-v2/
+*/*-raw-fetched.htm`, all 7 present), re-derives canonical text via the same
+`convertSecHtmlToCanonicalText` the live pipeline uses, and **independently verifies
+the result against the run's own recorded hash** before returning it — so this is not
+a hand-rolled HTML stripper, it is the real converter, checked. `modiv`'s base
+2026-08-06 run's `source-reference.json` was missing a recorded `retrieved_at` (can't
+rebuild from it); its 2026-08-07 replay directory carries the complete capture inputs
+for the same document and was used instead. The real `parseStructure` was then run on
+the rebuilt canonical text, and the real sections fed into `extractTransactionSteps`
+unmodified except for the two field renames noted in 7.1. Harness (read-only, not
+committed): `/tmp/claude-0/-home-user-precedent-machine/
+3942dbbb-1014-51f3-a689-d0286bab5211/scratchpad/transaction-steps-real-test.js`.
+
+### 7.3 Results: 4/7 correct on step count, and the misses are systematic, not noise
+
+| deal | ground truth | detector output | verdict |
+|---|---|---|---|
+| concho | 1-step single | `SINGLE_MERGER`, 1 step | **correct** |
+| metsera | 1-step single | `SINGLE_MERGER`, 1 step | **correct** |
+| redhat | 1-step single | `SINGLE_MERGER`, 1 step | **correct** |
+| skechers | 1-step single | `TWO_STEP_TENDER`, 2 steps | **wrong — false positive** |
+| skywater | 2-step sequential chain | `DOUBLE_DUMMY`, 2 steps, **zero chaining warnings** | **correct, and the chain verifies cleanly** |
+| topbuild | 2-step sequential chain | `SINGLE_MERGER`, 1 step | **wrong — false negative** |
+| modiv | 2-step parallel | `SINGLE_MERGER`, 1 step | **wrong — false negative, and unrepresentable regardless (7.4)** |
+
+**Reported honestly, per the instruction not to hide a partial hit rate: 4 of 7 correct
+on step count (57%).** On skywater specifically the detector does more than get the
+count right — with real entity text from the real document, `surviving_entity`/
+`disappearing_entity` chain cleanly with **zero** warnings, confirming Task 4's
+finding (post-merger defined-term naming) holds on real text, not just curated quotes.
+
+**Root cause of each miss, traced to the actual text, not guessed:**
+- **skechers (false positive):** the detector's tender-offer signal is
+  `/\bacceptance\s+time\b|\b251\(h\)\b|\bthe\s+offer\b/i`. Skechers' agreement contains
+  the phrase *"...if **the offer** is accepted, take or commit to take such action..."*
+  inside an ordinary antitrust-remedies covenant — nothing to do with a tender offer.
+  The regex is generic English, not a defined-term match, and misfires on it. This
+  false positive is reported with `confidence: 'HIGH'` (the tender-offer branch
+  hardcodes `HIGH`), which means **the detector's own confidence field cannot be
+  trusted to flag its own errors** — it was wrong and certain.
+- **topbuild (false negative):** the detector's double-dummy signal is hardcoded to
+  the literal phrases `first merger` / `second merger` / `subsequent merger`. TopBuild's
+  agreement names its two steps the **Titanium Merger** and the **Forward Merger** —
+  confirmed present in the real text (`has "Titanium Merger"? true`, `has "Forward
+  Merger"? true`, `has "first merger"? false`). This is the exact failure class
+  `CLAUDE.md` names for `findTerminationLimbGrantContext`: a grammar lifted from one
+  deal's drafting convention, silently absent for a newer deal that names the same
+  legal concept differently.
+- **modiv (false negative):** the detector has no pattern for a parallel/simultaneous
+  two-entity merger at all. Lacking `first merger`/`second merger` language and lacking
+  tender-offer language, it falls straight through to the unconditional single-step
+  default branch, which always emits exactly one hardcoded `MERGER` step regardless of
+  what the text actually contains.
+
+### 7.4 Does the schema handle modiv's parallel case at all? No — and this is
+### independent of which extraction method is used.
+
+`step_order` is not a hint, it's an enforced total order:
+`assertConsecutiveSteps` requires `1, 2, 3, …` with no gaps, and nothing in
+`deriveTopology`/`enforceTransactionStepInvariants` carries any notion of
+"simultaneous" or "concurrent" — there is no `execution_relationship` field, no
+`concurrent_with_step`, nothing. `stepChainingWarnings` is the closest the schema
+comes to noticing modiv's shape, and it notices by **absence** (surviving_entity of
+step 1 ≠ disappearing_entity of step 2 → warning), not by **presence** of a positive
+"these are parallel" signal. Concretely: even a hypothetically perfect extractor —
+model or detector — that supplied modiv's real `Company Merger`/`OpCo Merger` steps
+with correctly canonicalised entity names would still only ever land on
+`MULTI_STEP_REORG` + `topology_needs_review: true` + a chaining warning, exactly the
+same bucket a genuinely malformed or ambiguous two-step deal would land in. **This is
+a real schema gap, not fixable by better prompting or better regex — it needs a new
+field (e.g. a per-step `concurrency: SEQUENTIAL | PARALLEL_WITH_PRIOR` flag, or a
+sibling-step-group concept) if "parallel dual merger" is ever meant to be a positively
+identified topology rather than a permanent "needs review" catch-all.** Whether that's
+worth building depends on how common modiv's UPREIT shape is across the corpus this
+project cares about — a taxonomy-owner call, not resolved here. Note also, as a
+secondary and independent finding: whether a `MULTI_STEP_REORG` + `needs_review` +
+chaining-warning outcome for modiv-shaped deals is *actually fine as a permanent
+answer* (flag for human review, never try to auto-classify a parallel structure) is
+itself a legitimate design choice — not obviously a defect that must be fixed.
+
+### 7.5 Revised headline: **(c), hybrid — and closer to "detector as a low-trust hint"
+### than "detector and model as equal partners"**
+
+The evidence doesn't support (a) alone: 3 of 7 deals get the wrong answer, one of them
+(skechers) confidently wrong. It doesn't support (b) alone either: on the 4 it gets
+right, including the one real multi-step chain in that subset (skywater), it gets it
+right for the correct reason (entities genuinely chain), at zero model cost, without
+touching a single prompt file — throwing that away and waiting on a prompt bump for
+100% of deals would be wasteful given a working, deterministic, already-tested
+mechanism exists for the common case.
+
+**Revised precedence, mirroring `lib/employee-benefits.js`'s `buildRow(code, item,
+provision, bundled)` two-pass, direct-beats-inferred pattern** (`bundled: !!bundled`,
+a direct entry always wins, a bundled/inferred row stays flagged as such rather than
+looking equally authoritative):
+
+- **Pass 1 — model-extracted (once 5.2/5.3 land):** if the prompt-extracted
+  `transaction_steps` claims exist for a deal, they win outright, tagged
+  `step_source: 'MODEL_EXTRACTED'`. This is the "direct entry" of the pattern — a
+  human-legible quote sits behind every field, and it is the only path that can ever
+  resolve modiv's parallel case correctly (once whatever schema fix from 7.4 is agreed).
+- **Pass 2 — detector-inferred (available today, zero prompt change):** when no
+  model-extracted steps exist for a deal, run `extractTransactionSteps` over V2's own
+  sectionizer output (7.1) as a fallback, tagged `step_source: 'DETECTOR_INFERRED'`.
+  Given the demonstrated 4/7 real-text accuracy and the two concrete, named failure
+  modes (7.3), **a detector-inferred result must not be treated as a confident
+  classification** — force `topology_needs_review: true` on every detector-inferred
+  row regardless of what `deriveTopology` itself would otherwise set, and surface
+  `step_source` wherever topology is displayed, exactly as `bundled` stays visible on
+  an inferred benefits row rather than being collapsed into an indistinguishable
+  result. Do **not** trust the detector's own `confidence` field for this gating — 7.3
+  showed it reports `HIGH` on a confirmed false positive.
+- If both exist and disagree (a real scenario once the model path exists — e.g. model
+  says single-step, detector's false-positive tender signal says two-step), the
+  model-extracted result wins per the precedence rule above, but the disagreement
+  itself should force `topology_needs_review: true` — a silent override hides
+  information a reviewer would want.
+
+**What this changes about Task 6's sequencing note:** wiring the detector (Pass 2) is
+genuinely safe to do **now**, in parallel with the concurrent resolver work — it needs
+only the sectionizer-node-to-`extractTransactionSteps`-shape adapter named in 7.1, no
+prompt change, no resolver change, and can be merged and tested (against exactly the
+7-deal harness built for this task, made a real regression test) independent of when
+5.2/5.3 land. It should **ship labeled as a low-confidence fallback from day one** —
+not as the topology answer, but as a same-day, zero-model-cost signal that is right
+more often than not and always says so honestly when it's the only signal available.
