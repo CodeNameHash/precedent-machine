@@ -210,6 +210,42 @@ freeze / legacy-review-page phase:
 
 ## 5. Dead scripts (grouped)
 
+Counts are approximate (some files could not be fully read against the sweep
+budget) but every group below has a stated reason, not a guess.
+
+**Confirmed dead (explicit evidence in the code itself):**
+- `scripts/canonical-v2-staging-qxo-reverse-f3.mjs` — body is a bare `throw`:
+  "F3 failed adversarial legal review and cannot be regenerated or
+  published." `sql/qxo-reverse-f3/` (9 files) is that candidate's corpse.
+- `scripts/canonical-v2-corpus-source-discovery-capture.js`,
+  `scripts/run-unimplemented-adversarial-test.mjs` — deliberate
+  not-yet-implemented throw-stubs.
+- `scripts/ingest-agreements.js` — its own header: "CURRENTLY
+  NON-FUNCTIONAL END-TO-END"; the API route it calls is hard-503'd.
+  Superseded by `scripts/ingest-local.js`.
+- `scripts/lint/component-reuse.js`, `scripts/lint/party-scope-audit.js`,
+  `scripts/audit/ioc-scope-mismatch.js` — unconditional `PASS` stubs (see
+  §4); the components/rules they policed no longer exist.
+
+**~65 `canonical-v2-staging-*` / `canonical-v2-*-live-extraction-run` / `canonical-v2-*-proof` / `canonical-v2-m3-*` scripts** — one-shot, hash-pinned proofs of individual PLAN.md acceptance steps (2A/2B/2B2/2C/2C1/2D1/4A/4A2/4A3, F27/F28 breadth runs, M3 pilot/iteration-2/final-sol), each refusing to run outside one specific hosted Supabase project or against one hard-coded deal/hash set. Historically valuable (they ARE the evidence those steps closed — see `docs/core/COMPLETED.md`) but not reusable diagnostics. See §6 log for the full accounting.
+
+**~33 `sql/optionA/**` and `sql/qxo-reverse-f4/**` files** — generated, paste-ready SQL packets (dry-run/apply/verify/rollback sequences) for Ben to run by hand in the Supabase SQL Editor, produced by their corresponding generator scripts above. Historical record of an applied (or hand-run) migration, not something to re-run blind.
+
+**~6 legacy review-page migration audits in `scripts/audit/`** (`layout-slot-inventory.js`, `legacy-jsx-audit.js`, `m2-08-coverage.js`, `m2-09-per-family-plan.js`, `schema-augmentation-inventory.js`, `legacy-vocab-references.js`) — all target `pages/review-v1/[id].js` and the M2-06→M2-09 legacy-table-to-review-v2 migration, which reads as completed. `all-deals-card-backed.js` and `schema-parity.js` also cite the same PLAN-M2 era and are probably in the same boat, though not individually confirmed dead here.
+
+**~15 `docs/schema-shape/normalized-v1.json`-era migration scripts** (`scripts/schema-shape/*` — 8 files — and `scripts/schema-loss/*` — 5 files — plus `scripts/backfill/claims-from-normalized.js` and `scripts/reprocess/apply-reconciliation.js` / `replay-reconciliation.js`) — WP-SCHEMA P0-C/P0-D and WP-CLAIMS-LAYER-01 Phase-2 tooling, superseded by the live `public.claims` table and its own backfill/promote scripts once that migration completed. Not individually re-verified as inert — flag before deleting, don't assume.
+
+**6 narrow one-shot TopBuild/governance packet writers** (`scripts/write-current-source-intake-readiness.js`, `write-full-corpus-routing-prompt-cost-audit.js`, `write-governed-identity-proposal-packet.js`, `write-topbuild-legal-text-delta.js`, `write-topbuild-section-delta-review-queue.js`, `write-topbuild-two-occurrence-review-packet.js`) — each hardcodes one deal id / one artifact-root shape and refuses to overwrite existing output; spent one-offs.
+
+**3 WP-5 (M5-03) acceptance-gate scripts** (`scripts/wp5-screenshot.js`, `wp5-unresolved-sweep.js`, `wp5-verbatim-check.js`) — hardcode specific card/deal ids from a since-closed work package; still mechanically correct if re-run, but not a generic tool.
+
+**Earliest-era one-offs, already superseded**: `scripts/run-migration.js`, `supabase/add-provision-types.sql`, `supabase/fix-type-constraint.sql` — Feb-2026 prototype migrations; the schema and provision-type set they establish is long since live via later additive files.
+
+**~10 programme-gates / governance-infrastructure scripts** (`scripts/collect-g0-containment-evidence.mjs`, `generate-bootstrap-acceptance-source.mjs`, `generate-canonical-contract-current-review.mjs`, `preflight-local-review-controller.mjs`, `run-g0-local-cold-reviews.mjs`, `run-p1-contract-freeze-reviews.mjs`, `verify-codex-program-spec.mjs`, plus the ed25519-signed review-controller machinery they call into) — a self-contained governance/attestation layer for programme gates (G0 containment, contract-freeze reviews) tied to specific commits and key material. Not verified live or dead; narrow enough that "extraction quality" work is very unlikely to need them.
+
+**Not classified dead, but narrow/historical and NOT re-verified**: `scripts/confirm-kind-ruling.mjs`, `scripts/draft-kind-rulings.mjs`, `scripts/queue-volume-dry-run.mjs` (the "ruling corpus" / qualifier-kind lexicon system — could be currently active, this sweep did not check `contracts/ruling-corpus/`); `scripts/code-appraisal-rights.js`, `code-information-sharing.js`, `code-intervening-event.js` (human-reviewed codebook stampers — likely already applied once, re-running is a no-op if so, but not confirmed); `scripts/review-queue/create.js` / `poll.js` (tied to `archive/HANDOFF.md`, a workflow file that may itself be historical).
+
+
 ## 6. Log (working notes, in-order, may be pruned from final)
 
 ### canonical-v2-* scripts (77 files in scripts/, 4 in scripts/lib/)

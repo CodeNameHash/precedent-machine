@@ -47,8 +47,84 @@ Status: IN PROGRESS
 
 ## 3. Fixture catalogue
 
-| Path | Size | Deal | Family | Shape | Replayable? |
-|---|---|---|---|---|---|
+Two fixture roots: `tests/fixtures/` (144 files, ~2.9 MB text-only, ~16.6 MB
+including the raw `.htm` filings) and `__fixtures__/` (33 files, ~710 KB).
+`tests/fixtures/canonical-v2/` is the dominant subtree — one directory per
+real deal's "first/second/third live run" plus one per canonical-v2 family
+pilot.
+
+### Real filed merger agreements (raw SEC HTML, pinned by hash)
+
+| Path | Size | Deal | Shape | Replayable? |
+|---|---|---|---|---|
+| `tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm` | 879 KB | Modiv | Raw SEC EX-2.1 HTML, hash-pinned (also reused by termination-limb-grant-context and negation-boundary tests) | Yes — deterministic HTML→canonical-text pipeline, no model call |
+| `tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm` | 733 KB | TopBuild | Raw SEC HTML, hash-pinned | Yes, same pipeline |
+| `tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm` | 605 KB | Skechers | Raw SEC HTML | Yes |
+| `tests/fixtures/canonical-v2/skywater-first-live-run/skywater-raw-fetched.htm` | 590 KB | SkyWater | Raw SEC HTML | Yes |
+| `tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm` | 584 KB | Metsera | Raw SEC HTML | Yes |
+| `tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm` | 552 KB | Concho | Raw SEC HTML | Yes |
+| `tests/fixtures/canonical-v2/redhat-first-live-run/redhat-raw-fetched.htm` | 465 KB | Red Hat | Raw SEC HTML | Yes |
+| `__fixtures__/demo-deal/landos-abbvie-agreement.txt` | 394 KB | Landos Biopharma / AbbVie | Stripped plain text of a real 8-K EX-2.1 (SEC accession 0001193125-24-075991), byte-for-byte what the live ingest pipeline produces | Yes — used by `scripts/demo-dryrun.js` for the full parse/classify/extract/validate/store smoke test, no model call for ingestion itself |
+| `__fixtures__/demo-deal/landos-abbvie-agreement.broken.txt` | 25 KB | Same deal, truncated | First 25,000 bytes only — recitals + partial Article I, deliberately missing REP-T/REP-B/DEF/COND articles | Yes — negative-path fixture; proves `ingest-qa.js` fails every count gate and teardown still runs |
+
+### Recorded model responses (replayable extraction runs — zero model calls)
+
+Each "first/second/third-live-run" directory is a full recorded run: raw
+model response(s), the run receipt, resolution, adapter write-set, and
+validation report, all pinned so the real pipeline (`runNativeExtraction`,
+`resolveCandidates`, `buildNativeWriteSet`) can be replayed deterministically.
+
+| Deal / run | Directory | Key files (all replayable) |
+|---|---|---|
+| Modiv, first live run | `tests/fixtures/canonical-v2/modiv-first-live-run/` | `native-producer-recorded-response.json` (31 KB, raw model text), `run-receipt.json` (243 KB), `resolution.json` (180 KB), `adapter-result.json` (439 KB), `validation.json`, `review-queue.json`, `section-location-scan.json`, `call-telemetry.json`, `intake-pin.json` |
+| Skechers, first live run | `tests/fixtures/canonical-v2/skechers-first-live-run/` | Same shape: `native-producer-recorded-response.json` (20 KB), `run-receipt.json` (152 KB), `resolution.json` (119 KB), `adapter-result.json` (391 KB), `article-iii-canonical-excerpt.txt` (78 KB) |
+| QXO/TopBuild §3.1(b), F28 live run (run 1) | `tests/fixtures/canonical-v2/f28-live-run/qxo-topbuild-3-1-b-live-response.json` | 21 KB raw model response |
+| QXO/TopBuild §3.1(b), F28 second live run | `tests/fixtures/canonical-v2/f28-second-live-run/qxo-topbuild-3-1-b-live-response.json` | 13 KB raw model response — used directly by `tests/canonical-v2-limb-components.test.js` and `tests/canonical-v2-limb-enumeration-scan.test.js` |
+| QXO/TopBuild §3.1(b), F28 third live run | `tests/fixtures/canonical-v2/f28-third-live-run/` | Full run: `qxo-topbuild-3-1-b-live-response.json` (17 KB), `run-receipt.json` (146 KB), `resolution.json` (170 KB), `adapter-result.json` (431 KB), `validation.json`, `limb-enumeration-scan.json`, `coverage-proxies.json`, `run-comparator-vs-run2.json`, `call-telemetry.json` |
+| Modiv termination fee, review-parity case | `tests/fixtures/review-parity/cases/termination-fees/dfaa71fa-modiv.resolution.json` | 36 KB, full `resolved`/`review_queue`/`open_world`/`residuals`/`limb_component_trees`/`ioc_restriction_components`/`conditional_termination_fee_values` shape |
+
+### V1→V2 comparator snapshots (real per-deal card sets, pre-canonical-v2)
+
+| Path | Size | Deal | Shape |
+|---|---|---|---|
+| `tests/fixtures/canonical-v2/v1v2-comparator/modiv-v1-provision-snapshot.json` | 164 KB | Modiv | `{schema_version, deal_identity_bridge, deal_max_extraction_version, cards, deal, snapshot_id}` |
+| `tests/fixtures/canonical-v2/v1v2-comparator/topbuild-v1-provision-snapshot.json` | 146 KB | TopBuild | Same shape |
+| `tests/fixtures/canonical-v2/v1v2-comparator/skechers-v1-provision-snapshot.json` | 112 KB | Skechers | Same shape |
+
+### Corpus card dumps (per-family, cross-deal — real extracted cards)
+
+All share `{schema, family, source_spec, retrieval_date, source_table, resolved_prefix_dispositions, missing_prefixes, cards}`.
+
+| Path | Size | Family | Card count |
+|---|---|---|---|
+| `tests/fixtures/canonical-v2/guaranty-fixtures/corpus-cards.json` | 93 KB | Guaranty | 31 |
+| `tests/fixtures/canonical-v2/dno-fixtures/corpus-cards.json` | 213 KB | D&O indemnification | 27 |
+| `tests/fixtures/canonical-v2/financing-covenants-fixtures/corpus-cards.json` | 95 KB | Financing covenants | 18 |
+| `tests/fixtures/canonical-v2/employee-matters-fixtures/corpus-cards.json` | 137 KB | Employee matters | 16 |
+| `tests/fixtures/canonical-v2/m3-v31-fixtures/corpus-cards.json` | 6 KB | M3 v31 pilot | 8 |
+| `tests/fixtures/canonical-v2/appraisal-fixtures/corpus-cards.json`, `dividends-fixtures/corpus-cards.json`, `tax-matters-fixtures/corpus-cards.json` | <1 KB each | Appraisal / dividends / tax matters | 1 each — thin stub fixtures, not real corpora |
+
+### Small, hand-pinned real-clause fixtures (used across many test files)
+
+| Path | Size | Notes |
+|---|---|---|
+| `tests/fixtures/qxo-section-3-1-b.txt` | 4.7 KB | Real QXO capital-structure section, reused by limb-enumeration-scan and open-world-boundary tests |
+| `tests/fixtures/qxo-section-5-2.js` | 3.2 KB | Exports `QXO_5_2_TEXT` — the tiered COND-B rep bring-down text also pinned inline in `tests/subclauses.test.js` |
+| `tests/fixtures/canonical-v2/termination-rights-family/modiv-section-7.1.txt` | 9.7 KB | Modiv's real termination section |
+| `tests/fixtures/canonical-v2/closing-conditions-fixtures/*.txt` (8 files) | ~150-300 bytes each | Small real closing-condition clause snippets, keyed by content hash, with a `party-capacity-context.json` sidecar and README |
+| `tests/fixtures/canonical-v2/mae-definition-family/*-company/parent-mae-definition.txt` (4 deals) | 5-6 KB each | Real MAE definition text per deal (Modiv, TopBuild, Skechers) |
+
+### Non-replayable / staging-only fixtures
+
+The `qxo-no-shop-*-staging-attestation.json` files (18 files, 2.4 KB–504 KB,
+in `tests/fixtures/canonical-v2/`) are staging-environment attestation
+records (`authority`, `staging_execution`, `canonical_payload_digest`, etc.)
+— they prove a specific staging run happened, and are consumed by tests that
+mostly `t.skip` unless an env var / linked staging project is present (see
+§5). Not model-call replays in the same sense as the recorded-response
+fixtures above.
+
+
 
 ## 4. Documented past defects
 

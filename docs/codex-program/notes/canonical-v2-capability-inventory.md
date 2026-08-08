@@ -13,13 +13,13 @@ not treated as a finding.
 | 1 | Sub-clause / limb segmentation | RUNNING (but mints trees almost never) | `native-producer/limb-components.js` (`limb-component tree` builder), consumed via `native-producer/candidate-resolution.js:10636` | 202 `resolution.json` files scanned across all of `evidence/canonical-v2/`; exactly 1 has a non-empty `limb_component_trees` array — `modiv-capitalisation-20260807-replay` (1 tree). All 9 MAE runs and all 18 (not 4) REPRESENTATIONS-named runs are empty (10 of the 18 have no `resolution.json` at all). |
 | 2 | Qualifier attachment | RUNNING | `native-producer/qualifier-attachment.js` (`resolveQualifierAttachment`), called from `native-producer/anthropic-provider.js:811` inside `shapeRepresentationInstance`, which is registered for the REPRESENTATIONS family (line 3249) | `evidence/canonical-v2/redhat-representations-20260808-r1/adapter-result.json`: 33 qualifier `attachment` objects (5 CHAPEAU, 24 ITEM, 4 TRAILING) |
 | 3 | Chapeau / inheritance | SPLIT: qualifier-chapeau scope RUNNING; EXCEPTED_BY exception-inheritance BUILT BUT UNWIRED (single-deal offline slice, never in evidence) | `native-producer/qualifier-attachment.js` (chapeau scope); `contract-bundle.js` `NO_SHOP_EXCEPTION_EFFECT_SCHEMA_V1`/`EXCEPTED_BY`, consumed only by `qxo-no-shop-actions-parser-bridge.js` (`DEAL_KEY = 'deal:qxo-topbuild'`, `AUTHORITY_SCOPE = 'OFFLINE_REVIEW_ONLY_...'`) | none — `grep -rl "EXCEPTED_BY" evidence/canonical-v2/` returns nothing |
-| 4 | Open-world candidate handling | TBD | | |
-| 5 | Evidence residuals / drop reasons | TBD | | |
-| 6 | Party / scope derivation | TBD | | |
+| 4 | Open-world candidate handling | Capture: RUNNING. Promotion to mapped concept: NOT BUILT | `native-producer/anthropic-provider.js` (`shapeOpenWorldCandidate`); `native-producer/native-write-set-adapter.js` (fixed `UNGOVERNED_UNREVIEWED` disposition); `open-world-evidence-serving.js` (serving guard) | 160/204 `resolution.json` files have non-empty `open_world`; max 194 entries in one run (skechers-key-defined-terms) |
+| 5 | Evidence residuals / drop reasons | RUNNING | `native-producer/anthropic-provider.js` (`dropCounter.record`, 31+ reason codes); `native-producer/candidate-resolution.js` (35 resolver-level ambiguity/unresolved codes) | `adapter-result.json` residuals populated live across corpus (e.g. 22 `OPEN_WORLD_CANDIDATE`, 15 `QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS`) |
+| 6 | Party / scope derivation | RUNNING | `native-producer/candidate-resolution.js` (`resolvePartyCapacity` line 1485, `resolveParty` line 1529) | redhat-representations-20260808-r1: 26 resolved `"capacity": "TARGET"` provisions; `JOINT_MULTI_PARTY_CAPACITY` sentinel never observed in any evidence file |
 | 7 | Topology | SKIPPED (owned by another agent) | | |
-| 8 | Family registry | TBD | | |
-| 9 | Byte-offset handling | TBD | | |
-| 10 | Publish / hold-back criteria | TBD | | |
+| 8 | Family registry | RUNNING, all 25 | `native-producer/producer-prompt-registry.js` (`REGISTRY` Map, line 117) | every one of 25 registered families has ≥1 matching evidence directory (5–18 each) |
+| 9 | Byte-offset handling | RUNNING | `canonical-bytes.js`: `utf8ByteLength`, `utf8Slice` | required in 53 files across `lib/canonical-v2/` |
+| 10 | Publish / hold-back criteria | RUNNING | `native-producer/candidate-resolution.js` AUTO-PASS test (header lines 40-99) + `pushReviewUnresolved` (line 5529) | 3,133 total `review_queue` items across 204 evidence runs; top live reasons `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` (699), `IOC_ATTACHMENT_TARGET_QUOTE_MISSING` (171), `QUALIFIER_KIND_UNCLASSIFIED` (144) |
 
 ---
 
@@ -277,6 +277,42 @@ brief's "enumerate every drop reason string" ask):
 
 ## 6. Party / scope derivation
 
+**Found. WIRED and RUNNING.**
+
+`native-producer/candidate-resolution.js` has a two-function party
+derivation core:
+- `resolvePartyCapacity(rawValue)` (line 1485): maps a raw party string
+  (e.g. "the Company", "Parent", "Parent OpCo") to a canonical capacity
+  (`TARGET`/`BUYER`) via ordered lexicons (`PARTY_CAPACITY_LEXICON`,
+  `PARTY_CAPACITY_SEGMENT_LEXICON`). It splits multi-party lists into
+  segments (`segmentPartyListString`) to detect genuinely joint
+  obligations, returning a `JOINT_MULTI_PARTY_CAPACITY` sentinel when a
+  list spans more than one side, and `null` (fail closed, no guess) when
+  nothing matches.
+- `resolveParty({attributes, mapping})` (line 1529): wraps a resolved
+  capacity into a frozen `{role, value, capacity}` party object —
+  deliberately exactly three keys, per `source-structure.js`'s
+  `assertParty`, which the file's comment says was proven the hard way
+  (a broken test after an earlier version tried to add a fourth key).
+- Party resolution is what gates several families' claims into
+  `review_queue` when it fails: `PARTY_UNRESOLVED` (raw party string
+  present but capacity not resolvable — the module header calls this out
+  explicitly as step 1's own rule: "a proposal whose party cannot be
+  mechanically determined is never guessed"), and family-specific variants
+  such as `REPRESENTATION_SIDE_UNRESOLVED` / `REPRESENTATION_SIDE_PARTY_UNRESOLVED`
+  (representations family, lines 9178/9190) and `OBLIGOR_REF_UNCORROBORATED`
+  / `OBLIGOR_SCOPE_UNCORROBORATED` (obligation-bearing families).
+- Live evidence: `evidence/canonical-v2/redhat-representations-20260808-r1/resolution.json`
+  has 26 resolved provisions with `"capacity": "TARGET"`; no
+  `JOINT_MULTI_PARTY_CAPACITY` sentinel appears anywhere in the evidence
+  corpus (`grep -rl` across all 204 `resolution.json` files returns
+  nothing), so the joint-party path exists in code but was not observed
+  firing on real deal text in the runs captured so far — **uncertain**
+  whether that's because no captured deal actually has a joint-obligation
+  sentence in a family that reaches this code, or because the joint path
+  has a latent gap; would be settled by a synthetic fixture with a genuine
+  "Company and Parent shall..." joint sentence run through resolution.
+
 ## 7. Topology
 
 Skipped per instructions — owned by a separate agent.
@@ -339,3 +375,81 @@ this is one of the most widely depended-on modules in the whole
 `canonical-v2` tree.
 
 ## 10. Publish / hold-back criteria
+
+**Found. WIRED and RUNNING, and directly answers the "reasons" ask.**
+
+`native-producer/candidate-resolution.js`'s own header (lines 40-99) states
+the AUTO-PASS test exhaustively: a candidate is published directly (not
+held back) only if it has **all** of:
+1. a registered concept AND claim definition,
+2. a registered `canonical_value`,
+3. a resolved party (capability 6),
+4. no known-defect match (`matchesKnownDefect` against
+   `known-defect-registry.js`),
+5. exactly one evidence span with role `OPERATIVE_TEXT` (the mechanical
+   proxy for "not multi-span/composed" and "not a nested or
+   cross-referenced definition"),
+6. no residual already retained by `claims-relationships.js`'s own
+   attribute/taxonomy check.
+
+**Everything else lands in `review_queue`** (held back from publish),
+ranked by `MATERIALITY_TABLE`, each item carrying `has_resolution: false`,
+`auto_pass: false`, and a `reasons[]` array of typed codes
+(`pushReviewUnresolved`, line 5529).
+
+**Reason families, enumerated from the header plus live evidence
+(`review_queue[].reasons` across all 204 `resolution.json` files, 3,133
+total review-queue items):**
+- **Party unresolved**: `PARTY_UNRESOLVED` (38 live occurrences),
+  `REPRESENTATION_SIDE_UNRESOLVED`/`REPRESENTATION_SIDE_PARTY_UNRESOLVED`.
+- **Citation not validated**: `CITATION_NOT_VALIDATED` — neither
+  constructed from the sectionizer's tree nor corroborated by the
+  document's own cross-reference text.
+- **Structural-span gates**: `MULTI_SPAN_COMPOSED` (89),
+  `NESTED_OR_CROSS_REFERENCED_EVIDENCE` (89).
+- **Family-specific corroboration failures** (candidate's canonical value
+  checked against its own quote text) — by far the largest category live:
+  `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` (699 — largest single reason in the
+  corpus), `IOC_ATTACHMENT_TARGET_QUOTE_MISSING` (171),
+  `QUALIFIER_KIND_UNCLASSIFIED` (144), `CATEGORY_UNCORROBORATED` (105),
+  `TERMINATING_PARTY_REF_NOT_IN_QUOTE` (60),
+  `IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED` (59),
+  `CLAUSE_LABEL_NOT_IN_QUOTE` (58), `FEE_SIDE_UNCORROBORATED` (44),
+  `PROXY_MEETING_KIND_UNCORROBORATED` (44), `IOC_NUMERIC_OPERAND_NOT_EXACT` (37),
+  `DNO_KIND_UNCORROBORATED` (37), `NO_SHOP_PREREQUISITE_UNCORROBORATED` (35),
+  `CONDITION_KIND_UNCORROBORATED` (35), `ASSERTION_KIND_UNCORROBORATED` (35),
+  `TRIGGER_UNCORROBORATED` (32), `MAE_CARVEOUT_UNCORROBORATED` (26),
+  `NO_SHOP_PERIOD_ROLE_UNCORROBORATED` (23), `DEFINED_TERM_REF_NOT_IN_HEAD` (23),
+  `TRIGGER_KIND_UNCORROBORATED` (21), `PER_SHARE_CONTEXT_UNCORROBORATED` (21),
+  `QUALIFIER_KIND_DISAGREEMENT` (20), `NO_SHOP_ACTION_UNCORROBORATED` (18),
+  `CONSULTATION_RIGHT_UNCORROBORATED` (18),
+  `NOTIFICATION_OBLIGATION_UNCORROBORATED` (18),
+  `RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED` (17),
+  `OBLIGOR_REF_UNCORROBORATED` (17), `OBLIGOR_REF_NOT_IN_QUOTE` (14),
+  `OBLIGOR_SCOPE_UNCORROBORATED` (13), `MEETING_REF_ABSENT` (12),
+  `ITEM_OR_STANDARD_UNCORROBORATED` (11), `EMPLOYEE_KIND_UNCORROBORATED` (9),
+  `FILING_REGIME_NOT_SINGLE_NAMED_REGIME` (8), `REP_SIDE_UNCORROBORATED` (8),
+  `INFORMATION_SHARING_OBLIGATION_UNCORROBORATED` (8),
+  `CONTROL_PARTY_REF_ABSENT` (8), `STANDSTILL_ACTION_UNCORROBORATED` (7),
+  `NO_SUBSTITUTION_GRAMMAR` (7), plus a longer tail below these counts.
+- **Negation-boundary guard**: a claim whose quote's own byte-verified
+  position in the filed document sits just past a negation ("would not",
+  "in no event", a closed "no <noun>" list) that the quote itself doesn't
+  include — wired into `BRING_DOWN_TIER_CLAIM_KEY` resolution specifically
+  (the one path with no lexicon/pattern check tying raw to canonical
+  value), and the header notes it was investigated for and *deliberately
+  not* wired into the representation-qualifier ACCURACY path because real
+  Modiv text false-positived there.
+- **Known-defect match**: routed differently from a fresh review-queue
+  item (see `known-defect-registry.js`) — not counted in the reasons
+  tally above; not fully traced in the time available.
+
+**On the brief's "96 held-back items under review" claim**: could not
+locate or reproduce a figure of exactly 96 anywhere in
+`evidence/canonical-v2/` or `lib/canonical-v2/`. The live aggregate across
+every evidence run is 3,133 review-queue items total (204 runs); 96 would
+have to be a filtered subset (one deal, one family, or a live DB query
+outside this evidence corpus) that this read-only code/evidence sweep
+cannot independently confirm. **Uncertain** — would be settled by knowing
+which deal/family/date the 96 figure comes from and checking that specific
+evidence directory or the live `review_queue` DB table directly.
