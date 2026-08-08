@@ -181,3 +181,130 @@ test('it refuses a client or sink that cannot work', () => {
     /REQUIRES_SINK/,
   );
 });
+
+// ─────────────────────────────────────────────────────────────────────────
+// REPLAY MODEL IDENTITY.
+//
+// `model_id` feeds `producer_receipt_id`, which feeds `closure_id`. Replay
+// used to report itself as the model -- `replay(<path>)` -- so the SAME
+// recorded evidence replayed from two directories minted two different
+// identities for identical claims. The committed artefacts still show both
+// values for one Modiv run: `replay(evidence/canonical-v2/modiv-antitrust-20260806)`
+// and `replay(/tmp/.../pool-modiv-antitrust-20260807-replay)`.
+//
+// Replay is a transport, not a producer. These tests pin that the identity
+// comes from the live run that produced the text, and that an unidentifiable
+// replay refuses rather than inventing one.
+
+const {
+  resolveOriginalProviderModelId,
+  READABLE_SCHEMA_VERSIONS,
+} = require('../lib/canonical-v2/native-producer/provider-record-replay');
+
+const RECEIPT = (...modelIds) => ({
+  resolved_sections: modelIds.map((id) => ({ producer_receipt: { model_id: id } })),
+});
+
+test('a V2 recording carries the live producer identity, not the CLI alias', async () => {
+  let latest = null;
+  const client = createRecordingClient({
+    client: fakeClient(['A']),
+    model: 'sonnet',
+    providerModelId: 'claude-sonnet-5-via-claude-code-cli(sonnet)',
+    sink: (recording) => { latest = recording; },
+  });
+  await client.messages.create(REQ('one'));
+  // The alias and the producer identity are different strings, and the
+  // second is the one that reaches the receipt.
+  assert.equal(latest.model, 'sonnet');
+  assert.equal(latest.provider_model_id, 'claude-sonnet-5-via-claude-code-cli(sonnet)');
+  assert.equal(resolveOriginalProviderModelId({ recording: latest }), 'claude-sonnet-5-via-claude-code-cli(sonnet)');
+});
+
+test('the same recording replayed from two directories resolves ONE identity', () => {
+  // The regression itself. Nothing in the resolution may derive from a path.
+  const recording = {
+    schema_version: SCHEMA_VERSION,
+    provider_model_id: 'claude-sonnet-5-via-claude-code-cli(sonnet)',
+    call_count: 0,
+    calls: [],
+  };
+  const fromA = resolveOriginalProviderModelId({ recording, source: '/evidence/run' });
+  const fromB = resolveOriginalProviderModelId({ recording, source: '/tmp/scratch/pool-copy' });
+  assert.equal(fromA, fromB);
+  assert.equal(fromA, 'claude-sonnet-5-via-claude-code-cli(sonnet)');
+});
+
+test('a V1 recording falls back to the receipt of the run that produced it', () => {
+  // 24 V1 recordings exist and re-recording costs real model calls, so they
+  // stay readable -- but they carry only the alias, so the identity comes
+  // from the run receipt sitting beside them.
+  assert.ok(READABLE_SCHEMA_VERSIONS.includes('NATIVE_PRODUCER_RECORDED_RUN/V1'));
+  const v1 = { schema_version: 'NATIVE_PRODUCER_RECORDED_RUN/V1', model: 'sonnet', call_count: 0, calls: [] };
+  assert.doesNotThrow(() => createReplayClient({ recording: v1 }));
+  assert.equal(
+    resolveOriginalProviderModelId({
+      recording: v1,
+      runReceipt: RECEIPT('claude-sonnet-5-via-claude-code-cli(sonnet)', 'claude-sonnet-5-via-claude-code-cli(sonnet)'),
+    }),
+    'claude-sonnet-5-via-claude-code-cli(sonnet)',
+  );
+});
+
+test('a receipt-less run refuses to replay rather than inventing an identity', () => {
+  // The two TopBuild runs whose extraction failed (BREAKs 1 and 4) write no
+  // receipt. Substituting a path here is what caused the instability.
+  assert.throws(
+    () => resolveOriginalProviderModelId({ runReceipt: null, source: 'the run in /some/dir' }),
+    /REPLAY_MODEL_IDENTITY_UNKNOWN/,
+  );
+  assert.throws(
+    () => resolveOriginalProviderModelId({ runReceipt: RECEIPT(), source: 'x' }),
+    /REPLAY_MODEL_IDENTITY_UNKNOWN/,
+  );
+});
+
+test('a run produced by two models refuses to claim one identity', () => {
+  assert.throws(
+    () => resolveOriginalProviderModelId({
+      runReceipt: RECEIPT('model-a', 'model-b'),
+      source: 'a mixed run',
+    }),
+    /REPLAY_MODEL_IDENTITY_AMBIGUOUS/,
+  );
+});
+
+test('an operator may state the identity of a hand-assembled fixture set', () => {
+  // The "fullpin" collections are merged from several runs and carry no
+  // receipt. Stating the identity deliberately is allowed; deriving it from
+  // wherever the files sit is not.
+  assert.equal(
+    resolveOriginalProviderModelId({
+      runReceipt: null,
+      declared: 'claude-sonnet-5-via-claude-code-cli(sonnet)',
+      source: 'a hand-assembled set',
+    }),
+    'claude-sonnet-5-via-claude-code-cli(sonnet)',
+  );
+});
+
+test('an operator who contradicts the record is refused, not obeyed', () => {
+  assert.throws(
+    () => resolveOriginalProviderModelId({
+      runReceipt: RECEIPT('claude-sonnet-5-via-claude-code-cli(sonnet)'),
+      declared: 'claude-opus-4-via-something-else',
+      source: 'a recorded run',
+    }),
+    /REPLAY_MODEL_IDENTITY_CONFLICT/,
+  );
+});
+
+test('an operator who agrees with the record is a no-op', () => {
+  assert.equal(
+    resolveOriginalProviderModelId({
+      runReceipt: RECEIPT('claude-sonnet-5-via-claude-code-cli(sonnet)'),
+      declared: 'claude-sonnet-5-via-claude-code-cli(sonnet)',
+    }),
+    'claude-sonnet-5-via-claude-code-cli(sonnet)',
+  );
+});

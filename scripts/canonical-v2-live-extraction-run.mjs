@@ -121,7 +121,18 @@
  *     [--v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON, \
  *        default: none -- condition 1 (v1<->v2 comparator) then stays \
  *        unevaluated for every claim, recorded explicitly in run-manifest.json>] \
+ *     [--replay-model-id <the producer model_id the replayed run used. Only \
+ *        for hand-assembled fixture sets that carry no run-receipt.json; a \
+ *        replay of a real run reads the identity from that run's receipt and \
+ *        REFUSES this flag if it disagrees>] \
  *     [--dry-run]
+ *
+ * REPLAY REPORTS THE LIVE RUN'S MODEL, NOT ITSELF. Replay is a transport: the
+ * text it serves was produced by the live model, so `model_id` -- which feeds
+ * `producer_receipt_id` and therefore `closure_id` -- is that model's. This
+ * used to be `replay(<path>)`, which made claim identity a function of where
+ * the operator put the files; the committed evidence still shows one Modiv
+ * run carrying two identities for the same claims.
  *
  * M3 AUTO-PASS CONDITIONS. Every resolveCandidates() call below wires both
  * of Ben's two M3 auto-pass conditions (docs/core/PLAN.md, "Prerequisite."):
@@ -183,6 +194,7 @@ const {
   createOrderedReplayClient,
   buildRecordingFromSectionFixtures,
   replayCoverage,
+  resolveOriginalProviderModelId,
 } = require('../lib/canonical-v2/native-producer/provider-record-replay');
 const {
   getProducerPromptModule, listRegisteredSectionFamilies,
@@ -252,6 +264,17 @@ function scriptRelativePath() {
 // matching scripts/nets-eligibility-report.mjs's own `sectionBodyText`.
 function sectionBodyText(canonicalText, section) {
   return Buffer.from(canonicalText, 'utf8').slice(section.start, section.end).toString('utf8');
+}
+
+// A run directory's own receipt, which is where the model identity of that
+// run is recorded. Returns null when the directory has no receipt -- a run
+// whose extraction failed writes none -- and the caller turns that into a
+// refusal, because a replay with no identity to reproduce must not proceed
+// under an invented one.
+function readRunReceiptIfPresent(runDir) {
+  const receiptPath = resolve(runDir, 'run-receipt.json');
+  if (!existsSync(receiptPath)) return null;
+  return JSON.parse(readFileSync(receiptPath, 'utf8'));
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -430,15 +453,95 @@ const DEAL_PINS = Object.freeze({
     // normalised to the millisecond form the capture contract requires
     // (that file records `2026-08-03T02:20:00Z`).
     retrieved_at: '2026-08-03T02:20:00.000Z',
-    // Not pinned in this repo yet: pass --agreement-date explicitly for a
-    // TopBuild run that needs it (e.g. for deadline/date resolution).
-    agreement_date: null,
+    // PINNED 2026-08-08 by PLAN.md Step 2F, read out of the committed raw
+    // HTML rather than taken from prose: the preamble reads "...and TOPBUILD
+    // CORP. Dated as of April 18, 2026". Previously null, with a note to pass
+    // --agreement-date explicitly. It is needed rather than optional:
+    // parseMeasurementDate (measurement-date-parse.js) resolves the symbolic
+    // phrases "the date of this Agreement" / "the Capitalization Date" ONLY
+    // from this value, so a null date silently drops every deadline claim
+    // that states itself relative to signing -- a false zero that looks
+    // exactly like a family with nothing to find.
+    agreement_date: '2026-04-18',
     pin_corroboration: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json -- both '
       + 'raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed '
       + 'raw HTML and match that pin file exactly (raw_bytes_length 732686, canonical_text_byte_length '
       + '412860, verification_status PASS)',
-    default_section_refs_by_family: Object.freeze({}),
-    section_expectations: Object.freeze({}),
+    // PINNED 2026-08-08 by PLAN.md Step 2F, from the hand-reviewed mapping in
+    // docs/codex-program/notes/step-2e-topbuild-mapping.md. Every list below
+    // was read against the filed text section by section (2E), then EXERCISED
+    // LIVE by Step 2F -- these are not proposals. 24 of the 25 registered
+    // families ran; CAPITALISATION is deliberately absent because Ben parked
+    // the family on 2026-08-08 (PLAN.md Step 2D2, now Step 9F). Do not add it
+    // back without reopening that decision.
+    //
+    // WHY SO MANY OF THESE DISAGREE WITH THE STAGE-1 GENERATOR. Modiv's
+    // Article III is granular -- one numbered section per rep topic. TopBuild's
+    // is TWO sections, 3.1 (Company, 83,756 bytes) and 3.2 (Parent/Merger Subs,
+    // 47,618 bytes), each running to lettered sub-paragraphs (a)-(w).
+    // Capitalisation, material contracts, no-other-reps, employee benefits and
+    // the MAE definition all live INSIDE those two as sub-paragraphs with no
+    // section-level title of their own, and the generator classifies by title.
+    // Same pattern at 4.1/4.2 (dividends inside interim operations), 4.3/4.4
+    // (superior-proposal and intervening-event definitions inside no-shop) and
+    // 4.6 (the antitrust covenant is sub-paragraph (b) of a section titled
+    // about efforts generally).
+    //
+    // TWO PINS BELOW ARE PROVEN AND STILL PRODUCE NOTHING, and the pin is not
+    // the reason -- see Step 2F BREAK 2 and BREAK 3. GUARANTY_FINANCING_PARTY
+    // resolves 7.16 "Waiver of Claims Against Financing Sources" correctly and
+    // the producer prompt's guaranty-only framing excludes it; DIVIDENDS
+    // resolves 4.1/4.2 correctly and returns empty on text that contains
+    // "declare, set aside or pay any dividend" twice. Both are producer-prompt
+    // defects. Do not "fix" either by changing the sections.
+    //
+    // TWO FAMILIES HAVE NO RUN AT ALL. REPRESENTATIONS (3.1, 3.2) and NO_SHOP
+    // (4.3, 4.4) are pinned and correct, and both overflow the model's output
+    // budget on their first call (74,080 and 65,210 tokens against 64,000), so
+    // the single-JSON-object producer contract fails. Step 2F BREAK 1 and
+    // BREAK 4. Pinned here so the lists survive; they are not runnable today.
+    default_section_refs_by_family: Object.freeze({
+      ANTITRUST_REGULATORY: Object.freeze(['4.6']),
+      APPRAISAL_DISSENTERS_RIGHTS: Object.freeze(['2.1']),
+      CLOSING_CONDITIONS: Object.freeze(['5.1', '5.2', '5.3']),
+      CONSIDERATION: Object.freeze(['2.1', '2.2', '2.3', '2.4', '2.5']),
+      DIVIDENDS: Object.freeze(['4.1', '4.2']),
+      DNO_INDEMNIFICATION: Object.freeze(['4.13']),
+      EMPLOYEE_MATTERS: Object.freeze(['3.1', '4.11']),
+      FINANCING_COVENANTS: Object.freeze(['4.17']),
+      GENERAL_COVENANTS: Object.freeze(['4.8', '4.9', '4.10', '4.18', '4.19', '4.21']),
+      GUARANTY_FINANCING_PARTY: Object.freeze(['7.16']),
+      INTERIM_OPERATING: Object.freeze(['4.1', '4.2']),
+      // NOT 7.12, which the generator proposed. 7.12 reads, in full: "Each of
+      // the terms set forth in Annex C is defined in the Section of this
+      // Agreement set forth opposite such term." One sentence, no definitions.
+      // TopBuild defines inline at first use; these four sections are where
+      // this family's own assertion kinds actually live (superior-proposal and
+      // intervening-event definitions at 4.3(f)/4.4(f), the Knowledge standard
+      // at 3.1(g)(iii), willful-and-material-breach at 6.5(a)).
+      KEY_DEFINED_TERMS: Object.freeze(['3.1', '4.3', '4.4', '6.5']),
+      MAE_DEFINITION: Object.freeze(['3.1', '3.2']),
+      // 3.2's sub-paragraph (p) is "Solvency", not Contracts: Parent gives no
+      // Material Contracts rep in this agreement, so 3.2 is correctly absent.
+      MATERIAL_CONTRACTS: Object.freeze(['3.1']),
+      MERGER_STRUCTURE_CLOSING: Object.freeze(['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8']),
+      MISC_BOILERPLATE: Object.freeze(['7.1', '7.2', '7.3', '7.4', '7.5', '7.7', '7.8', '7.9', '7.13', '7.14', '7.15']),
+      NO_OTHER_REPS_FRAUD: Object.freeze(['3.1', '3.2']),
+      NO_SHOP: Object.freeze(['4.3', '4.4']),
+      PROXY_MEETING: Object.freeze(['4.5']),
+      REPRESENTATIONS: Object.freeze(['3.1', '3.2']),
+      SPECIFIC_PERFORMANCE_REMEDIES: Object.freeze(['7.6']),
+      TAX_MATTERS: Object.freeze(['4.23', '7.11']),
+      TERMINATION: Object.freeze(['6.1', '6.2', '6.3', '6.4']),
+      TERMINATION_FEE: Object.freeze(['6.5']),
+    }),
+    // Verified empirically against this exact filing by Step 2F's live runs:
+    // each heading below is what `findSectionByReference` actually returned.
+    section_expectations: Object.freeze({
+      '3.1': Object.freeze({ kind: 'SECTION', heading: /Representations and Warranties of the Company/i }),
+      '6.5': Object.freeze({ kind: 'SECTION', heading: /Effect of Termination and Abandonment/i }),
+      '7.16': Object.freeze({ kind: 'SECTION', heading: /Waiver of Claims Against Financing Sources/i }),
+    }),
     debug_related_node_pattern: null,
   }),
 });
@@ -481,9 +584,16 @@ function parseArgs(argv) {
       case '--record': out.recordPath = argv[++i]; break;
       case '--replay': out.replayPath = argv[++i]; break;
       case '--replay-from-run': out.replayFromRunDir = argv[++i]; break;
+      // An operator assertion of the producer identity, for hand-assembled
+      // fixture sets that carry no receipt. Checked against the record, never
+      // trusted over it.
+      case '--replay-model-id': out.replayModelId = argv[++i]; break;
       case '--v1-snapshot': out.v1SnapshotPath = argv[++i]; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
+  }
+  if (out.replayModelId && !out.replayPath && !out.replayFromRunDir) {
+    throw new Error('--replay-model-id states which model produced a REPLAYED run; it means nothing on a live run');
   }
   if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
   if ([out.recordPath, out.replayPath, out.replayFromRunDir].filter(Boolean).length > 1) {
@@ -561,6 +671,7 @@ function resolveRunConfig(args) {
     recordPath: args.recordPath || null,
     replayPath: args.replayPath || null,
     replayFromRunDir: args.replayFromRunDir || null,
+    replayModelId: args.replayModelId || null,
     v1SnapshotPath: args.v1SnapshotPath || null,
   });
 }
@@ -1130,6 +1241,12 @@ async function main() {
     model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
   });
   let replayClientRef = null;
+  // The producer model identity a replay must present: the LIVE model that
+  // produced the recorded text, never the replay mechanism and never a path.
+  // Resolved before the client is built so an unidentifiable replay fails
+  // before it does any work.
+  let replayProviderModelId = null;
+  const liveProviderModelId = `claude-sonnet-5-via-claude-code-cli(${config.model})`;
   if (config.replayFromRunDir) {
     // Replay a HISTORICAL run from the per-section fixtures it already wrote.
     // Weaker keying than --replay (ordered, not request-hashed) because those
@@ -1137,16 +1254,30 @@ async function main() {
     const fixtures = readdirSync(resolve(config.replayFromRunDir))
       .filter((name) => /^native-producer-recorded-response-.+\.json$/.test(name))
       .map((name) => JSON.parse(readFileSync(resolve(config.replayFromRunDir, name), 'utf8')));
+    replayProviderModelId = resolveOriginalProviderModelId({
+      runReceipt: readRunReceiptIfPresent(config.replayFromRunDir),
+      declared: config.replayModelId,
+      source: `the run in ${config.replayFromRunDir}`,
+    });
     const recording = buildRecordingFromSectionFixtures({
       fixtures,
       orderedSectionRefs: config.sectionRefs,
       model: `legacy-fixtures(${config.replayFromRunDir})`,
+      providerModelId: replayProviderModelId,
     });
     replayClientRef = createOrderedReplayClient({ recording });
     replayClientRef.recording = recording;
     liveClient = replayClientRef;
   } else if (config.replayPath) {
     const recording = JSON.parse(readFileSync(resolve(config.replayPath), 'utf8'));
+    // A V1 recording carries only the CLI alias, so fall back to the receipt
+    // of the run the recording sits beside -- the same run that produced it.
+    replayProviderModelId = resolveOriginalProviderModelId({
+      recording,
+      runReceipt: readRunReceiptIfPresent(dirname(resolve(config.replayPath))),
+      declared: config.replayModelId,
+      source: `the recording at ${config.replayPath}`,
+    });
     replayClientRef = createReplayClient({ recording });
     replayClientRef.recording = recording;
     liveClient = replayClientRef;
@@ -1154,6 +1285,7 @@ async function main() {
     liveClient = createRecordingClient({
       client: liveClient,
       model: config.model,
+      providerModelId: liveProviderModelId,
       // Written after every call rather than at the end, so a run that dies
       // partway still leaves a usable recording of what it did ask.
       sink: (recording) => {
@@ -1163,9 +1295,12 @@ async function main() {
   }
 
   const providerOptions = {
-    model: (config.replayPath || config.replayFromRunDir)
-      ? `replay(${config.replayPath || config.replayFromRunDir})`
-      : `claude-sonnet-5-via-claude-code-cli(${config.model})`,
+    // Replay reproduces the live run, so it reports the live run's model.
+    // This used to be `replay(<path>)`, which made producer_receipt_id -- and
+    // therefore closure_id -- a function of where the files happened to sit:
+    // the same Modiv evidence replayed from evidence/ and from a scratchpad
+    // copy minted two different identities for identical claims.
+    model: replayProviderModelId || liveProviderModelId,
     client: liveClient,
     maxRetries: 0,
   };

@@ -1,0 +1,459 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "5.10"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "5.10",
+      "section_id": "0c13fa57c60b740263772376671c152af67f7fcae5051d327f130147488ac5fb",
+      "parent_section_id": "bb1bf77bd0520f64dba9256ece1aad278429f50897ff19a87aea337a10679151",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 288832,
+      "end": 290051,
+      "text_sha256": "b121d223dceccdacf5a14857adf0ada3a6e5a94ef183eeec37beb491fbe069da",
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-dividends/v1",
+      "prompt_version": 2,
+      "prompt_digest": "b4a2d8008e3b53ae16e76900c857295dbf19d4b47d1da681f5458eb3f0fd5fbb",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "native-producer-anthropic/v1",
+        "model_id": "claude-sonnet-5-via-claude-code-cli(sonnet)",
+        "prompt_digest": "36bc73aca4f93a19a4fe6b71eff36f2f551efb7c4d6161517186c5baf82653a5",
+        "input_scope_digest": "6d923d80ba3a211acee63c80ce46ad65dfdb3cef6d9e4ff7d544731b31c04a7f",
+        "proposal_count": 4,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "b184d6b98a967c32242340df10b624b54e4e055a899b0ffff48738b44caca678"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "5.10",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.10",
+        "normalized_citation": "5.10",
+        "derived_citation": "5.10"
+      },
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "33596189d4d9a500775c7b06e2be985e5f796e0dd8f4b68e77d5ac38319f0595",
+          "claim_occurrence_id": "d53ad64c2c6f0e3c1ef85d361a41dc1cda5ec3468be6e2c38192d11896f17d66",
+          "subject_occurrence_id": "2c9085fd6bb555197085e6a7750dd1ca2b0a1818d556084a01263de0a0896fae",
+          "claim_definition_key": "NATIVE_DIVIDENDS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and any Company Subsidiary may make distributions (i) in the case of any Company Subsidiary, to the Company to allow the Company to make distributions to its stockholders",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ddd7d59ba51f0fe37b360cc744f4766ce8515daaad0a34e3020e30c82f5b7fa2"
+          ],
+          "attributes": {
+            "section_reference": "5.10",
+            "assertion_kind": "COORDINATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ddd7d59ba51f0fe37b360cc744f4766ce8515daaad0a34e3020e30c82f5b7fa2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9ee7e4b571a5abe8801f0ed5f1792f1dfba72fae076b939b7192a5f84efde03f",
+              "document_ordinal": 0,
+              "absolute_start": 393,
+              "absolute_end": 575,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "bff1e6767284603e5219f92638c746dc24d8cd3d23b3a502ad38141ee2dda16e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DIVIDENDS",
+          "prompt_digest": "36bc73aca4f93a19a4fe6b71eff36f2f551efb7c4d6161517186c5baf82653a5",
+          "producer_receipt_id": "b184d6b98a967c32242340df10b624b54e4e055a899b0ffff48738b44caca678",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "fd03ab40b688c8179eb14892ceeaafc4897c2907d71cba715263198260d1b705"
+        }
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4af1fb93bb070dce1b2e196e088764e17dc5d65d7b9646e2afb101e862cc1178",
+          "claim_occurrence_id": "40765530c7ff82299f546ea63e9f957b74bf1938f8f79a1146876b6e293fe50e",
+          "subject_occurrence_id": "074d77e256d5e6aba4f9e53521360dc661c1499e236d59c8ef90ef3c65aff170",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in each case, in accordance with clause (ii) of Section 5.1(c)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e8952ca426866aaf6a210acc365a95f3b32c3ba4d5d75bfb27d8e35c0054978e"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_COORDINATION: Distributions permitted under clause (b) of Section 5.10 must also comply with the coordination mechanics set out in clause (ii) of Section 5.1(c).",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e8952ca426866aaf6a210acc365a95f3b32c3ba4d5d75bfb27d8e35c0054978e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3217bc95de44f57b698cb2cf606d4c7280ebddb0689210869010725803a47470",
+              "document_ordinal": 0,
+              "absolute_start": 585,
+              "absolute_end": 647,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "be486291ad0a1685963319bca0df77401be8e3bdf01274be646a2206b6d4e405"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "36bc73aca4f93a19a4fe6b71eff36f2f551efb7c4d6161517186c5baf82653a5",
+          "producer_receipt_id": "b184d6b98a967c32242340df10b624b54e4e055a899b0ffff48738b44caca678",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "aa683eed0702e3d1dcc322b0088b627579618404f1c528ba396a16e5cd30d2e3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "08db4c368156265bf1ceed21fc930b233ae1851417502643e0a04ed23f18b0f0",
+          "claim_occurrence_id": "bafe8e48cbb316012f896481e66118875ac387db791199d10d1c4408bfb379dd",
+          "subject_occurrence_id": "74212951cb9116bdfdfd35b4b4de2aaa2f53dde0548b52fb68e3fb8106306bbc",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "In the event that a distribution with respect to the Company Common Shares, Company Preferred Shares or Partnership Units permitted under the terms of this Agreement has a record date prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable, and has not been paid prior to the Closing Date, such distribution shall be paid to the holders of such Company Common Shares, Company Preferred Shares or Partnership Units on the Closing Date immediately prior to the Company Merger Effective Time or OpCo Merger Effective Time, as applicable.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "93e7fdb5c757aa8e64641672265df12ff7508f9a24996b684e9a58238d09e403"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_FINAL_PERIOD: A permitted distribution with a record date before the applicable Merger Effective Time that remains unpaid as of the Closing Date is paid to holders of Company Common Shares, Company Preferred Shares, or Partnership Units on the Closing Date, immediately prior to the applicable Effective Time.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "93e7fdb5c757aa8e64641672265df12ff7508f9a24996b684e9a58238d09e403",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0d0e426efc38ca30776b4efa4a8f6e34061f6e219fdc633fdf6f978c70497ba0",
+              "document_ordinal": 0,
+              "absolute_start": 649,
+              "absolute_end": 1215,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "60614f9feb9409ebd316b3d7c6f61253ab3f8e999df84429ff1127f23d44fe2e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "36bc73aca4f93a19a4fe6b71eff36f2f551efb7c4d6161517186c5baf82653a5",
+          "producer_receipt_id": "b184d6b98a967c32242340df10b624b54e4e055a899b0ffff48738b44caca678",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "aa683eed0702e3d1dcc322b0088b627579618404f1c528ba396a16e5cd30d2e3"
+        }
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7ea85a02196be2914d1d09ea3570d7d3e8a899a3286b24e1c598d395bedaa98d",
+          "claim_occurrence_id": "4fea9173868d06226e5e37263c9ecc1fede39d5a7f5d196addb85646c6d756de",
+          "subject_occurrence_id": "14a549b712e9ff1c6c5cdd6740990797eebd02e88dc54e4f62c180898e914f93",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and any Company Subsidiary that is a REIT may make distributions to its stockholders reasonably necessary for the Company or any such Company Subsidiary to maintain its status as a REIT under the Code, or avoid the payment of income or excise tax under Sections 857 or 4981 of the Code (or any other entity-level Tax)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "58f09574bed98a28c54593803a540e0bd70214241ac419f04b3d66a28ca8903c"
+          ],
+          "attributes": {
+            "why_unmapped": "Recurring distribution permitted throughout the Interim Period to preserve REIT status or avoid entity-level tax; it is a recurring mandated dividend, not a coordination covenant or one-time pre-closing special dividend, so recurring mandated dividends remain open world.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "58f09574bed98a28c54593803a540e0bd70214241ac419f04b3d66a28ca8903c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f3031630af93b5ccb04698d85e2fb58da14d01fa54047e213aa9df67591719ed",
+              "document_ordinal": 0,
+              "absolute_start": 55,
+              "absolute_end": 384,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d8fc05090eefe792376378000fcddee39cfd875cb4d79ada13215cd4f53d17d1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "36bc73aca4f93a19a4fe6b71eff36f2f551efb7c4d6161517186c5baf82653a5",
+          "producer_receipt_id": "b184d6b98a967c32242340df10b624b54e4e055a899b0ffff48738b44caca678",
+          "governed_scope_digest": "cf26a338dcb9e64be17d8b94ec25994f60e9934af28b9e00b78a0064a6ded9d7",
+          "extraction_provenance_id": "aa683eed0702e3d1dcc322b0088b627579618404f1c528ba396a16e5cd30d2e3"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "5.10",
+      "source_byte_length": 1219,
+      "covered_byte_length": 1139,
+      "coverage_share": 0.9343724364232978,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "5.10",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 51,
+          "end": 54
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 455,
+          "end": 458
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 580,
+          "end": 584
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 625,
+          "end": 629
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 644,
+          "end": 647
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 5,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 51,
+          "end": 54
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 455,
+          "end": 458
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 580,
+          "end": 584
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 625,
+          "end": 629
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 644,
+          "end": 647
+        }
+      ],
+      "disagreement_count": 6
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 4,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "58de5027bf900ac282a27c0bad2e6db3ff3b8828bed37dfd05a4b622ef63909e"
+}
