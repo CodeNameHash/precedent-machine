@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "metsera",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm",
+  "raw_bytes_length": 583764,
+  "raw_bytes_sha256": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "canonical_text_byte_length": 348692,
+  "canonical_text_sha256": "4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3",
+  "verification_status": "PASS",
+  "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+  "pin_corroboration": "docs/codex-program/notes/four-deal-sources-2026-08-08.md -- raw_bytes_sha256 above matches that note's table exactly (583764 raw bytes). canonical_text_sha256 was computed through this script's own loadAndVerifySource() code path via --dry-run, not reimplemented separately.",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm",
+    "raw_bytes_sha256": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605dex21.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-08T03:43:07.000Z",
+    "retrieval_policy_digest": "a41b56aaac572e4149b71590b03c5d8fa5aaf43a02e90e26e5bada62428ab43e",
+    "immutable_source_document_id": "f783c4cdcaca4626c695d1c2c67924ccd8867eb066e16f17407ca64497ba778c",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/b92a7c3d217e7478d73693ae093ee4e8c75d72084a9e608bf3e6e820705fbf5a.deflate",
+    "source_map_compressed_sha256": "ab6a13e7f6a56f10935f68e2eb6b3b54b4091cbf3cdd7ae5a5076c90f06a85be",
+    "source_map_digest": "9c915e8c5e6bad5d80acf6b570302964658f375270b6b70c8dbecb6367f92ebf"
+  }
+}

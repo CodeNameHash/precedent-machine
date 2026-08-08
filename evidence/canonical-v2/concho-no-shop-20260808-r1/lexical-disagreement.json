@@ -1,0 +1,3383 @@
+{
+  "6.3": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.3",
+    "text_sha256": "83d337c245af9334050e75758ffbe1f5b7b064783c5485fd77f1bacc9485c9a5",
+    "candidate_digest": "65c7d3e3f02273b8e48e38deaa90007ec9068f58724da5061862f9d1fc420b12",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 239,
+            "end": 262,
+            "excerpt": "Subsidiaries and their respective officers and directors to, and will use their reasonable best efforts to cause the other Representatives of the Company and its Subsidiaries to, imme",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 250,
+            "end": 262,
+            "excerpt": "s and their respective officers and directors to, and will use their reasonable best efforts to cause the other Representatives of the Company and its Subsidiaries to, imme",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 1679,
+            "end": 1702,
+            "excerpt": "idiaries and their respective officers and directors not to, and will use their reasonable best efforts to cause the other Representatives of the Company and its Subsidiaries not to, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 1690,
+            "end": 1702,
+            "excerpt": "d their respective officers and directors not to, and will use their reasonable best efforts to cause the other Representatives of the Company and its Subsidiaries not to, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 7390,
+            "end": 7410,
+            "excerpt": " to the earlier of (A) three (3) Business Days prior to the date of the Company Stockholders Meeting (or promptly after commencement of such tender offer or exchange offer if comme",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 7563,
+            "end": 7583,
+            "excerpt": "f commenced on or after the third Business Day prior to the date of the Company Stockholders Meeting) or (B) ten (10) business days (as such term is used in Rule 14d-9 of the Excha",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8088,
+            "end": 8108,
+            "excerpt": "ests in writing or (B) three (3) Business Days prior to the date of the Company Stockholders Meeting (or promptly after announcement or disclosure of such Company Competing Proposa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8284,
+            "end": 8304,
+            "excerpt": "r disclosed on or after the third Business Day prior to the date of the Company Stockholders Meeting); or\n(vii) cause or permit the Company to enter into a Company Alternative Acqu",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MERGESUB",
+            "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+            "start": 6128,
+            "end": 6138,
+            "excerpt": "tion to withhold, withdraw, qualify or modify, in a manner adverse to Parent or Merger Sub, the Company Board Recommendation;\n(ii) fail to include the Company Board Recom",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:PHRASE:COMPANY_RECOMMENDATION_INCLUSION",
+            "start": 6187,
+            "end": 6227,
+            "excerpt": "adverse to Parent or Merger Sub, the Company Board Recommendation;\n(ii) fail to include the Company Board Recommendation in the Joint Proxy Statement;\n(iii) approve, endorse or recommend, or publicly ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 6241,
+            "end": 6256,
+            "excerpt": "ommendation;\n(ii) fail to include the Company Board Recommendation in the Joint Proxy Statement;\n(iii) approve, endorse or recommend, or publicly propose or announce any inten",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 8907,
+            "end": 8922,
+            "excerpt": "ted under the Exchange Act or other disclosure required to be made in the Joint Proxy Statement by applicable U.S. federal securities laws; provided, however, that if such dis",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 3,
+        "matched_count": 0,
+        "unmatched_count": 3,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 18230,
+            "end": 18244,
+            "excerpt": "xecution and delivery of this Agreement and continuing until the earlier of the Effective Time and termination of this Agreement in accordance with Article VIII, the Company ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-CEASE",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-ENFORCE",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14192,
+            "end": 14209,
+            "excerpt": "nd outside legal counsel, that the Company Competing Proposal remains a Company Superior Proposal and that the failure to effect a Company Change of Recommendation in response t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14304,
+            "end": 14321,
+            "excerpt": "ailure to effect a Company Change of Recommendation in response to such Company Superior Proposal would be inconsistent with the fiduciary duties owed by the Company Board to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 14353,
+            "end": 14369,
+            "excerpt": "on in response to such Company Superior Proposal would be inconsistent with the fiduciary duties owed by the Company Board to the stockholders of the Company under applicable L",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14547,
+            "end": 14564,
+            "excerpt": " in the event of any material amendment or material modification to any Company Superior Proposal (it being understood that any amendment or modification to the economic terms o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14663,
+            "end": 14680,
+            "excerpt": "od that any amendment or modification to the economic terms of any such Company Superior Proposal shall be deemed material), the Company shall be required to deliver a new writt",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 17480,
+            "end": 17496,
+            "excerpt": "on in response to such Company Intervening Event would be inconsistent with the fiduciary duties owed by the Company Board to the stockholders of the Company under applicable L",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:UNSOLICITED",
+            "start": 18715,
+            "end": 18726,
+            "excerpt": "r, the time the Company Stockholder Approval is obtained, if, in response to an unsolicited request from a third party to waive any “standstill” or similar provision, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 19649,
+            "end": 19665,
+            "excerpt": "ction 6.3(f) or (ii) but for the ability to avoid actions inconsistent with the fiduciary duties owed by the Company Board to the stockholders of the Company under applicable L",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 15,
+        "matched_count": 7,
+        "unmatched_count": 8,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.01617835651573444
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:DAYS_IN_ADVANCE",
+            "start": 12999,
+            "end": 13014,
+            "excerpt": "written notice of such proposed action and the basis thereof three (3) Business Days in advance, which notice shall set forth in writing that the Company Board intends to cons",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 15129,
+            "end": 15142,
+            "excerpt": "ew written notice shall in no event shorten the original three (3) Business Day notice period; and\n(iv) prior to, but not after, receipt of the Company Stockholder Approval,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:DAYS_IN_ADVANCE",
+            "start": 16218,
+            "end": 16233,
+            "excerpt": "written notice of such proposed action and the basis thereof three (3) Business Days in advance, which notice shall set forth in writing that the Company Board intends to cons",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 18092,
+            "end": 18105,
+            "excerpt": "ew written notice shall in no event shorten the original three (3) Business Day notice period.\n(f) During the period commencing with the execution and delivery of this Agree",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 739,
+            "end": 753,
+            "excerpt": " one (1) Business Day of the date of this Agreement the Company shall deliver a written notice to each Person that has received non-public information regarding the Company w",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 3614,
+            "end": 3620,
+            "excerpt": "mptly (and in any event within the shorter of one (1) Business Day or 48 hours) notify Parent of the receipt by the Company (directly or indirectly) of any Company Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 5599,
+            "end": 5605,
+            "excerpt": "resentatives from any Person. Without limiting the foregoing, the Company shall notify Parent if the Company determines to begin providing information or to engage in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 12919,
+            "end": 12933,
+            "excerpt": "ockholders of the Company under applicable Law;\n(C) the Company provides Parent written notice of such proposed action and the basis thereof three (3) Business Days in advanc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14755,
+            "end": 14769,
+            "excerpt": "posal shall be deemed material), the Company shall be required to deliver a new written notice to Parent and to comply with the requirements of this Section 6.3(e)(iii) with ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14869,
+            "end": 14883,
+            "excerpt": "mply with the requirements of this Section 6.3(e)(iii) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14909,
+            "end": 14923,
+            "excerpt": "on 6.3(e)(iii) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.3(e)(iii) shall be reduced to one (1) Bu",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 15052,
+            "end": 15066,
+            "excerpt": " shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period; an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 16138,
+            "end": 16152,
+            "excerpt": "ockholders of the Company under applicable Law;\n(C) the Company provides Parent written notice of such proposed action and the basis thereof three (3) Business Days in advanc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17720,
+            "end": 17734,
+            "excerpt": "g any Company Intervening Event, the Company shall be required to deliver a new written notice to Parent and to comply with the requirements of this Section 6.3(e)(iv) with r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17833,
+            "end": 17847,
+            "excerpt": "omply with the requirements of this Section 6.3(e)(iv) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17873,
+            "end": 17887,
+            "excerpt": "ion 6.3(e)(iv) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.3(e)(iv) shall be reduced to one (1) Bus",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 18015,
+            "end": 18029,
+            "excerpt": " shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period.\n(f",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 13,
+        "matched_count": 0,
+        "unmatched_count": 13,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 7,
+            "end": 19,
+            "excerpt": "6.3 No Solicitation by the Company.\n(a) From and after the date of this Agreement, the Company and ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 7164,
+            "end": 7176,
+            "excerpt": "Stock (other than by Parent or an Affiliate of Parent), fail to recommend, in a Solicitation/Recommendation Statement on Schedule 14D-9, against acceptance of such tender o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 9585,
+            "end": 9592,
+            "excerpt": "posal that satisfies the requirements in the following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the makin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:KNOWINGLY_ENCOURAGE",
+            "start": 9603,
+            "end": 9622,
+            "excerpt": "es the requirements in the following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the making of any proposal or offer wit",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:KNOWINGLY_FACILITATE",
+            "start": 9627,
+            "end": 9647,
+            "excerpt": "he following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the making of any proposal or offer with respect to such Company",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 9897,
+            "end": 9906,
+            "excerpt": "es a bona fide written Company Competing Proposal from such Person that was not solicited at any time following the execution of this Agreement and (2) such Company Comp",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 12022,
+            "end": 12031,
+            "excerpt": " a bona fide written Company Competing Proposal from a third party that was not solicited at any time following the execution of this Agreement and did not arise from a ",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 10,
+        "matched_count": 3,
+        "unmatched_count": 7,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.015537141166025451
+      },
+      {
+        "family": "NOSOL-RECOMMEND",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:MATERIAL_AMENDMENT",
+            "start": 14488,
+            "end": 14506,
+            "excerpt": "holders of the Company under applicable Law; provided, that in the event of any material amendment or material modification to any Company Superior Proposal (it being understood ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:MATERIAL_MODIFICATION",
+            "start": 14510,
+            "end": 14531,
+            "excerpt": " under applicable Law; provided, that in the event of any material amendment or material modification to any Company Superior Proposal (it being understood that any amendment or mod",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 14751,
+            "end": 14769,
+            "excerpt": " Proposal shall be deemed material), the Company shall be required to deliver a new written notice to Parent and to comply with the requirements of this Section 6.3(e)(iii) with ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 14865,
+            "end": 14883,
+            "excerpt": "o comply with the requirements of this Section 6.3(e)(iii) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 15048,
+            "end": 15066,
+            "excerpt": "iii) shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period; an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 17716,
+            "end": 17734,
+            "excerpt": "rding any Company Intervening Event, the Company shall be required to deliver a new written notice to Parent and to comply with the requirements of this Section 6.3(e)(iv) with r",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 17829,
+            "end": 17847,
+            "excerpt": "to comply with the requirements of this Section 6.3(e)(iv) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 18011,
+            "end": 18029,
+            "excerpt": "(iv) shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period.\n(f",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 8,
+        "matched_count": 0,
+        "unmatched_count": 8,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.00572161388971096
+      },
+      {
+        "family": "NOSOL-WAIVER",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:COMPANY_BOARD_RECOMMENDATION",
+            "start": 6144,
+            "end": 6172,
+            "excerpt": ", withdraw, qualify or modify, in a manner adverse to Parent or Merger Sub, the Company Board Recommendation;\n(ii) fail to include the Company Board Recommendation in the Joint Proxy State",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:COMPANY_BOARD_RECOMMENDATION",
+            "start": 6199,
+            "end": 6227,
+            "excerpt": "arent or Merger Sub, the Company Board Recommendation;\n(ii) fail to include the Company Board Recommendation in the Joint Proxy Statement;\n(iii) approve, endorse or recommend, or publicly ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:COMPANY_BOARD_RECOMMENDATION",
+            "start": 7902,
+            "end": 7930,
+            "excerpt": "other than pursuant to the foregoing clause (v)), fail to publicly reaffirm the Company Board Recommendation on or prior to the earlier of (A) five (5) Business Days after Parent so reques",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 8522,
+            "end": 8546,
+            "excerpt": "rth in the foregoing clauses (i), (ii), (iii), (iv), (v) and (vi), a “Company Change of Recommendation”).\n(e) Notwithstanding anything in this Agreement to the contrary:\n(i) the Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:COMPANY_BOARD_RECOMMENDATION",
+            "start": 9067,
+            "end": 9095,
+            "excerpt": "hat if such disclosure has the effect of withdrawing or adversely modifying the Company Board Recommendation, such disclosure shall be deemed to be a Company Change of Recommendation and P",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 9145,
+            "end": 9169,
+            "excerpt": "e Company Board Recommendation, such disclosure shall be deemed to be a Company Change of Recommendation and Parent shall have the right to terminate this Agreement as set forth in Sec",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12240,
+            "end": 12264,
+            "excerpt": "on 6.3, if the Company Board so chooses, the Company Board may effect a Company Change of Recommendation; provided, however, that such a Company Change of Recommendation may not be mad",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12305,
+            "end": 12329,
+            "excerpt": "fect a Company Change of Recommendation; provided, however, that such a Company Change of Recommendation may not be made unless and until:\n(A) the Company Board determines in good fait",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12685,
+            "end": 12709,
+            "excerpt": "r consultation with its outside legal counsel, that failure to effect a Company Change of Recommendation in response to such Company Superior Proposal would be inconsistent with the fi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13320,
+            "end": 13344,
+            "excerpt": "ing documents;\n(D) after giving such notice and prior to effecting such Company Change of Recommendation, the Company negotiates (and causes its officers, employees, financial advisor ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13660,
+            "end": 13684,
+            "excerpt": "rms of this Agreement as would permit the Company Board not to effect a Company Change of Recommendation in response thereto; and\n(E) at the end of the three (3) Business Day period, p",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13806,
+            "end": 13830,
+            "excerpt": "f the three (3) Business Day period, prior to taking action to effect a Company Change of Recommendation, the Company Board takes into account any adjustments or revisions to the terms",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 14251,
+            "end": 14275,
+            "excerpt": "al remains a Company Superior Proposal and that the failure to effect a Company Change of Recommendation in response to such Company Superior Proposal would be inconsistent with the fi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15481,
+            "end": 15505,
+            "excerpt": "the Company, the Company may, if the Company Board so chooses, effect a Company Change of Recommendation; provided, however, that such a Company Change of Recommendation may not be mad",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15546,
+            "end": 15570,
+            "excerpt": "fect a Company Change of Recommendation; provided, however, that such a Company Change of Recommendation may not be made unless and until:\n(A) the Company Board determines in good fait",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15904,
+            "end": 15928,
+            "excerpt": "r consultation with its outside legal counsel, that failure to effect a Company Change of Recommendation in response to such Company Intervening Event would be inconsistent with the fi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 16523,
+            "end": 16547,
+            "excerpt": "rvening Event;\n(D) after giving such notice and prior to effecting such Company Change of Recommendation, the Company negotiates (and causes its officers, employees, financial advisor ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 16863,
+            "end": 16887,
+            "excerpt": "rms of this Agreement as would permit the Company Board not to effect a Company Change of Recommendation in response thereto; and\n-50-\n(E) at the end of the three (3) Business Day peri",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 17014,
+            "end": 17038,
+            "excerpt": "f the three (3) Business Day period, prior to taking action to effect a Company Change of Recommendation, the Company Board takes into account any adjustments or revisions to the terms",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 17378,
+            "end": 17402,
+            "excerpt": "ancial advisors and outside legal counsel, that the failure to effect a Company Change of Recommendation in response to such Company Intervening Event would be inconsistent with the fi",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 20,
+        "matched_count": 0,
+        "unmatched_count": 20,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 11531,
+            "end": 11548,
+            "excerpt": "ny Competing Proposal is, or would reasonably be expected to lead to, a Company Superior Proposal and (D) prior to taking any such actions, the Company Board determines in good ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12534,
+            "end": 12551,
+            "excerpt": "ors and outside legal counsel that such Company Competing Proposal is a Company Superior Proposal;\n(B) the Company Board determines in good faith, after consultation with its ou",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12738,
+            "end": 12755,
+            "excerpt": "ailure to effect a Company Change of Recommendation in response to such Company Superior Proposal would be inconsistent with the fiduciary duties owed by the Company Board to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14192,
+            "end": 14209,
+            "excerpt": "nd outside legal counsel, that the Company Competing Proposal remains a Company Superior Proposal and that the failure to effect a Company Change of Recommendation in response t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14304,
+            "end": 14321,
+            "excerpt": "ailure to effect a Company Change of Recommendation in response to such Company Superior Proposal would be inconsistent with the fiduciary duties owed by the Company Board to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14547,
+            "end": 14564,
+            "excerpt": " in the event of any material amendment or material modification to any Company Superior Proposal (it being understood that any amendment or modification to the economic terms o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14663,
+            "end": 14680,
+            "excerpt": "od that any amendment or modification to the economic terms of any such Company Superior Proposal shall be deemed material), the Company shall be required to deliver a new writt",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 7,
+        "matched_count": 0,
+        "unmatched_count": 7,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 102,
+      "families_all_matched": 86,
+      "families_unmatched_signals": 12,
+      "families_uncovered": 4,
+      "total_pattern_hits": 90,
+      "total_matched": 10,
+      "total_unmatched": 80,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "b1be78859bf1f0033927d3c47410f57f303bad32bcdc87c80726682418cb19c8"
+  },
+  "6.4": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "6.4",
+    "text_sha256": "59f88d71b252c6ebc688b927e9fef59a635016a7503433976e85d60c47e9a7f5",
+    "candidate_digest": "cf4e437e2add858ee0ca79333d0b3752ff46f82154784be9d5f4f8c64d85e977",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 224,
+            "end": 247,
+            "excerpt": "Subsidiaries and their respective officers and directors to, and will use their reasonable best efforts to cause the other Representatives of Parent and its Subsidiaries to, immediate",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 235,
+            "end": 247,
+            "excerpt": "s and their respective officers and directors to, and will use their reasonable best efforts to cause the other Representatives of Parent and its Subsidiaries to, immediate",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 1616,
+            "end": 1639,
+            "excerpt": "idiaries and their respective officers and directors not to, and will use their reasonable best efforts to cause the other Representatives of Parent and its Subsidiaries not to, direc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 1627,
+            "end": 1639,
+            "excerpt": "d their respective officers and directors not to, and will use their reasonable best efforts to cause the other Representatives of Parent and its Subsidiaries not to, direc",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 7260,
+            "end": 7280,
+            "excerpt": "r to the earlier of (A) three (3) Business Days prior to the date of the Parent Stockholders Meeting (or promptly after commencement of such tender offer or exchange offer if comme",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 7432,
+            "end": 7452,
+            "excerpt": "if commenced on or after the third Business Day prior to the date of the Parent Stockholders Meeting) or (B) ten (10) business days (as such term is used in Rule 14d-9 of the Excha",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 7954,
+            "end": 7974,
+            "excerpt": "uests in writing or (B) three (3) Business Days prior to the date of the Parent Stockholders Meeting (or promptly after announcement or disclosure of such Parent Competing Proposal",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-MEETING",
+            "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+            "start": 8148,
+            "end": 8168,
+            "excerpt": "or disclosed on or after the third Business Day prior to the date of the Parent Stockholders Meeting); or\n(vii) cause or permit Parent to enter into a Parent Alternative Transactio",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 6102,
+            "end": 6117,
+            "excerpt": "commendation;\n(ii) fail to include the Parent Board Recommendation in the Joint Proxy Statement;\n(iii) approve, endorse or recommend, or publicly propose or announce any inten",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "COV-PROXY",
+            "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+            "start": 8762,
+            "end": 8777,
+            "excerpt": "ted under the Exchange Act or other disclosure required to be made in the Joint Proxy Statement by applicable U.S. federal securities laws; provided, however, that if such dis",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "MERGER-STRUCTURE",
+            "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+            "start": 18162,
+            "end": 18176,
+            "excerpt": "xecution and delivery of this Agreement and continuing until the earlier of the Effective Time and termination of this Agreement in accordance with Article VIII, Parent shall",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-CEASE",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14507,
+            "end": 14524,
+            "excerpt": "t in the event of any material amendment or material modification to any Parent Superior Proposal (it being understood that any amendment or modification to the economic terms o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 14622,
+            "end": 14639,
+            "excerpt": "ood that any amendment or modification to the economic terms of any such Parent Superior Proposal shall be deemed material), Parent shall be required to deliver a new written no",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:UNSOLICITED",
+            "start": 18641,
+            "end": 18652,
+            "excerpt": "er, the time the Parent Stockholder Approval is obtained, if, in response to an unsolicited request from a third party to waive any “standstill” or similar provision, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 19561,
+            "end": 19577,
+            "excerpt": "ction 6.4(f) or (ii) but for the ability to avoid actions inconsistent with the fiduciary duties owed by the Parent Board to the stockholders of Parent under applicable Law, wo",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 15,
+        "matched_count": 11,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.019985122737416317
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:DAYS_IN_ADVANCE",
+            "start": 12962,
+            "end": 12977,
+            "excerpt": "written notice of such proposed action and the basis thereof three (3) Business Days in advance, which notice shall set forth in writing that the Parent Board intends to consi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 15088,
+            "end": 15101,
+            "excerpt": "ew written notice shall in no event shorten the original three (3) Business Day notice period; and\n(iv) prior to, but not after, receipt of the Parent Stockholder Approval, ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:DAYS_IN_ADVANCE",
+            "start": 16151,
+            "end": 16166,
+            "excerpt": "written notice of such proposed action and the basis thereof three (3) Business Days in advance, which notice shall set forth in writing that the Parent Board intends to consi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 18024,
+            "end": 18037,
+            "excerpt": "ew written notice shall in no event shorten the original three (3) Business Day notice period.\n(f) During the period commencing with the execution and delivery of this Agree",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 713,
+            "end": 727,
+            "excerpt": "ithin one (1) Business Day of the date of this Agreement Parent shall deliver a written notice to each Person that has received non-public information regarding Parent within",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 3519,
+            "end": 3525,
+            "excerpt": "mptly (and in any event within the shorter of one (1) Business Day or 48 hours) notify the Company of the receipt by Parent (directly or indirectly) of any Parent Com",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:REGEX:NOTIFY_STEM",
+            "start": 5473,
+            "end": 5479,
+            "excerpt": "s Representatives from any Person. Without limiting the foregoing, Parent shall notify the Company if Parent determines to begin providing information or to engage in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 12882,
+            "end": 12896,
+            "excerpt": "he stockholders of Parent under applicable Law;\n(C) Parent provides the Company written notice of such proposed action and the basis thereof three (3) Business Days in advanc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14709,
+            "end": 14723,
+            "excerpt": "r Proposal shall be deemed material), Parent shall be required to deliver a new written notice to the Company and to comply with the requirements of this Section 6.4(e)(iii) ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14828,
+            "end": 14842,
+            "excerpt": "mply with the requirements of this Section 6.4(e)(iii) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 14868,
+            "end": 14882,
+            "excerpt": "on 6.4(e)(iii) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.4(e)(iii) shall be reduced to one (1) Bu",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 15011,
+            "end": 15025,
+            "excerpt": " shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period; an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 16071,
+            "end": 16085,
+            "excerpt": "he stockholders of Parent under applicable Law;\n(C) Parent provides the Company written notice of such proposed action and the basis thereof three (3) Business Days in advanc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17647,
+            "end": 17661,
+            "excerpt": "garding any Parent Intervening Event, Parent shall be required to deliver a new written notice to the Company and to comply with the requirements of this Section 6.4(e)(iv) w",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17765,
+            "end": 17779,
+            "excerpt": "omply with the requirements of this Section 6.4(e)(iv) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17805,
+            "end": 17819,
+            "excerpt": "ion 6.4(e)(iv) with respect to such new written notice, except that the advance written notice obligation set forth in this Section 6.4(e)(iv) shall be reduced to one (1) Bus",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 17947,
+            "end": 17961,
+            "excerpt": " shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period.\n(f",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 13,
+        "matched_count": 0,
+        "unmatched_count": 13,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 7,
+            "end": 19,
+            "excerpt": "6.4 No Solicitation by Parent.\n(a) From and after the date of this Agreement, Parent and its office",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 7030,
+            "end": 7042,
+            "excerpt": "er than by the Company or an Affiliate of the Company), fail to recommend, in a Solicitation/Recommendation Statement on Schedule\n-53-\n14D-9, against acceptance of such ten",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 9436,
+            "end": 9443,
+            "excerpt": "posal that satisfies the requirements in the following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the makin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:KNOWINGLY_ENCOURAGE",
+            "start": 9454,
+            "end": 9473,
+            "excerpt": "es the requirements in the following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the making of any proposal or offer wit",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:KNOWINGLY_FACILITATE",
+            "start": 9478,
+            "end": 9498,
+            "excerpt": "he following clauses (1) and (2), may solicit, propose, knowingly encourage, or knowingly facilitate any inquiry or the making of any proposal or offer with respect to such Parent ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 9741,
+            "end": 9750,
+            "excerpt": "ves a bona fide written Parent Competing Proposal from such Person that was not solicited at any time following the execution of this Agreement and (2) such Parent Compe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 11841,
+            "end": 11850,
+            "excerpt": "bona fide written Parent Competing Proposal from a third party that (x) was not solicited at any time following the execution of this Agreement, (y) is expressly conditi",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 10,
+        "matched_count": 3,
+        "unmatched_count": 7,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.015521943962310936
+      },
+      {
+        "family": "NOSOL-RECOMMEND",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 15007,
+            "end": 15025,
+            "excerpt": "iii) shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period; an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-REMATCH",
+            "pattern_id": "NOSOL-REMATCH:PHRASE:NEW_WRITTEN_NOTICE",
+            "start": 17943,
+            "end": 17961,
+            "excerpt": "(iv) shall be reduced to one (1) Business Day; provided, further, that any such new written notice shall in no event shorten the original three (3) Business Day notice period.\n(f",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 8,
+        "matched_count": 6,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.02692784527646913
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 8379,
+            "end": 8403,
+            "excerpt": "orth in the foregoing clauses (i), (ii), (iii), (iv), (v) and (vi), a “Parent Change of Recommendation”).\n(e) Notwithstanding anything in this Agreement to the contrary:\n(i) the Pa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 8998,
+            "end": 9022,
+            "excerpt": "the Parent Board Recommendation, such disclosure shall be deemed to be a Parent Change of Recommendation and the Company shall have the right to terminate this Agreement as set forth i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12216,
+            "end": 12240,
+            "excerpt": "ction 6.4, if the Parent Board so chooses, the Parent Board may effect a Parent Change of Recommendation; provided, however, that such a Parent Change of Recommendation may not be made",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12280,
+            "end": 12304,
+            "excerpt": "effect a Parent Change of Recommendation; provided, however, that such a Parent Change of Recommendation may not be made unless and until:\n(A) the Parent Board determines in good faith",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 12655,
+            "end": 12679,
+            "excerpt": "er consultation with its outside legal counsel, that failure to effect a Parent Change of Recommendation in response to such Parent Superior Proposal would be inconsistent with the fid",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13280,
+            "end": 13304,
+            "excerpt": "cing documents;\n(D) after giving such notice and prior to effecting such Parent Change of Recommendation, Parent negotiates (and causes its officers, employees, financial advisor and o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13623,
+            "end": 13647,
+            "excerpt": "terms of this Agreement as would permit the Parent Board not to effect a Parent Change of Recommendation in response thereto; and\n-55-\n(E) at the end of the three (3) Business Day peri",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 13773,
+            "end": 13797,
+            "excerpt": "of the three (3) Business Day period, prior to taking action to effect a Parent Change of Recommendation, the Parent Board takes into account any adjustments or revisions to the terms ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 14219,
+            "end": 14243,
+            "excerpt": "osal remains a Parent Superior Proposal and that the failure to effect a Parent Change of Recommendation in response to such Parent Superior Proposal would be inconsistent with the fid",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15426,
+            "end": 15450,
+            "excerpt": "greement by Parent, Parent may, if the Parent Board so chooses, effect a Parent Change of Recommendation; provided, however, that such a Parent Change of Recommendation may not be made",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15490,
+            "end": 15514,
+            "excerpt": "effect a Parent Change of Recommendation; provided, however, that such a Parent Change of Recommendation may not be made unless and until:\n(A) the Parent Board determines in good faith",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 15844,
+            "end": 15868,
+            "excerpt": "er consultation with its outside legal counsel, that failure to effect a Parent Change of Recommendation in response to such Parent Intervening Event would be inconsistent with the fid",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 16453,
+            "end": 16477,
+            "excerpt": "ervening Event;\n(D) after giving such notice and prior to effecting such Parent Change of Recommendation, Parent negotiates (and causes its officers, employees, financial advisor and o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 16796,
+            "end": 16820,
+            "excerpt": "terms of this Agreement as would permit the Parent Board not to effect a Parent Change of Recommendation in response thereto; and\n-56-\n(E) at the end of the three (3) Business Day peri",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 16946,
+            "end": 16970,
+            "excerpt": "of the three (3) Business Day period, prior to taking action to effect a Parent Change of Recommendation, the Parent Board takes into account any adjustments or revisions to the terms ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+            "start": 17318,
+            "end": 17342,
+            "excerpt": "nancial advisors and outside legal counsel, that the failure to effect a Parent Change of Recommendation in response to such Parent Intervening Event would be inconsistent with the fid",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 16,
+        "matched_count": 0,
+        "unmatched_count": 16,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 11355,
+            "end": 11372,
+            "excerpt": "ent Competing Proposal is, or would reasonably be expected to lead to, a Parent Superior Proposal and (D) prior to taking any such actions, the Parent Board determines in good f",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12506,
+            "end": 12523,
+            "excerpt": "isors and outside legal counsel that such Parent Competing Proposal is a Parent Superior Proposal;\n(B) the Parent Board determines in good faith, after consultation with its out",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12707,
+            "end": 12724,
+            "excerpt": " failure to effect a Parent Change of Recommendation in response to such Parent Superior Proposal would be inconsistent with the fiduciary duties owed by the Parent Board to the",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14161,
+            "end": 14178,
+            "excerpt": " and outside legal counsel, that the Parent Competing Proposal remains a Parent Superior Proposal and that the failure to effect a Parent Change of Recommendation in response to",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14271,
+            "end": 14288,
+            "excerpt": " failure to effect a Parent Change of Recommendation in response to such Parent Superior Proposal would be inconsistent with the fiduciary duties owed by the Parent Board to the",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14507,
+            "end": 14524,
+            "excerpt": "t in the event of any material amendment or material modification to any Parent Superior Proposal (it being understood that any amendment or modification to the economic terms o",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 14622,
+            "end": 14639,
+            "excerpt": "ood that any amendment or modification to the economic terms of any such Parent Superior Proposal shall be deemed material), Parent shall be required to deliver a new written no",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 7,
+        "matched_count": 0,
+        "unmatched_count": 7,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 100,
+      "families_all_matched": 87,
+      "families_unmatched_signals": 11,
+      "families_uncovered": 2,
+      "total_pattern_hits": 84,
+      "total_matched": 20,
+      "total_unmatched": 64,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "d804b981b8d21bc7428c5a398fd07876aca0e5b13f1f017c5c1dd9739eb10586"
+  }
+}
