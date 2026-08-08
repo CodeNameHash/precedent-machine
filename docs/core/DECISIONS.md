@@ -1559,3 +1559,28 @@ structural half Fable approved.
 (compounding win). F last of the three — most of its acceptance needs
 `transaction_steps` from the prompt bump, and the `UNDETERMINED` hazard is not
 live while the detector is unwired.
+
+---
+
+## 16. General-covenant dual-coding: lex specialis — DECIDED 2026-08-08
+
+Follow-up to the Step 2X-C held-quote collision report
+(`docs/codex-program/notes/step-2x-c-followup.md`). Four held collisions; three
+root causes.
+
+**NOTIFY ↔ LITNOTIFY: semantic overlap → more specific wins.** A Transaction
+Litigation notice clause genuinely is both a general notice obligation and a
+litigation-notice obligation. Independently drafted Concho §6.11 and TopBuild
+§4.18 share the shape. Ben: **precedence — the more specific code wins. One
+row, coded `COV-LITNOTIFY`.** Clean comparison. Accepted cost: a cross-deal
+query for bare "notice obligations" keyed only on `COV-NOTIFY` misses these
+rows unless the query surface later includes LITNOTIFY in that family.
+
+**16B ↔ MERGESUB and PUBLICITY ↔ MERGESUB: accidental overlap → tighten
+pattern.** `COV-MERGESUB`'s old `Merger Sub … shall` proximity fired on
+ordinary joint-obligor drafting. Not a taxonomy call — regex engineering.
+Pattern narrowed to Merger Sub *compliance* content.
+
+**Enforcement of primary multi-match refusal** still waits until held
+collisions are zero after these fixes (or only residual HOLD pairs remain that
+are not specificity-resolved).

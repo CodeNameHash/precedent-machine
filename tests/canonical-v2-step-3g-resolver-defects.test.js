@@ -163,18 +163,12 @@ test('Step 3F1 pin: the two general-covenants COV-PUBLICITY provisions resolve J
   }
 });
 
-// HOSTILE (review condition 2b). generalCovenantCodeCorroborated answers
-// "does THIS code's vocabulary appear" -- it never checked whether some
-// OTHER, different-owner code's vocabulary also appears in the same quote.
-// Forges a real modiv-general-covenants-20260807-replay COV-NOTIFY
-// candidate's raw_value to a genuinely double-fire quote (real drafting
-// shape: a litigation-notice clause that is simultaneously COV-NOTIFY's
-// "promptly notify" and COV-LITNOTIFY's "Transaction Litigation" -- see
-// tests/canonical-v2-general-covenant-corroboration.test.js for the
-// corroboration-level proof both codes fire). The resolver must not
-// silently trust the model's COV-NOTIFY pick: it must route to
-// review_queue, never resolve, never open_world.
-test('HOSTILE: a genuinely double-firing General Covenant quote routes to review_queue, not resolved', () => {
+// DECISIONS.md §16 (lex specialis). A litigation-notice clause fires both
+// COV-NOTIFY and COV-LITNOTIFY at the corroboration level — that is still
+// true and still tested in canonical-v2-general-covenant-corroboration.
+// The resolver no longer holds that pair forever: the more specific code
+// wins, one row coded COV-LITNOTIFY, even when the model asserted NOTIFY.
+test('HOSTILE: NOTIFY+LITNOTIFY dual-coding remaps to COV-LITNOTIFY (specificity), not review_queue', () => {
   const dir = path.join(EVIDENCE_ROOT, 'modiv-general-covenants-20260807-replay');
   const runReceipt = JSON.parse(fs.readFileSync(path.join(dir, 'run-receipt.json'), 'utf8'));
   const adapter = JSON.parse(fs.readFileSync(path.join(dir, 'adapter-result.json'), 'utf8'));
@@ -196,13 +190,20 @@ test('HOSTILE: a genuinely double-firing General Covenant quote routes to review
     contract_vocabulary: compileFixtureContractV38(),
     admitted_source_context: admittedSourceContext,
   });
-  assert.equal(result.resolved.length, 0, 'a genuinely double-firing candidate must not resolve');
-  assert.equal(result.open_world.length, 0, 'a genuinely double-firing candidate must not fall to open_world either');
-  assert.equal(result.review_queue.length, 1);
-  assert.equal(result.review_queue[0].concept_key, 'COV-NOTIFY');
-  assert.deepEqual(result.review_queue[0].reasons, ['GENERAL_COVENANT_CODE_DOUBLE_FIRE']);
-  assert.equal(result.review_queue[0].has_resolution, false);
-  assert.equal(result.review_queue[0].auto_pass, false);
+  assert.equal(result.open_world.length, 0, 'specificity pair must not fall to open_world');
+  assert.equal(result.resolved.length, 1);
+  assert.equal(result.resolved[0].concept_key, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.canonical_value, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.attributes.covenant_code, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.attributes.specificity_precedence_from, 'COV-NOTIFY');
+  // Non-auto-pass resolved rows still appear on review_queue with
+  // has_resolution true — that is not a DOUBLE_FIRE hold.
+  const held = result.review_queue.filter((row) => row.has_resolution === false);
+  assert.equal(held.length, 0, 'specificity pair must not produce an unresolved hold');
+  assert.ok(
+    !result.review_queue.some((row) => (row.reasons || []).includes('GENERAL_COVENANT_CODE_DOUBLE_FIRE')),
+    'DOUBLE_FIRE must not fire on the ruled lex-specialis pair',
+  );
 });
 
 // ─────────────────────────────────────────────────────────────────────────

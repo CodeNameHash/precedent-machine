@@ -41,6 +41,7 @@ const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), 
 
 const {
   generalCovenantPrimaryMatchingCodes,
+  applyGeneralCovenantSpecificity,
 } = require('../lib/canonical-v2/native-producer/general-covenant-corroboration');
 const {
   taxCooperationPrimaryMatchingKinds,
@@ -272,11 +273,21 @@ function buildReport() {
     taxCooperationRows.push(...taxCooperationQuotes(resolution, run, byNorm, taxHeld));
   }
 
+  // DECISIONS.md §16: NOTIFY ⊂ LITNOTIFY is lex specialis, not a collision.
+  // Count raw multi-matches, then collisions after specificity suppression.
+  const generalCovenantRawMulti = [];
   const generalCovenantCollisions = [];
+  const generalCovenantSpecificityResolved = [];
   for (const row of generalCovenantRows) {
     const matches = generalCovenantPrimaryMatchingCodes(row.quote);
-    if (matches.length > 1) {
-      generalCovenantCollisions.push({ ...row, matching_codes: matches });
+    if (matches.length <= 1) continue;
+    const effective = applyGeneralCovenantSpecificity(matches);
+    const annotated = { ...row, matching_codes: matches, effective_codes: effective };
+    generalCovenantRawMulti.push(annotated);
+    if (effective.length > 1) {
+      generalCovenantCollisions.push(annotated);
+    } else {
+      generalCovenantSpecificityResolved.push(annotated);
     }
   }
 
@@ -318,6 +329,8 @@ function buildReport() {
       review_queue_quote_sources: generalHeld.quote_sources,
       review_queue_excluded: generalHeld.review_queue_total - generalHeld.quotes_checked,
       review_queue_excluded_reasons: generalHeld.excluded_reasons,
+      raw_multi_matches: generalCovenantRawMulti.length,
+      specificity_resolved: generalCovenantSpecificityResolved,
       collisions: generalCovenantCollisions,
       collisions_resolved_open_world: generalResolvedCollisions.length,
       collisions_review_queue: generalHeldCollisions.length,
@@ -365,21 +378,24 @@ function formatMarkdown(report) {
     + '`generalCovenantPrimaryMatchingCodes` and `taxCooperationPrimaryMatchingKinds` '
     + '-- the exact functions candidate-resolution.js calls -- against every committed '
     + "candidate's own byte-verified quote, including **review_queue / held** rows "
-    + '(joined from `run-receipt.json` when the review row lacks `raw_value`).',
+    + '(joined from `run-receipt.json` when the review row lacks `raw_value`). '
+    + 'DECISIONS.md §16: NOTIFY⊂LITNOTIFY multi-matches are counted under '
+    + '`specificity_resolved`, not collisions.',
   );
   lines.push('');
   lines.push('## Summary');
   lines.push('');
   lines.push(
     '| family | runs | resolved+open_world quotes | held quotes checked | held excluded | '
-    + 'collisions (resolved+OW) | collisions (held) | collisions (all) |',
+    + 'specificity-resolved | collisions (resolved+OW) | collisions (held) | collisions (all) |',
   );
-  lines.push('|---|---:|---:|---:|---:|---:|---:|---:|');
+  lines.push('|---|---:|---:|---:|---:|---:|---:|---:|---:|');
   lines.push(
     `| general_covenants | ${report.general_covenants.runs_scanned} | `
     + `${report.general_covenants.quotes_by_source.resolved_open_world} | `
     + `${report.general_covenants.review_queue_quotes_checked} | `
     + `${report.general_covenants.review_queue_excluded} | `
+    + `${(report.general_covenants.specificity_resolved || []).length} | `
     + `${report.general_covenants.collisions_resolved_open_world} | `
     + `${report.general_covenants.collisions_review_queue} | `
     + `${report.general_covenants.collisions.length} |`,
@@ -389,6 +405,7 @@ function formatMarkdown(report) {
     + `${report.tax_cooperation.quotes_by_source.resolved_open_world} | `
     + `${report.tax_cooperation.review_queue_quotes_checked} | `
     + `${report.tax_cooperation.review_queue_excluded} | `
+    + `0 | `
     + `${report.tax_cooperation.collisions_resolved_open_world} | `
     + `${report.tax_cooperation.collisions_review_queue} | `
     + `${report.tax_cooperation.collisions.length} |`,
@@ -436,6 +453,26 @@ function formatMarkdown(report) {
     }
   }
 
+  const specificityResolved = report.general_covenants.specificity_resolved || [];
+  if (specificityResolved.length > 0) {
+    lines.push('## General covenants specificity-resolved (not collisions)');
+    lines.push('');
+    lines.push(
+      'DECISIONS.md §16: NOTIFY⊂LITNOTIFY. Raw multi-match, effective single code '
+      + 'after lex specialis. Listed for audit; not counted as collisions.',
+    );
+    lines.push('');
+    for (const [index, row] of specificityResolved.entries()) {
+      lines.push(`### ${index + 1}. \`${row.run}\` § ${row.section_reference} (${row.source})`);
+      lines.push('');
+      lines.push(`- asserted: \`${row.asserted_code}\``);
+      lines.push(`- raw matches: \`${row.matching_codes.join('`, `')}\``);
+      lines.push(`- effective: \`${row.effective_codes.join('`, `')}\``);
+      lines.push(`- quote: "${row.quote}"`);
+      lines.push('');
+    }
+  }
+
   renderCollisions('General covenants collisions', report.general_covenants.collisions, 'matching_codes');
   renderCollisions('Tax cooperation collisions', report.tax_cooperation.collisions, 'matching_kinds');
 
@@ -447,18 +484,16 @@ function formatMarkdown(report) {
     && report.general_covenants.collisions_resolved_open_world === 0
     && report.tax_cooperation.collisions_resolved_open_world === 0) {
     lines.push(
-      'Zero collisions on resolved+open_world **and** held. Per DECISIONS.md §15, '
-      + 'enforcement of multi-code refusal on the primary-hit path is authorised '
-      + '(would be a no-op on this corpus).',
+      'Zero collisions on resolved+open_world **and** held (after §16 specificity). '
+      + 'Per DECISIONS.md §15, enforcement of multi-code refusal on the primary-hit '
+      + 'path is authorised (would be a no-op on this corpus once specificity is '
+      + 'applied the same way at resolve time — already landed for NOTIFY/LITNOTIFY).',
     );
   } else if (heldCollisions > 0) {
     lines.push(
       `**Held collisions are non-zero (${heldCollisions}).** Per DECISIONS.md §15 / `
       + 'Step 2X-C: do **not** enforce multi-code refusal on the primary-hit path. '
-      + 'Colliding quotes are published above for Ben. All general-covenant held '
-      + 'collisions observed so far already carry `GENERAL_COVENANT_CODE_DOUBLE_FIRE` '
-      + '(the existing different-owner double-fire hold), but that is not the same '
-      + 'as primary-path multi-match refusal and does not authorise enforcement.',
+      + 'Colliding quotes are published above for Ben.',
     );
   } else {
     lines.push(

@@ -126,3 +126,53 @@ test('quote must be a non-empty string', () => {
   assert.throws(() => generalCovenantCodeCorroborated({ quote: '', code: 'COV-NOTIFY' }), TypeError);
   assert.throws(() => generalCovenantCodeCorroborated({ code: 'COV-NOTIFY' }), TypeError);
 });
+
+const {
+  applyGeneralCovenantSpecificity,
+  resolveGeneralCovenantSpecificity,
+  GENERAL_COVENANT_SPECIFICITY_PRECEDENCE,
+  generalCovenantPrimaryMatchingCodes,
+} = require('../lib/canonical-v2/native-producer/general-covenant-corroboration');
+const { GENERAL_COVENANT_FOLLOW_ON_OWNERS } = require('../lib/canonical-v2/p0-product-surface-routing');
+
+test('specificity: NOTIFY+LITNOTIFY suppresses NOTIFY', () => {
+  const matches = ['COV-LITNOTIFY', 'COV-NOTIFY'];
+  assert.deepEqual(applyGeneralCovenantSpecificity(matches), ['COV-LITNOTIFY']);
+  assert.equal(GENERAL_COVENANT_SPECIFICITY_PRECEDENCE[0].winner, 'COV-LITNOTIFY');
+});
+
+test('specificity: asserted NOTIFY remaps to LITNOTIFY on dual-coding quote', () => {
+  const quote = 'The Company shall promptly notify Parent of any Transaction Litigation of which it becomes aware.';
+  const result = resolveGeneralCovenantSpecificity({
+    quote,
+    assertedCode: 'COV-NOTIFY',
+    owners: GENERAL_COVENANT_FOLLOW_ON_OWNERS,
+  });
+  assert.equal(result.action, 'REMAP');
+  assert.equal(result.code, 'COV-LITNOTIFY');
+  assert.equal(result.from, 'COV-NOTIFY');
+});
+
+test('specificity: asserted LITNOTIFY passes when NOTIFY also matches', () => {
+  const quote = 'The Company shall promptly notify Parent of any Transaction Litigation of which it becomes aware.';
+  const result = resolveGeneralCovenantSpecificity({
+    quote,
+    assertedCode: 'COV-LITNOTIFY',
+    owners: GENERAL_COVENANT_FOLLOW_ON_OWNERS,
+  });
+  assert.equal(result.action, 'PASS');
+});
+
+test('COV-MERGESUB no longer fires on Rule 16b-3 joint-obligor drafting', () => {
+  const quote = 'Parent, Merger Sub and the Company shall take all such steps as may be required to cause any dispositions of equity securities of the Company to be exempt under Rule 16b-3 under the Exchange Act.';
+  const matches = generalCovenantPrimaryMatchingCodes(quote);
+  assert.ok(matches.includes('COV-16B'));
+  assert.ok(!matches.includes('COV-MERGESUB'), `unexpected MERGESUB hit: ${matches.join(',')}`);
+});
+
+test('COV-MERGESUB no longer fires on publicity joint-obligor drafting', () => {
+  const quote = 'Parent and Merger Sub, on the one hand, and the Company, on the other hand, shall consult with each other before issuing any press release or other public statements.';
+  const matches = generalCovenantPrimaryMatchingCodes(quote);
+  assert.ok(matches.includes('COV-PUBLICITY'));
+  assert.ok(!matches.includes('COV-MERGESUB'), `unexpected MERGESUB hit: ${matches.join(',')}`);
+});
