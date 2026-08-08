@@ -1,0 +1,115 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "51930a7cdd05bdedc8aa66504c8846703b154cc6c7bbafe14e1a054b942ab35a",
+  "review_queue": [
+    {
+      "section_reference": "7.4",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "761a11dd97e4361bdf659242c27c368f1457a17a2648582952c7372ff4485d28",
+      "closure_id": "bc2fd93715fffc0b6f756a9f1c0d64e89fbf902d034ca066129023a1acc9b11b",
+      "normalised_phrase": "Neither Parent nor the Company shall, nor shall they permit their respective Subsidiaries to, take any action that would prevent or impede, or could reasonably be expected to prevent or impede, the Mergers from qualifying for the Intended Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 601,
+          "end": 623,
+          "excerpt": "ax purposes and whether the Mergers constitute a reorganization pursuant to the Intended Tax Treatment. If the Threshold Percentage is at least 40%, each of Parent and the Company in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 853,
+          "end": 875,
+          "excerpt": "ed by this Agreement for U.S. federal income tax purposes as qualifying for the Intended Tax Treatment unless otherwise required pursuant to a “determination” within the meaning ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1428,
+          "end": 1450,
+          "excerpt": "be required to file any Tax Returns or take any position in accordance with the Intended Tax Treatment. Each of Parent and the Company further agree to notify the other party as prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1574,
+          "end": 1596,
+          "excerpt": "ee to notify the other party as promptly as practicable of any challenge to the Intended Tax Treatment by any Governmental Authority.\n(b) The parties hereto each acknowledge and agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 3192,
+          "end": 3214,
+          "excerpt": "s tax advisor a tax opinion to the effect that the Mergers will qualify for the Intended Tax Treatment. The tax advisor to the Company shall be Foley & Lardner LLP or another tax adv",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 3679,
+          "end": 3701,
+          "excerpt": "e opportunity to review and comment on opinions and disclosures relating to the Intended Tax Treatment), and shall use its commercially reasonable efforts in connection with the prep",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 4169,
+          "end": 4191,
+          "excerpt": "tes and other deliverables, to the effect that the Mergers will qualify for the Intended Tax Treatment. Each of Parent and the Company hereto shall use its reasonable best efforts no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 5380,
+          "end": 5402,
+          "excerpt": " to any condition or contingency with respect to the Mergers qualifying for the Intended Tax Treatment.\n(f) After the date of this Agreement and prior to the Closing Date, each of Pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "7.4",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5563ee6658c5b2dd6b358f4b9079de498b4ffb34cc6b86559641a25c8aadedba",
+      "closure_id": "cc82d7c93bdde6a55f641f12f0db7e63f77f9c8c97d9a00b3d02044aaa71d786",
+      "normalised_phrase": "Each of Parent and the Company shall reasonably cooperate with the other and with their respective tax advisors (including by providing drafts and a reasonable opportunity to review and comment on opinions and disclosures relating to the Intended Tax Treatment), and shall use its commercially reasonable efforts in connection with the preparation and issuance of the tax opinion\n73\nby the Company’s tax advisor in connection with the preparation, filing and delivery of the Form S-4 or the Company Proxy Statement.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION"
+    }
+  ],
+  "review_queue_artifact_id": "992b299400ca0e33a53876de614e09116938ec79dee41d63f7c51d8393ce306a"
+}
