@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 85,
-  "importable_run_count": 61,
+  "run_count": 91,
+  "importable_run_count": 67,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,9 +31,9 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 1065,
-    "provisions": 207,
-    "claims": 534,
+    "excerpts": 1125,
+    "provisions": 217,
+    "claims": 552,
     "relationships": 0,
     "components": 39,
     "definition_occurrences": 0,
@@ -1196,6 +1196,29 @@
       "published": null
     },
     {
+      "run": "skechers-appraisal-dissenters-rights-20260808-rung2",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.7"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-dividends-20260808-rung1",
       "section_family": "DIVIDENDS",
       "section_references": [
@@ -1212,6 +1235,122 @@
         "excerpts": 0,
         "provisions": 0,
         "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-dno-indemnification-20260808-rung2",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "6.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 6,
+      "review_queue": 14,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 3,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-employee-matters-20260808-rung2",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "6.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 6,
+      "review_queue": 11,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 1,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-guaranty-financing-party-20260808-rung1",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "4.13",
+        "9.15"
+      ],
+      "model_call_count": 2,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 14,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 1,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-material-contracts-20260808-rung2",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.13"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-termination-fee-20260808-rung1",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "8.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 10,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 3,
+        "claims": 2,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
