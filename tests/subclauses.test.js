@@ -168,6 +168,39 @@ test('Concho "Company Competing Proposal": colon-introduced inline (a)/(b)/(c) e
   assert.match(byMarker['c'].text, /any merger, consolidation, share exchange/);
 });
 
+// Metsera's real "Company Material Adverse Effect" definition (SECTION 9.03,
+// deal source-referenced in evidence/canonical-v2/metsera-mae-definition-
+// 20260808-r1/recording.json), pinned verbatim. This is the definitive guard
+// test for the colon rule: its (i)/(ii) prong markers are ambiguous
+// (single-char roman-or-alpha tokens, e.g. "i" also reads as alphaLower) and
+// sit at a WEAK position (mid-sentence, following a comma) rather than
+// start-of-line, so the existing SIBLING rule's ambiguity guard (see
+// findStructuralMarkers) rejects "(ii)" outright — the frame never advances
+// past "(i)". That forecloses BOTH other CHILD-OPEN paths for the "(A)"
+// carve-out list that follows: it is not the first marker in the section
+// (": (i)" already claimed that), and it is not adjacent to any prior
+// marker's closing paren (a full sentence of prose sits in between). Only
+// the colon rule can open it — this text splits solely because of this
+// change, which is what the guard-proof step below (neutering
+// isColonIntroduced and re-running this file) demonstrates.
+const METSERA_MAE_TEXT = "“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occurrence that, individually or in the aggregate, (i) has had, or would reasonably be expected to have, a material adverse effect on the business, assets, condition (financial or otherwise) or results of operations of the Company and the Company Subsidiaries, taken as a whole, or (ii) would or would reasonably be expected to prevent the consummation of, or materially impair the ability of the Company to consummate, the Merger by the Outside Date; provided, however, that, in the case of clause (i), no change, event, condition, development, circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting the biopharmaceutical industry, (B) changes in general economic or regulatory, legislative or political conditions (including the imposition of new or increased trade restrictions, tariffs or trade policies) or securities, credit, financial or other capital markets conditions (including changes generally in prevailing interest rates, currency exchange rates, credit markets and price levels or trading volumes), in each case in the United States or elsewhere in the world, (C) changes after the date hereof in applicable Law or GAAP (or the authoritative interpretation thereof), (D) geopolitical conditions, the outbreak or escalation of hostilities, any acts of war, sabotage, cyber-terrorism or terrorism, or any escalation or worsening of any such acts of war, sabotage, cyber-terrorism or terrorism, (E) any hurricane, tornado, flood, volcano, earthquake or other natural or manmade disaster, (F) the failure, in and of itself, of the Company to meet any internal or external projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics before, on or after the date of this Agreement, or changes or prospective changes in the market price or trading volume of the Company Common Stock or the credit rating of the Company (it being understood that the underlying facts giving rise or contributing to such failure or change may be taken into account in determining whether there has been a Company Material Adverse Effect if such facts are not otherwise excluded under this definition), (G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions), (H) any action taken by the Company or any of the Company Subsidiaries at Parent’s written request or with Parent’s written consent or that is expressly required by this Agreement, (I) any epidemic, pandemic or disease outbreak (including COVID-19) or any COVID-19 Measures or any change in such COVID-19 Measures or authoritative interpretations thereof and (J) the matters set forth on Section 9.03(a) of the Company Disclosure Letter, except in the case of clause (A), (B), (C), (D), (E) or (I), to the extent that the Company and the Company Subsidiaries, taken as a whole, are disproportionately affected thereby as compared with other participants in the industries in which the Company and the Company Subsidiaries operate (in which case the incremental disproportionate impact or impacts may be taken into account in determining whether there has been a Company Material Adverse Effect).";
+
+test('Metsera "Company Material Adverse Effect": colon-introduced (A)-(J) carve-out list opens only via the colon rule', () => {
+  const leaves = segmentSubClauses(METSERA_MAE_TEXT);
+  assertLeavesPartition(null, leaves, METSERA_MAE_TEXT);
+
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['i', 'i.A', 'i.B', 'i.C', 'i.D', 'i.E', 'i.F', 'i.G', 'i.H', 'i.I', 'i.J']);
+
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.match(byMarker['i.A'].text, /biopharmaceutical industry/);
+  assert.match(byMarker['i.J'].text, /Company Disclosure Letter/);
+  // The mid-paragraph back-reference "clause (i)" and the trailing back-
+  // reference "clauses (A), (B), (C), (D), (E) or (I)" must not fragment
+  // any leaf or spawn spurious markers.
+  assert.ok(!markers.includes('i.A.A'));
+});
+
 test('hostile: cross-reference "Section 3.1(b)" does not split even when a colon appears earlier in the sentence', () => {
   const text = 'The Company shall comply with the covenants set forth below: as provided in Section 3.1(b), the Company shall deliver the certificate.';
   const leaves = segmentSubClauses(text);
