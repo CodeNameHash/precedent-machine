@@ -47,6 +47,7 @@ const {
   findTerminationLimbChapeau,
   parseTerminationLimbDirection,
   findTerminationLimbGrantContext,
+  findTerminationSectionEitherGrantContext,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
 const RAW_HTML_PATH = path.join(__dirname, 'fixtures', 'canonical-v2', 'mae-definition-family', 'modiv-raw-fetched.htm');
@@ -400,6 +401,78 @@ test('HOSTILE unit: the bare one-party grammar never reads a mutual head as a on
     parseTerminationLimbDirection('(a) by mutual written consent of the Company and Parent;'),
     { outcome: 'UNRECOGNISED' },
   );
+  // Compound party name (Step 2X-0 WIP remediation for fc0362bb): must not
+  // truncate "the Company Stockholders' Representative" to "the Company".
+  assert.deepEqual(
+    parseTerminationLimbDirection('(f) by the Company Stockholders\' Representative, if:'),
+    { outcome: 'UNRECOGNISED' },
+  );
+});
+
+// Step 2X-0 WIP remediation (fc0362bb): three behaviours landed without
+// unit coverage. Pins below.
+
+test('unit: findTerminationLimbChapeau bounds a terminal leaf at newline/section-end when neither colon nor semicolon is present', () => {
+  // Concho 8.1(f) shape: a lettered limb that ends with a period at the
+  // section's own end, carrying neither ':' nor ';'.
+  const sectionText = '(a) by mutual written consent;\n(f) by Parent upon written notice to the Company.';
+  const admittedSourceContext = {
+    canonical_text: { text: sectionText },
+  };
+  const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
+  const chapeau = findTerminationLimbChapeau({
+    section,
+    admittedSourceContext,
+    sectionReference: '8.1',
+    citationReference: '8.1(f)',
+  });
+  assert.ok(chapeau, 'terminal leaf must bound, not fail closed for want of :/;');
+  assert.match(chapeau.chapeau_text, /^\(f\) by Parent/);
+});
+
+test('unit: findTerminationSectionEitherGrantContext returns the section-chapeau mutual grant when limbs carry grounds only', () => {
+  // TopBuild 6.2 shape: party grant lives in the section chapeau; lettered
+  // limbs are grounds-only.
+  const sectionText = [
+    'This Agreement may be terminated at any time prior to the Effective Time',
+    ' by either Parent or the Company if:',
+    '\n(a) the Company Stockholder Approval shall not have been obtained;',
+    '\n(b) any Governmental Entity shall have issued an order.',
+  ].join('');
+  const admittedSourceContext = {
+    canonical_text: { text: sectionText },
+  };
+  const section = { start: 0, end: Buffer.byteLength(sectionText, 'utf8') };
+  // Trigger span starts at limb (a) -- grant must sit entirely before it.
+  const limbA = sectionText.indexOf('\n(a)');
+  const beforeAbsoluteStart = section.start + Buffer.byteLength(sectionText.slice(0, limbA), 'utf8');
+  const hit = findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'either Parent or the Company',
+    partyScope: 'EITHER_PARTY',
+  });
+  assert.ok(hit);
+  assert.ok(hit.span.absolute_end <= beforeAbsoluteStart);
+
+  // Fail closed: ONE_PARTY scope never uses this tier.
+  assert.equal(findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'Parent',
+    partyScope: 'ONE_PARTY',
+  }), null);
+
+  // Fail closed: claimed ref must appear verbatim in the grant text.
+  assert.equal(findTerminationSectionEitherGrantContext({
+    section,
+    admittedSourceContext,
+    beforeAbsoluteStart,
+    terminatingPartyRef: 'either Buyer or the Seller',
+    partyScope: 'EITHER_PARTY',
+  }), null);
 });
 
 test('unit: findTerminationLimbGrantContext never rescues a party/scope combination the chapeau does not structurally support', () => {
