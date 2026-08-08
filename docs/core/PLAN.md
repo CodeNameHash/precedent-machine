@@ -2156,7 +2156,13 @@ already exists. It is additive, reversible, and cannot re-mint or regress
 anything. **The derived tree annotates for flat families and never mints for
 them**; identity stays with model-declared limbs (2X-L, 2X-I).
 
-**Reliability, measured rather than assumed.** `segmentSubClauses` was run over
+**Reliability, measured rather than assumed — and the measurement is narrower
+than it sounds.** It counts SIGNATURE-CLEANLINESS, not correctness: the
+detector only sees same-style parent-child links, so a mis-nest that happens to
+change style, and a phantom marker recognised where none exists, are both
+uncounted. Do not quote 98.9% as a correctness figure. A human spot-audit of
+roughly 30 UNFLAGGED sections is what would turn it into one, and it is an
+acceptance criterion of this step. `segmentSubClauses` was run over
 every resolved section of all 213 evidence runs across all seven deals: 538
 unique sections, 171 of them markerless and trivially safe, 367 carrying 2,360
 markers. The mis-nest signature appears in **45 markers across 6 sections —
@@ -2175,12 +2181,63 @@ Note the loop this closes: the two-"shall not"-list section that decided
 broadened service refuses precisely where it was shown to be wrong, and
 `findIocChapeau` still covers that case.
 
+**Identity: decided 2026-08-08, after Fable tested the alternatives.** The pass
+is annotation only, and that is not a permanent answer — see
+`docs/codex-program/notes/derived-structure-identity.md`. Annotation can answer
+any question about what we extracted; only identity can answer questions about
+what we did not, and absence is a large share of what the product is asked. So
+derived limbs will need identity eventually. They must not get it yet:
+
+- **Excerpts are not the answer**, and this was checked against the code rather
+  than assumed. `excerpt_id` content-addresses over the text hash plus a
+  `semantic_span_id` that hashes `{canonical_text_id, absolute_start,
+  absolute_end}`, so excerpt identity moves whenever the END moves — re-minting
+  under the MAX_DEPTH change exactly as components would. Excerpts also carry no
+  parent and no position, so the absence question cannot be asked of them
+  without a mapping that is the identity problem renamed. Excerpts are the right
+  way to hold a limb's extent as evidence; the wrong thing to BE the limb.
+- **When it comes, identity is `{canonical_text_id, marker_start_byte}`.** A
+  limb's beginning is a fact about the document; its extent, depth, path and
+  parentage are facts about our algorithm and must all stay out of the identity
+  payload — parentage especially, since the six mis-nesting sections are
+  re-parenting fixes waiting to happen. `ordinal` is dropped rather than
+  stabilised: start byte already totally orders limbs. This needs a new schema,
+  not a bent `PROVISION_COMPONENT/V1`, whose payload hard-codes parent id, both
+  offsets and ordinal.
+- **The stability criterion is concrete.** Re-run the corpus survey after the
+  depth and `(x)/(y)/(z)` changes land; zero start moves across all 2,360
+  markers. Until then, derived facts stay out of every `contentId` payload and
+  every derived output carries the segmenter version.
+- **The phantom-limb risk survives any scheme** and lands precisely on absence
+  answers. A derived absence must carry its derivation provenance and must never
+  render as ground truth.
+
 **Change, broadened.** A corpus-wide placement pass: every family's assertions
 gain a `structure_context` — the governing chapeau chain, by containment on
 their existing byte spans. Replay-validated, so it costs no model calls.
 Fail closed on span-crossing quotes, on same-style chains, and on markerless
 sections (which get section context only). Sits in the free replay phase
 immediately after 2X-L.
+
+**The three ways more structure can hurt, and the policy for each.** Ben's
+thesis — process the whole document deterministically into a structured form —
+survives adversarial review, in disciplined form: *more structure is better is
+true of structure computed and versioned, false of structure trusted and baked
+in.* The three real hazards:
+
+1. **Gating model input.** Chunking prompts by derived limbs would turn a 1%
+   segmentation error into an invisible coverage hole with no disagreement
+   signal. This is the one undetectable failure. **Derived structure must never
+   gate what the model sees.** Post-hoc corroboration is fine — disagreement is
+   the product.
+2. **Absence read as ground truth.** Covered by the provenance rule above.
+3. **Leaking into permanent identity.** Covered by the stability criterion
+   above.
+
+Prose sections raise no surviving objection: 171 of 538 sections are markerless,
+and section-level context is the honest floor for them.
+`lib/parser-v2/deterministic-sectionizer.js` already builds the whole-document
+section tree, so the document-level half of Ben's thesis is partly built.
 
 Three failure modes to handle explicitly. A quote spanning a chapeau plus its
 first limb — whole-sentence quoting is explicit in termination-fee
@@ -2199,6 +2256,64 @@ For the broadened pass: every assertion in every family carries either a
 `structure_context` or a typed UNDETERMINED, with zero silently absent; the six
 mis-nesting sections become a pinned fixture list; and no claim identity changes
 anywhere, which is checkable because the pass is annotation-only.
+
+---
+
+## Step 2X-A1. Two live defects in qualifier scope, found by corpus grep
+
+**What it is.** `lib/canonical-v2/native-producer/qualifier-attachment.js`
+carries two defects that resolve **deterministically wrong** rather than
+refusing. Both were found by Fable on 2026-08-08 and both verified against the
+corpus before being written here.
+
+**Defect 1 — a named subset of clauses is read as a single clause.**
+`SINGLE_CLAUSE_MARKER_PATTERNS` is
+`/in the case of clauses?(?:\s*\([^)]{1,20}\))?/i`, which swallows only the
+**first** parenthetical. So `in the case of clauses (ii) and (iii)` matches at
+`(ii)`, classifies as a single-clause marker, and resolves `THIS_ITEM_ONLY` —
+when the drafting names two clauses. Corpus counts in `evidence/canonical-v2`:
+**98** occurrences of `in the case of clauses (ii) and (iii)`, 40 of
+`(A) and (B)`, 32 of `(B) and (C)`.
+
+There is no `NAMED_SUBSET` scope reading. The taxonomy has `ALL_ITEMS` and
+`THIS_ITEM_ONLY`; a qualifier governing an explicitly named subset of limbs is
+neither.
+
+**Defect 2 — `in any case` is a false friend.** It is a shipped ALL_ITEMS
+marker pattern (line 62). The corpus has 299 occurrences and they are dominated
+by non-scope senses: `in any case within twenty (20) days`, `in any case no
+later than`, `in any case obligating Parent`. Read as a scope disambiguator it
+will assert series-scope on timing and obligation language.
+
+Fable also reports two shipped patterns with **zero** corpus occurrences, which
+is a separate smell: a lexicon entry that never fires is untested in production
+and may be wrong in a way nothing reveals.
+
+**Why this step exists at all.** These are the sharpest available evidence for
+the standing rule in Step 2X. Both are *deterministic generation* failing
+*silently on unseen drafting* — precisely the counter-position's argument
+against pushing determinism further. They are not a reason to abandon the rule;
+they are the reason its second clause is mandatory. A deterministic component
+that cannot say `UNDETERMINED` will assert a wrong answer at corpus scale, and
+here it has.
+
+**Change.** Widen the named-subset pattern to capture every parenthetical in
+the run; add a `NAMED_SUBSET` scope reading carrying the clause list it names;
+remove or re-scope `in any case`; and audit every shipped pattern against corpus
+frequency, retiring or justifying the zero-occurrence entries.
+
+**Do not seed new disambiguator phrases by intuition.** Apply Step 2X-G's
+promotion gate to phrases: blind adjudication, zero counterexamples across at
+least three deals, plus a collision test against non-scope senses — which is
+exactly the test `in any case` fails. Fable's seed candidates, with corpus
+counts: `in the case of each` (272), `in any such case` (115), `in respect of
+each` (109), `for purposes of the foregoing` (30).
+
+**Proves it is done.** `in the case of clauses (ii) and (iii)` resolves to a
+named subset of two, not to one item; every shipped pattern has either a
+non-zero corpus count or a written justification; and the corpus count of
+claims whose scope reading changes is reported, since this alters the meaning
+of already-extracted qualifiers rather than adding new ones.
 
 ---
 
