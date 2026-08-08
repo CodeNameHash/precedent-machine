@@ -2052,10 +2052,15 @@ to wait.
 far as this environment allows — the app builds and serves, but every route
 redirects to `/login` and no credentials exist here, so the changed surface was
 verified at component-input level (zero unsafe absence strings across 11
-configs) rather than visually. Blocker 2 under review by two reviewers split by
-area, writing to `merge-review-canonical-v2.md` and
-`merge-review-scripts-ui-tests.md`. The count is **eleven** WIP commits, not
-seven.
+configs) rather than visually. Blocker 2 CLOSED by two reviewers split by area
+— `merge-review-canonical-v2.md` and `merge-review-scripts-ui-tests.md`. The
+count was **eleven** WIP commits, not seven.
+
+**MERGED 2026-08-08 as `c40b7bb1`**, 207 commits. Both halves went together in
+the end rather than docs-first, because the blockers closed. Gates green on a
+quiet machine and re-verified after the merge, since `main` carried PR #480
+commits neither pre-merge run had seen: suite exit 0 (8,319 tests, 0 fail),
+build exit 0, lint INVARIANT-4 PASS.
 
 **Hold the code on three blockers**, all closable in about an hour:
 

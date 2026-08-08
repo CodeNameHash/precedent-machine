@@ -1222,3 +1222,56 @@ markers newly captured. `MAX_DEPTH` 3 → 5: **+0.186 percentage points** of
 mis-nest rate against **+62** markers newly captured across 7 sections. The
 first is free; the second is a real trade, taken because a flagged marker is
 visible rather than wrong.
+
+---
+
+## The merge. 207 commits to `main`, 2026-08-08
+
+**Merged as `c40b7bb1`.** Gates on a quiet machine, exit codes captured to files
+and read back rather than piped: `CI=true npm test` exit 0 — 8,319 tests, 8,274
+pass, **0 fail**, 45 skipped; `npm run build` exit 0;
+`scripts/lint/forbidden-patterns.sh` exit 0, INVARIANT-4 PASS.
+
+**Re-verified after the merge, not only before it.** `main` had moved — it
+carried commits from PR #480 that were not on the branch — so the merged tree
+was code neither gate run had seen. Post-merge suite exit 0, post-merge build
+exit 0. A pre-merge green on a branch is not evidence about the merge result,
+and this is the second time today that a gate run measured a tree which had
+changed underneath it.
+
+**The three blockers, and how each closed.**
+
+1. The MAE materiality split, decided wrong and still in the code. Closed by
+   integrating 2X-D and replaying the affected run at zero model calls:
+   resolved count unchanged at 32, all 13 claims reclassify to
+   `MAT_MAE_QUALIFIED`, zero residuals, zero quarantines.
+2. Eleven commits tagged UNREVIEWED or wip — not the seven first recorded.
+   Closed by two reviewers on separate slices. One real defect: two
+   termination-limb unit tests built a minimal `admittedSourceContext` missing
+   `canonical_text_id`, which this branch's code path asserts as a full SHA-256.
+   Fixed by computing the real digest of the fixture's own text, since a
+   placeholder would pass the format check while lying about what it
+   identifies. Both reviewers independently confirmed **no test was weakened to
+   make a change pass**, and the Redfin §2.10 expectation — the cheapest one to
+   soften — is untouched.
+3. Nothing user-facing live-verified. Closed as far as this environment allows:
+   the app builds and serves, but every route redirects to `/login` and no
+   credentials exist here, so the changed surface was verified at
+   component-input level — zero unsafe absence strings across 11 configs, and
+   the rendered string resolves to "Not found (may not be present, or not yet
+   extracted)". Stronger than a green build, weaker than a screenshot, and
+   recorded as such.
+
+**Three red herrings, all chased down rather than waved off.** Failures in the
+qxo normaliser tests, the auth-route tests, and the appraisal/attribute pair all
+passed in isolation — contention against a tree that kept changing under the
+runner, including a dev server left running from the live-verification attempt.
+The pattern cost real time and is now in the handoff's trap list: a gate run is
+only evidence if nothing else is touching the tree.
+
+**Carried forward, all in the plan.** Regenerate the 2X-L replay evidence, which
+still carries the retired MAE code — free by replay, and loud rather than silent
+if forgotten, since re-validation raises `INVALID_CANONICAL_VALUE` and
+quarantines. Publish the 69-limb disposition table that 2X-L1 demands. And the
+placement pass across all 22 flat families, which is the step that actually
+moves the top of the resolution table.
