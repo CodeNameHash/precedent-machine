@@ -1,0 +1,957 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03(p)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "intentionally takes (or intentionally fails to take) and knows (or reasonably should have known)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ce50f23f3a6969dee1fb71aafe29743c1e6101402226ae5d25360add05194ea2",
+      "closure_id": "4c2e0f3a0ee6c8b31f3881881a968ad233d51b2dfa682981d0479a46ae4218e1",
+      "normalised_phrase": "intentionally takes (or intentionally fails to take) and knows (or reasonably should have known)",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03(p)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "with respect to any agreement or covenant in this Agreement, an act or omission (including a failure to cure circumstances) taken or omitted to be taken that the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "59fe01d647ca01fcde721bf538ca93f4f967523c67789c9ea429809bad2f98ed",
+      "closure_id": "4cb6c353f69647f105874df23ef8c055fdd9d3b879162a32ec821f971fde9fea",
+      "normalised_phrase": "with respect to any agreement or covenant in this Agreement, an act or omission (including a failure to cure circumstances) taken or omitted to be taken that the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL"
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03(k)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the persons identified in Section 8.03(k) of the Company Letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "21547670d0a2edafa6051b49bf555b41e31ca0402864d804cc5c793252986d18",
+      "closure_id": "4676bf6928192949fb34a4007ca8121694b4bcb58eae61767b0879d6b54d44b7",
+      "normalised_phrase": "the persons identified in Section 8.03(k) of the Company Letter",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03(k)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "actual knowledge",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "60f812b4fc45b8f0abd4928a300ba5536833ebec8b981eac1c303ff4a7cc0e3d",
+      "closure_id": "b598e023a4a9b45f40b64df75166b142429a4456315fd0487522034baecdea77",
+      "normalised_phrase": "actual knowledge",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "affiliate",
+          "normalized_term_identity": "affiliate",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“affiliate” means",
+          "definition_body_quote": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "affiliate",
+          "normalized_term_identity": "affiliate",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“affiliate” means",
+          "definition_body_quote": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "44e836dc6955d77993fcdbec498263bdb659483d8669d77cbc9e5d3b2b1ed4ff",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "904eb1ed01c31ef75e4e77f62fcea04cc5e8c2963bd994f1c10fac7b90333ed6",
+          "document_ordinal": 0,
+          "absolute_start": 85,
+          "absolute_end": 226,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d83c8153012ea8a918f82b3d222708e6c9a5aae819ccf1b2dac736bd27336cef",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Benefit Agreement",
+          "normalized_term_identity": "benefit agreement",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Benefit Agreement” means",
+          "definition_body_quote": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Benefit Agreement",
+          "normalized_term_identity": "benefit agreement",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Benefit Agreement” means",
+          "definition_body_quote": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "53d00750f744c978597db8399167f738a001e054ca8abb172deb1010f0fa4527",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a9271d6459995e92513bbc389e3540c2edb0c6d37e9fa99282b1aa91a12c06e9",
+          "document_ordinal": 0,
+          "absolute_start": 262,
+          "absolute_end": 1095,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "911a08d939942b0c2e11a8981cde82037d0d1615af17be891a98a4a1a918c6d6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Benefit Plan",
+          "normalized_term_identity": "benefit plan",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Benefit Plan” means",
+          "definition_body_quote": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Benefit Plan",
+          "normalized_term_identity": "benefit plan",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Benefit Plan” means",
+          "definition_body_quote": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b7c673b2944477200a47e771621b6d6da1701be525b213ed42078d34ab621cd4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e146f4ca5942ff84922fc7c16684982aaf27b9b6673bb73b809baebbc545fb3",
+          "document_ordinal": 0,
+          "absolute_start": 1126,
+          "absolute_end": 2060,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d57892140d14ddd67e7bce0ed58be7b7ab248dc0171ee6ea9abd007ceefdc992",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Business Day",
+          "normalized_term_identity": "business day",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Business Day” means",
+          "definition_body_quote": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Business Day",
+          "normalized_term_identity": "business day",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Business Day” means",
+          "definition_body_quote": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f231e2735f8d3336378422dcb979dd68c28f8a466e105ebde3ffb58eed1a43b0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "172e826845673a1f734bdaccdc2dd118c453754587d108679a821c1ec4f90473",
+          "document_ordinal": 0,
+          "absolute_start": 2091,
+          "absolute_end": 2372,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c146d4578db7d00afe9956cfc9acfcc4cf374edf3077c94dd8ca80a51e8bd138",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Call Options",
+          "normalized_term_identity": "call options",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Call Options” means the call option transactions evidenced by:",
+          "definition_body_quote": "(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Call Options",
+          "normalized_term_identity": "call options",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Call Options” means the call option transactions evidenced by:",
+          "definition_body_quote": "(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8b77dceae637dfc85099dcf3a4be75ad8f6f758ef03c1754fd02a5cf2b0d0d7f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c0bde0333d30c6ca787364c011e4db2385dad911399b38c9f718a6f19ce2b701",
+          "document_ordinal": 0,
+          "absolute_start": 2446,
+          "absolute_end": 4010,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5881273ef96fdf7da1f702401f0e730908e2dcc2f277cfffedfff3f78fd4e182",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Commonly Controlled Entity",
+          "normalized_term_identity": "commonly controlled entity",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Commonly Controlled Entity” means",
+          "definition_body_quote": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Commonly Controlled Entity",
+          "normalized_term_identity": "commonly controlled entity",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Commonly Controlled Entity” means",
+          "definition_body_quote": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6fae911f086ecc55162da3ae37d72d94a7d0ff68cdaf271a23feaf56402233a4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9abbd1a5d7566620f624cedafd0fa5ea4e850afbf8135c3c7c3439fefc79009f",
+          "document_ordinal": 0,
+          "absolute_start": 4057,
+          "absolute_end": 4291,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5f3a67712c02bd3952856d947d562088074f6e4285dd49a8a0e142f66904ea7b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Company Personnel",
+          "normalized_term_identity": "company personnel",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Company Personnel” means",
+          "definition_body_quote": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Company Personnel",
+          "normalized_term_identity": "company personnel",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Company Personnel” means",
+          "definition_body_quote": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b1c79e58647d02cecf8cc2401b4013df9e4d2856765eb9e6a965244e74debaac",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa11e26d53788e805b39cf731e61be6e0ed8385986ed87fe7f85908ca14d377d",
+          "document_ordinal": 0,
+          "absolute_start": 4327,
+          "absolute_end": 4444,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d5f919b5c4daf4b719874a6ed4b296f63c916f59e15fdf3549f7f990cfc20e2e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Contract",
+          "normalized_term_identity": "contract",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Contract” means",
+          "definition_body_quote": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Contract",
+          "normalized_term_identity": "contract",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Contract” means",
+          "definition_body_quote": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f4595c36d72a61af18af2c08a6e2fab4a777226f54e5b9993a09530b5a2b450c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5cfecc9e68ff6d71e2739eaa51b608eaaaa199ce88a5e8bbb549c233f6ad1251",
+          "document_ordinal": 0,
+          "absolute_start": 4471,
+          "absolute_end": 4703,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4e27695475191a162ff746879ff7f1ee8ea83ad90db30731b87e497aea09944e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Convertible Notes",
+          "normalized_term_identity": "convertible notes",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Convertible Notes” means",
+          "definition_body_quote": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture",
+          "cross_reference_target": "Notes Indenture",
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Convertible Notes",
+          "normalized_term_identity": "convertible notes",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Convertible Notes” means",
+          "definition_body_quote": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture",
+          "cross_reference_target": "Notes Indenture",
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f0771b5d1ac04a68ed73881460f463203287e599cb15f9324d0dba6e893b8c38",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c3bc4b94885e5e7ec380306d788ef029bd3a6b804a3540da614de3b445242279",
+          "document_ordinal": 0,
+          "absolute_start": 4739,
+          "absolute_end": 4821,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "02444bf6cf1b5350281cba085a2f35a96ccfab0b7bc117a0fe139f72a62d9464",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Indebtedness",
+          "normalized_term_identity": "indebtedness",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Indebtedness” means",
+          "definition_body_quote": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business)",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Indebtedness",
+          "normalized_term_identity": "indebtedness",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Indebtedness” means",
+          "definition_body_quote": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business)",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d00bd3da277657f9038368036ceff19400b27e8e5d099b3611819454be329794",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3ad348d5e22811c3f2f3ae03ac40addcac076ad52374a83d2ef9c26485e2e344",
+          "document_ordinal": 0,
+          "absolute_start": 4852,
+          "absolute_end": 5842,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2f7bdb04670fe554d82e466b1a0982c50c978d21357522426b588d4a9a2f4430",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "person",
+          "normalized_term_identity": "person",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“person” means",
+          "definition_body_quote": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "person",
+          "normalized_term_identity": "person",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“person” means",
+          "definition_body_quote": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "65796bac21c988b1c27ffed2f3c5b26f4189248d26ac148c39d4395d19b42461",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "dfdd3ca18fadf3b4a0bb8342ed24465dc8a4203008c209862b60174082fde2dd",
+          "document_ordinal": 0,
+          "absolute_start": 10589,
+          "absolute_end": 10741,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e79d35325987d4d0152c81641982f0e628c72e2ad02c85ad022b03cb4e9c18ac",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Subsidiary",
+          "normalized_term_identity": "subsidiary",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "a “Subsidiary” of any person means",
+          "definition_body_quote": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Subsidiary",
+          "normalized_term_identity": "subsidiary",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "a “Subsidiary” of any person means",
+          "definition_body_quote": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bbfa2e27dec2331337191a292b092e1b868c05aad123623e40707ecf20f45688",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ef53d1c06d16388723ce1daf9a9493847b6e546706a9fd96b199d37199dd96bf",
+          "document_ordinal": 0,
+          "absolute_start": 10786,
+          "absolute_end": 11645,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4bc10210fad3bbfd21c2b668343e83988b5751a6455505fb2b81481ef8983eee",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "8.03",
+      "source_citation": "8.03",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "Warrants",
+          "normalized_term_identity": "warrants",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Warrants” means the warrant transactions evidenced by:",
+          "definition_body_quote": "(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "Warrants",
+          "normalized_term_identity": "warrants",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Warrants” means the warrant transactions evidenced by:",
+          "definition_body_quote": "(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b02d837d2a510c8bb4400d2f0123de971debff4054ce0b33d36b77dd7c1939fe",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1ee5a8d9109a67d0e5004747f76d78c017f1c9897690b7d99945aff44795430e",
+          "document_ordinal": 0,
+          "absolute_start": 11711,
+          "absolute_end": 13126,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6e63b3467faf773d70c2ab09d3b091e90843e1d618c43d80f2f3408d7cf92c72",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f2418e7ff956fdb6cec65b1150db0ccd9e82a738e00f1a791bf4d738fa14935d",
+        "producer_receipt_id": "249980ab24403a1d5f1f9bb03b51c1dbc1622ef395eb1aac5a5bc982bda65510",
+        "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+        "extraction_provenance_id": "0abcccd2aa3e0622c906a82c328193aa2890e7c20d3769a8d33207003c8529c4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b577f24aa2c4b133928aeb7202686c66d61debc64e638c44c7c55c79c5a9a9e5",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 17,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 4,
+      "open_world": 13,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "e03c4c38ba7a9896e10460d81d4d246047ea0fbf50030045426c01bf05d642be"
+  }
+}

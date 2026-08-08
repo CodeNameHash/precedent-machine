@@ -1894,6 +1894,16 @@ the right publish rate? Two readings, and they lead to different work:
 (2) would licence exactly the kind of corpus-wide prompt sweep that Step 2F2 is
 already holding back for want of evidence.
 
+**New evidence for Step 2F2, found while fanning out on 2026-08-08.** Red Hat's
+`TAX_MATTERS` returned `{"tax_assertions":[],"mechanics":[],"open_world_candidates":[]}`
+on §3.01(m) — 5,145 bytes that are the tax representation. Three empty arrays on
+a section that plainly contains the family's subject: **the same shape as BREAKs
+2 and 3, on a third deal, and `tax-matters-producer-prompt.js` is one of the
+thirteen prompts showing a pre-filled empty `open_world_candidates`.** That is
+now three independent instances of the same pattern across three drafters, which
+is materially stronger than the single-document correlation Step 2F2 was
+recorded on.
+
 **Proves it is done.** A decision recorded in `DECISIONS.md`, and if (2), a
 before-and-after publish rate on at least two deals.
 

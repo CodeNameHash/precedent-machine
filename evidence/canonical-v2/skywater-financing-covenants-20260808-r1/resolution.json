@@ -1,0 +1,186 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(b)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e0950490c9a2ecb53b7397e40e167ee305411acae6d2ea9729c30e5f2e3fb23b",
+      "closure_id": "72ecdd517a880a0b586292a3ea59eaf8287fa61d60c08bb3e88c96de6860eedd",
+      "normalised_phrase": "the Company and Parent shall cooperate with each other with respect to customary actions for transactions of this type that are reasonably requested by Parent to be taken by the Company or its Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING"
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8f5758a62d4b3c8d24cc3c09193ff75b3622e70af8d938b10466fdffc765db5d",
+      "closure_id": "dfba1b878373149d4c661b753df67d6bc08def27dfb50c2f3adf7315b89fa6eb",
+      "normalised_phrase": "at least three Business Days prior to the Closing Date a copy of a payoff letter",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Amended and Restated Loan and Security Agreement, dated as of June 30, 2025, by and between the Company, Siena Lending Group LLC and certain other parties (the “Subject Indebtedness”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Existing credit facility (Subject Indebtedness) with named lender Siena Lending Group LLC, to be paid off at Closing via a customary payoff letter, with related Liens and guarantees released upon payment of the Payoff Amount.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fccce6d4164d4920402aca5d4df389e901745869c68624e19ba50abfaadf99e4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e40e6e6fdb667a0cfd9308af2c653578c3b78df70d00ce6ca7debb6dd345d55a",
+          "document_ordinal": 0,
+          "absolute_start": 279,
+          "absolute_end": 470,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7defd1aaf24b5c67c693ac72b500e11154a2c57e0f58142f909f36649a74eef0",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1fa3b3bcf2455e465dd5976ffa90ed094edd048bbd041b0a641c13c0bc9d01e2",
+        "producer_receipt_id": "b2b84a0bc1060787102d3e88d827570aad33e7c40587ca63c33e438762058379",
+        "governed_scope_digest": "89817b7414746ff9f2cbcabc5ab405def9c377f8ac6504d0ad56d55e864ae86d",
+        "extraction_provenance_id": "770ba2cd6b1bf4df93e7fcc6fa9e9ba4853e13d07f5b18c34510e8f983326d44"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "5.8",
+      "source_citation": "5.8",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "under the various tool financing loans the Company or its Subsidiaries have entered into with financing lenders party thereto or any of the Company’s other loan arrangements",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "LENDER_ARRANGEMENT: Scope of the Company/Parent cooperation obligation extends to customary actions requested by Parent under the Company's existing tool financing loans and other loan arrangements with third-party financing lenders.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7e9697658f10f40146bd59778f2c1c661c2c6e027b8ae4ea42cf5deb8174dee5",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5c5378d059a157d47a52be0ef03536388b0fda71d66b5b915d68dc1c993f8d9d",
+          "document_ordinal": 0,
+          "absolute_start": 1552,
+          "absolute_end": 1727,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a7e67854d91478e6fa0106dd9a01ec31d22c3af89f82bff95e9b45fa1ed5cd9a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1fa3b3bcf2455e465dd5976ffa90ed094edd048bbd041b0a641c13c0bc9d01e2",
+        "producer_receipt_id": "b2b84a0bc1060787102d3e88d827570aad33e7c40587ca63c33e438762058379",
+        "governed_scope_digest": "89817b7414746ff9f2cbcabc5ab405def9c377f8ac6504d0ad56d55e864ae86d",
+        "extraction_provenance_id": "770ba2cd6b1bf4df93e7fcc6fa9e9ba4853e13d07f5b18c34510e8f983326d44"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "3850a3d71d4e94653c5ae1b74e60606d898ba7bd0282a8d23ee2ea5954a37339",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 2,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 4,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "dca548d8ac0c756fb3f923d58d1d9c6e3c26a8389d14a00403fd8d8512b42fee"
+  }
+}

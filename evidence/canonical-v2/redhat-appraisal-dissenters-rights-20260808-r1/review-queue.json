@@ -1,0 +1,36 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "4478180ea887d58386b9b64930223a199e9f3c42e8d130234cdcdf5a7b2014e1",
+  "review_queue": [
+    {
+      "section_reference": "2.01(d)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "526073923afaa07eaa0e6e163f25270f993f5f650460e1cc6e4a40c08fcb31dd",
+      "closure_id": "a36baf24f0b9f4f4ac7d9f8ae8e2a50b77b8d53109e677a465270b655ab3ddb2",
+      "normalised_phrase": "provided, however, that if, after the Effective Time, such holder fails to perfect, withdraws or otherwise loses such holder’s right to appraisal pursuant to Section 262 of the DGCL, or if a court of competent jurisdiction shall determine that such holder is not entitled to the relief provided by Section 262 of the DGCL, such shares of Company Common Stock shall be treated as if they had been converted as of the Effective Time into the right to receive the Merger Consideration in accordance with this Section 2.01",
+      "attachment_position": null,
+      "concept_family": "APPR-WITHDRAW",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "APPR-WITHDRAW",
+          "pattern_id": "APPR-WITHDRAW:PHRASE:WITHDRAWAL",
+          "start": 742,
+          "end": 758,
+          "excerpt": "d to collectively as the “Dissenting Shares” until such time as such holder fails to perfect, withdraws or otherwise loses such holder’s appraisal rights under the Laws o",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "4fdbf417d01e6916fe6bb517b1d569ee71747f3657f4b8348836b2a45d499b92"
+}

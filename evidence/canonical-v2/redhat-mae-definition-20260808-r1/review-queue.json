@@ -1,0 +1,640 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3b313201e780690399f254032faf579d049770fce3adbbd761b42c6aad0c28a1",
+  "review_queue": [
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "030487a1b833f5bd6797538ddb7820da530d6319e0d97a73562e6537953ff1ca",
+      "closure_id": "1c0a8ebe0f40c3294511fd74d6de374dd84f669bf80d1a5a3e1825ffdffc3afd",
+      "normalised_phrase": "any action or omission of the Company or any of its Subsidiaries taken with the prior written consent of Parent (or any action not taken as a result of a failure of Parent to consent to an action otherwise requiring Parent’s consent)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d307c5173a8310bef3af826c9d03cca7a2e29f1d6fe5db6499d51ab773f16df5",
+      "closure_id": "209ef51c9c58eaeb72caca965a546bc6e06b205978da0764a119ef1edc3b9e34",
+      "normalised_phrase": "any change in GAAP",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "source_citation": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "applicable Law",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "78f730a47fc982adb42abc00e402eb67ede8f5d4b2a17fb2c42caafb4c0171ce",
+      "closure_id": "36f545445f1fc7cd389d6e59cf477c3949e49836ab5353ae66f5a8050947c725",
+      "normalised_phrase": "applicable Law",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "529230a2a1e973a2fd722342c366f7c5e47cc3a65a74e2539c9a1596d02d0bb4",
+      "closure_id": "3aa2ba50d498964136919b4cb10dbbc7ed4818ab23fe8d1fc5da0fffcc1005b7",
+      "normalised_phrase": "any act of terrorism, war (whether or not declared)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "741dc3ddc554b8031f20a27a4203abc21377f4677808a5df4f63f0aaa20f4cd4",
+      "closure_id": "611e20bcd3fbbae50f2f1de0a1b6fea1df8721ff49e68a88604bcf41efa73d45",
+      "normalised_phrase": "the negotiation, execution or delivery of this Agreement or the public announcement (including as to the identity of the parties hereto) or pendency of the Merger or the other transactions contemplated by this Agreement, any loss of or adverse change in the relationship of the Company and its Subsidiaries with their respective employees, customers, distributors, licensors, partners or suppliers attributable to the announcement or pendency of this Agreement or the transactions contemplated hereby; provided that this clause (G) shall not apply to any representation or warranty (or any condition to the consummation of the Merger relating to such representation and warranty) to the extent the purpose of such representation and warranty is to address the consequences resulting from the execution and delivery of this Agreement or the consummation of the Merger",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "source_citation": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any national or international calamity affecting the United States or any other country or region of the world",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "edd772de3ba91f2fa9d72ab3192df69b0afba17eadf6cfa760d6f18d8d24b086",
+      "closure_id": "7a235944387852339a912015c1caf69dd47ea6d5b84296c56d3a1cadc36224ff",
+      "normalised_phrase": "any national or international calamity affecting the United States or any other country or region of the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.03(l)",
+      "source_citation": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "national disaster",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "faa2450f0384c7c057918a342b8f9408a2597b65717cea322b64baa4d3df38cd",
+      "closure_id": "9bad766335ddd640d99062ffbe3dc9b66af463d0d779700312110e236b5a11ce",
+      "normalised_phrase": "national disaster",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE"
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "40504756817e01e4170a9f19a4511b8318051b56d082bb6ec96a0a8ae4d2fbd3",
+      "closure_id": "a831e1c32ecf1f12e5d4374c997eb37f86284fb313fb2d460a5da01974face37",
+      "normalised_phrase": "any change in general economic, market or political conditions affecting the United States economy, or any other national or regional economy or the global economy generally that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e2ac4e9be238ed93d036f682305473b57bc52f5b2bba41670f001492ab659261",
+      "closure_id": "d2879abc23f7da386e831617dd426b9ac1ef7f5f4d8f6dc087d13a5a7ea1a0d8",
+      "normalised_phrase": "the occurrence of natural disasters, force majeure events or weather conditions adverse to the business being carried on by the Company and its Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "633880a5b0d6e8fbfbde203940f1213ecf4987d24c3b85e6494dbc3ac7b3cb97",
+      "closure_id": "ef20f3e8f9d16ccf269234f82341538f836be13494c9b2f85f7f8f73e2230223",
+      "normalised_phrase": "any failure to meet internal or published projections, forecasts or revenue or earnings predictions for any period (provided that the underlying causes of such failures\n53\nmay constitute or be taken into account in determining whether there has been, or would be, a Material Adverse Effect)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d32f20bfc009c1964ff90beed6fb56caddc7169d9366dc379962143eaf0cb817",
+      "closure_id": "f63ee7b7c710da5e8bb7fc3f641752223ee308fa8eb362fa38c0992378a79321",
+      "normalised_phrase": "changes in the financial, credit, banking or securities markets in the United States or any other country or region in the world (including any disruption thereof and any decline in the price of any security or any market index) and including changes or developments in or relating to currency exchange or interest rates that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1eb191492067aa7d91905a0fb41ce0269ca2e2fe3ab960ee53eb52c6f3b7ea74",
+      "closure_id": "fa731df451c9359daa950f4e5331a7c7ed973fbef35ce2a86506022786450650",
+      "normalised_phrase": "any change in the price or trading volume of the Company Common Stock in and of itself (provided that the underlying causes of such change may constitute or be taken into account in determining whether there has been, or would be, a Material Adverse Effect)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "99d93b7e7dff763ec8ffb9e1fd451e3745c77590cdf1e01f8590465acff5db99",
+      "closure_id": "a10ffcc6aaf8470db4a6ea42ce411bb392781824cca4577fdd4aed65d9441033",
+      "normalised_phrase": "prevent, materially impede or materially delay the consummation by the Company of the Merger or the other transactions contemplated by this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1c1a9a7c779ba1fe8a7128f4b39dea2b795dbd4497957f9a394e22ff9016ed15",
+      "closure_id": "c5b0ff4290e284576221c5c8f96e56f9add081c507aef61e744699ad4328fa46",
+      "normalised_phrase": "result in a material adverse effect on the business, assets, properties, financial condition or results of operations of the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "69c0a3c1f3fef2c4cb71b273b6553222e1b6966e4ca34eff2dbb79d9f3c1a10e",
+      "closure_id": "37ff17504934b9e2d36140c86dab298cd405fd04096fb2236749ace80fcfa160",
+      "normalised_phrase": "any change in general economic, market or political conditions affecting the United States economy, or any other national or regional economy or the global economy generally that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "588f4e4b41fc7bde6aacfc439e0fc6a527472e9773200ecc5acb6fbd67173634",
+      "closure_id": "39b5c2ec4bac4f291be2be3bdee0746951172bd81553f2a908d32ceed6670475",
+      "normalised_phrase": "any change in GAAP or applicable Law that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "65fe19cd699fb51e15c248022bec2a31608ba54e137a12cee2f6532b15bf176a",
+      "closure_id": "518faf8a893acc30ea885d211433500edfd36e09945a4bdff0d7ee53f89a2905",
+      "normalised_phrase": "changes in the financial, credit, banking or securities markets in the United States or any other country or region in the world (including any disruption thereof and any decline in the price of any security or any market index) and including changes or developments in or relating to currency exchange or interest rates that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.03(l)",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "028b85f2e430ebc4cdd359ff214e88ae7a4afdc92d5074b9235fb1d662dd03af",
+      "closure_id": "8915191f69638d861b5910b85d77e0ec5d07250530e1edcaf560dea7f66e83d6",
+      "normalised_phrase": "any act of terrorism, war (whether or not declared), national disaster, cyber-attack or any national or international calamity affecting the United States or any other country or region of the world that does not disproportionately affect the Company and its Subsidiaries, taken as a whole, relative to other participants of a similar size in its industry, in which case only the incremental disproportionate effect shall be taken into account",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 7,
+          "end": 30,
+          "excerpt": "(l) “Material Adverse Effect” means any state of facts, change, development, event, effect, condition, occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 771,
+          "end": 794,
+          "excerpt": "or be taken into account, in determining whether there has been, or would be, a Material Adverse Effect: (A) any change in general economic, market or political conditions affecting t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "4c95b5cd494c59abb33a242c16054c407f6125a8fdbcbac285193f869458d871"
+}

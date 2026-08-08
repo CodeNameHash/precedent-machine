@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "skywater",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/skywater-first-live-run/skywater-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1819974/000119312526022750/d32015dex21.htm",
+  "raw_bytes_length": 589570,
+  "raw_bytes_sha256": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "canonical_text_byte_length": 360595,
+  "canonical_text_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+  "verification_status": "PASS",
+  "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "pin_corroboration": "raw_bytes_sha256 corroborated by docs/codex-program/notes/four-deal-sources-2026-08-08.md; canonical_text_sha256 independently re-derived through THIS script's own loadAndVerifySource() code path (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), read from a --dry-run report against a placeholder digest, then pinned -- see docs/codex-program/notes/step-2g-skywater-onboarding.md.",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/skywater-first-live-run/skywater-raw-fetched.htm",
+    "raw_bytes_sha256": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1819974/000119312526022750/d32015dex21.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-08T03:43:09.000Z",
+    "retrieval_policy_digest": "6af1763e1ec02efa3a4c38bca8e790c6aa2746a50dcf967bfee546179ec13dac",
+    "immutable_source_document_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149.deflate",
+    "source_map_compressed_sha256": "4373c9ba51d760bb83136b288a0ff8a4f8851594c69794840e156adc65dac92a",
+    "source_map_digest": "29b169eea39597a6f47fa1a04864f9504fab7d7a400826bb78d0049813dda0f9"
+  }
+}
