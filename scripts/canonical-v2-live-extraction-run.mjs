@@ -101,9 +101,13 @@
  * MODEL BACKEND. No ANTHROPIC_API_KEY is assumed. Drives the model via the
  * Claude Code subscription CLI (`claude -p`), injected through
  * createAnthropicProvider's `client` seam, capturing full usage/cost/
- * duration telemetry from `--output-format json`. `maxRetries: 0`: a failed
- * call fails the run, it does not silently retry and blur the call count
- * this run exists partly to report.
+ * duration telemetry from `--output-format json`. CLI usage is normalised
+ * through `normalizeProviderUsage` before telemetry write and before the
+ * response is returned to the provider, so `input_tokens` reflects billed
+ * prompt volume (non-cache + cache read + cache creation), not the CLI's
+ * non-cached tail alone. `maxRetries: 0`: a failed call fails the run, it
+ * does not silently retry and blur the call count this run exists partly to
+ * report.
  *
  * Usage:
  *   node scripts/canonical-v2-live-extraction-run.mjs \
@@ -200,7 +204,10 @@ const {
 // older bundle turns already-governed vocabulary into open-world rows
 // for want of a home that exists.
 const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
-const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const {
+  createAnthropicProvider,
+  normalizeProviderUsage,
+} = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   createRecordingClient,
   createReplayClient,
@@ -1651,6 +1658,7 @@ function makeMeasuredCliClient({
         const wallClockMs = Date.now() - startedAt;
         const parsed = JSON.parse(rawCliOutput);
         if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
+        const normalizedUsage = normalizeProviderUsage(parsed.usage);
         telemetry.calls.push({
           call_index: callIndex,
           section_reference: sectionReference,
@@ -1658,7 +1666,7 @@ function makeMeasuredCliClient({
           duration_ms_reported: parsed.duration_ms,
           duration_api_ms_reported: parsed.duration_api_ms,
           total_cost_usd_cli: parsed.total_cost_usd,
-          usage: parsed.usage,
+          usage: normalizedUsage,
           model_usage: parsed.modelUsage,
           served_model: parsed.model || null,
           attribution_basis: attributionBasis,
@@ -1685,7 +1693,7 @@ function makeMeasuredCliClient({
         // NO_SHOP call that proved the ceiling raise works is exactly the call
         // it should have caught if the ceiling had still been 64,000, and it
         // said nothing. A guard whose input never arrives is not a guard.
-        return { content: [{ type: 'text', text: rawResponseText }], usage: parsed.usage };
+        return { content: [{ type: 'text', text: rawResponseText }], usage: normalizedUsage };
       },
     },
   };
