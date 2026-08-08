@@ -36,12 +36,15 @@ const {
 
 // ─── Version ───
 
-test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 3', () => {
+test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 4', () => {
   // P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
   // section 1): 1 -> 2. Stage 3 (structural-inheritance-diagnosis.md;
   // Ben's never-alias materiality ruling): 2 -> 3 -- two qualifier-only
   // whitelist pairs and the MAE-qualifier idiom front door.
-  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 3);
+  // Step 2X-D / DECISIONS.md entry 14 (2026-08-08): 3 -> 4 -- revert the
+  // MAT_MAE_AGGREGATE / MAT_MAE_QUALIFIED split; aggregate phrase classifies
+  // as MAT_MAE_QUALIFIED.
+  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 4);
 });
 
 test('QUALIFIER_KINDS enumerates the six families', () => {
@@ -445,28 +448,49 @@ test('Stage 3: the two qualifier-only materiality phrases classify with SEPARATE
   assert.notEqual(anyMaterial.code, allMaterial.code, 'the two phrases must never share a code');
 });
 
-test('Stage 3: the MAE-qualifier idiom front door classifies the real Red Hat chapeau and item forms, splitting aggregate from bare', () => {
+test('Stage 3 / Step 2X-D: the MAE-qualifier idiom front door classifies Red Hat chapeau and item forms as MAT_MAE_QUALIFIED (aggregate phrase is not a separate code)', () => {
+  // Justified edit (Step 2X-D): Stage 3 asserted MAT_MAE_AGGREGATE for the
+  // "individually or in the aggregate" form. Ben's 2026-08-08 reversal
+  // (DECISIONS.md entry 14) treats that phrase as a drafting variant of
+  // MAT_MAE_QUALIFIED — same legal standard, same code.
   const chapeau = classifyQualifierQuote({
     quote: 'Except for matters that would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
     modelKind: 'ACCURACY',
   });
   assert.equal(chapeau.outcome, 'CLASSIFIED');
   assert.equal(chapeau.kind, 'ACCURACY');
-  assert.equal(chapeau.code, 'MAT_MAE_AGGREGATE');
+  assert.equal(chapeau.code, 'MAT_MAE_QUALIFIED');
 
   const item = classifyQualifierQuote({
     quote: 'would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
     modelKind: null,
   });
   assert.equal(item.outcome, 'CLASSIFIED');
-  assert.equal(item.code, 'MAT_MAE_AGGREGATE');
+  assert.equal(item.code, 'MAT_MAE_QUALIFIED');
 
   const bare = classifyQualifierQuote({
     quote: 'except as would not reasonably be expected to have a Material Adverse Effect',
     modelKind: null,
   });
   assert.equal(bare.outcome, 'CLASSIFIED');
-  assert.equal(bare.code, 'MAT_MAE_QUALIFIED', 'no "individually or in the aggregate" -> the bare code, kept distinct');
+  assert.equal(bare.code, 'MAT_MAE_QUALIFIED', 'bare and aggregate forms share MAT_MAE_QUALIFIED');
+});
+
+test('Step 2X-D pin: "individually or in the aggregate" MAE idiom classifies as MAT_MAE_QUALIFIED (DECISIONS.md entry 14, Ben 2026-08-08)', () => {
+  // Pins the reversal explicitly: the aggregate drafting variant must not
+  // emit MAT_MAE_AGGREGATE from the V2 lexicon.
+  const result = classifyQualifierQuote({
+    quote: 'would not reasonably be expected to have, individually or in the aggregate, a Material Adverse Effect',
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(result.outcome, 'CLASSIFIED');
+  assert.equal(result.kind, 'ACCURACY');
+  assert.equal(result.code, 'MAT_MAE_QUALIFIED');
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(ACCURACY_CODES, 'MAT_MAE_AGGREGATE'),
+    false,
+    'MAT_MAE_AGGREGATE must not be emittable from ACCURACY_CODES',
+  );
 });
 
 test('Stage 3 HOSTILE: the affirmative MAE form never classifies through the idiom door, and a longer quote merely CONTAINING the idiom never front-door classifies', () => {

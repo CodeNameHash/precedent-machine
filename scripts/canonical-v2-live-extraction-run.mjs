@@ -188,13 +188,17 @@ const {
 // governed home that existed. Replaying the committed antitrust run with V38
 // gives all eleven a home, two resolving and nine queueing honestly, with no
 // change to anything that already resolved.
-// V41 (Stage 3): V38 plus the two strictly-additive trigger-path schema
-// versions (V39/V40) and REPRESENTATION_ACCURACY_STANDARD's widened
-// allowed-value set (MAT_MATERIAL_INLINE, MAT_MAE_AGGREGATE -- Ben's
-// never-alias materiality ruling; see contract-bundle.js's own V41
-// comment). Same reason the V34 -> V38 move recorded above: resolving
-// against an older bundle turns already-governed vocabulary into
-// open-world rows for want of a home that exists.
+// V41 (Stage 3, as amended by Step 2X-D): V38 plus the two strictly-
+// additive trigger-path schema versions (V39/V40) and
+// REPRESENTATION_ACCURACY_STANDARD's widened allowed-value set
+// (MAT_MATERIAL_INLINE -- Ben's never-alias materiality ruling for
+// "in any" vs "in all" material respects). MAT_MAE_AGGREGATE was briefly
+// admitted under the same Stage 3 split and was REMOVED 2026-08-08
+// (DECISIONS.md entry 14): the "individually or in the aggregate" form
+// classifies as MAT_MAE_QUALIFIED. See contract-bundle.js's V41 comment.
+// Same reason the V34 -> V38 move recorded above: resolving against an
+// older bundle turns already-governed vocabulary into open-world rows
+// for want of a home that exists.
 const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
