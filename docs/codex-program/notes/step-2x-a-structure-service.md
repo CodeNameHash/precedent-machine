@@ -41,11 +41,18 @@ Date: 2026-08-08. Branch: `cursor/step-2x-free-phase-b641`. Replay-only.
 
 6. **Tests** — `tests/canonical-v2-governing-structure.test.js`.
 
+## Live swap (structural half) — landed
+
+`findTerminationLimbChapeau` now delegates its structural half to
+`resolveTerminationLimbChapeauViaStructure` (DECISIONS.md §15). Gate was
+byte-identical Modiv 7.1 / Concho 8.1 / TopBuild 6.2 chapeau spans
+(19/19 identical including TopBuild 6.3/6.4). Direction grammar and
+capacity comparison remain in `candidate-resolution.js`. UNDETERMINED from
+the service maps to null (fail closed), never a guessed chapeau. Fixtures:
+`tests/fixtures/canonical-v2/termination-rights-family/termination-limb-chapeau-structural-parity.json`.
+
 ## Deferred (explicit)
 
-- **Live swap** of `findTerminationLimbChapeau` onto the adapter — adapter
-  exported and tested; in-place replacement deferred pending byte-identical
-  Modiv/Concho/TopBuild span parity on the existing termination fixtures.
 - **2X-I limb pre-pass** consuming the service (path hygiene) — not this
   slice; no live re-extraction / Modiv ladder / prompt bump (2X-K / 2X-I).
 - **Derived limb identity** — annotation only; identity model still open
