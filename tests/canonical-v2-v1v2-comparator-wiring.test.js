@@ -245,14 +245,19 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     resolutionFixture.resolution_receipt.resolution_receipt_id,
     'the regenerated fixture is current, not stale -- a fresh baseline over its own run-receipt.json reproduces it byte-for-byte',
   );
-  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, 'da5e8096615015b4ac9281cd1f37f8d84bb25a544d5011dba70148b5ec47fc6a');
+  // Re-pinned (Step 2X-D / DECISIONS.md entry 14, 2026-08-08):
+  // QUALIFIER_KIND_LEXICON_VERSION 3 -> 4. Same class of re-pin as Stage 3
+  // (2 -> 3) below: lexicon version folds into answer_provenance, so
+  // claim_revision_ids and this receipt id move; fixture regenerated via
+  // resolveCandidates on the same run-receipt — counts unchanged (3/6/31/1).
+  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '606d2c44b1d6e3ec241041404c4c87c625d9a122bb52275850b4348cc421b209');
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
   assert.equal(baseline.resolution_receipt.mapping_table_version, 20);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    'da5e8096615015b4ac9281cd1f37f8d84bb25a544d5011dba70148b5ec47fc6a',
+    '606d2c44b1d6e3ec241041404c4c87c625d9a122bb52275850b4348cc421b209',
     // Re-pinned again (Stage 3, QUALIFIER_KIND_LEXICON_VERSION 2 -> 3): the
     // lexicon version is folded into every mechanically-resolved claim's
     // answer_provenance, so the version bump re-keys claim_revision_ids and
@@ -261,6 +266,7 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     // every substantive row value are unchanged (verified field-by-field:
     // only ids, qualifier_kind_lexicon_version, and one order-only swap of
     // two identical-materiality review rows moved).
+    // Re-pinned again (Step 2X-D, QUALIFIER_KIND_LEXICON_VERSION 3 -> 4).
     // Re-pinned (phantom-citation re-derivation): section_reference moved
     // III-INTRO(b) -> 3.1(b) in the underlying fixture (same bytes, same
     // section_text_sha256 -- see docs/codex-program/notes/
