@@ -143,3 +143,46 @@ test('hard-wrapped marker case: markers survive mid-clause line wraps from fixed
   assert.match(leaves[0].text, /certifying as to the matters set forth herein\.\s*$/);
   assert.match(leaves[1].text, /prior to the Closing\.\s*$/);
 });
+
+// ---------------------------------------------------------------------------
+// Colon-introduced inline enumeration — the Concho fix. CONCHO_COMPETING_
+// PROPOSAL_TEXT is the real, verbatim "Company Competing Proposal" definition
+// from Concho's Annex A (Certain Definitions), fetched read-only and pinned
+// here as a static string, matching the shape blocking 12 held MAE carve-out
+// rows on Metsera and Concho: a chapeau ending in a colon mid-paragraph,
+// immediately followed by a bracketed (a)/(b)/(c) enumeration.
+// ---------------------------------------------------------------------------
+const CONCHO_COMPETING_PROPOSAL_TEXT = "“Company Competing Proposal” means any contract, proposal, offer or indication of interest relating to any transaction or series of related transactions (other than transactions only with Parent or any of its Subsidiaries) involving, directly or indirectly: (a) any acquisition (by asset purchase, stock purchase, merger, or otherwise) by any Person or group of any business or assets of the Company or any of its Subsidiaries (including capital stock of or ownership interest in any Subsidiary) that generated 20% or more of the Company’s and its Subsidiaries’ assets (by fair market value), net revenue or earnings before interest, Taxes, depreciation and amortization for the preceding twelve (12) months, or any license, lease or long-term supply agreement having a similar economic effect, (b) any acquisition of beneficial ownership by any Person or group of 20% or more of the outstanding shares of Company Common Stock or any other securities entitled to vote on the election of directors or any tender or exchange offer that if consummated would result in any Person or group beneficially owning 20% or more of the outstanding shares of Company Common Stock or any other securities entitled to vote on the election of directors or (c) any merger, consolidation, share exchange, business combination, recapitalization, liquidation, dissolution or similar transaction involving the Company or any of its Subsidiaries.";
+
+test('Concho "Company Competing Proposal": colon-introduced inline (a)/(b)/(c) enumeration splits into three items', () => {
+  const leaves = segmentSubClauses(CONCHO_COMPETING_PROPOSAL_TEXT);
+  assertLeavesPartition(null, leaves, CONCHO_COMPETING_PROPOSAL_TEXT);
+
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a', 'b', 'c']);
+
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  for (const leaf of leaves.filter((l) => l.marker !== null)) assert.equal(leaf.depth, 1);
+  assert.match(byMarker['a'].text, /any acquisition \(by asset purchase/);
+  assert.match(byMarker['b'].text, /any acquisition of beneficial ownership/);
+  assert.match(byMarker['c'].text, /any merger, consolidation, share exchange/);
+});
+
+test('hostile: cross-reference "Section 3.1(b)" does not split even when a colon appears earlier in the sentence', () => {
+  const text = 'The Company shall comply with the covenants set forth below: as provided in Section 3.1(b), the Company shall deliver the certificate.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'a colon earlier in the sentence must not turn a section cross-reference into a marker');
+});
+
+test('hostile: mid-paragraph back-reference "clauses (A), (B), (C) and (D) above" does not split even after a colon', () => {
+  // The back-reference is embedded inside an already-open (a) frame — as it
+  // would be in a real agreement — rather than being the very first bracket
+  // in the text, so this exercises the colon predicate itself rather than
+  // the pre-existing (and separately correct) "first marker in the section"
+  // CHILD-OPEN path.
+  const text = 'The obligations of Parent are subject to satisfaction of the following: (a) each representation shall be true, and, with respect to clauses (A), (B), (C) and (D) above, only as of the applicable date.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['a'], 'prose ("clauses") between the colon and the bracket must block the colon rule, and a mid-paragraph back-reference must stay unsplit');
+});
