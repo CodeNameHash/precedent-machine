@@ -256,3 +256,40 @@ fail-closed.** Zero un-gated, silently-misfiring instances found in the
 current generic (non-pilot-slice) core of `lib/` — both historical examples
 of that failure mode cited in the brief are already fixed and documented in
 `docs/core/COMPLETED.md`.
+
+## 4. Verification
+
+`CI=true npm test`, redirected to a file (not piped through head/tail),
+`$?` echoed to the same file, then grepped:
+
+```
+# tests 8300
+# suites 0
+# pass 8255
+# fail 0
+# cancelled 0
+# skipped 45
+# todo 0
+# duration_ms 997839.726924
+TEST_EXIT=0
+```
+
+`CI=true npm run build`, same discipline:
+
+```
+✓ Compiled successfully
+...
+BUILD_EXIT=0
+```
+
+Both exit 0. Full suite (8300 tests, 8255 pass, 0 fail, 45 skipped — pre-
+existing skips, none newly introduced) run start-to-finish after all Task 1
+edits, not just the targeted subset. Did not touch `lib/parser-v2/
+subclauses.js` or `tests/subclauses.test.js`.
+
+Status: DONE (Task 1 fully applied and verified; Task 2 investigation
+complete and ranked; hardcoded-deal-reference audit complete). Per
+instructions, no commit was made by me directly; the environment's own
+auto-checkpoint system committed the working tree under commits `39889ca7`
+and `8eeba42c` (both tagged UNREVIEWED) — these are session checkpoints, not
+a review-and-land action, and remain for whoever reviews this branch next.
