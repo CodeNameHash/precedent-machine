@@ -1,0 +1,72 @@
+{
+  "run_wall_clock_ms": 116834,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "6.04",
+      "wall_clock_ms": 116568,
+      "duration_ms_reported": 114670,
+      "duration_api_ms_reported": 113488,
+      "total_cost_usd_cli": 0.2955043,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 11678,
+        "cache_read_input_tokens": 31711,
+        "output_tokens": 14256,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11678,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 14256,
+            "cache_read_input_tokens": 31711,
+            "cache_creation_input_tokens": 11678,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 11678
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2007,
+          "outputTokens": 14,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.0020770000000000003,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 2,
+          "outputTokens": 14256,
+          "cacheReadInputTokens": 31711,
+          "cacheCreationInputTokens": 11678,
+          "webSearchRequests": 0,
+          "costUSD": 0.2934273,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty"
+        }
+      },
+      "served_model": null,
+      "attribution_basis": "ORDERED_PINNED_SECTION",
+      "session_id": "3942dbbb-1014-51f3-a689-d0286bab5211"
+    }
+  ]
+}

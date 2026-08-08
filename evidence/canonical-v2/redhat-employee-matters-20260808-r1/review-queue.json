@@ -1,0 +1,334 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "c180b6abd8cf4148244d647288c4eacd0821bbc93f37303977cbcee9ed212eeb",
+  "review_queue": [
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "target incentive opportunities (excluding retention, change in control and equity-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4f716addb950f899bc6952a517b9d1338720cec6aaefb9b0e41072bd96f89e55",
+      "closure_id": "040377ae0a3453e21f6664b9b45c4d28b679042abd163e27cc7bd89ce70d59c8",
+      "normalised_phrase": "target incentive opportunities (excluding retention, change in control and equity-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "ITEM_OR_STANDARD_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "retirement and welfare benefits (excluding any severance benefits, post-employment health benefits, post-employment welfare benefits and defined benefit pension and nonqualified deferred compensation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9a76af5502be0a880586802218a6018d494cb86f04002a4562221595decfd373",
+      "closure_id": "08bef350d8d5eeed66400230cd056e3288659b0d495e9578829301d0631fd77d",
+      "normalised_phrase": "retirement and welfare benefits (excluding any severance benefits, post-employment health benefits, post-employment welfare benefits and defined benefit pension and nonqualified deferred compensation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "5.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_SERVICE_CREDIT",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2cd05473066423841338258d61c63941fb381e43d01fc99fd36b338b1317dc70",
+      "closure_id": "168f4b24e2599daaff785f57ffa25f6ab50989e1532602d064899e8bfc83640c",
+      "normalised_phrase": "Parent or its applicable affiliates shall, unless prohibited by applicable Law give, or cause to be given, to Continuing Employees credit for purposes of eligibility to participate (other than any defined benefit pension, post-employment health benefits or post-employment welfare benefits plan), vesting and, with respect to severance and vacation benefits only, determining level of benefits, but not for benefit accrual, under employee benefit plans maintained by Parent or its affiliates and in which such employees participate after the Closing, for such employees’ service prior to the Closing with the Company or any of its Subsidiaries, to the same extent recognized by the Company and its Subsidiaries prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 904,
+          "end": 924,
+          "excerpt": "vide, to employees of the Company who remain employed after the Closing (the “Continuing Employees”), (i) base salaries or wages that are no less favorable than those provided ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1228,
+          "end": 1248,
+          "excerpt": "-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing and (iii) retirement and welfare benefits (exc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1564,
+          "end": 1584,
+          "excerpt": "nsation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing.\n(b) Parent or its applicable affiliates shall",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2530,
+          "end": 2550,
+          "excerpt": "uch benefit.\n(c) With respect to any Welfare Plan maintained by Parent in which Continuing Employees are eligible to participate after the Closing, Parent shall, and shall cause th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4422,
+          "end": 4442,
+          "excerpt": "riod, Parent shall, or shall cause the Company and its Subsidiaries to, provide Continuing Employees whose employment is terminated (in a manner that would trigger severance benefi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 5152,
+          "end": 5172,
+          "excerpt": "ct, trade union agreement or other works\n45\ncouncil agreement applicable to the Continuing Employees until such agreement otherwise expires pursuant to its terms or is modified by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11(c)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "waive all limitations as to preexisting conditions and exclusions with respect to participation and coverage requirements applicable to such employees to the extent such conditions and exclusions were satisfied or did not apply to such employees under the Welfare Plans of the Company and its Subsidiaries prior to the Closing (other than with respect to pre-existing health conditions pursuant to underwriting requirements under fully insured plans)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d20215f0b1c573a43f724f9f6db84306a1e1f575c9215fc63851ffaf55ebca3f",
+      "closure_id": "5187704dacbefb4bbb0db19a68f53a568c3e8586730dab336a8eacfc7f6436d4",
+      "normalised_phrase": "waive all limitations as to preexisting conditions and exclusions with respect to participation and coverage requirements applicable to such employees to the extent such conditions and exclusions were satisfied or did not apply to such employees under the Welfare Plans of the Company and its Subsidiaries prior to the Closing (other than with respect to pre-existing health conditions pursuant to underwriting requirements under fully insured plans)",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11(a)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "MONTH_COUNT_UNRESOLVED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the period beginning on the Closing and ending on the first anniversary of the Closing",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "981eb9793eed2dd2b94aa95c74bd151a236f964b9249f552891d8f5952ef4a35",
+      "closure_id": "76bdb6ddda0e3efc29a3ed05e2e561ea296ac2eaefe44f817b73055b8f63af05",
+      "normalised_phrase": "the period beginning on the Closing and ending on the first anniversary of the Closing",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11(g)",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "EMPLOYEE_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "nothing in this Section 5.11 shall confer any rights or remedies of any kind or description upon any Continuing Employee (or any beneficiaries or dependents thereof) or any other person other than Parent, its Subsidiaries, the Company and their respective successors and assigns.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "de30c415bce95c4aa965ab8afd545de3cd920747ba96ed540d8fcf3d81c6c403",
+      "closure_id": "a278b2aa086eef034f58c687481d8d784fb41a7edd34f7e7338a8f7810d0bac7",
+      "normalised_phrase": "nothing in this Section 5.11 shall confer any rights or remedies of any kind or description upon any Continuing Employee (or any beneficiaries or dependents thereof) or any other person other than Parent, its Subsidiaries, the Company and their respective successors and assigns.",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE"
+    },
+    {
+      "section_reference": "5.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "EMPLOYEE_COMP_ITEM_STANDARD",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "806e1f5a2c6cd8fe88a66cd96677475b4eadad0200abc41a1c81fec38dfe3897",
+      "closure_id": "a8ff3f898a9b559a69e36147b842b95b2e95cb0bcfae25e509ff9e456c05bdfa",
+      "normalised_phrase": "base salaries or wages that are no less favorable than those provided to Continuing Employees immediately prior to the Closing",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 904,
+          "end": 924,
+          "excerpt": "vide, to employees of the Company who remain employed after the Closing (the “Continuing Employees”), (i) base salaries or wages that are no less favorable than those provided ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1228,
+          "end": 1248,
+          "excerpt": "-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing and (iii) retirement and welfare benefits (exc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1564,
+          "end": 1584,
+          "excerpt": "nsation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing.\n(b) Parent or its applicable affiliates shall",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2530,
+          "end": 2550,
+          "excerpt": "uch benefit.\n(c) With respect to any Welfare Plan maintained by Parent in which Continuing Employees are eligible to participate after the Closing, Parent shall, and shall cause th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4422,
+          "end": 4442,
+          "excerpt": "riod, Parent shall, or shall cause the Company and its Subsidiaries to, provide Continuing Employees whose employment is terminated (in a manner that would trigger severance benefi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 5152,
+          "end": 5172,
+          "excerpt": "ct, trade union agreement or other works\n45\ncouncil agreement applicable to the Continuing Employees until such agreement otherwise expires pursuant to its terms or is modified by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "5.11",
+      "generic_claim_key": "NATIVE_EMPLOYEE_MATTERS_CANDIDATE",
+      "resolved_claim_definition_key": "WELFARE_PLAN_TRANSITION_RELIEF",
+      "concept_key": "COV-EMPLOYEE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 82,
+      "materiality_label": "EMPLOYEE_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ca8c082a4473b98a0ec15919723dd1a7b6694717e90dcad66c181014d9b46a06",
+      "closure_id": "ddd672cf181dc27e3802cdb400d7743c75138fddcec9f46ea72ecfe495002656",
+      "normalised_phrase": "provide Continuing Employees with credit for any co-payments and deductibles paid prior to the Closing in satisfying any analogous deductible or out-of-pocket requirements only to the same extent recognized by the Company or its Subsidiaries prior to the Closing",
+      "attachment_position": null,
+      "concept_family": "COV-EMPLOYEE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 904,
+          "end": 924,
+          "excerpt": "vide, to employees of the Company who remain employed after the Closing (the “Continuing Employees”), (i) base salaries or wages that are no less favorable than those provided ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1228,
+          "end": 1248,
+          "excerpt": "-based compensation), if any, that are no less favorable than those provided to Continuing Employees immediately prior to the Closing and (iii) retirement and welfare benefits (exc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 1564,
+          "end": 1584,
+          "excerpt": "nsation plans) that are no less favorable in the aggregate to those provided to Continuing Employees immediately prior to the Closing.\n(b) Parent or its applicable affiliates shall",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 2530,
+          "end": 2550,
+          "excerpt": "uch benefit.\n(c) With respect to any Welfare Plan maintained by Parent in which Continuing Employees are eligible to participate after the Closing, Parent shall, and shall cause th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 4422,
+          "end": 4442,
+          "excerpt": "riod, Parent shall, or shall cause the Company and its Subsidiaries to, provide Continuing Employees whose employment is terminated (in a manner that would trigger severance benefi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-EMPLOYEE",
+          "pattern_id": "COV-EMPLOYEE:PHRASE:CONTINUING_EMPLOYEES",
+          "start": 5152,
+          "end": 5172,
+          "excerpt": "ct, trade union agreement or other works\n45\ncouncil agreement applicable to the Continuing Employees until such agreement otherwise expires pursuant to its terms or is modified by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "bd00def83f8f506c86cf6bc6a3dab8d024a181038970356f32e72010a236fd49"
+}

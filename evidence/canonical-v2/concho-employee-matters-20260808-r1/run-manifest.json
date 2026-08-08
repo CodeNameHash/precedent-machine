@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "concho",
+  "deal_label": "ConocoPhillips / Concho Resources Inc.",
+  "section_family": "EMPLOYEE_MATTERS",
+  "purpose": "General extraction run: family EMPLOYEE_MATTERS on deal concho.",
+  "section_references": [
+    "6.9"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "6.9",
+      "family_id": "EMPLOYEE_MATTERS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-employee-matters/v1",
+  "prompt_version": 1,
+  "agreement_date": "2020-10-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T04:54:11.993Z",
+  "total_elapsed_ms": 154944,
+  "extraction_wall_clock_ms": 149279,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/concho-employee-matters-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "81f9af7d1e2699e0cfb81326da347f28728bbdd9",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "4487d73a176b897ec73e8727e381acf01f5108cfefd74b160393ceac5113e450",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
