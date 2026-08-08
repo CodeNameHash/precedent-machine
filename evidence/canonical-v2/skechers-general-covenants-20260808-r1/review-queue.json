@@ -1,0 +1,335 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "aaa94717819a35df81707916af4af5a5637367d63afda7d15c502b73d16cd9bb",
+  "review_queue": [
+    {
+      "section_reference": "6.13",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "57e159427c5def07839035548cfef59ead57865346e2c4e5e3f20fe709457e10",
+      "closure_id": "4237780561e3ee7bedb050b6b8d728c50f11ebf12156f326ed53a821124613f5",
+      "normalised_phrase": "the Company will give prompt notice to Parent upon becoming aware that any representation or warranty made by it in this Agreement has become untrue or inaccurate in any material respect, or of any failure by the Company to comply with or satisfy in any material respect any covenant, condition or agreement to be complied with or satisfied by it pursuant to this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 5,
+          "end": 36,
+          "excerpt": "6.13 Notification of Certain Matters.\n(a) Notification by the Company. At all times during the period commencing wit",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.13",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c2aa9a89c102ee253baae1a17648fed4e66ceb5a34b84d3bc053d292b810898e",
+      "closure_id": "76e379b7a6745efaf07c99c1a972cccc82c643ff1ee370572193e491f2d17716",
+      "normalised_phrase": "Parent will give prompt notice to the Company upon becoming\n-73-\naware that any representation or warranty made by the Buyer Parties in this Agreement has become untrue or inaccurate in any material respect, or of any failure by the Buyer Parties to comply with or satisfy in any material respect any covenant, condition or agreement to be complied with or satisfied by it pursuant to this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-NOTIFY",
+          "pattern_id": "COV-NOTIFY:PHRASE:NOTIFY",
+          "start": 5,
+          "end": 36,
+          "excerpt": "6.13 Notification of Certain Matters.\n(a) Notification by the Company. At all times during the period commencing wit",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.14",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "122f254ab9b127efb82c90cc7b25be38bfce2085bf5e834441075d102de37543",
+      "closure_id": "670a9c4386bdd7ea3d01a4d64ab93c757d046c22523c2adcab93091fa9bf493f",
+      "normalised_phrase": "The initial press release concerning this Agreement and the Merger of the Company, on the one hand, and the Buyer Parties, on the other hand, will each be reasonably acceptable to the other Party.",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY"
+    },
+    {
+      "section_reference": "6.15",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "74d0a737cc7d29f69b2b97a6bf8c584f21371e8cf3766fe04f6f118c217e4145",
+      "closure_id": "1d01b18f0cb01337327781b20e3aac9da06bf6c68a8482abdf5c06457be8cdd2",
+      "normalised_phrase": "the Company will provide Parent with prompt notice of all Transaction Litigation (including by providing copies of all pleadings with respect thereto) and keep Parent reasonably informed with respect to the status thereof",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "6.15 Transaction Litigation. Prior to the Effective Time, the Company will provide Parent with prompt notic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 394,
+          "end": 416,
+          "excerpt": "the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation; and (b) consult with Parent with respect to the defense, settlement and prosec",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 509,
+          "end": 531,
+          "excerpt": "sult with Parent with respect to the defense, settlement and prosecution of any Transaction Litigation. The Company may not compromise, settle or come to an arrangement regarding, or",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1001,
+          "end": 1023,
+          "excerpt": " proposed strategy and other material decisions and filings with respect to the Transaction Litigation by the Company (to the extent that the attorney-client privilege between the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1211,
+          "end": 1233,
+          "excerpt": " undermined), and Parent may offer comments or suggestions with respect to such Transaction Litigation but will not be afforded any decision-making power or other authority over such",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1314,
+          "end": 1336,
+          "excerpt": "but will not be afforded any decision-making power or other authority over such Transaction Litigation except for the settlement or compromise consent set forth above.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.15",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2b251e77ef0df529ee116ccffe4da19ed82f6799c965985c22532ec34e2bd5b1",
+      "closure_id": "ac9f9a51f17ec06122756a51579760c9bbed90ca81cf82353be044e5cc030dd8",
+      "normalised_phrase": "The Company may not compromise, settle or come to an arrangement regarding, or agree to compromise, settle or come to an arrangement regarding, any Transaction Litigation unless Parent has consented thereto in writing",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "6.15 Transaction Litigation. Prior to the Effective Time, the Company will provide Parent with prompt notic",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 394,
+          "end": 416,
+          "excerpt": "the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation; and (b) consult with Parent with respect to the defense, settlement and prosec",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 509,
+          "end": 531,
+          "excerpt": "sult with Parent with respect to the defense, settlement and prosecution of any Transaction Litigation. The Company may not compromise, settle or come to an arrangement regarding, or",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1001,
+          "end": 1023,
+          "excerpt": " proposed strategy and other material decisions and filings with respect to the Transaction Litigation by the Company (to the extent that the attorney-client privilege between the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1211,
+          "end": 1233,
+          "excerpt": " undermined), and Parent may offer comments or suggestions with respect to such Transaction Litigation but will not be afforded any decision-making power or other authority over such",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 1314,
+          "end": 1336,
+          "excerpt": "but will not be afforded any decision-making power or other authority over such Transaction Litigation except for the settlement or compromise consent set forth above.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.16",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "108eda1df4b4214cdb7514eab9240c50b11dfb98ac72f1a8cca0a5b80fdba4e3",
+      "closure_id": "b556136f1d8ae7e8ec0d3b0487baf0fc64bb7ea4c7545351b7e41e0dfa3f3a59",
+      "normalised_phrase": "the Company will cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time; and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 20,
+          "end": 29,
+          "excerpt": "6.16 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company will cooperate with P",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.7",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_TAKEOVER_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-TAKEOVER",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7dd041bc14ad4914c5ec8e4ff9a8f4207bade19fbf9d3a2129dc5923f161da62",
+      "closure_id": "e67f4d59f06d103016cc4059ed6954a9c0db1f1aed200f2c3c574a5157750277",
+      "normalised_phrase": "The Company and the Company Board will (a) take all actions within their power to ensure that no “anti-takeover” statute or similar statute or regulation is or becomes applicable to the Merger; and (b) if any “anti-takeover” statute or similar statute or regulation becomes applicable to the Merger, take all action within their power to ensure that the Merger may be consummated as promptly as practicable on the terms contemplated by this Agreement and otherwise to minimize or make inapplicable the effect of such statute or regulation on the Merger.",
+      "attachment_position": null,
+      "concept_family": "COV-TAKEOVER",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-TAKEOVER",
+          "pattern_id": "COV-TAKEOVER:PHRASE:TAKEOVER",
+          "start": 9,
+          "end": 22,
+          "excerpt": "6.7 Anti-Takeover Laws. The Company and the Company Board will (a) take all actions within their power",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "6.8",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dcd921338cf3d5ded59b5b455394f9b6c9997f3f1a5f7e5f4fc21b325ca18ab4",
+      "closure_id": "c14b8262d104b13775658f206398ac516191d693dad4b0dc65e1e1a84fcd299c",
+      "normalised_phrase": "the Company will afford Parent and its Representatives reasonable access during normal business hours, upon reasonable advance notice, to the properties, books and records and personnel of the Company Group",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS"
+    },
+    {
+      "section_reference": "6.8",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "55936352916e9c04484dd89f2e4c12f766a64785af74d3c7aeb0b4dcb47f87ad",
+      "closure_id": "f060d887b30cb800dbb3b9959ad004e3a0845b077e2ba05b6f519e9aa44ae3c3",
+      "normalised_phrase": "The terms and conditions of the Confidentiality Agreement will apply to any information obtained by Parent or any of its Representatives in connection with any investigation conducted pursuant to the access contemplated by this Section 6.8",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS"
+    },
+    {
+      "section_reference": "6.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-16B",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d084ef2fe554fcac53506bbf02a2d95f7267e38d36ffae4c2691557b346b48a5",
+      "closure_id": "771d0252d8457c9c99c54bf4df69e23feb99d380cd3f9d70b7abf9c9530997c1",
+      "normalised_phrase": "The Company will take all actions reasonably necessary to cause the Merger, and any dispositions of equity securities of the Company (including derivative securities) in connection with the Merger by each individual who is a director or executive officer of the Company to be exempt pursuant to Rule 16b-3 promulgated under the Exchange Act.",
+      "attachment_position": null,
+      "concept_family": "COV-16B"
+    }
+  ],
+  "review_queue_artifact_id": "88e2b04bc3cdfaca217662005b25280bbafedaeceb3276d8d10ee361d5fa8b95"
+}

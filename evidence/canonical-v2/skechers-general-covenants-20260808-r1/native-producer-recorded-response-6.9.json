@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:09:02.206Z",
+  "section_reference": "6.9",
+  "note": "General extraction run: deal=skechers, family=GENERAL_COVENANTS, section_references=[\"6.1\",\"6.7\",\"6.8\",\"6.9\",\"6.12\",\"6.13\",\"6.14\",\"6.15\",\"6.16\",\"6.20\",\"6.21\"] (all dispatched as GENERAL_COVENANTS via section_family_assignments), prompt_id=native-producer-general-covenants/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"general_covenants\": [\n    {\n      \"section_reference\": \"6.9\",\n      \"covenant_obligor\": \"The Company\",\n      \"covenant_code\": \"COV-16B\",\n      \"definition_cross_references\": [],\n      \"quote\": \"The Company will take all actions reasonably necessary to cause the Merger, and any dispositions of equity securities of the Company (including derivative securities) in connection with the Merger by each individual who is a director or executive officer of the Company to be exempt pursuant to Rule 16b-3 promulgated under the Exchange Act.\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:13:35.921Z",
+  "section_reference": "9.10",
+  "note": "General extraction run: deal=concho, family=MISC_BOILERPLATE, section_references=[\"9.1\",\"9.2\",\"9.3\",\"9.4\",\"9.5\",\"9.6\",\"9.7\",\"9.8\",\"9.9\",\"9.10\",\"9.12\",\"9.13\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"No Company Affiliate shall have any liability or obligation to Parent or Merger Sub of any nature whatsoever in connection with or under this Agreement or the transactions contemplated hereby or thereby other than for fraud, and Parent and Merger Sub hereby waive and release all claims of any such liability and obligation, other than for fraud.\"},{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"No Parent Affiliate shall have any liability or obligation to the Company of any nature whatsoever in connection with or under this Agreement or the transactions contemplated hereby or thereby other than for fraud, and the Company hereby waives and releases all claims of any such liability and obligation, other than for fraud.\"}],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}
