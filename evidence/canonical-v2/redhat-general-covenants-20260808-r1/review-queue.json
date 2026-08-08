@@ -1,0 +1,115 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "0808cd9b85bd12ef19db45ae216dc01e315acfca0202068178043400bac69b52",
+  "review_queue": [
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d4c151cca2ff92c656b8e36f662c9074eec72c0eef8ce4e76dfa4c2b5e092cc1",
+      "closure_id": "b20fe995237c54d37dbeffa23ba02be326943f070fd411c4eb0363c7c018d852",
+      "normalised_phrase": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 13,
+          "end": 34,
+          "excerpt": "Section 5.02 Access to Information; Confidentiality. The Company shall, and shall cause each of its Subsidiaries t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "5.07",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "15f54dcb035833487acfa2771f9d9ca70e826a2d30f04c31daaf458216d388b5",
+      "closure_id": "6685d14d7f0c7ec5a8c3be5bf6955d22e0786e66738fba044ba68eb93025ccce",
+      "normalised_phrase": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation, except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange or national securities quotation system",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 13,
+          "end": 33,
+          "excerpt": "Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "5.07",
+      "source_citation": "5.07",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the initial press release to be issued with respect to the transactions contemplated by this Agreement shall be in the form heretofore agreed to by the parties",
+      "canonical_value": "COV-PUBLICITY",
+      "original_claim_occurrence_id": "88b33e868d4a43eb80d00b44d4ca91ee2916267818e6b3f1bbe8ce7c0dd745fc",
+      "closure_id": "7818b6eee80ea47e8d975ab5735ad7fe78feba5b75bbf2803e69c8392e88f07f",
+      "normalised_phrase": "the initial press release to be issued with respect to the transactions contemplated by this Agreement shall be in the form heretofore agreed to by the parties",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY"
+    },
+    {
+      "section_reference": "5.09",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "fb5a5de5ae8750b33cee890470554d844e3c9ad710497551de8f899c4a08eb89",
+      "closure_id": "9ff71062cd8c4ddc538746b6543a57d04295413198097e49084d6a7d3dc24a53",
+      "normalised_phrase": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 28,
+          "end": 37,
+          "excerpt": "Section 5.09 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    }
+  ],
+  "review_queue_artifact_id": "2fc00cc61967cad3af07618351d11365f830fac4cae3ed4b926bba357a53ceed"
+}
