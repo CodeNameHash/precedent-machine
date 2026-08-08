@@ -1894,6 +1894,36 @@ the right publish rate? Two readings, and they lead to different work:
 (2) would licence exactly the kind of corpus-wide prompt sweep that Step 2F2 is
 already holding back for want of evidence.
 
+**The three symptoms are ONE cause, established by a failed hypothesis on
+2026-08-08.** Concho's `CONSIDERATION` published nothing across 31 candidates,
+all `NO_RATIO_LITERAL`. I predicted the cause was scope — that the Exchange
+Ratio is a defined term whose value lives in the definitions section, outside
+the operative sections pinned to the family — and tested it by re-running with
+Annex-A "Certain Definitions" added.
+
+**The prediction was wrong.** Queued failures fell from 5 to 1 and open world
+rose from 26 to 36, but nothing resolved. The reason: the literal was never
+elsewhere. Concho §3.1 reads *"...equal to the Exchange Ratio (the 'Merger
+Consideration'). As used in this Agreement, **'Exchange Ratio' means 1.46**."*
+The definition sits in the same section, one sentence after the operative
+clause, and that section was in scope the whole time. The model quoted the
+operative sentence and stopped short of the next one.
+
+That makes it the same failure as `FEE_SIDE_UNCORROBORATED` on SkyWater's
+termination fee (quote is the bare figure, no payer or payee) and
+`TERMINATING_PARTY_REF_NOT_IN_QUOTE` on Concho and Red Hat's termination
+articles (quote is the trigger, not who may pull it). **Three families, four
+deals, one cause: the model quotes the operative words and omits the adjacent
+fact the resolver must corroborate against.** Not a scope problem, not a
+mapping problem, and not a resolver defect — every one of those refusals is
+correct on the evidence it was given.
+
+This raises the stakes on the choice above, because it is now a single
+identified mechanism rather than a diffuse rate. It also means reading (2) has
+a concrete, testable form: instruct producers to extend a quote to the sentence
+carrying the fact the claim asserts. That is a taxonomy change and stays Ben's
+call.
+
 **New evidence for Step 2F2, found while fanning out on 2026-08-08.** Red Hat's
 `TAX_MATTERS` returned `{"tax_assertions":[],"mechanics":[],"open_world_candidates":[]}`
 on §3.01(m) — 5,145 bytes that are the tax representation. Three empty arrays on
