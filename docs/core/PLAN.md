@@ -1709,10 +1709,26 @@ the response and setting the provider's `maxOutputTokens` to the same figure the
 CLI is asked for. This is the eighth guard found in this programme that was
 defined, exported and unable to fire.
 
-**Still open.** What the real ceiling actually is (established only as "at least
-69,576"), why the static reading and the behaviour disagree, and whether
-REPRESENTATIONS §3.1 — 83,756 bytes, the largest section in play, attempted
-71,907 tokens — fits under it. A re-ruling is in hand.
+**Still open, and one of these is a proof I could not complete.**
+
+1. **The guard's wiring is made but its firing on a real run is UNPROVEN.**
+   `usage` now travels on the response and the ceilings match, both readable in
+   the diff, and 11 unit tests cover the predicate. But the obvious end-to-end
+   proof — set the ceiling low, watch a real extraction refuse — does not work:
+   at `CLAUDE_CODE_MAX_OUTPUT_TOKENS` of 1,200 and 8,000 the CLI exits 1 before
+   generating anything, with an unrelated workspace-trust message, so the run
+   dies upstream of the guard. Two attempts, both on families that complete
+   normally at the default. **Until someone watches this fire on a live call it
+   is a guard believed to work, which is the exact category this programme keeps
+   discovering was wrong.** It needs a way to lower the guard's threshold without
+   lowering the CLI's — without creating a second source of truth for the
+   ceiling, which is the bug class that produced it.
+2. **What the real ceiling is.** Established only as "at least 69,576".
+3. **Why the static reading and the behaviour disagree.**
+4. **Whether REPRESENTATIONS §3.1 fits** — 83,756 bytes, the largest section in
+   play, previously attempted 71,907 tokens.
+
+A re-ruling is in hand on all four.
 
 **Proves it is done.** Both families extract TopBuild through the standard
 validation, write and projection gates. NO_SHOP has done so.
