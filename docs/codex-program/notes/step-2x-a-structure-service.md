@@ -45,11 +45,13 @@ Date: 2026-08-08. Branch: `cursor/step-2x-free-phase-b641`. Replay-only.
 
 `findTerminationLimbChapeau` now delegates its structural half to
 `resolveTerminationLimbChapeauViaStructure` (DECISIONS.md §15). Gate was
-byte-identical Modiv 7.1 / Concho 8.1 / TopBuild 6.2 chapeau spans
-(19/19 identical including TopBuild 6.3/6.4). Direction grammar and
-capacity comparison remain in `candidate-resolution.js`. UNDETERMINED from
-the service maps to null (fail closed), never a guessed chapeau. Fixtures:
+byte-identical Modiv 7.1 / Concho 8.1 / TopBuild 6.2–6.4 chapeau spans:
+**19 compared, 19 identical, 0 mismatch** (pre-swap vs adapter). Pinned
+fixtures cover 14 limbs (Modiv a–d, Concho a–f, TopBuild 6.2 a–d) under
 `tests/fixtures/canonical-v2/termination-rights-family/termination-limb-chapeau-structural-parity.json`.
+Direction grammar and capacity comparison remain in
+`candidate-resolution.js`. UNDETERMINED/null from the service maps to null
+(fail closed), never a guessed chapeau.
 
 ## Deferred (explicit)
 
