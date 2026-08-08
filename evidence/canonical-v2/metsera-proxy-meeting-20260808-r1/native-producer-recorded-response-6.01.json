@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T10:47:55.011Z",
+  "section_reference": "6.01",
+  "note": "General extraction run: deal=metsera, family=PROXY_MEETING, section_references=[\"6.01\",\"6.10\",\"6.11\"] (all dispatched as PROXY_MEETING via section_family_assignments), prompt_id=native-producer-proxy-meeting/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"proxy_meeting_assertions\": [\n    {\n      \"section_reference\": \"6.01\",\n      \"assertion_kind\": \"MERGER_SUB_APPROVAL\",\n      \"anchor_kind\": \"AGREEMENT_DATE\",\n      \"day_kind\": null,\n      \"limit_basis\": null,\n      \"reason_kind\": null,\n      \"control_party\": null,\n      \"consenting_party\": null,\n      \"obligated_party\": \"Parent\",\n      \"meeting_ref\": null,\n      \"document_ref\": \"this Agreement\",\n      \"adoption_mechanism\": \"SOLE_STOCKHOLDER_ADOPTION\",\n      \"adoption_timing\": \"Immediately following the execution of this Agreement\",\n      \"quote\": \"Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.\"\n    }\n  ],\n  \"open_world_candidates\": []\n}\n```"
+}

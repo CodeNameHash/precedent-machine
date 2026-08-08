@@ -1,0 +1,78 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "9ccc2d3333356cba8198523ddf908ce62bfe327c51806e92cf0a908b7b55ff3d",
+  "review_queue": [
+    {
+      "section_reference": "2.01",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6ed38e5afeb686bb645720b750e9d136bd1da593ab8cdca6c495cbc7af28d999",
+      "closure_id": "6be8b5435c555d942b24c04a87063f69ebff5393288f1483227182273e83e467",
+      "normalised_phrase": "who is entitled to demand and properly demands appraisal of such shares pursuant to, and who complies in all respects with, Section 262 of the DGCL (“Section 262”)",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:PHRASE:APPRAISAL_RIGHTS",
+          "start": 2423,
+          "end": 2439,
+          "excerpt": "the Merger Consideration in accordance with Section 2.02, without interest.\n(d) Appraisal Rights. Notwithstanding anything in this Agreement to the contrary, shares of Company ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "2.01",
+      "source_citation": "2.01(c)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "$47.50 in cash, without interest (the “Closing Amount”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1931e10be58b02989b664f30b9f3712c893c81a87e27b3cb55e291951c9e9c72",
+      "closure_id": "8193a59a4bf74653292309cac883fa027699dc49efdea465fec870f7466232b7",
+      "normalised_phrase": "$47.50 in cash, without interest (the “Closing Amount”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    },
+    {
+      "section_reference": "2.02",
+      "source_citation": "2.02(b)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an amount of cash equal to the product of (1) the number of shares of Company Common Stock theretofore represented by such Certificate or Book-Entry Shares and (2) the Closing Amount",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9afe1b05ef671adeb7ecfef116b9f28f8c8cd5461d249e881086f855d7426f11",
+      "closure_id": "72534c9d849fdbe9f8373625ea3d95d203fc7c1782924a5535e0b0e7d6e5c738",
+      "normalised_phrase": "an amount of cash equal to the product of (1) the number of shares of Company Common Stock theretofore represented by such Certificate or Book-Entry Shares and (2) the Closing Amount",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE"
+    }
+  ],
+  "review_queue_artifact_id": "0532c18d1f424e5611b64542b3a9e9e5ce30a4b823e2721f8b2cb4738ae9688e"
+}
