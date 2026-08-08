@@ -2098,12 +2098,16 @@ separately. But convergence is a hypothesis, not a conclusion — some of the
 five may differ for good reasons, and collapsing them would then lose
 behaviour.
 
-**DECIDED 2026-08-08 by Fable: converge two of the five, not all five.** Build
+**DECIDED 2026-08-08 by Fable, and re-confirmed after the sixth mechanism was
+found: converge two of the SIX, not all of them.** Build
 the service; adapt `findTerminationLimbGrantContext`'s structural half and the
 limb pre-pass onto it; keep `findIocChapeau`, `qualifier-attachment.js` and
 `limb-components.js` separate.
 
-The deciding facts. Only two of the five discover structure from text at all —
+The deciding facts. Only two of the six discover structure from text *and*
+answer the governing-span question — `deterministic-sectionizer.js` discovers
+structure but is the section INVENTORY and the service's second input, not a
+candidate for the base (see above) —
 `qualifier-attachment.js` takes no span and answers scope-of-wording, and
 `limb-components.js` consumes model-declared paths including descriptive
 headings a segmenter can never produce. And there is a concrete input where the
@@ -2208,11 +2212,21 @@ useful part.**
 | scope | whole document | per section |
 | offsets | UTF-8 bytes | UTF-16 string indices |
 
-Neither is better. They fail in opposite directions, which means **their
-disagreement is a signal, not a problem to resolve**:
+Neither is better. **They are complementary on marker RECALL, not on tree
+SHAPE** — a correction Fable made from the code after this table was first
+written. An unmatched candidate in `buildMarkerTree` opens a new child under
+the deepest open frame, so a restarting `(a)` mis-nests there exactly as it does
+in `segmentSubClauses`. **Agreement between the two detectors therefore does NOT
+confirm parentage**, and the same-style refusal stays mandatory regardless of
+what they agree on.
+
+On recall they genuinely differ, and there the disagreement is a signal:
 
 - **Both find a marker** → high confidence.
-- **Line-anchored only** → a conventionally laid-out list item. Safe.
+- **Line-anchored only** → not merely "safe to annotate": the sectionizer's
+  label width is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and
+  long doubled-letter overflow are markers `segmentSubClauses` **structurally
+  cannot see**. These must be UNIONED IN, not just noted as agreed-absent.
 - **`segmentSubClauses` only** → an inline enumeration. This is exactly the set
   that is either a genuine inline list (which is why the permissive rule
   exists) **or** a cross-reference, back-reference or forward-reference. It is
@@ -2222,6 +2236,11 @@ That last row is the answer to the reference problem without new machinery: a
 marker seen only by the permissive detector requires corroboration, where a
 line-anchored marker does not. Two mechanisms we already own, used against each
 other.
+
+**One caveat on the line-anchor immunity.** It assumes structural line breaks,
+which holds for HTML-derived `cleanText` and therefore for all seven corpus
+deals. It is void for a hard-wrapped plain-text filing, where the anchor would
+fire mid-sentence. Test before relying on it outside the current corpus.
 
 **Scope: ALL sections, not only extracted ones. Decided 2026-08-08 by Ben.**
 The placement pass as first drafted covered every section that produced claims
@@ -2674,6 +2693,50 @@ same shaper gap may exist elsewhere and would be invisible by the same route.
 `limb_component_trees`, with the limb count reconciled against the count in the
 recorded response — 69 for Red Hat's §3.01 and §3.02 — and no limb silently
 dropped. Zero new model calls in the run receipt.
+
+---
+
+## Step 2X-L1. Account for every limb, or the tree is a silent drop
+
+**What it is.** 2X-L landed on 2026-08-08 and the tree minted for the first
+time: the Red Hat replay carries 2 `limb_component_trees`, 7 path nodes and 6
+assertion nodes, against 202 of 202 runs where the array was empty. That is
+real and it proves the mechanism.
+
+**It does not prove the step is done, and it was reported as though it did.**
+The model emitted **69 limbs** on those two sections — 60 in 3.01, 9 in 3.02 —
+verified against the source run's recorded responses. Six assertion nodes were
+minted. `residuals` is **zero**.
+
+**Why that is not acceptable as it stands.** A shortfall with zero residuals is
+indistinguishable from a silent drop, and it is the same signature as the defect
+fixed earlier the same day, where open-world candidates emitted as bare strings
+vanished without trace because the shaper returned a bare `null` instead of
+recording. The open-world channel exists so content the taxonomy cannot express
+is still captured; a limb channel that discards 63 of 69 inputs without saying
+why defeats its purpose in exactly the same way.
+
+**The mitigating possibility, which must be proved rather than assumed.** The
+run receipt carries a `limb_enumeration_scan` classifying markers as
+`ENUMERATION_MARKER` or `CROSS_REFERENCE_MARKER`. Many of the 69 may be
+model-declared limbs that are genuinely cross-references and were correctly
+declined — which would be right behaviour. But **"correctly declined" and
+"silently dropped" are identical from outside when the residual count is zero**,
+and telling them apart is the whole point.
+
+**Change.** Publish a 69 → minted / dropped-with-reason table. Every input limb
+gets exactly one disposition, and the count with none is zero. Where a limb is
+declined as a cross-reference, the reason code and the classifying evidence are
+recorded, so the decline is auditable rather than assumed correct.
+
+**Also required at diff review.** Path hygiene: model limb paths mix outline
+markers (`["(a)","(i)"]`) with descriptive headings
+(`["Corporate power and authority"]`). A path that is not an outline path cannot
+be corroborated against the derived tree, and must be handled explicitly rather
+than silently accepted.
+
+**Proves it is done.** The disposition table exists, sums to 69, and the
+unaccounted count is zero — computed from the evidence, not asserted.
 
 ---
 

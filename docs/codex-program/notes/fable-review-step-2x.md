@@ -385,3 +385,110 @@ for flat families**; identity minting stays with model-declared limbs
 claim. Sits in the free replay phase immediately after 2X-L, which supplies
 its first consumer (path-hygiene corroboration) and whose limb trees it
 cross-checks.
+
+---
+
+## 6. The sixth mechanism, and the per-step re-walk (2026-08-08, later)
+
+Code read: `deterministic-sectionizer.js` in full around `buildMarkerTree`
+(:228–319), `classifyOpeningKind`/`expectedNext` (:114–205), `MARKER_PATTERN`
+(:112); `subclauses.js` `MARKER_TOKEN_RE` (:246, read-only — under edit);
+commit 501e2d26 and its replay evidence. The coordinator's table is mostly
+right; two of its conclusions are wrong in ways that matter.
+
+### 6.1 Does the sixth mechanism change the 2X-A decision?
+
+**The architecture stands: converge two, keep three. The sectionizer is
+neither the base nor a seventh kept-separate — it is the service's SECOND
+INPUT, and it is also the section inventory the broadened placement pass now
+requires.** Ben's "all sections, not only those with claims" needs an
+enumeration of every section including ones no family touched;
+`deterministic-sectionizer.js` on the live path (`native-extraction-run.js:173`)
+already is that enumeration. Base stays `segmentSubClauses` for recall — the
+QXO inline `(A)`–`(D)` fact that decided recall is untouched, `buildMarkerTree`
+structurally cannot see inline markers.
+
+**Where the coordinator's table is wrong, from the code:**
+
+1. **"They fail in opposite directions" is false for parentage.** An
+   unmatched candidate in `buildMarkerTree` "opens a brand-new child level
+   directly under whatever sequence is currently deepest" (:212, :297–311).
+   A second list restarting at `(a)` under an open `(b)` frame nests as a
+   child — the SAME same-style restart mis-nest as `segmentSubClauses`, and
+   the module's own history shows a worse variant (the ever-deepening
+   letter-overflow chain, :164–177). **Agreement between the two detectors
+   does not confirm tree shape.** Corroboration is a marker-EXISTENCE signal
+   only; the same-style refusal stays mandatory regardless.
+2. **"Line-anchored only → conventional list item" understates it.**
+   `MARKER_TOKEN_RE` is `{1,3}` letters; `MARKER_PATTERN` allows 9. `(viii)`
+   and doubled-letter overflow past three chars are sectionizer-ONLY finds —
+   a recall gap, so line-anchored-only markers must be UNIONED into the
+   marker set, not merely annotated. (Width may change with the in-flight
+   `subclauses.js` work — recheck after it lands.)
+3. Line-anchor immunity is conditional on line breaks being structural
+   (HTML-derived cleanText). All seven deals are modern EDGAR HTML; a
+   hard-wrapped plain-text filing voids it. Record the assumption.
+
+**Per-marker corroboration tiers for the service:** CORROBORATED (both);
+LINE_ANCHORED_ONLY (union in — width/inline gaps); PERMISSIVE_ONLY (the risky
+set: genuine inline list or cross-reference — annotation allowed with tier
+recorded; identity minting and absence assertions require corroboration).
+
+### 6.2 Does corroboration solve the reference hazards? (coordinator Q3)
+
+Smaller, and for the two observed shapes, effectively yes — but by two
+different tests. The colon back-reference (`(A) and (B) above.`) is inline →
+PERMISSIVE_ONLY → flagged; it also breaks `expectedNext` sequence. The
+forward reference (`provided that (D)…; (D) do four.`) is the sharper case:
+both detectors find "(D)", at DIFFERENT offsets — same expected label, one
+inline start, one line-anchored start. That specific disagreement is
+detectable and the line-anchored start wins. So: existence hazards largely
+handled by mechanisms we own (corpus frequency already measured low);
+parentage hazards NOT handled (6.1.1) — they remain the same-style rule's
+job, and its blind spot (manufactured siblings) remains, now partially
+covered by the start-offset-disagreement test. Not a solved problem; a
+bounded one.
+
+### 6.3 Per-step walk, 2X-0 through 2X-L (Ben's question)
+
+- **2X-0 — unchanged in substance; blocker 2 grew.** 501e2d26 and 3bfcf15b
+  are new UNREVIEWED/wip commits on the branch. 2X-D is confirmed NOT in the
+  cursor range (no taxonomy/lexicon file in the diff), so blocker 1 stands.
+- **2X-A — CHANGED** as §6.1: second input, corroboration tiers,
+  sectionizer as section inventory, and the plan's own prose still says
+  "converge two of the five / only two of the five" three times (PLAN
+  :2101–2122) after the header was updated to six — a stale-count fix.
+- **2X-A1 — unchanged.** Qualifier lexicon; the sectionizer has no bearing.
+- **2X-B — unchanged.** Family vocabularies, no structural dependency.
+- **2X-C — unchanged.**
+- **2X-D — unchanged and still open.** The belief it had landed in the
+  cursor branch was false; verified against the diff.
+- **2X-E — unchanged** (done; the `NoShopCrossViewPreview` sibling item open).
+- **2X-F — unchanged.** Topology consumes defined terms and
+  `transaction_steps`, not sub-clause trees.
+- **2X-G — unchanged.**
+- **2X-H — unchanged.**
+- **2X-I — changed at the margin.** Its open question (segment ahead of the
+  model call so the model cites limbs by path) must inherit the rule from
+  the identity note: derived structure may DESCRIBE what the model said,
+  never SELECT what the model reads. Citing by path is admissible only if
+  the model still receives full section text; otherwise the 1% becomes an
+  invisible coverage hole. Otherwise unchanged.
+- **2X-L — landed, UNREVIEWED, acceptance NOT yet shown met.** The commit
+  message's own numbers do not reconcile: 69 limbs recorded, "2 trees, 7
+  path nodes, 6 assertion nodes, zero residuals" claimed, while
+  `resolution.json` carries 26 `limb_component_id`s and 65 `limb_path`
+  occurrences. Zero residuals plus any shortfall = silent drop until the
+  reconciliation table (69 → minted/dropped-with-reason) is published. That
+  table is the step's stated acceptance; the diff review must demand it.
+- **2X-J — unchanged.**
+- **2X-K — unchanged as design** (2X-L was already placed in the free
+  phase); its first free rung now has an artefact awaiting the gate above.
+
+### 6.4 Tie-back to derived identity
+
+Corroborated marker starts strengthen the start-anchored identity design in
+`derived-structure-identity.md`: the mintable set, when the stability
+criterion is eventually met, should be CORROBORATED starts only — two
+independent detectors agreeing on `{canonical_text_id, start_byte}` is the
+closest a derived limb gets to attestation.
