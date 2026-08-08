@@ -128,8 +128,47 @@ fixtures above.
 
 ## 4. Documented past defects
 
-- 
+- `tests/subclauses.test.js` (header): a prior spec document (SPAN-ACCOUNTING-SPEC-2026-07-18.md) described QXO §5.2's structure from memory of the bug report as "(a)(i), (a)(ii)(A-D), (b), (c)" — the REAL stored section text has no separate top-level `(c)`; what the spec called "(c) certificate" is actually `(b)`. A spec's prose description of a defect is not itself ground truth — the pinned real text is.
+- `tests/canonical-v2-party-capacity-lexicon.test.js`: `resolvePartyCapacity` scanned a raw multi-party obligor string once and returned the first array entry whose pattern matched anywhere, so a genuine joint obligor naming parties from BOTH sides of the deal ("Parent, Company Merger Sub, Parent OpCo, the Company and the Partnership each") silently resolved to only one side's capacity and looked like an ordinary, correct single-party resolution.
+- `tests/termr-legal-restraint-split.test.js`: Metsera §8.01(b) bundled two distinct termination rights (outside-date and legal-restraint) into one lettered sub-clause via roman numerals; the section could only carry ONE canonical code (TERMR-OUTSIDE), so the review page falsely showed the Legal Restraint termination right as "Not present."
+- `tests/knowledge-scope-type.test.js`: the review UI supported per-rep knowledge-qualifier scope display since fb2, but extraction never emitted the field — an article-wide boolean could only ever land on the shared preamble row, so no individual rep row ever showed its actual knowledge scope.
+- `tests/canonical-v2-step-2d1-defects-3-4.test.js`, Defect 3: `remedies-misc-product-projection.js`'s membership sets named an older, finer-grained claim-key vocabulary the resolver had stopped emitting; SPECIFIC_PERFORMANCE_REMEDIES and MISC_BOILERPLATE both wrote correctly upstream and then silently dropped to zero cards downstream, with no error.
+- `tests/canonical-v2-step-2d1-defects-3-4.test.js`, Defect 4: four product-projection files compared `provision.schema_version` to the single literal `'PROVISION_INSTANCE/V1'`, missing the newer, equally-valid `'STRUCTURAL_PROVISION_INSTANCE/V1'` kind that the SQL writer and validator both admit — confirmed live-failing on TAX_MATTERS, latent (not yet triggered) on FINANCING_COVENANTS, GUARANTY_FINANCING_PARTY, and REPRESENTATIONS.
+- `tests/canonical-v2-step-3g-resolver-defects.test.js`: four defects in `candidate-resolution.js`, each an over-narrow corroboration check in the resolver — includes the Material Contracts ANY-threshold widening (word-numeral/superlative markers not recognised) and a General Covenants cross-code double-fire routing rule.
+- `tests/extraction-core-fixes.test.js` EXT-1: Strategy D's step-5 feature-extraction filter required a COMPLETELY empty `features` bag before admitting alias-matched DEF provisions — no DEF path ever produced a completely empty bag, so the pass was dead code and alias-matched MAE definitions shipped with zero carve-outs extracted.
+- `tests/extraction-core-fixes.test.js` EXT-3: Strategy B stamped every provision parsed out of a multi-section chunk with the CHUNK's first-section `startChar` instead of each provision's own section's offset — span/citation accounting was silently wrong for every provision after the first in a multi-section chunk.
+- `tests/residual-cleanup-fixes.test.js` Fix 1: `claims-adapter.js` dumped raw JSON envelopes into the read view instead of a friendly label whenever a claim's backfilled attribute was object/dict-shaped but marked `verbatim` — a separate, same-family bug in a config file's stale local copy of the value-formatting logic doubled the raw code onto the label for another field.
+- `tests/residual-cleanup-fixes.test.js` Fix 3: clicking a sidebar section entry called `queueSectionScroll()` TWICE per click (once from the click handler, once from router-hydration), and each call minted a brand-new scroll-target object that cancelled the in-flight double-rAF scroll from the first call — on data-heavy deals this repeated cancel/reschedule for seconds, making the scroll+expand look like it silently never fired.
+- `tests/canonical-v2-modiv-termination-fee-scope-correction-replay.test.js` (header, "THE PROMPT-VERSION TRAP"): a replay test pinned against recorded model responses only proves what TODAY's resolver does with YESTERDAY's extraction shape — it is explicitly NOT evidence about what a fresh model call under a newer prompt version would produce. Documented as a standing trap for anyone citing an old replay test as current behavior.
+- `tests/canonical-v2-proxy-meeting-reference-fixes.test.js`: of 4 candidates flagged `MEETING_REF_NOT_IN_QUOTE`, only 2 were the real MAE-shape defect (a genuine field narrowed out of the quote by the prompt's own deliberate narrowing) — the other 2 had `meeting_ref: null` in the model's own recorded JSON, a null-vs-absent conflation, not a scope defect. Each shape got its own reason code; only the genuine narrowed-quote shape got a widened check (fixing the null-vs-absent shape the same way would have masked genuine absence).
+- `tests/canonical-v2-termination-limb-grant-context.test.js` (fixes `TERMINATING_PARTY_REF_NOT_IN_QUOTE`): the pre-fix resolver's document-wide proximity search found nothing when a party grant lived only in lettered limb heads far from the chapeau, and a naive "does the widened text contain terminating_party" substring check would have corroborated the wrong party on limbs naming both parties.
+- `tests/negation-boundary-guard.test.js` (header, "the attack from WORK-COMPLETED.md"): trimming "would not " off the front of a genuine MAE qualifier leaves a word-boundary-aligned but meaning-inverted fragment that would otherwise pass quote verification undetected.
 
 ## 5. Skipped / pending tests
 
-- 
+Grepped `tests/**` for `skip(`, `.skip(`, `todo(`, `xit(`, `xdescribe(`. Found
+9 files containing the pattern; 2 are false hits (`process.exit(0)` text
+matched greedily, not an actual skip). The remaining 7 files contain 11
+individual conditional skips — all are environment-gated (missing env var,
+missing linked staging project, missing production build, missing Supabase
+service credentials), not abandoned-guarantee skips with no path to running.
+None found unconditionally skipped with no gating condition at all.
+
+| File | Skip | Condition |
+|---|---|---|
+| `tests/canonical-v2-copy-delivery-release-f23.test.js` | `t.skip('set CANONICAL_V2_LIVE_F23=1 for the linked staging proof')` | env var unset |
+| `tests/canonical-v2-copy-delivery-release-f23.test.js` | `t.skip('isolated staging project is not linked in this environment')` | no linked staging project |
+| `tests/canonical-v2-prepare-metsera-pilot-inputs.test.js` | `t.skip('set METSERA_SEALED_SOURCE_DIR to a directory of verified <accession>.htm sealed sources to run this proof')` | env var unset |
+| `tests/canonical-v2-process-research-entry.test.js` | `t.skip('No Process research preview origin was supplied.')` | missing runtime origin |
+| `tests/canonical-v2-qxo-no-shop-copy-delivery-canonical-f19.test.js` | `t.skip('isolated staging project is not linked in this environment')` | no linked staging project |
+| `tests/canonical-v2-qxo-no-shop-copy-delivery-query-f20.test.js` | `t.skip('set CANONICAL_V2_LIVE_F20=1 for the linked staging proof')` | env var unset |
+| `tests/canonical-v2-qxo-no-shop-copy-delivery-query-f20.test.js` | `t.skip('isolated staging project is not linked in this environment')` | no linked staging project |
+| `tests/query-containment.test.js` | `t.skip('Production build not present.')` (×1) | no production build |
+| `tests/query-containment.test.js` | `t.skip('No Query containment runtime origin was supplied.')` (×2) | missing runtime origin |
+| `tests/schema/coverage.test.js` | `t.skip('no Supabase service env')` / `t.skip(unavailable)` | missing Supabase service credentials |
+
+Additionally, the ~18 `qxo-no-shop-*-staging-attestation.json` fixtures (§3)
+back tests that are gated the same way — they only run against a linked
+isolated staging Supabase project, which is not present in this read-only
+sweep environment, so their "proof" content could not itself be exercised
+here (not run, per the task's read-only + no-full-suite instructions).

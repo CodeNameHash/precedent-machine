@@ -1,14 +1,40 @@
 # Asset sweep: scripts/ sql/ supabase/
 
-Status: IN PROGRESS (incremental write-up; do not treat as final until this line is removed)
-
-Scope: `scripts/**`, `sql/**`, `supabase/**` (~300 files). Read-only analysis
+Scope: `scripts/**`, `sql/**`, `supabase/**` (300 files). Read-only analysis
 for canonical-V2 extraction quality work. Companion sweeps cover lib/, pages/,
 components/, tests/ separately.
 
 ## 1. Summary
 
-(to be filled in last)
+This slice is dominated by one huge, largely-spent cluster: ~77
+`canonical-v2-*` top-level scripts (plus their 4 `scripts/lib/` helpers and
+the 42 `sql/optionA` + `sql/qxo-reverse-f3` + `sql/qxo-reverse-f4` generated
+SQL packets) that are one-shot, hash-pinned proofs of individual PLAN.md
+acceptance steps against one hosted Supabase staging project or one local
+throwaway Postgres container — historically valuable as evidence a step
+closed, not reusable diagnostics. Buried in that cluster are a handful of
+genuinely reusable pieces: the general 25-family live-extraction runner
+(`canonical-v2-live-extraction-run.mjs`), a real replay-mode CLI
+(`canonical-v2-native-extract.mjs --replay`), and zero-cost coverage/baseline
+diagnostics. Outside that cluster, the legacy (pre-canonical-V2) layer has a
+strong existing set of quality/coverage/parity tools most valuable to this
+work: `scripts/eval.js`, `scripts/ingest-qa.js`, `scripts/review-parity-
+check.js` (the parity harness CLAUDE.md warns about), `scripts/diff-runs.js`,
+`scripts/coverage-audit.js`, `scripts/taxonomy-report.js`, `scripts/span-
+residual-baseline.js`, `scripts/integrity-orphan-check.mjs`, and `scripts/
+nets-eligibility-report.mjs` (a genuine zero-network replay report). The
+`sql/` and `supabase/` schema map answers all four live questions the brief
+named: limb/component trees live in `provision_instances` +
+`provision_components` (parent-linked by id, not FK — real `component_key`
+example: `EXCEPTION_LIMB`); evidence residuals and hold-back reasons are the
+`residuals` table's 12-value `reason_code` CHECK vocabulary plus the
+`quarantines` table's single `UNRESOLVED_RESIDUAL` escalation state;
+qualifier attachment is a named metric (`KNOWLEDGE_QUALIFIER_STATE`,
+`GENERAL_MATERIALITY_QUALIFIER_STATE`) bound to a specific value-slot on a
+specific component/claim, not a flag on the parent provision. Roughly 100+
+of the 300 files in this slice are confidently classifiable as dead or
+spent one-offs (see §5); a further ~30-40 are narrow/historical governance or
+migration tooling not individually re-verified.
 
 ## 2. Scripts worth keeping
 

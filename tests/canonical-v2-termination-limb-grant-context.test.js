@@ -333,9 +333,73 @@ test('unit: parseTerminationLimbDirection recognises "from X to Y" and "either X
   );
   assert.deepEqual(
     parseTerminationLimbDirection('(b) by either the Company, on the one hand, or Parent, on the other hand, by written notice to the other, if:'),
-    { outcome: 'EITHER_PARTY', party_a: 'the Company', party_b: 'Parent' },
+    {
+      outcome: 'EITHER_PARTY',
+      party_a: 'the Company',
+      party_b: 'Parent',
+      either_phrase: 'either the Company, on the one hand, or Parent, on the other hand',
+    },
   );
   assert.deepEqual(parseTerminationLimbDirection('(e) if the sky is blue, if:'), { outcome: 'UNRECOGNISED' });
+});
+
+// Stage 1 (docs/codex-program/notes/structural-inheritance-diagnosis.md):
+// the corpus's single most common mutual form -- plain "by either X or Y",
+// no "on the one hand" -- plus the bare one-party limb head. Real drafting
+// verbatim from Concho 8.1(b) and SkyWater's Article VIII, not invented.
+test('unit: parseTerminationLimbDirection recognises the plain "by either X or Y" mutual head and the bare "(x) by X:" one-party head', () => {
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by either the Company or Parent:'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'the Company', party_b: 'Parent', either_phrase: 'either the Company or Parent',
+    },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by either Parent or the Company, if:'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'Parent', party_b: 'the Company', either_phrase: 'either Parent or the Company',
+    },
+  );
+  // Skechers: an "at any time prior to ... if" continuation after the pair.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(c) by either Parent or the Company, at any time prior to the Effective Time if'),
+    {
+      outcome: 'EITHER_PARTY', party_a: 'Parent', party_b: 'the Company', either_phrase: 'either Parent or the Company',
+    },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(c) by the Company:'),
+    { outcome: 'ONE_PARTY', granting_party: 'the Company' },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(e) by Parent, if'),
+    { outcome: 'ONE_PARTY', granting_party: 'Parent' },
+  );
+});
+
+test('HOSTILE unit: the bare one-party grammar never reads a mutual head as a one-party grant, and never fires off the limb marker anchor', () => {
+  // "by Parent or the Company" without "either" -- a mutual head; reading
+  // it ONE_PARTY(Parent) would mint a one-sided right from mutual text.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by Parent or the Company, if:'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  assert.deepEqual(
+    parseTerminationLimbDirection('(b) by the Company and Parent;'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  // Mid-chapeau "by Parent" (not anchored at the limb marker) must not fire
+  // the bare grammar: the marker anchor is what scopes it to a genuine
+  // limb-head grant rather than any "by X" phrase inside the limb's prose.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(d) upon written notice delivered by Parent within five Business Days;'),
+    { outcome: 'UNRECOGNISED' },
+  );
+  // The mutual-consent leaf limb carries no "by <party>" grant at all.
+  assert.deepEqual(
+    parseTerminationLimbDirection('(a) by mutual written consent of the Company and Parent;'),
+    { outcome: 'UNRECOGNISED' },
+  );
 });
 
 test('unit: findTerminationLimbGrantContext never rescues a party/scope combination the chapeau does not structurally support', () => {
