@@ -2,6 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
 import { voteStandard } from './vote-standard.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -286,7 +287,11 @@ function proseSeeText(label, text) {
 }
 
 function keyTermsNode(key, card, PillCell) {
-  if (!card) return React.createElement('span', { className: 'italic text-inkFaint' }, 'Not present in this agreement');
+  // Per-cell absence: `card` being null here only means the extractor found
+  // no card for this key term -- not that the agreement lacks it. Same
+  // UNSAFE-copy class as the table-level empty strings above; fixed the same
+  // way (cross-family-consistency sweep, Task 1).
+  if (!card) return React.createElement('span', { className: 'italic text-inkFaint' }, CONDITION_ABSENT_COPY);
   const f = cardFeatures(card);
   const factBlocks = [];
   const proseBlocks = [];
@@ -801,7 +806,7 @@ const terminationRightsConfig = {
         // as conditions.config.js/ioc-exceptions.config.js.
         return React.createElement(GroupedSubRows, {
           groups,
-          emptyCopy: 'No termination rights found.',
+          emptyCopy: CONDITION_ABSENT_COPY,
           onSelectCard: ctx.onSelectCard,
           resolveCard: ctx.resolveCard,
           selectedCardId: ctx.selectedCardId,
