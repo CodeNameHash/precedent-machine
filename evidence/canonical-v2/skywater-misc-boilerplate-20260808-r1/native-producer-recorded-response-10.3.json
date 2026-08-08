@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T11:12:37.429Z",
+  "section_reference": "10.3",
+  "note": "General extraction run: deal=skywater, family=MISC_BOILERPLATE, section_references=[\"10.1\",\"10.2\",\"10.3\",\"10.4\",\"10.7\",\"10.8\",\"10.9\",\"10.10\",\"10.11\",\"10.12\",\"10.13\",\"10.14\",\"10.15\"] (all dispatched as MISC_BOILERPLATE via section_family_assignments), prompt_id=native-producer-remedies-misc/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\"boilerplate_assertions\":[{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"such amendment or waiver is in writing and signed, in the case of an amendment, by the Company, Parent and the Merger Subsidiaries, or in the case of a waiver, by the party against whom the waiver is to be effective\"},{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"No failure or delay by any party in exercising any right, power or privilege hereunder shall operate as a waiver thereof nor shall any single or partial exercise thereof preclude any other or further exercise thereof or the exercise of any other right, power or privilege. The rights and remedies herein provided shall be cumulative and not exclusive of any rights or remedies provided by law.\"}],\"mechanics\":[],\"open_world_candidates\":[]}\n```"
+}
