@@ -1,0 +1,79 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skywater",
+  "deal_label": "IonQ, Inc. / SkyWater Technology, Inc.",
+  "section_family": "CONSIDERATION",
+  "purpose": "General extraction run: family CONSIDERATION on deal skywater.",
+  "section_references": [
+    "1.4",
+    "1.5",
+    "2.1",
+    "2.2",
+    "2.3",
+    "2.4"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "1.4",
+      "family_id": "CONSIDERATION"
+    },
+    {
+      "section_reference": "1.5",
+      "family_id": "CONSIDERATION"
+    },
+    {
+      "section_reference": "2.1",
+      "family_id": "CONSIDERATION"
+    },
+    {
+      "section_reference": "2.2",
+      "family_id": "CONSIDERATION"
+    },
+    {
+      "section_reference": "2.3",
+      "family_id": "CONSIDERATION"
+    },
+    {
+      "section_reference": "2.4",
+      "family_id": "CONSIDERATION"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-consideration/v1",
+  "prompt_version": 2,
+  "agreement_date": "2026-01-25",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T10:56:12.171Z",
+  "total_elapsed_ms": 486450,
+  "extraction_wall_clock_ms": 479782,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/skywater-consideration-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "0299244d42a5bbaf7f73b9712f55b0fb67939159",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 6,
+  "run_receipt_id": "c4fe4f40691d60129cb5e4e703aed0ab3bf92578799d8b06b54e8674772c801b",
+  "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+  "source_sha256": "ffee664a374a1c18c35dabb9458bcffc8e5014a305eefc184b102bbbe5bcc8f1",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 6,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
