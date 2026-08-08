@@ -371,15 +371,25 @@ mid-day brief misquoted this as 71,907, which is Modiv CAP §4.2's figure;
 the table in §2 above is authoritative). If the effective cap is truly
 128,000, headroom over the worst observation is 42%. If the binary's clamp
 sits anywhere in (74,080, 128,000], all four recorded failures clear. Only
-a clamp inside (69,576, 74,080) would leave §3.1 stuck — and the §3.1
-re-run under var=128,000, in flight as this correction is written
+a clamp inside (69,576, 74,080) would leave §3.1 stuck. **The §3.1 re-run
+under var=128,000 landed while this correction was being written**
 (`evidence/canonical-v2/topbuild-representations-20260808-ceiling128k/`,
-started 02:50Z), decides exactly that. Its acceptance criterion is
-unchanged from §3a above: completes, parses as one object, passes
-validation → durable write → projection. Whatever it shows, thinking volume
-remains stochastic and unbounded above, so the overflow guard — not the
-raised figure — is what keeps a future denser section from failing
-silently.
+02:50–02:58Z): completed, **63,747 output tokens in one message**
+(`iterations [63747]` = total), a complete 53,425-char JSON opening at the
+beginning, `validation.json` `accepted: true`, 193 publishable, 0
+residuals, 0 quarantined closures, 20 review-queue items — **the first
+REPRESENTATIONS extraction TopBuild has ever produced. BREAK 1 is
+cleared.** One honesty note, so this run is never cited for more than it
+shows: 63,747 is *below* the old 64,000 ceiling — the same section that
+measured 74,080 yesterday came in 10,333 tokens lighter today, so this
+sample would have squeaked under the old cap by 253 tokens anyway
+(CAP §3.2's 63,729 twin, another face of the §2 coin flip). It proves
+BREAK 1 clears and the pipeline accepts the output; the proof that the
+*raise* works remains the 69,576-token NO_SHOP run. And it demonstrates
+the point that matters going forward: thinking volume is stochastic and
+unbounded above — a 10K-token day-to-day swing on one section — so the
+overflow guard, not the raised figure, is what keeps a future denser
+section from failing silently.
 
 **The named fallback if a section ever exceeds the raised ceiling** (and
 the answer to "is any of the ~88% invisible thinking steerable"): partly,
