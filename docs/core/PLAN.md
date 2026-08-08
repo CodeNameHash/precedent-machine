@@ -2738,7 +2738,7 @@ dropped. Zero new model calls in the run receipt.
 
 ---
 
-## Step 2X-L1. Account for every limb, or the tree is a silent drop
+## Step 2X-L1. Account for every limb — ANSWERED 2026-08-08, no silent drop
 
 **What it is.** 2X-L landed on 2026-08-08 and the tree minted for the first
 time: the Red Hat replay carries 2 `limb_component_trees`, 7 path nodes and 6
@@ -2766,7 +2766,18 @@ declined — which would be right behaviour. But **"correctly declined" and
 "silently dropped" are identical from outside when the residual count is zero**,
 and telling them apart is the whole point.
 
-**Change.** Publish a 69 → minted / dropped-with-reason table. Every input limb
+**ANSWERED at merge review, 2026-08-08. There is no silent drop.** All 69 are
+accounted for: **1 residual**, and **68 recorded as open-world candidates** with
+an explicit `UNMAPPED_GENERIC_CLAIM_KEY` reason, of which **6 also feed the limb
+trees**. That matches the documented design — a limb the taxonomy cannot express
+goes to open world with a reason code rather than vanishing.
+
+So the shortfall was real and the drop was not. The concern was still worth
+raising: a zero residual count beside a 69-to-6 shortfall is indistinguishable
+from the open-world defect fixed earlier the same day, and the only way to tell
+them apart was to trace every one.
+
+**What remains of this step.** Publish the disposition table. Every input limb
 gets exactly one disposition, and the count with none is zero. Where a limb is
 declined as a cross-reference, the reason code and the classifying evidence are
 recorded, so the decline is auditable rather than assumed correct.
