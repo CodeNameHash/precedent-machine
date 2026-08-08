@@ -1829,6 +1829,74 @@ refused something real, and the agent doing the regeneration reported it rather
 than reaching for the `--replay-model-id` escape hatch it had not been
 authorised to use. That is the behaviour the refusal exists to produce.
 
+## Step 2G1. Thirty-seven per cent of what is extracted publishes — NEEDS BEN
+
+**What it is.** Measured across all six deals and every committed run, on
+2026-08-08:
+
+| Deal | Resolved | Review queue | Open world | Resolved % |
+|---|---|---|---|---|
+| modiv | 349 | 630 | 514 | 35.6% |
+| topbuild | 307 | 489 | 324 | 38.6% |
+| skechers | 129 | 250 | 208 | 34.0% |
+| skywater | 53 | 71 | 15 | 42.7% |
+| redhat | 46 | 77 | 31 | 37.4% |
+| metsera | 46 | 72 | 14 | 39.0% |
+| concho | 3 | 7 | 20 | 30.0% |
+| **Total** | **933** | **1,596** | **1,126** | **36.9%** |
+
+**Roughly two in three extracted candidates do not publish; they queue for a
+human.** The rate sits between 30% and 43% on every deal, across three
+decades of drafting convention and four different transaction shapes. That
+consistency is the finding: it is a property of the pipeline, not of any
+drafter.
+
+**Why candidates queue.** The top reasons, corpus-wide:
+
+| Count | Reason |
+|---|---|
+| 417 | `LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` |
+| 61 | `IOC_ATTACHMENT_TARGET_QUOTE_MISSING` |
+| 44 | `FEE_SIDE_UNCORROBORATED` |
+| 41 | `MULTI_SPAN_COMPOSED` |
+| 41 | `NESTED_OR_CROSS_REFERENCED_EVIDENCE` |
+| 37 | `IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED` |
+| 32 | `CLAUSE_LABEL_NOT_IN_QUOTE` |
+| 32 | `TRIGGER_UNCORROBORATED` |
+
+A large share share one shape: **the model quoted a fragment that omits the
+fact the resolver needs to corroborate**, so the resolver declines to guess.
+Two clean instances found the same night. SkyWater's termination fee,
+`$51,573,958.07`, is in the model's response and does not publish, because the
+quote is the bare figure and `FEE_SIDE_UNCORROBORATED` cannot tell payer from
+payee — while Red Hat's single-sided fee publishes at $975,000,000 because its
+quote carries "the Company shall pay (or cause to be paid) to Parent". Red Hat's
+termination article resolved **zero** of twelve, seven of them
+`TERMINATING_PARTY_REF_NOT_IN_QUOTE`.
+
+**The refusals are correct.** Every one of them declines to assert something the
+evidence does not contain, and queues it rather than dropping it. Nothing is
+lost. That is the design working.
+
+**The question for Ben is a product question, not a correctness one.** Is 37%
+the right publish rate? Two readings, and they lead to different work:
+
+1. **It is right.** The surface is a review tool; a queued item is a reviewer's
+   job, not a failure. Then the work is making the queue pleasant to work
+   through, and the number needs no change.
+2. **It is too strict.** A reviewer facing 1,596 queued items against 933
+   published ones will not read them. Then the work is teaching the producer
+   prompts to quote wide enough to carry their own corroboration — include the
+   acting party in the quote, not just the operative words — which is a
+   taxonomy change across many families and would invalidate evidence.
+
+**Do not act on this without Ben.** It was measured, not designed, and reading
+(2) would licence exactly the kind of corpus-wide prompt sweep that Step 2F2 is
+already holding back for want of evidence.
+
+**Proves it is done.** A decision recorded in `DECISIONS.md`, and if (2), a
+before-and-after publish rate on at least two deals.
+
 ## Step 2H. Say which fixes generalised and which were Modiv-only
 
 **What it is.** One table. A row per fix landed since commit `bff5cd28`, with

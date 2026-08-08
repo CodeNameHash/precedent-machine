@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T04:40:06.897Z",
+  "section_reference": "7.02",
+  "note": "General extraction run: deal=redhat, family=TERMINATION, section_references=[\"7.01\",\"7.02\"] (all dispatched as TERMINATION via section_family_assignments), prompt_id=native-producer-termination/v2, prompt_version=2. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\n  \"termination_right_assertions\": [],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"termination of this Agreement by either the Company or Parent as provided in Section 7.01\",\n      \"why_unmapped\": \"names both parties as capable of terminating but states no trigger_kind and is a cross-reference within this effect-of-termination/survival clause rather than a fresh grant made by Section 7.02 itself\",\n      \"nearest_concept\": \"RIGHT_GRANT (terminating_party_scope EITHER_PARTY)\"\n    }\n  ]\n}"
+}
