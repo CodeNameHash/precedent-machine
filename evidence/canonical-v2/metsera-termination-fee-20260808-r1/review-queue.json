@@ -1,0 +1,211 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a1082a2f35ee03cc2f5365387e43570246cd3995da454439f9b79285fe048c8c",
+  "review_queue": [
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5c47e29efa29537b61768530459a2cb6098ac3d19a23f092887ffb68fb8dac9a",
+      "closure_id": "5f831445fa1cad64d0f0e525dfd67bdc5f1e63e18d62d10d849f5fd27eb42dce",
+      "normalised_phrase": "then the Company shall pay (or cause to be paid) to Parent a fee of $190,000,000 (the “Company Termination Fee”).",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3144,
+          "end": 3159,
+          "excerpt": "dge and agree that in no event shall the Company be required to pay the Company Termination Fee on more than one occasion, whether or not the Company Termination Fee may be pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3214,
+          "end": 3229,
+          "excerpt": "e Company Termination Fee on more than one occasion, whether or not the Company Termination Fee may be payable under more than one provision of this Agreement at the same or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3549,
+          "end": 3564,
+          "excerpt": "n, warranty or covenant set forth in this Agreement, (x) payment of the Company Termination Fee described in this Section 8.02 shall constitute the sole and exclusive remedy o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3904,
+          "end": 3919,
+          "excerpt": "lure of the Transactions to be consummated, and (y) upon payment of the Company Termination Fee, none of the Company or the Company Subsidiaries or any of their respective cur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ]
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "656d5eb64207910503e0924835793db7ef0b0b5eeeb88e784d3222e372c2fe53",
+      "closure_id": "c878e7150f1f84c4926a96d3665e1b267b232a262523226dc21da9c3f7753199",
+      "normalised_phrase": "(C) within twelve (12) months of such termination (1) the transactions contemplated by a Company Takeover Proposal are consummated or (2) the Company enters into a definitive agreement to consummate the transactions contemplated by a Company Takeover Proposal and such transactions are subsequently consummated (whether during or after such twelve (12)-month period),",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL"
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company terminates this Agreement pursuant to Section 8.01(f)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4359724a189d28feb96fa1f94c22b0e95d4cf9c6c670b176793ec709321c1484",
+      "closure_id": "4358d9a2b3e2228083166a8d94b211a18647ea40cfb0e2719ab337a934f71269",
+      "normalised_phrase": "the Company terminates this Agreement pursuant to Section 8.01(f)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(iii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(A) after the date of this Agreement and prior to the termination of this Agreement, a bona fide Company Takeover Proposal is made or communicated to the Company Board or publicly proposed or publicly announced and has not, in any case, been withdrawn, (B) thereafter this Agreement is terminated by either Parent or the Company pursuant to Section 8.01(b)(i), Section 8.01(c) or Section 8.01(g), and (C) within twelve (12) months of such termination (1) the transactions contemplated by a Company Takeover Proposal are consummated or (2) the Company enters into a definitive agreement to consummate the transactions contemplated by a Company Takeover Proposal and such transactions are subsequently consummated (whether during or after such twelve (12)-month period),",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "66f8e9937e9f866d817708942c3b8fcca25d685aaf7313fa2c98feb91c6f14df",
+      "closure_id": "b4e43ddec915130bc24d9e3f98458d5ef9b86ef6431ebb2d5902bd4835f538bd",
+      "normalised_phrase": "(A) after the date of this Agreement and prior to the termination of this Agreement, a bona fide Company Takeover Proposal is made or communicated to the Company Board or publicly proposed or publicly announced and has not, in any case, been withdrawn, (B) thereafter this Agreement is terminated by either Parent or the Company pursuant to Section 8.01(b)(i), Section 8.01(c) or Section 8.01(g), and (C) within twelve (12) months of such termination (1) the transactions contemplated by a Company Takeover Proposal are consummated or (2) the Company enters into a definitive agreement to consummate the transactions contemplated by a Company Takeover Proposal and such transactions are subsequently consummated (whether during or after such twelve (12)-month period),",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent terminates this Agreement pursuant to Section 8.01(d)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c39b47d3599519691a6212d54e33a55c8b7cf48cf9588101cb5ec20d398d47c2",
+      "closure_id": "c8b39ee3ed587291842afe33a7b9975578ac645ec2e697c0bb17111e6f679158",
+      "normalised_phrase": "Parent terminates this Agreement pursuant to Section 8.01(d)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.05",
+      "source_citation": "8.05(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company may terminate this Agreement pursuant to Section 8.01(f) only if (i) the Company Board authorizes the Company to enter into a definitive written agreement constituting a Superior Company Proposal and immediately following such termination, the Company enters into a binding definitive agreement for such Superior Company Proposal, (ii) the Company has complied in all material respects with Section 5.02, including its obligations under Section 5.02(e) in respect of such Superior Company Proposal and (iii) the Company has paid, or simultaneously with the termination of this Agreement pays, the fee due under Section 8.02 that is payable if this Agreement is terminated pursuant to Section 8.01(f).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2dad3ab03c13f41bc31e49c443424c16920a7b334c2210ac03d0242fa3fe9846",
+      "closure_id": "b10236d570997038cbe250f53d543e4b80e5df6c4f674fb022b3a5c0985aef25",
+      "normalised_phrase": "The Company may terminate this Agreement pursuant to Section 8.01(f) only if (i) the Company Board authorizes the Company to enter into a definitive written agreement constituting a Superior Company Proposal and immediately following such termination, the Company enters into a binding definitive agreement for such Superior Company Proposal, (ii) the Company has complied in all material respects with Section 5.02, including its obligations under Section 5.02(e) in respect of such Superior Company Proposal and (iii) the Company has paid, or simultaneously with the termination of this Agreement pays, the fee due under Section 8.02 that is payable if this Agreement is terminated pursuant to Section 8.01(f).",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a67c9817522a3cc4b08218d46c94a19af3d365b702350870b094abb279c021b3",
+      "closure_id": "4df3662bf3ff48331d05fe7e5ba66886ae5440c59d13cf45ea9ee433fe82e873",
+      "normalised_phrase": "the willful and material breach by the company of any representation, warranty or covenant set forth in this agreement",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7f2c9a4d9165e6ef93b3cc12823c3e2db4161c2e5db1cb1f80ae43ede8a67935",
+      "closure_id": "7aa472b6758e1002119db345ec208c30226319c8a8ae5f89a28deecf72979019",
+      "normalised_phrase": "shall constitute the sole and exclusive remedy of parent and merger sub against the company and the company subsidiaries and their respective current, former or future representatives for any loss suffered as a result of the failure of the transactions to be consummated",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c26ae064289fe08bda01c443230ae94d4e09bdf407a916cbe8e3d4f481ef8cc8",
+      "closure_id": "b7eedfe0450be488e7b952ef45614410c158777cab8b43b9e23768152edef4f4",
+      "normalised_phrase": "fraud",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    }
+  ],
+  "review_queue_artifact_id": "76964db88dd668f436a0a76b3f20844df3f5b3c99d2fc79f306ccf6e42fa7864"
+}

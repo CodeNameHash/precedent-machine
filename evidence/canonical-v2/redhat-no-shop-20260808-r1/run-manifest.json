@@ -1,0 +1,54 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "redhat",
+  "deal_label": "International Business Machines Corporation / Red Hat, Inc.",
+  "section_family": "NO_SHOP",
+  "purpose": "General extraction run: family NO_SHOP on deal redhat.",
+  "section_references": [
+    "4.02"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.02",
+      "family_id": "NO_SHOP"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-no-shop/v2",
+  "prompt_version": 3,
+  "agreement_date": "2018-10-28",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T04:26:46.466Z",
+  "total_elapsed_ms": 436378,
+  "extraction_wall_clock_ms": 431449,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/redhat-no-shop-20260808-r1/recording.json",
+  "code_provenance": {
+    "commit": "c2bed3028c2d0ac7f4cd949218ced66f0e0db289",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "6075b98de49827af1c4159d62e7c78e86c0e1eab2d4b241ab821733f832bddc1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

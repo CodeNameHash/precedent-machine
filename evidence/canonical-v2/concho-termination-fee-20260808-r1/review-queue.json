@@ -1,0 +1,139 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "ff20ec1c084336326c5f610f0111d0d5f12aa90d87ec95708d56e05b7df561dd",
+  "review_queue": [
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d45503cb8d8e7eaf90d44e2c163af4f5f53f5a3d2500a2962be300f0e6fcdc47",
+      "closure_id": "cc6fbedced665867fee534c4cc7578ea28338bf299d9131be97d024a2e440737",
+      "normalised_phrase": "within twelve (12) months after the date of such termination, the Company enters into a definitive agreement",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL"
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 8.1(c) (Company Change of Recommendation)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7d3f435f4380f38970367666e3ef74e99fb58c66bca7fd66a08e8a0d8edef11e",
+      "closure_id": "099cd8e72085956be7391050954a7a8b9e0afaaef024f55958e5a5f68d3d9649",
+      "normalised_phrase": "Section 8.1(c) (Company Change of Recommendation)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 8.1(f) (No Solicitation by Parent)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ff8044d927a6c4aebc9511aa51286ee708e2692883a69fd2f5a53bc0cfa1ac90",
+      "closure_id": "1f3e3f9e36a223926ed05a124612a192ebd1160452f64c8fac0159e2a5437c97",
+      "normalised_phrase": "Section 8.1(f) (No Solicitation by Parent)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 8.1(e) (No Solicitation by the Company)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "396133ed2b5168c77ea01e1e38e86e585686e1f45da73d1b2a08bea8ce7fb386",
+      "closure_id": "2ee9ce7892367f9e9e33b647a266d2a2295a418469087a22c0d21c70e7ad49c0",
+      "normalised_phrase": "Section 8.1(e) (No Solicitation by the Company)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 8.1(d) (Parent Change of Recommendation)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "567016259e157d3ef49fbe6f95d7cbb184638f5c1b2f8190a521cfaf9535038d",
+      "closure_id": "7dcf282747f9a0626acc81745f63220800eac1e6bbc77296433bdfb9d781bc37",
+      "normalised_phrase": "Section 8.1(d) (Parent Change of Recommendation)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "698610f28c12cd402563df00e2793dc20b6de094c892c60bdd69080b01490f26",
+      "closure_id": "c0399c55d1e392a41be1b2ec0228c9adfe5fe74d7d474a34961fb5d0f6c719d1",
+      "normalised_phrase": "upon payment of such amount, none of the company and its subsidiaries or any of their respective former, current or future directors, officers, shareholders, representatives or affiliates shall have any further liability or obligation relating to or arising out of this agreement or the transactions",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d575c7f1b22e413e80a87e25fdb8ac7902b603d766d81893f7a2d133170a7f2d",
+      "closure_id": "c3d9d1def7497b5dfd1f41df0ce94b4204a9d54bb60e17a4e961da4d73f716ef",
+      "normalised_phrase": "upon payment of such amount, none of parent or merger sub or any of their respective former, current or future directors, officers, shareholders, representatives or affiliates shall have any further liability or obligation relating to or arising out of this agreement or the transactions",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE"
+    }
+  ],
+  "review_queue_artifact_id": "320d765068779a94354be936db915a45d10f6c944225edf1263801ec00ef9348"
+}
