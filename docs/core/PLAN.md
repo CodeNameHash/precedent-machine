@@ -2037,6 +2037,53 @@ ratify.
 
 ---
 
+## Step 2X-0. Merge the record before the code
+
+**Decided 2026-08-08.** The branch is 189 commits ahead of `main`, which
+production tracks. The merge is split deliberately.
+
+**Merge the docs now.** `PLAN.md`, `COMPLETED.md`, `DECISIONS.md` and everything
+under `docs/codex-program/notes/` are pure additions with no runtime surface.
+Landing them is what stops the next session re-deriving today's findings, which
+is this programme's most expensive habit. There is no risk in it and no reason
+to wait.
+
+**Hold the code on three blockers**, all closable in about an hour:
+
+1. **The MAE materiality split is still in the code and is already decided
+   wrong** (Step 2X-D, `DECISIONS.md` entry 14). Merging ships a taxonomy
+   decision that stops two deals with identical legal effect from matching in
+   precedent search. Red Hat carries 11 claims on the retiring code.
+2. **Seven commits are tagged UNREVIEWED or wip.** They were committed to
+   satisfy the stop hook while agents were in flight, not because their diffs
+   were reviewed. `CLAUDE.md` forbids committing unreviewed delegate output; the
+   tags are honest labelling, not compliance. Look hardest at the absence-copy
+   port across 11 config files — its author's account has been read, its diff
+   has not, and silent scope-narrowing is what a summary hides.
+3. **Nothing user-facing has been live-verified.** The absence change alters
+   what a reviewer sees across 11 families. A green build is not a working page.
+
+**Order to unblock.** Revert the MAE split, diff-review the seven WIP commits
+against their criteria, live-verify one page per changed surface, re-run
+`CI=true npm test`, `npm run build` and `scripts/lint/forbidden-patterns.sh`
+capturing exit codes to files, then merge the code.
+
+**Scale, so the reviewer is not surprised.** 143 code files, +39,301 lines. Most
+of the bulk is fixtures — four raw SEC filings are roughly 16,800 of those lines
+— but `candidate-resolution.js` is +1,197 and
+`scripts/canonical-v2-live-extraction-run.mjs` is +1,285. A real review, not a
+skim.
+
+**Proves it is done.** The docs are on `main`. The code merge is gated on the
+three blockers being individually closed, each with its evidence, not on a
+judgement that the branch feels ready.
+
+**The handoff.** `docs/codex-program/notes/HANDOFF-2026-08-08.md` says where
+every artefact lives, what the traps are, and what to do next in order. Read it
+before touching this branch.
+
+---
+
 ## Step 2X-A. One structure service, or a written reason there are five
 
 **What it is.** There are five mechanisms in the tree that answer some version
