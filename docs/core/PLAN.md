@@ -2048,12 +2048,24 @@ Landing them is what stops the next session re-deriving today's findings, which
 is this programme's most expensive habit. There is no risk in it and no reason
 to wait.
 
+**STATUS 2026-08-08, end of session.** Blocker 1 CLOSED. Blocker 3 closed as
+far as this environment allows — the app builds and serves, but every route
+redirects to `/login` and no credentials exist here, so the changed surface was
+verified at component-input level (zero unsafe absence strings across 11
+configs) rather than visually. Blocker 2 under review by two reviewers split by
+area, writing to `merge-review-canonical-v2.md` and
+`merge-review-scripts-ui-tests.md`. The count is **eleven** WIP commits, not
+seven.
+
 **Hold the code on three blockers**, all closable in about an hour:
 
-1. **The MAE materiality split is still in the code and is already decided
-   wrong** (Step 2X-D, `DECISIONS.md` entry 14). Merging ships a taxonomy
-   decision that stops two deals with identical legal effect from matching in
-   precedent search. Red Hat carries 11 claims on the retiring code.
+1. **CLOSED.** ~~The MAE materiality split is still in the code and is already
+   decided wrong.~~ Integrated from `cursor/step-2x-d-mae-revert-945e`. Replay
+   against post-revert code, at zero model calls: resolved count unchanged at
+   32, all 13 claims reclassify to `MAT_MAE_QUALIFIED`, zero residuals, zero
+   quarantines, validation accepted. Nothing was lost by retiring the code,
+   which is what Ben's ruling predicted. The figure is 13 claims, not the 26
+   first reported — that was raw string occurrences, not claims.
 2. **Seven commits are tagged UNREVIEWED or wip.** They were committed to
    satisfy the stop hook while agents were in flight, not because their diffs
    were reviewed. `CLAUDE.md` forbids committing unreviewed delegate output; the

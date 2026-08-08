@@ -39,7 +39,7 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 | `bring-down-tiers.js` implements whole-clause-then-flag with proviso splitting | PLAN | 2X-A as the shape to copy |
 | IOC second-chance fallback missing from three corroboration modules | PLAN | 2X-B |
 | Non-collision asserted in a comment, never checked at run time, in two modules | PLAN | 2X-C |
-| `MAT_MAE_AGGREGATE` defined twice in `taxonomy.js` with different meanings | PLAN | 2X-D |
+| `MAT_MAE_AGGREGATE` defined twice in `taxonomy.js` with different meanings | **DONE** | 2X-D — documented rather than deleted; deleting either entry breaks stored V1 claims |
 | `taxonomy.js` — 54 vocabularies, 429 codes, one consumed | PLAN | 2X-J |
 | `MAE_CARVEOUT_META` 27 codes unconsumed | PLAN | 2X-J |
 | `lib/schema/features.js` 551 feature definitions unconsumed | PLAN | 2X-J |
@@ -54,7 +54,7 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 
 | finding | disposition | where |
 |---|---|---|
-| 14 unsafe absence wordings across 11 config files | **DONE** | 2X-E |
+| 14 unsafe absence wordings across 11 config files | **DONE** | 2X-E — verified zero remaining, and the string resolves to "Not found (may not be present, or not yet extracted)" |
 | `termination-fees.config.js` NOT_YET_EXTRACTED vs ESTABLISHED_ABSENT pill | DROP for other families | no other family has a second source; inventing one would fabricate a signal |
 | `NoShopCrossViewPreview.jsx` `formatCode(null) → 'Not applicable'` | PLAN | 2X-E, still open; fix is same-file consistency |
 | `configDecorations.js` computes legal-adjacent facts at render time with no provenance flag | PLAN | 2X-E follow-on, display-only, low risk |
@@ -138,3 +138,14 @@ correction. No ruling of Ben's was contradicted.
 not what the *model returned*. Concluding a producer emits nothing from a
 receipt is the same error class as concluding a module does one thing from its
 header comment. Read `raw_response_text`.
+
+## Added after the sweep, 2026-08-08
+
+| finding | disposition | where |
+|---|---|---|
+| A **sixth** structure mechanism — `deterministic-sectionizer.js`'s `buildMarkerTree`, whole-document, byte-native, already live | PLAN | 2X-A — the service's second input and the section inventory; not the base, since it structurally cannot see inline markers |
+| The two sub-clause detectors are complementary on marker RECALL but both mis-nest a restarting `(a)` | CRITERION | same-style refusal stays mandatory regardless of detector agreement |
+| Colon-introduced back-reference mis-read by the colon rule | CRITERION | detectable by the same-style signature; pinned as a test |
+| **Forward** reference read as the next sibling, swallowing the real limb | PLAN | 2X-A — the same-style detector is BLIND to it; resolved by the line-anchored start winning. Corpus frequency low: `provided that (X)` 1, `pursuant to (X)` 3, others zero |
+| Limb EXTENT is ambiguous at sentence boundaries; nesting is not | CRITERION | independent evidence for start-anchored identity — a limb's start is a fact about the document, its end a fact about our algorithm |
+| 2X-D arrived with a premise that was true on its own branch and false here | **DONE** | corrected in `contract-bundle.js` with the replay that settles it |

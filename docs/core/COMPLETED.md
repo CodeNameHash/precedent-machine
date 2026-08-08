@@ -1172,3 +1172,53 @@ process liveness was twice reported from `pgrep -fc`, which matches the checking
 shell's own argv — the same self-match that produced false "still running"
 reports overnight. Counting via `/proc` with the checking shell excluded gives
 the real answer.
+
+---
+
+## Steps 2X-D, 2X-L and 2X-E. The first limb tree, and the MAE split reverted
+
+**Closed 2026-08-08**, later the same day as Step 2X-PRE.
+
+**2X-D — the MAE materiality split reverted.** `MAT_MAE_AGGREGATE` no longer
+emitted; the duplicate key in `lib/taxonomy.js` documented rather than deleted,
+since deleting either entry would break stored V1 claims. The proof is a replay
+at zero model calls against post-revert code: **resolved count unchanged at 32,
+all 13 affected claims reclassify to `MAT_MAE_QUALIFIED`, zero residuals, zero
+quarantines, validation accepted.** Nothing was lost by collapsing the two
+codes, which is exactly what Ben's ruling predicted — the two drafting variants
+are one legal standard.
+
+Two corrections belong in the record. The affected figure is **13 claims, not
+26**; the larger number counted raw string occurrences across three files rather
+than distinct claims. And the change arrived with a stale premise: its own
+comment justified narrowing the allowed-value set on the grounds that no
+committed evidence carried the retired code. True on the branch that authored
+it, false here, because 2X-L's replay evidence landed first. Re-validating that
+evidence produces `INVALID_CANONICAL_VALUE` residuals and quarantines rather
+than silent acceptance — the loud failure, which is the one we want.
+
+**2X-L — the limb tree minted, for the first time in 202 runs.** The Red Hat
+replay carries 2 `limb_component_trees` with 7 path nodes and 6 assertion nodes.
+Path nodes carry the outline skeleton and no span of their own; assertion nodes
+carry the byte-verified facts. So a fact knows its limb and the limb knows its
+lineage.
+
+**It is not accepted yet, and Step 2X-L1 exists to hold it to account.** The
+model emitted **69 limbs** across those two sections; six assertion nodes were
+minted; `residuals` is zero. A shortfall with zero residuals is indistinguishable
+from a silent drop — the same signature as the open-world defect fixed earlier
+the same day. Many of the 69 may be genuine cross-references correctly declined,
+which the receipt's `limb_enumeration_scan` could show, but "correctly declined"
+and "silently dropped" look identical from outside when nothing is recorded.
+
+**2X-E — absence copy.** 14 unsafe wordings across 11 config files now use
+`CONDITION_ABSENT_COPY`, verified as zero remaining. The termination-fees
+provenance pill was deliberately **not** ported: no other family has a genuine
+second extraction source, and inventing one would fabricate a signal.
+
+**Segmenter improvements**, both measured against a 538-section corpus harness
+rather than assumed. `(x)/(y)/(z)` list opening: **zero** added mis-nests, 19
+markers newly captured. `MAX_DEPTH` 3 → 5: **+0.186 percentage points** of
+mis-nest rate against **+62** markers newly captured across 7 sections. The
+first is free; the second is a real trade, taken because a flagged marker is
+visible rather than wrong.
