@@ -107,11 +107,15 @@ test('(b) direction grammar stays in candidate-resolution — adapter has no par
     path.join(__dirname, '..', 'lib', 'canonical-v2', 'native-producer', 'governing-structure.js'),
     'utf8',
   );
-  assert.equal(adapterSource.includes('parseTerminationLimbDirection'), false);
-  assert.equal(adapterSource.includes('TERMINATION_LIMB_FROM_TO_PATTERN'), false);
-  assert.equal(adapterSource.includes('TERMINATION_LIMB_BARE_BY_PATTERN'), false);
-  assert.equal(adapterSource.includes('resolvePartyCapacity'), false);
-  assert.equal(adapterSource.includes('findTerminationLimbGrantContext'), false);
+  // Match executable definitions / requires, not comment mentions of the
+  // semantic half that deliberately stay in candidate-resolution.js.
+  assert.equal(/\bfunction\s+parseTerminationLimbDirection\b/.test(adapterSource), false);
+  assert.equal(/\bTERMINATION_LIMB_FROM_TO_PATTERN\b/.test(adapterSource), false);
+  assert.equal(/\bTERMINATION_LIMB_BARE_BY_PATTERN\b/.test(adapterSource), false);
+  assert.equal(/\bTERMINATION_LIMB_EITHER_PATTERN\b/.test(adapterSource), false);
+  assert.equal(/\bfunction\s+resolvePartyCapacity\b/.test(adapterSource), false);
+  assert.equal(/\bfunction\s+findTerminationLimbGrantContext\b/.test(adapterSource), false);
+  assert.equal(/require\(['"]\.\/candidate-resolution['"]\)/.test(adapterSource), false);
 
   const resolutionSource = fs.readFileSync(
     path.join(__dirname, '..', 'lib', 'canonical-v2', 'native-producer', 'candidate-resolution.js'),
