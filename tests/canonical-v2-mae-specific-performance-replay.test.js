@@ -132,7 +132,8 @@ test('TopBuild 7.6 rejects a bare equitable-relief grant and retains the operati
   ]);
   assert.equal(complete.proposals.length, 1);
   assert.deepEqual(complete.evidence_residuals, []);
-  assert.equal(prompt.prompt_version, 2);
+  // 2 -> 3 on 2026-08-08: Step 2F2 probe, response shape only.
+  assert.equal(prompt.prompt_version, 3);
   assert.match(prompt.messages[0].content, /irreparable harm would occur and money damages would not be an adequate remedy/);
   assert.match(prompt.messages[0].content, /condition gates, termination limits, non-waiver language, bond or security waivers/);
 });

@@ -210,7 +210,8 @@ test('Modiv 6.1 checkpoint replay carries the complete Registration Statement ch
 test('affected prompts require the source coverage needed by the governed mappings', () => {
   const antitrust = buildAntitrustRegulatoryProducerPrompt({ source_text: 'x', governed_scope: {} });
   const closing = buildClosingConditionsProducerPrompt({ source_text: 'x', governed_scope: {} });
-  assert.equal(antitrust.prompt_version, 5);
+  // 5 -> 6 on 2026-08-08: Step 2F2 probe, response shape only.
+  assert.equal(antitrust.prompt_version, 6);
   assert.match(antitrust.messages[0].content, /quote must include the exact obligor_party phrase and the operative verb/);
   assert.match(antitrust.messages[0].content, /MANDATORY_DEFEND/);
   assert.equal(closing.prompt_version, 4);
