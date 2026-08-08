@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T14:45:23.387Z",
+  "section_reference": "5.16",
+  "note": "General extraction run: deal=concho, family=REPRESENTATIONS, section_references=[\"5.10\",\"5.11\",\"5.12\",\"5.13\",\"5.14\",\"5.15\",\"5.16\",\"5.17\",\"5.18\",\"5.19\"] (all dispatched as REPRESENTATIONS via section_family_assignments), prompt_id=native-producer-representations/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "{\n  \"representation_instances\": [],\n  \"bring_down_conditions\": [],\n  \"open_world_candidates\": [\n    {\n      \"candidate_kind\": \"ATTRIBUTE_OR_QUESTION\",\n      \"observed_category\": \"ownership scope extended to convertible/exchangeable/exercisable securities\",\n      \"observed_quote\": \"other securities convertible into, exchangeable for or exercisable for shares of Company Common Stock\",\n      \"why_unmapped\": \"This slice captures only accuracy and knowledge qualifiers on representation clauses; this parenthetical is a substantive expansion of what counts as ownership of Company Common Stock, not an accuracy, knowledge, threshold, or temporal qualifier, so it has no controlled slot in this schema.\",\n      \"nearest_concept\": \"Ownership of Company Common Stock representation (5.16) subject matter\"\n    }\n  ]\n}"
+}

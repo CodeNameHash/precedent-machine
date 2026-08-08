@@ -1,0 +1,2916 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "3.26",
+      "source_citation": "3.26",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": "MAT_ALL_RESPECTS",
+      "original_claim_occurrence_id": "fd7347c758d85561f6bc79275f8ae7d5ab8fe222070376e5ce46cfe698c693c0",
+      "closure_id": "f85707af164dcdfc0a6d19fec4bbb4aaf3dfd558f02e3e1e44026ff266567c64",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER"
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "79102d3b107eb90bb557e8dfa92173766c31681481421871b5e0744bb70a1dd7",
+      "closure_id": "42fe9fb3fdc052700a40fec8f5d52fec2a5344021f7b76a5f327ccbd375e677d",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except for those the absence of which would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "8962e4ea3e9a9aea82a2ca3cb6fe50d02425e6ff589208ca9067e1d4402bacd4",
+      "closure_id": "a9e29e9764d2e7f684e313827ef6dcb0f8639502c6a0a73d173f9d6efc757a1d",
+      "normalised_phrase": "except for those the absence of which would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except for those jurisdictions where the failure to be so qualified would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "243af88add2c5999b3e7227050f06e5544c8803d20e3735f0dcc40a3ce6576c6",
+      "closure_id": "dfd28a501cba8aa52ef9b28f7dd787208afcc128bf599ad940608a97bd77a95f",
+      "normalised_phrase": "except for those jurisdictions where the failure to be so qualified would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "that would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "3d9bc58588ee0b91e084c19f9291efc449c4aec175810d1c11758e8c45b828e5",
+      "closure_id": "6e714636d6932d9b55bd48ad1ce35d4a881556874edb67502d92a3c3b761b8c4",
+      "normalised_phrase": "that would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect.",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-B-QUALIFIER"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "3.25",
+      "source_citation": "3.25",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "that is in effect on the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This first slice captures only accuracy and knowledge qualifiers; this phrase is a temporal/lookback limitation on the population of confidentiality and standstill agreements the representation reaches, not an accuracy or knowledge standard.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Temporal lookback limiting which agreements are covered"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d7ffc7821822d650ead5ffa67257fad3257577473bd71716e16d592c60b2013e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4360ea58e8ab5d333821ec67c7392ab5316ca52c627e50d0e4a1eec521ba5eef",
+          "document_ordinal": 0,
+          "absolute_start": 215,
+          "absolute_end": 262,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9eef1bf2a8ffe5bd2516fd7b91decdc370c4cd7e7d63888b2d1c34b3cff4bfef",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7a5743e6f9b8c48a3a8119f077862ea9693cc519b9e10991ab11c56baffc0d6f",
+        "producer_receipt_id": "bf289613de468c9436e7d4539d7714b071740fdadd9bee8c2344a754c7fdfd63",
+        "governed_scope_digest": "e68dea2f5d6ab16636caf116e56024d5412a7c110a2db58a6e8b287e49cb453e",
+        "extraction_provenance_id": "6dec4f67ecbc76f68342a97aa9ceee16aaed700691d15cc5d2eb520394481df0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.25",
+      "source_citation": "3.25",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "after the Effective Time, Parent or any of its Subsidiaries",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Extends the no-binding-provisions assertion to Parent and its Subsidiaries as a consequence of the Effective Time occurring; this is a representation-specific commercial/temporal scope term, not an accuracy or knowledge qualifier within this slice's taxonomy.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Post-closing extension of binding effect to Parent"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "28f0ec195956700730a58c7b42723ca849c217708e2cb5eeeec9f89b65950e8c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4ec1a528724e4af25e10e28fdf1a313278499367e5fd5bd27169153e6885e543",
+          "document_ordinal": 0,
+          "absolute_start": 385,
+          "absolute_end": 444,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fc8e34b82612ec77555bbcaa8039baa2377db02d0feb3ae95a47007d1dd21f1a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7a5743e6f9b8c48a3a8119f077862ea9693cc519b9e10991ab11c56baffc0d6f",
+        "producer_receipt_id": "bf289613de468c9436e7d4539d7714b071740fdadd9bee8c2344a754c7fdfd63",
+        "governed_scope_digest": "e68dea2f5d6ab16636caf116e56024d5412a7c110a2db58a6e8b287e49cb453e",
+        "extraction_provenance_id": "6dec4f67ecbc76f68342a97aa9ceee16aaed700691d15cc5d2eb520394481df0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.25",
+      "source_citation": "3.25",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "or any agent thereof",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Broadens the class of counterparties covered by the representation beyond 'third party' itself; a subject-taxonomy detail rather than an accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Counterparty scope extended to agents of third parties"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5045ac9b11f0c4c35f237434f10605577053375e1931a7364baa77463c95ec86",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "957edface96725e8355ae29e311b2a80340bc928f1da890f3b5eb64003d5d755",
+          "document_ordinal": 0,
+          "absolute_start": 193,
+          "absolute_end": 213,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5922f7445933ed2e94191e839750ba3dfbd2503b4c96a655af0d5cd389201ff1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "7a5743e6f9b8c48a3a8119f077862ea9693cc519b9e10991ab11c56baffc0d6f",
+        "producer_receipt_id": "bf289613de468c9436e7d4539d7714b071740fdadd9bee8c2344a754c7fdfd63",
+        "governed_scope_digest": "e68dea2f5d6ab16636caf116e56024d5412a7c110a2db58a6e8b287e49cb453e",
+        "extraction_provenance_id": "6dec4f67ecbc76f68342a97aa9ceee16aaed700691d15cc5d2eb520394481df0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.26",
+      "source_citation": "3.26",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "other than Goldman Sachs & Co. LLC (the “Financial Advisor”)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Names a specific excluded advisor rather than stating an accuracy, knowledge, threshold, or temporal standard, so it does not fit any controlled qualifier kind.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "named financial advisor carve-out from broker's-fee representation"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "761bb80d624a3c2d6e0831c219c78b25d1da28a769fea4a76d27861db071be4d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2e8d9967de2ba3233e6d95a22ed271f84832d33d62a2d971afce9fce5bcf8bb8",
+          "document_ordinal": 0,
+          "absolute_start": 106,
+          "absolute_end": 170,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c093a097408dc38886f1b48fbf7beebb1cafcff283f2e734c00c9e9a7d47f2cc",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "771220a8bffbf6dd5d36cffbbe67d6185292925543840f31f3d7568a219bb2ee",
+        "producer_receipt_id": "ea39fe4fbe49daa724a43cd79e23a55683abd531ddc2e256dce125f2387ebc1d",
+        "governed_scope_digest": "7da250dbaeb9f857403e576b8ea8164a89817665558bdec9a7c4ba00c407a571",
+        "extraction_provenance_id": "678dcff3d13991f5c1f536e2e5969af8678532b59e460fc9eba0beadbf65cb06"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.26",
+      "source_citation": "3.26",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company or any Subsidiary or affiliate of the Company",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Defines which engaging entities can trigger the no-broker-fee representation; this is a scope/subject-taxonomy element, not an accuracy, knowledge, threshold, or temporal qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "subject taxonomy of engaging entities"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5ae4109d420357ec903af8cb6dc024468c8fcd43d419df198faedd4b4ca08c1c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b7861c2504ad2e2e2e589bad47017a3bdaf864dd488ba6e24d26fc246f198e72",
+          "document_ordinal": 0,
+          "absolute_start": 340,
+          "absolute_end": 397,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3a5f185c2ba9b336cad319efe70f81a5193b5d49dab06aeb03057dae62d3ae14",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "771220a8bffbf6dd5d36cffbbe67d6185292925543840f31f3d7568a219bb2ee",
+        "producer_receipt_id": "ea39fe4fbe49daa724a43cd79e23a55683abd531ddc2e256dce125f2387ebc1d",
+        "governed_scope_digest": "7da250dbaeb9f857403e576b8ea8164a89817665558bdec9a7c4ba00c407a571",
+        "extraction_provenance_id": "678dcff3d13991f5c1f536e2e5969af8678532b59e460fc9eba0beadbf65cb06"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.27",
+      "source_citation": "3.27",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "on or prior to the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.27",
+        "party_making": "Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bc4bf297c1b18030575c918c428e1459ce49086de8787e15d0033692164debcf",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8903591420a9b8cce7ffc89b2924bf57ef3bfece44e8594b250ccd9c279ea03d",
+          "document_ordinal": 0,
+          "absolute_start": 151,
+          "absolute_end": 192,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "143c562d1a9e140004315ae24b0b2c6c595e48d630bd8c20dba8ab44d151a5a4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "63d56e07d6a10b724a40e0881538f1ac509c2682664a8be1749724b81e997f99",
+        "producer_receipt_id": "20e4a8e2b8b21c42fa569a1d0b740056bc27536c7f40ab1bccf878c86d513c26",
+        "governed_scope_digest": "c1e5ffee91bf9a893cbea6ebe39ad9c55f51b59c93243523b4391cc382092411",
+        "extraction_provenance_id": "e7dfa24af6bc8d2fb548caef4dfd181088cfe85a92ec4af540299d816a16d8e9"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.27",
+        "normalized_citation": "3.27",
+        "derived_citation": "3.27"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.27",
+      "source_citation": "3.27",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "as of the date of such opinion",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.27",
+        "party_making": "Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "Fairness Opinion"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bbda1514c312701f4ff765488ca7721152eaad802ef7749960777fd7f240bf40",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4ff0788e63df5f171fedf72c0eb66919652193176f5d4f1fbf48030cf7467dea",
+          "document_ordinal": 0,
+          "absolute_start": 214,
+          "absolute_end": 244,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8faed8ec69ee9d90c475ce179d8c30bdd645b8e0b2d0b69a8196d3564853bda8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "63d56e07d6a10b724a40e0881538f1ac509c2682664a8be1749724b81e997f99",
+        "producer_receipt_id": "20e4a8e2b8b21c42fa569a1d0b740056bc27536c7f40ab1bccf878c86d513c26",
+        "governed_scope_digest": "c1e5ffee91bf9a893cbea6ebe39ad9c55f51b59c93243523b4391cc382092411",
+        "extraction_provenance_id": "e7dfa24af6bc8d2fb548caef4dfd181088cfe85a92ec4af540299d816a16d8e9"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.27",
+        "normalized_citation": "3.27",
+        "derived_citation": "3.27"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.27",
+      "source_citation": "3.27",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "based on and subject to the matters set forth therein, including the various assumptions made, procedures followed, matters considered and qualifications and limitations set forth therein",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.27",
+        "party_making": "Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "Fairness Opinion"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "46304592ed6eb4b2ed6258c6990233f05a4e67f9187643dd079deae1823fa123",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d6466afcd425f238ddb0225e4418ee06f19e41fbc923797be57efcbeb6033bf1",
+          "document_ordinal": 0,
+          "absolute_start": 249,
+          "absolute_end": 436,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "13bb2ba1ed421505dad168ea713b6437e20c1a244c7853f89a55c0e961329deb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "63d56e07d6a10b724a40e0881538f1ac509c2682664a8be1749724b81e997f99",
+        "producer_receipt_id": "20e4a8e2b8b21c42fa569a1d0b740056bc27536c7f40ab1bccf878c86d513c26",
+        "governed_scope_digest": "c1e5ffee91bf9a893cbea6ebe39ad9c55f51b59c93243523b4391cc382092411",
+        "extraction_provenance_id": "e7dfa24af6bc8d2fb548caef4dfd181088cfe85a92ec4af540299d816a16d8e9"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.27",
+        "normalized_citation": "3.27",
+        "derived_citation": "3.27"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.27",
+      "source_citation": "3.27",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(other than Parent and its affiliates)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This is a carve-out narrowing which holders the fairness assertion runs to; it is not an accuracy, knowledge, threshold, or temporal qualifier, and this slice has no subject-carve-out category to hold it.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Excluded holder class from fairness opinion beneficiaries"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "985288b7ce18aed1ea99b6090a3e1c1fe7a3089ce9893c4f05253fcf67e7569c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "85279e6dd4e48618cee98aaa66e339cfcf01ad8a1f34af675c2737a004b2437e",
+          "document_ordinal": 0,
+          "absolute_start": 489,
+          "absolute_end": 527,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e682483682ec9d4192b54f4db3e94a7595dc756bb5a59ba24a959647f85613ea",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "63d56e07d6a10b724a40e0881538f1ac509c2682664a8be1749724b81e997f99",
+        "producer_receipt_id": "20e4a8e2b8b21c42fa569a1d0b740056bc27536c7f40ab1bccf878c86d513c26",
+        "governed_scope_digest": "c1e5ffee91bf9a893cbea6ebe39ad9c55f51b59c93243523b4391cc382092411",
+        "extraction_provenance_id": "7edd1b0f9c499c1c3db09c0f56f83a050a62f6a2cd60479836fcdcd1d084de70"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.27",
+      "source_citation": "3.27",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "is fair, from a financial point of view, to such holders",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "States a financial fairness standard, not a true/correct accuracy standard, so it does not map to any ACCURACY_STANDARD code in this slice's controlled vocabulary.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Fairness-from-a-financial-point-of-view standard"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "dd94e72ff8d52918453e5cdf736d1fc5c10468c2b7422441a857bac4ed7be491",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "454591ba5978c4f5fd5954d740f8550edd26a39181ff2b9872e02ea6794a1360",
+          "document_ordinal": 0,
+          "absolute_start": 589,
+          "absolute_end": 645,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0430090cc80cc2739835bb73129754d8eab65291e353a22ef7ae6ce882d89967",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "63d56e07d6a10b724a40e0881538f1ac509c2682664a8be1749724b81e997f99",
+        "producer_receipt_id": "20e4a8e2b8b21c42fa569a1d0b740056bc27536c7f40ab1bccf878c86d513c26",
+        "governed_scope_digest": "c1e5ffee91bf9a893cbea6ebe39ad9c55f51b59c93243523b4391cc382092411",
+        "extraction_provenance_id": "7edd1b0f9c499c1c3db09c0f56f83a050a62f6a2cd60479836fcdcd1d084de70"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "to the extent, if any, such restrictions would otherwise be applicable to this Agreement, the Mergers, the Voting Agreement, the Transactions and compliance with the terms of this Agreement and the Voting Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.28",
+        "party_making": "The Company and the Board of Directors of the Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "TRAILING",
+          "governs_path": [
+            "Takeover Statutes"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6e6a5c1f7fdf39c5e4ad6d2ae64eba56b0711f8cf47ec05288c7f326e42701a7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cd416e1b4196d68e6bb3380a1036e9d15551e48bbb034aac10e93eecd9355701",
+          "document_ordinal": 0,
+          "absolute_start": 418,
+          "absolute_end": 632,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c7fd85a9e784f3bd46b9414100fa79c4047cf1445ee31382d9141770ee24ce26",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "354a2fa8add3ffade5a70c34144a36efe23470ed586dbe42931540a8d8fcbbd2",
+        "producer_receipt_id": "485371b386a5121989613a963c077e2895d61039e9f00c2b30be33b6d0e017b8",
+        "governed_scope_digest": "619476649d678fe90843c2cfde384224645062b4f621ed35ff49dfdb1c4af8e8",
+        "extraction_provenance_id": "04dc0263f21140d7139471cbbac61ee739445bd24d57557cb9b6d463b12c29e6"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.28",
+        "normalized_citation": "3.28",
+        "derived_citation": "3.28"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.28",
+      "source_citation": "3.28",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "No other takeover or similar law, statute or regulation is applicable to this Agreement, the Voting Agreement, the Mergers, the Transactions or compliance with the terms of this Agreement and the Voting Agreement.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This is a freestanding negative assertion with no accuracy, knowledge, threshold, or temporal qualifier language, so it falls outside this slice's scope, which only emits representation clauses containing a qualifier.",
+        "nearest_concept": "Takeover Statutes representation (Section 3.28)",
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "catch-all sweep disclaiming other applicable takeover statutes"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "da883e15a828746e36e77b461467be3cd7b3eb478ca979c7cbbaac1c4b259172",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5667fbbfe9db76496441aeedfaabc1315f869fd98db2ed52e0886aa32153d00d",
+          "document_ordinal": 0,
+          "absolute_start": 634,
+          "absolute_end": 847,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "dd312361533374d5bfc86cc9cde72ca2d4f18292a107c9c8be8c3414bca96f1d",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "354a2fa8add3ffade5a70c34144a36efe23470ed586dbe42931540a8d8fcbbd2",
+        "producer_receipt_id": "485371b386a5121989613a963c077e2895d61039e9f00c2b30be33b6d0e017b8",
+        "governed_scope_digest": "619476649d678fe90843c2cfde384224645062b4f621ed35ff49dfdb1c4af8e8",
+        "extraction_provenance_id": "cf72baa3d5422ed7955dd2c36dc6d1746c9b2d65001e6929d379c910e5783bd6"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.29",
+      "source_citation": "3.29",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_EXACT",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "is not aware, after reasonable diligence, of",
+      "canonical_value": "AFTER_INQUIRY",
+      "attributes": {
+        "section_reference": "3.29",
+        "party_making": "the Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "KNOWLEDGE",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "No Knowledge"
+          ],
+          "ambiguity_signals": {}
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "99a5d4e5a5f15020c6ecd558ff1d9108bb0131e1e6bd6a719f7154030c9bc2d6",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "82ae0f0d26b26b3e7e405454d744cdbd9b5238ed5d54eeb9860f19e2abf82655",
+          "document_ordinal": 0,
+          "absolute_start": 133,
+          "absolute_end": 177,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0d80e3cc277416a0de3bdbaac506403613680ba463d09f0a869cc1ccf057f088",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "57375054742e487ec51de1173eddd4cc07bcec36085dcc1f9277f57270514544",
+        "producer_receipt_id": "c5861c652cb3d557bb4ed77a8310463ab962d2466961fdfb28a1f82ee4cc9495",
+        "governed_scope_digest": "57b1fde1054bcb9f881f514f0931d207166c83124b29e3f62eb5c9d775ae96f5",
+        "extraction_provenance_id": "eea371f44a31856968389e9c896328e7c5a6458dc9f29241701abfea35cfb3ab"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.29",
+        "normalized_citation": "3.29",
+        "derived_citation": "3.29"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.29",
+      "source_citation": "3.29",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "that could reasonably be expected to prevent or impede the Mergers from qualifying for the Intended Tax Treatment",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.29",
+        "party_making": "the Company",
+        "representation_side": "TARGET",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "TRAILING",
+          "governs_path": null,
+          "ambiguity_signals": {
+            "items_grammatically_parallel": true
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b0d56099e58ead1c7a00a244aeffe218cc667f6fec06b91c2be85e355f1978dd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "da35a97f042fc1810082535838d72c3931ce23b6295219a16a8a94ed4f65a52c",
+          "document_ordinal": 0,
+          "absolute_start": 220,
+          "absolute_end": 333,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b4188326b6e08e2aeedcc336aa28a5afc650d199459e89016af85fe09659f27c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "57375054742e487ec51de1173eddd4cc07bcec36085dcc1f9277f57270514544",
+        "producer_receipt_id": "c5861c652cb3d557bb4ed77a8310463ab962d2466961fdfb28a1f82ee4cc9495",
+        "governed_scope_digest": "57b1fde1054bcb9f881f514f0931d207166c83124b29e3f62eb5c9d775ae96f5",
+        "extraction_provenance_id": "eea371f44a31856968389e9c896328e7c5a6458dc9f29241701abfea35cfb3ab"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.29",
+        "normalized_citation": "3.29",
+        "derived_citation": "3.29"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.29",
+      "source_citation": "3.29",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "prevent or impede the Mergers from qualifying for the Intended Tax Treatment",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The representation's subject matter is the deal-specific qualification of the Mergers for the Intended Tax Treatment, a tax-characterization concept not captured by any representation-subject taxonomy in this first slice, which addresses only accuracy and knowledge qualifiers.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Tax reorganization qualification (Intended Tax Treatment)"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "149a62f9ae85aa95d1f877a25e31f2852ba3f6a10849e7e4dda3b2a2d68da354",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "818db09809f1c6a6f98dac54770b703d83fbaa9d2a88eb8c6491f6a155caf308",
+          "document_ordinal": 0,
+          "absolute_start": 257,
+          "absolute_end": 333,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d63de3247ca0438575a826230e5b41abfb63812717ac11e636bd9de89401dde7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "57375054742e487ec51de1173eddd4cc07bcec36085dcc1f9277f57270514544",
+        "producer_receipt_id": "c5861c652cb3d557bb4ed77a8310463ab962d2466961fdfb28a1f82ee4cc9495",
+        "governed_scope_digest": "57b1fde1054bcb9f881f514f0931d207166c83124b29e3f62eb5c9d775ae96f5",
+        "extraction_provenance_id": "e93b4c632846e141ce1f4e9e2158d660ddc01796c4a7761713b2ffb0573b4d57"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "as qualified by the Company Disclosure Schedules",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This defines the document universe of representations not disclaimed under this non-reliance clause; it is not an ACCURACY_STANDARD or KNOWLEDGE_STANDARD qualifier attached to an affirmative representation, so the first slice's vocabulary cannot express it.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Company Disclosure Schedules carve-out"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6c785b7da8aa618512a1000ee36a979dee7170c9f934e777b6cf462f4c13a5d3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5f46cece461d7ebbe78435ff566f6be30219d3ead0285b7909ad1beb446c1a52",
+          "document_ordinal": 0,
+          "absolute_start": 120,
+          "absolute_end": 168,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2a2d94e0c6c51f0214360fc69f73ae3477a315394b85ed6225e22e34e3ed4eff",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Voting Agreement or any certificate delivered pursuant to this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Names additional instruments excluded from the disclaimer of representations; this is a scope/document carve-out, not an accuracy or knowledge standard.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Voting Agreement/certificate carve-out"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6f1ce75bdf51826e6bf169a83418e9813a98711f6e8396d8afbfa171ca6f1506",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1d329e21532c9abeeff00fde3b7b65cbc36d9e1781bd90cd08369e9992e82715",
+          "document_ordinal": 0,
+          "absolute_start": 171,
+          "absolute_end": 247,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c0bc150334c386a16ce5de1e20282312c0c19025ad5b25df1d284961190ebf65",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any financial projection, forecast, estimate, budget or prospect information relating to the Company or any of its Subsidiaries or their respective businesses",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Enumerates a subject-matter category expressly excluded from any representation or warranty; this is a disclaimed-subject taxonomy, not an affirmative representation carrying an accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "financial projection/forecast subject taxonomy"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ec89a1ac828e395ddd038c36d0fc20d12becbc154bb6649adb4a7ab186665f24",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "959eac0cf85b235d68b3e10a1b381fad09685229cdb0fa4fc1d8a66beaa3f517",
+          "document_ordinal": 0,
+          "absolute_start": 1029,
+          "absolute_end": 1187,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b8848ba9e0bf0544966fea1a8b05599653b84c62b2cd8e6c57023b50c99705b7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any oral or written information presented to Parent or any of its affiliates or representatives in the course of their due diligence investigation of the Company, the negotiation of this Agreement or in the course of the Mergers or the Transactions",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Enumerates diligence-process information disclaimed from representation; no affirmative representation or controlled qualifier is present.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "due diligence information subject taxonomy"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9fce1cc161bd4de03d3cb24feaf9b7da31c3c3d01d1ace6c4ddec5dc2abaee77",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "392ed8741ddcef24519d9f20bbb7defeaf14268acca526b59b6dbb1810c3ba8d",
+          "document_ordinal": 0,
+          "absolute_start": 1197,
+          "absolute_end": 1445,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a5826b76fd7a613c3bcedf0bfdf670db0f8fb8ec35c9c01814647885ec968cf2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "as qualified by the Parent Disclosure Schedules",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Defines the document universe of Parent representations not disclaimed; a scope/document carve-out rather than an accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Parent Disclosure Schedules carve-out"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "06a2da3bfbd1d7fc2451a4b3a44b75a10ad5ab5bdbe9411426ef92582726b876",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b012c94339912def5d61e9ba3f06630d785b56354571ef945813877006ea928d",
+          "document_ordinal": 0,
+          "absolute_start": 1871,
+          "absolute_end": 1918,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2ac74548c9d063b48b89e47787abd4687684bbfb2d0122745b4de5be674dc89f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any implied representation or warranty as to the accuracy or completeness of any information regarding Parent or any of its affiliates furnished or made available to the Company or any of its representatives",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The word \"accuracy\" here names the subject matter of an implied warranty being disclaimed, not a stated standard for how true an affirmative representation must be, so it cannot be coded as an ACCURACY_STANDARD qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "accuracy/completeness of information disclaimer"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2922358e259da4e2f24584942de622bc223f6dc082417310c95d4d0d9c27f295",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "88d64e0cb4db0777cd8aeb2e412fce1d543b7817127a2cd8727e0cbda6600ba5",
+          "document_ordinal": 0,
+          "absolute_start": 1987,
+          "absolute_end": 2194,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "55c62d39bad34cb3ccb74961cb58cdcbe01712ea1c77e08c1088d8ae3a408556",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "no representations or warranties are made with respect to any projections, forecasts, estimates, budgets or prospect information that may have been made available to the Company or any of its representatives",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Disclaims a subject-matter category of representation regarding Parent; not an affirmative representation with an accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "projections/forecasts disclaimer (Parent)"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "523b5b930d9be0f863fe81ea10d28d1e373c5c0716974866b053a890eb257797",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c6d6221abcc8c2c516a99abb2760712e1aab96059e5ac5616f0b72fb6f9256fd",
+          "document_ordinal": 0,
+          "absolute_start": 2427,
+          "absolute_end": 2634,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "781070c6774967a59b339f8c064b157162d715416f672f3a285d7292c0f6b796",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company hereby disclaims any such other representations or warranties",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This is the Company's own disclaimer of additional representations, a non-reliance mechanism rather than a representation whose truth is qualified by an accuracy or knowledge standard.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Company non-reliance disclaimer"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0bd75555bf728cfae9aaedb7991b8e2302d7bfc3548ef990f296389acc0ae33e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a8bffa5409f91f419a4cf7d465f8da96ccf73d10ef323a5857b624eed7985719",
+          "document_ordinal": 0,
+          "absolute_start": 575,
+          "absolute_end": 648,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fd19506784fb1d8a2b1bdd9aa1825494e23e209bf96c7d41820f6f914168fb80",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "3.30",
+      "source_citation": "3.30",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the Company expressly disclaims reliance upon",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "An anti-reliance acknowledgment by the Company regarding statements about Parent; not itself an affirmative representation carrying a controlled accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Company anti-reliance disclaimer (Parent reps)"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0d21075ae68ee66304b25628594f51ced20ea14abb81e5df620a25e368a124d8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cad4797d9a67f2d06eb3ccba2215b893a1169a74236c67e3faeed1831b1c6fb7",
+          "document_ordinal": 0,
+          "absolute_start": 1625,
+          "absolute_end": 1670,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d808a49614c753ea2380a112dd364202854240a1828ea9210af3459bb22d23b9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1d5f840ad7c382fd0e81d1107493f7c50d7c6d53ef7b32d5a35664418000de14",
+        "producer_receipt_id": "4b517583da0d43b461eb86bf5b9b0a9af3162cd13124982986558588ddec679b",
+        "governed_scope_digest": "ad13f983fc6ab0323a56cfa1afc46be419a98898ca4a4e64dfe8cd005b9fb824",
+        "extraction_provenance_id": "ba10d47aab3a077ac1e6fe50059c6799c5f9f88a26b50dc4ad104fd499b3d398"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "reason": "REPRESENTATION_SIDE_UNRESOLVED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "Since the date of its incorporation or formation, as applicable",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.1",
+        "party_making": "Merger Subsidiary 1 and Merger Subsidiary 2",
+        "representation_side": null,
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "No Activities Outside Agreement Scope"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "10fb2d22716f3d6cc88e9c50fbf422d6a661815bf9e7abcf54c04096bcad0b5d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "74dc0d2c0a74610171be8ed228ad74ad826e2084797a7d645241b6d464618a70",
+          "document_ordinal": 0,
+          "absolute_start": 1285,
+          "absolute_end": 1348,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "76d712de4cd43b664faaba9042ffb71fbda116fad79faefaaa8d5257300ada21",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "817d03bdeaa663800a8b2604475f0463e4c438f399fad0b10eaa58a274be4a4f",
+        "producer_receipt_id": "205357a7000b2991251054d2b1b48a5479eac2bf29a0916c31612896f181baa8",
+        "governed_scope_digest": "ed78530abdec9372f1a57558ba86acda7394f4fcc6d493da92600daf9b170821",
+        "extraction_provenance_id": "2a05796e08373e5b6bac6877e040a77310b47b02cc6778d9377bc864bae93010"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.1",
+        "normalized_citation": "4.1",
+        "derived_citation": "4.1"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "in each case as currently in effect",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.1",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "TRAILING",
+          "governs_path": [
+            "Delivery of True, Correct and Complete Organizational Documents"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a2c46da1a94d3421b3c7a7896bb98ace5a4a1f0af800d5b7a15e234b6fe3b2f0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bc103133083648d66f9890a802c83370d3c5d8ecb60deee2efff6ee76c6f0ef6",
+          "document_ordinal": 0,
+          "absolute_start": 1768,
+          "absolute_end": 1803,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "45b4a57897eea6401695f15a279361aa0bd7aaf45196cf65490ff5523ea48be6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "817d03bdeaa663800a8b2604475f0463e4c438f399fad0b10eaa58a274be4a4f",
+        "producer_receipt_id": "205357a7000b2991251054d2b1b48a5479eac2bf29a0916c31612896f181baa8",
+        "governed_scope_digest": "ed78530abdec9372f1a57558ba86acda7394f4fcc6d493da92600daf9b170821",
+        "extraction_provenance_id": "2a05796e08373e5b6bac6877e040a77310b47b02cc6778d9377bc864bae93010"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.1",
+        "normalized_citation": "4.1",
+        "derived_citation": "4.1"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "other than in connection with or as contemplated by this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Limits the subject-matter scope of 'any activities' rather than stating an accuracy, knowledge, threshold-materiality, or temporal standard captured by this slice's qualifier kinds.",
+        "nearest_concept": "THRESHOLD qualifier (subject-matter scope carve-out)",
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Scope carve-out for permitted activities"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "eaa977bebd08eac8f0c74becac221b07c380c617fa6ca7466060c78d1d51a3b2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "971945e81977e3f4fd614e0bfacf9a3525487acc91d1b8adce2cd5cb1551f2b5",
+          "document_ordinal": 0,
+          "absolute_start": 1435,
+          "absolute_end": 1501,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ee2c2fde1e83e775203643832a4d2f9a35d681832179270c678f7b20158f86b0",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "817d03bdeaa663800a8b2604475f0463e4c438f399fad0b10eaa58a274be4a4f",
+        "producer_receipt_id": "205357a7000b2991251054d2b1b48a5479eac2bf29a0916c31612896f181baa8",
+        "governed_scope_digest": "ed78530abdec9372f1a57558ba86acda7394f4fcc6d493da92600daf9b170821",
+        "extraction_provenance_id": "1fba6237bef5c4153294f33f569493c9e267e7a1344275cc71afb934e6bd3c65"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "Assuming due authorization, execution and delivery of this Agreement by the Company,",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.2",
+        "party_making": "Parent, Merger Subsidiary 1 and Merger Subsidiary 2",
+        "representation_side": "BUYER",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "Valid, Binding, Enforceable Agreement"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "279c286ccfd0c5c4240533a2cf8e99b6b2f29423c3e57a3e2949250b9e71aadd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c4d84a651dce87148de5800cdb8e36ad6b738fad8a9bd87b2bb914477e0dba47",
+          "document_ordinal": 0,
+          "absolute_start": 493,
+          "absolute_end": 577,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "77f7dfb2c298ea3b2e07fc6f568f54b35218ed4cd11479df87956c3e52d521a0",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "b15ae10b9fdb175f72c7796c53b9c1bdf3ffdd4aa6934e84aee93cd0ef4b4f0e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.2",
+        "normalized_citation": "4.2",
+        "derived_citation": "4.2(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "subject to Creditors’ Rights",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.2",
+        "party_making": "Parent, Merger Subsidiary 1 and Merger Subsidiary 2",
+        "representation_side": "BUYER",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "TRAILING",
+          "governs_path": [
+            "Valid, Binding, Enforceable Agreement"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9be10fcf8a36ffeb85d550ce366807547a8a29e22c39a309d9f4b9d76fcf497e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "362ce75d307de91b99a12e441072a78ca249bd247c4e323570e15cfcc79333e4",
+          "document_ordinal": 0,
+          "absolute_start": 743,
+          "absolute_end": 773,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4fcfcdb3e6a065cc0179fe00b4d631bbeb098e14b4437091b1c16344cc83f98e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "b15ae10b9fdb175f72c7796c53b9c1bdf3ffdd4aa6934e84aee93cd0ef4b4f0e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.2",
+        "normalized_citation": "4.2",
+        "derived_citation": "4.2(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "when issued in accordance with the terms hereof",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.2",
+        "party_making": "Parent, Merger Subsidiary 1 and Merger Subsidiary 2",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "Share Issuance"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c519f0bbf23b82db828d68d4fb935b689066c693edf7f0f1c985a68bc8e0c3c1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "23303dc287c292ec3e7a15e19eba59f685a26fe57dbc63d61897febba1e69649",
+          "document_ordinal": 0,
+          "absolute_start": 841,
+          "absolute_end": 888,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5cbd4c1fd6416767ab0736b69fa2385132673f99be5346f0f5950af42e50311c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "b15ae10b9fdb175f72c7796c53b9c1bdf3ffdd4aa6934e84aee93cd0ef4b4f0e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.2",
+        "normalized_citation": "4.2",
+        "derived_citation": "4.2(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2(b)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "on or prior to the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.2",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "ambiguity_signals": {
+            "items_grammatically_parallel": true
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a3c80d1126511d8945a88ada31fa2543c57fad7688fdb0711756325a7be4c788",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9d32d8e3df7922729e60a864fdc928632af7991aaed2c73e838c123a2d1fb4d0",
+          "document_ordinal": 0,
+          "absolute_start": 1036,
+          "absolute_end": 1077,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3b87a9221ee37af6485a6779440f3ff6ba9917fc66ef3f05f1c9af1cad4761b2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "b15ae10b9fdb175f72c7796c53b9c1bdf3ffdd4aa6934e84aee93cd0ef4b4f0e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.2",
+        "normalized_citation": "4.2",
+        "derived_citation": "4.2(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "fair to, and in the best interests of, Parent and Parent’s stockholders",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This slice captures only accuracy and knowledge qualifiers on representation limbs; a board's fiduciary fairness determination is a substantive corporate-process representation, not an accuracy or knowledge qualifier.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Board fiduciary/fairness determination"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b014771ba23967cb24a9539693c120a563cd461d568a91f6be2cf049c22a199e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "d33e567a2fbe64ba6724742b991da78f75697df49ee22dca02f5b65fb4989795",
+          "document_ordinal": 0,
+          "absolute_start": 1216,
+          "absolute_end": 1289,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "19f490938836355189cad4ae3c35209d00b535cb8fcc6ba41e4dd71072d0bd41",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "5ea2d16a42a8c5716472894af95d4c6ecbd20379d76ce10ce478dd8199327eb5"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "fully paid and nonassessable and not subject to preemptive rights",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Describes substantive attributes of the issued shares rather than an accuracy or knowledge standard applied to the representation.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Share issuance quality / preemptive-rights attribute"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "71af9ee2118f6a3c2bb1f39ce69a609e2dd3c9345e0d3c47532bffaf9ee1c666",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9711f5cdbae1e417e804c86bac9033f00507a024f4c4ed3c9f817e2b07b1ed67",
+          "document_ordinal": 0,
+          "absolute_start": 931,
+          "absolute_end": 996,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "11fe7e6599b1d2c0ea58ee323b930d9a4bb7431a458dcfa815a8e17e30982382",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "5ea2d16a42a8c5716472894af95d4c6ecbd20379d76ce10ce478dd8199327eb5"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "submitted this Agreement to Parent, as sole stockholder of Merger Subsidiary 1, for adoption thereby and recommended that Parent, acting in its capacity as the sole stockholder of Merger Subsidiary 1, approve and adopt this Agreement and the Transactions",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Subsection (c) contains no accuracy or knowledge qualifier and so is not emitted as a representation instance in this slice, but its stockholder-adoption mechanics are a substantive commercial/process term worth preserving.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "Merger Subsidiary board/stockholder approval and adoption process"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a5de7272ab6d921b34da8b0d0fb0dbcb53db7f6bd4013bf248cd0dc204682383",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "36f8d593a95f71c8b25635f977e7f1e65d3de01327864abeb8d48f5153016dcf",
+          "document_ordinal": 0,
+          "absolute_start": 1647,
+          "absolute_end": 1901,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "017bb6edd1b74d347c2b3948d0c7da4c1d088a81df783deee0559d109b051e30",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "d9b87054dffcf7da45f318f0a0c43cbb29e1efcf82ed6af7559290bf12164bc9",
+        "producer_receipt_id": "2c7d44d8c6a4113b609d4a6e64fa54dd7aaab05419ae1a059951f7eb23f75219",
+        "governed_scope_digest": "cd78b385734b4b7800d16b63ae710463c22b2450dd7b1506da03078e5b4145b5",
+        "extraction_provenance_id": "5ea2d16a42a8c5716472894af95d4c6ecbd20379d76ce10ce478dd8199327eb5"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.3",
+      "source_citation": "4.3",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.3",
+        "party_making": "Parent and the Merger Subsidiaries",
+        "representation_side": "BUYER",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "f"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": true
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "41ab29ad1fbdaeaf382eb2ccfc3ab33d1b98f7f768c603a20b9acc1f24d86fd7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fa8a832287ca1335472b16fd5c0f6716fb1d28892a1a3d5f87e35657483d7e2c",
+          "document_ordinal": 0,
+          "absolute_start": 744,
+          "absolute_end": 850,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3bdf82980c96d86560216d5065ddba032f9cda67a76280ebb9e002ba5e0cf2fd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "9541bd82f134bb7e9f5c78ab92ce5523335917a6f596990be528a2b4e56e5460",
+        "producer_receipt_id": "4cd84d4dcbc4b3684f256d2be301bf52dff87114006ba32d3389981a0e632949",
+        "governed_scope_digest": "3a96f6c64f4a2b8c6759ba8ea49fc55062dd3032341bcbf4c1b21932efdffe3f",
+        "extraction_provenance_id": "da9fa8c3794537741e436b6110e948be79aea369f0e01eea0622656f298c3f0c"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.3",
+        "normalized_citation": "4.3",
+        "derived_citation": "4.3"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.3",
+      "source_citation": "4.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "(a) the filing of the Certificates of Merger in accordance with the DGCL and the DLLCA, (b) compliance with any applicable requirements of the HSR Act, (c) compliance with any applicable requirements of the Exchange Act, (d) compliance with any applicable requirements of the Securities Act, (e) the appropriate filings and approvals under the rules of the NYSE or Nasdaq",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This slice's controlled vocabulary covers only accuracy and knowledge qualifiers; the specific named statutes and exchange rules forming the exception list are subject-matter taxonomy with no governed code.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "enumerated regulatory-filing carve-out taxonomy"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "aa5e9ae31633c3c811c672d61b6ba47daa8bfb67f87d63825012010437fd4d1f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "49a0eed7b5aff5c3c09281bad3db4651dcc2f90dd60aa9be2f82c9a98339bebf",
+          "document_ordinal": 0,
+          "absolute_start": 306,
+          "absolute_end": 677,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "583e27393713ee7fd82015cd527ffda4b99965e68dae2d00a062386aa37a8f69",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "9541bd82f134bb7e9f5c78ab92ce5523335917a6f596990be528a2b4e56e5460",
+        "producer_receipt_id": "4cd84d4dcbc4b3684f256d2be301bf52dff87114006ba32d3389981a0e632949",
+        "governed_scope_digest": "3a96f6c64f4a2b8c6759ba8ea49fc55062dd3032341bcbf4c1b21932efdffe3f",
+        "extraction_provenance_id": "e8d0808314fc1094b773dd65fb614d85e4a5fbaf2b35bf7dda895c3851f260c7"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_EXACT",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "To Parent’s knowledge",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.4",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "KNOWLEDGE",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "sole"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f0f54fc09f30b9b54bf6e4b6086d97b665f4aedd3677d25d34313d19c813485f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "74fbbddd6620675e0cdfb329aad0d540ea72c3daf72107c9fc4368d38d7a9861",
+          "document_ordinal": 0,
+          "absolute_start": 1787,
+          "absolute_end": 1810,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "1b3263f78f9ac390c5e7e80e8d1bc6b1bad6a2a87b2a8ef349956716b1a2c89f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "2124a0b43e33371aecedc5ff2cee9cff4c5635b8dd78014ebe99673eb8044075"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.4",
+        "normalized_citation": "4.4",
+        "derived_citation": "4.4"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "as of the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.4",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "sole"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cb12c45338c4a277da151ed9b5b46247afda999c2b3420573b2467beeed5199c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8a2f79f56da69bf383dc3e183f268aab1486f69fc16030c8bd2024cde75fbaf6",
+          "document_ordinal": 0,
+          "absolute_start": 1811,
+          "absolute_end": 1843,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b78798778541b610cf7b8d7751c638418bfea5e5fa531529004dcc89ae1a30b7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "2124a0b43e33371aecedc5ff2cee9cff4c5635b8dd78014ebe99673eb8044075"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.4",
+        "normalized_citation": "4.4",
+        "derived_citation": "4.4"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "materially impede or materially interfere",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.4",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "sole"
+          ],
+          "ambiguity_signals": {
+            "items_grammatically_parallel": false
+          }
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fd78ae7a2088db8335b40335c8730ab67c812caf0401bb3c0dacc088213b6dd9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c7ddaf1bb98dee2ad59aedb392588b8d2cfe2463ad4ca207dbcc6d9023097bf3",
+          "document_ordinal": 0,
+          "absolute_start": 1910,
+          "absolute_end": 1951,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "af9bf4a2bec3986a78af5c45199a25935fc69935c42b4928c34e481cf215bba3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "2124a0b43e33371aecedc5ff2cee9cff4c5635b8dd78014ebe99673eb8044075"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.4",
+        "normalized_citation": "4.4",
+        "derived_citation": "4.4"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "assuming compliance with the matters referred to in Sections 4.2 and 4.3",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This is a conditional cross-reference to compliance with other sections of the agreement, not an accuracy or knowledge qualifier, and cross-reference capture is out of scope for this slice.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "cross-referenced compliance condition"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "78731f0aa34db07585288b37b465e287a2c48bf79171ab23c0815b0104f7b79b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "237499d1145621db12708dbccb090b1fd7ee748f8d693fbbe1537b2b7d691f95",
+          "document_ordinal": 0,
+          "absolute_start": 227,
+          "absolute_end": 299,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6f23e1f4cc5708ac18d11dd7ce3c2e1da52327acbaf18da6c0f5cfd1acdde6bb",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "ad5c308d24b59ed04f9dfc223068362aa0817d4fdfab1456c7d1759af765ea94"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "there is no Effect that would reasonably be expected to prevent, materially impede or materially interfere with the consummation by Parent or the Merger Subsidiaries of the Merger and the Transactions",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This creates a bespoke reasonable-expectation/materiality standard tied to consummation of the Merger, distinct from the defined Parent Material Adverse Effect threshold used elsewhere in the section, and is not expressible as a single controlled accuracy code.",
+        "nearest_concept": "Parent Material Adverse Effect",
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "representation-specific negative assurance standard"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "99f3458bf7bac42a3f037e698bba7f186a4de145db86d83f121bc8e6a2f987b1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9b76f105e966eab863ce8974e77b215189f1c72e65548cb1949f12e93aa2c359",
+          "document_ordinal": 0,
+          "absolute_start": 1845,
+          "absolute_end": 2045,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f8ceb6ef1968335720c2a3bac71454581a6959ea4aad9245d82a87ab3c9f3fcf",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "ad5c308d24b59ed04f9dfc223068362aa0817d4fdfab1456c7d1759af765ea94"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.4",
+      "source_citation": "4.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The approval of the stockholders of Parent is not required by applicable law or the rules of the NYSE or Nasdaq to effect the transactions contemplated by this Agreement.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This is an unqualified representation with no accuracy or knowledge qualifier, so it is not emitted as a representation_instances object under this slice's scope; the substantive stockholder-approval/exchange-rule content is preserved here instead.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "stockholder approval / exchange listing rule statement"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "aad4540cbb5725d45661d4bca76bced00afa7c4fac55f176b0d1f537cb76cd81",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b8d44d3a0bf5636e2eeba5f081dd52b873d02fc4101fdab2a231d5ee4c02b1fd",
+          "document_ordinal": 0,
+          "absolute_start": 1616,
+          "absolute_end": 1786,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4499aac41ef127010067159e42538c41fe3d692a89a121f298f03ea8f2793f8f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "71aef44d9d4cd40a4b9a37910531d95893108c18038d904a8c95d4a2cdafea37",
+        "producer_receipt_id": "a1a4698364725bb43d10f3366c0b17370b7a8e4670dc00b15ef3e774a5f33737",
+        "governed_scope_digest": "30fe9afbfe6519e19738520c927fe4625a55551066f3c32ebdff95b0aab94405",
+        "extraction_provenance_id": "ad5c308d24b59ed04f9dfc223068362aa0817d4fdfab1456c7d1759af765ea94"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The authorized capital stock of Parent consists of 1,000,000,000 shares of Parent Common Stock, and 20,000,000 shares of preferred stock, par value $0.0001 per share (“Parent Preferred Stock”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This slice captures only accuracy and knowledge qualifiers attaching to representation clauses; the specific authorized share counts, class structure, and par value are a substantive capitalization fact, not a qualifier, so no representation_instances qualifier object can express them.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "capital structure - authorized shares and par value"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7a287ed5ad00d890274c2f72d91455d8a237cac8db7be3a84aaa931e903c2cbc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8c88d1cbe92b79151f40df337330d958623ef95537e7d46d72c4815c70e2a2e7",
+          "document_ordinal": 0,
+          "absolute_start": 28,
+          "absolute_end": 225,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c116ed8bb0b3d0d332e8254bf937737cbb16861b17e03dff7bc552ae9a64da03",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "fdd2867bbd754e17d14259cbaf94ccce7b26cb3c1101ee6e05ef1e59c331c36d",
+        "producer_receipt_id": "f497dc554167d5b7cabc5c88ef786a533f703c965933082fe8b079496da737d8",
+        "governed_scope_digest": "f918dd0ddefeb2ebdf2f7ad0ba0f091bf14b6d2b992442db802b7bfd5ef1c3e1",
+        "extraction_provenance_id": "37067a7123d2bbb1c0230bb12717aa46168bc965ad453aa7c14bcc6f65266fde"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "As of its filing date",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.6",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "(a)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "77f31441c4fdf4e344ed917587c73a13593fa416174cae2073648b2e90e2ee88",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "58fd2ad15d43f06bb0bf7a2f035cd0f2afbb7e753541461aca7402442a5467bd",
+          "document_ordinal": 0,
+          "absolute_start": 29,
+          "absolute_end": 50,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "cabf999640170704d79c58e8450e934dbae957acf747970edfc9fc57bfe99092",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "5fbbba478732d4e28abb031757b67c6db990cdd3eb3a4762458b19c21fd2f35f"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.6",
+        "normalized_citation": "4.6",
+        "derived_citation": "4.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6(a)",
+      "reason": "REPRESENTATION_ACCURACY_NOT_CHAPEAU",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "in all material respects",
+      "canonical_value": "MAT_ALL_MATERIAL",
+      "attributes": {
+        "section_reference": "4.6",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "ACCURACY",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "(a)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "50a3a34161986f34e4e39919b8530637ae0754e07266eb45e681965b1a80d6be",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "882688da72310a66e29b643dcaf25f4264dcbd40f7c1ff21e3283cbe324aa182",
+          "document_ordinal": 0,
+          "absolute_start": 97,
+          "absolute_end": 121,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4e2a2439aa2ae30953df0abca50488e3aa1abb9efefa6990cb3ca54f7595e9c3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "5fbbba478732d4e28abb031757b67c6db990cdd3eb3a4762458b19c21fd2f35f"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.6",
+        "normalized_citation": "4.6",
+        "derived_citation": "4.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "as to form",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.6",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "(a)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "446bfe068253cdaf5a3791717ee8b6bb38dac841bf6fff8dda5a9dbedbb92606",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5e161509731fd191dc4961c31c8a03a27cdbeda370903fdfcdeb04144618e772",
+          "document_ordinal": 0,
+          "absolute_start": 86,
+          "absolute_end": 96,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3dcd50c912004ee0ef68c74a055ccafcd3eb90d992b645bee8ef62454c7eaad2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "5fbbba478732d4e28abb031757b67c6db990cdd3eb3a4762458b19c21fd2f35f"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.6",
+        "normalized_citation": "4.6",
+        "derived_citation": "4.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6(a)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "As of its filing date",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.6",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": [
+            "(b)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "754e23302bfecbbbb1673b559409b791f03140208ec4c4d2ee1fbcc268ee4adc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "58fd2ad15d43f06bb0bf7a2f035cd0f2afbb7e753541461aca7402442a5467bd",
+          "document_ordinal": 0,
+          "absolute_start": 29,
+          "absolute_end": 50,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c64107515ec0e2adff3c23014865083ccc47837b9cede207511d218910b2790f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "5fbbba478732d4e28abb031757b67c6db990cdd3eb3a4762458b19c21fd2f35f"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.6",
+        "normalized_citation": "4.6",
+        "derived_citation": "4.6(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6(c)",
+      "reason": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "raw_value": "as of the date such statement or amendment became effective",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.6",
+        "party_making": "Parent",
+        "representation_side": "BUYER",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "(c)"
+          ]
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "632fd8c4c65c3a9a4f4e5eceb01fede369971369bea72fbc899bfe0534d0f3ce",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8aef5e2aa1a7bc9e84448e1c0c848bd2e054678fdae33f84a89ccafc6d244785",
+          "document_ordinal": 0,
+          "absolute_start": 1429,
+          "absolute_end": 1488,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "7ad3523bd34e41d82b01101a6bc2e00233e6a3b161f57e52583f6789adae4e9b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "REPRESENTATION_QUALIFIER",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "5fbbba478732d4e28abb031757b67c6db990cdd3eb3a4762458b19c21fd2f35f"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.6",
+        "normalized_citation": "4.6",
+        "derived_citation": "4.6(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "“Parent SEC Documents” means Parent’s (i) Annual Reports on Form 10-K for its fiscal years ended December 31, 2023 and 2024, (ii) proxy or information statements relating to meetings of, or actions taken without a meeting by, the stockholders of Parent held since December 31, 2023 and (iii) other reports, statements, schedules and registration statements filed with the SEC since December 31, 2023.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "This defines which filings fall within the representation's subject matter (a subject taxonomy), not an accuracy, knowledge, or threshold qualifier on a limb; this slice has no field for representation-subject definitions.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "defined-term subject taxonomy for 'Parent SEC Documents'"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e04f7520d61527caab5e4e51fc3795e7a17401fe254a14f7ef768bb62c7ce5d8",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c5871ebf0a7ee419e75d68feb19d8e2295627239105b2e6bb49563965947b52e",
+          "document_ordinal": 0,
+          "absolute_start": 296,
+          "absolute_end": 702,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b6d1a8e7221e7e1c82491ad02d31c6948f9d36f4821d0361469689478656c5c3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "7b1d97aabfcfe68ad1ea669d98e86406301ab7a8df8326ed422f57298392bafb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "since January 1, 2023",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Bounds the population of registration statements covered by the (c) representation rather than qualifying how true the representation must be or the date accuracy is tested; broader than a single TEMPORAL bring-down date and not an ACCURACY/KNOWLEDGE/THRESHOLD code.",
+        "nearest_concept": "TEMPORAL qualifier",
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "lookback period bounding covered registration statements"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7335f35431b46102dee274880311104831a89e4399f68bfa4be5949a84c4970d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a3d94ad0247d917377e3ffa526fb5b62dad4242c56083f3ff699a5a5b660e1dc",
+          "document_ordinal": 0,
+          "absolute_start": 1375,
+          "absolute_end": 1396,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f05f0d76073b86cf5c53d18366616b43ec24cd5b2eabb3604a9eb8e2b09be832",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "7b1d97aabfcfe68ad1ea669d98e86406301ab7a8df8326ed422f57298392bafb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "as amended or supplemented, if applicable",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Narrows which registration statements are within scope depending on whether amendments/supplements exist; not an accuracy, knowledge, or threshold qualifier under the controlled vocabulary.",
+        "nearest_concept": null,
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "conditional applicability scope"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a365cc93aa6ca2b35e0570c58c3300f940af365f0c4cce5f75ee116fc3988daa",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "0b69b15ebee1e593fa9a2c346bddc3d5ffa07e8f10edde4c23e87a5e4e2a017d",
+          "document_ordinal": 0,
+          "absolute_start": 1316,
+          "absolute_end": 1357,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "0fc5beb41f1ecafa9737d5ad312ff90d983d816389e803d46e00dda9717ed0d7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "7b1d97aabfcfe68ad1ea669d98e86406301ab7a8df8326ed422f57298392bafb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    },
+    {
+      "section_reference": "4.6",
+      "source_citation": "4.6",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "since January 1, 2023",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Bounds the population of forms, reports, schedules, registration statements and proxy statements covered by the (d) filing-completeness representation. This representation carries no ACCURACY/KNOWLEDGE/THRESHOLD/TEMPORAL bring-down qualifier of its own, so no representation_instance is emitted for (d) under this slice's scope rule, but the lookback bounding the rep's subject matter is preserved here.",
+        "nearest_concept": "TEMPORAL qualifier",
+        "candidate_kind": "ATTRIBUTE_OR_QUESTION",
+        "observed_category": "lookback period bounding covered filings"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a15d6752d1061a5f3ef30e26501c360f1763d70b4d8c7fa3b054318084ea623b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a3d94ad0247d917377e3ffa526fb5b62dad4242c56083f3ff699a5a5b660e1dc",
+          "document_ordinal": 0,
+          "absolute_start": 1375,
+          "absolute_end": 1396,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8571fd104317928dd9f70b0d9c6c1a79fc0ff5eebc41f1bbd80a58ad9aacfeb4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "17f2816b86b4d93ba528339dd5ed899d2ef3540aff837e0bbf9e0586b74fd442",
+        "producer_receipt_id": "b2af06db41b3bc52f76231fe97d65f03609ae205e79ab2b5e6fac60485d2afcf",
+        "governed_scope_digest": "a10600b517ebb94931c1d4dd57f764c8e76697834acf886b7a3b1958cf4ed441",
+        "extraction_provenance_id": "7b1d97aabfcfe68ad1ea669d98e86406301ab7a8df8326ed422f57298392bafb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "887c6e57b39d5f3f94c459320c4f90e50fe41f1e9e70157c49897a3c4c2e1ccb",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 20,
+    "qualifier_kind_lexicon_version": 3,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "87787c58e555f3c0d4d6d03cf72228f3fe94f99d6a9aa51363748e1792af7bce",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 57,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 5,
+      "open_world": 52,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "a74fbcfb2a16682a6dd89705c946549e85c98de8c9cd12a7d6d98f1faff56636"
+  }
+}

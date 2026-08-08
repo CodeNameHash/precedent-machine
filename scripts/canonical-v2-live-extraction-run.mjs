@@ -188,7 +188,14 @@ const {
 // governed home that existed. Replaying the committed antitrust run with V38
 // gives all eleven a home, two resolving and nine queueing honestly, with no
 // change to anything that already resolved.
-const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
+// V41 (Stage 3): V38 plus the two strictly-additive trigger-path schema
+// versions (V39/V40) and REPRESENTATION_ACCURACY_STANDARD's widened
+// allowed-value set (MAT_MATERIAL_INLINE, MAT_MAE_AGGREGATE -- Ben's
+// never-alias materiality ruling; see contract-bundle.js's own V41
+// comment). Same reason the V34 -> V38 move recorded above: resolving
+// against an older bundle turns already-governed vocabulary into
+// open-world rows for want of a home that exists.
+const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   createRecordingClient,
@@ -1827,7 +1834,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV38();
+  const contractBundle = compileFixtureContractV41();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -2082,7 +2089,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV38',
+    contract_bundle_version: 'compileFixtureContractV41',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,

@@ -81,8 +81,10 @@ function fixtureQuote(closurePrefix) {
 
 // ─── Versions ───
 
-test('QUALIFIER_KIND_LEXICON_VERSION is 2, SCHEDULE_REFERENCE_PARSE_VERSION is 1, MEASUREMENT_DATE_PARSE_VERSION is 2', () => {
-  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 2);
+test('QUALIFIER_KIND_LEXICON_VERSION is 3, SCHEDULE_REFERENCE_PARSE_VERSION is 1, MEASUREMENT_DATE_PARSE_VERSION is 2', () => {
+  // Stage 3 bumped the lexicon 2 -> 3 (see canonical-v2-qualifier-kind-
+  // lexicon.test.js's own version pin for the reason).
+  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 3);
   assert.equal(SCHEDULE_REFERENCE_PARSE_VERSION, 1);
   assert.equal(MEASUREMENT_DATE_PARSE_VERSION, 2);
 });

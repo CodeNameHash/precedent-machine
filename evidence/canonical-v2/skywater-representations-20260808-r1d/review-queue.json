@@ -1,0 +1,81 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "0af3efc1779015ea0be1e5f53c67277b5fb49cbbe90573cd0983e3cc400d48fb",
+  "review_queue": [
+    {
+      "section_reference": "4.12",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "abee4b7c75363a675530dc205e872995a6bdeaece88a0eb3a9b4dcb40b55bd81",
+      "closure_id": "e83b299e126d26c508208272269975de1d336744960046e96be1a6af669192c8",
+      "normalised_phrase": "to the knowledge of Parent",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.12",
+      "source_citation": "4.12",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except as would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "0609e15a4ac39a315f90c322bc4b51ac03a5cc80fe03625933a909f219498426",
+      "closure_id": "ef4b855c31803d378664860a5e2e8b4ca61fc4856fe5588d57188d4a25a268ce",
+      "normalised_phrase": "except as would not, individually or in the aggregate, be reasonably likely to have a Parent Material Adverse Effect",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except for any violations that, individually or in the aggregate, have not had, and would not be reasonably likely to have, a Parent Material Adverse Effect.",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "3e281e7991807a419f70ebadc43918c5a7392abea40c28477297e897913d2e9a",
+      "closure_id": "6ec19f07227812b4bf49f219dde008007411ab6087e08112aa48ae0c4d58540d",
+      "normalised_phrase": "except for any violations that, individually or in the aggregate, have not had, and would not be reasonably likely to have, a Parent Material Adverse Effect.",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-B-QUALIFIER"
+    },
+    {
+      "section_reference": "4.7",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5746ed4e67789a4ba449a52c98cf6b676ce1b68bae5c534515a46656e59893ff",
+      "closure_id": "7696f100b248d36dd7ece750059b6f3f69c74ee9f7d09c205fb09fa814b5e4ef",
+      "normalised_phrase": "in all material respects",
+      "attachment_position": "CHAPEAU",
+      "concept_family": "REP-B-QUALIFIER"
+    }
+  ],
+  "review_queue_artifact_id": "bdd65a831806539ad8f0b556a21d918df38be0fcbe1b3dbb254697b829fdecca"
+}

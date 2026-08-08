@@ -697,7 +697,15 @@ async function resolveSingleQualifier({ quote, attachment, modelKind = null, mod
   });
 }
 
-test('(QUALIFIER, ACCURACY, ITEM) routes to review, never rep-level (work item 2)', async () => {
+test('(QUALIFIER, ACCURACY, ITEM) mints a LIMB-level claim on the assertion-node subject -- never rep-level -- and a pathless ITEM accuracy still routes to review (Stage 3, Ben rulings 4/5)', async () => {
+  // HISTORY. This test originally pinned spec section 2 rule 6's blanket
+  // "ITEM ACCURACY -> review" routing. Ben has since ruled that qualifiers
+  // ALWAYS attach to their host and that review cards are progressive
+  // (fact -> limb -> clause), so an ITEM-attached accuracy standard with a
+  // resolved governs_path now mints as a limb-level fact on the assertion
+  // node the tree resolves. What rule 6 actually prohibits -- minting at
+  // REP level -- is pinned below directly: the resolved claim's subject is
+  // the assertion node, never the provision.
   const resolution = await resolveSingleQualifier({
     quote: ACCURACY_CHAPEAU_QUOTE,
     attachment: itemAttachment(['(i)']),
@@ -709,13 +717,53 @@ test('(QUALIFIER, ACCURACY, ITEM) routes to review, never rep-level (work item 2
       subject: 'synthetic item-level accuracy statement',
     }],
   });
-  assert.equal(resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false);
-  const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
-  assert.ok(queued, 'the ITEM-attached ACCURACY qualifier reached review_queue');
-  assert.ok(queued.reasons.includes('ACCURACY_ITEM_ATTACHED_NOT_REP_LEVEL'));
-  assert.equal(queued.concept_family, 'REP-T-CAP');
-  assert.equal(queued.attachment_position, 'ITEM');
-  assert.equal(queued.normalised_phrase, ACCURACY_CHAPEAU_QUOTE);
+  const resolvedQualifier = resolution.resolved.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(resolvedQualifier, 'the ITEM-attached ACCURACY qualifier with a resolved governs_path now resolves');
+  assert.equal(resolvedQualifier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
+  assert.equal(resolvedQualifier.claim.canonical_value, 'MAT_ALL_RESPECTS');
+  // NEVER rep-level: the subject is the tree's assertion node, not the
+  // provision instance.
+  assert.notEqual(
+    resolvedQualifier.claim.subject_occurrence_id,
+    resolvedQualifier.provision_instance.provision_instance_id,
+    'an ITEM accuracy claim must be limb-scoped, never minted on the provision itself',
+  );
+  const tree = resolution.limb_component_trees.find(
+    (candidateTree) => candidateTree.provision_instance_id === resolvedQualifier.provision_instance.provision_instance_id,
+  );
+  assert.ok(tree, 'the limb tree minted for this provision');
+  assert.ok(
+    tree.assertion_nodes.some((node) => node.limb_component_id === resolvedQualifier.claim.subject_occurrence_id),
+    'the claim subject is one of the tree\'s own assertion nodes',
+  );
+
+  // The rep-level prohibition still stands where there is nothing to
+  // attach to. A pathless ITEM qualifier cannot even be CONSTRUCTED
+  // through the real producer (evidenceForItemQualifier needs the
+  // governs_path to locate the limb, so the shaping stage drops it as a
+  // typed residual before the resolver ever sees it) -- prove exactly
+  // that, rather than a resolver outcome the producer makes unreachable.
+  // resolveQualifierPart additionally carries its own defensive pathless
+  // guard (ACCURACY_ITEM_ATTACHED_NOT_REP_LEVEL) for any future caller
+  // that bypasses the shaping stage.
+  const pathless = await resolveSingleQualifier({
+    quote: ACCURACY_CHAPEAU_QUOTE,
+    attachment: Object.freeze({
+      position: 'ITEM',
+      governs_path: null,
+      ambiguity_signals: { items_grammatically_parallel: true },
+    }),
+    modelKind: 'ACCURACY',
+    modelCode: 'MAT_ALL_RESPECTS',
+  });
+  assert.equal(pathless.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false,
+    'a pathless ITEM accuracy must never resolve');
+  assert.equal(
+    pathless.review_queue.some((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY)
+      || pathless.open_world.some((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    false,
+    'the shaping stage drops it as a typed residual before resolution',
+  );
 });
 
 test('an ACCURACY qualifier whose whole quote matches no whitelist phrase routes to review regardless of attachment (plan Task 2 test case)', async () => {

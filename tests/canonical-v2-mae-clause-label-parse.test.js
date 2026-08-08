@@ -22,6 +22,7 @@ const path = require('node:path');
 const {
   verifyMaeClauseLabelAdjacency,
   selectMaeClauseLabelSibling,
+  verifyMaeClauseLabelContainment,
   verifyMaeClauseLabel,
 } = require('../lib/canonical-v2/native-producer/mae-clause-label-parse');
 
@@ -213,19 +214,68 @@ test('verifyMaeClauseLabel: tier 3 -- clause (D)\'s three real narrowed sub-quot
   }
 });
 
-test('verifyMaeClauseLabel: tier 3 refuses when the only candidate sibling is NOT itself independently verified (an unverified sibling can never rescue another candidate)', () => {
-  // A sibling asserting the same clause_label "(D)" but whose OWN quote is a
-  // fragment that is neither self-referencing nor source-adjacent to "(D)"
-  // -- i.e. a sibling that would ITSELF still be queued -- must not be used
-  // as a tier-3 anchor for anyone else either.
+test('verifyMaeClauseLabel: an unverified sibling is never the tier-3 anchor -- when this quote verifies at all, it is tier 4 (structural containment), and a WRONG label with the same unverified sibling still refuses', () => {
+  // History: before tier 4 existed, this exact call returned false, which
+  // proved tier 3 refused the unverified sibling. Tier 4 (structural clause
+  // containment) now legitimately verifies this quote WITHOUT any sibling --
+  // NATURAL_DISASTERS_QUOTE genuinely sits inside clause (D)'s own span --
+  // so the tier-3 property is pinned in isolation below instead, and the
+  // hostile case moves to a WRONG label, which every tier (including 4)
+  // must still refuse even with the unverified sibling present.
   const unverifiedSibling = 'material worsening of such conditions'; // real (D) prose, but not adjacent to "(D)" and does not itself contain "(D)"
-  const ok = verifyMaeClauseLabel({
+
+  // Tier 3 in isolation: the caller-side filter (directlyAdjacent) is what
+  // excludes unverified siblings; prove the selector itself never fires
+  // with an empty verified set, and that the unverified sibling would not
+  // pass the adjacency filter it is gated behind.
+  assert.deepEqual(selectMaeClauseLabelSibling({ quote: NATURAL_DISASTERS_QUOTE, candidates: [] }), { outcome: 'NONE' });
+  assert.notEqual(
+    verifyMaeClauseLabelAdjacency({ sectionText: TOPBUILD_MAE_TEXT, quote: unverifiedSibling, clauseLabel: '(D)' }).outcome,
+    'ADJACENT',
+    'the unverified sibling must itself fail tier-2 adjacency -- that failure is exactly what keeps it out of the tier-3 candidate set',
+  );
+
+  // The overall true result is tier 4's doing, not the sibling's:
+  assert.deepEqual(
+    verifyMaeClauseLabelContainment({ sectionText: TOPBUILD_MAE_TEXT, quote: NATURAL_DISASTERS_QUOTE, clauseLabel: '(D)' }),
+    { outcome: 'CONTAINED' },
+  );
+
+  // HOSTILE: the same quote under a WRONG label ((C) is a real clause the
+  // quote does NOT sit in) refuses through every tier, unverified sibling
+  // present or not.
+  assert.equal(verifyMaeClauseLabel({
     quote: NATURAL_DISASTERS_QUOTE,
-    clauseLabel: '(D)',
+    clauseLabel: '(C)',
     sectionText: TOPBUILD_MAE_TEXT,
     siblingQuotes: [unverifiedSibling],
-  });
-  assert.equal(ok, false);
+  }), false);
+});
+
+test('verifyMaeClauseLabelContainment: fails closed on a label absent from the outline, an ambiguous quote, and a quote outside the labelled clause', () => {
+  assert.deepEqual(
+    verifyMaeClauseLabelContainment({ sectionText: TOPBUILD_MAE_TEXT, quote: NATURAL_DISASTERS_QUOTE, clauseLabel: '(Z)' }),
+    { outcome: 'LABEL_NOT_IN_OUTLINE' },
+  );
+  assert.deepEqual(
+    verifyMaeClauseLabelContainment({ sectionText: TOPBUILD_MAE_TEXT, quote: ECONOMY_GENERAL_QUOTE, clauseLabel: '(D)' }),
+    { outcome: 'NOT_CONTAINED' },
+    'a real (A) quote claimed under (D) must refuse',
+  );
+  // "(X)" is not a plausible outline value (alphaValue 23 can never open a
+  // list), so segmentSubClauses refuses the whole outline -- an equally
+  // fail-closed refusal, typed LABEL_NOT_IN_OUTLINE rather than
+  // QUOTE_NOT_LOCATED. An ambiguous quote under a REAL label refuses too:
+  const duplicated = '(a) shared wording appears here. Unrelated paragraph.\n(b) shared wording appears here.';
+  assert.equal(
+    verifyMaeClauseLabelContainment({ sectionText: duplicated, quote: 'shared wording appears here.', clauseLabel: '(a)' }).outcome,
+    'QUOTE_NOT_LOCATED',
+  );
+  const notPlausible = '(X) shared wording appears here. Unrelated paragraph. (X) shared wording appears here.';
+  assert.equal(
+    verifyMaeClauseLabelContainment({ sectionText: notPlausible, quote: 'shared wording appears here.', clauseLabel: '(X)' }).outcome,
+    'LABEL_NOT_IN_OUTLINE',
+  );
 });
 
 test('verifyMaeClauseLabel: HOSTILE -- a label absent from the source entirely still fails, exactly as today, even with real siblings present', () => {

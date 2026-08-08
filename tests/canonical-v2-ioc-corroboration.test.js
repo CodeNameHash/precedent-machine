@@ -86,3 +86,60 @@ test('threshold basis requires one corroborated reading', () => {
     { outcome: 'REVIEW', reason: 'THRESHOLD_BASIS_UNCORROBORATED' },
   );
 });
+
+// ═══════════════════════════════════════════════════════════════════════
+// Stage 4: V1 IOC vocabulary consumed as second-chance corroboration
+// (lib/vocab/ioc-categories.js + ioc-components.js -- see
+// ioc-corroboration.js's own V2_CATEGORY_TO_V1_KEYS comment).
+// ═══════════════════════════════════════════════════════════════════════
+
+test('Stage 4: "Organizational Documents" corroborates CHARTER through the V1 vocabulary, typed with its own provenance (card 04)', () => {
+  const result = corroborateRestrictionCategory({
+    quote: 'amend or propose to amend the Company’s Organizational Documents',
+    asserted_category: 'CHARTER',
+  });
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.concept_key, 'IOC-CHARTER');
+  assert.equal(result.corroboration_provenance, 'V1_IOC_CATEGORY_VOCABULARY');
+  assert.equal(result.v1_category.v1_category_key, 'CHARTER_BYLAW_AMENDMENTS');
+});
+
+test('Stage 4: the V1 record carries sub-components exactly where lib/vocab/ioc-components.js has them, never invented', () => {
+  const withComponents = corroborateRestrictionCategory({
+    quote: 'complete any acquisition of any corporation, partnership or division thereof',
+    asserted_category: 'MERGE',
+  });
+  assert.equal(withComponents.outcome, 'RESOLVED');
+  assert.equal(withComponents.v1_category.v1_category_key, 'ACQUISITIONS_BUSINESS_COMBINATIONS');
+  assert.ok(Array.isArray(withComponents.v1_category.v1_category_components), 'ACQUISITIONS has components in V1');
+  const withoutComponents = corroborateRestrictionCategory({
+    quote: 'amend or propose to amend the Company’s Organizational Documents',
+    asserted_category: 'CHARTER',
+  });
+  assert.equal('v1_category_components' in withoutComponents.v1_category, false, 'CHARTER has no V1 components -- none invented');
+});
+
+test('Stage 4 HOSTILE: the second chance never fires when the primary tests matched (primary path byte-identical), never corroborates a wrong category, and a V1-only-category hit refuses', () => {
+  // Primary path unchanged: no provenance, no v1_category.
+  const primary = corroborateRestrictionCategory({
+    quote: 'incur any indebtedness for borrowed money',
+    asserted_category: 'DEBT',
+  });
+  assert.deepEqual(primary, { outcome: 'RESOLVED', restriction_category: 'DEBT', concept_key: 'IOC-DEBT' });
+
+  // Wrong category: quote is charter text, asserted DEBT -- must refuse.
+  const wrong = corroborateRestrictionCategory({
+    quote: 'amend or propose to amend the Company’s Organizational Documents',
+    asserted_category: 'DEBT',
+  });
+  assert.equal(wrong.outcome, 'REVIEW');
+
+  // A quote whose only V1 hit is a category with NO V2 counterpart
+  // (REAL_ESTATE_LEASES) must not corroborate anything.
+  const v1Only = corroborateRestrictionCategory({
+    quote: 'enter into any new real estate leases for office space',
+    asserted_category: 'CONTRACT',
+  });
+  assert.equal(v1Only.outcome, 'REVIEW');
+  assert.equal(v1Only.reason, 'CATEGORY_UNCORROBORATED');
+});
