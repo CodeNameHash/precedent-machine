@@ -3,6 +3,7 @@ import taxonomy from '../../../lib/taxonomy.js';
 import { belowThresholdLabel, cardCode, cardFeatures, cardType, textOf, triggerThresholdLabel, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { parseMoneyAmount } from '../../../lib/parse-money.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const {
   EFFORTS_STANDARDS, EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, MATERIALITY_CODES, labelForCode,
@@ -1218,7 +1219,7 @@ function buildIocConfig({ id, title, party }) {
           // exactly as before (no dead cursor).
           return React.createElement(GroupedSubRows, {
             groups,
-            emptyCopy: 'No interim operating covenants found.',
+            emptyCopy: CONDITION_ABSENT_COPY,
             onSelectCard: ctx.onSelectCard,
             resolveCard: ctx.resolveCard,
             selectedCardId: ctx.selectedCardId,

@@ -1,6 +1,7 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -469,7 +470,7 @@ const materialContractsConfig = {
     { id: 'threshold', header: 'Threshold', width: '12rem', renderCell: renderThreshold },
     { id: 'evidence', header: 'Evidence', renderCell: renderEvidence },
   ],
-  empty: { copy: 'No material-contract rows found.' },
+  empty: { copy: CONDITION_ABSENT_COPY },
   renderFooter: renderMaterialContractsFooter,
 };
 

@@ -4,6 +4,7 @@ import { cardCode, cardFeatures, labelOf, splitForCell, triggerThresholdLabel, v
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
 import bringDownTiers from '../../../lib/bring-down-tiers.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 const { bringDownTreatmentCodes, recoverBringDownFromCard } = bringDownTiers;
 
@@ -1050,7 +1051,7 @@ const conditionsConfig = {
         const groups = conditionGroups(row.reviewDeal, ctx);
         return React.createElement(GroupedSubRows, {
           groups: groups.map((group) => ({ id: group.id, label: group.label, rows: group.rows })),
-          emptyCopy: 'No closing conditions found.',
+          emptyCopy: CONDITION_ABSENT_COPY,
           // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
           // nosol-section.config.js's buildGroups() already uses -- resolveCard
           // just needs row.card, which conditionGroups() now sets above.

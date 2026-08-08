@@ -3,6 +3,7 @@ import { cardFeatures, partySide, splitForCell, stripEdgeEllipsis, textOf, value
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { CONDITION_ABSENT_COPY } from '../../../lib/canonical-conditions.js';
 
 // Rebuilt per REBUILD-SPECS.md §7. Kept as its own standalone span block
 // (Ben likes Intervening Event separate from the other No-Solicitation
@@ -368,7 +369,7 @@ const nosolInterveningConfig = {
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
-  empty: { copy: 'No Intervening Event mechanics found.' },
+  empty: { copy: CONDITION_ABSENT_COPY },
 };
 
 export { nosolInterveningConfig, renderDetail, renderSignals, rowSignal, summarizeInterveningDefinition };
