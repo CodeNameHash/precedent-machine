@@ -302,3 +302,86 @@ objects, same key, different glosses, exactly as 2X-D states.
 
 No Ben ruling in DECISIONS entry 14 is factually contradicted by anything
 found. The 2X-I finding does not overturn a ruling; it re-orders a step.
+
+---
+
+## 5. Ben's question: why not broaden segmentation to all 25 families? — REVISED: broaden
+
+**Answered 2026-08-08, after the coordinator's survey (2 of 25 prompts declare
+limbs; 22 families are flat assertion lists; the 13–26% families are flat lists
+pointed at nested drafting).**
+
+### 5.1 The actual reason
+
+Broadening was **not considered**. My comparison answered the question as
+posed — five mechanisms, converge or keep — and the service contract I wrote
+(`resolveGoverningStructure(sectionText, span)`) is already family-agnostic,
+but I named consumers only among the existing five mechanisms plus 2X-L. That
+was scope inherited from the question, not a decision taken on evidence.
+There is no rejection to defend.
+
+### 5.2 Is placement the same operation as the limb families?
+
+Same containment lookup, materially different consequence. The limb families
+use model-declared trees to mint **claim identity** — new claim subjects,
+content-derived ids, pinned forever. Placing an existing flat assertion into
+a text-derived tree adds **inheritance context** to a claim that already has
+its identity: additive, reversible, and unable to re-mint anything. The
+difference argues FOR broadening — the flat-family version is the lower-stakes
+half of the operation the limb families already do.
+
+### 5.3 What actually breaks — failure modes, named
+
+1. **Quote span crosses leaf boundaries** — whole-sentence quoting rules
+   (termination-fee PROMPT_VERSION 2 explicitly) can produce spans covering a
+   chapeau plus its first limb. Must return UNDETERMINED, never the deeper
+   leaf. Affected: families quoting whole sentences or multi-limb passages.
+2. **Assertion whose quote IS the chapeau** — termination grants, IOC
+   chapeaus. Not a failure: containment correctly returns the chapeau leaf.
+3. **Same-style restart mis-nest** — the colon CHILD-OPEN rule nests a second
+   enumeration's `(a)`/`(1)` under the previous list's last frame. Verified
+   real, not hypothetical: TopBuild 2.1's second election list `(1)/(2)`
+   lands at `b.2.1`/`b.2.2` under the first list's `(2)`. This is the silent
+   failure mode — a wrong parent, no refusal.
+4. **MAX_DEPTH=3 truncation and unfired CHILD-OPEN** — conservative by
+   design: coarser leaves, never a wrong parent (except via 3).
+
+### 5.4 Reliability, measured — not assumed
+
+Ran `segmentSubClauses` (read-only scratchpad script,
+`segmenter-survey.js`) over **every resolved section of all 213 evidence
+runs, all 7 deals**, canonical texts rebuilt via
+`rebuildAdmittedSourcePrimitives` (Modiv from a post-08-07 run dir; the
+pre-08-07 Modiv dirs correctly refuse with NO_RECORDED_RETRIEVAL_TIMESTAMP).
+
+- **538 unique sections**; 171 (32%) have no markers at all — trivially safe,
+  section-level context only. 367 have markers; 2,360 markers total; max
+  depth 1/2/3 = 261/75/31 sections.
+- **Mis-nest suspicion signature** (same-style parent-child link, computable
+  from output paths alone): **45 markers in 6 sections — 1.1% of sections**:
+  concho Annex-A (`c.a…`), modiv 8.12 (`g.a…`, `ll.a…`), modiv 8.3 (`b.a`),
+  redhat 3.01 (`vii.M.A…J`), skywater 3.21 (`a.G.A…D`), topbuild 2.1
+  (`b.2.1`, `b.2.2` — inspected, confirmed a real restart mis-nest).
+- So: clean on ~99% of sections, and the residual 1% is **machine-flaggable
+  from the segmenter's own output** — the service refuses any chain passing
+  through a same-style link, converting the one silent failure mode into a
+  visible UNDETERMINED at a measured cost of six sections corpus-wide. Those
+  six become a pinned fixture list.
+
+### 5.5 Revised 2X-A scope
+
+**Broaden.** The architecture of §1 stands unchanged (the kept-separate
+reasons for `findIocChapeau`, `qualifier-attachment.js`, `limb-components.js`
+are untouched — note the two-shall-not-list drafting shape is exactly the
+same-style restart signature, so the service now refuses where it would have
+mis-nested). What changes is the consumer list: add a **corpus-wide placement
+pass** — every family's assertions get a `structure_context` (governing
+chapeau chain by containment lookup on their existing byte spans) at
+resolution time. Fail-closed on: span crossing leaves; any chain through a
+same-style parent-child link; markerless sections get section-chapeau context
+only. **Context annotation only — the derived tree must never mint identity
+for flat families**; identity minting stays with model-declared limbs
+(2X-L/2X-I), which is what keeps this pass additive and unable to regress a
+claim. Sits in the free replay phase immediately after 2X-L, which supplies
+its first consumer (path-hygiene corroboration) and whose limb trees it
+cross-checks.
