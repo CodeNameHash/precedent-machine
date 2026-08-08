@@ -1,5 +1,10 @@
 # Do derived limbs need identity, or is annotation enough?
 
+**Status: DECIDED 2026-08-08 (DECISIONS.md §15).** Annotation-only for now;
+design the identity model now; mint only after marker-start stability.
+Schema: `DERIVED_LIMB/V1` — see `step-2x-derived-limb-schema.md`. Survey:
+`step-2x-marker-start-stability.md`.
+
 Open architectural question, raised by Ben 2026-08-08 while Step 2X-A was being
 broadened. Recorded because it is a decision that is cheap to make now and
 expensive to retrofit, and because the analysis below turns on a measurement
@@ -115,7 +120,17 @@ the stability criterion is met is cheap.
 
 ## Status
 
-Open. Not decided. Put to Fable as a design question, or decided with Ben.
+**DECIDED 2026-08-08 — Ben, DECISIONS.md §15.**
+
+- Ship annotation now (`structure_context`); do not mint derived identity yet.
+- Design now: identity `{canonical_text_id, marker_start_byte}`; path and
+  parentage out of identity; ordinal dropped; **new schema `DERIVED_LIMB/V1`**,
+  not a bent `PROVISION_COMPONENT/V1`.
+- Mint gate: corpus survey shows **zero marker-start moves** across ~2,360
+  markers after colon rule + `MAX_DEPTH` 3→5 + `(x)/(y)/(z)`.
+- Spec: `docs/codex-program/notes/step-2x-derived-limb-schema.md`.
+- Survey: `scripts/canonical-v2-marker-start-stability.mjs` →
+  `docs/codex-program/notes/step-2x-marker-start-stability.md`.
 
 ---
 
