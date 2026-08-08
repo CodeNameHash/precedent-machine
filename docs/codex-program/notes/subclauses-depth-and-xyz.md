@@ -6,13 +6,14 @@ step completes.
 
 ## Status
 
-- [ ] Harness rebuilt, baseline reproduced (Change 3, part 1)
-- [ ] Change 1 — raise MAX_DEPTH
-- [ ] Change 2 — (x)/(y)/(z) corroborated CHILD-OPEN
-- [ ] Re-measure after each change separately and both together
-- [ ] New tests written
+- [x] Harness rebuilt, baseline reproduced (Change 3, part 1)
+- [x] Change 1 — raise MAX_DEPTH (to 5)
+- [x] Change 2 — (x)/(y)/(z) corroborated CHILD-OPEN
+- [x] Re-measure after each change separately and both together
+- [x] New tests written (18 total in tests/subclauses.test.js, up from 8)
 - [ ] Guard proof for each change
 - [ ] Full verification (existing tests, V1 consumers, npm test, npm run build)
+- [x] Coordinator addendum: limb-marker back-reference shapes (3 tests + corpus scan)
 
 ## 1. Harness
 

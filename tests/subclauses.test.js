@@ -336,14 +336,18 @@ test('back-reference shape 1 (protected): mid-paragraph "as described in (A) and
   // non-zero, so CHILD-OPEN's "first marker overall" path cannot re-fire,
   // and the back-reference is neither colon-introduced nor line-adjacent to
   // the prior marker. Protected by the existing adjacency requirement.
-  const text = 'The Company shall: (A) do one thing; (B) do a second thing; (C) do a third, in each '
-    + 'case as described in (A) and (B) above.';
+  const text = 'The Company shall, to the extent required by applicable Law: (A) file all Tax Returns '
+    + 'required to be filed by it on or before the Closing Date; (B) pay all Taxes shown as due and '
+    + 'owing on any such Tax Return; (C) cooperate with Parent and its Representatives after the '
+    + 'Closing Date in each case as described in (A) and (B) above, including by providing reasonable '
+    + 'access to books and records.';
   const leaves = segmentSubClauses(text);
   assertLeavesPartition(null, leaves, text);
   const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
   assert.deepEqual(markers, ['A', 'B', 'C'], 'the back-reference inside (C) must not spawn C.A/C.B');
   const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
   assert.match(byMarker['C'].text, /as described in \(A\) and \(B\) above/);
+  assert.match(byMarker['A'].text, /Tax Returns/);
 });
 
 test('back-reference shape 2 (protected): "Section 3.1(b) and Section 4.2(a)" cross-references do not split', () => {
