@@ -1,0 +1,104 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "MISC_BOILERPLATE",
+  "purpose": "General extraction run: family MISC_BOILERPLATE on deal topbuild.",
+  "section_references": [
+    "7.1",
+    "7.2",
+    "7.3",
+    "7.4",
+    "7.5",
+    "7.7",
+    "7.8",
+    "7.9",
+    "7.13",
+    "7.14",
+    "7.15"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "7.1",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.2",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.3",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.4",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.5",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.7",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.8",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.9",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.13",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.14",
+      "family_id": "MISC_BOILERPLATE"
+    },
+    {
+      "section_reference": "7.15",
+      "family_id": "MISC_BOILERPLATE"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV38",
+  "prompt_id": "native-producer-remedies-misc/v1",
+  "prompt_version": 2,
+  "agreement_date": "2026-04-18",
+  "model_cli_alias": "sonnet",
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-08T11:50:44.329Z",
+  "total_elapsed_ms": 516222,
+  "extraction_wall_clock_ms": 505213,
+  "replay": null,
+  "recorded_to": "evidence/canonical-v2/topbuild-misc-boilerplate-20260808-probe2f2/recording.json",
+  "code_provenance": {
+    "commit": "e50796167f0ea774d758b09e50ead3a0ae650f5d",
+    "working_tree_clean": false
+  },
+  "resolved_models": [],
+  "model_call_count": 11,
+  "run_receipt_id": "2a7d8d597903b6860843f8e448d42a5f0fa41834471623a78314d9a05fa9f60e",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 11,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}
