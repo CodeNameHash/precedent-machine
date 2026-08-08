@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-08T10:51:53.207Z",
+  "section_reference": "8.03(p)",
+  "note": "General extraction run: deal=redhat, family=NO_OTHER_REPS_FRAUD, section_references=[\"3.01(v)\",\"3.02(f)\",\"8.03(p)\"] (all dispatched as NO_OTHER_REPS_FRAUD via section_family_assignments), prompt_id=native-producer-no-other-reps-fraud/v1, prompt_version=1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"no_other_reps_assertions\": [],\n  \"non_reliance_assertions\": [],\n  \"independent_investigation_assertions\": [],\n  \"fraud_carveout_assertions\": [],\n  \"willful_breach_definitions\": [{\n    \"section_reference\": \"8.03(p)\",\n    \"definition_quote\": \"with respect to any agreement or covenant in this Agreement, an act or omission (including a failure to cure circumstances) taken or omitted to be taken that the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.\",\n    \"defined_term_ref\": \"\\u201cWillful Breach\\u201d\"\n  }],\n  \"open_world_candidates\": []\n}\n```"
+}
