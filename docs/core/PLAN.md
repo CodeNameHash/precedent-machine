@@ -1510,42 +1510,53 @@ recurring, which says the reader needs a **contract test against a real
 read back are compared field by field through `canonicalJson`, and the test
 names every field that does not round-trip. Fix what that test finds.
 
-## Step 2D2. Capitalisation section 4.2 returns dozens of JSON objects
+## Step 2D2. PARKED until after go-live, by Ben, 2026-08-08
 
-**Found by Step 2D1's own proof run, 2026-08-07, and it is a different defect
-from the one that run was built to prove.**
+**Ben's ruling: capitalisation is set aside until the whole project is done.**
+It is `PLAN.md` Step 9F now — after the cutover, not before it. This step stays
+here as a marker so nobody re-opens it as active work.
 
-**What it is.** Fixing the dead `--call-timeout-ms` flag let section 4.2 run to
-completion for the first time — 633,833ms and 652,899ms across two independent
-runs, both well past the 600,000ms ceiling that had been killing it. The
-section then failed to parse: **its model response contains dozens of
-independent JSON objects — 58 in one run, 52 in the other** — and
-`anthropic-provider.js`'s parser expects a single object and cannot
-disambiguate them.
+**Why.** The family extracts a share register: five assertion kinds,
+`AUTHORIZED`, `ISSUED_OUTSTANDING`, `RESERVED`, `TREASURY`,
+`OUTSTANDING_AWARDS`. All five are counts. **Nobody searches precedents for how
+many Class C shares a REIT had outstanding**, and the thing that *is*
+searchable in that same section — "no options, warrants or convertible
+securities outstanding other than..." — is a negative statement that **none of
+the five kinds captures.** So the family has been costing the corpus's highest
+output-per-input-byte to produce its least valuable half, while missing the
+valuable half entirely.
 
-**So `CAPITALISATION` is still `incomplete`, for a reason nobody could have
-seen before.** The timeout defect hid this one completely: the call never
-finished, so its response was never parsed. Fixing one defect revealed the next
-in the same path, which is the normal shape of this work and must not be
-recorded as "the timeout fix did not work". It did; twice; measurably.
+It has also absorbed disproportionate engineering: the dead-timeout defect and
+this multi-object parse both surfaced here, on the family with the least
+precedent value in the set.
 
-**Why it is plausible rather than surprising.** Capitalisation is the corpus's
-densest section — 58,867 output tokens from 8.2KB of input, the highest
-output-per-input-byte measured. A model asked to enumerate share counts across
-many instruments has a natural reason to emit many objects rather than one.
+**What is deferred with it**, so the pieces are not separated:
 
-**Change.** Decide what a multi-object response means before writing a parser
-for it. Two readings, and they are not equivalent: either the model is emitting
-one object per instrument and the response should be **accumulated**, or it is
-retrying itself mid-response and later objects **supersede** earlier ones.
-Accumulating a retry double-counts; superseding an enumeration loses most of
-the answer. **Read the actual recorded responses in the two committed proof
-directories before choosing** — both are on disk, so this needs no live call.
+- The multi-object parse. Section 4.2's response carries dozens of independent
+  JSON objects — 58 in one run, 52 in the other — that the single-object parser
+  cannot disambiguate. **Both recorded responses are committed** in
+  `modiv-capitalisation-20260807-step2d1-fix-live{,-nofollow}/`, so this needs
+  no live call whenever it is picked up.
+- **The decision that must precede any parser**: are those objects an
+  enumeration, one per instrument-count, to be **accumulated** — or is the
+  model retrying itself, so later objects **supersede** earlier ones?
+  Accumulating a retry double-counts the share register; superseding an
+  enumeration discards most of it.
+- **The taxonomy question, which is the more valuable one.** Whether the family
+  should extract the negative statements instead of, or alongside, the counts.
+  That is a codebook change and is reserved to Ben.
 
-**Proves it is done.** `CAPITALISATION` completes both sections and is no
-longer `incomplete`, with the resolved share counts checked against the filed
-document by hand rather than by count. A hostile test pins whichever reading
-was chosen, so the other cannot silently creep back in.
+**Two facts to carry, so this parking is not mistaken for a break.**
+
+**`CAPITALISATION` is `incomplete` and will stay that way.** Every check that
+reads "`incomplete` is 0" or "all 25 families" now means **24 of 25, with
+capitalisation parked deliberately.** A future session finding 24 must not
+read it as a regression, and must not "fix" it by re-running the family.
+
+**`RESERVED` and `OUTSTANDING_AWARDS` are the two counts that touch equity
+awards** — shares reserved under plans, awards outstanding. If anything
+downstream reasons about dilution or ownership thresholds they may be
+load-bearing, so check consumers before removing kinds rather than after.
 
 ## Step 2E. Map the families to TopBuild's sections, for nothing
 
@@ -2588,6 +2599,44 @@ kept form of `P9_CUTOVER_AUTHORISATION` and no document substitutes for it.
 local build of the same commit and compare the served payloads; they agree. This
 is the replacement for `P9_DEPLOYMENT_PARITY`, whose own named tests are one of
 three implemented.
+
+## Step 9F. Come back to capitalisation
+
+**Parked by Ben on 2026-08-08 and placed here deliberately: after the cutover,
+not before it.** Step 2D2 holds the full account; this is where the work
+actually happens.
+
+**What it is.** Decide what the capitalisation family should extract, then make
+it work. In that order — the parser question is downstream of the taxonomy
+question and answering it first would build the wrong thing well.
+
+**The taxonomy question, which is Ben's.** The family today is five count
+kinds. The precedent-searchable content of a capitalisation representation is
+not the share register but the **negative statements** — no options, warrants
+or convertible securities outstanding other than the disclosed ones; no
+preemptive rights; no voting agreements; no repurchase obligations — and their
+carve-outs. None of the five kinds captures any of that. Whether the family
+extracts those instead of, or alongside, the counts is a codebook change.
+
+**Then the parser.** Section 4.2's response carries dozens of independent JSON
+objects, 58 and 52 across two runs, against a single-object parser. Both
+recorded responses are committed, so no live call is needed. **Decide
+accumulate versus supersede from those responses before writing anything** —
+accumulating a retry double-counts the register, superseding an enumeration
+throws most of it away.
+
+**Note the parser problem may not survive the taxonomy answer.** Those objects
+are almost certainly one per instrument-count. A family narrowed to negative
+statements may not produce them at all.
+
+**Before removing any kind**, check what consumes `RESERVED` and
+`OUTSTANDING_AWARDS`. Those two touch equity awards rather than the raw class
+register, and anything reasoning about dilution or ownership thresholds may
+depend on them.
+
+**Proves it is done.** The family extracts what Ben rules it should, completes
+both sections, and is no longer `incomplete`. Until then, every "all 25
+families" check in this document means 24, by decision rather than by defect.
 
 ## Step 9E. Roll back, for real, once
 
