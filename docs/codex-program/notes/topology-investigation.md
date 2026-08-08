@@ -1,6 +1,6 @@
 # Topology Investigation
 
-Status: COMPLETE
+Status: COMPLETE, revised per coordinator follow-up (see Task 7)
 Branch: claude/codex-handoff-plan-status-77wn7n
 Date: 2026-08-08
 Scope: read-only investigation + spec. No prompt files edited. No commits made.

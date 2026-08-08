@@ -1,10 +1,34 @@
 # Asset sweep: tests/ and __fixtures__/ as institutional memory
 
-Status: IN PROGRESS
+Status: COMPLETE (targeted sweep, not exhaustive — see protocol note below)
 
 ## 1. Summary
 
-(to be filled at the end)
+This repo's ~1,122 test/fixture files (970 in the target slice) are the best
+written record of what the canonical-v2 extraction pipeline is supposed to
+guarantee: many carry long header comments naming the real defect that
+motivated them, replaying committed evidence directories or recorded model
+responses through the real pipeline rather than asserting against
+hand-built stand-ins. This sweep triaged by file name and size, grepped for
+inheritance/qualifier/scope/span/absence concepts across the whole suite,
+and read ~20 of the highest-signal files in full plus headers of a dozen
+more, rather than reading all 970 files. It surfaced 30 reusable rules
+spanning sub-clause segmentation, span-residual/span-claims accounting,
+qualifier attachment and kind classification, open-world-vs-governed-claim
+boundaries, negation-boundary quote integrity, party-capacity and
+party-scope inheritance, and IOC/termination-rights limb splitting; a
+catalogue of real, deal-grounded, model-call-free replayable fixtures
+(raw SEC filings, recorded model responses, full run receipts); 15
+documented past defects with concrete failure shapes; and 11 conditional
+(env-gated) skips across 7 files, none abandoned outright.
+
+**Not exhaustive.** ~970 files could not all be read at 40-effort budget.
+The 30 rules below are the highest-signal ones surfaced by the greps used
+(chapeau/limb/inherit/subclause, materiality/qualifier, party scope,
+residual/span, absence/open-world) — a second pass targeting different
+concepts (e.g. "consideration", "definitions graph", "citation
+constructibility", the 138-file chapeau/limb grep's remaining ~115 unread
+files) would surface more.
 
 ## 2. Reusable rules
 
