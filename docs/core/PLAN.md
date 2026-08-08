@@ -2242,6 +2242,29 @@ which holds for HTML-derived `cleanText` and therefore for all seven corpus
 deals. It is void for a hard-wrapped plain-text filing, where the anchor would
 fire mid-sentence. Test before relying on it outside the current corpus.
 
+**The corroboration tiers.** Marker existence gets one of three tiers, from
+the two detectors:
+
+- **CORROBORATED** — both find a marker at the same start. Highest confidence.
+- **LINE_ANCHORED_ONLY** — the sectionizer only. Union these in: its label width
+  is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and doubled-letter
+  overflow are markers `segmentSubClauses` cannot see at all.
+- **PERMISSIVE_ONLY** — `segmentSubClauses` only. The risky set: either a
+  genuine inline enumeration, which is why the permissive rule exists, or a
+  reference. **Annotation is allowed with the tier recorded; identity and
+  absence assertions are not, without corroboration.**
+
+Both of Ben's reference hazards land handled by this. The colon back-reference
+is PERMISSIVE_ONLY and sequence-breaking. The forward reference produces a
+*same-expected-label, two-starts disagreement* — an inline `(D)` and a
+line-anchored `(D)` — and **the line-anchored start wins**, which is what stops
+the real limb being swallowed.
+
+**What corroboration does NOT fix: parentage.** Tiers are about whether a marker
+exists, not about which parent it hangs from. Both detectors mis-nest a
+restarting `(a)`, so the same-style refusal remains mandatory on top of the
+tiers.
+
 **Scope: ALL sections, not only extracted ones. Decided 2026-08-08 by Ben.**
 The placement pass as first drafted covered every section that produced claims
 — which is the part we already looked at. That can answer "this section has a
@@ -2644,6 +2667,13 @@ with `EITHER_PRINCIPAL_PARTY`. It re-mints Modiv's committed identities and
 rewrites three pinned test files plus the termination projection, so it belongs
 in the bump rather than as a silent fold into a resolver step.
 
+**The constraint this step inherits, and it is not negotiable.** Derived
+structure may **describe what the model said; it may never select what the model
+reads.** Chunking prompts by derived limbs would convert a 1% segmentation error
+into an invisible coverage hole with no disagreement signal — the one failure
+mode nothing downstream can detect. Path-citation is admissible only if the
+model still sees the full section text.
+
 **The open question for this step.** Whether segmentation should also move
 *ahead* of the model call, so the model cites a limb by path rather than
 re-quoting its governing text. Output dominates cost — 15,897 tokens per call
@@ -2793,6 +2823,11 @@ from the bump, so that acceptance must be split in two or it stalls the free
 phase. 2X-D is confirmed replay-safe — the retired code was already absent from
 the prompt. This places 2X-I by design rather than letting
 implementation order decide it.
+
+**One tie-back to derived identity.** When the stability criterion is met,
+mint only **CORROBORATED** starts. Two independent detectors agreeing on
+`{canonical_text_id, start_byte}` is the closest a derived limb gets to the
+attestation a model-declared limb has by construction.
 
 **Proves it is done.** Each rung has its own pass before the next is funded. The
 blind 96-card re-score is the final rung's gate, not the only gate.
