@@ -393,7 +393,8 @@
             "tests/canonical-v2-defined-terms-family-seam.test.js",
             "tests/canonical-v2-defined-terms-later-slices.test.js",
             "tests/canonical-v2-key-terms-mae-product-projection.test.js",
-            "tests/canonical-v2-mae-definition-resolution.test.js"
+            "tests/canonical-v2-mae-definition-resolution.test.js",
+            "tests/canonical-v2-step-2f-breaks-5-6.test.js"
           ],
           "other": []
         },
@@ -432,6 +433,7 @@
         "exports": [
           "AUTHORITY_STATE",
           "LABELS",
+          "NoOtherRepsFraudProductProjectionError",
           "PRODUCT_PROJECTION_SCHEMA",
           "projectNoOtherRepsFraudProduct"
         ],
@@ -452,7 +454,8 @@
             "tests/canonical-v2-no-other-reps-fraud-dark-bridge.test.js",
             "tests/canonical-v2-no-other-reps-fraud-follow-on.test.js",
             "tests/canonical-v2-no-other-reps-fraud-negation-investigation.test.js",
-            "tests/canonical-v2-representations-dark-bridge.test.js"
+            "tests/canonical-v2-representations-dark-bridge.test.js",
+            "tests/canonical-v2-step-2f-breaks-5-6.test.js"
           ],
           "other": []
         },
