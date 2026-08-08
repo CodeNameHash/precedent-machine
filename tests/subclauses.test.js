@@ -323,3 +323,69 @@ test('hostile: mid-paragraph back-reference "clauses (A), (B), (C) and (D) above
   const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
   assert.deepEqual(markers, ['a'], 'prose ("clauses") between the colon and the bracket must block the colon rule, and a mid-paragraph back-reference must stay unsplit');
 });
+
+// ---------------------------------------------------------------------------
+// Limb markers as BACK-REFERENCES inside a clause's own text — three shapes,
+// only one of which is a real hole. All three cite prior limbs by letter
+// ("(A) and (B) above") rather than opening new ones.
+// ---------------------------------------------------------------------------
+
+test('back-reference shape 1 (protected): mid-paragraph "as described in (A) and (B) above" stays inside the citing clause', () => {
+  // (A) and (B) are matched to their OWN limbs earlier in the list; by the
+  // time (C) is reached and cites them back, "markers.length" is already
+  // non-zero, so CHILD-OPEN's "first marker overall" path cannot re-fire,
+  // and the back-reference is neither colon-introduced nor line-adjacent to
+  // the prior marker. Protected by the existing adjacency requirement.
+  const text = 'The Company shall: (A) do one thing; (B) do a second thing; (C) do a third, in each '
+    + 'case as described in (A) and (B) above.';
+  const leaves = segmentSubClauses(text);
+  assertLeavesPartition(null, leaves, text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, ['A', 'B', 'C'], 'the back-reference inside (C) must not spawn C.A/C.B');
+  const byMarker = Object.fromEntries(leaves.map((l) => [l.marker, l]));
+  assert.match(byMarker['C'].text, /as described in \(A\) and \(B\) above/);
+});
+
+test('back-reference shape 2 (protected): "Section 3.1(b) and Section 4.2(a)" cross-references do not split', () => {
+  // Both brackets are glued to a digit ("3.1(b)", "4.2(a)"), so
+  // isEligiblePosition rejects them outright — the same protection that
+  // guards every other section cross-reference in this module.
+  const text = 'The representations set forth in Section 3.1(b) and Section 4.2(a) shall survive the '
+    + 'Closing for a period of eighteen months.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  assert.deepEqual(markers, [], 'digit-glued cross-references must not be read as markers');
+});
+
+test('back-reference shape 3 (real, pre-existing hole in the colon rule): colon-introduced "(A) and (B) above" is detectable via the same-style mis-nest signature', () => {
+  // The colon rule opens on ANY colon immediately before a bracket, with no
+  // sense of "citation" vs "introduction" — "comply with the following:"
+  // reads identically to "as described in ... above:" would. This predates
+  // both changes in this file (MAX_DEPTH and xyz) and is not fixed by
+  // either; it is documented in docs/codex-program/notes/subclauses-depth-
+  // and-xyz.md and left as a known limitation, on the corpus evidence
+  // recorded there (zero observed real instances, and the same-style
+  // detector already flags every synthetic case tried). Rather than assert
+  // a specific (possibly change-sensitive) split, assert the DETECTABLE
+  // consequence that makes this catchable downstream: whatever nests here
+  // carries a same-style parent-child link — real outlining never nests a
+  // style under itself, so this signature is exactly what marks the
+  // structure as untrustworthy.
+  const text = 'The Company shall: (A) do one thing; (B) do a second; (C) comply with the following: '
+    + '(A) and (B) above.';
+  const leaves = segmentSubClauses(text);
+  const markers = leaves.filter((l) => l.marker !== null).map((l) => l.marker);
+  const nested = markers.filter((m) => m.includes('.'));
+  assert.ok(nested.length > 0, 'expected the colon rule to nest something under C (this is the known hole)');
+  const styleOfSingleLetter = (label) => (/^[A-Z]$/.test(label) ? 'upper' : (/^[a-z]$/.test(label) ? 'lower' : 'other'));
+  for (const path of nested) {
+    const segs = path.split('.');
+    const parentLabel = segs[segs.length - 2];
+    const childLabel = segs[segs.length - 1];
+    assert.equal(
+      styleOfSingleLetter(childLabel),
+      styleOfSingleLetter(parentLabel),
+      `expected a same-style parent-child link at ${path} (the mis-nest signature)`,
+    );
+  }
+});
