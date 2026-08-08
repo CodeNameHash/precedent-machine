@@ -7,6 +7,8 @@ const {
   resolveQualifierAttachment,
   buildAmbiguousReadings,
   firstMarkerMatch,
+  matchSingleClauseMarker,
+  extractParentheticalClausePaths,
   SERIES_MARKER_PATTERNS,
   SINGLE_CLAUSE_MARKER_PATTERNS,
 } = require('../lib/canonical-v2/native-producer/qualifier-attachment');
@@ -70,8 +72,39 @@ test('a TRAILING qualifier with an explicit single-clause marker resolves THIS_I
   });
   assert.equal(result.scope_reading, 'THIS_ITEM_ONLY');
   assert.equal(result.ambiguity_signals.single_clause_language, 'in the case of clause (iv)');
+  assert.equal(result.ambiguity_signals.named_subset_language, null);
   assert.equal(result.ambiguity_signals.in_each_case_language, null);
+  assert.equal(result.named_subset_paths, null);
   assert.equal(result.readings, null);
+});
+
+test('a TRAILING qualifier naming two clauses resolves NAMED_SUBSET with both paths', () => {
+  const result = resolveQualifierAttachment({
+    position: 'TRAILING',
+    governs_path: ['(iii)'],
+    quote_text: 'other than, in the case of clauses (ii) and (iii), any such contraventions',
+    sibling_limb_paths: [['(i)'], ['(ii)'], ['(iii)']],
+  });
+  assert.equal(result.scope_reading, 'NAMED_SUBSET');
+  assert.deepEqual(result.named_subset_paths, ['(ii)', '(iii)']);
+  assert.equal(
+    result.ambiguity_signals.named_subset_language,
+    'in the case of clauses (ii) and (iii)',
+  );
+  assert.equal(result.ambiguity_signals.single_clause_language, null);
+  assert.equal(result.readings, null);
+});
+
+test('in any case no longer forces ALL_ITEMS on a TRAILING qualifier', () => {
+  const result = resolveQualifierAttachment({
+    position: 'TRAILING',
+    governs_path: ['(ii)'],
+    quote_text: 'in any case no later than twenty (20) Business Days after the Effective Time',
+    sibling_limb_paths: [['(i)'], ['(ii)']],
+  });
+  assert.equal(result.scope_reading, 'AMBIGUOUS');
+  assert.equal(result.ambiguity_signals.in_each_case_language, null);
+  assert.ok(Array.isArray(result.readings));
 });
 
 test('a bare TRAILING qualifier with neither marker is AMBIGUOUS and carries both readings with correct governs_paths', () => {
@@ -155,8 +188,22 @@ test('position must be one of the three governed values', () => {
 
 test('firstMarkerMatch is case-insensitive and returns the matched substring verbatim', () => {
   assert.equal(firstMarkerMatch('In Each Case, as provided', SERIES_MARKER_PATTERNS), 'In Each Case');
-  assert.equal(firstMarkerMatch('SOLELY WITH RESPECT TO clause (ii)', SINGLE_CLAUSE_MARKER_PATTERNS), 'SOLELY WITH RESPECT TO');
   assert.equal(firstMarkerMatch('no markers here', SERIES_MARKER_PATTERNS), null);
+  assert.equal(firstMarkerMatch('in any case no later than', SERIES_MARKER_PATTERNS), null);
+});
+
+test('matchSingleClauseMarker captures every parenthetical in a named-subset run', () => {
+  const result = matchSingleClauseMarker('in the case of clauses (ii) and (iii), any such');
+  assert.equal(result.matched, 'in the case of clauses (ii) and (iii)');
+  assert.deepEqual(result.clausePaths, ['(ii)', '(iii)']);
+  assert.deepEqual(
+    extractParentheticalClausePaths('in the case of clauses (A) and (B)'),
+    ['(A)', '(B)'],
+  );
+  assert.equal(
+    matchSingleClauseMarker('SOLELY WITH RESPECT TO clause (ii)').matched,
+    'SOLELY WITH RESPECT TO',
+  );
 });
 
 // ─── buildAmbiguousReadings directly. ───
