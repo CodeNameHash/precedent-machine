@@ -2335,12 +2335,14 @@ fresh in-memory canonical repository, with a real receipt and no refusal.
 
 **Stage 3 entry is closed.** The original 96-card sample was recovered and is
 committed under `evidence/blind-review/2026-08-08/`; no successor sample or
-exception is needed. The current exact re-score resolves 17/96, reported by its
-twelve fixed strata: terminating party 6/8, clause label 6/8, qualifier kind
-4/8, category 1/8, and the other eight strata 0/8. The eight zero controls hold,
-but the original floor is missed because terminating party regressed by one and
-category regressed by three. Stage 3 does not start until a later exact re-score
-meets the original per-stratum floor or Ben expressly changes that floor.
+exception is needed. `node scripts/canonical-v2-20260808-blind-current-rescore.mjs
+--gate` reports `blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`: the
+current exact re-score resolves 17/96, reported by its twelve fixed strata:
+terminating party 6/8, clause label 6/8, qualifier kind 4/8, category 1/8, and
+the other eight strata 0/8. The eight zero controls hold, but the original floor
+is missed because terminating party regressed by one and category regressed by
+three. A future pass of this scorer is not Stage 3 permission. Stage 3 does not
+start until the full entry decision is made.
 
 ---
 
@@ -2353,11 +2355,13 @@ a confirmed mechanism or an explicit correct abstention. Stage 2X asked why the
 resolver refuses. Stage 2Y is about what has to change so that it is correct at
 a scale where nobody is watching.
 
-**PROPOSED. Three rulings in §"What this stage needs from Ben" are open** (a
-fourth is answered). Each says what the default is if Ben says nothing, so
-silence is a decision rather than a stall — **except ruling 4, which has no
-default and therefore does stall the 152 occurrences behind it.** That is stated
-rather than papered over.
+**Partially implemented, but not activated.** Step 2Y-K's diagnostic census is
+closed. Some other steps have inert or withheld proof work. No Stage 2Y change
+is selected for serving or publication. Three rulings in §"What this stage needs
+from Ben" are open (a fourth is answered). Each says what the default is if Ben
+says nothing, so silence is a decision rather than a stall — **except ruling 4,
+which has no default and therefore does stall the 152 occurrences behind it.**
+That is stated rather than papered over.
 
 **Baseline correction, 2026-08-09.** The first Stage 2Y draft lived on a branch
 that diverged before the Stage 2X evidence commit. This branch now integrates
@@ -2406,6 +2410,10 @@ Source: `evidence/canonical-v2/corpus-review-20260809.html`, one winning run per
 rows. Parsed directly rather than read off the rendered page. The full row-level
 register is `docs/codex-program/notes/stage-2y/unresolved-register.json` — 155
 rows, one per (family, reason_code) pair, summing to exactly 4,241.
+
+This is the diagnostic run set. It is not the later 157-run selected campaign
+set recorded in `COMPLETED.md`; the two counts have different purposes and must
+not be combined.
 
 | state | distinct codes | occurrences |
 |---|---|---|
@@ -2528,17 +2536,17 @@ same bucket structure regardless of content… That reconciliation is deliberate
 left to a later stage."* The later stage does not exist. 623 of these are
 REPRESENTATIONS — the largest single row in the register.
 
-**5. Representation qualifiers that are governed nowhere.** 485
-`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, of which **463 were measured and
-fully accounted for — THRESHOLD 306, TEMPORAL 157** — is a resolver
-kind-dispatch gap, not missing governance. *(306 + 157 = 463, not 485. The
-22-row difference is a run-set discrepancy `diag-qualifier-proxy.md` flags at
-its own line 38: "owner: 485; measured: 463". An earlier draft of this stage
-said "100% accounted for" against the 485, which was arithmetic that did not
-close. The 22 are not diagnosed.)*
+**5. Representation qualifiers that are governed nowhere.** The fixed 157-run
+selected campaign cohort has all 485
+`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` occurrences accounted for:
+THRESHOLD 326 and TEMPORAL 159. This is a resolver kind-dispatch gap, not
+missing governance. The earlier 151-run diagnostic cohort measured 463
+(THRESHOLD 306, TEMPORAL 157). TopBuild's official r3 supplies the remaining 20
+THRESHOLD and 2 TEMPORAL occurrences. There is no undiagnosed 22-row remainder.
 With `QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
 `ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26) it is **675 occurrences resolving to
-three causes**, all replay-validatable, except ~7 of the 22 bring-down rows.
+three causes**, all replay-validatable, apart from the separate prompt-dependent
+closing-conditions bring-down slice.
 
 **6. The lexical disagreement net over-triggers on its own success.**
 `matchFamily()` (`lexical-disagreement-net.js:1115`) marks a pattern hit MATCHED
@@ -2550,10 +2558,11 @@ collapse to 164 distinct (deal, section, concept_family) roots** — 3.9 tainted
 claims per root.
 
 Beyond the six: **107 open-world duplicates** and **59 byte-identical MAE
-duplicates** minted twice by the same shaper; **22 open-world concepts recurring
-in three or more deals** (147 occurrences) with nowhere to be promoted to; and a
-genuinely absent shape — the appraisal-settlement-consent covenant, same
-drafting across three deals, **no registered assertion kind at all**.
+duplicates** minted twice by the same shaper; **14 native open-world concepts
+recurring across three or more eligible deals** (130 occurrences) with nowhere to
+be promoted to; and a genuinely absent shape: the appraisal-settlement-consent
+covenant, same drafting across three deals, **no registered assertion kind at
+all**.
 
 ## What is *not* a defect, and must stop being counted as one
 
@@ -2673,11 +2682,12 @@ is a ratchet. *Default: yes, floors derived from
 
 **3. Open-world promotion threshold.** 2X-G left this open and 2Y-J cannot
 proceed without it. The evidence now says a concept-recurrence rule reads better
-than a percentage: the faithful collector finds **22 concepts recurring in
-three or more deals, across 147 rows**. The original diagnostic reported
-21/146; the discrepancy report names the additional eligible
-`AFFIRMATIVE_COVENANT` row. At seven deals a percentage rule makes one recurrence
-14%. *Default: three deals, and re-examine the rule at fifty.*
+than a percentage: the faithful collector finds **14 native concepts recurring
+across three or more eligible deals, covering 130 rows**. The appraisal card is
+separate, making 15 held candidates. `AFFIRMATIVE_COVENANT` occurs in six raw-deal
+records but only one eligible deal, so it is not a candidate. At seven deals a
+percentage rule makes one recurrence 14%. *Default: three deals, and re-examine
+the rule at fifty.*
 
 **4. `MULTI_SPAN_COMPOSED` / `NESTED_OR_CROSS_REFERENCED_EVIDENCE` (76 each) is
 one mechanism, not two** — confirmed on the corpus. I told Ben these were his
@@ -2717,6 +2727,13 @@ presupposed a baseline precision figure that **has never been measured** — the
 correct, not the published one. So my rule needed a number we do not have and
 then picked a threshold by argument. A sweep produces the number and the
 threshold together, per family, from evidence.
+
+**Current status.** The fail-closed substrate is partly built: the human-anchor
+packet, calibration harness, publication-disposition validation, readers and
+serving filter exist. The generated packet has 80 cards, but its decision ledger
+has zero decisions. There is therefore no completed anchor set, calibration,
+passing selected rung, calibration authority, eligible claim or publication
+release. Every current candidate remains `WITHHELD`.
 
 ### The ladders
 
@@ -2989,6 +3006,10 @@ queue, and `triage` is not persisted. The missing component is a publication
 state carried through the existing pipeline, not a switch that opens
 `auto_pass`.
 
+**Current status.** The fail-closed state and exclusion substrate is partly
+built, but has no authority artefact or enabled family. No claim is `ELIGIBLE`
+or `PUBLISHED`. This is not a step closure or serving activation.
+
 **What it is.** A versioned `publication_disposition` for every resolved claim,
 separate from both resolution and review routing. The minimum states are
 `WITHHELD`, `ELIGIBLE` and `PUBLISHED`. A review task says that a human should
@@ -3034,9 +3055,17 @@ result is typed: leaf, ancestor chain and siblings stay separate.
 
 **Why.** The largest single mechanism in the corpus, by a wide margin. The 2X-A
 structure service exists, but annotation currently runs after resolution and
-many held or open-world rows have no surviving evidence span, so their context
-is `UNDETERMINED`. The resolver must preserve and consume the exact occurrence,
-not re-locate a quote with `indexOf`.
+some specialised held paths in the selected artefacts still have stored evidence
+missing, so their context is `UNDETERMINED`. Generic resolver paths preserve
+evidence. The resolver must preserve and consume the exact occurrence, not
+re-locate a quote with `indexOf`.
+
+**Current census, 157-run selected campaign cohort.**
+`evidence/canonical-v2/stage-2y-a-context-availability-census.json` records 575
+of 756 fragment exclusions with structural host context available. It preserves
+exact fragment evidence for 712 and marks 44 `NOT_ASSESSABLE`. Candidate host
+binding was not performed. This is availability evidence only; it does not show
+a fragment was bound, reattached or resolved.
 
 **Change.** First preserve verified evidence on every held and open-world row.
 Then call the existing 2X-A structure service inside resolution, using the
@@ -3122,6 +3151,10 @@ a genuine conflict. Only definition-absent cases may test model fallback.
 ---
 
 ## Step 2Y-C. One vocabulary registry, and a lint that forces its use
+
+**Status: in progress.** The registry migration and its evidence must be
+regenerated from the current implementation before this step can be accepted.
+No production activation is claimed.
 
 **What it is.** Ben's source-of-truth question, answered. A single registry of
 the controlled language the resolver matches against — codes, controlled
@@ -3228,9 +3261,12 @@ quote is a genuine ambiguity and guessing is worse than refusing.
 **Direction of risk: additive.** Small, contained, five known occurrences plus
 the month-count family.
 
-**Proves it is done.** "at least four Business Days", "a Match Period of three
-Business Days" and "for a period of one year" all resolve; the two-count quote
-still abstains and has a test that says so.
+**Proves it is done.** The committed 157-run, 19-recording numeral replay reports
+every rung's resolved and abstained counts, every changed claim id and raw quote,
+and a per-rung diff. "at least four Business Days", "a Match Period of three
+Business Days" and "for a period of one year" all resolve. The two-count quote,
+unsupported units and ambiguous quotes still abstain, including
+`MULTIPLE_DAY_COUNTS`, with tests that say so.
 
 ---
 
@@ -3286,15 +3322,18 @@ same instance. This is a reshape of the stored response, never a model call, so
 it replays. The alternative site is `candidate-resolution.js:~10989`, before the
 generic-fallback `pushOpenWorld`.
 
-**Also, and separately: the remaining 25.** They are orphans concentrated in one
-Concho run that resolved **zero** `MAE_CARVEOUT` claims. That is a possible
-content-loss signature, not a routing bug, and it must not be swept up in the
-duplicate fix. Root-cause it on its own.
+**Also, and separately: the retained 25.** The five selected MAE runs scan 84
+candidates: 59 are `WOULD_SUPPRESS` and 25 are retained. Concho retains 11 and
+would suppress zero; it is not a 25-row zero-resolution outlier. Across all
+runs, 21 retained rows have a typed peer held, two share an open-world quote and
+two have a different span. This evidence is report-only and must not be swept
+into the duplicate fix.
 
 **Direction of risk: additive.** Nothing resolved is touched.
 
-**Proves it is done.** 59 duplicates gone with zero change to the resolved set;
-the Concho 25 given a stated root cause, which may be a defect elsewhere.
+**Proves it is done.** Report-only evidence records 59 `WOULD_SUPPRESS`, actual
+suppression remains zero, the resolved set is unchanged, and the retained 25 are
+accounted for as above. Any activation requires a separate decision.
 
 ---
 
@@ -3329,20 +3368,21 @@ the corpus evidence, not from memory, and check it against
 `lib/category-summary-features.js`'s expected rows per family, which already
 carries the PW question numbers this is meant to answer.
 
-**Proves it is done.** A named topic list with its evidence; the 623 classified,
-with a hand-adjudicated sample stating what fraction got the right topic; and
-anything the classifier cannot place staying open-world rather than being forced
-into the nearest bucket.
+**Proves it is done.** A named topic list with its evidence; the 623 replayed
+REPRESENTATIONS rows reported as 324 classified and 299 unclassified, with a
+hand-adjudicated sample stating what fraction got the right topic; and the 299
+remaining open-world rather than being forced into the nearest bucket.
 
 ---
 
 ## Step 2Y-I. Dispatch the representation qualifier kinds that exist
 
-**What it is.** `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, 485 occurrences of
-which **463 are measured and accounted for — THRESHOLD 306 and TEMPORAL 157** —
-is a resolver kind-dispatch gap. The governance exists; nothing routes to it.
-*(The 22-occurrence remainder is a run-set discrepancy, undiagnosed; an earlier
-draft claimed 100% against the 485 and the arithmetic did not close.)* With
+**What it is.** In the fixed 157-run selected campaign cohort,
+`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` has 485 occurrences, all accounted
+for: THRESHOLD 326 and TEMPORAL 159. The earlier 151-run diagnostic cohort had
+463: THRESHOLD 306 and TEMPORAL 157. TopBuild official r3 adds 20 THRESHOLD and
+2 TEMPORAL occurrences. This is a resolver kind-dispatch gap. The governance
+exists; nothing routes to it. With
 `QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
 `ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26), 675 occurrences resolve to three
 causes.
@@ -3372,15 +3412,12 @@ force-fitted.
 
 ## Step 2Y-J. Open-world promotion candidates, on a three-deal rule
 
-**What it is.** 2X-G's promotion loop, now with the evidence to size it. The
-faithful collector finds 22 distinct concepts recurring in **three or more
-deals** (147 occurrences), clustered from the extractor's own `why_unmapped`
-labels. The original diagnostic reported 21/146. The difference is one
-`AFFIRMATIVE_COVENANT` row for which no committed rule permits a name-based
-exclusion; the discrepancy report cited above records it. Of 1,147 candidates,
-582 carry a self-assigned category label, 53 distinct labels. Plus the appraisal-settlement-
-consent covenant: same shape across three deals, **no registered assertion kind
-at all**.
+**What it is.** 2X-G's promotion loop, now with pinned collector evidence. Of
+1,147 native rows, 32 labels recur in three or more raw deals. After documented
+duplicate and fragment exclusions, 14 native concepts recur across three or more
+eligible deals, covering 130 rows. The collector also emits one held appraisal
+settlement-consent candidate, so there are 15 held cards in total. It has no
+registered assertion kind.
 
 **Why.** This is the structural answer to Ben's scaling point. Without promotion,
 the same shape re-opens on every new deal forever and the backlog grows linearly
@@ -3390,10 +3427,11 @@ turns a recurring unmapped concept into a governed one **automatically enough**
 that the corpus getting bigger makes the system better rather than worse.
 
 **Change.** The recurrence mechanism emits versioned promotion candidates, with
-the 22 concepts as its first batch. Three deals are enough to surface a proposal,
-not enough to mutate the active taxonomy. Registry activation requires
-adjudicated evidence, compatibility analysis and an explicit versioned approval.
-The appraisal covenant is the first such candidate. `expected-sets.js`'s
+the 14 native concepts and appraisal card as its first batch. Three eligible
+deals are enough to surface a proposal, not enough to mutate the active taxonomy.
+`AFFIRMATIVE_COVENANT` appears in six raw-deal records but only one eligible deal,
+so it is not a candidate. Registry activation requires adjudicated evidence,
+compatibility analysis and an explicit versioned approval. `expected-sets.js`'s
 0.66/0.33 thresholds are not reused because they answer a different question.
 
 **Direction of risk: regressive in the long run if the threshold is wrong.**
@@ -3401,7 +3439,7 @@ Promoting too eagerly writes noise into the taxonomy permanently, and taxonomy
 mistakes are the expensive kind — they corrupt precedent search, which is the
 product. Every promotion carries its evidence and is reversible.
 
-**Proves it is done.** The 22 concepts are adjudicated one by one against their
+**Proves it is done.** The 15 cards are adjudicated one by one against their
 quotes and recorded as approved, rejected or held. A new deal automatically
 creates or strengthens a promotion candidate without writing to the active
 registry. A separately approved appraisal-covenant registry version resolves
@@ -3409,30 +3447,36 @@ across its three deals.
 
 ---
 
-## Step 2Y-L. One prompt bump, not several
+## Step 2Y-L. One live prompt batch, with per-section identities
 
-**What it is.** The changes that genuinely require re-extraction, batched into a
-single digest invalidation.
+**What it is.** The changes that genuinely require re-extraction, batched into
+one planned live ladder. Each changed literal prompt section gets its own prompt
+identity invalidation; there is no shared digest invalidation.
 
 **Why.** Everything above is replay-validatable at zero model cost. A prompt
 change invalidates digests and everything after it is a live run at full price —
 REPRESENTATIONS alone burned 2,734,334 output tokens across 172 calls for four
 deals. So the bump is placed deliberately, not wherever implementation order puts
-it. This is the same discipline as 2X-I and it should be **merged with 2X-I into
-one bump** if 2X-I has not yet run.
+it.
 
-**Contents, from the diagnosis.** Financing covenants proposing `OBTAIN_EFFORTS`
-for what are plainly payoff covenants and cooperation grants (~3, wrong
-`assertion_kind` at source, unfixable downstream); the closing-conditions
-bring-down prompt's missing controlled-vocabulary block and its null contract
-mismatch (~7); day-count claims being proposed for qualitative "as promptly as
-practicable" timing standards; IOC's 11-category enum against V1's 25; plus
-whatever 2X-I already carries.
+**Contents, from the diagnosis.** Financing covenants have eight current
+`ASSERTION_KIND_UNCORROBORATED` occurrences: five producer assertion-kind
+misclassifications and three resolver corroboration misses. This prompt batch can
+address the five, not claim recovery of all eight. Closing conditions have 26
+`ACCURACY_STANDARD_OUT_OF_VOCABULARY` occurrences: 25 fit the existing controlled
+values and one Red Hat prevent/materially-delay quote must remain open-world. The
+same closing calls also address seven `PRODUCER_CONDITION_OBLIGOR_OMITTED` cases;
+the partyless Red Hat burdensome fragment remains a correct no-fix. Proxy Meeting
+has three qualitative day-count cases. A prompt may route those to open-world,
+but cannot resolve them without new taxonomy and resolver work. The planned 46
+calls are a prompt-section workload, not a count of corrected cards: eight
+financing calls, 26 closing-conditions calls and 12 proxy-meeting calls.
 
 **Direction of risk: expensive and irreversible in cost terms.** Nothing else.
 
-**Proves it is done.** One digest invalidation, the live ladder run once, and a
-per-family diff against the last replay baseline.
+**Proves it is done.** The required prompt identity invalidation for each changed
+literal section, the live ladder run once, and a per-family diff against the last
+replay baseline.
 
 ---
 
@@ -3461,6 +3505,11 @@ final re-score reported **per stratum against those twelve strata of eight**; an
 the 2Y-0 precision baseline re-measured at the end and not lower than at the
 start. If recovery is up and precision is down, this stage has failed on Ben's
 own terms and the result is the precision number, not the recovery number.
+
+**Current gate.** Before the final ladder, the executable scorer is
+`scripts/canonical-v2-20260808-blind-current-rescore.mjs`. Its `--gate` result is
+`blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`. This is a stratum floor
+check, not authority to start Stage 3 if it later passes.
 
 ---
 

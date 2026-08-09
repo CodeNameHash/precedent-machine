@@ -1505,11 +1505,14 @@ compressed by a different zlib version is still adopted only after its
 inflated map matches the independently rebuilt map and its recorded digest.
 
 **Original blind sample recovered; Stage 3 entry remains closed.** The exact
-96-card sample is committed under `evidence/blind-review/2026-08-08/`. Its
-current re-score resolves 17/96: terminating party 6/8 against 7/8, clause
-label 6/8 against 6/8, qualifier kind 4/8 against 4/8, category 1/8 against
-4/8, and the other eight strata remain 0/8. The control strata hold, but the
-original per-stratum floor is missed. No successor sample or exception applies.
+96-card sample is committed under `evidence/blind-review/2026-08-08/`. The
+executable scorer is `scripts/canonical-v2-20260808-blind-current-rescore.mjs`.
+Its `--gate` result is `blind_rescore_gate: FAIL` and `stage_3_entry: CLOSED`:
+the current re-score resolves 17/96, terminating party 6/8 against 7/8, clause
+label 6/8 against 6/8, qualifier kind 4/8 against 4/8, category 1/8 against 4/8,
+and the other eight strata remain 0/8. The control strata hold, but the original
+per-stratum floor is missed. No successor sample or exception applies. A future
+pass of this scorer does not itself authorise Stage 3.
 
 ---
 
@@ -1519,13 +1522,19 @@ original per-stratum floor is missed. No successor sample or exception applies.
 former `LIKELY_MECHANISM` / `UNDIAGNOSED` rows and all 212 occurrences. Every
 occurrence is located. None is LOW confidence or needs source adjudication.
 
-| occurrence fix class | occurrences |
+| implementation remedy class | occurrences |
 |---|---:|
 | resolver-side | 98 |
 | prompt-change | 63 |
 | taxonomy-design | 23 |
 | no-fix | 28 |
 | **total** | **212** |
+
+This is a remedy classification axis. The Stage 2Y ownership ledger in `PLAN.md`
+uses a separate operational ownership axis: 27 context/placement, 4
+corroboration, 61 registry, 11 agreement-local, 63 prompt, 12 taxonomy/codebook
+and 34 correct abstention. The two tables answer different questions and must
+not be compared as competing partitions.
 
 **Restamp rule.** A row is `CORRECT_ABSTENTION` only when every occurrence in
 that row is an explicit correct abstention. Every other row is
@@ -1542,3 +1551,11 @@ count, key, location, confidence and fix-class partition drift in both `--write`
 and `--check` modes.
 
 **Not claimed.** This closes the diagnostic proof only. Stage 2Y remains open.
+
+**Inert Stage 2Y evidence, not step closures.** The current human-anchor packet
+has 80 cards and an empty decision ledger. The calibration and publication-
+disposition substrate therefore fails closed: no authority artefact, eligible
+claim, publication release or serving activation exists. Other replay evidence
+remains inert: the duplicate census is report-only, the representation-topic
+replay is 324 classified / 299 unclassified, and the promotion collector holds
+15 cards. None of this completes a Stage 2Y step or authorises Stage 3.
