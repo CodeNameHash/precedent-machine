@@ -1,0 +1,267 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b793db56dcdcc544d43a7437f3b43420789272a0b4a6a6dcd962c7a34760b1e9",
+  "review_queue": [
+    {
+      "section_reference": "2.14",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "INTENDED_TAX_TREATMENT_KIND",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "29c640a2661aa8b90196c6d4805000bdab57b041e2a3be12fa436ea4a19ef1b0",
+      "closure_id": "e85663cec68f222458d33aa0075f0285eab2cd62668f63882a7fbb7f820165d6",
+      "normalised_phrase": "The parties hereto shall treat, for U.S. federal and applicable state and local income Tax purposes, (i) in the case of Company Stockholders who receive the Mixed Election Consideration in the Merger, the transfer of Company Common Stock to Parent by the Company Stockholders (pursuant to the Merger) in exchange for Parent Units and cash, pursuant to a plan with and taken together with the contribution of cash or other property to Parent by the holders of Parent Units, as a transaction described under Section 351(a) of the Code and (ii) in the case of Company Stockholders who receive only Cash Election Consideration in the Merger, the transfer pursuant to the Merger of Company Common Stock for cash, as a sale or exchange governed by Section 1001 of the Code (collectively, the “Intended Tax Treatment”).",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 5,
+          "end": 27,
+          "excerpt": "2.14 Intended Tax Treatment. The parties hereto shall treat, for U.S. federal and applicable state and loca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 984,
+          "end": 1006,
+          "excerpt": "deral and applicable state and local income Tax purposes in accordance with the Intended Tax Treatment, and no party nor any of their Affiliates shall take any position for U.S. fede",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1347,
+          "end": 1369,
+          "excerpt": " or unwritten) with any applicable Governmental Authority inconsistent with the Intended Tax Treatment unless required to do so pursuant to a change in applicable law or by a “fina",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.17",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a3ff4e946761b73eddd197223bc845d6582adad2e6ad0b3b2ece12be5ae5cc52",
+      "closure_id": "86f967da456cbd81e77f4fb5c16cb3cec1f627e1f3515ecf0c52fa9afb97c9ef",
+      "normalised_phrase": "Neither the Company nor any of its Subsidiaries is aware of the existence of any fact or circumstance, or has taken or agreed to take any action, or knowingly failed to take any action, which fact or circumstance or act or failure to act could reasonably be expected to prevent or impede the Merger from qualifying for the Intended Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 4773,
+          "end": 4795,
+          "excerpt": "l taxation in any country other than the country of its formation; and\n-39-\n(k) Intended Tax Treatment. Neither the Company nor any of its Subsidiaries is aware of the existence of a",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.14",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "67fa027994825c03d7cf19669c10c0da06e4599f455fd678af0be3edcf5e746c",
+      "closure_id": "650f7c7a63aa073091a717f7d5c72c3d47f2559297f33dd1bae7f230e7eb4a0c",
+      "normalised_phrase": "Neither Parent, nor Merger Sub or any of their Subsidiaries is aware of the existence of any fact or circumstance, or has taken or agreed to take any action, or knowingly failed to take any action, which fact or circumstance or act or failure to act could reasonably be expected to prevent or impede the Merger from qualifying for the Intended Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 543,
+          "end": 565,
+          "excerpt": "under this Agreement and does not conduct any other business or operations.\n(c) Intended Tax Treatment. Neither Parent, nor Merger Sub or any of their Subsidiaries is aware of the ex",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bb71be32c3ba7278e4f54a78ec6284a1d560435119a0c7064f16249501541812",
+      "closure_id": "2a975f1e481e6999530b5b87d5d2d2143db7299b66c8b60e7703de7365357d12",
+      "normalised_phrase": "Parent and the Company shall use reasonable best efforts to provide such other information as reasonably requested by the applicable tax counsel for purposes of providing the tax disclosure in the Registration Statement.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2c606f7db74d784add5d527ee705cdb7416760f72fcdf2c1d467ec85d7c67d53",
+      "closure_id": "4150f5971b820150d5714b8ba31c6ccf8dea3317c706d39f010392e21173a06b",
+      "normalised_phrase": "each of Parent and the Company will use its reasonable best efforts and cooperate with one another to obtain such opinion, with such opinion to be prepared by Latham & Watkins LLP as tax counsel to the Company (or by Paul, Weiss, Rifkind, Wharton & Garrison LLP, so long as the opinion provided by Paul, Weiss, Rifkind, Wharton & Garrison LLP is at least at a “should” level).",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "49ec0e4097d469ecc7581df4b2b663d7674d08a5d537fc9154c01cb74690cb0d",
+      "closure_id": "467b2da1f0f77039492cb39b3045eac673ea4841ee179e91867a4f0ba5091d8f",
+      "normalised_phrase": "Neither Parent nor the Company shall, nor shall they permit their respective Subsidiaries to, take any action that would prevent or impede, or could reasonably be expected to prevent or impede, the Merger from qualifying for the Intended Tax Treatment;",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 373,
+          "end": 395,
+          "excerpt": " the parties acknowledge and agree, that if the Merger fails to qualify for the Intended Tax Treatment solely as a result of a change in applicable law after the date of this Agreeme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 966,
+          "end": 988,
+          "excerpt": "bstantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment. Parent and the Company shall report, and shall cause their respective Subsidia",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1114,
+          "end": 1136,
+          "excerpt": "ll cause their respective Subsidiaries to report the Merger consistent with the Intended Tax Treatment and none of the parties nor any of their respective Subsidiaries shall take any",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1500,
+          "end": 1522,
+          "excerpt": " or unwritten) with any applicable Governmental Authority inconsistent with the Intended Tax Treatment, unless required by a change in applicable law or by a “final determination",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 3157,
+          "end": 3179,
+          "excerpt": " not subject to the receipt by the Company of a tax opinion with respect to the Intended Tax Treatment.\n-75-\n(d) On or prior to the Closing, the Company shall provide Parent with a c",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a6fc8d6d8bfd1a9a2f153e5972a18986e4bd0d8e4255b900fef0cdbde984a4e3",
+      "closure_id": "705091e08d43190860d84c7c8d70f40c9d836404a6ddbf872c108007bea0360a",
+      "normalised_phrase": "Each of Parent and the Company shall deliver to Latham & Watkins LLP (or Paul, Weiss, Rifkind, Wharton & Garrison LLP) customary Tax representation letters regarding such tax opinion, which are satisfactory to such applicable tax counsel, dated and executed as of the date of the Registration Statement shall have been declared effective by the SEC and such other date(s) as determined reasonably necessary by Latham & Watkins LLP (or Paul, Weiss, Rifkind, Wharton & Garrison LLP) in connection with the preparation and filing of the Registration Statement.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "680dc7a1dbc6232c329858aae2e1d53e0b5cf2fa9cd5fe2d9f834efbecc581d5"
+}

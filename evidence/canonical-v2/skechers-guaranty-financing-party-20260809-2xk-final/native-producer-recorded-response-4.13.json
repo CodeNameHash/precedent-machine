@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:49:22.490Z",
+  "section_reference": "4.13",
+  "prompt_id": "native-producer-guaranty/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"guaranty_assertions\":[{\"section_reference\":\"4.13\",\"assertion_kind\":\"GUARANTY_DELIVERED\",\"guarantor_ref\":\"3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”)\",\"quote\":\"Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.\"},{\"section_reference\":\"4.13\",\"assertion_kind\":\"GUARANTY_IN_EFFECT\",\"guarantor_ref\":\"Guarantor\",\"quote\":\"The Guaranty is in full force and effect\"}],\"financing_mechanics\":[{\"surface\":\"GUARANTY_DELIVERY\",\"quote\":\"Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.\",\"detail\":\"Parent and Merger Sub delivered a duly executed guaranty to the Company.\"},{\"surface\":\"GUARANTY_CORE_TERM\",\"quote\":\"constitutes a valid and binding obligation of the Guarantor, enforceable against the Guarantor in accordance with its terms, except as enforceability may be limited by the Bankruptcy and Equity Exceptions, and has not been (and will not be except in accordance with its terms) amended or modified.\",\"detail\":\"The guaranty is a valid and binding obligation, subject to stated enforceability limits, and has not been amended or modified except under its terms.\"}],\"open_world_candidates\":[{\"observed_quote\":\"No event has occurred which, with or without notice, lapse of time or both, could constitute or would reasonably be expected to constitute or result in a default on the part of the Guarantor under such Guaranty.\",\"why_unmapped\":\"This is a no-default representation, not a positive guaranty fact or financing mechanism.\",\"nearest_concept\":null}]}"
+}

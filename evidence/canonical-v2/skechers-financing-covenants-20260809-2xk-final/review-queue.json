@@ -1,0 +1,1094 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a099e803baecb4fad9a84b899488f93e009c75c360856ec37d3002880e5aebc4",
+  "review_queue": [
+    {
+      "section_reference": "6.19",
+      "source_citation": "6.19",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1768014fe4d6e8a7ba32944442a36b338ffcf466754187170f63b90a8069260f",
+      "closure_id": "5fb50568eff386a5f5b152608a4533d3640478d06e8adf612593f41b0af5b766",
+      "normalised_phrase": "The Company shall use reasonable best efforts to deliver Payoff Deliverables with respect to the Repaid Indebtedness",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "source_citation": "6.5(c)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "FINANCING_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9651e433ffd2afc41f92de06df06f417583d5b14536211534e27b11f0f7c2b24",
+      "closure_id": "0bbfaa84e5dd54aafdd66a7a5dd7ca0bab2ef074f5e4715040d9356257c3093c",
+      "normalised_phrase": "Parent shall (i) use reasonable best efforts to arrange and obtain, as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the amount of Financing remaining available and cash and cash equivalent on hand at the Company and its Subsidiaries, sufficient to pay the Required Amount on the Closing Date, in each case, upon terms and conditions not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provisions) (“Alternative Financing”)",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e007e356e704d4f0bae9597fe05ea87377697531b0feaf71db876ed2af298e4e",
+      "closure_id": "492f95235c1ac7b70f952b43446ca64db2d8b94bd1e3fd11bc30da7ef00db8a3",
+      "normalised_phrase": "Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things necessary, advisable or proper to obtain the proceeds of the Debt Financing contemplated by the Debt Commitment Letter on or prior to the Closing Date on the terms and conditions and in the amounts described in the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that are not materially less favorable (taken as a whole) to the Company",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 583,
+          "end": 605,
+          "excerpt": "able (taken as a whole) to the Company, including (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying w",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 625,
+          "end": 639,
+          "excerpt": "cluding (i) maintaining in effect the Debt Commitment Letter and any Definitive Debt Financing Agreements (as defined below) and complying with its obligations thereunder, (i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1013,
+          "end": 1027,
+          "excerpt": "the Merger promptly upon the Closing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1045,
+          "end": 1067,
+          "excerpt": "sing Date, all conditions to the funding of the Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1092,
+          "end": 1106,
+          "excerpt": " Debt Financing set forth in the Debt Commitment Letter and the Definitive\n-62-\nDebt Financing Agreements that are within its control, (iii) using reasonable best efforts to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1222,
+          "end": 1236,
+          "excerpt": "rol, (iii) using reasonable best efforts to negotiate and enter into definitive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Lett",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1296,
+          "end": 1318,
+          "excerpt": "itive debt financing agreements on the terms and conditions contemplated by the Debt Commitment Letter (including any “flex” provisions) or such other terms and conditions that a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1484,
+          "end": 1498,
+          "excerpt": " materially less favorable (taken as a whole) to the Company (the “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are sat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1548,
+          "end": 1570,
+          "excerpt": "e “Definitive Debt Financing Agreements”), (iv) if the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1603,
+          "end": 1617,
+          "excerpt": "the conditions under the Debt Commitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1634,
+          "end": 1648,
+          "excerpt": "ommitment Letter are satisfied, consummating the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1677,
+          "end": 1691,
+          "excerpt": "g the Debt Financing and causing the Debt Financing Sources to consummate their Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Le",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 1753,
+          "end": 1775,
+          "excerpt": "eir Debt Financing at the Closing, (v) complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, takin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1791,
+          "end": 1805,
+          "excerpt": " complying with its obligations under the Debt Commitment Letter and Definitive Debt Financing Agreements in a timely and diligent manner, taking into consideration the timin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2083,
+          "end": 2097,
+          "excerpt": "rent basis and in reasonable detail of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2118,
+          "end": 2140,
+          "excerpt": " of the status of its efforts to arrange the Debt Financing contemplated by the Debt Commitment Letter and any other financing (including, by, upon reasonable request of the Company,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2304,
+          "end": 2318,
+          "excerpt": "mptly providing to the Company drafts of material definitive agreements for the Debt Financing (and any amendments thereto entered into on or prior to the Closing)) and givin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2579,
+          "end": 2593,
+          "excerpt": "to have, individually or in the aggregate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2614,
+          "end": 2636,
+          "excerpt": "regate, a material and adverse impact on the Debt Financing contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2674,
+          "end": 2696,
+          "excerpt": "contemplated by the Debt Commitment Letter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii)",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2711,
+          "end": 2725,
+          "excerpt": "etter, (ii) any breach by any party to the Debt Commitment Letter or Definitive Debt Financing Agreements of which Parent has become aware, (iii) the expiration or terminatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 2876,
+          "end": 2898,
+          "excerpt": "ermination (or attempted or purported termination, whether or not valid) of the Debt Commitment Letter, (iv) any written or electronic (including email) notice or communication by an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2980,
+          "end": 2994,
+          "excerpt": "(iv) any written or electronic (including email) notice or communication by any Debt Financing Source with respect to any actual or threatened breach, default (or allegation ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3116,
+          "end": 3138,
+          "excerpt": "atened breach, default (or allegation thereof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3157,
+          "end": 3171,
+          "excerpt": "reof), repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement or any refusal to provide, or stated intent that it will not provide,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3259,
+          "end": 3273,
+          "excerpt": "nt or any refusal to provide, or stated intent that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitmen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3304,
+          "end": 3318,
+          "excerpt": "t that it will not provide, by any Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3339,
+          "end": 3361,
+          "excerpt": "Debt Financing Source the full amount of the Debt Financing contemplated by the Debt Commitment Letter for any reason, (v) Parent’s good faith belief, for any reason, that it may n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3494,
+          "end": 3508,
+          "excerpt": "r any reason, that it may no longer be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions describe",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3529,
+          "end": 3551,
+          "excerpt": " be able to obtain all or any portion of any Debt Financing contemplated by the Debt Commitment Letter on the terms and conditions described therein (after giving effect to any flex ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3838,
+          "end": 3860,
+          "excerpt": "al or potential breach, default, termination or repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement, (B) material dispute or disagreemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3879,
+          "end": 3893,
+          "excerpt": "ion or repudiation by any party to the Debt Commitment Letter or any Definitive Debt Financing Agreement, (B) material dispute or disagreement between or among any parties to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 3978,
+          "end": 4000,
+          "excerpt": "ement, (B) material dispute or disagreement between or among any parties to the Debt Commitment Letter or any Definitive Debt Financing Agreement (other than ordinary course negotiat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4019,
+          "end": 4033,
+          "excerpt": "nt between or among any parties to the Debt Commitment Letter or any Definitive Debt Financing Agreement (other than ordinary course negotiations) and (C) the failure of any ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4130,
+          "end": 4144,
+          "excerpt": " than ordinary course negotiations) and (C) the failure of any condition to the Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4180,
+          "end": 4202,
+          "excerpt": "ilure of any condition to the Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing agreements, any Alternative Financing commitment or any Def",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4208,
+          "end": 4222,
+          "excerpt": "e Debt Financing to be satisfied. Any breach of the Debt Commitment Letter, the Debt Financing agreements, any Alternative Financing commitment or any Definitive Debt Financi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4290,
+          "end": 4304,
+          "excerpt": "bt Financing agreements, any Alternative Financing commitment or any Definitive Debt Financing Agreements by Parent or Merger Sub shall be deemed a breach by Parent of this S",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4614,
+          "end": 4636,
+          "excerpt": "ent, supplement or other modification of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written c",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4651,
+          "end": 4665,
+          "excerpt": " of, or waive any of its rights under, the Debt Commitment Letter or Definitive Debt Financing Agreements without the Company’s prior written consent; provided that Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 4910,
+          "end": 4932,
+          "excerpt": "lacement, supplement or other modification to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reaso",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4951,
+          "end": 4965,
+          "excerpt": "n to or waiver of any provision of the Debt Commitment Letter or any Definitive Debt Financing Agreements that would not, and would not reasonably be expected to, (A) reduce ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5063,
+          "end": 5077,
+          "excerpt": "ould not, and would not reasonably be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5098,
+          "end": 5120,
+          "excerpt": "be expected to, (A) reduce the amount of the Debt Financing contemplated by the Debt Commitment Letter, to an amount that will be less than the Required Amount, (B) adversely affect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5290,
+          "end": 5312,
+          "excerpt": "y of Parent and Merger Sub to enforce its rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, repla",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5331,
+          "end": 5345,
+          "excerpt": " rights against any other party to the Debt Commitment Letter or the Definitive Debt Financing Agreements, in each case, as so amended, replaced, supplemented or otherwise mo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5571,
+          "end": 5593,
+          "excerpt": "to the ability of Parent to enforce its rights against the other parties to the Debt Commitment Letter as in effect on the date hereof, (C) prevent, materially delay or impede the co",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5703,
+          "end": 5717,
+          "excerpt": "of, (C) prevent, materially delay or impede the consummation of the Merger, the Debt Financing or the other transactions contemplated by this Agreement upon the satisfaction ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5843,
+          "end": 5865,
+          "excerpt": "s Agreement upon the satisfaction of the conditions set forth in the applicable Debt Commitment Letter, or (D) impose any new or additional conditions, or otherwise expand any of the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5993,
+          "end": 6007,
+          "excerpt": ", or otherwise expand any of the conditions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, suppleme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6031,
+          "end": 6053,
+          "excerpt": "tions, to the availability and funding of Debt Financing as contemplated by the Debt Commitment Letter, and (ii) amend, modify, supplement, restate, assign, substitute or replace the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6134,
+          "end": 6156,
+          "excerpt": " and (ii) amend, modify, supplement, restate, assign, substitute or replace the Debt Commitment Letter to add and appoint additional arrangers, bookrunners, underwriters, agents, len",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6355,
+          "end": 6377,
+          "excerpt": "h amendment, replacement, supplement,\n-63-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the De",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6396,
+          "end": 6410,
+          "excerpt": "-\nmodification or waiver, the terms “Debt Commitment Letter,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitiv",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6455,
+          "end": 6477,
+          "excerpt": "er,” “Definitive Debt Financing Agreement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6492,
+          "end": 6506,
+          "excerpt": "greement,” as applicable, shall mean the Debt Commitment Letter or Definitive Debt Financing Agreement, as applicable, as so amended, replaced, supplemented or modified. Pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6712,
+          "end": 6734,
+          "excerpt": "ies of any such amendment, replacement, supplement or other modification of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n(c) If all",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6780,
+          "end": 6802,
+          "excerpt": "tion of the Debt Commitment Letter and/or any such waiver of a provision of the Debt Commitment Letter.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the De",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6837,
+          "end": 6851,
+          "excerpt": " of a provision of the Debt Commitment Letter.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Deb",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 6880,
+          "end": 6902,
+          "excerpt": "er.\n(c) If all or any portion of the Debt Financing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6928,
+          "end": 6942,
+          "excerpt": "ing becomes unavailable, or the Debt Commitment Letter or any of the Definitive Debt Financing Agreements shall be withdrawn, repudiated, terminated or rescinded, regardless ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:EQUITY_FINANCING",
+          "start": 7198,
+          "end": 7214,
+          "excerpt": " as promptly as practicable, from the same and/or alternative debt or preferred equity financing sources, as applicable, alternative financing in an amount, together with the a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 7583,
+          "end": 7605,
+          "excerpt": "ns not materially less favorable, taken as a whole, than those set forth in the Debt Commitment Letter (including, for the avoidance of doubt, any related “market flex” provision",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 7956,
+          "end": 7978,
+          "excerpt": "y more fees, OIDs or incur an increase in pricing than the pricing terms of the Debt Commitment Letter, as in effect on the date of this Agreement, taking into account any flex terms",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8186,
+          "end": 8200,
+          "excerpt": "ined in accordance with this Section 6.5(c), references in this Agreement to “Debt Financing” shall also be deemed to refer to such Alternative Financing, as appropriate,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 8488,
+          "end": 8510,
+          "excerpt": "nection with such Alternative Financing, references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8529,
+          "end": 8543,
+          "excerpt": "references in this Agreement to the “Debt Commitment Letter”, “Definitive Debt Financing Agreements” and any other relevant defined term or clause, as applicable, sha",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8941,
+          "end": 8955,
+          "excerpt": "y pursuant to Section 6.6 shall be applicable thereto to the same extent as the Debt Financing.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "NO_FINANCING_CONDITION_ACKNOWLEDGMENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "84469e88a99e07ad34108e0832c147f99be28d136397c3fa5a5e7743d1b525ae",
+      "closure_id": "504a9488b37cfa7489d0ca2fa7e47ab7c53c2a79568e39742121c8646904db28",
+      "normalised_phrase": "each of Parent and Merger Sub understands and acknowledges and agrees that obtaining the Financing is not a condition to the obligations of the parties to consummate the Merger in accordance with the terms and provisions of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 402,
+          "end": 416,
+          "excerpt": "ation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 513,
+          "end": 535,
+          "excerpt": "provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter (or permanent take-out financing incurred in lieu of the bridge facility contem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 632,
+          "end": 654,
+          "excerpt": "ke-out financing incurred in lieu of the bridge facility contemplated under the Debt Commitment Letter), including reasonable best efforts to:\n(i) assist in preparation for and parti",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1046,
+          "end": 1060,
+          "excerpt": "parties acting as lead arrangers or agents for, and prospective lenders of, the Debt Financing), drafting sessions, conference calls, presentations, road shows, due diligence",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 1461,
+          "end": 1475,
+          "excerpt": "e advance notice, and assist Parent in obtaining ratings in connection with the Debt Financing;\n(ii) (A) as promptly as reasonably practicable, furnish Parent with the Requir",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2453,
+          "end": 2467,
+          "excerpt": "ial statements to the extent necessary or reasonably requested by Parent or the Debt Financing Sources, it being agreed that the Company will not be responsible for any infor",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 2935,
+          "end": 2949,
+          "excerpt": "nts desired to be incorporated into any information used in connection with the Debt Financing; or (C) any financial information related to Parent or any of its Subsidiaries ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3217,
+          "end": 3231,
+          "excerpt": "e of and prior to the completion of the Marketing Period, assist Parent and the Debt Financing Sources in the preparation of customary bank information memoranda, lender or i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3476,
+          "end": 3490,
+          "excerpt": "cement memoranda and other customary marketing materials in connection with the Debt Financing (collectively, the “Marketing Material”) including delivering upon request ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 3630,
+          "end": 3644,
+          "excerpt": "vering upon request of Parent prior to the commencement of the marketing of the Debt Financing (A) customary executed authorization letters to accompany customary Marketing M",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4554,
+          "end": 4568,
+          "excerpt": " with respect to any non-convertible high yield debt securities included in the Debt Financing issued on a “Rule 144A for life” basis (including using reasonable best eff",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4772,
+          "end": 4786,
+          "excerpt": "nsents of accountants for use of their reports in any materials relating to the Debt Financing and accountants’ comfort letters, in each case as reasonably requested by Par",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 4877,
+          "end": 4891,
+          "excerpt": "tants’ comfort letters, in each case as reasonably requested by Parent or the Debt Financing Sources) and (y) reasonable assistance to Parent in connection with the Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5318,
+          "end": 5332,
+          "excerpt": "ior to the Closing Date, and to the extent requested by Parent on behalf of the Debt Financing Sources no later than ten (10) Business Days prior to the Closing Date, provide",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_COMMITMENT",
+          "start": 5871,
+          "end": 5893,
+          "excerpt": "assets of the Company (other than Permitted Liens) that are contemplated by the Debt Commitment Letter to become collateral for the Debt Financing; and (B) assisting in the preparati",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 5923,
+          "end": 5937,
+          "excerpt": "hat are contemplated by the Debt Commitment Letter to become collateral for the Debt Financing; and (B) assisting in the preparations for the pledging of collateral, includin",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6391,
+          "end": 6405,
+          "excerpt": "ration of any definitive financing documents and other matters ancillary to the Debt Financing as may be reasonably requested by Parent, including by providing access to info",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 6741,
+          "end": 6755,
+          "excerpt": "any corporate or facility ratings from any ratings agencies contemplated by the Debt Financing;\n(ix) (A) furnishing Parent with the Payoff Deliverables (including providing P",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 7782,
+          "end": 7796,
+          "excerpt": "demption prior to the occurrence of the Closing);\n(x) furnish to Parent and the Debt Financing Sources (A) within 50 days after the end of any fiscal quarter that is not a fi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8632,
+          "end": 8646,
+          "excerpt": "Date) of any definitive financing documentation required in connection with the Debt Financing and the schedules and exhibits thereto, in each case, required to be delivered ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 8998,
+          "end": 9012,
+          "excerpt": "other definitive financing documents and deliverables (including any Definitive Debt Financing Agreements); and\n(xii) assist in the taking of customary corporate and other si",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 9258,
+          "end": 9272,
+          "excerpt": "y necessary or reasonably requested by Parent to permit the consummation of the Debt Financing on the Closing Date (provided, that such actions will only be required by a dir",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 10798,
+          "end": 10812,
+          "excerpt": "ed to pass resolutions or consents to approve or authorize the execution of the Debt Financing (except to the extent they continue in such capacity immediately after the Clos",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 11709,
+          "end": 11723,
+          "excerpt": " information contained in the disclosure and marketing materials related to the Debt Financing); (C) any bank information memoranda and high-yield offering prospectuses or me",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 13246,
+          "end": 13260,
+          "excerpt": "d comment on marketing materials used in connection with the arrangement of the Debt Financing prior to the dissemination of such materials to potential lenders or other coun",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 13646,
+          "end": 13660,
+          "excerpt": "ble best efforts, to update any Required Information provided to Parent and the Debt Financing Sources as may be necessary so that such Required Information (i) is Compliant,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 14812,
+          "end": 14826,
+          "excerpt": "ce with the definition thereof (regardless of whether all or any portion of the Debt Financing was successfully allocated to investors or lenders during such Marketing Period",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 15849,
+          "end": 15863,
+          "excerpt": " not unreasonably object) to include in a customary offering memorandum for the Debt Financing, then, the Company shall file such Current Report on Form 8-K.\n-67-\n(d) Reimbur",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-FINANCING",
+          "pattern_id": "COV-FINANCING:REGEX:DEBT_FINANCING",
+          "start": 17410,
+          "end": 17424,
+          "excerpt": "e Company hereby consents to the use of its logos solely in connection with the Debt Financing; provided, that Parent and Merger Sub shall ensure that such logos are used sol",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)(vi)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "at least four (4) Business Days prior to the Closing Date, and to the extent requested by Parent on behalf of the Debt Financing Sources no later than ten (10) Business Days prior to the Closing Date, provide all documentation and other information about the Company and the Subsidiaries of the Company as is reasonably required under applicable “know your customer”, anti-money laundering and beneficial ownership rules and regulations, including the USA PATRIOT Act;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "941684bd41864480d4c49feb1de921310dafe3e9e1eda43a201887b6f19bea73",
+      "closure_id": "643e9f634864ada85393b60528b556cafce0c5707341b62fcd5bfd188cf7549b",
+      "normalised_phrase": "at least four (4) Business Days prior to the Closing Date, and to the extent requested by Parent on behalf of the Debt Financing Sources no later than ten (10) Business Days prior to the Closing Date, provide all documentation and other information about the Company and the Subsidiaries of the Company as is reasonably required under applicable “know your customer”, anti-money laundering and beneficial ownership rules and regulations, including the USA PATRIOT Act;",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)(ix)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PAYOFF_DELIVERY_LEAD_TIME_DAYS",
+      "concept_key": "COV-PAYOFF",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(A) furnishing Parent with the Payoff Deliverables (including providing Parent with drafts thereof at least three Business Days prior to the Closing);",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "134718dc7380fe47f9f685921f08aa1c726133349b88e13b0d2c142373f0791f",
+      "closure_id": "748dbf27e5ed69ab662f3533794505901ad8794ba402acb92794526702174a38",
+      "normalised_phrase": "(A) furnishing Parent with the Payoff Deliverables (including providing Parent with drafts thereof at least three Business Days prior to the Closing);",
+      "attachment_position": null,
+      "concept_family": "COV-PAYOFF",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "42e2d037375d18e0f78fe6ebc5205d4436263fd09a9805dc8c8a93d77a35e298",
+      "closure_id": "855702eb7bfeeea76ffc8817cdad7f52ab9273aa39940aabde9f8d09209dd86b",
+      "normalised_phrase": "the Company shall use reasonable best efforts to, and shall cause its Subsidiaries to use reasonable best efforts to, and shall use reasonable best efforts to cause its and their respective Representatives to, provide such cooperation as is reasonably requested by Parent, is necessary in connection with the Debt Financing and customarily provided for borrowers or issuers in financings of the type contemplated by the Debt Commitment Letter",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.6",
+      "source_citation": "6.6(a)(ii)",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(A) as promptly as reasonably practicable, furnish Parent with the Required Information",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "562a97e0ad5e501cffa6689aca7e74f84a5f984cf2a409d36a85f3d0ffad1bb7",
+      "closure_id": "d2c4e2b0a2fd593ab6ac015499cca801b31addaf9adacfa2bbe8282e3d8ca6b1",
+      "normalised_phrase": "(A) as promptly as reasonably practicable, furnish Parent with the Required Information",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "76809ec3811f4ba640e256e35928a41fb79b7b618c7c02e24f3813c89067cef4"
+}

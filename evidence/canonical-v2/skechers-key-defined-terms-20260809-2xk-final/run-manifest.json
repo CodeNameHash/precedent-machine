@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skechers",
+  "deal_label": "Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.",
+  "section_family": "KEY_DEFINED_TERMS",
+  "purpose": "General extraction run: family KEY_DEFINED_TERMS on deal skechers.",
+  "section_references": [
+    "1.1",
+    "1.2"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "1.1",
+      "family_id": "KEY_DEFINED_TERMS"
+    },
+    {
+      "section_reference": "1.2",
+      "family_id": "KEY_DEFINED_TERMS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-defined-terms/v1",
+  "prompt_version": 2,
+  "agreement_date": "2025-05-04",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T06:49:05.938Z",
+  "total_elapsed_ms": 76784,
+  "extraction_wall_clock_ms": 72240,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "bd66680325ce27b466783a86814134f9808ebf48",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 2,
+  "run_receipt_id": "b89543c8c58e9b24a2f8e5313e37c88b39192ad1006bc469981df0c248fc7127",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 2,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

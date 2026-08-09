@@ -1,0 +1,56 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "6ba04c994e1b59cf9243f29980fca0de0884135ff579cf78c62f05f8511837fa",
+  "review_queue": [
+    {
+      "section_reference": "4.13",
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_DELIVERED",
+      "concept_key": "GTY-DELIVERY",
+      "reasons": [],
+      "materiality_rank": 74,
+      "materiality_label": "GUARANTY_FINANCING_PARTY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "73eebb6aa3803edecb4f881f64cb96beb433ba87034ad1524192685289c88ef7",
+      "closure_id": "aae77095aca53366ab9a6b760633a53860b9feb3d55c33a2718053db792abd88",
+      "normalised_phrase": "Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership (“Guarantor”) to the Company.",
+      "attachment_position": null,
+      "concept_family": "GTY-DELIVERY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.13",
+      "source_citation": "4.13",
+      "generic_claim_key": "NATIVE_GUARANTY_CANDIDATE",
+      "resolved_claim_definition_key": "LIMITED_GUARANTY_IN_EFFECT",
+      "concept_key": "GTY-DELIVERY",
+      "reasons": [
+        "GTY_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 74,
+      "materiality_label": "GUARANTY_FINANCING_PARTY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Guaranty is in full force and effect",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6d072c933c31ffcffefae7d9ad0e02be74f6a34175f3fe18ef8a6938e8a802c3",
+      "closure_id": "f870c0965daf02d50bd687aead0d260935ddf6eade49656fcb3ed0fac1eaca0b",
+      "normalised_phrase": "The Guaranty is in full force and effect",
+      "attachment_position": null,
+      "concept_family": "GTY-DELIVERY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "e523f6b96339b7ae14be3edbd965a905ff5f5fd8d74b254cebea4ba15c902371"
+}

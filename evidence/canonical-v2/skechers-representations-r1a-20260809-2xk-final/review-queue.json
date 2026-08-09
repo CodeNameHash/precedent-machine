@@ -1,0 +1,387 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "e5bd9d7a05f1d7cc05f62feacacc0c2ebcbd3374047f534e948f4dd687eac93f",
+  "review_queue": [
+    {
+      "section_reference": "3.11",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a66c5761095eb6c14f9a50611a9ea36d454d447f327dda8aab5db756faf9863e",
+      "closure_id": "6b508ab995c6e911ca8743d01f2ff86c06a416184186b56878587c1e2c92914f",
+      "normalised_phrase": "would not have a Company Material Adverse Effect",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6ed872a9b07043013e09f02001249d0a75eb032ce61a3bbff9d10099ec9841f9",
+      "closure_id": "2fec51469e837c08fc44ec8d0c1772d14967be911d32d63c376f8d331822449a",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except where the failure to be so qualified or in good standing would not have a Company Material Adverse Effect",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "641a9533d49c422583395743b7b954e78655f2808effd8d4857d80bb9f70d1e8",
+      "closure_id": "80486aa1ba0d26460c955400271e69f6d28267c4ec46faf7f95299a29d25a0d3",
+      "normalised_phrase": "except where the failure to be so qualified or in good standing would not have a Company Material Adverse Effect",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.10",
+      "source_citation": "3.10(c)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "accurately and fairly",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "04f0537f80e11b6b24601529ed90527b9b0f8fe4493e6ed5373aafba628a8427",
+      "closure_id": "40faff3d36a6bb494895a4dd4c649cc5535fd24790978c884523c71ac9aa3a9a",
+      "normalised_phrase": "accurately and fairly",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.10",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f14e4f6e702656e6a0d336ca6adb45da8b5c06f7f4cc1a904b2aae17ccff9ff7",
+      "closure_id": "862bc41f4d0467076238c13ee4f3f914b622f765378b51ac3faf0c13c3002146",
+      "normalised_phrase": "to the Knowledge of the Company",
+      "attachment_position": "CHAPEAU",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.10",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "518993f00413348c56bf2f28eeefc144453eb7dc6a41039fc4be3b6ac4f8d413",
+      "closure_id": "b4ef104e52f1416efcfcfafafd9a666eb3e1ae331354ff9b8f85453f6b93652b",
+      "normalised_phrase": "in all material respects",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.12",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1a16117eb286968555299bfd9cccce9c31c204e52a5f808181c36bbe29b66843",
+      "closure_id": "23aff355d22ee4014db168085ed9d2ecac7b20b20728e6af8d5e65bf24c78e47",
+      "normalised_phrase": "in all material respects",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "source_citation": "3.7(b)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "current, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f2ebd28abcc293ccc1e139d732f20216eecd06da5ed98de0f41e8f9b87738d1c",
+      "closure_id": "fb225466247019becf0bf7082af2425b069703a222d52c4002bc905670ba099c",
+      "normalised_phrase": "current, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.8",
+      "source_citation": "3.8(a)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except where the failure to be so organized, validly existing and in good standing would not have a Company Material Adverse Effect",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "9fc5371649e815eaa3e6cd10ecacc5e5ef088f11cb831d4c0ef34643336acf60",
+      "closure_id": "35d76987f7ea25e10cfd2d41ad864f03a36d017c650aece28467bca2a70afff9",
+      "normalised_phrase": "except where the failure to be so organized, validly existing and in good standing would not have a Company Material Adverse Effect",
+      "attachment_position": "TRAILING",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.8",
+      "source_citation": "3.8(a)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except for such violations that would not have a Company Material Adverse Effect",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "5b49c822e6b10f0923e55f5ff1c4ca1784e8dbdf83a4d34cbd4ba74efd755506",
+      "closure_id": "813ed34a4e36ca35b4308f76cf57756f247c689fe0a119ca875e264504d79aec",
+      "normalised_phrase": "except for such violations that would not have a Company Material Adverse Effect",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.8",
+      "source_citation": "3.8(a)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "except where the failure to be so qualified or in good standing would not have a Company Material Adverse Effect",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "a0566df7a751f8237ef6e2b4d56805767edd255602640313280a303d6308b9f6",
+      "closure_id": "a4d704423b13d182f979f27f39d3bbef0f01600e5aebb0ee0286e61cd287c8a8",
+      "normalised_phrase": "except where the failure to be so qualified or in good standing would not have a Company Material Adverse Effect",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.8",
+      "source_citation": "3.8(a)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cecc8b5ef6c0a4d4e192fe86c5f9a94f99f476adf411446b7ec3164198d27f7d",
+      "closure_id": "c6a1a0b83d5a1392272ba1c2f137a286a71b0b093d2722a652ce62268b904d23",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.8",
+      "source_citation": "3.8(a)",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3c1e5314454728adaf86029b422f78490e5fd2f563d7138220860d2b01762e7d",
+      "closure_id": "fb9dcbaba967782bff8d01cf2556e329bbedf11b39a8e66fb85cd2c5db2b43f3",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.9",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9e6fb848ffa14c3bf31ec7177e20edce24bbf77ebb8f12ad46ef67228790cdb7",
+      "closure_id": "9bca79a33450d610d6adc4e8fa39307f6ad9e5de063487ab6e0a41fb8aa10629",
+      "normalised_phrase": "in all material respects",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.9",
+      "source_citation": "3.9",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "True, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "df3b77d4d6699bf0467a88b4710ab427e2211f9f26d650fb76e8409435c06815",
+      "closure_id": "bd382ffbd662df5a7a36273983aaf831a45cf7056427c5a616eba98f8c7c831d",
+      "normalised_phrase": "True, correct and complete",
+      "attachment_position": "CHAPEAU",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "0ab11d271b46071dcd43aeb8eae6917207b94519ed39e32744b32a7952db1a5a"
+}

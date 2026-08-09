@@ -1,0 +1,79 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skechers",
+  "deal_label": "Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.",
+  "section_family": "TAX_MATTERS",
+  "purpose": "General extraction run: family TAX_MATTERS on deal skechers.",
+  "section_references": [
+    "2.13",
+    "2.14",
+    "3.17",
+    "4.14",
+    "6.18"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "2.13",
+      "family_id": "TAX_MATTERS"
+    },
+    {
+      "section_reference": "2.14",
+      "family_id": "TAX_MATTERS"
+    },
+    {
+      "section_reference": "3.17",
+      "family_id": "TAX_MATTERS"
+    },
+    {
+      "section_reference": "4.14",
+      "family_id": "TAX_MATTERS"
+    },
+    {
+      "section_reference": "6.18",
+      "family_id": "TAX_MATTERS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-tax-matters/v1",
+  "prompt_version": 2,
+  "agreement_date": "2025-05-04",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T06:58:10.080Z",
+  "total_elapsed_ms": 61335,
+  "extraction_wall_clock_ms": 57155,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "bd66680325ce27b466783a86814134f9808ebf48",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 5,
+  "run_receipt_id": "b793db56dcdcc544d43a7437f3b43420789272a0b4a6a6dcd962c7a34760b1e9",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 5,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

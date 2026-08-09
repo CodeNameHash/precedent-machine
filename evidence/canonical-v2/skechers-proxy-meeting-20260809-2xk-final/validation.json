@@ -1,0 +1,210 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "3f49d770ac02743ea0f01e5267a102dde2ff2d2077887c7b19ad180530a412a1",
+      "deal_key": "deal:skechers-proxy-meeting:5e1d6f13ab83e3f9",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 253822,
+        "absolute_start": 253603,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "de8c418009e23ed4cb767aa649b3ca6c4c8408322686dac5162a598fb9b139fd",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "05988ff3507563bea1be33a6317d3f353db71e10fa52b90e80a829c8862da7e6",
+        "exact_text": "The Company shall use its reasonable best efforts to cause the Information Statement/Prospectus to be mailed to the Company Stockholders as promptly as practicable after the Registration Statement is declared effective.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "dc71749bfe42c6e2f177ba911aa732993f5c94bd727c53e5be135afcb6888bd4",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "3c1adede1cf7491f822fa8751f8da7687c75f70ccfb1be628203241a4f9ff09f"
+          }
+        ],
+        "output_text_hash": "05988ff3507563bea1be33a6317d3f353db71e10fa52b90e80a829c8862da7e6",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "4a2671a059bb5c419a164443390a46cab273ca0b1dbebfdf9b889902a9a05d5b",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      },
+      {
+        "absolute_end": 251780,
+        "absolute_start": 251729,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "722d2aaea014295d781ad2ef0897663e0e88c5106531c8620bc70b7cfb1ccb5b",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "24b793f0aacb3351dc66b345af85d1b99be5136f73bd2ef9790335985a360ce4",
+        "exact_text": "concerning the Written Consent and the transactions",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "4b7233c192382cee5f718e493f2cb6cf8521fe7e0f114081e2fb0d6b072bbc76",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "9cd0ae629a075c4d8ee3983713bf5a43c830210d7969bf9da7e3c2ef60cec055"
+          }
+        ],
+        "output_text_hash": "24b793f0aacb3351dc66b345af85d1b99be5136f73bd2ef9790335985a360ce4",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "4a2671a059bb5c419a164443390a46cab273ca0b1dbebfdf9b889902a9a05d5b",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+        "candidate_id": "eb568f400f684796fdbd39e57bb48ab220067cb93ed6c3a1c4932349f54133b6",
+        "canonical_value": null,
+        "closure_id": "80b1c9ed9bf1ea3898cffe904e55b087e2c5d233a723999506b29f44cc8ff8c2",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "The Company shall use its reasonable best efforts to cause the Information Statement/Prospectus to be mailed to the Company Stockholders as promptly as practicable after the Registration Statement is declared effective.",
+        "reason_code": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "6.4"
+      },
+      {
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "candidate_id": "6a575663639895bf6948bff82231a545edc105f5ef88e4b364ae7d072fc88688",
+        "canonical_value": null,
+        "closure_id": "e8a1b2b9d6906b40f732319458d2be522935920f67ed7bc7489fd2fbe7ef3abf",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "concerning the Written Consent and the transactions",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "6.4"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "anchor_kind": "SEC_CLEARANCE",
+          "assertion_kind": "MAILING_DEADLINE",
+          "consenting_party": null,
+          "control_party": null,
+          "day_kind": null,
+          "document_ref": "the Information Statement/Prospectus",
+          "limit_basis": null,
+          "meeting_ref": null,
+          "obligated_party": "The Company",
+          "reason_kind": null,
+          "section_reference": "6.4"
+        },
+        "candidate_id": "eb568f400f684796fdbd39e57bb48ab220067cb93ed6c3a1c4932349f54133b6",
+        "canonical_value": null,
+        "closure_id": "80b1c9ed9bf1ea3898cffe904e55b087e2c5d233a723999506b29f44cc8ff8c2",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "1fc658be56467f8c2e2e16b54bf1a69338f316588d4a09af165a0ea1af4f7ec0",
+        "raw_value": "The Company shall use its reasonable best efforts to cause the Information Statement/Prospectus to be mailed to the Company Stockholders as promptly as practicable after the Registration Statement is declared effective.",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      },
+      {
+        "attributes": {
+          "nearest_concept": null,
+          "why_unmapped": "The text refers to a Written Consent but does not state its approving party, approval mechanism, or timing."
+        },
+        "candidate_id": "6a575663639895bf6948bff82231a545edc105f5ef88e4b364ae7d072fc88688",
+        "canonical_value": null,
+        "closure_id": "e8a1b2b9d6906b40f732319458d2be522935920f67ed7bc7489fd2fbe7ef3abf",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "cd6434000af1e9137a2e33b5ef662611f4d3754bf25b5eb1e398f4f20a6c1249",
+        "raw_value": "concerning the Written Consent and the transactions",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 253822,
+        "absolute_start": 253603,
+        "closure_id": "80b1c9ed9bf1ea3898cffe904e55b087e2c5d233a723999506b29f44cc8ff8c2",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "0bc5ee9ca465f75975a09146de9cc1e16cf0200be95871b13af97d424f6921fd",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "dc71749bfe42c6e2f177ba911aa732993f5c94bd727c53e5be135afcb6888bd4",
+        "open_world_candidate_occurrence_id": "1fc658be56467f8c2e2e16b54bf1a69338f316588d4a09af165a0ea1af4f7ec0",
+        "ordinal": 0
+      },
+      {
+        "absolute_end": 251780,
+        "absolute_start": 251729,
+        "closure_id": "e8a1b2b9d6906b40f732319458d2be522935920f67ed7bc7489fd2fbe7ef3abf",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "8aabb00e0702bf903b67ce02b66ccfe73723429340f712db498282f04d56ba22",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "4b7233c192382cee5f718e493f2cb6cf8521fe7e0f114081e2fb0d6b072bbc76",
+        "open_world_candidate_occurrence_id": "cd6434000af1e9137a2e33b5ef662611f4d3754bf25b5eb1e398f4f20a6c1249",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "80b1c9ed9bf1ea3898cffe904e55b087e2c5d233a723999506b29f44cc8ff8c2",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "8b7f1330ff4f964d97aada0db294fd9af77aa80f1b45e255029e30d037a0c9e5",
+        "open_world_candidate_occurrence_id": "1fc658be56467f8c2e2e16b54bf1a69338f316588d4a09af165a0ea1af4f7ec0",
+        "reason_code": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      },
+      {
+        "closure_id": "e8a1b2b9d6906b40f732319458d2be522935920f67ed7bc7489fd2fbe7ef3abf",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "14ec0dbfec4410a58c28f670a0a4679b0607223681275425fa3ba53736b1faae",
+        "open_world_candidate_occurrence_id": "cd6434000af1e9137a2e33b5ef662611f4d3754bf25b5eb1e398f4f20a6c1249",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "deal_admission_id": "3f49d770ac02743ea0f01e5267a102dde2ff2d2077887c7b19ad180530a412a1",
+        "governed_deal_key": "deal:skechers-proxy-meeting:5e1d6f13ab83e3f9",
+        "immutable_source_document_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "a8663ed9e48231e088ab21faed3ebea3f1006b59b6dd6ef358511d319ceda18e",
+        "source_admission_manifest_id": "cd518ad18e64ffdead9f1a4aec266d05b5eec52a7f7c0e717cbac7f049ffb6cb",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 10,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

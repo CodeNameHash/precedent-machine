@@ -1,0 +1,228 @@
+{
+  "resolved": [],
+  "review_queue": [
+    {
+      "section_reference": "6.17",
+      "source_citation": "6.17",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Immediately following the execution and delivery of this Agreement, Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "684a0a333d1abe67381ca7adc6b90b9f044cfb51791e5b9d7c942d521655cc41",
+      "closure_id": "dbd1cf9eff781f59200d9f8ad1449a42c18534ad2772095178a9f6d8083a2fac",
+      "normalised_phrase": "Immediately following the execution and delivery of this Agreement, Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "NO_DAY_COUNT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "As promptly as practicable following the execution of this Agreement, Parent shall file with the SEC a registration statement on Form S-4 (the “Registration Statement”), which will include (i) an information statement of the type contemplated by Rule 14c-2 of the Exchange Act containing the information specified in Schedule 14C under the Exchange Act concerning the Written Consent and the transactions (the “Information Statement”) to be prepared by the Company, and (ii) a prospectus in connection with the registration under the Securities Act of the Parent Units to be issued in connection with the Merger (the “Prospectus,” and with the Information Statement, the “Information Statement/Prospectus”), to be prepared by the Parent with the Company’s reasonable cooperation.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bcda7c85ac380b310310a88a99788ed17185c04ce1168e18a37b2e3114e99225",
+      "closure_id": "53edff0d7deea13f35ff1ecc24844871763c3163a8e4e03ec304cf008200aa2b",
+      "normalised_phrase": "As promptly as practicable following the execution of this Agreement, Parent shall file with the SEC a registration statement on Form S-4 (the “Registration Statement”), which will include (i) an information statement of the type contemplated by Rule 14c-2 of the Exchange Act containing the information specified in Schedule 14C under the Exchange Act concerning the Written Consent and the transactions (the “Information Statement”) to be prepared by the Company, and (ii) a prospectus in connection with the registration under the Securities Act of the Parent Units to be issued in connection with the Merger (the “Prospectus,” and with the Information Statement, the “Information Statement/Prospectus”), to be prepared by the Parent with the Company’s reasonable cooperation.",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4(b)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "The Company shall use its reasonable best efforts to cause the Information Statement/Prospectus to be mailed to the Company Stockholders as promptly as practicable after the Registration Statement is declared effective.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.4",
+        "assertion_kind": "MAILING_DEADLINE",
+        "anchor_kind": "SEC_CLEARANCE",
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": null,
+        "document_ref": "the Information Statement/Prospectus",
+        "obligated_party": "The Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "62dd93f378180d084db25de9a0a97de9a0342d6b54dd0e55a384001fdbc0b4eb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9fc11a0124d47f36cb41f4e5210131016280dc993e0d3c44c6b7b349648ab9ca",
+          "document_ordinal": 0,
+          "absolute_start": 2358,
+          "absolute_end": 2577,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "80b1c9ed9bf1ea3898cffe904e55b087e2c5d233a723999506b29f44cc8ff8c2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "a57242b8a67010f8961fc94bdff12e12828888f8fe26924152513c86566c9aa5",
+        "producer_receipt_id": "86b581913fb0c4bee76f0d53bfbcd107f7696343c7278215acd3d16d62aa9ded",
+        "governed_scope_digest": "23d5a69de4e6bcf5801e0694e58d2416383b7d879050cdce833f020030055fa2",
+        "extraction_provenance_id": "47ff08755c1cf27849bf79aae4d28932d519a255c6dd2400f7f10319762175ec"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.4",
+        "normalized_citation": "6.4",
+        "derived_citation": "6.4(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "concerning the Written Consent and the transactions",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "The text refers to a Written Consent but does not state its approving party, approval mechanism, or timing.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ebb92cef52c08aa39311c9757388345aecadd99207e0722efbd9474209cc9e1b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "724d723fcc2f7a94ee7681246b5535b3190bb4a165d84644a37f033e15364533",
+          "document_ordinal": 0,
+          "absolute_start": 484,
+          "absolute_end": 535,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e8a1b2b9d6906b40f732319458d2be522935920f67ed7bc7489fd2fbe7ef3abf",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a57242b8a67010f8961fc94bdff12e12828888f8fe26924152513c86566c9aa5",
+        "producer_receipt_id": "86b581913fb0c4bee76f0d53bfbcd107f7696343c7278215acd3d16d62aa9ded",
+        "governed_scope_digest": "23d5a69de4e6bcf5801e0694e58d2416383b7d879050cdce833f020030055fa2",
+        "extraction_provenance_id": "3e7557a92e75fb0dbbcfe6f971b4d41fbe5292f3114c73c3f0d0c889d49a3456"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "c42223cebfe4455a28dda7450c34b1a1878276b68faabbfccd47ece32a1996b3",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 4,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 2,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "433698d5e8a5d49997a3bc3b94cc63690bb865c1b6248aa0f416a00b92ceba3e"
+  }
+}

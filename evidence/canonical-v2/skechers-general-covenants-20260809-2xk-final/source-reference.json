@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "skechers",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm",
+  "raw_bytes_length": 604740,
+  "raw_bytes_sha256": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "canonical_text_byte_length": 380704,
+  "canonical_text_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "verification_status": "PASS",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "pin_corroboration": "tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json -- both raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed raw HTML via this script's own loadAndVerifySource() path and match that pin file exactly",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm",
+    "raw_bytes_sha256": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-01T12:34:55.229Z",
+    "retrieval_policy_digest": "e665cb3d1e82932003dffe93850fb32723bfee32bc570df4c95ca58d911d62fb",
+    "immutable_source_document_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0.deflate",
+    "source_map_compressed_sha256": "e84f9d18513907d8d9ea55393efa90efeec771ad0f9c8ae8b33f5130f73c6140",
+    "source_map_digest": "b05b8dbc4eaddf24c4c06d0f222bdcd56410a0829e7c35514a7ae678fa9641fe"
+  }
+}

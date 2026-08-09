@@ -1,0 +1,41 @@
+{
+  "run_wall_clock_ms": 33474,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "4.13",
+      "wall_clock_ms": 11880,
+      "usage": {
+        "input_tokens": 17255,
+        "cached_input_tokens": 16128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 398,
+        "reasoning_output_tokens": 0
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe548-55e1-7953-9d6e-4addc9d485be",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    },
+    {
+      "call_index": 1,
+      "section_reference": "9.15",
+      "wall_clock_ms": 21469,
+      "usage": {
+        "input_tokens": 17847,
+        "cached_input_tokens": 12032,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1055,
+        "reasoning_output_tokens": 122
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe548-83ac-7443-9969-1a48dc039ab1",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    }
+  ]
+}
