@@ -1,5 +1,5 @@
 {
-  "schema_version": "STAGE_2Y_D_DEFINED_TERM_REPLAY/V1",
+  "schema_version": "STAGE_2Y_D_DEFINED_TERM_REPLAY/V2",
   "publication": "WITHHELD",
   "model_calls": 0,
   "writes": false,
@@ -77,10 +77,112 @@
     "NONE": 80,
     "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT": 11
   },
+  "counts_by_resolver_replay_disposition": {
+    "RESOLVED": 80,
+    "REVIEW": 11
+  },
   "counts_by_effective_code": {
     "ACTUAL": 76,
     "AFTER_INQUIRY": 15
   },
+  "definition_evidence_gap_report": {
+    "status": "OPEN_EVIDENCE_REPAIR_REQUIRED",
+    "false_no_definition_count": 18,
+    "false_no_definition_by_deal": {
+      "skywater": 13,
+      "topbuild": 5
+    },
+    "source_proof_by_deal": {
+      "skywater": {
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "document_byte_span": {
+          "start": 312815,
+          "end": 313185
+        },
+        "quote": "When used in this Agreement, “knowledge” means, (a) with respect to the Company, the actual knowledge of the officers and employees of the Company set forth on Section 10.14 of the Company Disclosure Schedules, and (b) with respect to Parent, the actual knowledge of the officers and employees of Parent set forth on Section 10.14 of the Parent Disclosure Schedules.",
+        "exact_bytes_digest": "b862ffa48318a460b15d2b32d9f6478ad23ec3184e5a5971bd77df8db5ffd76b",
+        "expected_codes": {
+          "TARGET": "ACTUAL",
+          "BUYER": "ACTUAL"
+        },
+        "diagnostic_only_not_kdt_evidence": true
+      },
+      "topbuild": {
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "document_byte_span": {
+          "start": 77985,
+          "end": 78443
+        },
+        "quote": "The term “Knowledge,” when used in this Agreement (i) with respect to the Company, shall mean the actual knowledge of those persons set forth in Section ‎3.1(g)(iii) of the Company Disclosure Letter after due inquiry of such person’s direct reports and (ii) with respect to Parent shall mean the actual knowledge of those persons set forth in Section ‎3.1(g)(iii) of the Parent Disclosure Letter after due inquiry of such person’s direct reports.",
+        "exact_bytes_digest": "17d606d55d115f376079b14512d00af068cf9269712dccfcce398dcf2e0d2a66",
+        "expected_codes": {
+          "TARGET": "AFTER_INQUIRY",
+          "BUYER": "AFTER_INQUIRY"
+        },
+        "diagnostic_only_not_kdt_evidence": true
+      }
+    },
+    "affected_ledger_ids": [
+      "32edd85f1ee956c6e9ce46d4b2462d344c6874de5d2ef5719b614fcca0c21529",
+      "203494891d396e9e8b73842d367e8298e8fc1a46f5814958e0d0f4fd7c53dd21",
+      "9395e99dd9210bed93f95df8a749be16a1f985c5deb3c3afdc2d397089f3fdb8",
+      "aebdb3ea4b6d661f031da0c6ac251c031a526eb4072caf1a5f5b2b3610648032",
+      "e84c4e88dc1129b50089715cf78cbcaa12a5ea7cf5e9415c25e978bba425e62d",
+      "7172fc4a964ed63d8f1de275de92e20946a175ce9e8fcb150cc2849fe7bc4f57",
+      "962e82de37315a107b0a5b7bb792807e150f84dd172717b552d86382091dd4cc",
+      "a75da2e19c92427d4534d67069cf2918da87f54453cf39c403b337254e2224b4",
+      "d8e6b3c12492480654c94f5bc0afd039d5a0ae2cb7f03d289d4fd3a84ce018b0",
+      "de842b871b7c8663a53f327bc2dacf600e77ae6554291dde230ed30f29f253b4",
+      "14fcca68b705dd76dab3e63a188b935c383cd5b0c30db77a97516a2989e19ef0",
+      "4a5400c3f53f7c096c2db1582ba60f5719bd09fa95c884c0e1167c7dafa4187f",
+      "6ca55b74b15d82c8cacf5cd45071d7b0e1d1cb843171c31233a242e07f1344d6",
+      "339e872a82f59c3ae11d61655fd1d29ba120ce4a378efa0370cea18c8c999c00",
+      "4846a90567529b05b8df3b5b1e193ce7268d4d7756fea197495947938927c363",
+      "8f68a00a4f4296fbe5c2cc9548412dbb273e786fa611c0ad8b868fb87de397df",
+      "b8c20afd585e5abb01365ab22bbfcc895283b663235a518d1760ed55c07b67ba",
+      "c4eb1d73b75000c0cfe95723eb5c765846c220d46b8457ce4f8483bffb5104c4"
+    ],
+    "expected_after_evidence_repair": {
+      "counts_by_definition_outcome": {
+        "NO_DEFINITION": 3,
+        "RESOLVED": 88
+      },
+      "counts_by_resolver_disposition": {
+        "RESOLVED": 75,
+        "REVIEW": 16
+      }
+    },
+    "expected_counts_are_projection_not_executed_replay": true
+  },
+  "true_fallbacks": [
+    {
+      "ledger_id": "c0929f377c28a8f022b52202776af94cdfd3359ae446cb87392bee8d3f60c467",
+      "deal": "skechers",
+      "representation_run": "skechers-representations-r1c-20260809-2xk-final",
+      "section_reference": "4.6",
+      "representation_side": "BUYER",
+      "claim_occurrence_id": "cda676d7fc916d30ae79fd598489a9f210a74a7708b30ed0c8a66e3b4445a211",
+      "quote": "to the knowledge of Parent"
+    },
+    {
+      "ledger_id": "7a3255e67cd82a7355afb2a952a826a2f64fbe0f71e8c3d8c5f2ba96271cd2b4",
+      "deal": "skechers",
+      "representation_run": "skechers-representations-r1d-20260809-2xk-final",
+      "section_reference": "4.12",
+      "representation_side": "BUYER",
+      "claim_occurrence_id": "69c736957804c26df0eeed66aff02342a5db2bc135971b5ad49a54306708868c",
+      "quote": "to the knowledge of Parent"
+    },
+    {
+      "ledger_id": "99dc96e850d05a9732fa4b1944408306f943e1b74e919ac134829456501449b0",
+      "deal": "skechers",
+      "representation_run": "skechers-representations-r1d-20260809-2xk-final",
+      "section_reference": "4.12",
+      "representation_side": "BUYER",
+      "claim_occurrence_id": "24b149644505d0d1945f351043517b8660fd73fc08d4e2e142eb236a54f76500",
+      "quote": "to the knowledge of Parent"
+    }
+  ],
   "topbuild_buyer_no_definition_count": 5,
   "ledger_rows": [
     {
@@ -90,6 +192,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.10",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 61706,
         "end": 66746
@@ -118,6 +221,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -175,6 +285,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.10",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 61706,
         "end": 66746
@@ -203,6 +314,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -260,6 +378,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.11",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 66746,
         "end": 70212
@@ -288,6 +407,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -345,6 +471,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.11",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 66746,
         "end": 70212
@@ -373,6 +500,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -430,6 +564,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.11",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 66746,
         "end": 70212
@@ -458,6 +593,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -515,6 +657,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.11",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 66746,
         "end": 70212
@@ -543,6 +686,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -600,6 +750,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.9",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 59816,
         "end": 61706
@@ -628,6 +779,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -685,6 +843,7 @@
       "representation_run_receipt_id": "7cd27656667e2d3b544e39eb97e20674c1d08fa09dc8cec41eec9be4b6a88882",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.9",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 59816,
         "end": 61706
@@ -713,6 +872,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -770,6 +936,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 76327,
         "end": 78829
@@ -798,6 +965,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -855,6 +1029,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 76327,
         "end": 78829
@@ -883,6 +1058,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -940,6 +1122,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 76327,
         "end": 78829
@@ -968,6 +1151,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1025,6 +1215,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.15",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 78829,
         "end": 80671
@@ -1053,6 +1244,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1110,6 +1308,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.15",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 78829,
         "end": 80671
@@ -1138,6 +1337,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1195,6 +1401,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.15",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 78829,
         "end": 80671
@@ -1223,6 +1430,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1280,6 +1494,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.18",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 88923,
         "end": 90856
@@ -1308,6 +1523,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1365,6 +1587,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.18",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 88923,
         "end": 90856
@@ -1393,6 +1616,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1450,6 +1680,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.24",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 103222,
         "end": 104735
@@ -1478,6 +1709,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1535,6 +1773,7 @@
       "representation_run_receipt_id": "c1b0955b142ade6c3fb54c9f8e4c12e1d734278fb7e7b398e5178127e7b1e6ae",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "4.24",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 103222,
         "end": 104735
@@ -1563,6 +1802,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1620,6 +1866,7 @@
       "representation_run_receipt_id": "7264f9bb38c77940420b95db0dab57a5bad659d7282a100c2e1b39bfbdb92e66",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "5.9",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 126456,
         "end": 128312
@@ -1648,6 +1895,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1705,6 +1959,7 @@
       "representation_run_receipt_id": "7264f9bb38c77940420b95db0dab57a5bad659d7282a100c2e1b39bfbdb92e66",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "5.9",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 126456,
         "end": 128312
@@ -1733,6 +1988,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1790,6 +2052,7 @@
       "representation_run_receipt_id": "86718e6b2bd1b5c30e0a1a6cd88b5cb1fd1fb7a5afe68b62e21fb29cb21cf8e0",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "5.12",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 129042,
         "end": 129573
@@ -1818,6 +2081,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1875,6 +2145,7 @@
       "representation_run_receipt_id": "86718e6b2bd1b5c30e0a1a6cd88b5cb1fd1fb7a5afe68b62e21fb29cb21cf8e0",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "5.13",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 129573,
         "end": 131420
@@ -1903,6 +2174,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -1960,6 +2238,7 @@
       "representation_run_receipt_id": "86718e6b2bd1b5c30e0a1a6cd88b5cb1fd1fb7a5afe68b62e21fb29cb21cf8e0",
       "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
       "section_reference": "5.13",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 129573,
         "end": 131420
@@ -1988,6 +2267,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "016896b95c7dfae265af99113b6393f396fa9ca797ab798ea9ad93fc85f1fbaa"
@@ -2045,6 +2331,7 @@
       "representation_run_receipt_id": "6eb194f0448bc932df9b93d089997c8d26329dd11a324c1cdfd5137f4d514a89",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.06",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 54893,
         "end": 62448
@@ -2073,6 +2360,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2130,6 +2424,7 @@
       "representation_run_receipt_id": "6eb194f0448bc932df9b93d089997c8d26329dd11a324c1cdfd5137f4d514a89",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.10",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 71360,
         "end": 74935
@@ -2158,6 +2453,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2215,6 +2517,7 @@
       "representation_run_receipt_id": "6eb194f0448bc932df9b93d089997c8d26329dd11a324c1cdfd5137f4d514a89",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.10",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 71360,
         "end": 74935
@@ -2243,6 +2546,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2300,6 +2610,7 @@
       "representation_run_receipt_id": "6eb194f0448bc932df9b93d089997c8d26329dd11a324c1cdfd5137f4d514a89",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.10",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 71360,
         "end": 74935
@@ -2328,6 +2639,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2385,6 +2703,7 @@
       "representation_run_receipt_id": "6eb194f0448bc932df9b93d089997c8d26329dd11a324c1cdfd5137f4d514a89",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.11",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 74935,
         "end": 83951
@@ -2413,6 +2732,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2470,6 +2796,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.15",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 96870,
         "end": 97722
@@ -2498,6 +2825,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2555,6 +2889,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -2583,6 +2918,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2640,6 +2982,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -2668,6 +3011,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2725,6 +3075,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -2753,6 +3104,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2810,6 +3168,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -2838,6 +3197,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2895,6 +3261,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -2923,6 +3290,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -2980,6 +3354,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3008,6 +3383,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3065,6 +3447,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3093,6 +3476,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3150,6 +3540,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3178,6 +3569,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3235,6 +3633,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3263,6 +3662,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3320,6 +3726,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3348,6 +3755,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3405,6 +3819,7 @@
       "representation_run_receipt_id": "25abafc58d3f0e5c17de0d86f0f18b02eb5241a9e36a7c61863e836b34fcecc0",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.19",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 111865,
         "end": 129125
@@ -3433,6 +3848,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3490,6 +3912,7 @@
       "representation_run_receipt_id": "abe3013d83864c2629669f27e4831eee33ccd4eea92264fa33739f1cdc014c34",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.25",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 135382,
         "end": 136853
@@ -3518,6 +3941,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3575,6 +4005,7 @@
       "representation_run_receipt_id": "abe3013d83864c2629669f27e4831eee33ccd4eea92264fa33739f1cdc014c34",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.26",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 136853,
         "end": 138209
@@ -3603,6 +4034,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3660,6 +4098,7 @@
       "representation_run_receipt_id": "abe3013d83864c2629669f27e4831eee33ccd4eea92264fa33739f1cdc014c34",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "3.26",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 136853,
         "end": 138209
@@ -3688,6 +4127,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3745,6 +4191,7 @@
       "representation_run_receipt_id": "abe3013d83864c2629669f27e4831eee33ccd4eea92264fa33739f1cdc014c34",
       "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
       "section_reference": "4.07",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 144568,
         "end": 145009
@@ -3773,6 +4220,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff"
@@ -3830,6 +4284,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -3858,6 +4313,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -3915,6 +4377,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -3943,6 +4406,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4000,6 +4470,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4028,6 +4499,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4085,6 +4563,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4113,6 +4592,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4170,6 +4656,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4198,6 +4685,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4255,6 +4749,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4283,6 +4778,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4340,6 +4842,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4368,6 +4871,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4425,6 +4935,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4453,6 +4964,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4510,6 +5028,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4538,6 +5057,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4595,6 +5121,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4623,6 +5150,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4680,6 +5214,7 @@
       "representation_run_receipt_id": "7b538c0423ae79856291b028dc4ba58be78e06b1a7d330a72d950aac57df81c5",
       "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
       "section_reference": "3.01",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 28259,
         "end": 104301
@@ -4708,6 +5243,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2"
@@ -4765,6 +5307,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.13",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 138630,
         "end": 140559
@@ -4793,6 +5336,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -4893,6 +5443,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.13",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 138630,
         "end": 140559
@@ -4921,6 +5472,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5021,6 +5579,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 140559,
         "end": 144300
@@ -5049,6 +5608,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5149,6 +5715,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 140559,
         "end": 144300
@@ -5177,6 +5744,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5277,6 +5851,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.14",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 140559,
         "end": 144300
@@ -5305,6 +5880,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5405,6 +5987,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.15",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 144300,
         "end": 145700
@@ -5433,6 +6016,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5533,6 +6123,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.16",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 145700,
         "end": 154638
@@ -5561,6 +6152,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5661,6 +6259,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.16",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 145700,
         "end": 154638
@@ -5689,6 +6288,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5789,6 +6395,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.16",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 145700,
         "end": 154638
@@ -5817,6 +6424,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -5917,6 +6531,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.16",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 145700,
         "end": 154638
@@ -5945,6 +6560,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -6045,6 +6667,7 @@
       "representation_run_receipt_id": "91b3959624bb9bc221337ac9fd7797b3570723b944ffc610a5b19e09a946db03",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "3.16",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 145700,
         "end": 154638
@@ -6073,6 +6696,13 @@
       "integration_disposition": "REVIEW",
       "integration_reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "REVIEW",
+        "reason": "REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT",
+        "resolved_claim_definition_key": null,
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
@@ -6173,6 +6803,7 @@
       "representation_run_receipt_id": "0be858bb51f5aae91d336c6f28133f9d931f12660abec8046ddbb20b5ea9e763",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "4.6",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 188134,
         "end": 188456
@@ -6201,6 +6832,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "TRUE_AGREEMENT_DEFINITION_ABSENCE",
+        "expected_definition_code_after_evidence_repair": null,
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6217,6 +6859,7 @@
       "representation_run_receipt_id": "350440f73affc98d83faab7e9a06881e39ec05f2fff1c3f3fe8f4d73ede3b9d7",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "4.12",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 192055,
         "end": 198037
@@ -6245,6 +6888,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "TRUE_AGREEMENT_DEFINITION_ABSENCE",
+        "expected_definition_code_after_evidence_repair": null,
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6261,6 +6915,7 @@
       "representation_run_receipt_id": "350440f73affc98d83faab7e9a06881e39ec05f2fff1c3f3fe8f4d73ede3b9d7",
       "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
       "section_reference": "4.12",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 192055,
         "end": 198037
@@ -6289,6 +6944,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "TRUE_AGREEMENT_DEFINITION_ABSENCE",
+        "expected_definition_code_after_evidence_repair": null,
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6305,6 +6971,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.13",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 71550,
         "end": 72016
@@ -6333,6 +7000,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6349,6 +7027,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.17",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 90900,
         "end": 95487
@@ -6377,6 +7056,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6393,6 +7083,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.17",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 90900,
         "end": 95487
@@ -6421,6 +7112,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6437,6 +7139,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.17",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 90900,
         "end": 95487
@@ -6465,6 +7168,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6481,6 +7195,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.17",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 90900,
         "end": 95487
@@ -6509,6 +7224,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6525,6 +7251,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.21",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 106339,
         "end": 136029
@@ -6553,6 +7280,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6569,6 +7307,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.21",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 106339,
         "end": 136029
@@ -6597,6 +7336,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6613,6 +7363,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.21",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 106339,
         "end": 136029
@@ -6641,6 +7392,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6657,6 +7419,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.23",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 160677,
         "end": 162857
@@ -6685,6 +7448,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6701,6 +7475,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.23",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 160677,
         "end": 162857
@@ -6729,6 +7504,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6745,6 +7531,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.24",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 162857,
         "end": 165611
@@ -6773,6 +7560,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6789,6 +7587,7 @@
       "representation_run_receipt_id": "ac291b88af4e1d364333d89a14bd7f29406a0630e4f48982e1126bcd0e3431c3",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "3.24",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 162857,
         "end": 165611
@@ -6817,6 +7616,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6833,6 +7643,7 @@
       "representation_run_receipt_id": "2654b1ce3a9dc6e6fdf3e14dc63e54419d873192e493e3ca808cfffc45ff62bc",
       "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
       "section_reference": "4.12",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 188427,
         "end": 188941
@@ -6861,6 +7672,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "ACTUAL",
+        "expected_resolver_disposition_after_evidence_repair": "RESOLVED"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -6877,6 +7699,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.1",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 47755,
         "end": 131511
@@ -6905,6 +7728,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "ce00c03aa00f4dd92853a7b3786aa293d85b29b3883e55835288197f4c933357",
@@ -7005,6 +7835,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.1",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 47755,
         "end": 131511
@@ -7033,6 +7864,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "ce00c03aa00f4dd92853a7b3786aa293d85b29b3883e55835288197f4c933357",
@@ -7133,6 +7971,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.1",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 47755,
         "end": 131511
@@ -7161,6 +8000,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "ce00c03aa00f4dd92853a7b3786aa293d85b29b3883e55835288197f4c933357",
@@ -7261,6 +8107,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.1",
+      "representation_side": "TARGET",
       "section_document_byte_span": {
         "start": 47755,
         "end": 131511
@@ -7289,6 +8136,13 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "SAME_DEAL_DEFINED_TERM",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": null,
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [
         "ce00c03aa00f4dd92853a7b3786aa293d85b29b3883e55835288197f4c933357",
@@ -7389,6 +8243,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.2",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 131511,
         "end": 179129
@@ -7417,6 +8272,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "AFTER_INQUIRY",
+        "expected_resolver_disposition_after_evidence_repair": "REVIEW"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -7433,6 +8299,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.2",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 131511,
         "end": 179129
@@ -7461,6 +8328,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "AFTER_INQUIRY",
+        "expected_resolver_disposition_after_evidence_repair": "REVIEW"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -7477,6 +8355,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.2",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 131511,
         "end": 179129
@@ -7505,6 +8384,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "AFTER_INQUIRY",
+        "expected_resolver_disposition_after_evidence_repair": "REVIEW"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -7521,6 +8411,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.2",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 131511,
         "end": 179129
@@ -7549,6 +8440,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "AFTER_INQUIRY",
+        "expected_resolver_disposition_after_evidence_repair": "REVIEW"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],
@@ -7565,6 +8467,7 @@
       "representation_run_receipt_id": "bafa3e73275e66ac75d6d7f5ca1367035b8d033d1278828c465c4879e1d0d02e",
       "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
       "section_reference": "3.2",
+      "representation_side": "BUYER",
       "section_document_byte_span": {
         "start": 131511,
         "end": 179129
@@ -7593,6 +8496,17 @@
       "integration_disposition": "RESOLVED",
       "integration_reason": null,
       "effective_code_source": "REGISTERED_CURRENT_MODEL_FALLBACK",
+      "resolver_replay": {
+        "disposition": "RESOLVED",
+        "reason": null,
+        "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+        "model_calls": 0
+      },
+      "definition_gap_classification": {
+        "classification": "FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE",
+        "expected_definition_code_after_evidence_repair": "AFTER_INQUIRY",
+        "expected_resolver_disposition_after_evidence_repair": "REVIEW"
+      },
       "calibration_id": "stage-2y-d-defined-term-replay/final-corpus/v1",
       "selected_definition_claim_occurrence_ids": [],
       "selected_definitions": [],

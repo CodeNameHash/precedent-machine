@@ -17,8 +17,9 @@
  * the prompt's own deliberate narrowing); the other 2 have `meeting_ref:
  * null` in the model's own recorded JSON -- the SAME null-vs-absent
  * conflation the brief names for control_party, one gate earlier in the
- * same handler. Both defect shapes get their own reason code below; only
- * the genuine narrowed-quote shape gets a widened check.
+ * same handler. The two Boolean presence facts do not need a meeting
+ * identity and resolve without one. Identity-bearing claims still require
+ * the reference. A present but narrowed reference gets a section check.
  */
 
 const test = require('node:test');
@@ -135,18 +136,23 @@ test('grounding: the committed (pre-fix) resolution.json queues 4 MEETING_REF_NO
 // Integration: replay the real recorded run through the current resolver.
 // ─────────────────────────────────────────────────────────────────────────
 
-test('REPLAY (evidence/canonical-v2/modiv-proxy-meeting-20260806/): the 2 genuine narrowed-meeting_ref candidates resolve; the 2 null-meeting_ref and 1 null-control_party candidates queue under their own distinct ABSENT reasons, never resolved', () => {
+test('REPLAY (evidence/canonical-v2/modiv-proxy-meeting-20260806/): narrowed references and Boolean presence facts resolve, while a null control party stays held', () => {
   const runReceipt = loadJson('run-receipt.json');
   const manifest = loadJson('run-manifest.json');
   const resolution = runReplay(runReceipt, manifest);
 
   assert.equal(resolution.resolution_receipt.counts.compiled_candidates, 21);
-  assert.equal(resolution.resolved.length, 2, 'resolved rises from the committed 0 to 2 -- measured by replay, not asserted');
+  assert.equal(resolution.resolved.length, 4, 'two narrowed references and two Boolean presence facts resolve');
   assert.equal(resolution.open_world.length, 8, 'unaffected by this fix');
 
   const resolvedPhrases = resolution.resolved.map((entry) => entry.claim.raw_value).sort();
-  assert.deepEqual(resolvedPhrases, ['for the absence of a quorum', 'if required by Law']);
-  for (const entry of resolution.resolved) {
+  assert.deepEqual(resolvedPhrases, [
+    'commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act',
+    'establish a record date for and give notice of a meeting of its stockholders',
+    'for the absence of a quorum',
+    'if required by Law',
+  ]);
+  for (const entry of resolution.resolved.filter((row) => row.claim.attributes.assertion_kind === 'ADJOURNMENT_REASON')) {
     assert.equal(entry.concept_key, 'COV-MEETING');
     assert.equal(entry.claim.attributes.meeting_ref, 'the Company Common Stockholders’ Meeting');
   }
@@ -155,14 +161,7 @@ test('REPLAY (evidence/canonical-v2/modiv-proxy-meeting-20260806/): the 2 genuin
   assert.ok(resolution.review_queue.every((item) => !item.reasons.includes('CONTROL_PARTY_REF_NOT_IN_QUOTE')));
 
   const meetingRefAbsent = resolution.review_queue.filter((item) => item.reasons.includes('MEETING_REF_ABSENT'));
-  assert.equal(meetingRefAbsent.length, 2);
-  assert.deepEqual(
-    meetingRefAbsent.map((item) => item.raw_value).sort(),
-    [
-      'commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act',
-      'establish a record date for and give notice of a meeting of its stockholders',
-    ],
-  );
+  assert.equal(meetingRefAbsent.length, 0);
 
   const controlPartyAbsent = resolution.review_queue.filter((item) => item.reasons.includes('CONTROL_PARTY_REF_ABSENT'));
   assert.equal(controlPartyAbsent.length, 1);
@@ -192,6 +191,24 @@ test('HOSTILE: a fabricated meeting_ref that is genuinely absent from the real s
   const stillQueued = resolution.review_queue.find((item) => item.raw_value === 'for the absence of a quorum');
   assert.ok(stillQueued);
   assert.ok(stillQueued.reasons.includes('MEETING_REF_NOT_IN_QUOTE'), `fabricated reference must still be refused, got ${JSON.stringify(stillQueued.reasons)}`);
+});
+
+test('HOSTILE: a missing meeting_ref still holds an identity-bearing adjournment reason', () => {
+  const runReceipt = loadJson('run-receipt.json');
+  const manifest = loadJson('run-manifest.json');
+  const fabricated = structuredClone(runReceipt);
+  const target = fabricated.compiled_candidates.find(
+    (entry) => entry.ok === true && entry.candidate?.kind === 'claim'
+      && entry.candidate.claim.raw_value === 'for the absence of a quorum',
+  );
+  assert.ok(target);
+  target.candidate.claim.attributes.meeting_ref = null;
+
+  const resolution = runReplay(fabricated, manifest);
+  const held = resolution.review_queue.find((item) => item.raw_value === 'for the absence of a quorum');
+  assert.ok(held);
+  assert.ok(held.reasons.includes('MEETING_REF_ABSENT'));
+  assert.equal(held.has_resolution, false);
 });
 
 // ─────────────────────────────────────────────────────────────────────────

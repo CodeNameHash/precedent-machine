@@ -8,6 +8,8 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { sha256Hex, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const { buildSemanticSpan } = require('../lib/canonical-v2/source-structure');
+const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
+const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const {
   OUTCOMES,
   FINAL_CORPUS_DEFINED_TERM_BINDINGS,
@@ -23,6 +25,11 @@ const EXPECTED_BY_DEAL = Object.freeze({ concho: 23, metsera: 21, redhat: 11, sk
 const EXPECTED_TOTAL = 91;
 const EXPECTED_DEFINITION_OUTCOMES = Object.freeze({ NO_DEFINITION: 21, RESOLVED: 70 });
 const EXPECTED_INTEGRATION_DISPOSITIONS = Object.freeze({ RESOLVED: 80, REVIEW: 11 });
+const EXPECTED_AFTER_EVIDENCE_REPAIR = Object.freeze({
+  counts_by_definition_outcome: Object.freeze({ NO_DEFINITION: 3, RESOLVED: 88 }),
+  counts_by_resolver_disposition: Object.freeze({ RESOLVED: 75, REVIEW: 16 }),
+});
+const CONTRACT = compileFixtureContractV38();
 const KNOWLEDGE_STANDARD_CODES = new Set(['ACTUAL', 'CONSTRUCTIVE', 'AFTER_INQUIRY']);
 const INTEGRATION_REASONS = Object.freeze({
   KNOWLEDGE_STANDARD_CONFLICT: 'REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT',
@@ -43,6 +50,18 @@ const RUNS = Object.freeze([
   ['skywater', 'skywater-representations-r1d-20260809-2xk-final'],
   ['topbuild', 'topbuild-representations-20260809-2xk-r3-final'],
 ]);
+const DEFINITION_GAP_SOURCE_PROOF = Object.freeze({
+  skywater: Object.freeze({
+    start: 'When used in this Agreement, “knowledge” means',
+    end: 'set forth on Section 10.14 of the Parent Disclosure Schedules.',
+    expected_codes: Object.freeze({ TARGET: 'ACTUAL', BUYER: 'ACTUAL' }),
+  }),
+  topbuild: Object.freeze({
+    start: 'The term “Knowledge,” when used in this Agreement',
+    end: 'after due inquiry of such person’s direct reports.',
+    expected_codes: Object.freeze({ TARGET: 'AFTER_INQUIRY', BUYER: 'AFTER_INQUIRY' }),
+  }),
+});
 
 function assertion(condition, message) {
   if (!condition) throw new Error(message);
@@ -81,6 +100,29 @@ function sourceFor(run) {
   assertion(typeof source?.canonical_text?.text === 'string', `${run.name}: canonical source text missing`);
   assertion(source.document_hash === run.receipt.document_hash, `${run.name}: admitted source document hash mismatch`);
   return source;
+}
+
+function definitionGapSourceProof(deal, source) {
+  const spec = DEFINITION_GAP_SOURCE_PROOF[deal];
+  assertion(spec, `no source-proof specification for ${deal}`);
+  const text = source.canonical_text.text;
+  const characterStart = text.indexOf(spec.start);
+  assertion(characterStart >= 0, `${deal}: definition source-proof start missing`);
+  assertion(text.indexOf(spec.start, characterStart + 1) === -1, `${deal}: definition source-proof start is not unique`);
+  const characterEndMarker = text.indexOf(spec.end, characterStart);
+  assertion(characterEndMarker >= characterStart, `${deal}: definition source-proof end missing`);
+  const characterEnd = characterEndMarker + spec.end.length;
+  const quote = text.slice(characterStart, characterEnd);
+  const documentStart = Buffer.byteLength(text.slice(0, characterStart), 'utf8');
+  const documentEnd = documentStart + Buffer.byteLength(quote, 'utf8');
+  return Object.freeze({
+    document_hash: source.document_hash,
+    document_byte_span: Object.freeze({ start: documentStart, end: documentEnd }),
+    quote,
+    exact_bytes_digest: sha256Hex(Buffer.from(quote, 'utf8')),
+    expected_codes: spec.expected_codes,
+    diagnostic_only_not_kdt_evidence: true,
+  });
 }
 
 function sectionFor(receipt, reference, label) {
@@ -127,7 +169,7 @@ function useCandidateFor(receipt, row, label) {
       && (claim.evidence || []).some((edge) => edge.claim_evidence_id === evidenceId);
   });
   assertion(matches.length === 1, `${label}: use candidate identity missing or ambiguous`);
-  return matches[0].candidate.claim;
+  return matches[0];
 }
 
 function definitionClaimsFor(receipt, ids, label) {
@@ -199,13 +241,71 @@ function integrationDisposition({ definitionOutcome, effectiveCode, currentModel
   });
 }
 
+function replayCandidateThroughResolver({ run, source, candidateEntry, index, label }) {
+  const resolution = resolveCandidates({
+    run_receipt: { ...run.receipt, compiled_candidates: [candidateEntry] },
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: source,
+    agreement_date: run.manifest.agreement_date,
+    same_deal_defined_terms: index,
+  });
+  const held = resolution.review_queue.filter((entry) => entry.has_resolution === false);
+  if (resolution.resolved.length === 1 && held.length === 0 && resolution.open_world.length === 0) {
+    return Object.freeze({
+      disposition: 'RESOLVED',
+      reason: null,
+      resolved_claim_definition_key: resolution.resolved[0].resolved_claim_definition_key,
+      model_calls: 0,
+    });
+  }
+  if (resolution.resolved.length === 0 && held.length === 1 && resolution.open_world.length === 0) {
+    assertion(held[0].reasons.length === 1, `${label}: resolver replay returned multiple review reasons`);
+    return Object.freeze({
+      disposition: 'REVIEW',
+      reason: held[0].reasons[0],
+      resolved_claim_definition_key: null,
+      model_calls: 0,
+    });
+  }
+  throw new Error(`${label}: resolver replay did not produce one settled disposition: ${JSON.stringify({
+    resolved: resolution.resolved.length,
+    held: held.length,
+    open_world: resolution.open_world.map((entry) => entry.reason),
+  })}`);
+}
+
+function definitionGapClassification({ deal, side, definitionOutcome, modelCode }) {
+  if (definitionOutcome !== OUTCOMES.NO_DEFINITION) return null;
+  if (deal === 'skywater') {
+    return Object.freeze({
+      classification: 'FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE',
+      expected_definition_code_after_evidence_repair: 'ACTUAL',
+      expected_resolver_disposition_after_evidence_repair: modelCode === 'ACTUAL' ? 'RESOLVED' : 'REVIEW',
+    });
+  }
+  if (deal === 'topbuild' && side === 'BUYER') {
+    return Object.freeze({
+      classification: 'FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE',
+      expected_definition_code_after_evidence_repair: 'AFTER_INQUIRY',
+      expected_resolver_disposition_after_evidence_repair: modelCode === 'AFTER_INQUIRY' ? 'RESOLVED' : 'REVIEW',
+    });
+  }
+  assertion(deal === 'skechers' && side === 'BUYER', `unexpected true NO_DEFINITION fallback: ${deal}/${side}`);
+  return Object.freeze({
+    classification: 'TRUE_AGREEMENT_DEFINITION_ABSENCE',
+    expected_definition_code_after_evidence_repair: null,
+    expected_resolver_disposition_after_evidence_repair: 'RESOLVED',
+  });
+}
+
 function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIndex }) {
   const label = `${run.name}:open_world[${resolutionIndex}]`;
   assertion(row.reason === 'REPRESENTATION_KNOWLEDGE_STANDARD_UNCORROBORATED', `${label}: wrong historical reason`);
   const source = sourceFor(run);
   assertion(source.document_hash === keySource.document_hash && source.document_hash === keyRun.receipt.document_hash,
     `${label}: representation and current final key-defined-term documents differ`);
-  const claim = useCandidateFor(run.receipt, row, label);
+  const candidateEntry = useCandidateFor(run.receipt, row, label);
+  const claim = candidateEntry.candidate.claim;
   const section = sectionFor(run.receipt, row.section_reference, label);
   const useEdge = (row.evidence || []).filter((edge) => edge.evidence_role === 'OPERATIVE_TEXT');
   assertion(useEdge.length === 1, `${label}: expected exactly one OPERATIVE_TEXT use`);
@@ -224,11 +324,22 @@ function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIn
   assertion(result.outcome !== OUTCOMES.INERT, `${label}: calibrated index became inert`);
   const selectedDefinitions = definitionSelection({ result, receipt: keyRun.receipt, source: keySource, label });
   const effectiveCode = result.outcome === OUTCOMES.RESOLVED ? result.value : modelCode;
-  const integration = integrationDisposition({
+  const expectedIntegration = integrationDisposition({
     definitionOutcome: result.outcome,
     effectiveCode,
     currentModelCode: modelCode,
     label,
+  });
+  const resolverReplay = replayCandidateThroughResolver({ run, source, candidateEntry, index, label });
+  assertion(resolverReplay.disposition === expectedIntegration.disposition,
+    `${label}: helper disposition ${expectedIntegration.disposition} disagrees with resolver ${resolverReplay.disposition}`);
+  assertion(resolverReplay.reason === expectedIntegration.reason,
+    `${label}: helper reason ${expectedIntegration.reason} disagrees with resolver ${resolverReplay.reason}`);
+  const gapClassification = definitionGapClassification({
+    deal,
+    side,
+    definitionOutcome: result.outcome,
+    modelCode,
   });
   return Object.freeze({
     ledger_id: sha256Hex(`${run.name}\0${row.closure_id || claim.claim_occurrence_id}\0${use.claim_evidence_id}`),
@@ -237,6 +348,7 @@ function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIn
     representation_run_receipt_id: run.receipt.run_receipt_id,
     document_hash: source.document_hash,
     section_reference: row.section_reference,
+    representation_side: side,
     section_document_byte_span: Object.freeze({ start: section.start, end: section.end }),
     claim_occurrence_id: claim.claim_occurrence_id || null,
     closure_id: row.closure_id || null,
@@ -244,9 +356,11 @@ function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIn
     definition_outcome: result.outcome,
     effective_code: effectiveCode,
     current_model_code: modelCode,
-    integration_disposition: integration.disposition,
-    integration_reason: integration.reason,
-    effective_code_source: integration.effective_code_source,
+    integration_disposition: resolverReplay.disposition,
+    integration_reason: resolverReplay.reason,
+    effective_code_source: expectedIntegration.effective_code_source,
+    resolver_replay: resolverReplay,
+    definition_gap_classification: gapClassification,
     calibration_id: FINAL_CORPUS_DEFINED_TERM_CALIBRATION.calibration_id,
     selected_definition_claim_occurrence_ids: result.provenance?.source_claim_occurrence_ids || [],
     selected_definitions: selectedDefinitions,
@@ -259,6 +373,14 @@ function buildLedgerRow({ deal, run, keyRun, index, keySource, row, resolutionIn
 export function assertReplayIntegrity(replay, sourcesByDocumentHash) {
   assertion(Array.isArray(replay?.ledger_rows), 'ledger rows missing');
   assertion(replay.ledger_rows.length === EXPECTED_TOTAL, `ledger count drift: expected ${EXPECTED_TOTAL}, got ${replay.ledger_rows.length}`);
+  for (const [deal, proof] of Object.entries(replay.definition_evidence_gap_report.source_proof_by_deal)) {
+    const source = sourcesByDocumentHash.get(proof.document_hash);
+    assertion(source, `${deal}: source proof has unknown document`);
+    const quote = utf8Slice(source.canonical_text.text, proof.document_byte_span.start, proof.document_byte_span.end);
+    assertion(quote === proof.quote, `${deal}: definition source-proof quote drift`);
+    assertion(sha256Hex(Buffer.from(quote, 'utf8')) === proof.exact_bytes_digest, `${deal}: definition source-proof digest drift`);
+    assertion(proof.diagnostic_only_not_kdt_evidence === true, `${deal}: source proof must remain diagnostic only`);
+  }
   const useIds = new Set();
   for (const row of replay.ledger_rows) {
     assertion(typeof row.document_hash === 'string' && sourcesByDocumentHash.has(row.document_hash), `unknown document for ${row.ledger_id}`);
@@ -294,6 +416,13 @@ export function assertReplayIntegrity(replay, sourcesByDocumentHash) {
   assertion(JSON.stringify(definitionOutcomes) === JSON.stringify(EXPECTED_DEFINITION_OUTCOMES), 'definition outcome conservation drift');
   const integrationDispositions = countBy(replay.ledger_rows, (row) => row.integration_disposition);
   assertion(JSON.stringify(integrationDispositions) === JSON.stringify(EXPECTED_INTEGRATION_DISPOSITIONS), 'integration disposition conservation drift');
+  const resolverDispositions = countBy(replay.ledger_rows, (row) => row.resolver_replay.disposition);
+  assertion(JSON.stringify(resolverDispositions) === JSON.stringify(EXPECTED_INTEGRATION_DISPOSITIONS), 'actual resolver disposition conservation drift');
+  for (const row of replay.ledger_rows) {
+    assertion(row.resolver_replay.disposition === row.integration_disposition, `resolver/helper disposition drift: ${row.ledger_id}`);
+    assertion(row.resolver_replay.reason === row.integration_reason, `resolver/helper reason drift: ${row.ledger_id}`);
+    assertion(row.resolver_replay.model_calls === 0, `resolver replay model-call drift: ${row.ledger_id}`);
+  }
   const skechersConflicts = replay.ledger_rows.filter((row) => row.deal === 'skechers'
     && row.definition_outcome === OUTCOMES.RESOLVED
     && row.effective_code === 'AFTER_INQUIRY'
@@ -318,6 +447,18 @@ export function assertReplayIntegrity(replay, sourcesByDocumentHash) {
     assertion(row.integration_reason === null, `NO_DEFINITION fallback reason drift: ${row.ledger_id}`);
     assertion(row.effective_code_source === 'REGISTERED_CURRENT_MODEL_FALLBACK', `NO_DEFINITION fallback source drift: ${row.ledger_id}`);
   }
+  const falseAbsences = noDefinitionFallbacks.filter((row) => (
+    row.definition_gap_classification?.classification === 'FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE'
+  ));
+  assertion(falseAbsences.length === 18, `false NO_DEFINITION count drift: ${falseAbsences.length}`);
+  assertion(JSON.stringify(countBy(falseAbsences, (row) => row.deal)) === JSON.stringify({ skywater: 13, topbuild: 5 }),
+    'false NO_DEFINITION deal split drift');
+  const trueFallbacks = noDefinitionFallbacks.filter((row) => (
+    row.definition_gap_classification?.classification === 'TRUE_AGREEMENT_DEFINITION_ABSENCE'
+  ));
+  assertion(trueFallbacks.length === 3, `true fallback count drift: ${trueFallbacks.length}`);
+  assertion(trueFallbacks.every((row) => row.deal === 'skechers' && row.representation_side === 'BUYER'),
+    'true fallback identity drift');
   return true;
 }
 
@@ -360,8 +501,28 @@ export function buildReplay() {
     || left.representation_run.localeCompare(right.representation_run)
     || left.section_reference.localeCompare(right.section_reference)
     || left.ledger_id.localeCompare(right.ledger_id));
+  const falseNoDefinitions = ledgerRows.filter((row) => (
+    row.definition_gap_classification?.classification === 'FALSE_NO_DEFINITION_MISSING_KDT_EVIDENCE'
+  ));
+  const trueFallbacks = ledgerRows.filter((row) => (
+    row.definition_gap_classification?.classification === 'TRUE_AGREEMENT_DEFINITION_ABSENCE'
+  )).map((row) => Object.freeze({
+    ledger_id: row.ledger_id,
+    deal: row.deal,
+    representation_run: row.representation_run,
+    section_reference: row.section_reference,
+    representation_side: row.representation_side,
+    claim_occurrence_id: row.claim_occurrence_id,
+    quote: row.use.quote,
+  }));
+  const sourceProofByDeal = Object.freeze(Object.fromEntries(
+    Object.keys(DEFINITION_GAP_SOURCE_PROOF).map((deal) => [
+      deal,
+      definitionGapSourceProof(deal, keyByDeal.get(deal).source),
+    ]),
+  ));
   const replay = Object.freeze({
-    schema_version: 'STAGE_2Y_D_DEFINED_TERM_REPLAY/V1',
+    schema_version: 'STAGE_2Y_D_DEFINED_TERM_REPLAY/V2',
     publication: 'WITHHELD',
     model_calls: 0,
     writes: false,
@@ -377,7 +538,18 @@ export function buildReplay() {
     counts_by_definition_outcome: countBy(ledgerRows, (row) => row.definition_outcome),
     counts_by_integration_disposition: countBy(ledgerRows, (row) => row.integration_disposition),
     counts_by_integration_reason: countBy(ledgerRows, (row) => row.integration_reason || 'NONE'),
+    counts_by_resolver_replay_disposition: countBy(ledgerRows, (row) => row.resolver_replay.disposition),
     counts_by_effective_code: countBy(ledgerRows, (row) => row.effective_code),
+    definition_evidence_gap_report: Object.freeze({
+      status: 'OPEN_EVIDENCE_REPAIR_REQUIRED',
+      false_no_definition_count: falseNoDefinitions.length,
+      false_no_definition_by_deal: countBy(falseNoDefinitions, (row) => row.deal),
+      source_proof_by_deal: sourceProofByDeal,
+      affected_ledger_ids: Object.freeze(falseNoDefinitions.map((row) => row.ledger_id)),
+      expected_after_evidence_repair: EXPECTED_AFTER_EVIDENCE_REPAIR,
+      expected_counts_are_projection_not_executed_replay: true,
+    }),
+    true_fallbacks: Object.freeze(trueFallbacks),
     topbuild_buyer_no_definition_count: ledgerRows.filter((row) => row.deal === 'topbuild' && row.typed_absence_or_conflict?.type === OUTCOMES.NO_DEFINITION && row.typed_absence_or_conflict.requested_party === 'BUYER').length,
     ledger_rows: ledgerRows,
   });

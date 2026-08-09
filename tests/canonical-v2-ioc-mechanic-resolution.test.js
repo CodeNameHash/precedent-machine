@@ -219,17 +219,19 @@ test('multiple amounts and non-USD amounts remain raw open world with no canonic
   assert.equal(multiple.numeric_resolution.canonical_value, null);
 });
 
-test('zero attachment matches enter legal review and never attach to the nearest limb', async () => {
+test('a unique target subquote attaches to its containing restriction component', async () => {
   const resolution = await resolvedIocMechanics();
   const item = mechanics(resolution).find((entry) => (
     entry.attributes.structured_mechanic.proposed_target_restriction_quote === 'incur any indebtedness'
   ));
-  assert.equal(item.attributes.structured_mechanic.attachment.state, 'REVIEW_REQUIRED');
-  assert.equal(item.attributes.structured_mechanic.attachment.reason, 'IOC_ATTACHMENT_TARGET_ZERO_MATCHES');
-  assert.ok(resolution.review_queue.some((entry) => (
-    entry.closure_id === item.closure_id
-      && entry.reasons.includes('IOC_ATTACHMENT_TARGET_ZERO_MATCHES')
-  )));
+  const attachment = item.attributes.structured_mechanic.attachment;
+  assert.equal(attachment.state, 'RESOLVED');
+  assert.equal(attachment.target.provision_component_id != null, true);
+  assert.equal(
+    utf8Slice(SOURCE, attachment.target.span.absolute_start, attachment.target.span.absolute_end),
+    'incur any indebtedness',
+  );
+  assert.equal(resolution.review_queue.some((entry) => entry.closure_id === item.closure_id), false);
 });
 
 test('a non-exact operand blocks numeric normalisation and stays in review', async () => {
@@ -306,6 +308,118 @@ test('two exact component matches enter review and do not select by order', () =
     'IOC_ATTACHMENT_TARGET_MULTIPLE_MATCHES',
   );
   assert.deepEqual(output.review_queue[0].reasons, ['IOC_ATTACHMENT_TARGET_MULTIPLE_MATCHES']);
+});
+
+test('one full mechanic quote contained inside a wider component attaches at the exact UTF-8 byte span', () => {
+  const target = 'incur indebtedness above €20 million';
+  const prefix = 'Préface: ';
+  const sourceText = `${prefix}${target}; other restriction text.`;
+  const component = {
+    provision_component_id: 'component:contained',
+    parent_provision_instance_id: 'provision:contained',
+    component_key: 'RESTRICTED_ACTION',
+    canonical_text_id: 'text:contained',
+    absolute_start: 0,
+    absolute_end: utf8ByteLength(sourceText),
+  };
+  const output = resolveIocMechanics({
+    open_world: [mechanicItem({
+      quote: target,
+      attachmentScope: 'RESTRICTION_LIMB',
+      targetQuote: target,
+      closureId: 'contained:one',
+    })],
+    resolved: [resolvedRestriction({
+      sectionReference: '5.1',
+      componentId: component.provision_component_id,
+      provisionId: component.parent_provision_instance_id,
+    })],
+    ioc_restriction_components: [component],
+    resolved_sections: [{ section_reference: '5.1', start: 0, end: utf8ByteLength(sourceText) }],
+    admitted_source_context: { canonical_text: { text: sourceText } },
+  });
+
+  const attachment = output.open_world[0].attributes.structured_mechanic.attachment;
+  assert.equal(attachment.state, 'RESOLVED');
+  assert.deepEqual(attachment.target.span, {
+    canonical_text_id: 'text:contained',
+    absolute_start: utf8ByteLength(prefix),
+    absolute_end: utf8ByteLength(`${prefix}${target}`),
+  });
+});
+
+test('one target subquote inside a wider mechanic and component attaches at the exact UTF-8 byte span', () => {
+  const target = 'incur indebtedness above €20 million';
+  const mechanicQuote = `except with consent, ${target}, in the aggregate`;
+  const prefix = 'Préface: ';
+  const sourceText = `${prefix}${mechanicQuote}; other restriction text.`;
+  const component = {
+    provision_component_id: 'component:wider-contained',
+    parent_provision_instance_id: 'provision:wider-contained',
+    component_key: 'RESTRICTED_ACTION',
+    canonical_text_id: 'text:wider-contained',
+    absolute_start: 0,
+    absolute_end: utf8ByteLength(sourceText),
+  };
+  const output = resolveIocMechanics({
+    open_world: [mechanicItem({
+      quote: mechanicQuote,
+      attachmentScope: 'RESTRICTION_LIMB',
+      targetQuote: target,
+      closureId: 'contained:wider',
+    })],
+    resolved: [resolvedRestriction({
+      sectionReference: '5.1',
+      componentId: component.provision_component_id,
+      provisionId: component.parent_provision_instance_id,
+    })],
+    ioc_restriction_components: [component],
+    resolved_sections: [{ section_reference: '5.1', start: 0, end: utf8ByteLength(sourceText) }],
+    admitted_source_context: { canonical_text: { text: sourceText } },
+  });
+
+  const attachment = output.open_world[0].attributes.structured_mechanic.attachment;
+  const targetPrefix = `${prefix}except with consent, `;
+  assert.equal(attachment.state, 'RESOLVED');
+  assert.deepEqual(attachment.target.span, {
+    canonical_text_id: 'text:wider-contained',
+    absolute_start: utf8ByteLength(targetPrefix),
+    absolute_end: utf8ByteLength(`${targetPrefix}${target}`),
+  });
+});
+
+test('two normalised occurrences inside one component abstain as ambiguous', () => {
+  const target = 'incur indebtedness';
+  const sourceText = `${target}; and later ${target}.`;
+  const component = {
+    provision_component_id: 'component:duplicate-within',
+    parent_provision_instance_id: 'provision:duplicate-within',
+    component_key: 'RESTRICTED_ACTION',
+    canonical_text_id: 'text:duplicate-within',
+    absolute_start: 0,
+    absolute_end: utf8ByteLength(sourceText),
+  };
+  const output = resolveIocMechanics({
+    open_world: [mechanicItem({
+      quote: target,
+      attachmentScope: 'RESTRICTION_LIMB',
+      targetQuote: target,
+      closureId: 'contained:duplicate-within',
+    })],
+    resolved: [resolvedRestriction({
+      sectionReference: '5.1',
+      componentId: component.provision_component_id,
+      provisionId: component.parent_provision_instance_id,
+    })],
+    ioc_restriction_components: [component],
+    resolved_sections: [{ section_reference: '5.1', start: 0, end: utf8ByteLength(sourceText) }],
+    admitted_source_context: { canonical_text: { text: sourceText } },
+  });
+
+  const attachment = output.open_world[0].attributes.structured_mechanic.attachment;
+  assert.equal(attachment.state, 'REVIEW_REQUIRED');
+  assert.equal(attachment.reason, 'IOC_ATTACHMENT_TARGET_MULTIPLE_MATCHES');
+  assert.equal(attachment.target, null);
 });
 
 test('real Modiv 5.1 parent and limb whitespace variants locate the original UTF-8 spans', () => {

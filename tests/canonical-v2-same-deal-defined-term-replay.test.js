@@ -23,7 +23,30 @@ test('Stage 2Y-D replay records definition outcomes and candidate integration di
   assert.deepEqual(replay.counts_by_definition_outcome, { NO_DEFINITION: 21, RESOLVED: 70 });
   assert.deepEqual(replay.counts_by_integration_disposition, { RESOLVED: 80, REVIEW: 11 });
   assert.deepEqual(replay.counts_by_integration_reason, { NONE: 80, REPRESENTATION_KNOWLEDGE_STANDARD_CONFLICT: 11 });
+  assert.deepEqual(replay.counts_by_resolver_replay_disposition, { RESOLVED: 80, REVIEW: 11 });
+  assert.equal(replay.definition_evidence_gap_report.false_no_definition_count, 18);
+  assert.deepEqual(replay.definition_evidence_gap_report.false_no_definition_by_deal, { skywater: 13, topbuild: 5 });
+  assert.match(replay.definition_evidence_gap_report.source_proof_by_deal.skywater.quote,
+    /with respect to Parent, the actual knowledge/);
+  assert.match(replay.definition_evidence_gap_report.source_proof_by_deal.topbuild.quote,
+    /with respect to Parent shall mean the actual knowledge[\s\S]*after due inquiry/);
+  for (const proof of Object.values(replay.definition_evidence_gap_report.source_proof_by_deal)) {
+    assert.match(proof.exact_bytes_digest, /^[0-9a-f]{64}$/);
+    assert.ok(proof.document_byte_span.end > proof.document_byte_span.start);
+  }
+  assert.deepEqual(replay.definition_evidence_gap_report.expected_after_evidence_repair, {
+    counts_by_definition_outcome: { NO_DEFINITION: 3, RESOLVED: 88 },
+    counts_by_resolver_disposition: { RESOLVED: 75, REVIEW: 16 },
+  });
+  assert.equal(replay.true_fallbacks.length, 3);
+  assert.ok(replay.true_fallbacks.every((row) => row.deal === 'skechers' && row.representation_side === 'BUYER'));
   assert.equal(replay.topbuild_buyer_no_definition_count, 5);
+
+  for (const row of replay.ledger_rows) {
+    assert.equal(row.resolver_replay.disposition, row.integration_disposition);
+    assert.equal(row.resolver_replay.reason, row.integration_reason);
+    assert.equal(row.resolver_replay.model_calls, 0);
+  }
 
   const skechersConflicts = replay.ledger_rows.filter((row) => row.deal === 'skechers'
     && row.definition_outcome === 'RESOLVED'

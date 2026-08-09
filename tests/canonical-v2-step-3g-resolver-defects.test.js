@@ -240,6 +240,29 @@ test('HOSTILE: NOTIFY+LITNOTIFY dual-coding remaps to COV-LITNOTIFY (specificity
   );
 });
 
+test('HOSTILE: an asserted general-covenant code that misses while two other codes match keeps the ambiguity reason', () => {
+  const dir = path.join(EVIDENCE_ROOT, 'modiv-general-covenants-20260807-replay');
+  const runReceipt = JSON.parse(fs.readFileSync(path.join(dir, 'run-receipt.json'), 'utf8'));
+  const adapter = JSON.parse(fs.readFileSync(path.join(dir, 'adapter-result.json'), 'utf8'));
+  const admittedSourceContext = adapter.admitted_source_contexts[0];
+  const original = runReceipt.compiled_candidates.find((entry) => (
+    entry.candidate?.claim?.attributes?.covenant_code === 'COV-NOTIFY'
+  ));
+  assert.ok(original);
+
+  const forged = structuredClone(original);
+  forged.candidate.claim.raw_value = 'The Company shall give Parent reasonable access and issue a press release.';
+  const result = resolveCandidates({
+    run_receipt: { ...runReceipt, compiled_candidates: [forged] },
+    contract_vocabulary: compileFixtureContractV38(),
+    admitted_source_context: admittedSourceContext,
+  });
+
+  assert.equal(result.resolved.length, 0);
+  assert.equal(result.open_world.length, 1);
+  assert.equal(result.open_world[0].reason, 'AMBIGUOUS_GENERAL_COVENANT_CODE');
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Defect 3: Representations ACCURACY REVIEW-routing.
 // Before this fix: 28 open world (10 REPRESENTATION_QUALIFIER_KIND_NOT_EXACT,
