@@ -4,7 +4,16 @@ Read-only audit. For each DONE/CRITERION row: asset export surface, what canonic
 actually `require`s from it (grep-verified), verdict (TRUE CLOSE / FALSE CLOSE /
 UNVERIFIABLE), and — for FALSE CLOSE — which held reason code the unused part bears on.
 
-Status: IN PROGRESS. Appending as each row is checked.
+Status: COMPLETE.
+
+Summary tally (DONE + CRITERION rows in the disposition table):
+- TRUE CLOSE: 20
+- FALSE CLOSE: 4 (one already known: canonical-conditions.js)
+- UNVERIFIABLE: 2 (rows that are pure measurements, not re-checkable by grep alone)
+
+Two supplementary items outside the strict DONE/CRITERION scope were checked
+because the brief named them explicitly ("particular care" list): they are
+PLAN rows, reported for completeness, not counted in the tally above.
 
 ## Method
 - `grep -rn "require.*<module>"` across lib/, scripts/, pages/, api/ to find real
