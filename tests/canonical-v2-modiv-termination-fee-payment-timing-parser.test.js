@@ -14,6 +14,7 @@ const test = require('node:test');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
+const { resolveModivConditionalFees } = require('../lib/canonical-v2/native-producer/modiv-termination-fee-source-parser');
 const {
   buildTerminationFeePaymentTiming,
   parseModivPaymentTimings,
@@ -47,10 +48,32 @@ function trigger(branch, feeSide) {
   };
 }
 
+function companyBaseAmountCrossReference(rawValue, {
+  citation = '8.12(f)', feeSide = 'SELLER', sectionReference = '8.12',
+} = {}) {
+  return {
+    ok: true,
+    section_reference: sectionReference,
+    citation_validation: { accepted: true, derived_citation: citation },
+    candidate: {
+      kind: 'claim',
+      claim: {
+        claim_definition_key: 'NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE',
+        raw_value: rawValue,
+        attributes: { fee_side: feeSide },
+      },
+    },
+  };
+}
+
 const ALL_SIX = [
   trigger('7.3(b)(i)', 'SELLER'), trigger('7.3(b)(ii)', 'SELLER'), trigger('7.3(b)(iii)', 'SELLER'),
   trigger('7.3(b)(iv)', 'SELLER'), trigger('7.3(b)(v)', 'SELLER'), trigger('7.3(c)', 'BUYER'),
 ];
+
+const R1_V2_SHAPE_WITHOUT_DIRECT_BIII = ALL_SIX.filter(
+  (entry) => entry.citation_validation.derived_citation !== '7.3(b)(iii)',
+);
 
 test('buildTerminationFeePaymentTiming: valid input freezes and content-addresses; every required field is enforced', () => {
   const row = buildTerminationFeePaymentTiming({
@@ -155,6 +178,58 @@ test('requires every retained trigger branch and its supported side, hostile: a 
   assert.throws(
     () => resolveModivPaymentTimings({ source_text: text, fee_trigger_candidates: [] }),
     /BRANCH_UNSUPPORTED/,
+  );
+});
+
+test('the R1-v2 shape recovers both Modiv sidecars through one exact Company Base Amount branch gate', () => {
+  const candidates = [
+    ...R1_V2_SHAPE_WITHOUT_DIRECT_BIII,
+    companyBaseAmountCrossReference('Section 7.3(b)(iii)'),
+  ];
+  assert.equal(resolveModivConditionalFees({ source_text: text, fee_trigger_candidates: candidates }).length, 6);
+  assert.equal(resolveModivPaymentTimings({ source_text: text, fee_trigger_candidates: candidates }).length, 6);
+});
+
+test('payment timing refuses malformed or unproved Company Base Amount supplementation', () => {
+  const resolves = (reference) => resolveModivPaymentTimings({
+    source_text: text,
+    fee_trigger_candidates: reference
+      ? [...R1_V2_SHAPE_WITHOUT_DIRECT_BIII, reference]
+      : R1_V2_SHAPE_WITHOUT_DIRECT_BIII,
+  });
+  assert.throws(() => resolves(null), /BRANCH_UNSUPPORTED/);
+  assert.throws(
+    () => resolves(companyBaseAmountCrossReference('Section 7.3(b)(iii)', { citation: '8.12(g)' })),
+    /BRANCH_UNSUPPORTED/,
+  );
+  assert.throws(
+    () => resolves(companyBaseAmountCrossReference('Section 7.3(b)(iii)', { feeSide: 'BUYER' })),
+    /BRANCH_UNSUPPORTED/,
+  );
+  assert.throws(
+    () => resolves(companyBaseAmountCrossReference('Section 7.3(b)(vi)')),
+    /BRANCH_UNSUPPORTED/,
+  );
+  assert.throws(
+    () => resolveModivPaymentTimings({
+      source_text: text,
+      fee_trigger_candidates: [...R1_V2_SHAPE_WITHOUT_DIRECT_BIII, trigger('7.3(b)(iii)', 'BUYER')],
+    }),
+    /SIDE_MISMATCH/,
+  );
+});
+
+test('payment timing refuses a definition supplement when the exact Company Base Amount source formula is absent', () => {
+  const withoutCompanyBaseAmount = text.replace('“Company Base Amount” means', '“Changed Base Amount” means');
+  assert.throws(
+    () => resolveModivPaymentTimings({
+      source_text: withoutCompanyBaseAmount,
+      fee_trigger_candidates: [
+        ...R1_V2_SHAPE_WITHOUT_DIRECT_BIII,
+        companyBaseAmountCrossReference('Section 7.3(b)(iii)'),
+      ],
+    }),
+    /MODIV_FEE_DEFINITION_MISSING_OR_AMBIGUOUS/,
   );
 });
 
