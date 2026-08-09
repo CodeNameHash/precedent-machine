@@ -1,0 +1,568 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "f76e2064616a068b01a6829bae682c81d516a23eca6c22158cb36221a1293c1e",
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "CONSULTATION_RIGHT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each shall consider in good faith all reasonable comments suggested by the other party or its counsel in connection therewith.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "87e0956933170e68389ded6c18a0d5c0112d1b23b807736fc701b32b551156bb",
+      "closure_id": "03ecd3ce7f88b38656517bfca360820db0f9f5ef39bd3c318b4c0392484e2f53",
+      "normalised_phrase": "each shall consider in good faith all reasonable comments suggested by the other party or its counsel in connection therewith.",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_COOPERATION_OBLIGATION",
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "80f723484f3c4e4b2c8be2ba574f573cc4edc24a96d7f0e9edd895136c5b6a89",
+      "closure_id": "04f09e82fea15a0b69d8c90b31408ed0f9ca3b9bdf95cf9a034447198f296084",
+      "normalised_phrase": "the Company and Parent shall each cooperate with the other",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "FILING_OBLIGATION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3ccd1ef39ca63d2bcaf3ece99652f99b27428afac952b7069d9bed91c9d2126d",
+      "closure_id": "2e8dc383d3ed3ee85c46538bea9a85f61cd347a519fbfe15a14e2d4629d8e2a4",
+      "normalised_phrase": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "27ca103be9f8e8c593fb775bac5572f837aaccdeb9ed707c9d003632308830eb",
+      "closure_id": "2eb4dcacdad8db8d67e633778a1ef9821546a733de34270dca78d9ba91aef4ce",
+      "normalised_phrase": "Parent and the Company shall, as applicable: (i) each use its reasonable best efforts to avoid the entry of, or to have vacated or terminated, any judgment, injunction, order or decree that would prohibit, enjoin, restrain, prevent or delay the Closing, on or before the End Date or the Extended End Date, as applicable",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 12,
+          "end": 35,
+          "excerpt": "Section 7.1 Reasonable Best Efforts.\n(a) Subject to Section 5.2 and Section 7.1(b), the Company and Parent shall ea",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 23,
+          "end": 35,
+          "excerpt": "Section 7.1 Reasonable Best Efforts.\n(a) Subject to Section 5.2 and Section 7.1(b), the Company and Parent shall ea",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 4572,
+          "end": 4595,
+          "excerpt": "vernmental Authority with respect to the Mergers, then such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 4583,
+          "end": 4595,
+          "excerpt": "Authority with respect to the Mergers, then such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 6225,
+          "end": 6248,
+          "excerpt": "ng appeal) any claim asserted in any court by any Person; and (ii) each use its reasonable best efforts to avoid or eliminate each and every impediment that may arise or be asserted u",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 6236,
+          "end": 6248,
+          "excerpt": "any claim asserted in any court by any Person; and (ii) each use its reasonable best efforts to avoid or eliminate each and every impediment that may arise or be asserted u",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_LITIGATION_OBLIGATION",
+      "concept_key": "ANTI-LITIGATION",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d0ca9cf5c89e1b69cca5b6d3d88d556651e1b2c0841a06e55b9a0908f2221574",
+      "closure_id": "3220e7de1977205f02ad1f332cbb72ebd62a69a4c658a02505521cde635fe9a9",
+      "normalised_phrase": "Parent and the Company shall, as applicable: (i) each use its reasonable best efforts to avoid the entry of, or to have vacated or terminated, any judgment, injunction, order or decree that would prohibit, enjoin, restrain, prevent or delay the Closing, on or before the End Date or the Extended End Date, as applicable, including without limitation defending through litigation on the merits (including appeal) any claim asserted in any court by any Person",
+      "attachment_position": null,
+      "concept_family": "ANTI-LITIGATION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-INFO",
+      "reasons": [
+        "INFORMATION_PROTECTION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company and Parent shall each furnish to each other copies of all material substantive correspondence, filings (other than the notifications required under the HSR Act) and written communications between it and any such Governmental Authority with respect to this Agreement and the Mergers, and furnish the other party with such necessary information and reasonable assistance as the other party may reasonably request in connection with its preparation of filings or submissions of information to any such Governmental Authority; provided, that materials provided pursuant to this Section 7.1(a) may be redacted (x) to remove references concerning the valuation of the Company, (y) as necessary to comply with applicable law or contractual obligations and (z) as necessary to address reasonable privilege or confidentiality concerns.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a1d3f3cb82dde2256b4f608c1af29989a9d6fde2014f30f72bf4fea849be1686",
+      "closure_id": "3b7f1e98c89a9eb690f91a8149ebd8f5e0f52840c346c774794e95e5501137cf",
+      "normalised_phrase": "the Company and Parent shall each furnish to each other copies of all material substantive correspondence, filings (other than the notifications required under the HSR Act) and written communications between it and any such Governmental Authority with respect to this Agreement and the Mergers, and furnish the other party with such necessary information and reasonable assistance as the other party may reasonably request in connection with its preparation of filings or submissions of information to any such Governmental Authority; provided, that materials provided pursuant to this Section 7.1(a) may be redacted (x) to remove references concerning the valuation of the Company, (y) as necessary to comply with applicable law or contractual obligations and (z) as necessary to address reasonable privilege or confidentiality concerns.",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_WITHDRAWAL_REFILING_RESTRICTION",
+      "concept_key": "ANTI-AGREEMENTS",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "12f92a759b018c284b1a9be329007f09fb4818ad583deba0e3ca14352ee3e785",
+      "closure_id": "3dd0f151852107bd72cfd656f8b9e260cb4a8ecf13e94fa7263068ea1281e24b",
+      "normalised_phrase": "No party shall agree to “pull-and-refile” any filing made under the HSR Act or otherwise consent or agree to any timing agreement, extension or tolling of any waiting period or any other voluntary delay of the Merger or transactions contemplated hereby without the prior written consent of the other parties, which consent shall not be unreasonably withheld.",
+      "attachment_position": null,
+      "concept_family": "ANTI-AGREEMENTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+      "concept_key": "ANTI-AGREEMENTS",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4179efe60cfb5d14ee5a4831cce13cf41a3a460a1e48d54ea4e34a53d91f8f59",
+      "closure_id": "3eeb3fe1b7781ab59e7a043ae68cc63473c758afd629da535d87b8ef165d1b6d",
+      "normalised_phrase": "No party shall agree to “pull-and-refile” any filing made under the HSR Act or otherwise consent or agree to any timing agreement, extension or tolling of any waiting period or any other voluntary delay of the Merger or transactions contemplated hereby without the prior written consent of the other parties, which consent shall not be unreasonably withheld.",
+      "attachment_position": null,
+      "concept_family": "ANTI-AGREEMENTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9b7138c8d39e62c4fa8e158fc36065fefdbd2c3e5e97cca1b93897503027c073",
+      "closure_id": "47646b7599cf357bb37bb0147a0e7eee7d5644cab1296ba4841158c44c5163ef",
+      "normalised_phrase": "the Company and Parent shall each cooperate with the other and use (and shall cause their respective Subsidiaries and affiliates to use) their respective reasonable best efforts to promptly (i) take or cause to be taken all actions, and do or cause to be done all things, necessary, proper or advisable under this Agreement and applicable laws to consummate and make effective the Mergers and the other Transactions as soon as practicable",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 12,
+          "end": 35,
+          "excerpt": "Section 7.1 Reasonable Best Efforts.\n(a) Subject to Section 5.2 and Section 7.1(b), the Company and Parent shall ea",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 23,
+          "end": 35,
+          "excerpt": "Section 7.1 Reasonable Best Efforts.\n(a) Subject to Section 5.2 and Section 7.1(b), the Company and Parent shall ea",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 4572,
+          "end": 4595,
+          "excerpt": "vernmental Authority with respect to the Mergers, then such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 4583,
+          "end": 4595,
+          "excerpt": "Authority with respect to the Mergers, then such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 6225,
+          "end": 6248,
+          "excerpt": "ng appeal) any claim asserted in any court by any Person; and (ii) each use its reasonable best efforts to avoid or eliminate each and every impediment that may arise or be asserted u",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 6236,
+          "end": 6248,
+          "excerpt": "any claim asserted in any court by any Person; and (ii) each use its reasonable best efforts to avoid or eliminate each and every impediment that may arise or be asserted u",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other party, an appropriate response in substantial compliance with such request.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b34905d6b6edfb114a2352b51e9b40377026a243490f9a733735ccde3444a7e9",
+      "closure_id": "4d06d4a3e72b406bd035b266a1fef148b51f6bc0b6c1102853b67608aeec9d5d",
+      "normalised_phrase": "such party shall use its reasonable best efforts to make, or cause to be made, promptly and after consultation with the other party, an appropriate response in substantial compliance with such request.",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "10d2ae15bdc8f8ffc32bbdb6584e7ee0ec57f0a1c4169df4f3be0bf2c745d1c9",
+      "closure_id": "5925f8e864dbc6fe0d2919159aec3a336cad3880833a564522fbbeb5377f9a15",
+      "normalised_phrase": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 2252,
+          "end": 2259,
+          "excerpt": "ers and the other Transactions (other than the notifications required under the HSR Act), and each shall consider in good faith all reasonable comments suggested by th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 4048,
+          "end": 4055,
+          "excerpt": "icable. No party shall agree to “pull-and-refile” any filing made under the HSR Act or otherwise consent or agree to any timing agreement, extension or tolling of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5032,
+          "end": 5039,
+          "excerpt": "antive correspondence, filings (other than the notifications required under the HSR Act) and written communications between it and any such Governmental Authority with",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-NOACTION",
+      "reasons": [
+        "NON_IMPEDIMENT_COVENANT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and the Company shall, as applicable: (i) each use its reasonable best efforts to avoid the entry of, or to have vacated or terminated, any judgment, injunction, order or decree that would prohibit, enjoin, restrain, prevent or delay the Closing, on or before the End Date or the Extended End Date, as applicable",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a0c19a95db8d2372001b90132639a77937a06ac999bf4a389e529647c62637d1",
+      "closure_id": "5adc91bd3985c00792a5b254042c3a97cb3437cc37abc965b77cd81e1405c5e4",
+      "normalised_phrase": "Parent and the Company shall, as applicable: (i) each use its reasonable best efforts to avoid the entry of, or to have vacated or terminated, any judgment, injunction, order or decree that would prohibit, enjoin, restrain, prevent or delay the Closing, on or before the End Date or the Extended End Date, as applicable",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOACTION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_NOTIFICATION_OBLIGATION",
+      "concept_key": "ANTI-NOTIFY",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "87cdd90fde2ed4573919942b964acce6f1de136ad080b206ffd8379a1f82e039",
+      "closure_id": "704db372692779283c303e750dedcc19365a3178da212a485a72bab0b75731e4",
+      "normalised_phrase": "The Company and Parent shall each promptly inform the other party, and if in writing, furnish the other party with copies (or, in the case of oral communications, advise the other party), of any material substantive communication received from any Governmental Authority regarding the Mergers",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "CONSULTATION_RIGHT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company and Parent shall have the right to review in advance, and each shall consult the other to provide any necessary information with respect to all filings made with, or written materials submitted to, any third party and/or any Governmental Authority in connection with the Mergers and the other Transactions (other than the notifications required under the HSR Act)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f48b5163668f8166e4e1e4544b8db83b36976081a4de91cd9bd4b8a47471b70d",
+      "closure_id": "719e1d76a0a01e623fe8b0ce027b9e15739bcb30893047ce843f81d3be0f6848",
+      "normalised_phrase": "The Company and Parent shall have the right to review in advance, and each shall consult the other to provide any necessary information with respect to all filings made with, or written materials submitted to, any third party and/or any Governmental Authority in connection with the Mergers and the other Transactions (other than the notifications required under the HSR Act)",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-BURDEN",
+      "reasons": [
+        "BURDEN_COMMITMENT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and, if requested by Parent, the Company shall agree to any such Divestiture Remedies or Behavioral Remedies;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "26283b3b2d92360f97ab0c1516d201106ab2c4b513d34b3aeec46a7e87756a70",
+      "closure_id": "89de84f3f5798b384b931686ec7cf865ebf6a12bedfce87b597a91f230409c0b",
+      "normalised_phrase": "Parent and, if requested by Parent, the Company shall agree to any such Divestiture Remedies or Behavioral Remedies;",
+      "attachment_position": null,
+      "concept_family": "ANTI-BURDEN",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-BURDEN",
+      "reasons": [
+        "BURDEN_COMMITMENT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and, if requested by Parent, the Company shall agree to any such Divestiture Remedies or Behavioral Remedies;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a963c8d35ae04d3c9fcf0b7006ab7cd85e4181dbe0b7513008efc0eb0ba33a99",
+      "closure_id": "a62e73e365af0e7d724684202ff60d48bcd7c06f7368fc81c43e5597eeb55451",
+      "normalised_phrase": "Parent and, if requested by Parent, the Company shall agree to any such Divestiture Remedies or Behavioral Remedies;",
+      "attachment_position": null,
+      "concept_family": "ANTI-BURDEN",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+      "concept_key": "ANTI-INFO",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0832c3d072faf263746936f39e2a4624237fdec6e2e4b77893d256e521a2357d",
+      "closure_id": "ba1f546cc4be45eab96b473bd03c6e12e76871175975f9170d3bfc60777911c5",
+      "normalised_phrase": "The Company and Parent shall each promptly inform the other party, and if in writing, furnish the other party with copies (or, in the case of oral communications, advise the other party), of any material substantive communication received from any Governmental Authority regarding the Mergers",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "bc615abf5f516dd86df16d19b86c8e8ddfce0f0e07b14c1a9c7c15e2ac88912b"
+}

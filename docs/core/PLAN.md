@@ -1385,15 +1385,15 @@ only when something it depends on changed since its last green receipt: code,
 unchanged-input re-run against a live model is sampling noise, not a regression
 check. **The runner change this needed is done** (2026-08-07). The manifest now
 carries `code_provenance` (commit plus whether the working tree was clean, so
-a dirty-tree run cannot be mistaken for one the commit describes) and
-`resolved_models` (what the CLI reported actually serving each call, not the
-alias the operator typed — a model swap behind an unchanged alias would
-otherwise trigger no re-run at all).
-
-One correction to an earlier draft of this step: it said the only model field
-was a CLI alias. That was true of `run-manifest.json` and **false of
-`call-telemetry.json`**, which has recorded `served_model` per call all along.
-The manifest was the gap, not the runner.
+a dirty-tree run cannot be mistaken for one the commit describes),
+`requested_models`, and `resolved_models`. The Codex JSONL contract reports
+the requested model in the command but does not report the model actually
+served. Therefore Codex calls record `requested_model_id` explicitly,
+`served_model: null`, and `served_model_status: NOT_REPORTED_BY_CODEX_JSONL`.
+`resolved_models` stays empty unless a future transport event supplies actual
+served-model evidence. A model swap behind an unchanged request cannot be
+detected today. The manifest must state that limitation rather than relabel a
+requested model as an observed one.
 
 **What is still undecided:** what counts as a family run's code footprint —
 which paths, changing, should invalidate it. That is a judgement call, and
@@ -1996,7 +1996,9 @@ Five V1 vocabulary assets were consumed by the staged fixes
 (`party-role-aliases.js`, `TERMF_TRIGGER_META`, `ioc-categories.js`,
 `ioc-components.js`, `MATERIALITY_CODES`). The rest of `taxonomy.js` — 54
 vocabularies, 429 codes — `MAE_CARVEOUT_META`, and the 551 feature definitions
-in `lib/schema/features.js` are not consumed. Step 2X-B and 2X-K address that.
+in `lib/schema/features.js` were accounted for by the completed 2X-J
+disposition inventory. Step 2X-B is report-only and does not consume them;
+2X-K re-validates the existing surfaces.
 
 ### The standing rule this step establishes
 
@@ -2103,389 +2105,28 @@ before touching this branch.
 
 ## Step 2X-A. One structure service, and point it at every family
 
-**What it is.** There are **six** mechanisms in the tree that answer some
-version of "what governs this span": the termination limb finder in
-`candidate-resolution.js`, `findIocChapeau`, `qualifier-attachment.js`,
-`limb-components.js`, `segmentSubClauses`, and
-`deterministic-sectionizer.js`'s `buildMarkerTree` — the sixth found only after
-the comparison had been made. None is aware of the others.
+**MOVED TO COMPLETED.md (2026-08-08).** The replay-validated service,
+placement pass and termination structural adapter are complete. See the closure
+record for the six-mechanism comparison, pinned fixtures and 19/19 parity.
 
-**Why.** Each family's inheritance is currently fixed separately and drifts
-separately. But convergence is a hypothesis, not a conclusion — some of the
-five may differ for good reasons, and collapsing them would then lose
-behaviour.
-
-**DECIDED 2026-08-08 by Fable, and re-confirmed after the sixth mechanism was
-found: converge two of the SIX, not all of them.** Build
-the service; adapt `findTerminationLimbGrantContext`'s structural half and the
-limb pre-pass onto it; keep `findIocChapeau`, `qualifier-attachment.js` and
-`limb-components.js` separate.
-
-The deciding facts. Only two of the six discover structure from text *and*
-answer the governing-span question — `deterministic-sectionizer.js` discovers
-structure but is the section INVENTORY and the service's second input, not a
-candidate for the base (see above) —
-`qualifier-attachment.js` takes no span and answers scope-of-wording, and
-`limb-components.js` consumes model-declared paths including descriptive
-headings a segmenter can never produce. And there is a concrete input where the
-proposed base mechanism is **wrong** and a supposedly redundant one is right: on
-a section carrying two "shall not" lists, `segmentSubClauses` mis-nests the
-second `(a)` under `(b)` via the colon rule landed today, while `findIocChapeau`
-— anchored on a lexical verb pattern at no outline position — is correct. The
-service is therefore not a superset of `findIocChapeau`, and collapsing it would
-lose behaviour silently.
-
-**Contract.** `resolveGoverningStructure({ sectionText, startByte, endByte })`
-returns either a RESOLVED leaf plus its chapeau chain, in UTF-8 bytes, or a
-typed UNDETERMINED. Never a guess. The termination adapter keeps its own
-direction grammar and capacity comparison; only the structural half moves.
-
-**Change.** First, a written comparison: for each of the five, its real input,
-its real output, and the specific question it answers. Then either a single
-structure-context service over `segmentSubClauses` answering "given a section
-and a span, return its governing chapeau chain", with the other four as
-adapters — or a written statement of which must stay separate and why. Both
-outcomes are acceptable. Silently building the service without the comparison
-is not.
-
-Segmentation runs in string indices (UTF-16). The V2 pipeline slices by UTF-8
-bytes. Convert at the boundary using `lib/canonical-v2/canonical-bytes.js`
-(`utf8ByteLength`, `utf8Slice`). Do **not** port `subclauses.js` to bytes: it
-has 8 passing tests and live V1 callers in `span-claims.js`,
-`span-residual.js`, `consideration-equity.js` and `bring-down-tiers.js`.
-
-**BROADENED 2026-08-08, on Ben's question, after Fable measured it.** The
-first decision scoped the service to the families that already declare limbs.
-Ben asked why a *deterministic* mechanism was not simply pointed at all of them.
-Fable's answer: broadening had **not been considered** — the scope was inherited
-from how the question was posed, not decided on evidence. There was no rejection
-to defend, and on measurement the answer is to broaden.
-
-**The survey that motivates it.** Only 2 of 25 prompts declare a `limbs` array
-(capitalisation, representations); 3 reference `limb_path` (those plus
-mae-definition, which can cite a path but not declare a tree). IOC is a separate
-mechanism — `ioc_restriction_assertions` producing `ioc_restriction_components`,
-105 across six runs, and the only structural output landing anywhere today. The
-remaining **22 families have no sub-clause representation at all**: flat
-assertion lists, one assertion per row, no parent. Two carry narrow
-domain-specific nesting only (termination-fee `carve_outs`, capitalisation
-`tiers`). Those 22 include every family in the 13–26% band.
-
-**Why broadening is safe, and this is the distinction that makes it so.** The
-limb families use model-declared trees to mint **claim identity** — new
-subjects, content-derived ids. Placing an existing flat assertion into a
-text-derived tree adds only **inheritance context** to a claim whose identity
-already exists. It is additive, reversible, and cannot re-mint or regress
-anything. **The derived tree annotates for flat families and never mints for
-them**; identity stays with model-declared limbs (2X-L, 2X-I).
-
-**Reliability, measured rather than assumed — and the measurement is narrower
-than it sounds.** It counts SIGNATURE-CLEANLINESS, not correctness: the
-detector only sees same-style parent-child links, so a mis-nest that happens to
-change style, and a phantom marker recognised where none exists, are both
-uncounted. Do not quote 98.9% as a correctness figure. A human spot-audit of
-roughly 30 UNFLAGGED sections is what would turn it into one, and it is an
-acceptance criterion of this step. `segmentSubClauses` was run over
-every resolved section of all 213 evidence runs across all seven deals: 538
-unique sections, 171 of them markerless and trivially safe, 367 carrying 2,360
-markers. The mis-nest signature appears in **45 markers across 6 sections —
-1.1%** (concho Annex-A, modiv 8.12 and 8.3, redhat 3.01, skywater 3.21,
-topbuild 2.1).
-
-**The failure is detectable, which is what converts it from silent to visible.**
-The signature is a **same-style parent-child link** in the segmenter's own
-output paths — a second colon-introduced list's `(a)` landing as `b.a` under the
-first list's `(b)`. Real legal outlining always changes style when it nests
-(`(a)` → `(i)` → `(A)`), so same-style nesting is structurally impossible and
-two lines of code catch it. Verified independently by reproducing the shape.
-
-Note the loop this closes: the two-"shall not"-list section that decided
-`findIocChapeau` must stay separate **is** the same-style signature. The
-broadened service refuses precisely where it was shown to be wrong, and
-`findIocChapeau` still covers that case.
-
-**A SIXTH mechanism, found 2026-08-08 after the five-way comparison, on Ben's
-question.** `lib/canonical-v2/native-producer/deterministic-sectionizer.js`
-already builds a whole-document section tree with exact UTF-8 byte offsets, no
-model calls, and it is **on the live extraction path** — required by
-`native-extraction-run.js` and by `scripts/canonical-v2-live-extraction-run.mjs`.
-It replaced the hand-typed `{start,end}` intervals that used to live in
-per-deal `reviewed-*-slice.js` files.
-
-It also contains its own sub-clause detector. Its header is explicit that
-`structural.js` exports no sub-item tree builder, so `buildMarkerTree` is new
-code written for that module. Fable's five-way comparison did not include it,
-because the brief did not know it existed.
-
-**The two sub-clause detectors make opposite trade-offs, and that is the
-useful part.**
-
-| | `deterministic-sectionizer` `buildMarkerTree` | `segmentSubClauses` |
-|---|---|---|
-| marker pattern | `/(?:^\|\n)[ \t]*\(([A-Za-z]{1,9}\|[0-9]{1,3})\)/g` — **line-start anchored** | eligibility-tested, **not** line-anchored |
-| label width | up to 9 characters | up to 3 |
-| inline enumerations | **misses them** | **catches them** (QXO inline `(A)`–`(D)`, Concho colon lists) |
-| inline references | **immune** — its header says the line-start anchor alone screens out "the items referred to in clauses (B) and (C)" | **vulnerable** — the colon back-reference and the forward-reference holes both live here |
-| scope | whole document | per section |
-| offsets | UTF-8 bytes | UTF-16 string indices |
-
-Neither is better. **They are complementary on marker RECALL, not on tree
-SHAPE** — a correction Fable made from the code after this table was first
-written. An unmatched candidate in `buildMarkerTree` opens a new child under
-the deepest open frame, so a restarting `(a)` mis-nests there exactly as it does
-in `segmentSubClauses`. **Agreement between the two detectors therefore does NOT
-confirm parentage**, and the same-style refusal stays mandatory regardless of
-what they agree on.
-
-On recall they genuinely differ, and there the disagreement is a signal:
-
-- **Both find a marker** → high confidence.
-- **Line-anchored only** → not merely "safe to annotate": the sectionizer's
-  label width is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and
-  long doubled-letter overflow are markers `segmentSubClauses` **structurally
-  cannot see**. These must be UNIONED IN, not just noted as agreed-absent.
-- **`segmentSubClauses` only** → an inline enumeration. This is exactly the set
-  that is either a genuine inline list (which is why the permissive rule
-  exists) **or** a cross-reference, back-reference or forward-reference. It is
-  the risky zone, and it is now identifiable rather than diffuse.
-
-That last row is the answer to the reference problem without new machinery: a
-marker seen only by the permissive detector requires corroboration, where a
-line-anchored marker does not. Two mechanisms we already own, used against each
-other.
-
-**One caveat on the line-anchor immunity.** It assumes structural line breaks,
-which holds for HTML-derived `cleanText` and therefore for all seven corpus
-deals. It is void for a hard-wrapped plain-text filing, where the anchor would
-fire mid-sentence. Test before relying on it outside the current corpus.
-
-**The corroboration tiers.** Marker existence gets one of three tiers, from
-the two detectors:
-
-- **CORROBORATED** — both find a marker at the same start. Highest confidence.
-- **LINE_ANCHORED_ONLY** — the sectionizer only. Union these in: its label width
-  is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and doubled-letter
-  overflow are markers `segmentSubClauses` cannot see at all.
-- **PERMISSIVE_ONLY** — `segmentSubClauses` only. The risky set: either a
-  genuine inline enumeration, which is why the permissive rule exists, or a
-  reference. **Annotation is allowed with the tier recorded; identity and
-  absence assertions are not, without corroboration.**
-
-Both of Ben's reference hazards land handled by this. The colon back-reference
-is PERMISSIVE_ONLY and sequence-breaking. The forward reference produces a
-*same-expected-label, two-starts disagreement* — an inline `(D)` and a
-line-anchored `(D)` — and **the line-anchored start wins**, which is what stops
-the real limb being swallowed.
-
-**What corroboration does NOT fix: parentage.** Tiers are about whether a marker
-exists, not about which parent it hangs from. Both detectors mis-nest a
-restarting `(a)`, so the same-style refusal remains mandatory on top of the
-tiers.
-
-**Scope: ALL sections, not only extracted ones. Decided 2026-08-08 by Ben.**
-The placement pass as first drafted covered every section that produced claims
-— which is the part we already looked at. That can answer "this section has a
-limb with no claim against it" but **not** "there is a section nobody extracted
-from at all". Since the whole argument for structure is that only structure
-answers absence, restricting it to extracted sections defeats half its purpose.
-The sectionizer already enumerates every section in the document with byte
-offsets whether or not extraction touched it, so document-level absence is a
-join between two things that both exist, not new machinery.
-
-**Identity: decided 2026-08-08, after Fable tested the alternatives.** The pass
-is annotation only, and that is not a permanent answer — see
-`docs/codex-program/notes/derived-structure-identity.md`. Annotation can answer
-any question about what we extracted; only identity can answer questions about
-what we did not, and absence is a large share of what the product is asked. So
-derived limbs will need identity eventually. They must not get it yet:
-
-- **Excerpts are not the answer**, and this was checked against the code rather
-  than assumed. `excerpt_id` content-addresses over the text hash plus a
-  `semantic_span_id` that hashes `{canonical_text_id, absolute_start,
-  absolute_end}`, so excerpt identity moves whenever the END moves — re-minting
-  under the MAX_DEPTH change exactly as components would. Excerpts also carry no
-  parent and no position, so the absence question cannot be asked of them
-  without a mapping that is the identity problem renamed. Excerpts are the right
-  way to hold a limb's extent as evidence; the wrong thing to BE the limb.
-- **When it comes, identity is `{canonical_text_id, marker_start_byte}`.** A
-  limb's beginning is a fact about the document; its extent, depth, path and
-  parentage are facts about our algorithm and must all stay out of the identity
-  payload — parentage especially, since the six mis-nesting sections are
-  re-parenting fixes waiting to happen. `ordinal` is dropped rather than
-  stabilised: start byte already totally orders limbs. This needs a new schema,
-  not a bent `PROVISION_COMPONENT/V1`, whose payload hard-codes parent id, both
-  offsets and ordinal.
-- **The stability criterion is concrete.** Re-run the corpus survey after the
-  depth and `(x)/(y)/(z)` changes land; zero start moves across all 2,360
-  markers. Until then, derived facts stay out of every `contentId` payload and
-  every derived output carries the segmenter version.
-- **The phantom-limb risk survives any scheme** and lands precisely on absence
-  answers. A derived absence must carry its derivation provenance and must never
-  render as ground truth.
-
-**Change, broadened.** A corpus-wide placement pass: every family's assertions
-gain a `structure_context` — the governing chapeau chain, by containment on
-their existing byte spans. Replay-validated, so it costs no model calls.
-Fail closed on span-crossing quotes, on same-style chains, and on markerless
-sections (which get section context only). Sits in the free replay phase
-immediately after 2X-L.
-
-**The three ways more structure can hurt, and the policy for each.** Ben's
-thesis — process the whole document deterministically into a structured form —
-survives adversarial review, in disciplined form: *more structure is better is
-true of structure computed and versioned, false of structure trusted and baked
-in.* The three real hazards:
-
-1. **Gating model input.** Chunking prompts by derived limbs would turn a 1%
-   segmentation error into an invisible coverage hole with no disagreement
-   signal. This is the one undetectable failure. **Derived structure must never
-   gate what the model sees.** Post-hoc corroboration is fine — disagreement is
-   the product.
-2. **Absence read as ground truth.** Covered by the provenance rule above.
-3. **Leaking into permanent identity.** Covered by the stability criterion
-   above.
-
-Prose sections raise no surviving objection: 171 of 538 sections are markerless,
-and section-level context is the honest floor for them.
-`lib/parser-v2/deterministic-sectionizer.js` already builds the whole-document
-section tree, so the document-level half of Ben's thesis is partly built.
-
-Three failure modes to handle explicitly. A quote spanning a chapeau plus its
-first limb — whole-sentence quoting is explicit in termination-fee
-PROMPT_VERSION 2 — returns UNDETERMINED. An assertion whose quote **is** the
-chapeau is not a failure: containment correctly returns the chapeau leaf.
-MAX_DEPTH truncation and unfired CHILD-OPEN are conservative — coarser leaves,
-never a wrong parent.
-
-**Proves it is done.** The comparison exists and names, per mechanism, at least
-one input on which it differs from the others or a statement that it does not.
-Where the service is built, `CI=true npm test` stays exit 0 and the four
-existing V1 consumers produce byte-identical output on the pinned fixtures — a
-moved consumer is a regression to explain, not a fixture to regenerate.
-
-For the broadened pass: every assertion in every family carries either a
-`structure_context` or a typed UNDETERMINED, with zero silently absent; the six
-mis-nesting sections become a pinned fixture list; and no claim identity changes
-anywhere, which is checkable because the pass is annotation-only.
 
 ---
 
-## Step 2X-A1. Two live defects in qualifier scope, found by corpus grep
+## Step 2X-B. The corroboration fallback, HOLD and report-only
 
-**What it is.** `lib/canonical-v2/native-producer/qualifier-attachment.js`
-carries two defects that resolve **deterministically wrong** rather than
-refusing. Both were found by Fable on 2026-08-08 and both verified against the
-corpus before being written here.
+**Decision.** HOLD. The second-chance audit checks primary misses against the
+legacy presentation scaffolds, but it never resolves or promotes a claim. Its
+corpus report contains exactly three General Covenant would-resolves: two
+Concho `COV-TAKEOVER` rows and one Metsera `COV-SECREPORT` row. Guaranty and
+tax-cooperation have zero would-resolves.
 
-**Defect 1 — a named subset of clauses is read as a single clause.**
-`SINGLE_CLAUSE_MARKER_PATTERNS` is
-`/in the case of clauses?(?:\s*\([^)]{1,20}\))?/i`, which swallows only the
-**first** parenthetical. So `in the case of clauses (ii) and (iii)` matches at
-`(ii)`, classifies as a single-clause marker, and resolves `THIS_ITEM_ONLY` —
-when the drafting names two clauses. Corpus counts in `evidence/canonical-v2`:
-**98** occurrences of `in the case of clauses (ii) and (iii)`, 40 of
-`(A) and (B)`, 32 of `(B) and (C)`.
+All three General Covenant rows remain held as evidence for a later decision.
+No vocabulary or primary pattern is authorised from this report, and no
+automatic promotion path may consume the HOLD scaffolds.
 
-There is no `NAMED_SUBSET` scope reading. The taxonomy has `ALL_ITEMS` and
-`THIS_ITEM_ONLY`; a qualifier governing an explicitly named subset of limbs is
-neither.
-
-**Defect 2 — `in any case` is a false friend.** It is a shipped ALL_ITEMS
-marker pattern (line 62). The corpus has 299 occurrences and they are dominated
-by non-scope senses: `in any case within twenty (20) days`, `in any case no
-later than`, `in any case obligating Parent`. Read as a scope disambiguator it
-will assert series-scope on timing and obligation language.
-
-Fable also reports two shipped patterns with **zero** corpus occurrences, which
-is a separate smell: a lexicon entry that never fires is untested in production
-and may be wrong in a way nothing reveals.
-
-**Why this step exists at all.** These are the sharpest available evidence for
-the standing rule in Step 2X. Both are *deterministic generation* failing
-*silently on unseen drafting* — precisely the counter-position's argument
-against pushing determinism further. They are not a reason to abandon the rule;
-they are the reason its second clause is mandatory. A deterministic component
-that cannot say `UNDETERMINED` will assert a wrong answer at corpus scale, and
-here it has.
-
-**Change.** Widen the named-subset pattern to capture every parenthetical in
-the run; add a `NAMED_SUBSET` scope reading carrying the clause list it names;
-remove or re-scope `in any case`; and audit every shipped pattern against corpus
-frequency, retiring or justifying the zero-occurrence entries.
-
-**Do not seed new disambiguator phrases by intuition.** Apply Step 2X-G's
-promotion gate to phrases: blind adjudication, zero counterexamples across at
-least three deals, plus a collision test against non-scope senses — which is
-exactly the test `in any case` fails. Fable's seed candidates, with corpus
-counts: `in the case of each` (272), `in any such case` (115), `in respect of
-each` (109), `for purposes of the foregoing` (30).
-
-**Proves it is done.** `in the case of clauses (ii) and (iii)` resolves to a
-named subset of two, not to one item; every shipped pattern has either a
-non-zero corpus count or a written justification; and the corpus count of
-claims whose scope reading changes is reported, since this alters the meaning
-of already-extracted qualifiers rather than adding new ones.
-
----
-
-## Step 2X-B. The corroboration fallback, in the three families that lack it
-
-**What it is.** `ioc-corroboration.js` retries against a legacy vocabulary when
-its primary pattern matches nothing, tags the hit
-`corroboration_provenance: 'V1_IOC_CATEGORY_VOCABULARY'`, and keeps the
-fail-closed ambiguity discipline on the fallback pass.
-`general-covenant-corroboration.js`, `guaranty-corroboration.js` and
-`tax-cooperation-corroboration.js` are single-shot: a primary miss goes to
-review or open-world permanently.
-
-**Why.** That is the same bug IOC had before Stage 4, still live in three
-families. Stage 4 moved `CATEGORY_UNCORROBORATED` from 105 to 33 by fixing it
-once.
-
-**Change.** Port the fallback to the three. Note the honest obstacle: IOC's
-fallback worked because `lib/vocab/ioc-categories.js` already existed. There is
-no equivalent for general-covenants, guaranty or tax-cooperation, so this is
-vocabulary curation, not a straight port, and general-covenants is the hardest
-of the three. Copy IOC's discipline of leaving the primary-hit path untouched —
-enriching it would re-mint every already-resolved claim for no information gain.
-
-**Direction of risk: additive.** Candidates can only move from held to resolved;
-existing resolved claims are untouched. This is why it precedes 2X-C.
-
-**Proves it is done.** Per family, the count of its uncorroborated reason code
-before and after, from `review-queue.json` files, plus the count of claims that
-changed from held to resolved and zero that moved the other way.
-
----
-
-## Step 2X-C. Enforce the non-collision claim that is currently only a comment
-
-**What it is.** `guaranty-corroboration.js` and `ioc-corroboration.js` check a
-quote against every code's pattern and refuse when more than one matches.
-`general-covenant-corroboration.js` and `tax-cooperation-corroboration.js` rely
-instead on a comment asserting that their patterns are written to avoid
-cross-code collision. That claim is never checked at run time.
-
-**Why.** It is the read-the-code-not-the-comment failure one level down: not a
-stale description of behaviour, but a **safety property asserted in prose and
-never verified**. If it is false anywhere in the corpus we are mis-resolving
-today and nothing tells us.
-
-**Change.** Run all codes' patterns against the quote and refuse on more than
-one hit, as guaranty and IOC already do.
-
-**Land it report-only first (Fable, 2026-08-08).** The enforcing code generates
-its own diff, so run it in report mode over **all importable runs by replay**,
-not merely the ladder rungs — collisions are corpus-dependent and replay is
-free. Enforce only once that report is read.
-
-**Direction of risk: regressive.** Enforcing the check can move currently
-resolved claims to review. It therefore requires a deal-by-deal diff of the
-resolution set before it lands, and must not ship as a pure additive change.
-
-**Proves it is done.** A diff of the resolution set per deal, and for every
-claim that moved from resolved to review, the two codes that collided, quoted.
-If the count is zero the comment was true and that is a result worth recording.
+**Proves the hold.** The report retains exactly three would-resolves, while the
+second-chance path emits zero resolved claims and changes no existing resolved
+claim.
 
 ---
 
@@ -2540,9 +2181,9 @@ pill derives from canonical coverage surfaces minus what canonical produced,
 and no other family has a genuine second source to derive that from. Inventing
 one would have been fabricating a signal.
 
-**Still open.** `NoShopCrossViewPreview.jsx`'s `formatCode(null) → 'Not
-applicable'`, whose fix is to match its own siblings in the same file rather
-than a cross-family port.
+**Closed 2026-08-09.** `NoShopCrossViewPreview.jsx` now renders a null code as
+`Not captured`, matching its sibling missing-data labels. The focused
+cross-surface test passed.
 
 **Proves it is done.** Zero occurrences of the unsafe shapes in
 `components/review/table-configs/`, and `CI=true npm test` exit 0.
@@ -2551,156 +2192,38 @@ than a cross-family port.
 
 ## Step 2X-F. Topology, with an undetermined state
 
-**What it is.** `lib/schema/topology-detector.js` scores 4/7 against real
-hash-verified document text: concho, metsera and redhat correct at one step;
-skywater's chain correct; **skechers a false positive** (a generic `/the offer/i`
-regex matches an unrelated antitrust-remedies clause, reported at HIGH
-confidence); **topbuild a false negative** (its double-dummy pattern is
-hardcoded to "first/second/subsequent merger" and topbuild names its steps
-"Titanium Merger" and "Forward Merger"); **modiv a false negative** (no parallel
-pattern exists).
-
-**Why the earlier recommendation was not to wire it, and why that changed.**
-The objection was never to topology as a capability — Ben's point that
-understanding how a merger works is valuable stands. The objection was to a
-silent fallback: two of the three failures return `SINGLE_MERGER`, which looks
-like a normal answer, so nothing invites review. That is a property of the
-default, not of the detection. With no unconditional default the same 4/7
-becomes four correct and three visibly flagged, which is useful and honest.
-
-**Change.**
-1. Remove the unconditional single-step default; no matched pattern yields
-   `UNDETERMINED`.
-2. Replace the generic tender regex; derive step names from the agreement's own
-   defined terms rather than a fixed list.
-3. Add a concurrency concept. `step_order` is an enforced total order
-   (`assertConsecutiveSteps` requires 1,2,3…) and nothing carries simultaneity,
-   so modiv's UPREIT structure — Company Merger and OpCo Merger, explicitly
-   simultaneous — currently lands in the same bucket as a malformed deal. Ben's
-   ruling, 2026-08-08: invent the simultaneous-merger taxonomy.
-4. Add reverse-triangular-then-LLC-conversion as its own structure. Ben's
-   ruling: double dummy is a real structure, but skywater and topbuild are not
-   it — there is no HoldCo.
-5. Model-extracted steps primary, detector as corroboration, with disagreement
-   surfaced rather than resolved silently.
-
-Also fix or document `FORWARD_TRIANGULAR` and `REVERSE_TRIANGULAR`, which the
-module declares but cannot reach — they are gated behind an option no caller
-passes.
-
-**Proves it is done.** Seven deals, one right answer each: concho, metsera,
-redhat and skechers single-step; skywater and topbuild sequential two-step;
-modiv parallel two-step. Any deal the detector cannot place returns
-`UNDETERMINED` and is counted separately from a wrong answer.
+**MOVED TO COMPLETED.md (2026-08-09)** — detector half: 7/7 hash-verified
+(concho/metsera/redhat/skechers single; skywater/topbuild
+`REVERSE_TRIANGULAR_THEN_LLC`; modiv `PARALLEL_MERGERS`). Model-extracted
+`transaction_steps` + precedence merge wait on the 2X-I prompt bump.
+See `docs/codex-program/notes/step-2x-f-topology.md`.
 
 ---
 
 ## Step 2X-G. The open-world promotion loop
 
-**What it is.** Open-world capture works — 160 of 204 runs produce candidates,
-up to 194 in one run, 3,031 corpus-wide. **Nothing is ever promoted to a mapped
-concept.** One hand-authored pin exists, marked `NOT_YET_GOVERNED`.
-
-**Why.** Without promotion the same shape re-opens on every new deal forever,
-and supplying more approved phrases by hand is the only lever — which does not
-scale and is the wrong instrument. This is also the mechanism that makes the
-standing rule above pay off over time.
-
-**Change.** A promotion path gated on corpus recurrence, using the machinery in
-`lib/expected-sets.js`. **Ben's ruling, 2026-08-08:** promote when a concept
-appears in three or four deals, with a confidence check and a check that it does
-not collide with an existing concept — not a percentage. A percentage is the
-wrong instrument for a concept that surfaces a handful of times; at seven deals
-one recurrence is 14%.
-
-**Proves it is done.** A promotion produces a governed concept, and re-running
-an earlier deal resolves the shape that previously went to open world, with the
-before and after counts cited from evidence rather than asserted.
+**MOVED TO COMPLETED.md (2026-08-08)** — gate + first promotion
+(`REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION` → `NOSOL-CEASE`). Skywater
+replay: open_world 11→10. Scan and further candidates:
+`docs/codex-program/notes/step-2x-g-open-world-promotion.md`. Remaining PASS
+scan rows need Ben/taxonomy before promote; do not auto-apply.
 
 ---
 
 ## Step 2X-H. Record input tokens
 
-**What it is.** Call telemetry across the fifteen REPRESENTATIONS chunks reports
-**426 input tokens across 172 calls**, which is impossible. Output is recorded
-correctly at 2,734,334.
-
-**Why.** Without input tokens no run can be costed and no two prompt variants
-can be compared. Every cost statement made from this telemetry, including in
-this plan, is output-only and must be read that way.
-
-**Change.** `lib/canonical-v2/native-producer/anthropic-provider.js` and the
-telemetry writer in `scripts/canonical-v2-live-extraction-run.mjs`.
-
-**Proves it is done.** A single recorded call carries an input token count
-consistent with its own prompt length, checked by hand once.
+**MOVED TO COMPLETED.md (2026-08-08)** — CLI `input_tokens` is the non-cached
+tail only; `normalizeProviderUsage` sums cache fields. Proof:
+`tests/canonical-v2-input-token-telemetry.test.js`. Note:
+`docs/codex-program/notes/step-2x-h-input-tokens.md`.
 
 ---
 
 ## Step 2X-I. One prompt bump, not four
 
-**What it is.** Four producer-side changes, batched into a single digest
-invalidation: limb-assertion emission for REPRESENTATIONS and MAE; the IOC
-producer's category enum widened; `transaction_steps` fields for topology; and
-the 2F2 open-world element-schema fix, held since 2026-08-08 for exactly this.
-
-**Why only MAE's limb work is here. CORRECTED 2026-08-08 after Fable's review.**
-This step originally read "the REPRESENTATIONS producer emits zero
-limb-assertion candidates at all", citing Red Hat's run receipt — 68
-qualifiers, 12 open-world, no limbs — and concluded no resolver change could
-reach the limb tree. **That was wrong, and it was the load-bearing claim of the
-whole step.**
-
-Red Hat's recorded responses contain **69 limbs**: 60 across 29 instances in
-§3.01 and 9 across 3 instances in §3.02. The model has been emitting them all
-along. They are dropped one layer later, because
-`FAMILY_RESPONSE_SHAPERS.REPRESENTATIONS` is
-`shapeRepresentationQualifierProposals`, which never reads `instance.limbs`.
-Only `CAPITALISATION` routes to the minting shaper — which is exactly why
-`limb_component_trees` is non-empty in 1 of 202 runs.
-
-The error is the one CLAUDE.md exists to prevent: absence was inferred at the
-source from an artefact three steps downstream. A run receipt records what the
-**shaper produced**, not what the **model returned**. Anyone re-deriving this
-must read `raw_response_text`, not the receipt.
-
-**Consequence: the REPRESENTATIONS fix is free and does not belong in this
-step.** Replay re-feeds `raw_response_text` through the shapers, so fixing the
-shaper costs zero model calls. The 421-claim family — the largest in the corpus
-— moves to the replay-validated phase in 2X-K. See Step 2X-L.
-
-MAE is genuinely different and stays here: neither Red Hat's nor SkyWater's MAE
-recorded responses contain a `limbs` array at all, so its limb emission really
-does need the prompt to change.
-
-**Why IOC is here.** V1 has 25 categories; the V2 producer enum has 11. Nine
-categories that hit in the corpus **cannot be emitted at all**, so no
-resolver-side work can recover them. **Ben's ruling, 2026-08-08:** bring in all
-25, and the IOC codes go in the rubric.
-
-**Also folded in, deliberately.** Ruling 2 — a mutual right minting two rows,
-one per party — is not implemented anywhere; mutual rights still mint one row
-with `EITHER_PRINCIPAL_PARTY`. It re-mints Modiv's committed identities and
-rewrites three pinned test files plus the termination projection, so it belongs
-in the bump rather than as a silent fold into a resolver step.
-
-**The constraint this step inherits, and it is not negotiable.** Derived
-structure may **describe what the model said; it may never select what the model
-reads.** Chunking prompts by derived limbs would convert a 1% segmentation error
-into an invisible coverage hole with no disagreement signal — the one failure
-mode nothing downstream can detect. Path-citation is admissible only if the
-model still sees the full section text.
-
-**The open question for this step.** Whether segmentation should also move
-*ahead* of the model call, so the model cites a limb by path rather than
-re-quoting its governing text. Output dominates cost — 15,897 tokens per call
-on average — and much of it is the model re-transcribing structure a pure
-function already knows. This is the lever, but the magnitude is unmeasured and
-must not be claimed until one family is run both ways.
-
-**Proves it is done.** One digest invalidation, not four; and REPRESENTATIONS
-produces a non-empty limb tree on at least one deal, which has happened once in
-202 runs to date.
+**MOVED TO COMPLETED.md (2026-08-09)** — IOC V1×25, MAE limbs, 2F2 schemas,
+mutual two-row mint, model `transaction_steps` + `mergeDealTopology` precedence.
+Live re-extract is 2X-K. Notes under `docs/codex-program/notes/step-2x-i-*.md`.
 
 ---
 
@@ -2798,76 +2321,35 @@ unaccounted count is zero — computed from the evidence, not asserted.
 
 ---
 
-## Step 2X-J. Consume the rest of the V1 vocabulary
-
-**What it is.** Five V1 assets are consumed. `taxonomy.js`'s remaining
-vocabularies, `MAE_CARVEOUT_META`'s 27 codes, and `lib/schema/features.js`'s 551
-feature definitions are not.
-
-**Why.** Every one is a concept the corpus may already be producing as an
-open-world candidate because nothing can express it. This is the cheapest
-possible source of new coverage: it is curation, not design.
-
-**Change.** Per vocabulary, a decision to consume, to widen, or to record as
-deliberately unused. `lib/category-summary-features.js`'s roughly 200 expected
-rows give a per-family target to measure against.
-
-**Proves it is done.** Every vocabulary in `taxonomy.js` has one of the three
-dispositions recorded against it, and the count with none is zero.
-
----
-
 ## Step 2X-K. The re-validation ladder
 
-**What it is.** How Step 2X is proven, once implemented. **Ben's ruling,
-2026-08-08**, superseding "run it against all seven deals, then expand":
-Modiv on a few families, then Modiv on more families, then TopBuild, then more
-deals.
+**Campaign closed 2026-08-09.** The ladder completed across Modiv, TopBuild,
+Skechers, SkyWater, Metsera, Concho and Red Hat. The selected evidence contains
+157 runs and 558 recorded Terra calls. It publishes 1,561 claims from 1,571
+resolved rows, with zero validation residuals and zero quarantines. Every
+selected run passes the V42 dry import. Full evidence and per-deal counts are
+recorded in `COMPLETED.md`. All 157 also pass a real, non-dry-run write to a
+fresh in-memory canonical repository, with a real receipt and no refusal.
 
-**Why.** It is the ladder discipline the programme already runs on, applied to
-validation rather than build-out. Step 2X lands a structure service, vocabulary
-consumption, absence discipline, a corroboration fallback, an ambiguity guard
-and a prompt bump. Fire all of that at seven deals across 25 families at once
-and a regression is unattributable.
-
-Modiv is first on the evidence: **62 evidence directories**, the deepest
-baseline in the corpus (TopBuild next at 33), and it was already the explicit
-regression pin in the Stage 1 termination work, held at 12 → 12 unchanged as a
-control while six other deals moved. TopBuild is second for the next-deepest
-baseline and because it is a genuine sequential two-step chain, so it exercises
-2X-F where the four single-step deals cannot.
-
-**The consequence for sequencing.** Replay costs zero model calls, so every rung
-before the prompt bump is free. Everything after 2X-I is a live run at full
-cost. So the ladder is climbed **twice**: a replay-validated resolver phase
-(2X-A through 2X-E, 2X-H, 2X-J and **2X-L**), then one prompt bump, then a live
-phase for the producer-side changes.
-
-**Corrected 2026-08-08 after Fable's review.** The original phase list omitted
-2X-F, 2X-G and 2X-H. 2X-H is replay-safe and joins the free phase. 2X-G's
-promotion loop spans both. **2X-F straddles**: its detector work is
-replay-validatable, but its seven-deal acceptance proof needs `transaction_steps`
-from the bump, so that acceptance must be split in two or it stalls the free
-phase. 2X-D is confirmed replay-safe — the retired code was already absent from
-the prompt. This places 2X-I by design rather than letting
-implementation order decide it.
-
-**One tie-back to derived identity.** When the stability criterion is met,
-mint only **CORROBORATED** starts. Two independent detectors agreeing on
-`{canonical_text_id, start_byte}` is the closest a derived limb gets to the
-attestation a model-declared limb has by construction.
-
-**Proves it is done.** Each rung has its own pass before the next is funded. The
-blind 96-card re-score is the final rung's gate, not the only gate.
+**Stage 3 entry is closed.** The original 96-card sample was recovered and is
+committed under `evidence/blind-review/2026-08-08/`; no successor sample or
+exception is needed. The current exact re-score resolves 17/96, reported by its
+twelve fixed strata: terminating party 6/8, clause label 6/8, qualifier kind
+4/8, category 1/8, and the other eight strata 0/8. The eight zero controls hold,
+but the original floor is missed because terminating party regressed by one and
+category regressed by three. Stage 3 does not start until a later exact re-score
+meets the original per-stratum floor or Ben expressly changes that floor.
 
 ---
 
 # Stage 2Y. Be right unattended, not right after review
 
-**Added 2026-08-09**, after every one of the **4,241 unresolved reason-code
-occurrences** in the corpus was diagnosed to a mechanism. Stage 2X asked why the
-resolver refuses. Stage 2Y is about what has to change so that it stops needing
-to, at a scale where nobody is watching.
+**Added 2026-08-09**, after the corpus's **4,241 reason-code occurrences** were
+inventoried. They are not 4,241 unique claims and not all are unresolved: 787
+are resolved claims carrying publication-quality flags. Most occurrences have
+a confirmed or likely mechanism; about 73 remain a named diagnostic tail owned
+by Step 2Y-K. Stage 2X asked why the resolver refuses. Stage 2Y is about what has
+to change so that it is correct at a scale where nobody is watching.
 
 **PROPOSED. Three rulings in §"What this stage needs from Ben" are open** (a
 fourth is answered). Each says what the default is if Ben says nothing, so
@@ -2875,17 +2357,17 @@ silence is a decision rather than a stall — **except ruling 4, which has no
 default and therefore does stall the 152 occurrences behind it.** That is stated
 rather than papered over.
 
-**Two reading notes, both from Fable's adversarial review of 2026-08-09.**
+**Baseline correction, 2026-08-09.** The first Stage 2Y draft lived on a branch
+that diverged before the Stage 2X evidence commit. This branch now integrates
+`origin/cursor/step-2x-free-phase-b641` through `7535782a`. Code sites and corpus
+evidence must be re-derived from this integrated baseline before each edit.
 
-*Line numbers cited in this stage are from
-`origin/cursor/step-2x-free-phase-b641`, the branch the corpus artifact was
-generated on, and are 100–200 lines ahead of `main`.* Verified equivalents on
-the current branch where they were checked: `sourceParagraphForCandidate` 5615
-(not 5757), its chapeau-walk template 5627, `deriveKnowledgeStandard` 2200,
-the KNOWLEDGE branch 9635, `OFFICER_CERTIFICATE` 4851, the causation dict 4879,
-`finalizeResolvedCandidate` 5726, `matchFamily` 1115 (unchanged). **The
-substance survives at every site checked**; only the numbers drift. Re-derive
-before editing, do not trust the citation.
+**Two reading notes, from the two independent adversarial reviews of
+2026-08-09.**
+
+*Line numbers cited in this stage came from different points on the former two
+branches.* Re-derive before editing. Do not trust a citation merely because the
+named function exists.
 
 *The committed register still stamps 90 rows / 732 occurrences `UNDIAGNOSED`.*
 Those were closed afterwards by `diag-gap-remaining.md`, `diag-gap-reps-mae.md`
@@ -2942,19 +2424,15 @@ governed claim-definition key**; the flag blocks the stricter auto-pass status
 only. Fixing them creates no new content — it unblocks content that already
 resolved.
 
-**And a caveat on what auto-pass currently means — corrected 2026-08-09, and
-the correction is the more important fact.** I sampled 118 rows across families,
-found `auto_pass` false on every one, zero true, and reported it as a
-measurement. Fable read the code: it is **permanently false by construction**.
-`candidate-resolution.js:5821-5833` unconditionally adds
-`SOURCE_SCOPE_CERTIFICATION_ABSENT`, `V1_V2_COMPARATOR_ABSENT` and
-`LEXICAL_DISAGREEMENT_NET_ABSENT` to every claim, and its own comment says
-auto-pass "stays permanently false for now."
-
-So my sample measured a constant, and I presented a documented, deliberate
-design invariant as a discovery. The consequence is not cosmetic: **a stage
-titled "be right unattended" contained no step that creates an unattended
-publication path.** Step 2Y-0A now exists because of this.
+**And a caveat on what auto-pass currently means — corrected twice on
+2026-08-09.** It is permanently false by construction, but it is not the
+publication gate. `finalizeResolvedCandidate` puts a claim in `resolved` first
+and also queues it when `auto_pass` is false. The live runner sends all resolved
+claims to the write-set adapter, and the adapter does not persist `triage` or
+`auto_pass`. So `auto_pass` controls queue duplication, not write eligibility.
+Step 2Y-0A must create a separate publication disposition that is consumed by
+write, validation, storage and serving. Opening the current auto-pass condition
+would not create that boundary.
 
 ## The six mechanisms
 
@@ -2963,8 +2441,10 @@ figure is extrapolated from a pooled measurement rather than counted per family,
 it says so. Ordered by weight.
 
 **1. The context a check reads is a rendering artefact, not document structure.**
-`sourceParagraphForCandidate` (`candidate-resolution.js:5757`) takes a single
-`\n`-bounded line as the claim's context. `sec-html-canonical-text.js` emits a
+`sourceParagraphForCandidate` takes a single `\n`-bounded line as the claim's
+context. It also ignores `entry` and uses the first global
+`sourceText.indexOf(claim.raw_value)` match, so repeated text can bind to the
+wrong occurrence and the wrong chapeau. `sec-html-canonical-text.js` emits a
 hard newline for every `<p>`. SEC filings put each enumerated sub-clause in its
 own `<P>`. So the chapeau — which carries the obligor, the modal verb, and very
 often the standard or threshold — is *always* in a different context window from
@@ -2983,8 +2463,10 @@ The fix template is **twelve lines away in the same file**:
 `partyContextForCandidate` (`:5769-5784`) already walks back to the chapeau. It
 was written for one purpose and never generalised. And the whole-document
 section tree that would do this properly — `deterministic-sectionizer.js`,
-`structure_context` / `GOVERNING_STRUCTURE`, visible in every review-queue row —
-is computed on every run and never consulted here.
+`structure_context` / `GOVERNING_STRUCTURE` — is computed after resolution and
+cannot yet repair this check. Held and open-world flattened rows commonly lack
+the evidence span required to resolve structure, so preserving their exact span
+comes before consuming the service.
 
 **2. Corroboration regexes encoding one drafter's habit.** Per-kind literal
 tables that hold for the deal they were written against and fail on ordinary
@@ -3134,9 +2616,10 @@ the code obey them.
    it as a rule pre-commits the outcome the sweep exists to choose. Corrected
    after Fable pointed out that a sweep whose answer is written above it is
    theatre.
-2. **The context a check reads is the governing structure, never a rendered
-   line.** If a check needs the obligor and the obligor is in the chapeau, the
-   check gets the chapeau.
+2. **The context a check reads is bound to the claim's verified evidence
+occurrence, never a rendered line or a global text match.** A typed context keeps
+the leaf, ancestor chain and siblings separate. A corroborator requests only the
+parts it needs; it does not receive an undifferentiated whole-section window.
 3. **A phrase list lives in one place and adding to it helps every family.** A
    literal written inline in a resolver helps one code path and is invisible to
    the next person with the same problem — twice over, demonstrably, for
@@ -3236,6 +2719,12 @@ always being today's behaviour, so every curve carries its own control.
 there is no classifier, so that would have been a control the system does not
 have and the curve would have had no zero point.)*
 
+**G, I and J are not ordinal ladders.** Duplicate suppression (G) and qualifier
+dispatch (I) are binary feature switches with their own before/after gates.
+Open-world recurrence (J) automatically produces promotion candidates only;
+registry activation is a separate, versioned approval. None is silently folded
+into the joint rung configuration.
+
 ### One at a time, then jointly — and the joint run is the one that gates
 
 The full cross-product is over a thousand configurations. Sweep each ladder with
@@ -3254,11 +2743,10 @@ as the result is exactly the shape of error this programme keeps making.
 
 ### The sequencing consequence, and it changes every other step in this stage
 
-You cannot sweep a ladder that is not built. So **2Y-A through 2Y-J each ship
-rung-selectable and default to rung 0** — the implementation lands disabled, the
-sweep chooses its rung, and only then is that rung turned on. Each of those steps
-therefore has two landings, an inert one and a live one, and the acceptance
-evidence quoted in each step belongs to the second.
+You cannot sweep a ladder that is not built. So **2Y-A through 2Y-F and 2Y-H
+ship rung-selectable and default to rung 0**. G and I ship behind binary switches.
+J emits promotion candidates but cannot activate them. Each implementation lands
+inert; only calibrated, approved settings can become live.
 
 This is a real cost and it is worth it: it is also the only way any of these
 changes is ever revertible per-mechanism rather than per-commit.
@@ -3423,12 +2911,37 @@ So: ladder 2 first, on a small slice, and let its answer size the rest. **If
 rung 3/4 wins, 2Y-C's registry should hold vocabularies, enums and the near-miss
 miner — not the migrated corroboration tables.**
 
+### Corrected prerequisite order after the independent adversarial
+
+The first draft placed the sweep before facts the sweep depends on. The working
+order is:
+
+1. integrate the evidence-producing code baseline and regenerate the register;
+2. define the resolution, review and publication state machine;
+3. complete 2Y-K and re-stamp register confidence honestly;
+4. preserve exact evidence spans on held and open-world rows;
+5. build the calibration harness and immutable authority schema;
+6. build and sweep a small corroboration vertical slice;
+7. use that result to size the remaining rung scaffolding and registry work.
+
+The human anchor set still gates adjudicator verdicts and any live rung. It does
+not block inert runners, evidence-span plumbing, register correction or the
+small vertical-slice implementation.
+
 **Change.** A sweep runner and an adjudication harness under `scripts/`; the
 rung-selection configuration the other steps build against; a committed evidence
 directory in the shape of `evidence/blind-review/2026-08-08/`; reclassification
 into `docs/codex-program/notes/stage-2y/unresolved-register.json` — **including
 re-stamping the 90 rows still marked `UNDIAGNOSED`**, which the three
 `diag-gap-*` notes closed and nobody wrote back.
+
+The calibration artefact has a versioned schema. It binds the exact corpus,
+source, prompt, requested model, registry, resolver and adjudication-rubric
+digests; selected rung; sample size; confidence interval; adjudicator identity
+and calibration score; expiry or drift rule; and product-approved
+false-publication threshold. Missing, stale, new-family and new-claim-kind cases
+fail closed. Each live decision records the artefact id and supports a
+per-family kill switch.
 
 **Direction of risk: none to the product, high to the programme if skipped.** No
 resolver change ships from this step. But every later step's gate is defined
@@ -3451,86 +2964,69 @@ programme has ever had that could notice the system getting quietly worse.
 
 ---
 
-## Step 2Y-0A. The unattended publication gate — the step this stage was missing
+## Step 2Y-0A. A first-class publication disposition
 
-**Added 2026-08-09, from Fable's adversarial review.** Asked whether Stage 2Y
-implied any *fundamental* change to the system's structure, its answer was: one,
-and it is the gap between this stage and its own title.
+**Corrected 2026-08-09 after the independent adversarial.** `auto_pass` is not a
+publication gate. A resolved claim is written even when it is also in the review
+queue, and `triage` is not persisted. The missing component is a publication
+state carried through the existing pipeline, not a switch that opens
+`auto_pass`.
 
-**What it is.** A run-time gate that decides which claims publish without a
-human looking at them, and a risk-tiering of what remains, so that the review
-queue is ordered by how likely a claim is to be wrong rather than by nothing.
+**What it is.** A versioned `publication_disposition` for every resolved claim,
+separate from both resolution and review routing. The minimum states are
+`WITHHELD`, `ELIGIBLE` and `PUBLISHED`. A review task says that a human should
+inspect a claim. It does not itself decide whether the claim is written or
+served.
 
-**Why, and this is the whole argument for the stage.** `auto_pass` is
-permanently false by construction. Every claim carries
-`SOURCE_SCOPE_CERTIFICATION_ABSENT` and two comparator-absent reasons, always.
-So **every claim Stage 2Y recovers still routes to the queue the preamble itself
-says "is not read — it is ignored"**. Steps 2Y-A through 2Y-M make the system
-know more true things. Not one of them changes what happens to a true thing once
-known. Fixing the 787 auto-pass-blocked occurrences unblocks them into a gate
-that is closed for unrelated reasons — the plan said as much and then assigned
-the fix to no step.
+**Change.** Define the state transition and threat model first. Then carry the
+disposition through the write set, validators, storage schema, readers and
+serving projections. Bind each `ELIGIBLE` decision to the immutable calibration
+artefact from 2Y-0. Missing or stale calibration, an unknown family or claim
+kind, a digest mismatch, structural uncertainty, definition ambiguity, model
+fallback, party-attribution risk or a disabled family all fail closed to
+`WITHHELD`.
 
-Ben's standard is *"humans will back fill edits but the system needs to do
-really well."* Back-filling presupposes a front fill. There isn't one.
+The three absent-certification conditions remain review and evidence signals
+until each is completed or explicitly retired. Removing them cannot substitute
+for a publication disposition. Queue priority uses direct claim-level signals,
+not only adjudicator disagreement, and the decision trace is stored with the
+claim.
 
-**Change.** Three things, and the second is a decision more than a build.
+**Direction of risk: highest in the stage.** The schema and negative paths land
+inert before any family can become eligible. Activation ships last, behind a
+per-family kill switch and rollback receipt.
 
-1. **Close or retire the three absent-certification reasons.** Source-scope
-   certification is a real, unbuilt mechanism. The V1/V2 comparator and the
-   lexical-disagreement net exist — 2Y-F is about the latter. Each is either
-   completed, or **explicitly retired** with the reason recorded in
-   `GRAVEYARD.md`. What is not acceptable is leaving a permanent blocker in
-   place because nobody decided.
-2. **Define what publishes unattended.** The obvious candidate is the output of
-   2Y-0: a claim publishes when its (family, mechanism, rung) sits inside the
-   calibrated envelope and it carries no zero-tolerance error class. That makes
-   2Y-0 a run-time input rather than a one-off report, which is a materially
-   different thing to build — **and it is why 2Y-0A is placed here, before the
-   loosening steps, rather than after them.**
-3. **Tier what does not publish.** A queue ordered by risk is read; a flat queue
-   of 109,000 is not. The tiering signal is already being computed — the
-   adjudicator disagreement rate per (family, mechanism) from 2Y-0.
+**Proves it is done.** Tests prove both directions end to end: one calibrated
+eligible claim reaches a serving projection, and an ineligible or stale claim
+cannot enter a publishable write set, storage row or serving projection. The
+same claim can independently carry a review task. Every decision is reproducible
+from stored evidence and the bound calibration artefact.
 
-**Direction of risk: this is the highest-risk step in the stage**, and the only
-one that changes what a user sees without a human in the loop. It ships last in
-implementation order even though it is specified first, and it ships behind a
-per-family switch.
-
-**Proves it is done.** At least one family publishes claims unattended, with the
-gate's decision recorded per claim and reproducible from stored evidence; every
-one of the three absent-certification reasons is either satisfied or retired in
-`GRAVEYARD.md` with its reasoning; the queue is ordered by a stated risk signal;
-and the count of claims publishing unattended is reported per family alongside
-the precision measured on exactly that set — not on the family as a whole.
-
-**Open with Ben, and it is a product decision, not an engineering one.** What
-false-publication rate is acceptable for a claim no human sees before a lawyer
-does? 2Y-0 can measure the rate at any rung. It cannot tell you which one you
-are willing to ship. *No default.*
+**Open with Ben, with no default.** What false-publication rate is acceptable
+for a claim no human sees before a lawyer does? Engineering may build every
+inert state and exclusion path. No family becomes `ELIGIBLE` until Ben sets the
+threshold.
 
 ---
 
 ## Step 2Y-A. Read the governing chapeau, not the rendered line
 
-**What it is.** Replace `sourceParagraphForCandidate`'s single-`\n` slice
-(`candidate-resolution.js:5757`) with a governing-context lookup that returns the
-claim's span *plus its chapeau chain*, and route every corroboration check
-through it.
+**What it is.** Replace `sourceParagraphForCandidate`'s single-line, first-global-
+match lookup with context bound to the candidate's verified evidence span. The
+result is typed: leaf, ancestor chain and siblings stay separate.
 
-**Why.** The largest single mechanism in the corpus, by a wide margin — mechanism
-1 above. It is also the cheapest, because the context is already computed: the
-whole-document tree from `deterministic-sectionizer.js` and the
-`structure_context` field present on every review-queue row. And the walk-back
-template is twelve lines below the defect, in `partyContextForCandidate`
-(`:5769-5784`).
+**Why.** The largest single mechanism in the corpus, by a wide margin. The 2X-A
+structure service exists, but annotation currently runs after resolution and
+many held or open-world rows have no surviving evidence span, so their context
+is `UNDETERMINED`. The resolver must preserve and consume the exact occurrence,
+not re-locate a quote with `indexOf`.
 
-**Change.** `candidate-resolution.js`, `ioc-mechanic-resolution.js`. Consume
-`segmentSubClauses` (`lib/parser-v2/subclauses.js`) behind
-`lib/canonical-v2/canonical-bytes.js` — **do not port it to bytes**; it works in
-UTF-16 string indices, has passing tests and four live V1 consumers, and
-converting at the boundary is the standing rule. This is 2X-A's structure service
-narrowed to the one consumer that proves it.
+**Change.** First preserve verified evidence on every held and open-world row.
+Then call the existing 2X-A structure service inside resolution, using the
+candidate's section-local UTF-8 byte span. Keep `segmentSubClauses` in UTF-16 and
+convert at the boundary through `canonical-bytes.js`. Each corroborator requests
+only leaf or ancestor text it is authorised to read. Whole-section and sibling
+text are not concatenated into a general regex window.
 
 **Direction of risk: additive first, then regressive.** Widening the window can
 only move held → resolved. But a check that now sees more text can also match
@@ -3562,11 +3058,12 @@ the model's, distinguish *"I derived a different value"* (a real disagreement)
 from *"I derived nothing"* (the check has nothing to say). Only the first is a
 failure.
 
-**Why.** Mechanism 3. 91 occurrences on one branch, 82 measured, **zero genuine
-conflicts** in the whole sample. The KNOWLEDGE branch discards a correct,
-convention-grounded model answer because the word "actual" is not repeated in a
-quote reading "to the knowledge of the Company" — a phrase whose entire legal
-meaning is the actual-knowledge standard.
+**Why.** Mechanism 3. There are 91 occurrences. The earlier 82-row check found
+zero literal quote-versus-model conflicts because every deterministic derivation
+was null. It did not establish semantic agreement. The omitted nine TopBuild
+rows use one composite definition but split model codes by party: four Company
+rows `AFTER_INQUIRY`, five Parent rows `ACTUAL`. The same definition cannot
+justify that split.
 
 **Change.** `candidate-resolution.js` KNOWLEDGE branch (`~9825-9834`): when
 `deriveKnowledgeStandard` returns `null` and `claim.canonical_value` is a member
@@ -3598,10 +3095,11 @@ Model-deferral is the **fallback where the agreement defines nothing**.
 **Direction of risk: regressive in principle.** Deferring to the model is exactly
 where a wrong claim gets published. This step is the reason 2Y-0 exists.
 
-**Proves it is done.** The 91 resolve; the *genuine*-conflict path is exercised
-by a test with a quote saying "constructive knowledge" tagged `ACTUAL`, and still
-holds; and the adjudicated precision of the 91 newly published claims is
-measured, not assumed. If any of the 91 is wrong, this step is wrong.
+**Proves it is done.** Every one of the 91 has an explicit disposition against
+the agreement's own definition. A composite "actual knowledge after due inquiry"
+definition has a settled codebook treatment and applies consistently to both
+parties. A quote saying "constructive knowledge" tagged `ACTUAL` still holds as
+a genuine conflict. Only definition-absent cases may test model fallback.
 
 ---
 
@@ -3853,7 +3351,7 @@ force-fitted.
 
 ---
 
-## Step 2Y-J. Open-world promotion, on a three-deal rule
+## Step 2Y-J. Open-world promotion candidates, on a three-deal rule
 
 **What it is.** 2X-G's promotion loop, now with the evidence to size it. 21
 distinct concepts recur in **three or more deals** (146 occurrences), clustered
@@ -3869,20 +3367,23 @@ More approved phrases help; hand-feeding does not scale. A promotion loop is wha
 turns a recurring unmapped concept into a governed one **automatically enough**
 that the corpus getting bigger makes the system better rather than worse.
 
-**Change.** The promotion mechanism, the 21 concepts as its first batch, and the
-appraisal covenant as a new registered shape. Uses `expected-sets.js`'s existing
-mechanism, but **not** its 0.66/0.33 thresholds — those answer "is absence
-notable", not "is this real enough to govern". Blocked on Ben's ruling 3.
+**Change.** The recurrence mechanism emits versioned promotion candidates, with
+the 21 concepts as its first batch. Three deals are enough to surface a proposal,
+not enough to mutate the active taxonomy. Registry activation requires
+adjudicated evidence, compatibility analysis and an explicit versioned approval.
+The appraisal covenant is the first such candidate. `expected-sets.js`'s
+0.66/0.33 thresholds are not reused because they answer a different question.
 
 **Direction of risk: regressive in the long run if the threshold is wrong.**
 Promoting too eagerly writes noise into the taxonomy permanently, and taxonomy
 mistakes are the expensive kind — they corrupt precedent search, which is the
 product. Every promotion carries its evidence and is reversible.
 
-**Proves it is done.** The 21 concepts adjudicated one by one against their
-quotes — promoted, rejected, or held with a reason; the appraisal covenant
-resolves across its three deals; and the loop demonstrably runs on a new deal
-without a human writing a phrase.
+**Proves it is done.** The 21 concepts are adjudicated one by one against their
+quotes and recorded as approved, rejected or held. A new deal automatically
+creates or strengthens a promotion candidate without writing to the active
+registry. A separately approved appraisal-covenant registry version resolves
+across its three deals.
 
 ---
 

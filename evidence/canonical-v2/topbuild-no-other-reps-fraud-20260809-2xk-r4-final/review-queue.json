@@ -1,0 +1,99 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a2340212dd3ac0b12f919e267f84edd8a69346660157789a96f950864cd2abe8",
+  "review_queue": [
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e06a7a637cdbdbcf0b14961630d0aeb6024bec0967395d30254d138fe1d57053",
+      "closure_id": "e4286ddeadd0078c5c5539ccb9e9ccbca4831eebeaaaf8fe559424ec7ce1989f",
+      "normalised_phrase": "The Company acknowledges that except for the representations and warranties contained in Section 3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section 5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 82559,
+          "end": 82583,
+          "excerpt": "f such transactions with any third party or its Subsidiaries or Affiliates.\n(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ea6f6eea9b9a47ddd77ad3fcb9b805fcc124f7cb891eea211039558b77b086dc",
+      "closure_id": "264df30eefc6d07269477ca4a8f22db719a64cc4b5f6643ea25173aad77186ea",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "179c819d9b88714ea34a12a7f8ea44edf2b81b2affb4430027fd93d45eed588d",
+      "closure_id": "5a089de5e229fb1103aa58989948e94025764b17b3416af7fe99622c3bf71fd9",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a69266b7858355283f0c8183d65cabd11c27ebbc6f8e6df533a7687ceb631ed2"
+}

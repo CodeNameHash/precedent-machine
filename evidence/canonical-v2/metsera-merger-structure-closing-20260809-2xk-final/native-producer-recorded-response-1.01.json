@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:12:33.514Z",
+  "section_reference": "1.01",
+  "prompt_id": "native-producer-merger-structure/v1",
+  "prompt_version": 3,
+  "raw_response_text": "{\"structure_assertions\":[{\"assertion_kind\":\"EFFECTIVE_TIME\",\"quote\":\"Merger Sub shall be merged with and into the Company at the Effective Time.\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"At the Effective Time, the separate corporate existence of Merger Sub shall cease and the Company shall continue as the surviving corporation (the “Surviving Corporation”).\"}],\"structure_mechanics\":[],\"transaction_steps\":[{\"step_order\":1,\"step_kind\":\"MERGER\",\"disappearing_entity\":\"Merger Sub\",\"surviving_entity\":\"Surviving Corporation\",\"parent_entity\":null,\"concurrency\":\"SEQUENTIAL\",\"quote\":\"Merger Sub shall be merged with and into the Company at the Effective Time. At the Effective Time, the separate corporate existence of Merger Sub shall cease and the Company shall continue as the surviving corporation (the “Surviving Corporation”).\"}],\"open_world_candidates\":[]}"
+}

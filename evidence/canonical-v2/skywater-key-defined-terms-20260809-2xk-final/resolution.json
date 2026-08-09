@@ -1,0 +1,3107 @@
+{
+  "resolved": [
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-ACQPROPOSAL",
+        "ordinal": 1,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "closure_id": "441ad3e8868ffbde8ad3142ca674f07e0a5965d00dc9847ed558f3e7504d2ff4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c0cd9cd052971d31d81b2f33347a65f98b700ff5dfc42fccbf8320fc0a6bcf30",
+        "claim_occurrence_id": "8a130149492c8537879caa4a4dfae98e5e98834deabdbcf5f6676fbad8c1c3f8",
+        "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+        "canonical_value": "20",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "436dfdec00c2bff61b2e32f120f0d7110546a07d0a014b7fa99a46e0468c8fec",
+          "ef7fcbc415a5c052cebfc479fb88f41022f989fc183bb30dd61d8bf294a9a7d3"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "ACQ_THRESHOLD",
+          "definition_head_quote": "“Acquisition Proposal” means",
+          "limb_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": "ASSETS",
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "acquisition proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACQ_THRESHOLD",
+          "threshold_basis": "ASSETS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "436dfdec00c2bff61b2e32f120f0d7110546a07d0a014b7fa99a46e0468c8fec",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+            "document_ordinal": 0,
+            "absolute_start": 30,
+            "absolute_end": 62,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ef7fcbc415a5c052cebfc479fb88f41022f989fc183bb30dd61d8bf294a9a7d3",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ab9163d65e06ee3c9ffa2a17ae7629614551d39baa53a03c863c9be97811eb99",
+            "document_ordinal": 0,
+            "absolute_start": 331,
+            "absolute_end": 446,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c710fd99b2d31baba56b216b0710c9515fd552fb3fa782f012af7213e3540b23"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c0cd9cd052971d31d81b2f33347a65f98b700ff5dfc42fccbf8320fc0a6bcf30",
+            "claim_occurrence_id": "8a130149492c8537879caa4a4dfae98e5e98834deabdbcf5f6676fbad8c1c3f8",
+            "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+            "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+            "canonical_value": "20",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "436dfdec00c2bff61b2e32f120f0d7110546a07d0a014b7fa99a46e0468c8fec",
+              "ef7fcbc415a5c052cebfc479fb88f41022f989fc183bb30dd61d8bf294a9a7d3"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "ACQ_THRESHOLD",
+              "definition_head_quote": "“Acquisition Proposal” means",
+              "limb_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": "ASSETS",
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "acquisition proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACQ_THRESHOLD",
+              "threshold_basis": "ASSETS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "436dfdec00c2bff61b2e32f120f0d7110546a07d0a014b7fa99a46e0468c8fec",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+                "document_ordinal": 0,
+                "absolute_start": 30,
+                "absolute_end": 62,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ef7fcbc415a5c052cebfc479fb88f41022f989fc183bb30dd61d8bf294a9a7d3",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ab9163d65e06ee3c9ffa2a17ae7629614551d39baa53a03c863c9be97811eb99",
+                "document_ordinal": 0,
+                "absolute_start": 331,
+                "absolute_end": 446,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c710fd99b2d31baba56b216b0710c9515fd552fb3fa782f012af7213e3540b23"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-ACQPROPOSAL",
+        "ordinal": 1,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "closure_id": "441ad3e8868ffbde8ad3142ca674f07e0a5965d00dc9847ed558f3e7504d2ff4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "fa61cc647be2e824d7b2551e91aa0c85a86362c69b946a274695c7459469903d",
+        "claim_occurrence_id": "ec0ab912cfb52386ec39b2767b01b0cac4045ab6f3c4b170e2fc22a77f0115ff",
+        "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+        "canonical_value": "20",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7823375f14804eb52112396cc4cb658c53b15f3a79d26879a2dc5d7366885f3d",
+          "4218229d81f63b0f23ff99696476d1f4e52d18b7349ca1f539f0f0e4b63c5b53"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "ACQ_THRESHOLD",
+          "definition_head_quote": "“Acquisition Proposal” means",
+          "limb_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": "REVENUE_OR_EARNINGS",
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "acquisition proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACQ_THRESHOLD",
+          "threshold_basis": "REVENUE_OR_EARNINGS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7823375f14804eb52112396cc4cb658c53b15f3a79d26879a2dc5d7366885f3d",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+            "document_ordinal": 0,
+            "absolute_start": 30,
+            "absolute_end": 62,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "4218229d81f63b0f23ff99696476d1f4e52d18b7349ca1f539f0f0e4b63c5b53",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ab9163d65e06ee3c9ffa2a17ae7629614551d39baa53a03c863c9be97811eb99",
+            "document_ordinal": 0,
+            "absolute_start": 331,
+            "absolute_end": 446,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "fcc4f3fe69493c2d94b69980f8ec0893cf301fc344da8997fe8b2ce0f5cfd1dc"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "fa61cc647be2e824d7b2551e91aa0c85a86362c69b946a274695c7459469903d",
+            "claim_occurrence_id": "ec0ab912cfb52386ec39b2767b01b0cac4045ab6f3c4b170e2fc22a77f0115ff",
+            "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+            "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+            "canonical_value": "20",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7823375f14804eb52112396cc4cb658c53b15f3a79d26879a2dc5d7366885f3d",
+              "4218229d81f63b0f23ff99696476d1f4e52d18b7349ca1f539f0f0e4b63c5b53"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "ACQ_THRESHOLD",
+              "definition_head_quote": "“Acquisition Proposal” means",
+              "limb_quote": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": "REVENUE_OR_EARNINGS",
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "acquisition proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACQ_THRESHOLD",
+              "threshold_basis": "REVENUE_OR_EARNINGS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7823375f14804eb52112396cc4cb658c53b15f3a79d26879a2dc5d7366885f3d",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+                "document_ordinal": 0,
+                "absolute_start": 30,
+                "absolute_end": 62,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "4218229d81f63b0f23ff99696476d1f4e52d18b7349ca1f539f0f0e4b63c5b53",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ab9163d65e06ee3c9ffa2a17ae7629614551d39baa53a03c863c9be97811eb99",
+                "document_ordinal": 0,
+                "absolute_start": 331,
+                "absolute_end": 446,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "fcc4f3fe69493c2d94b69980f8ec0893cf301fc344da8997fe8b2ce0f5cfd1dc"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "20% or more of any class of equity securities of the Company or any of its Subsidiaries"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-ACQPROPOSAL",
+        "ordinal": 1,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "closure_id": "441ad3e8868ffbde8ad3142ca674f07e0a5965d00dc9847ed558f3e7504d2ff4"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "8881f6b669c154d6acb04511e3e11fb083b36568e91b25e098cb2d918d00d51a",
+        "claim_occurrence_id": "f4037bfdb6eb940e5309af7c1b48901715adc74d555381f1cfb7947c681716df",
+        "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+        "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+        "claim_definition_version": 1,
+        "ordinal": 2,
+        "state": "PRESENT",
+        "raw_value": "20% or more of any class of equity securities of the Company or any of its Subsidiaries",
+        "canonical_value": "20",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "aac1bf69b660a6356080f28c38cc158a220f887262d66049d3cd16f0175343c6",
+          "f24a6c1a44f30ef9b5063aa585a3a215d1a78283446bfad8d742f09caa1af908"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "ACQ_THRESHOLD",
+          "definition_head_quote": "“Acquisition Proposal” means",
+          "limb_quote": "20% or more of any class of equity securities of the Company or any of its Subsidiaries",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": "EQUITY_SECURITIES",
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "acquisition proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ACQ_THRESHOLD",
+          "threshold_basis": "EQUITY_SECURITIES"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "aac1bf69b660a6356080f28c38cc158a220f887262d66049d3cd16f0175343c6",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+            "document_ordinal": 0,
+            "absolute_start": 30,
+            "absolute_end": 62,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "f24a6c1a44f30ef9b5063aa585a3a215d1a78283446bfad8d742f09caa1af908",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e24bf16451731935cfb5d7c3f58891e392a292d8d8efc96058a632627629c7b9",
+            "document_ordinal": 0,
+            "absolute_start": 499,
+            "absolute_end": 586,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ad396adfa57e166af84221f27e3290e8cebdb653edf7841507ca3442d4d0dfb9"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "8881f6b669c154d6acb04511e3e11fb083b36568e91b25e098cb2d918d00d51a",
+            "claim_occurrence_id": "f4037bfdb6eb940e5309af7c1b48901715adc74d555381f1cfb7947c681716df",
+            "subject_occurrence_id": "def6c3c7c64827de6aa4e2e50686af39354331a7752f8d34d26e3475e928a4f9",
+            "claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+            "claim_definition_version": 1,
+            "ordinal": 2,
+            "state": "PRESENT",
+            "raw_value": "20% or more of any class of equity securities of the Company or any of its Subsidiaries",
+            "canonical_value": "20",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "aac1bf69b660a6356080f28c38cc158a220f887262d66049d3cd16f0175343c6",
+              "f24a6c1a44f30ef9b5063aa585a3a215d1a78283446bfad8d742f09caa1af908"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "ACQ_THRESHOLD",
+              "definition_head_quote": "“Acquisition Proposal” means",
+              "limb_quote": "20% or more of any class of equity securities of the Company or any of its Subsidiaries",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": "EQUITY_SECURITIES",
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "acquisition proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ACQ_THRESHOLD",
+              "threshold_basis": "EQUITY_SECURITIES"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "aac1bf69b660a6356080f28c38cc158a220f887262d66049d3cd16f0175343c6",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "c3ed72d4b73e1349ee4abf64db5f3deb65d447886a5b48cec38e833391775f4f",
+                "document_ordinal": 0,
+                "absolute_start": 30,
+                "absolute_end": 62,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "f24a6c1a44f30ef9b5063aa585a3a215d1a78283446bfad8d742f09caa1af908",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e24bf16451731935cfb5d7c3f58891e392a292d8d8efc96058a632627629c7b9",
+                "document_ordinal": 0,
+                "absolute_start": 499,
+                "absolute_end": 586,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ad396adfa57e166af84221f27e3290e8cebdb653edf7841507ca3442d4d0dfb9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+      "concept_key": "DEF-INTERVENING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-INTERVENING",
+        "ordinal": 2,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "closure_id": "c7fbf9a21f9e8162e008a4835de8d2f9d41110302d1094cf9c377874eb9ab1bf"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "361f7a987c65d1a20a1189724038e918cbaf8aeb3b413d12b485b562cec90fa5",
+        "claim_occurrence_id": "b2008c887a571810ce9e48afc142b4a434e03907dc8357be0435f117fec13d62",
+        "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "dec90417fd337d9e28e10b267893c52ee3a67065321e3376bd7cb41c576fb548",
+          "52dcfc9a7e48075c7e9314c37de3622efff6dfb637c5b869ef7bc91baebcad25"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "INTERVENING_DEFINITION",
+          "definition_head_quote": "“Intervening Event” means",
+          "limb_quote": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": "Intervening Event",
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "intervening event",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "INTERVENING_DEFINITION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "dec90417fd337d9e28e10b267893c52ee3a67065321e3376bd7cb41c576fb548",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+            "document_ordinal": 0,
+            "absolute_start": 21266,
+            "absolute_end": 21295,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "52dcfc9a7e48075c7e9314c37de3622efff6dfb637c5b869ef7bc91baebcad25",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "451cc17d2f8aaa9bab8ac8bf5e7930bc3409cd4f879e774fca2072648cf40e9a",
+            "document_ordinal": 0,
+            "absolute_start": 21296,
+            "absolute_end": 21604,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "e8d03fc735556e3b633a6882154cda025eb0a3e7994afdc7719eb58d10b364f5"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "361f7a987c65d1a20a1189724038e918cbaf8aeb3b413d12b485b562cec90fa5",
+            "claim_occurrence_id": "b2008c887a571810ce9e48afc142b4a434e03907dc8357be0435f117fec13d62",
+            "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+            "claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "dec90417fd337d9e28e10b267893c52ee3a67065321e3376bd7cb41c576fb548",
+              "52dcfc9a7e48075c7e9314c37de3622efff6dfb637c5b869ef7bc91baebcad25"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "INTERVENING_DEFINITION",
+              "definition_head_quote": "“Intervening Event” means",
+              "limb_quote": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": "Intervening Event",
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "intervening event",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "INTERVENING_DEFINITION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "dec90417fd337d9e28e10b267893c52ee3a67065321e3376bd7cb41c576fb548",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+                "document_ordinal": 0,
+                "absolute_start": 21266,
+                "absolute_end": 21295,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "52dcfc9a7e48075c7e9314c37de3622efff6dfb637c5b869ef7bc91baebcad25",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "451cc17d2f8aaa9bab8ac8bf5e7930bc3409cd4f879e774fca2072648cf40e9a",
+                "document_ordinal": 0,
+                "absolute_start": 21296,
+                "absolute_end": 21604,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "e8d03fc735556e3b633a6882154cda025eb0a3e7994afdc7719eb58d10b364f5"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.c",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-INTERVENING",
+        "ordinal": 2,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "closure_id": "c7fbf9a21f9e8162e008a4835de8d2f9d41110302d1094cf9c377874eb9ab1bf"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "bb4aa4689acdd7cb35ecd4c5cc92b5bbae2d48fccb7650d65f1439b16a2130ec",
+        "claim_occurrence_id": "68185cd7f726469217580df3a2fbbc226f2ba1b69f734b422124eb62c5e92d3f",
+        "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof",
+        "canonical_value": "ACQUISITION_PROPOSAL_RECEIPT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e950d83f71ea5ddc8a2df195c0868e3c451b870beebd30ae45980b78bfc127cb",
+          "a2164de417eb9d3e282b25f1286e0e9bbe1e813b043c5467654901dadb091879"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "INTERVENING_EXCLUSION",
+          "definition_head_quote": "“Intervening Event” means",
+          "limb_quote": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": "Intervening Event",
+          "exclusion_code": "ACQUISITION_PROPOSAL_RECEIPT",
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "intervening event",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "INTERVENING_EXCLUSION",
+          "exclusion_code": "ACQUISITION_PROPOSAL_RECEIPT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e950d83f71ea5ddc8a2df195c0868e3c451b870beebd30ae45980b78bfc127cb",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+            "document_ordinal": 0,
+            "absolute_start": 21266,
+            "absolute_end": 21295,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "a2164de417eb9d3e282b25f1286e0e9bbe1e813b043c5467654901dadb091879",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "59c8b3bdae01a7a47fc7d65d74e01bfb5413b897055bd3d9e53431d5d43859af",
+            "document_ordinal": 0,
+            "absolute_start": 21722,
+            "absolute_end": 21834,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "44d6a24f28d8fee5bd03346a9cc139cd30fd4cd9b9d5de24dbc20dfadae050f6"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "bb4aa4689acdd7cb35ecd4c5cc92b5bbae2d48fccb7650d65f1439b16a2130ec",
+            "claim_occurrence_id": "68185cd7f726469217580df3a2fbbc226f2ba1b69f734b422124eb62c5e92d3f",
+            "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+            "claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof",
+            "canonical_value": "ACQUISITION_PROPOSAL_RECEIPT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e950d83f71ea5ddc8a2df195c0868e3c451b870beebd30ae45980b78bfc127cb",
+              "a2164de417eb9d3e282b25f1286e0e9bbe1e813b043c5467654901dadb091879"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "INTERVENING_EXCLUSION",
+              "definition_head_quote": "“Intervening Event” means",
+              "limb_quote": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": "Intervening Event",
+              "exclusion_code": "ACQUISITION_PROPOSAL_RECEIPT",
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "intervening event",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "INTERVENING_EXCLUSION",
+              "exclusion_code": "ACQUISITION_PROPOSAL_RECEIPT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e950d83f71ea5ddc8a2df195c0868e3c451b870beebd30ae45980b78bfc127cb",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+                "document_ordinal": 0,
+                "absolute_start": 21266,
+                "absolute_end": 21295,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "a2164de417eb9d3e282b25f1286e0e9bbe1e813b043c5467654901dadb091879",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "59c8b3bdae01a7a47fc7d65d74e01bfb5413b897055bd3d9e53431d5d43859af",
+                "document_ordinal": 0,
+                "absolute_start": 21722,
+                "absolute_end": 21834,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "44d6a24f28d8fee5bd03346a9cc139cd30fd4cd9b9d5de24dbc20dfadae050f6"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.c",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-INTERVENING",
+        "ordinal": 2,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "closure_id": "c7fbf9a21f9e8162e008a4835de8d2f9d41110302d1094cf9c377874eb9ab1bf"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6a3b9cae7ab7c2ab4125bb5d332f20e2ffb1b109566c6b817ad97bd1682f19c4",
+        "claim_occurrence_id": "b36d95f5f0deb0945e1e7fc83d0bce1ab6f7f6817b99e02285a22bc4571487c2",
+        "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+        "claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries",
+        "canonical_value": "STOCK_PRICE_CHANGE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "722899569c0ac3de5096633fb82a84dbcb48f3e5d4954372eefef5d5a527ef1f",
+          "08c6c7a312167054def62caecff11da73edb4f03a8ae9f46ee4b8ca4440ecf4a"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "INTERVENING_EXCLUSION",
+          "definition_head_quote": "“Intervening Event” means",
+          "limb_quote": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": "Intervening Event",
+          "exclusion_code": "STOCK_PRICE_CHANGE",
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "intervening event",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "INTERVENING_EXCLUSION",
+          "exclusion_code": "STOCK_PRICE_CHANGE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "722899569c0ac3de5096633fb82a84dbcb48f3e5d4954372eefef5d5a527ef1f",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+            "document_ordinal": 0,
+            "absolute_start": 21266,
+            "absolute_end": 21295,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "08c6c7a312167054def62caecff11da73edb4f03a8ae9f46ee4b8ca4440ecf4a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "d003f99425bfec6b4cc5f724ff548a02b0727b5dee7eb407c12fd597efa04424",
+            "document_ordinal": 0,
+            "absolute_start": 21842,
+            "absolute_end": 22023,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7ccc5dfae8caf0471fb8b606aa4f788e2d0d4fb92918a6e4e596a714b42d146b"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6a3b9cae7ab7c2ab4125bb5d332f20e2ffb1b109566c6b817ad97bd1682f19c4",
+            "claim_occurrence_id": "b36d95f5f0deb0945e1e7fc83d0bce1ab6f7f6817b99e02285a22bc4571487c2",
+            "subject_occurrence_id": "a098a040b471508da454cf04088c2c5ef1ded62f0282ebc7b2248f37c08301e5",
+            "claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries",
+            "canonical_value": "STOCK_PRICE_CHANGE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "722899569c0ac3de5096633fb82a84dbcb48f3e5d4954372eefef5d5a527ef1f",
+              "08c6c7a312167054def62caecff11da73edb4f03a8ae9f46ee4b8ca4440ecf4a"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "INTERVENING_EXCLUSION",
+              "definition_head_quote": "“Intervening Event” means",
+              "limb_quote": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": "Intervening Event",
+              "exclusion_code": "STOCK_PRICE_CHANGE",
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "intervening event",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "INTERVENING_EXCLUSION",
+              "exclusion_code": "STOCK_PRICE_CHANGE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "722899569c0ac3de5096633fb82a84dbcb48f3e5d4954372eefef5d5a527ef1f",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "7e7b40a131676237f7e624cae1e9af551eef31b38cb2efdb0ff05146bc74084f",
+                "document_ordinal": 0,
+                "absolute_start": 21266,
+                "absolute_end": 21295,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "08c6c7a312167054def62caecff11da73edb4f03a8ae9f46ee4b8ca4440ecf4a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "d003f99425bfec6b4cc5f724ff548a02b0727b5dee7eb407c12fd597efa04424",
+                "document_ordinal": 0,
+                "absolute_start": 21842,
+                "absolute_end": 22023,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7ccc5dfae8caf0471fb8b606aa4f788e2d0d4fb92918a6e4e596a714b42d146b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.c",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "at least 80% of the outstanding shares of Company Common Stock"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-SUPERIOR",
+        "ordinal": 3,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "closure_id": "c92a35242894b060dd491b63fb2b31de774119416084c38f2159aa14b7a2f5b0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "6d2b24dda48f82f3b2942c25a3879584d49e93b4a8ddc39fd4987e943959a28a",
+        "claim_occurrence_id": "9830cf8b416f28ef15f023930a33afe0a7d4e072e4f23238f4d2c68a2b437406",
+        "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "at least 80% of the outstanding shares of Company Common Stock",
+        "canonical_value": "80",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d546acb08391e3097be08677b742decb78a131fca4b523b1d874ad1e0ac47c09",
+          "2421312856584b1e060437b6ac82ce9026aab289a5e4756ae319ceaca37b4268"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "SUPERIOR_THRESHOLD",
+          "definition_head_quote": "“Superior Proposal” means",
+          "limb_quote": "at least 80% of the outstanding shares of Company Common Stock",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": "Superior Proposal",
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": "EQUITY_SECURITIES",
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "superior proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "SUPERIOR_THRESHOLD",
+          "threshold_basis": "EQUITY_SECURITIES"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d546acb08391e3097be08677b742decb78a131fca4b523b1d874ad1e0ac47c09",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+            "document_ordinal": 0,
+            "absolute_start": 36240,
+            "absolute_end": 36269,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2421312856584b1e060437b6ac82ce9026aab289a5e4756ae319ceaca37b4268",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "cdb8e2dd65131456a86c5f9f558a7c7fda88485389d87dbd468e62959824db1a",
+            "document_ordinal": 0,
+            "absolute_start": 36334,
+            "absolute_end": 36396,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c7704ea2b8c1594698a0a55bf79d7bcfe45f8b0d804f990f95b15e4d04da6352"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "6d2b24dda48f82f3b2942c25a3879584d49e93b4a8ddc39fd4987e943959a28a",
+            "claim_occurrence_id": "9830cf8b416f28ef15f023930a33afe0a7d4e072e4f23238f4d2c68a2b437406",
+            "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+            "claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "at least 80% of the outstanding shares of Company Common Stock",
+            "canonical_value": "80",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d546acb08391e3097be08677b742decb78a131fca4b523b1d874ad1e0ac47c09",
+              "2421312856584b1e060437b6ac82ce9026aab289a5e4756ae319ceaca37b4268"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "SUPERIOR_THRESHOLD",
+              "definition_head_quote": "“Superior Proposal” means",
+              "limb_quote": "at least 80% of the outstanding shares of Company Common Stock",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": "Superior Proposal",
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": "EQUITY_SECURITIES",
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "superior proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SUPERIOR_THRESHOLD",
+              "threshold_basis": "EQUITY_SECURITIES"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d546acb08391e3097be08677b742decb78a131fca4b523b1d874ad1e0ac47c09",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+                "document_ordinal": 0,
+                "absolute_start": 36240,
+                "absolute_end": 36269,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2421312856584b1e060437b6ac82ce9026aab289a5e4756ae319ceaca37b4268",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "cdb8e2dd65131456a86c5f9f558a7c7fda88485389d87dbd468e62959824db1a",
+                "document_ordinal": 0,
+                "absolute_start": 36334,
+                "absolute_end": 36396,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c7704ea2b8c1594698a0a55bf79d7bcfe45f8b0d804f990f95b15e4d04da6352"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.e",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-SUPERIOR",
+        "ordinal": 3,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "closure_id": "c92a35242894b060dd491b63fb2b31de774119416084c38f2159aa14b7a2f5b0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "c29c46b7caa03f7c416d4317d8002395dd5e2c95fe72d3a852570bc09bda4232",
+        "claim_occurrence_id": "840dc2e7f75a1d697a24f554b849dba3d4f4873342fcaf203250695b6ca00cb2",
+        "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions",
+        "canonical_value": "FINANCIAL_FAVORABILITY",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "de69a5a7b65bfa6677f72aba00ea1c7ee62e284567199b696ff43f88c448f78d",
+          "40fe06ea36dd300389fe9d0cb07b0742fef633e66b892db4025fbf325595f2e5"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "definition_head_quote": "“Superior Proposal” means",
+          "limb_quote": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions",
+          "proposal_term_ref": null,
+          "superior_term_ref": "Superior Proposal",
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": "FINANCIAL_FAVORABILITY",
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "superior proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "qualifier_code": "FINANCIAL_FAVORABILITY"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "de69a5a7b65bfa6677f72aba00ea1c7ee62e284567199b696ff43f88c448f78d",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+            "document_ordinal": 0,
+            "absolute_start": 36240,
+            "absolute_end": 36269,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "40fe06ea36dd300389fe9d0cb07b0742fef633e66b892db4025fbf325595f2e5",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b69bbe4a5e38c0f8f73a2800270e9094f4f10582721e1707e42484dcaaae7329",
+            "document_ordinal": 0,
+            "absolute_start": 37014,
+            "absolute_end": 37132,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "6eaa3f11d6fe3b481fe01da91264136b1e1456ffb1e0eb663e7172c960a8e0d2"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "c29c46b7caa03f7c416d4317d8002395dd5e2c95fe72d3a852570bc09bda4232",
+            "claim_occurrence_id": "840dc2e7f75a1d697a24f554b849dba3d4f4873342fcaf203250695b6ca00cb2",
+            "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+            "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions",
+            "canonical_value": "FINANCIAL_FAVORABILITY",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "de69a5a7b65bfa6677f72aba00ea1c7ee62e284567199b696ff43f88c448f78d",
+              "40fe06ea36dd300389fe9d0cb07b0742fef633e66b892db4025fbf325595f2e5"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "definition_head_quote": "“Superior Proposal” means",
+              "limb_quote": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions",
+              "proposal_term_ref": null,
+              "superior_term_ref": "Superior Proposal",
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": "FINANCIAL_FAVORABILITY",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "superior proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "qualifier_code": "FINANCIAL_FAVORABILITY"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "de69a5a7b65bfa6677f72aba00ea1c7ee62e284567199b696ff43f88c448f78d",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+                "document_ordinal": 0,
+                "absolute_start": 36240,
+                "absolute_end": 36269,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "40fe06ea36dd300389fe9d0cb07b0742fef633e66b892db4025fbf325595f2e5",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b69bbe4a5e38c0f8f73a2800270e9094f4f10582721e1707e42484dcaaae7329",
+                "document_ordinal": 0,
+                "absolute_start": 37014,
+                "absolute_end": 37132,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "6eaa3f11d6fe3b481fe01da91264136b1e1456ffb1e0eb663e7172c960a8e0d2"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.e",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "citation_context": {
+        "parent_section_reference": "Annex-A",
+        "child_section_reference": "Annex-A",
+        "parent_chapeau_quote": "ANNEX A\nCERTAIN DEFINED TERMS\n“Acquisition Proposal” means any bona fide written offer or proposal for, or any bona fide written indication of interest in, any",
+        "child_clause_quote": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7d3e04036c3ca5fa2be7a39ce2a5e81fe6391c141cc44280402c094ea58277ee",
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "absolute_start": 317026,
+        "absolute_end": 360595,
+        "concept_key": "DEF-SUPERIOR",
+        "ordinal": 3,
+        "source_anchor_id": "e2f8dd173e8d1cf38985b1bf821ba27fdc4b79ac1455727e19ac97b692c55e80",
+        "provision_instance_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "closure_id": "c92a35242894b060dd491b63fb2b31de774119416084c38f2159aa14b7a2f5b0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "b040acb3d6791539a0a9c95cb1b3a77a32d5271bae11a607156f7820467e24e8",
+        "claim_occurrence_id": "5f13f879f5bd2eb513684d94b645c58f4c13f633dc19a9236e9dcf66cc47c9f8",
+        "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+        "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis",
+        "canonical_value": "CONSUMMATION_LIKELIHOOD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "373a1be02b5120b0d9515104b8346a29a2e49da00ca1cb828f5b368f395115f9",
+          "7fda6c40dc5c173406bd656d2cfc1027d05ff42aebd7319735ff70f321149f5a"
+        ],
+        "attributes": {
+          "section_reference": "Annex-A",
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "definition_head_quote": "“Superior Proposal” means",
+          "limb_quote": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis",
+          "proposal_term_ref": null,
+          "superior_term_ref": "Superior Proposal",
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": "CONSUMMATION_LIKELIHOOD",
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "superior proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "qualifier_code": "CONSUMMATION_LIKELIHOOD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "373a1be02b5120b0d9515104b8346a29a2e49da00ca1cb828f5b368f395115f9",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+            "document_ordinal": 0,
+            "absolute_start": 36240,
+            "absolute_end": 36269,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7fda6c40dc5c173406bd656d2cfc1027d05ff42aebd7319735ff70f321149f5a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1c73a2e3ee10785f6dd5ad6b0816fd350d1b13ccc5272cd79f4bf3f877b1de29",
+            "document_ordinal": 0,
+            "absolute_start": 37142,
+            "absolute_end": 37243,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "89b84a2f72f3d2439694da04ccec75142363581a20a7dc500ca94cdf87a3c8a4"
+      },
+      "compiled_candidate": {
+        "section_reference": "Annex-A",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "b040acb3d6791539a0a9c95cb1b3a77a32d5271bae11a607156f7820467e24e8",
+            "claim_occurrence_id": "5f13f879f5bd2eb513684d94b645c58f4c13f633dc19a9236e9dcf66cc47c9f8",
+            "subject_occurrence_id": "39541eea317683df01fe8c1b3a9167b4578e9517f25295fffaff5cb2101a1e94",
+            "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis",
+            "canonical_value": "CONSUMMATION_LIKELIHOOD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "373a1be02b5120b0d9515104b8346a29a2e49da00ca1cb828f5b368f395115f9",
+              "7fda6c40dc5c173406bd656d2cfc1027d05ff42aebd7319735ff70f321149f5a"
+            ],
+            "attributes": {
+              "section_reference": "Annex-A",
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "definition_head_quote": "“Superior Proposal” means",
+              "limb_quote": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis",
+              "proposal_term_ref": null,
+              "superior_term_ref": "Superior Proposal",
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": "CONSUMMATION_LIKELIHOOD",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "superior proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "qualifier_code": "CONSUMMATION_LIKELIHOOD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "373a1be02b5120b0d9515104b8346a29a2e49da00ca1cb828f5b368f395115f9",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "60f5c157871af04d2a2215bbfd4a32f33e7d2a80ab542f88d9a6e7603512ffca",
+                "document_ordinal": 0,
+                "absolute_start": 36240,
+                "absolute_end": 36269,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7fda6c40dc5c173406bd656d2cfc1027d05ff42aebd7319735ff70f321149f5a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1c73a2e3ee10785f6dd5ad6b0816fd350d1b13ccc5272cd79f4bf3f877b1de29",
+                "document_ordinal": 0,
+                "absolute_start": 37142,
+                "absolute_end": 37243,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "89b84a2f72f3d2439694da04ccec75142363581a20a7dc500ca94cdf87a3c8a4"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+            "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+            "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+            "extraction_provenance_id": "9a1b3ec86a529f0b0c1b273dfd80206af0eeb54654f663f86566afdd7729e372"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "Annex-A",
+          "normalized_citation": "Annex-A",
+          "derived_citation": "Annex-A"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "i.I.i.i.e",
+        "annotation_only": true,
+        "same_style_paths": [
+          "i.I.i.i",
+          "i.I.i.i.a",
+          "i.I.i.i.b",
+          "i.I.i.i.c",
+          "i.I.i.i.d",
+          "i.I.i.i.e"
+        ]
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bb4aa4689acdd7cb35ecd4c5cc92b5bbae2d48fccb7650d65f1439b16a2130ec",
+      "closure_id": "44d6a24f28d8fee5bd03346a9cc139cd30fd4cd9b9d5de24dbc20dfadae050f6",
+      "normalised_phrase": "the receipt, existence or terms of an Acquisition Proposal or any matter relating thereto or consequence thereof",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "NO_PERCENT_LITERAL"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company’s and its Subsidiaries’ consolidated assets",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "90d5f5d24df007ec9c1d6cb2197bf2432b4f8793fd51ccb392e4a7d3120bd295",
+      "closure_id": "6b44d2d969a6e9dad9ef3f4e69a5e69e64340ac9ba15a093f87a221d6c4b7ee2",
+      "normalised_phrase": "the Company’s and its Subsidiaries’ consolidated assets",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c29c46b7caa03f7c416d4317d8002395dd5e2c95fe72d3a852570bc09bda4232",
+      "closure_id": "6eaa3f11d6fe3b481fe01da91264136b1e1456ffb1e0eb663e7172c960a8e0d2",
+      "normalised_phrase": "is more favorable to the Company’s stockholders from a financial point of view than the Mergers and the Transactions",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a3b9cae7ab7c2ab4125bb5d332f20e2ffb1b109566c6b817ad97bd1682f19c4",
+      "closure_id": "7ccc5dfae8caf0471fb8b606aa4f788e2d0d4fb92918a6e4e596a714b42d146b",
+      "normalised_phrase": "any change in the price or trading volume of the Company Common Stock, the Parent Common Stock or any other securities of the Company, Parent or any of their respective Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b040acb3d6791539a0a9c95cb1b3a77a32d5271bae11a607156f7820467e24e8",
+      "closure_id": "89b84a2f72f3d2439694da04ccec75142363581a20a7dc500ca94cdf87a3c8a4",
+      "normalised_phrase": "constitutes a transaction that is likely to be consummated on the terms so proposed on a timely basis",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8881f6b669c154d6acb04511e3e11fb083b36568e91b25e098cb2d918d00d51a",
+      "closure_id": "ad396adfa57e166af84221f27e3290e8cebdb653edf7841507ca3442d4d0dfb9",
+      "normalised_phrase": "20% or more of any class of equity securities of the Company or any of its Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c0cd9cd052971d31d81b2f33347a65f98b700ff5dfc42fccbf8320fc0a6bcf30",
+      "closure_id": "c710fd99b2d31baba56b216b0710c9515fd552fb3fa782f012af7213e3540b23",
+      "normalised_phrase": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6d2b24dda48f82f3b2942c25a3879584d49e93b4a8ddc39fd4987e943959a28a",
+      "closure_id": "c7704ea2b8c1594698a0a55bf79d7bcfe45f8b0d804f990f95b15e4d04da6352",
+      "normalised_phrase": "at least 80% of the outstanding shares of Company Common Stock",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "361f7a987c65d1a20a1189724038e918cbaf8aeb3b413d12b485b562cec90fa5",
+      "closure_id": "e8d03fc735556e3b633a6882154cda025eb0a3e7994afdc7719eb58d10b364f5",
+      "normalised_phrase": "any event, development or change in circumstances that was not known by or reasonably foreseeable to the Company’s Board of Directors as of the date of this Agreement, which event, change or development becomes known to the Company’s Board of Directors prior to obtaining the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "fa61cc647be2e824d7b2551e91aa0c85a86362c69b946a274695c7459469903d",
+      "closure_id": "fcc4f3fe69493c2d94b69980f8ec0893cf301fc344da8997fe8b2ce0f5cfd1dc",
+      "normalised_phrase": "20% or more of the assets, net revenues, net income or EBITDA of the Company and its Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-PENDING",
+      "reasons": [
+        "RECORDED_DEFINITION_ENVELOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "all Intellectual Property Rights that are registered or filed with or by, or issued under the authority of, any Governmental Authority or Internet domain name registrar",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3ffb2ccf61ee3f26f8547fb661c75b3f54ebfee79527e4aba168c08226d36eb7",
+      "closure_id": "72ad440137010cc82a68c1da09304f044cae371289135036ac2dbb2f5014d424",
+      "normalised_phrase": "all Intellectual Property Rights that are registered or filed with or by, or issued under the authority of, any Governmental Authority or Internet domain name registrar",
+      "attachment_position": null,
+      "concept_family": "DEF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the sum of (A) the Exchange Ratio and (B) the quotient, rounded to four decimal places, obtained by dividing (x) the Per Share Cash Consideration by (y) the Parent Trading Price.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Equity Award Exchange Ratio”",
+          "normalized_term_identity": "equity award exchange ratio",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Equity Award Exchange Ratio” means",
+          "definition_body_quote": "the sum of (A) the Exchange Ratio and (B) the quotient, rounded to four decimal places, obtained by dividing (x) the Per Share Cash Consideration by (y) the Parent Trading Price.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Equity Award Exchange Ratio”",
+          "normalized_term_identity": "equity award exchange ratio",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Equity Award Exchange Ratio” means",
+          "definition_body_quote": "the sum of (A) the Exchange Ratio and (B) the quotient, rounded to four decimal places, obtained by dividing (x) the Per Share Cash Consideration by (y) the Parent Trading Price.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "59dd15d93b0c20d2fa8ee48016b1ffd60aa11bd11a130d2a259a2d29fac4cf5b",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c5589cf168c5badf2cb56e5ced730a7786b02c0e8b2b977c2aaa11c89192a48b",
+          "document_ordinal": 0,
+          "absolute_start": 15529,
+          "absolute_end": 15707,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "971af7a43c47e970c2a5e6ae26475289c980ea0aba566662a3d06d945ae2a05e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the following (in each case rounded to four decimals): (A) if the Parent Trading Price is an amount equal to or less than the Floor Price, then the Exchange Ratio shall be 0.5265; (B) if the Parent Trading Price is an amount greater than the Floor Price but less than the Ceiling Price, then the Exchange Ratio shall be equal to the quotient obtained by dividing $20 by the Parent Trading Price; and (C) if the Parent Trading Price is an amount greater than or equal to the Ceiling Price, then the Exchange Ratio shall be 0.3326.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Exchange Ratio”",
+          "normalized_term_identity": "exchange ratio",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Exchange Ratio” means",
+          "definition_body_quote": "the following (in each case rounded to four decimals): (A) if the Parent Trading Price is an amount equal to or less than the Floor Price, then the Exchange Ratio shall be 0.5265; (B) if the Parent Trading Price is an amount greater than the Floor Price but less than the Ceiling Price, then the Exchange Ratio shall be equal to the quotient obtained by dividing $20 by the Parent Trading Price; and (C) if the Parent Trading Price is an amount greater than or equal to the Ceiling Price, then the Exchange Ratio shall be 0.3326.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Exchange Ratio”",
+          "normalized_term_identity": "exchange ratio",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Exchange Ratio” means",
+          "definition_body_quote": "the following (in each case rounded to four decimals): (A) if the Parent Trading Price is an amount equal to or less than the Floor Price, then the Exchange Ratio shall be 0.5265; (B) if the Parent Trading Price is an amount greater than the Floor Price but less than the Ceiling Price, then the Exchange Ratio shall be equal to the quotient obtained by dividing $20 by the Parent Trading Price; and (C) if the Parent Trading Price is an amount greater than or equal to the Ceiling Price, then the Exchange Ratio shall be 0.3326.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a19face43558eebb8ab5569b9424da86cae5721758ea595d209ea525f0652d77",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f6093c81f2ec09c1eee1ef455e2bf757ba12a088195189c34879f8bfd0f7aae2",
+          "document_ordinal": 0,
+          "absolute_start": 16024,
+          "absolute_end": 16553,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6f3988e59a0ae2e1532470759c2447d55f9330ab4158139c55950f6f4b3658d4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "an individual, a corporation, a limited liability company, a partnership, an association, a trust or any other entity or organization, including a Governmental Authority.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Person” or “person”",
+          "normalized_term_identity": "person or person",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Person” or “person” means",
+          "definition_body_quote": "an individual, a corporation, a limited liability company, a partnership, an association, a trust or any other entity or organization, including a Governmental Authority.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Person” or “person”",
+          "normalized_term_identity": "person or person",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Person” or “person” means",
+          "definition_body_quote": "an individual, a corporation, a limited liability company, a partnership, an association, a trust or any other entity or organization, including a Governmental Authority.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "40279e3b6cd7904659b7d45ae127294e397ad4dbd6e89c470322c18524023f85",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6ace3ae6f87179e81e530911cfb0d71fb32c7fc3e2cda70c4dcde8b0bf6ec5d8",
+          "document_ordinal": 0,
+          "absolute_start": 30737,
+          "absolute_end": 30907,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c1efc86d8974684f316717efb25fa0ad3c485a98ec768c993e9050d9800cc506",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any return, report, form, election, declaration or similar statement filed or required to be filed with respect to any Tax (including any attachments, schedules or amendments thereto), including any information return, claim for refund, amended return or declaration of estimated Tax.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Tax Returns”",
+          "normalized_term_identity": "tax returns",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Tax Returns” means",
+          "definition_body_quote": "any return, report, form, election, declaration or similar statement filed or required to be filed with respect to any Tax (including any attachments, schedules or amendments thereto), including any information return, claim for refund, amended return or declaration of estimated Tax.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Tax Returns”",
+          "normalized_term_identity": "tax returns",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Tax Returns” means",
+          "definition_body_quote": "any return, report, form, election, declaration or similar statement filed or required to be filed with respect to any Tax (including any attachments, schedules or amendments thereto), including any information return, claim for refund, amended return or declaration of estimated Tax.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e492f89c37a302ac360ed246df7d923cd1bc68feb0aa9424a3f4f586e74632c0",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "12568aab5c50d8063895767a013fac7e8d17e641f9833ccf73aee080a9b009de",
+          "document_ordinal": 0,
+          "absolute_start": 37430,
+          "absolute_end": 37714,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a273dffda109d4a40ca6b0d0575e76121f6b277f89af5370fb0b4aa5309a5c92",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any and all taxes, charges, fees, levies, duties, tariffs, imposts or other assessments, whether disputed or not, including all net income, gross income, gross receipts, excise, stamp, real or personal property, ad valorem, withholding, social security (or similar), unemployment, occupation, use, production, service, service use, license, digital services, net worth, payroll, franchise, severance, transfer, recording, employment, premium, windfall profits, environmental, customs duties, capital stock, profits, disability, sales, registration, value added, alternative or add-on minimum, estimated or other taxes, assessments or charges in the nature of taxes imposed by any Governmental Authority and any interest, penalties or additions to tax attributable thereto;",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Taxes”",
+          "normalized_term_identity": "taxes",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Taxes” means",
+          "definition_body_quote": "any and all taxes, charges, fees, levies, duties, tariffs, imposts or other assessments, whether disputed or not, including all net income, gross income, gross receipts, excise, stamp, real or personal property, ad valorem, withholding, social security (or similar), unemployment, occupation, use, production, service, service use, license, digital services, net worth, payroll, franchise, severance, transfer, recording, employment, premium, windfall profits, environmental, customs duties, capital stock, profits, disability, sales, registration, value added, alternative or add-on minimum, estimated or other taxes, assessments or charges in the nature of taxes imposed by any Governmental Authority and any interest, penalties or additions to tax attributable thereto;",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Taxes”",
+          "normalized_term_identity": "taxes",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Taxes” means",
+          "definition_body_quote": "any and all taxes, charges, fees, levies, duties, tariffs, imposts or other assessments, whether disputed or not, including all net income, gross income, gross receipts, excise, stamp, real or personal property, ad valorem, withholding, social security (or similar), unemployment, occupation, use, production, service, service use, license, digital services, net worth, payroll, franchise, severance, transfer, recording, employment, premium, windfall profits, environmental, customs duties, capital stock, profits, disability, sales, registration, value added, alternative or add-on minimum, estimated or other taxes, assessments or charges in the nature of taxes imposed by any Governmental Authority and any interest, penalties or additions to tax attributable thereto;",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "cecdfc756a397400c2e6425f1f53da922e4eb90b2910a2d55f5fc0dbc420e491",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bf0c1cc8f1944d803ad5b71796569d91e19d83563115ef3fb2cf47b1dd4bea91",
+          "document_ordinal": 0,
+          "absolute_start": 37733,
+          "absolute_end": 38505,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "941484f7af9b2cfbad5c233070f70b76dd0ec57850955a2980429ed61cb189ad",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "source_citation": "Annex-A",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the quotient, expressed as a percentage, obtained by dividing (i) the Per Share Tax Value by (ii) the sum of the Per Share Tax Value plus the Per Share Cash Consideration, which for this purpose shall include any other amounts treated as consideration other than stock of Parent, as determined pursuant to Treasury Regulations Section 1.368-1(e).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Threshold Percentage”",
+          "normalized_term_identity": "threshold percentage",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Threshold Percentage” means",
+          "definition_body_quote": "the quotient, expressed as a percentage, obtained by dividing (i) the Per Share Tax Value by (ii) the sum of the Per Share Tax Value plus the Per Share Cash Consideration, which for this purpose shall include any other amounts treated as consideration other than stock of Parent, as determined pursuant to Treasury Regulations Section 1.368-1(e).",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Threshold Percentage”",
+          "normalized_term_identity": "threshold percentage",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Threshold Percentage” means",
+          "definition_body_quote": "the quotient, expressed as a percentage, obtained by dividing (i) the Per Share Tax Value by (ii) the sum of the Per Share Tax Value plus the Per Share Cash Consideration, which for this purpose shall include any other amounts treated as consideration other than stock of Parent, as determined pursuant to Treasury Regulations Section 1.368-1(e).",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2d89b608fff959fb914ba7ec1223be10deafbd875e729602d3e3d380105b2024",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "711f3a32c22092ecd7c3b0ff5a0ef5c6b236a609043fef52bc43baffbdfedadc",
+          "document_ordinal": 0,
+          "absolute_start": 39898,
+          "absolute_end": 40244,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "57420789be3fc1343cef84551965386de19c6aac6fa0ce9a811bcc9178326371",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "2ee8745b5f51ec1ace58ca1012fa6658827c47a13c2e5d1e7dbbf78000a76089",
+        "producer_receipt_id": "dcd688dc864945bef5fbd8ec06ebe118de375d8ed88936db817d6fdd68755de3",
+        "governed_scope_digest": "e241e4acb783c81be789e4bdb3faaac504c4f30ac8bd240cc2a12411326e0bdc",
+        "extraction_provenance_id": "6d8c8925e0d84d6380479fd44ca584cc0ea73777d52daf5133dcdd99d22201d3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b4f6caa1c5c751d97f367be90fce0154eb29277ddfb412f7fe84d03c13c94427",
+    "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 17,
+      "resolved": 9,
+      "auto_pass": 0,
+      "review_queue": 11,
+      "open_world": 6,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "8ca12b8e32b5eb3c39f0797b7a7092ec0845669ce1b65883214a01961882eb55"
+  }
+}

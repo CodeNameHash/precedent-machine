@@ -1,0 +1,317 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a14f6f9e10358d955e5c93487025126634153aa7b5b712da0d873239de02651f",
+  "review_queue": [
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_STRATEGY_CONTROL",
+      "concept_key": "ANTI-STRATEGY",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dfdc9c87eebfd5e2f52e1acbb4f48dd1d82a50f1bc23dd61a2f6f3075fe6df81",
+      "closure_id": "5976b5f186934dab91d64bb3cf2d8767065c9700995f1bd5ef99798d9b1b00a7",
+      "normalised_phrase": "Parent shall have the right to control and (having taken into consideration in good faith all comments, proposals and suggestions made by the Company) direct the process, strategy and determinations with respect to any Antitrust and Foreign Investment Law in connection with the Merger, including in dealing with any Governmental Authority with respect thereto.",
+      "attachment_position": null,
+      "concept_family": "ANTI-STRATEGY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "OBLIGOR_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2aede99daf79c081cad7aedfef7affba9e10f120c2c5e029205172d61b605b47",
+      "closure_id": "64ae43fa704913e09cdcfa2050d030fa5faeef5b22fc82b1543a2d22d5827f4f",
+      "normalised_phrase": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+      "concept_key": "ANTI-INFO",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ba019f8ca492fb01836a31d881f40900074e93e50edf17ad4ff7272c4666ac09",
+      "closure_id": "6a2e0a90ebbafc04304027d7239027b03f2e5cd9e5527e897a80880a5d365591",
+      "normalised_phrase": "the Company and the Buyer Parties shall (and shall cause their respective Affiliates to), subject to any restrictions under applicable laws, (i) promptly notify the other Parties of, and, if in writing, furnish the others with copies of (or, in the case of oral communications, advise the others of the contents of) any material communication received by such Person from a Governmental Authority in connection with the Merger",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-INFO",
+          "pattern_id": "ANTI-INFO:PHRASE:SUPPLY_INFORMATION",
+          "start": 977,
+          "end": 992,
+          "excerpt": " to cooperate and coordinate) with the other in the making of such filings; (B) promptly supply the other (or cause the other to be supplied) with any information that may be ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-INFO",
+          "pattern_id": "ANTI-INFO:PHRASE:SUPPLY_INFORMATION",
+          "start": 1116,
+          "end": 1131,
+          "excerpt": "d) with any information that may be required in order to make such filings; (C) promptly supply (or cause the other to be supplied) any additional information that may be requ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-INFO",
+          "pattern_id": "ANTI-INFO:PHRASE:OUTSIDE_COUNSEL",
+          "start": 6818,
+          "end": 6833,
+          "excerpt": "lic information provided to any Governmental\n-60-\nAuthority as restricted to “outside counsel” only and any such information shall not be shared with employees, officers o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-INFO",
+          "pattern_id": "ANTI-INFO:PHRASE:OUTSIDE_COUNSEL",
+          "start": 7348,
+          "end": 7363,
+          "excerpt": " information provided to any Governmental Authority with another Party on an “outside counsel” only basis. Notwithstanding anything herein to the contrary, Parent shall ha",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_NOTIFICATION_OBLIGATION",
+      "concept_key": "ANTI-NOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f69babc8997d833bf533faa92340f8ee9f8a2cbc670df8eaa0597ab97576b459",
+      "closure_id": "856f269ed6499fe9d84c87d892b98e5f7d2abe0422bde48d379a660f5da2b581",
+      "normalised_phrase": "the Company and the Buyer Parties shall (and shall cause their respective Affiliates to), subject to any restrictions under applicable laws, (i) promptly notify the other Parties of, and, if in writing, furnish the others with copies of (or, in the case of oral communications, advise the others of the contents of) any material communication received by such Person from a Governmental Authority in connection with the Merger",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-NOTIFY",
+          "pattern_id": "ANTI-NOTIFY:PHRASE:KEEP_INFORMED",
+          "start": 5473,
+          "end": 5515,
+          "excerpt": "therewith) made in connection with the Merger to a Governmental Authority; (ii) keep the other Parties reasonably informed with respect to the status of any such submissions and filings to any Governmen",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(a)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-INFO",
+      "reasons": [
+        "INFORMATION_SHARING_OBLIGATION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each of Parent and the Company will use reasonable efforts to (A) cooperate and coordinate (and cause its respective Affiliates to cooperate and coordinate) with the other in the making of such filings; (B) promptly supply the other (or cause the other to be supplied) with any information that may be required in order to make such filings",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7c5602ae1eb5c210dcec86db90d2fd956925dc20b26946dca3182020deb9add1",
+      "closure_id": "9f325c30d39107a4b337f55fee505e166dbc2d68fd6e863bf30eb9f5e5b6b2e8",
+      "normalised_phrase": "Each of Parent and the Company will use reasonable efforts to (A) cooperate and coordinate (and cause its respective Affiliates to cooperate and coordinate) with the other in the making of such filings; (B) promptly supply the other (or cause the other to be supplied) with any information that may be required in order to make such filings",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e0d5fd2ef78c5df386f083a8e38938384ceea73b98617bcee4ae424b280e9147",
+      "closure_id": "a77b2fd27f15a1f594683608f76591d8b8a42a504c96e20b8316f25acfbc6a7a",
+      "normalised_phrase": "Each of Parent and the Company will use reasonable efforts to",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_COOPERATION_OBLIGATION",
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4cb2a50e500e018164dcc4ed618f832dbdaf1fb51025b7bc6126b42b2beb551a",
+      "closure_id": "b8c31a0a12e9b7386fd014d52a4db528411c4931f88ad63f5ca939bd40c4bbf2",
+      "normalised_phrase": "the Company shall, and shall cause its Affiliates and Representatives to, reasonably cooperate, with Parent and its Affiliates on any sale, divestiture, license, hold separate, or other action undertaken or proposed to be undertaken by the Buyer Parties.",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_NON_IMPEDIMENT_COVENANT",
+      "concept_key": "ANTI-NOACTION",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b6358173c86f638345fc8c31a6344269ddae0cf6bb8c9e3c2a7afea18b02da12",
+      "closure_id": "cb7828dfad40f1fc00ed48eda20ff60c4dfcbfe47a857eb6368a6d301cc3de45",
+      "normalised_phrase": "none of the Company, Parent or Merger Sub (or any of their respective Affiliates) shall enter into any agreement, transaction or any agreement to effect any transaction (including any merger or acquisition) that would reasonably be expected to materially and adversely affect or materially delay the Company’s, Parent’s or Merger Sub’s ability to: (i) obtain the timely expiration or termination of the waiting period under the HSR Act, or the authorizations, consents, Orders and approvals required under any other applicable Antitrust and Foreign Investment Laws, applicable to the Transactions;",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOACTION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "source_citation": "6.2(b)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-BURDEN",
+      "reasons": [
+        "BURDEN_COMMITMENT_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Buyer Parties shall and, shall cause their respective Affiliates to, propose, negotiate, offer to commit and effect (and if such offer is accepted, commit to and effect), by consent decree, hold separate order, or otherwise, the sale, divestiture or disposition of such assets or businesses of, effective as of the Effective Time, the Company or its Subsidiaries, or otherwise offer to take or offer to commit to take any action (including any action that limits its freedom of action, ownership or control with respect to, or its ability to retain or hold, any of the businesses, assets, product lines, properties or services of the Company or its Subsidiaries) (collectively, “Remedies”) which it is lawfully capable of taking and if the offer is accepted, take or commit to take such action, in each case, as may be required in order to obtain any clearance, consent, approval or waiting period expiration or termination from any Person or Governmental Authority with respect to the Merger and the other transactions contemplated hereby or in order to vacate, lift, reverse, overturn, settle or otherwise resolve any order that prevents, prohibits, restricts or delays the consummation of the Merger and the other transactions contemplated hereby, in any case, that may be issued by any court or other Governmental Authority, so as to enable the Closing to occur as soon as reasonably possible (and in any event, not later than the Termination Date); provided, however, that Buyer Parties shall not be required to take or agree or commit to take any action, including any Remedies, if doing so would, individually or in the aggregate, reasonably be expected to have a material adverse effect on the business, financial condition or results of operations of the Company Group, taken as a whole (a “Detriment”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2b0f6fab1dfac5b927e4b4a3cdd7c824fcd474cef5f3a9a3d32a4ba5c4fb3d13",
+      "closure_id": "e0015eee56faa63acbf8ef7eb75e50334c310cc4ac445342b79d5a5943bac47b",
+      "normalised_phrase": "Buyer Parties shall and, shall cause their respective Affiliates to, propose, negotiate, offer to commit and effect (and if such offer is accepted, commit to and effect), by consent decree, hold separate order, or otherwise, the sale, divestiture or disposition of such assets or businesses of, effective as of the Effective Time, the Company or its Subsidiaries, or otherwise offer to take or offer to commit to take any action (including any action that limits its freedom of action, ownership or control with respect to, or its ability to retain or hold, any of the businesses, assets, product lines, properties or services of the Company or its Subsidiaries) (collectively, “Remedies”) which it is lawfully capable of taking and if the offer is accepted, take or commit to take such action, in each case, as may be required in order to obtain any clearance, consent, approval or waiting period expiration or termination from any Person or Governmental Authority with respect to the Merger and the other transactions contemplated hereby or in order to vacate, lift, reverse, overturn, settle or otherwise resolve any order that prevents, prohibits, restricts or delays the consummation of the Merger and the other transactions contemplated hereby, in any case, that may be issued by any court or other Governmental Authority, so as to enable the Closing to occur as soon as reasonably possible (and in any event, not later than the Termination Date); provided, however, that Buyer Parties shall not be required to take or agree or commit to take any action, including any Remedies, if doing so would, individually or in the aggregate, reasonably be expected to have a material adverse effect on the business, financial condition or results of operations of the Company Group, taken as a whole (a “Detriment”).",
+      "attachment_position": null,
+      "concept_family": "ANTI-BURDEN",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_COOPERATION_OBLIGATION",
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "896228367cddc124daa0da2d70fe38b549051dd2c2400b7d4c3c478ce539beb2",
+      "closure_id": "eaf44e90097fb30571ab29adc0d8f99cd9daa58651a2828ebb9fb273c9dbebdc",
+      "normalised_phrase": "Each of Parent and the Company will use reasonable efforts to (A) cooperate and coordinate (and cause its respective Affiliates to cooperate and coordinate) with the other in the making of such filings",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.2",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+      "concept_key": "ANTI-AGREEMENTS",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8c1f0a0ad27fabdafb1b67717cd7b0fafa431578a9e4369e8be25487ec7a1d05",
+      "closure_id": "fa2d3b769bc96e7f20bde1879ff4981943a379c8d0ecb62f7d45564ebd1793b8",
+      "normalised_phrase": "Neither Parent nor the Company will (and each of the Company and Parent will cause their Subsidiaries and affiliates not to) agree to stay, toll or extend any applicable waiting period under any Antitrust and Foreign Investment Law or enter into or extend a timing agreement with any Governmental Authority, without the prior written consent of the other party.",
+      "attachment_position": null,
+      "concept_family": "ANTI-AGREEMENTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "8ce24382d7cf59cb8818cc063404fd6409c9ab432bdf77babf133763a886dc06"
+}

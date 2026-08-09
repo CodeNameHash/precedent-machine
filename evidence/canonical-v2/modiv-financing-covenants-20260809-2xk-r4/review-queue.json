@@ -1,0 +1,61 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3a56ceada983e3310c23d412d180675945afe1798e6d3d6f379e9c53029ba8d8",
+  "review_queue": [
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_OBTAIN_EFFORTS_STANDARD",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bd88fcc14f5c2e7005a2f4891e8cb5ed8267285038ced80541afa2a1b5f52073",
+      "closure_id": "af6d6d6e9f2350e8b3802e6c7d23a773d57e6f22eea2e95d036962c205f78515",
+      "normalised_phrase": "use its commercially reasonable efforts to assist Parent in undertaking all things reasonably necessary, proper or advisable, in each case, as reasonably requested by Parent to maintain the interest rate swap transactions described under Section 5. 1(v)(i)(A – C).",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.20",
+      "source_citation": "5.20",
+      "generic_claim_key": "NATIVE_FINANCING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "FINANCING_COOPERATION_PRESENT",
+      "concept_key": "COV-FINANCING",
+      "reasons": [
+        "ASSERTION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 75,
+      "materiality_label": "FINANCING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Prior to the Company Merger Effective Time, the Company shall cooperate with Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6264433063cbb882886493bdc09f706421d4e071e12ba17e4f6338b0d519e3fa",
+      "closure_id": "f94343009eddcc5a756c611accdb0d3ddec62254c27b164da053f61feee0061e",
+      "normalised_phrase": "Prior to the Company Merger Effective Time, the Company shall cooperate with Parent",
+      "attachment_position": null,
+      "concept_family": "COV-FINANCING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "c100761a51d7f45d320205ee5ae203d69562c2d777a2ca90f15bf73ef27e78ca"
+}

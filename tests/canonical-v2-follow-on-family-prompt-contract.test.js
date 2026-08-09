@@ -45,7 +45,7 @@ const CASES = Object.freeze([
   {
     family: 'MERGER_STRUCTURE_CLOSING', module: mergerStructure,
     builder: mergerStructure.buildMergerStructureProducerPrompt,
-    responseKeys: ['structure_assertions', 'structure_mechanics', 'open_world_candidates'],
+    responseKeys: ['structure_assertions', 'structure_mechanics', 'transaction_steps', 'open_world_candidates'],
     sourceQuote: 'The Merger will be governed by and effected under Section 251(h) of the DGCL.',
     governedInstruction: 'Put a positive fact that fits a structure_assertions kind in structure_assertions.',
     boundaryInstruction: 'Use structure_mechanics only for a deferred or novel mechanism that cannot be stated faithfully as one governed assertion.',

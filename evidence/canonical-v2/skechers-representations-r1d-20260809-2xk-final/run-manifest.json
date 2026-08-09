@@ -1,0 +1,99 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skechers",
+  "deal_label": "Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.",
+  "section_family": "REPRESENTATIONS",
+  "purpose": "General extraction run: family REPRESENTATIONS on deal skechers.",
+  "section_references": [
+    "4.9",
+    "4.10",
+    "4.11",
+    "4.12",
+    "4.13",
+    "4.14",
+    "4.15",
+    "4.16",
+    "4.17"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.9",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.10",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.11",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.12",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.13",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.14",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.15",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.16",
+      "family_id": "REPRESENTATIONS"
+    },
+    {
+      "section_reference": "4.17",
+      "family_id": "REPRESENTATIONS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "agreement_date": "2025-05-04",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T06:58:10.074Z",
+  "total_elapsed_ms": 183103,
+  "extraction_wall_clock_ms": 178792,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "bd66680325ce27b466783a86814134f9808ebf48",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 9,
+  "run_receipt_id": "350440f73affc98d83faab7e9a06881e39ec05f2fff1c3f3fe8f4d73ede3b9d7",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 9,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

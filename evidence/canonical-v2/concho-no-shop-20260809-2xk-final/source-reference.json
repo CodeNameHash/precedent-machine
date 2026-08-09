@@ -1,0 +1,27 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "concho",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1358071/000119312520271642/d32162dex21.htm",
+  "raw_bytes_length": 552099,
+  "raw_bytes_sha256": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "canonical_text_byte_length": 351804,
+  "canonical_text_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "verification_status": "PASS",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "pin_corroboration": "tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm (552,099 bytes) sourced per docs/codex-program/notes/four-deal-sources-2026-08-08.md; canonical_text_sha256 above is independently re-derived through this runner's own loadAndVerifySource() code path (buildSecEdgarIntakeCapture -> convertSecHtmlToCanonicalText -> verifySecHtmlCanonicalText), not copied from anywhere else -- see docs/codex-program/notes/step-2g-concho-onboarding.md section 1.",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script.",
+  "admitted_source_capture_inputs": {
+    "schema_version": "ADMITTED_SOURCE_CAPTURE_INPUTS/V1",
+    "raw_html_path": "tests/fixtures/canonical-v2/concho-first-live-run/concho-raw-fetched.htm",
+    "raw_bytes_sha256": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1358071/000119312520271642/d32162dex21.htm",
+    "content_type": "text/html; charset=UTF-8",
+    "retrieved_at": "2026-08-08T03:43:08.000Z",
+    "retrieval_policy_digest": "f6d689ea3dd3511974ce9fe14070b59a22439660f66d630a32c9b5a5d7be0d1a",
+    "immutable_source_document_id": "1d6bba9ac993f72340d048742f995eb515a50cdfadb9bc86b3f36847baed9116",
+    "source_map_payload_path": "evidence/canonical-v2/_admitted-source-map-payloads/8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3.deflate",
+    "source_map_compressed_sha256": "e4d7c447e7290b9108ad957b9f4ff198292660fe7c0fd687f6c6bb348d0db5c7",
+    "source_map_digest": "c1ac2136197f092792e21bace57f413787c7593a0b34cdb714c4af1afaa943e3"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d83ef2ccddd603b943dbe5b3322e9bd87f3a4cbc88bd47c68a62153c60f79bb9",
+  "review_queue": [
+    {
+      "section_reference": "4.23",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dbb8de0c84a95b56a66bf24dd6df5ef30228ee8239d56cb66884c5e6b2eff89f",
+      "closure_id": "009df53f06ecfc2416813bb19c3f0161ac09eebca72c883b3823d7cf6ddb76e3",
+      "normalised_phrase": "None of the parties or their respective Affiliates shall take or cause to be taken, or fail to take or cause to be failed to be taken, any action that would reasonably be expected to prevent or impede qualification of the Mergers, taken together, for such Intended Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 167,
+          "end": 189,
+          "excerpt": "heir respective reasonable best efforts to cause the Mergers to qualify for the Intended Tax Treatment.\n(b) Tax Opinions. Each of Parent and the Company shall use its reasonable best",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 369,
+          "end": 391,
+          "excerpt": "te with one another to obtain (i) any opinion required by the SEC regarding the Intended Tax Treatment to be prepared and submitted in connection with the declaration of effectivenes",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1910,
+          "end": 1932,
+          "excerpt": "t the Titanium Merger and Forward Merger, taken together, shall qualify for the Intended Tax Treatment. None of the parties or their respective Affiliates shall take or cause to be t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 2332,
+          "end": 2354,
+          "excerpt": "Affiliates to, prepare and file all Tax Returns in a manner consistent with the Intended Tax Treatment and each party shall not, and shall cause its Affiliates not to, take any posit",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 2468,
+          "end": 2490,
+          "excerpt": "ll cause its Affiliates not to, take any position that is inconsistent with the Intended Tax Treatment on any Tax Return, in any audit, examination or other proceeding relating to Ta",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2f99fa86e565e23da94252fa9271877194864dbecbff266024cad4958221adee",
+      "closure_id": "0888d3554c653a0ce2e7dba99e1924afe4ccaee2593d42fbc2095de45d0c5961",
+      "normalised_phrase": "Parent and the Company shall use reasonable best efforts to provide such other information as reasonably requested by the applicable counsel for purposes of rendering the SEC Tax Opinion or the Closing Tax Opinion, as applicable.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "34dc29eec3bb16228d93cf69cb24cec8adb1115307f3b034e6d0348b566d0b18",
+      "closure_id": "4b655c0907f2188db75cf3af59b8154f37ba123b2186e208f49f4dd40e2d3174",
+      "normalised_phrase": "Each of Parent and the Company shall use its reasonable best efforts and cooperate with one another to obtain (i) any opinion required by the SEC regarding the Intended Tax Treatment to be prepared and submitted in connection with the declaration of effectiveness of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act (the “SEC Tax Opinion”), such opinion to be prepared by Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) and (ii) the Closing Tax Opinion.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e7e9f96bcf2545a3ba2cd7d146a76b34889debf12f487aa777863340cfdbf32b",
+      "closure_id": "5d16efc0b1cc2f66eb668a8e231b65b1e7ee640455c51084717fcfd5bf32b108",
+      "normalised_phrase": "In connection with the foregoing, the officers of each of Parent, Titanium Merger Sub, Forward Merger Sub and the Company shall execute and deliver to the counsel delivering the SEC Tax Opinion or the Closing Tax Opinion, as applicable, a certificate containing customary representations and statements reasonably necessary or appropriate for such counsel to render such opinion, in form and substance reasonably acceptable to such counsel, dated as of the effective date of the Form S-4 for the SEC Tax Opinion or the Closing Date for the Closing Tax Opinion.",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.11",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TRANSFER_TAX_ALLOCATION",
+      "concept_key": "TAXM-TRANSFER",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2df27ddef7bf95719a30c165854b0c27aea259f373bb49eee5b9c0e78d848835",
+      "closure_id": "5292d92f190843acea6ef36af2bbdc4b16ad05b4c3f549a5f411b3650b9a5221",
+      "normalised_phrase": "All transfer, documentary, sales, use, stamp, registration and other such similar Taxes imposed with respect to the Mergers shall be paid by Parent, Titanium Merger Sub and Forward Merger Sub when due.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TRANSFER",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TRANSFER",
+          "pattern_id": "TAXM-TRANSFER:PHRASE:TRANSFER_TAXES",
+          "start": 5,
+          "end": 19,
+          "excerpt": "7.11 Transfer Taxes. All transfer, documentary, sales, use, stamp, registration and other such simi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "1d63680f3af94744079b58f4e43aa3ae6409b2a57a7a57e99e1786fcf8ba8fb5"
+}

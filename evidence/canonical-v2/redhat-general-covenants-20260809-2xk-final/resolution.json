@@ -1,0 +1,1061 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.02",
+      "source_citation": "5.02",
+      "citation_context": {
+        "parent_section_reference": "5.02",
+        "child_section_reference": "5.02",
+        "parent_chapeau_quote": "Section 5.02 Access to Information; Confidentiality. The Company shall, and shall cause each of its Subsidiaries to, afford to Parent and to Parent’s officers, employees, investment bankers, attorneys, accountants, consultants and other representatives and advisors access upon reasonable advance notice, during normal business hours in a manner as to not interfere unreasonably with the conduct of business of the Company and its Subsidiaries during the period prior to the Effective Time or the termination of this Agreement to their respective properties, assets, books, records, Contracts, Permits, documents, information, directors, officers and employees, and during such period the Company shall, and shall cause each of its Subsidiaries to, furnish to Parent and its representatives, as promptly as reasonably practicable, any information concerning its business as may be reasonably requested by or on behalf of Parent. Notwithstanding the foregoing, neither the Company nor any of its Subsidiaries shall be required to provide access to or disclose information where the Company reasonably determines (upon the advice of outside counsel) that such access or disclosure could jeopardize the attorney-\n33\nclient privilege of the Company or any of its Subsidiaries or conflict with or violate any applicable Law or any Contract, including any confidentiality obligations contained therein, to which the Company or any of its Subsidiaries is a party; provided that the Company shall use its commercially reasonable efforts",
+        "child_clause_quote": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement."
+      },
+      "governing_context_quote": "client privilege of the Company or any of its Subsidiaries or conflict with or violate any applicable Law or any Contract, including any confidentiality obligations contained therein, to which the Company or any of its Subsidiaries is a party; provided that the Company shall use its commercially reasonable efforts (A) to allow for such access or disclosure in a manner that does not result in a loss of attorney-client privilege or (B) to develop an alternative to providing such information so as to address such matters that is reasonably acceptable to Parent and the Company. Except as required by any applicable Law or Judgment, Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "party": {
+        "role": "COVENANT_OBLIGOR",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "3409aeab51671fce45cd27f1c105c489f2ba3d6a9fbaeb5b90620f9c2c2c5494",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 156859,
+        "absolute_end": 158972,
+        "concept_key": "COV-ACCESS",
+        "party": {
+          "role": "COVENANT_OBLIGOR",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "d40298e9eb6bf0178a33c3728e3127fdbcae6991a6419928f8fdcb5b0be8c352",
+        "provision_instance_id": "ed3425c084cc69ff5aa896895660dc99a0871fa78d77184a60cd6ba3a85de80b",
+        "closure_id": "70c3f0bc1479cd6c18459142d30b3989ca284a30c2907e4481df73ab91b51365"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "8a9102d8004078e01b76fddd8caef13a04d306253f04c1774d501ae9c254858a",
+        "claim_occurrence_id": "fca65f08b2b9d61bd273880e81fc9960ea5a087076eaa196f4b343bacd7a09d6",
+        "subject_occurrence_id": "ed3425c084cc69ff5aa896895660dc99a0871fa78d77184a60cd6ba3a85de80b",
+        "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.",
+        "canonical_value": "COV-ACCESS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5223d11e6d72b3a92648044c8c791366bd4b905a7639d5861c329773a8770700"
+        ],
+        "attributes": {
+          "section_reference": "5.02",
+          "covenant_obligor": "Parent",
+          "covenant_code": "COV-ACCESS",
+          "owner_id": "ACCESS_INFORMATION_COVENANTS",
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "covenant_code": "COV-ACCESS"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5223d11e6d72b3a92648044c8c791366bd4b905a7639d5861c329773a8770700",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "48fd5139a8acc2d0f1bc1616254c888409d18d534f52b81e2d0553a744082478",
+            "document_ordinal": 0,
+            "absolute_start": 1850,
+            "absolute_end": 2112,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "550bd8fbfedbb9d7b69a31ef8d808793ddfd4a4563d32bd9114b19b1dd7bd9a1"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.02",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.02",
+          "normalized_citation": "5.02",
+          "derived_citation": "5.02"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "8a9102d8004078e01b76fddd8caef13a04d306253f04c1774d501ae9c254858a",
+            "claim_occurrence_id": "fca65f08b2b9d61bd273880e81fc9960ea5a087076eaa196f4b343bacd7a09d6",
+            "subject_occurrence_id": "ed3425c084cc69ff5aa896895660dc99a0871fa78d77184a60cd6ba3a85de80b",
+            "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.",
+            "canonical_value": "COV-ACCESS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5223d11e6d72b3a92648044c8c791366bd4b905a7639d5861c329773a8770700"
+            ],
+            "attributes": {
+              "section_reference": "5.02",
+              "covenant_obligor": "Parent",
+              "covenant_code": "COV-ACCESS",
+              "owner_id": "ACCESS_INFORMATION_COVENANTS",
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "covenant_code": "COV-ACCESS"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5223d11e6d72b3a92648044c8c791366bd4b905a7639d5861c329773a8770700",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "48fd5139a8acc2d0f1bc1616254c888409d18d534f52b81e2d0553a744082478",
+                "document_ordinal": 0,
+                "absolute_start": 1850,
+                "absolute_end": 2112,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "550bd8fbfedbb9d7b69a31ef8d808793ddfd4a4563d32bd9114b19b1dd7bd9a1"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GENERAL_COVENANT",
+            "prompt_digest": "eceaf90b37a8c7a329631fe8f0688517f77f53c3b905a78433686cbf034a2855",
+            "producer_receipt_id": "07fd7af9b03387d92f64502ee55eaa3fb15a5cd598baae591376111ff053e3be",
+            "governed_scope_digest": "e4ccd9f836cc5fe46845805380736b24aa8187c09823df66841bf2cdbfab2d4c",
+            "extraction_provenance_id": "ba56510690d7b23d6ec250f7f6a5800ddd27391b1b3045c62ff7b50c16e960a0"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 95,
+        "materiality_label": "GENERAL_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.02",
+          "normalized_citation": "5.02",
+          "derived_citation": "5.02"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "B",
+          "depth": 1,
+          "start_byte": 1652,
+          "end_byte": 2113
+        },
+        "chain": [
+          {
+            "path": "B",
+            "start_byte": 1652,
+            "end_byte": 2113,
+            "text": " to develop an alternative to providing such information so as to address such matters that is reasonably acceptable to Parent and the Company. Except as required by any applicable Law or Judgment, Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1531,
+            "text": "Section 5.02 Access to Information; Confidentiality. The Company shall, and shall cause each of its Subsidiaries to, afford to Parent and to Parent’s officers, employees, investment bankers, attorneys, accountants, consultants and other representatives and advisors access upon reasonable advance notice, during normal business hours in a manner as to not interfere unreasonably with the conduct of business of the Company and its Subsidiaries during the period prior to the Effective Time or the termination of this Agreement to their respective properties, assets, books, records, Contracts, Permits, documents, information, directors, officers and employees, and during such period the Company shall, and shall cause each of its Subsidiaries to, furnish to Parent and its representatives, as promptly as reasonably practicable, any information concerning its business as may be reasonably requested by or on behalf of Parent. Notwithstanding the foregoing, neither the Company nor any of its Subsidiaries shall be required to provide access to or disclose information where the Company reasonably determines (upon the advice of outside counsel) that such access or disclosure could jeopardize the attorney-\n33\nclient privilege of the Company or any of its Subsidiaries or conflict with or violate any applicable Law or any Contract, including any confidentiality obligations contained therein, to which the Company or any of its Subsidiaries is a party; provided that the Company shall use its commercially reasonable efforts "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.07",
+      "source_citation": "5.07",
+      "citation_context": {
+        "parent_section_reference": "5.07",
+        "child_section_reference": "5.07",
+        "parent_chapeau_quote": "Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to the transactions contemplated by this Agreement shall be in the form heretofore agreed to by the parties. Thereafter,",
+        "child_clause_quote": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "party": {
+        "role": "COVENANT_OBLIGOR",
+        "value": "the Company, on the one hand, and Parent and Sub, on the other hand,",
+        "capacity": "JOINT_MULTI_PARTY"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "3409aeab51671fce45cd27f1c105c489f2ba3d6a9fbaeb5b90620f9c2c2c5494",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 197134,
+        "absolute_end": 198597,
+        "concept_key": "COV-PUBLICITY",
+        "party": {
+          "role": "COVENANT_OBLIGOR",
+          "value": "the Company, on the one hand, and Parent and Sub, on the other hand,",
+          "capacity": "JOINT_MULTI_PARTY"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "1e56c4f402d3eb005103805580bfc15ef5fb8709dbe6b5e2a403991518ade02e",
+        "provision_instance_id": "424f3e7f43458cf22b254028caf8cf78197b4b980de53d9065c9b46309ddcea5",
+        "closure_id": "7c6e26dccafdc715054d40d8150d1ac942215b2e0d202b50d9f6e1c4d76d8401"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "49be0b7d6130a1a404065492714fdcca7af8ade53037b72a99837676da91b37d",
+        "claim_occurrence_id": "5af19f8656c9f15810b4b0ed0c8e5a873359fd0966037d5cf855789e8c7b58e1",
+        "subject_occurrence_id": "424f3e7f43458cf22b254028caf8cf78197b4b980de53d9065c9b46309ddcea5",
+        "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation",
+        "canonical_value": "COV-PUBLICITY",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "757716df2f0c52999fc053a5696d942d6b40e6983b9ac1462f0eb15ddc472b58"
+        ],
+        "attributes": {
+          "section_reference": "5.07",
+          "covenant_obligor": "the Company, on the one hand, and Parent and Sub, on the other hand,",
+          "covenant_code": "COV-PUBLICITY",
+          "owner_id": "PUBLICITY_COVENANTS",
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "covenant_code": "COV-PUBLICITY"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "757716df2f0c52999fc053a5696d942d6b40e6983b9ac1462f0eb15ddc472b58",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "f40194511739c2dd3fe6a7819e5492790802df07e158800970d99b9bc4e42eae",
+            "document_ordinal": 0,
+            "absolute_start": 231,
+            "absolute_end": 788,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "d3382460a2eb0035a6152a97530e7b63c42cfd32c0924f3f7fb6e44b20764862"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.07",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.07",
+          "normalized_citation": "5.07",
+          "derived_citation": "5.07"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "49be0b7d6130a1a404065492714fdcca7af8ade53037b72a99837676da91b37d",
+            "claim_occurrence_id": "5af19f8656c9f15810b4b0ed0c8e5a873359fd0966037d5cf855789e8c7b58e1",
+            "subject_occurrence_id": "424f3e7f43458cf22b254028caf8cf78197b4b980de53d9065c9b46309ddcea5",
+            "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation",
+            "canonical_value": "COV-PUBLICITY",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "757716df2f0c52999fc053a5696d942d6b40e6983b9ac1462f0eb15ddc472b58"
+            ],
+            "attributes": {
+              "section_reference": "5.07",
+              "covenant_obligor": "the Company, on the one hand, and Parent and Sub, on the other hand,",
+              "covenant_code": "COV-PUBLICITY",
+              "owner_id": "PUBLICITY_COVENANTS",
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "covenant_code": "COV-PUBLICITY"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "757716df2f0c52999fc053a5696d942d6b40e6983b9ac1462f0eb15ddc472b58",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "f40194511739c2dd3fe6a7819e5492790802df07e158800970d99b9bc4e42eae",
+                "document_ordinal": 0,
+                "absolute_start": 231,
+                "absolute_end": 788,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "d3382460a2eb0035a6152a97530e7b63c42cfd32c0924f3f7fb6e44b20764862"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GENERAL_COVENANT",
+            "prompt_digest": "c4b908f6d3867557149e51c6c1f343638245b672c57d0359f5cd69a8651e803b",
+            "producer_receipt_id": "2f00b64ef04d3cd2edaeeeace7d7f03f15ea8e22f1b40ffa2fc0ca7ab102bbd1",
+            "governed_scope_digest": "35016da880413bbf99183993abde227b724dac39beb8ec8d6ff6fb96d037315f",
+            "extraction_provenance_id": "9b195eef671feabef7fc8d16c4099bd83c239cef193c42cf1285d6cbf8a0c60a"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 95,
+        "materiality_label": "GENERAL_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.07",
+          "normalized_citation": "5.07",
+          "derived_citation": "5.07"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 1463
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 1463,
+            "text": "Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to the transactions contemplated by this Agreement shall be in the form heretofore agreed to by the parties. Thereafter, the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation, except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange or national securities quotation system; provided that the foregoing shall not apply to any press release or public statement so long as the statements contained therein concerning this Agreement, the Merger and the other transactions contemplated by this Agreement are substantially similar to previous releases or statements made by the applicable party with respect to which such party has complied with the provisions of this sentence and would not otherwise require the other party to make additional public disclosure\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.09",
+      "source_citation": "5.09",
+      "citation_context": {
+        "parent_section_reference": "5.09",
+        "child_section_reference": "5.09",
+        "parent_chapeau_quote": "Section 5.09 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause",
+        "child_clause_quote": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting."
+      },
+      "governing_context_quote": "Section 5.09 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "party": {
+        "role": "COVENANT_OBLIGOR",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "3409aeab51671fce45cd27f1c105c489f2ba3d6a9fbaeb5b90620f9c2c2c5494",
+        "canonical_text_id": "e2666a438a78125e141395f04e747e98ee7d64db7ad483a62383a22423c4f784",
+        "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+        "absolute_start": 198713,
+        "absolute_end": 199325,
+        "concept_key": "COV-DELIST",
+        "party": {
+          "role": "COVENANT_OBLIGOR",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "9ba394f86be6bf9542772cb9e49ee3ea7eb45f3c5e781424440803aa58169f1a",
+        "provision_instance_id": "f1e36c8020fe2a796e5900d11e2576318cd76ab09232b5bcfc890f39137e69a1",
+        "closure_id": "54aa6209b2946b73c6568b7f0c23e8f27288f40ff913d866aa1861943110a40c"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "023e9b893342d7484b40059600e20ed5d4668a8776381de31ed4ddd3d4b3348d",
+        "claim_occurrence_id": "9154050bb5a50538541bc25d8aff2bebbb2f42534ddeb2e98cf504b31257f59c",
+        "subject_occurrence_id": "f1e36c8020fe2a796e5900d11e2576318cd76ab09232b5bcfc890f39137e69a1",
+        "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+        "canonical_value": "COV-DELIST",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "bc55a2c96ecb764921460a3b0afc0972c9b78180f255c5b5e32357c6ab381d33"
+        ],
+        "attributes": {
+          "section_reference": "5.09",
+          "covenant_obligor": "the Company",
+          "covenant_code": "COV-DELIST",
+          "owner_id": "LISTING_DELISTING_COVENANTS",
+          "definition_cross_references": [],
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5,
+              "gate": "ALLOWED_VALUES_MEMBERSHIP"
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "covenant_code": "COV-DELIST"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "bc55a2c96ecb764921460a3b0afc0972c9b78180f255c5b5e32357c6ab381d33",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "029ed39532accf5b155a4a44b83b6fab2f80151f61ed5c7f696897552aa23869",
+            "document_ordinal": 0,
+            "absolute_start": 84,
+            "absolute_end": 611,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "5eeb9dcaa8f8378d674c27f9a022bdb0940faa221b664feac39006d03c98f06a"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.09",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.09",
+          "normalized_citation": "5.09",
+          "derived_citation": "5.09"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "023e9b893342d7484b40059600e20ed5d4668a8776381de31ed4ddd3d4b3348d",
+            "claim_occurrence_id": "9154050bb5a50538541bc25d8aff2bebbb2f42534ddeb2e98cf504b31257f59c",
+            "subject_occurrence_id": "f1e36c8020fe2a796e5900d11e2576318cd76ab09232b5bcfc890f39137e69a1",
+            "claim_definition_key": "GENERAL_COVENANT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+            "canonical_value": "COV-DELIST",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "bc55a2c96ecb764921460a3b0afc0972c9b78180f255c5b5e32357c6ab381d33"
+            ],
+            "attributes": {
+              "section_reference": "5.09",
+              "covenant_obligor": "the Company",
+              "covenant_code": "COV-DELIST",
+              "owner_id": "LISTING_DELISTING_COVENANTS",
+              "definition_cross_references": [],
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5,
+                  "gate": "ALLOWED_VALUES_MEMBERSHIP"
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "covenant_code": "COV-DELIST"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "bc55a2c96ecb764921460a3b0afc0972c9b78180f255c5b5e32357c6ab381d33",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "029ed39532accf5b155a4a44b83b6fab2f80151f61ed5c7f696897552aa23869",
+                "document_ordinal": 0,
+                "absolute_start": 84,
+                "absolute_end": 611,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "5eeb9dcaa8f8378d674c27f9a022bdb0940faa221b664feac39006d03c98f06a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GENERAL_COVENANT",
+            "prompt_digest": "28cd375822d2d3941853149a4038c70cd0ba0b1f3707ed11224b5ba1ecb413db",
+            "producer_receipt_id": "ac8869c62f5ec58830f959b46f76f15a2285826329fdc479ad94de9102358994",
+            "governed_scope_digest": "ba9241a9fc3e34b5d1a464ae9c086aeb5de62a32ffd5c8ee0418d2e0e500d2c0",
+            "extraction_provenance_id": "7aab1c55231e52ce332091c06bae36a2ca5c8e54c1e0eec545c688a2221d32e3"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 95,
+        "materiality_label": "GENERAL_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.09",
+          "normalized_citation": "5.09",
+          "derived_citation": "5.09"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SPAN_CROSSES_LEAVES",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8a9102d8004078e01b76fddd8caef13a04d306253f04c1774d501ae9c254858a",
+      "closure_id": "550bd8fbfedbb9d7b69a31ef8d808793ddfd4a4563d32bd9114b19b1dd7bd9a1",
+      "normalised_phrase": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 13,
+          "end": 34,
+          "excerpt": "Section 5.02 Access to Information; Confidentiality. The Company shall, and shall cause each of its Subsidiaries t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.07",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "49be0b7d6130a1a404065492714fdcca7af8ade53037b72a99837676da91b37d",
+      "closure_id": "d3382460a2eb0035a6152a97530e7b63c42cfd32c0924f3f7fb6e44b20764862",
+      "normalised_phrase": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 13,
+          "end": 33,
+          "excerpt": "Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.09",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "023e9b893342d7484b40059600e20ed5d4668a8776381de31ed4ddd3d4b3348d",
+      "closure_id": "5eeb9dcaa8f8378d674c27f9a022bdb0940faa221b664feac39006d03c98f06a",
+      "normalised_phrase": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 28,
+          "end": 37,
+          "excerpt": "Section 5.09 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.02",
+      "source_citation": "5.02",
+      "reason": "GENERAL_COVENANT_CODE_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "raw_value": "The Company shall, and shall cause each of its Subsidiaries to, afford to Parent and to Parent’s officers, employees, investment bankers, attorneys, accountants, consultants and other representatives and advisors access upon reasonable advance notice, during normal business hours in a manner as to not interfere unreasonably with the conduct of business of the Company and its Subsidiaries during the period prior to the Effective Time or the termination of this Agreement to their respective properties, assets, books, records, Contracts, Permits, documents, information, directors, officers and employees",
+      "canonical_value": "COV-ACCESS",
+      "attributes": {
+        "section_reference": "5.02",
+        "covenant_obligor": "The Company",
+        "covenant_code": "COV-ACCESS",
+        "owner_id": "ACCESS_INFORMATION_COVENANTS",
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "00f4f32c6859496a864c14ee68daeecf2a6a452b82e1060a99e6343bc8e5cca9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a42b68a29abbf1b1c331d8d1fe4baa9418d4cd36861b0c578e8afde42b90d07a",
+          "document_ordinal": 0,
+          "absolute_start": 53,
+          "absolute_end": 662,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d6c6df2619665be8cfbeddd4da8b0db824276d9098b2a1708f8660edd8c1f7de",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GENERAL_COVENANT",
+        "prompt_digest": "eceaf90b37a8c7a329631fe8f0688517f77f53c3b905a78433686cbf034a2855",
+        "producer_receipt_id": "07fd7af9b03387d92f64502ee55eaa3fb15a5cd598baae591376111ff053e3be",
+        "governed_scope_digest": "e4ccd9f836cc5fe46845805380736b24aa8187c09823df66841bf2cdbfab2d4c",
+        "extraction_provenance_id": "ba56510690d7b23d6ec250f7f6a5800ddd27391b1b3045c62ff7b50c16e960a0"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.02",
+        "normalized_citation": "5.02",
+        "derived_citation": "5.02"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.08",
+      "source_citation": "5.08",
+      "reason": "GENERAL_COVENANT_CODE_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_GENERAL_COVENANT_MERGESUB_PRESENT_CANDIDATE",
+      "raw_value": "Parent shall cause Sub to comply with all of Sub’s obligations under this Agreement.",
+      "canonical_value": "COV-MERGESUB",
+      "attributes": {
+        "section_reference": "5.08",
+        "covenant_obligor": "Parent",
+        "covenant_code": "COV-MERGESUB",
+        "owner_id": "MERGER_SUB_COVENANTS",
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6a6cfd19d3b52e204853d5ec2f3b0c5a37edc09bde010ba86dacb68196aff1ae",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bd2868db6f74033ca66a952af7131f4e0d4def590d631dc9e78100e60db94226",
+          "document_ordinal": 0,
+          "absolute_start": 29,
+          "absolute_end": 115,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6c3dad1adca5ca5d4032a54a67868a393e78c1f12da12071ac6de5eb0de9d60c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GENERAL_COVENANT",
+        "prompt_digest": "50bf770f141d334bb24c3ec2fd8200778f93d328b2beb9a07b07bc19ff458323",
+        "producer_receipt_id": "8ea9a665aae89c56e3ff2d8c1c9cf76bac8c597af60994c97a1f1e946db662c6",
+        "governed_scope_digest": "edc7d53d8ec1e669486e3c4e43d471b16a14a9627944feb210fb71230a7b0f08",
+        "extraction_provenance_id": "725142f0604991cefeb5eb42992f62d66ceeceab7e2271da51c8c12370b8a30a"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.08",
+        "normalized_citation": "5.08",
+        "derived_citation": "5.08"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10(a)",
+      "reason": "GENERAL_COVENANT_CODE_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_GENERAL_COVENANT_DEBT_PRESENT_CANDIDATE",
+      "raw_value": "the Company shall give any notices and take all actions necessary in accordance with the terms of the Indenture, dated as of October 7, 2014 (the “Notes Indenture”), between the Company and U.S. Bank National Association (the “Trustee”), the Convertible Notes or any applicable Law (with respect to the Notes Indenture or the Convertible Notes) in connection with the Merger and the other transactions contemplated by this Agreement",
+      "canonical_value": "COV-DEBT",
+      "attributes": {
+        "section_reference": "5.10",
+        "covenant_obligor": "the Company",
+        "covenant_code": "COV-DEBT",
+        "owner_id": "EXISTING_DEBT_COVENANTS",
+        "definition_cross_references": []
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c44c43a8963adc980d52ed066e63f703c5c79ef72cd25e8cb59f46a2d18bdd40",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "32b8399634ae01bda839c105fef8c49e669d378158212a1216221cdf2d4b75ce",
+          "document_ordinal": 0,
+          "absolute_start": 152,
+          "absolute_end": 592,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2e40d6ca0dfc27656d4c883a9a935ad9d72348474ec69b7f43bb16ae3e59a767",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GENERAL_COVENANT",
+        "prompt_digest": "eed199403a56b78fe63bacfcb10825b590487659ee6b7ee7f7920b73b8ca7461",
+        "producer_receipt_id": "b7396f1feb9c65d4b683c2723c3b0a7489440d8c6b20e8c31519e45128992f62",
+        "governed_scope_digest": "e09029878d02a1ed285c91e082db7d7a8019b9fa5a99bb3b5a38dfb3a9cd65fa",
+        "extraction_provenance_id": "7bfa67429a1dd0fbff30dcf71b874201b72a569889ee2ee6ff0ba957682a6ff2"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.10",
+        "normalized_citation": "5.10",
+        "derived_citation": "5.10(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.10",
+      "source_citation": "5.10",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Prior to the Effective Time, the Company shall use its reasonable best efforts to, and shall cause its Subsidiaries and their respective directors and officers to, and shall use its reasonable best efforts to cause the other Company Representatives to, take all actions reasonably requested by Parent in connection with making elections under, amending, obtaining waivers, and/or unwinding or otherwise settling the Warrants and the Call Options",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "No exact GENERAL_COVENANT code covers treatment, amendment, waiver, unwinding, or settlement of call options and warrants.",
+        "nearest_concept": "GENERAL_COVENANT_ROUTER"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6730e01f5240c06f6fd740f22da3e07902798523098a5b41621e47f0ec09709a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b45c6670d2af54facf77eb532c6b57a903c75cc525ce895fca14ee754e7cb15a",
+          "document_ordinal": 0,
+          "absolute_start": 4510,
+          "absolute_end": 4955,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "307045217d16640d48688e4fcdcd7553bf4a171a15b86b8943d2ace21d907bd3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "eed199403a56b78fe63bacfcb10825b590487659ee6b7ee7f7920b73b8ca7461",
+        "producer_receipt_id": "b7396f1feb9c65d4b683c2723c3b0a7489440d8c6b20e8c31519e45128992f62",
+        "governed_scope_digest": "e09029878d02a1ed285c91e082db7d7a8019b9fa5a99bb3b5a38dfb3a9cd65fa",
+        "extraction_provenance_id": "7cefd0f176e3b19d2ad542d789a3da127e47776edcb9a92c078d6d19ecaaa990"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "6d3dc8993338d2aa1d7e7eac3b152c0a28aef3194e9d26292eb49f785967b487",
+    "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 7,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 3,
+      "open_world": 4,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "48570fe3572f6ff528fb54474372aa37dbbe2954da117ebc52561b678b04bb55"
+  }
+}

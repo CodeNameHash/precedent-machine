@@ -24,6 +24,7 @@ const { getProducerPromptModule } = require('../lib/canonical-v2/native-producer
 const {
   GENERAL_COVENANT_CODES,
   buildGeneralCovenantsProducerPrompt,
+  PROMPT_VERSION,
 } = require('../lib/canonical-v2/native-producer/general-covenants-producer-prompt');
 const {
   GENERAL_COVENANT_FOLLOW_ON_OWNERS,
@@ -121,7 +122,10 @@ test('General Covenants registers the exact 18-code contract, producer and title
   });
   assert.match(prompt.messages[0].content, /Parent stockholder approval and Merger Sub stockholder approval are separate/);
   assert.match(prompt.messages[0].content, /Never encode either as COV-CONSENT or COV-MERGESUB/);
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(PROMPT_VERSION, 2);
+  assert.match(prompt.messages[0].content, /only when its unresolved meaning can change the selected covenant code/);
+  assert.match(prompt.messages[0].content, /Never list a term merely because it is capitalised, appears in the quote, or affects only the parties or scope/);
+  assert.equal(MAPPING_TABLE_VERSION, 21);
   assert.equal(new Set(Object.values(GENERAL_COVENANT_CLAIM_KEYS)).size, 18);
   const mappingRows = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.filter(
     (row) => Object.values(GENERAL_COVENANT_CLAIM_KEYS).includes(row.generic_claim_key),

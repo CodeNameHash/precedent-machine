@@ -1,0 +1,2084 @@
+{
+  "resolved": [
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ss)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "the actual knowledge"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-KNOWLEDGE",
+        "ordinal": 1,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "closure_id": "72ccf1270cadf07a1c13825cf44fe7492f0985cadd901efecb1c443430db210a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5e3f28d26984081fe9f351f27740731760b17f79158e723430a16a63577b59db",
+        "claim_occurrence_id": "63486adb22b530efd17b7312b7dd7905000f49923ee5386db9a25c7b6461c5d2",
+        "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "claim_definition_key": "KNOWLEDGE_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "the actual knowledge",
+        "canonical_value": "ACTUAL",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "09c0599c2497c49a53ecfb221fc5542e99f7bcf6b85c3c0aaed759e83e8209c0",
+          "45a9c5dec38f5bce08849f868fb0c8956609dd2300ec8c90a10a211a322b0a6a"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "KNOWLEDGE_STANDARD",
+          "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+          "limb_quote": "the actual knowledge",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": "Knowledge",
+          "standard_code": "ACTUAL",
+          "source_code": null,
+          "knowledge_party": "TARGET",
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "knowledge",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "KNOWLEDGE_STANDARD",
+          "standard_code": "ACTUAL",
+          "knowledge_party": "TARGET"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "09c0599c2497c49a53ecfb221fc5542e99f7bcf6b85c3c0aaed759e83e8209c0",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+            "document_ordinal": 0,
+            "absolute_start": 22509,
+            "absolute_end": 22586,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "45a9c5dec38f5bce08849f868fb0c8956609dd2300ec8c90a10a211a322b0a6a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "2bdac49102b94c50e9ef8d861f8f9756db4a2ef4dd83a39cace625372f8b9c1f",
+            "document_ordinal": 0,
+            "absolute_start": 22587,
+            "absolute_end": 22607,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "ca8fd4db3e5b98b4a5fff9b89fa7ff71152e6912ad6fb236d80d600fffca6a2f"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5e3f28d26984081fe9f351f27740731760b17f79158e723430a16a63577b59db",
+            "claim_occurrence_id": "63486adb22b530efd17b7312b7dd7905000f49923ee5386db9a25c7b6461c5d2",
+            "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+            "claim_definition_key": "KNOWLEDGE_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "the actual knowledge",
+            "canonical_value": "ACTUAL",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "09c0599c2497c49a53ecfb221fc5542e99f7bcf6b85c3c0aaed759e83e8209c0",
+              "45a9c5dec38f5bce08849f868fb0c8956609dd2300ec8c90a10a211a322b0a6a"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "KNOWLEDGE_STANDARD",
+              "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+              "limb_quote": "the actual knowledge",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": "Knowledge",
+              "standard_code": "ACTUAL",
+              "source_code": null,
+              "knowledge_party": "TARGET",
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "knowledge",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "KNOWLEDGE_STANDARD",
+              "standard_code": "ACTUAL",
+              "knowledge_party": "TARGET"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "09c0599c2497c49a53ecfb221fc5542e99f7bcf6b85c3c0aaed759e83e8209c0",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+                "document_ordinal": 0,
+                "absolute_start": 22509,
+                "absolute_end": 22586,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "45a9c5dec38f5bce08849f868fb0c8956609dd2300ec8c90a10a211a322b0a6a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "2bdac49102b94c50e9ef8d861f8f9756db4a2ef4dd83a39cace625372f8b9c1f",
+                "document_ordinal": 0,
+                "absolute_start": 22587,
+                "absolute_end": 22607,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "ca8fd4db3e5b98b4a5fff9b89fa7ff71152e6912ad6fb236d80d600fffca6a2f"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(ss)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "ss",
+          "depth": 1,
+          "start_byte": 22508,
+          "end_byte": 22887
+        },
+        "chain": [
+          {
+            "path": "ss",
+            "start_byte": 22508,
+            "end_byte": 22887,
+            "text": " “Knowledge” of the Company, with respect to any matter in question, means the actual knowledge of (i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller, in each case after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ss)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-KNOWLEDGE",
+        "ordinal": 1,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "closure_id": "72ccf1270cadf07a1c13825cf44fe7492f0985cadd901efecb1c443430db210a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "23423fbc1c98446720f2884a844d13e258b5fae7eeeca432a8f6788b12ad003a",
+        "claim_occurrence_id": "a2c6c5731f2a5691f2ce67ae7e2564e3e326c56cab520130c79c60f8c266ca71",
+        "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "claim_definition_key": "KNOWLEDGE_STANDARD",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+        "canonical_value": "AFTER_INQUIRY",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d0fb7f5801259c512ea4fdfa157a26019ffc6a6ce9f608b1283246701843a10b",
+          "65d72e6386384452874e1f64f1725b84f652303700d9f495f94f8da429b00e22"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "KNOWLEDGE_STANDARD",
+          "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+          "limb_quote": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": "Knowledge",
+          "standard_code": "AFTER_INQUIRY",
+          "source_code": null,
+          "knowledge_party": "TARGET",
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "knowledge",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "KNOWLEDGE_STANDARD",
+          "standard_code": "AFTER_INQUIRY",
+          "knowledge_party": "TARGET"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d0fb7f5801259c512ea4fdfa157a26019ffc6a6ce9f608b1283246701843a10b",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+            "document_ordinal": 0,
+            "absolute_start": 22509,
+            "absolute_end": 22586,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "65d72e6386384452874e1f64f1725b84f652303700d9f495f94f8da429b00e22",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "eee23b9be77305c741331d6bb684006765195c5f4b38fbbab2c84fb50a31106e",
+            "document_ordinal": 0,
+            "absolute_start": 22758,
+            "absolute_end": 22885,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "6e758cbf4756a29df687b1bf7a9f6242c40863e0beeeb23827df0c03763248d1"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "23423fbc1c98446720f2884a844d13e258b5fae7eeeca432a8f6788b12ad003a",
+            "claim_occurrence_id": "a2c6c5731f2a5691f2ce67ae7e2564e3e326c56cab520130c79c60f8c266ca71",
+            "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+            "claim_definition_key": "KNOWLEDGE_STANDARD",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+            "canonical_value": "AFTER_INQUIRY",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d0fb7f5801259c512ea4fdfa157a26019ffc6a6ce9f608b1283246701843a10b",
+              "65d72e6386384452874e1f64f1725b84f652303700d9f495f94f8da429b00e22"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "KNOWLEDGE_STANDARD",
+              "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+              "limb_quote": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": "Knowledge",
+              "standard_code": "AFTER_INQUIRY",
+              "source_code": null,
+              "knowledge_party": "TARGET",
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "knowledge",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "KNOWLEDGE_STANDARD",
+              "standard_code": "AFTER_INQUIRY",
+              "knowledge_party": "TARGET"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d0fb7f5801259c512ea4fdfa157a26019ffc6a6ce9f608b1283246701843a10b",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+                "document_ordinal": 0,
+                "absolute_start": 22509,
+                "absolute_end": 22586,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "65d72e6386384452874e1f64f1725b84f652303700d9f495f94f8da429b00e22",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "eee23b9be77305c741331d6bb684006765195c5f4b38fbbab2c84fb50a31106e",
+                "document_ordinal": 0,
+                "absolute_start": 22758,
+                "absolute_end": 22885,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "6e758cbf4756a29df687b1bf7a9f6242c40863e0beeeb23827df0c03763248d1"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(ss)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "ss",
+          "depth": 1,
+          "start_byte": 22508,
+          "end_byte": 22887
+        },
+        "chain": [
+          {
+            "path": "ss",
+            "start_byte": 22508,
+            "end_byte": 22887,
+            "text": " “Knowledge” of the Company, with respect to any matter in question, means the actual knowledge of (i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller, in each case after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ss)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-KNOWLEDGE",
+        "ordinal": 1,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "closure_id": "72ccf1270cadf07a1c13825cf44fe7492f0985cadd901efecb1c443430db210a"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a94677bc85fb4d0b08cf81eecab96dd2585af6270efc8d801b24934799e781a9",
+        "claim_occurrence_id": "875a24b81d18cdf118f6f3eb4facd37ab8c7cdbaaa14fd917bd64d524cd42b94",
+        "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+        "claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+        "canonical_value": "TITLE_CLASS",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "fa4e22aa94b6e08a384420dca356f949522226071eefa228801c8c227ece9b01",
+          "e203b952131af37ee593c09bbee395b2cb4d85ac7c1ed0b5d0e3a2e68150f072"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+          "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+          "limb_quote": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+          "proposal_term_ref": null,
+          "superior_term_ref": null,
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": null,
+          "threshold_basis": null,
+          "qualifier_code": null,
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": "Knowledge",
+          "standard_code": null,
+          "source_code": "TITLE_CLASS",
+          "knowledge_party": "TARGET",
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "knowledge",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+          "source_code": "TITLE_CLASS",
+          "knowledge_party": "TARGET"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fa4e22aa94b6e08a384420dca356f949522226071eefa228801c8c227ece9b01",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+            "document_ordinal": 0,
+            "absolute_start": 22509,
+            "absolute_end": 22586,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e203b952131af37ee593c09bbee395b2cb4d85ac7c1ed0b5d0e3a2e68150f072",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "1223a90f831332ae3dae7c4867eeb5a25d9740f943acc60c9b58b9d438f46319",
+            "document_ordinal": 0,
+            "absolute_start": 22611,
+            "absolute_end": 22743,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "9157c0fa4e15fcbf5f27ac9f4a01e8d57c1f020ae4f814f93790242952a60d13"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a94677bc85fb4d0b08cf81eecab96dd2585af6270efc8d801b24934799e781a9",
+            "claim_occurrence_id": "875a24b81d18cdf118f6f3eb4facd37ab8c7cdbaaa14fd917bd64d524cd42b94",
+            "subject_occurrence_id": "2c82204630eadb7fbacade1ec161a1fafaf70915c7d64de62e7517dc4731d4a3",
+            "claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+            "canonical_value": "TITLE_CLASS",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "fa4e22aa94b6e08a384420dca356f949522226071eefa228801c8c227ece9b01",
+              "e203b952131af37ee593c09bbee395b2cb4d85ac7c1ed0b5d0e3a2e68150f072"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+              "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+              "limb_quote": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+              "proposal_term_ref": null,
+              "superior_term_ref": null,
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": null,
+              "threshold_basis": null,
+              "qualifier_code": null,
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": "Knowledge",
+              "standard_code": null,
+              "source_code": "TITLE_CLASS",
+              "knowledge_party": "TARGET",
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "knowledge",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+              "source_code": "TITLE_CLASS",
+              "knowledge_party": "TARGET"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fa4e22aa94b6e08a384420dca356f949522226071eefa228801c8c227ece9b01",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+                "document_ordinal": 0,
+                "absolute_start": 22509,
+                "absolute_end": 22586,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e203b952131af37ee593c09bbee395b2cb4d85ac7c1ed0b5d0e3a2e68150f072",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "1223a90f831332ae3dae7c4867eeb5a25d9740f943acc60c9b58b9d438f46319",
+                "document_ordinal": 0,
+                "absolute_start": 22611,
+                "absolute_end": 22743,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "9157c0fa4e15fcbf5f27ac9f4a01e8d57c1f020ae4f814f93790242952a60d13"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(ss)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "ss",
+          "depth": 1,
+          "start_byte": 22508,
+          "end_byte": 22887
+        },
+        "chain": [
+          {
+            "path": "ss",
+            "start_byte": 22508,
+            "end_byte": 22887,
+            "text": " “Knowledge” of the Company, with respect to any matter in question, means the actual knowledge of (i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller, in each case after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ttt)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-SUPERIOR",
+        "ordinal": 2,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+        "closure_id": "d29e79da7e35d984288ea2bc6f460908a926c804977aaf6be502699320d3012f"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "1d9d106f915935e37e2764ee960b35d8487752f937486b6e9ea62bee5e4557b2",
+        "claim_occurrence_id": "104e7bafe1d8983e422109a1f458d718158e69903c72a3129ca0b6e69c9cce52",
+        "subject_occurrence_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+        "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+        "canonical_value": "CONSUMMATION_LIKELIHOOD",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8d5bae792d3a705d0ab05aa135bb151eb9a4caa0bd9a3e2f2be0f3e04ee95ee1",
+          "2446942465e99514300eb1e7da26177017af2ae021cf5e24180c96f5a0186411"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "definition_head_quote": "“Superior Proposal” means",
+          "limb_quote": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": "Superior Proposal",
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": "Superior Proposal",
+          "threshold_basis": null,
+          "qualifier_code": "CONSUMMATION_LIKELIHOOD",
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "superior proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "qualifier_code": "CONSUMMATION_LIKELIHOOD"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8d5bae792d3a705d0ab05aa135bb151eb9a4caa0bd9a3e2f2be0f3e04ee95ee1",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+            "document_ordinal": 0,
+            "absolute_start": 46401,
+            "absolute_end": 46430,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2446942465e99514300eb1e7da26177017af2ae021cf5e24180c96f5a0186411",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "c2dcff870991a9936ffd978fc11d7dc978f3ff41a9dc432074940a103197f93c",
+            "document_ordinal": 0,
+            "absolute_start": 46743,
+            "absolute_end": 47059,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "28960daa291efb5b923395d5c5eed83e272fc011f808fb2fd04d33ff9b9cac3c"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "1d9d106f915935e37e2764ee960b35d8487752f937486b6e9ea62bee5e4557b2",
+            "claim_occurrence_id": "104e7bafe1d8983e422109a1f458d718158e69903c72a3129ca0b6e69c9cce52",
+            "subject_occurrence_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+            "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+            "canonical_value": "CONSUMMATION_LIKELIHOOD",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8d5bae792d3a705d0ab05aa135bb151eb9a4caa0bd9a3e2f2be0f3e04ee95ee1",
+              "2446942465e99514300eb1e7da26177017af2ae021cf5e24180c96f5a0186411"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "definition_head_quote": "“Superior Proposal” means",
+              "limb_quote": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": "Superior Proposal",
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": "Superior Proposal",
+              "threshold_basis": null,
+              "qualifier_code": "CONSUMMATION_LIKELIHOOD",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "superior proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "qualifier_code": "CONSUMMATION_LIKELIHOOD"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8d5bae792d3a705d0ab05aa135bb151eb9a4caa0bd9a3e2f2be0f3e04ee95ee1",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+                "document_ordinal": 0,
+                "absolute_start": 46401,
+                "absolute_end": 46430,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2446942465e99514300eb1e7da26177017af2ae021cf5e24180c96f5a0186411",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "c2dcff870991a9936ffd978fc11d7dc978f3ff41a9dc432074940a103197f93c",
+                "document_ordinal": 0,
+                "absolute_start": 46743,
+                "absolute_end": 47059,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "28960daa291efb5b923395d5c5eed83e272fc011f808fb2fd04d33ff9b9cac3c"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(ttt)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "zz.i",
+          "depth": 2,
+          "start_byte": 33518,
+          "end_byte": 50736
+        },
+        "chain": [
+          {
+            "path": "zz.i",
+            "start_byte": 33518,
+            "end_byte": 50736,
+            "text": " liens for Taxes, assessments and governmental charges or levies either not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (ii) mechanics, carriers’, workmen’s, warehouseman’s, repairmen’s, materialmen’s or other liens or security interests that are not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (iii) leases, subleases and licenses (other than capital leases and leases underlying sale and leaseback transactions and licenses of Intellectual Property); (iv) non-exclusive licenses of Intellectual Property granted in the ordinary course of business; (v) liens imposed by applicable law (other than Tax law); (vi) pledges or deposits to secure obligations pursuant to workers’ compensation laws or similar legislation or to secure public or statutory obligations; (vii) pledges and deposits to secure the performance of bids, trade contracts, leases, surety and appeal bonds, performance bonds and other obligations of a similar nature, in each case in the ordinary course of business; (viii) defects, imperfections or irregularities in title, easements, covenants and rights of way and other similar liens (or other encumbrances of any type) (in each case, unrecorded and of record), in each case that do not adversely affect in any material respect the current use by the Company Group or, with respect to Owned Real Property, value of the applicable property owned, leased, used or held for use by the Company Group; (ix) zoning, building and other similar codes or restrictions which are not violated in any material respect by the current use by the Company Group of the applicable property owned, leased, used or held for use by the Company Group, (x) liens the existence of which are disclosed in the notes to the consolidated financial statements of the Company included in the Company SEC Reports filed as of the date hereof; (x) any other liens that do not secure a liquidated amount, that have been incurred or suffered in the ordinary course of business, and that would not, individually or in the aggregate, have a material effect on the Company Group, taken as a whole; (xii) statutory, common law or contractual liens (or other encumbrances of any type) of landlords or liens against the interests of the landlord, sublandlord or owner of any Leased Real Property or other real property leased, subleased or licensed by the Company Group; or (xiii) liens in favor of (including exclusive licenses to) any member of the Company Group.\n(ccc) “Person” means any individual, corporation (including any non-profit corporation), limited liability company, joint stock company, general partnership, limited partnership, limited liability partnership, joint venture, estate, trust, firm, Governmental Authority or other enterprise, association, organization or entity.\n(ddd) “Personally Identifiable Information” means all data that identifies an individual or, in combination with any other information or data, is capable of identifying an individual, or which is otherwise defined as ‘personal data,’ ‘personally identifiable information,’ ‘protected health information,’ or similar term under applicable Data Protection Laws.\n(eee) “Processed” or “Processing” means to store, collect, copy, process, transfer, transmit, display, access, use, adapt, record, retrieve, organize, structure, erase or disclose, and any actions that are otherwise defined as ‘processed’ or ‘processing’ under applicable Data Protection Laws.\n(fff) “Repaid Indebtedness” means the Indebtedness set forth on Section 1.1(fff) of the Company Disclosure Letter.\n-11-\n(ggg) “Representatives” means, with respect to any Person, its directors, officers, employees, consultants, agents, representatives and advisors.\n(hhh) “Required Information” means (i) all financial statements, financial data, audit reports and other information regarding the Company and its Subsidiaries of the type that would be required by Regulation S-X promulgated by the SEC and Regulation S-K promulgated by the SEC for a registered public offering of debt securities on a registration statement on Form S-1 under the Securities Act of the Company to consummate the offerings of high yield debt securities contemplated by the Debt Commitment Letter, assuming that such offering(s) were consummated at the same time during the Company’s fiscal year as such offering(s) of debt securities will be made (including all audited financial statements (which, for the avoidance of doubt, will include audited financial statements for and as of the fiscal years ended December 31, 2022, December 31, 2023, and December 31, 2024) and all unaudited financial statements (which will have been reviewed by the Company’s independent public accountants as provided in Statement on Auditing Standards 100)); and (ii)(A) information, financial statements and financial data of the Company and its Subsidiaries that is reasonably requested by Parent in writing and of the type customarily included in an offering memorandum with respect to a private placement of high yield debt securities pursuant to Rule 144A under the Securities Act (including information that would be required by Regulation S-X and Regulation S-K in a registered offering on Form S-1 under the Securities Act to the extent customarily included in such an offering memorandum) or (B) as otherwise necessary to receive from the Company’s independent public accountants (and any other accountant to the extent that financial statements audited or reviewed by such accountants are or would be included in such offering memorandum), customary “comfort” (including “negative assurance” comfort and change period comfort), together with drafts of customary comfort letters that such independent public accountants are prepared to deliver upon the “pricing” of any high-yield bonds being issued in connection with any portion of the Debt Financing, with respect to the financial information to be included in such offering memorandum. Notwithstanding anything to the contrary in clauses (i) and (ii), nothing will require the Company to provide (or be deemed to require the Company to prepare) any (1) pro forma financial statements; (2) description of all or any portion of the Debt Financing, including any “description of notes”, “plan of distribution” or any other information customarily provided by initial purchasers or underwriters in such offering; (3) risk factors relating to all or any component of the Debt Financing or (4) other information required by Rule 3-05, Rule 3-09, Rule 3-10, Rule 3-16 or Rule 4-08 of Regulation S-X, (5) segment reporting or XBRL exhibits, (6) information required by Item 10, Item 302, Item 402 (including any Compensation Discussion and Analysis required by Item 402(b)) and Item 601 of Regulation S-K and information regarding executive compensation and certain related party disclosure related to SEC Release Nos. 33-8732A, 34-54302A and IC-27444A, or (7) any other information customarily excluded from an offering memorandum for private placements of non-convertible high-yield bonds pursuant to Rule 144A).\n(iii) “Sanctioned Country” means any country or region or territory that is the target of comprehensive Sanctions (at the time of this Agreement, Cuba, Iran, North Korea, Syria, and the Crimea, so-called “Donetsk People’s Republic,” and so-called “Luhansk People’s Republic” regions of Ukraine).\n(jjj) “Sanctioned Person” means (i) any Person listed on any U.S., United Kingdom, or European Union Sanctions related list of designated Persons, including the U.S. Department of the Treasury Office of Foreign Assets Control’s (“OFAC”) List of Specially Designated Nationals and Blocked Persons; (ii) the government of a Sanctioned Country or the Government of Venezuela; (iii) any Person that is, in the aggregate, 50 percent or greater owned, directly or indirectly, or whether relevant under applicable Sanctions, controlled by a Person or Persons described in clause (i) or (ii); or (iii) any Person located, organized, or ordinarily resident in a Sanctioned Country.\n(kkk) “Sanctions” means economic or financial sanctions or trade embargoes imposed, administered or enforced from time to time by (i) the U.S. government, including those administered by OFAC or the U.S. Department of State, or (ii) the United Nations Security Council, the European Union, any European Union member state or His Majesty’s Treasury of the United Kingdom.\n-12-\n(lll) “Sarbanes-Oxley Act” means the Sarbanes-Oxley Act of 2002.\n(mmm) “SEC” means the United States Securities and Exchange Commission or any successor thereto.\n(nnn) “Securities Act” means the Securities Act of 1933.\n(ooo) “Software” means all computer software (in object code or source code format), associated databases, and related specifications, designs, documentation and materials.\n(ppp) “Solvent” means, when used with respect to any Person, that, on a consolidated basis as of any date of determination, (i) the amount of the “fair saleable value” of the assets of such Person will, as of such date, exceed (A) the amount of all liabilities of such Person, as of such date, as such amounts are determined in accordance with applicable law governing determinations of the insolvency of debtors, and (B) the amount that will be required to pay the probable liabilities of such Person on its debts as such debts become absolute and matured, (ii) such Person will not have, as of such date, an unreasonably small amount of capital with which to conduct its business, (iii) such Person will be able to pay its liabilities and debts as they mature and (iv) such Person is not insolvent under applicable law.\n(qqq) “Specified Letter” means a pre-consummation letter from the Federal Trade Commission in similar form to that set forth in its blogpost dated August 3, 2021 and posted at this link: https://www.ftc.gov/system/files/attachments/blog_posts/Adjusting%20merger%\n20review%20to%20deal%20with%20the%20surge%20in%20merger%20filings/sample_pre-consummation_warning_letter.pdf, or a letter of, and limited to, similar substance from the Federal Trade Commission or DOJ.\n(rrr) “Specified Data Breach” means the unauthorized (i) disclosure of Personally Identifiable Information in the possession, custody or control of any member of the Company Group or that is processed on behalf of any member of the Company Group; or (ii) access, use, theft, transmission or transfer of Personally Identifiable Information Processed by or in the possession, custody or control of any member of the Company Group that, in the case of each of clauses (i) or (ii), would reasonably be expected to (A) negatively impact in any material respect, the business, reputation, or results of operation of the Company Group; or (B) result in any member of the Company Group having any material obligation under applicable Data Protection Law to provide notification regarding any of the foregoing to any Person or Governmental Authority.\n(sss) “Subsidiary” of any Person means (i) a corporation of which more than 50% of the combined voting power of the outstanding voting equity securities of such corporation is owned, directly or indirectly, by such Person or by one or more other Subsidiaries of such Person or by such Person and one or more other Subsidiaries of such Person; (ii) a partnership of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries thereof, directly or indirectly, is the general partner and has the power to direct the policies, management and affairs of such partnership; (iii) a limited liability company of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, is the manager or managing member and has the power to direct the policies, management and affairs of such limited liability company; or (iv) any other Person (other than a corporation, partnership or limited liability company) in which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, has at least a majority ownership and the power to direct the policies, management and affairs thereof. Notwithstanding anything to the contrary in this Agreement, for purposes of this Agreement, following the Closing, each of the Surviving Corporation and its Subsidiaries will be deemed to be a Subsidiary of Parent.\n-13-\n(ttt) “Superior Proposal” means any bona fide written Acquisition Proposal for an Acquisition Transaction that is fully financed or has fully committed financing to consummate such Acquisition Transaction on terms that the Company Board has determined in good faith, after consultation with its financial advisor and outside legal counsel, (1) is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant, and (2) if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger (taking into account any revisions to this Agreement made or proposed in writing by Parent prior to the time of such determination). For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”\n(uuu) “Tax” means any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.\n(vvv) “Trade Controls” means (i) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered, or enforced by the U.S. government, including the Arms Export Control Act (22 U.S.C. § 1778), the International Emergency Economic Powers Act (50 U.S.C. §§ 1701–1706), Section 999 of the Internal Revenue Code, the U.S. customs laws at Title 19 of the U.S. Code, the Export Control Reform Act of 2018 (50 U.S.C. §§ 4801-4861), the International Traffic in Arms Regulations (22 C.F.R. Parts 120–130), the Export Administration Regulations (15 C.F.R. Parts 730-774), the U.S. customs regulations at 19 C.F.R. Chapter 1, and the Foreign Trade Regulations (15 C.F.R. Part 30); and (ii) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered or enforced by any other country, except to the extent inconsistent with U.S. law.\n(www) “Transaction Litigation” means any Legal Proceeding commenced or threatened by any Person (including any current or former holder of Company Common Stock or any other securities of any member of the Company Group) against a Party or any of its Subsidiaries or any of its or their Representatives or otherwise relating to, involving or affecting such Party or any of its Subsidiaries or any of its or their Representatives, in each case in connection with, arising from or otherwise relating to or regarding the Merger or any other transaction contemplated by this Agreement, including the Support Agreement, including any Legal Proceeding alleging or asserting any misrepresentation or omission in the Information Statement, Registration Statement or any other communications to the Company Stockholders, other than any Legal Proceedings among the Parties related to this Agreement.\n(xxx) “Transaction Documents” means, collectively, this Agreement, the Confidentiality Agreement, the Support Agreement, the Guaranty, and the Equity Commitment Letter.\n(yyy) “Transfer” means to, directly or indirectly, sell, transfer, assign, or similarly dispose of, either voluntarily or involuntarily, by operation of law or otherwise, including by way of Constructive Disposition, or to enter into any contract, option, or other arrangement or understanding with respect to the sale, transfer, assignment, or similar disposition of, any Company Common Stock owned by a Person or any interest (including a beneficial interest) in any Company Common Stock owned by a Person.\n-14-\n(zzz) “WARN Act” means the Worker Adjustment and Retraining Notification Act of 1988 and any similar foreign, state or local law, regulation or ordinance.\n"
+          },
+          {
+            "path": "zz",
+            "start_byte": 32660,
+            "end_byte": 33515,
+            "text": " “Parent Units” means the limited liability company units of Parent designated as Common Units in the A&R Parent LLCA.\n-10-\n(aaa) “Payoff Deliverables” means customary payoff letters reasonably satisfactory to Parent with respect to the Repaid Indebtedness, which shall provide (i) the total amount required to be paid to fully satisfy the applicable Indebtedness and other obligations thereunder (other than those obligations expressly permitted to survive thereunder) (the “Payoff Amounts”), (ii) wire instructions for payment of such Payoff Amounts and (iii) that upon payment of the Payoff Amounts set forth in such payoff letter, all guarantees and liens, if any, in connection with the applicable Repaid Indebtedness shall be automatically and immediately released and terminated.\n(bbb) “Permitted Liens” means any of the following: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ttt)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-SUPERIOR",
+        "ordinal": 2,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+        "closure_id": "d29e79da7e35d984288ea2bc6f460908a926c804977aaf6be502699320d3012f"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a7a634a5ae19f57ac8e85c26570bd2c5ce81da3fff69788d5c7952673662e025",
+        "claim_occurrence_id": "5c938b4f9a355c80c22610d7cacf555acaf6c4cae53db41c021314b600277466",
+        "subject_occurrence_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+        "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+        "canonical_value": "FINANCIAL_FAVORABILITY",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b6eb66a2a544f1b2906d87129155aa837722dc06b2d1a2e549af753ff158c798",
+          "fb1f2e34162a584324089aeae8864ff7a8460039215da3e10bceb77225c52402"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "definition_head_quote": "“Superior Proposal” means",
+          "limb_quote": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+          "proposal_term_ref": "Acquisition Proposal",
+          "superior_term_ref": "Superior Proposal",
+          "substitution_from_percent": null,
+          "substituted_term_ref": null,
+          "host_term_ref": "Superior Proposal",
+          "threshold_basis": null,
+          "qualifier_code": "FINANCIAL_FAVORABILITY",
+          "event_term_ref": null,
+          "exclusion_code": null,
+          "knowledge_term_ref": null,
+          "standard_code": null,
+          "source_code": null,
+          "knowledge_party": null,
+          "named_persons": [],
+          "breach_term_ref": null,
+          "defined_term_identity": "superior proposal",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "SUPERIOR_QUALIFIER",
+          "qualifier_code": "FINANCIAL_FAVORABILITY"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b6eb66a2a544f1b2906d87129155aa837722dc06b2d1a2e549af753ff158c798",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+            "document_ordinal": 0,
+            "absolute_start": 46401,
+            "absolute_end": 46430,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "fb1f2e34162a584324089aeae8864ff7a8460039215da3e10bceb77225c52402",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "06f42e202d248c78a25b055378801dcd0ac4ca78ef3f2b1635e4b3c20156e0c7",
+            "document_ordinal": 0,
+            "absolute_start": 47069,
+            "absolute_end": 47213,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "d35a80fdec7b2ad917c8dc89f9dd1b5fe953e2d543b3fd4a75cfa72f9f74f45a"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a7a634a5ae19f57ac8e85c26570bd2c5ce81da3fff69788d5c7952673662e025",
+            "claim_occurrence_id": "5c938b4f9a355c80c22610d7cacf555acaf6c4cae53db41c021314b600277466",
+            "subject_occurrence_id": "9de249062c6d05c720c660025e5d0b93613942e2c99c0d5db8c5b4ae0b1c9e59",
+            "claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+            "canonical_value": "FINANCIAL_FAVORABILITY",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b6eb66a2a544f1b2906d87129155aa837722dc06b2d1a2e549af753ff158c798",
+              "fb1f2e34162a584324089aeae8864ff7a8460039215da3e10bceb77225c52402"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "definition_head_quote": "“Superior Proposal” means",
+              "limb_quote": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+              "proposal_term_ref": "Acquisition Proposal",
+              "superior_term_ref": "Superior Proposal",
+              "substitution_from_percent": null,
+              "substituted_term_ref": null,
+              "host_term_ref": "Superior Proposal",
+              "threshold_basis": null,
+              "qualifier_code": "FINANCIAL_FAVORABILITY",
+              "event_term_ref": null,
+              "exclusion_code": null,
+              "knowledge_term_ref": null,
+              "standard_code": null,
+              "source_code": null,
+              "knowledge_party": null,
+              "named_persons": [],
+              "breach_term_ref": null,
+              "defined_term_identity": "superior proposal",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SUPERIOR_QUALIFIER",
+              "qualifier_code": "FINANCIAL_FAVORABILITY"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b6eb66a2a544f1b2906d87129155aa837722dc06b2d1a2e549af753ff158c798",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+                "document_ordinal": 0,
+                "absolute_start": 46401,
+                "absolute_end": 46430,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "fb1f2e34162a584324089aeae8864ff7a8460039215da3e10bceb77225c52402",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "06f42e202d248c78a25b055378801dcd0ac4ca78ef3f2b1635e4b3c20156e0c7",
+                "document_ordinal": 0,
+                "absolute_start": 47069,
+                "absolute_end": 47213,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "d35a80fdec7b2ad917c8dc89f9dd1b5fe953e2d543b3fd4a75cfa72f9f74f45a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 40,
+        "materiality_label": "FIDUCIARY",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(ttt)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "zz.i",
+          "depth": 2,
+          "start_byte": 33518,
+          "end_byte": 50736
+        },
+        "chain": [
+          {
+            "path": "zz.i",
+            "start_byte": 33518,
+            "end_byte": 50736,
+            "text": " liens for Taxes, assessments and governmental charges or levies either not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (ii) mechanics, carriers’, workmen’s, warehouseman’s, repairmen’s, materialmen’s or other liens or security interests that are not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (iii) leases, subleases and licenses (other than capital leases and leases underlying sale and leaseback transactions and licenses of Intellectual Property); (iv) non-exclusive licenses of Intellectual Property granted in the ordinary course of business; (v) liens imposed by applicable law (other than Tax law); (vi) pledges or deposits to secure obligations pursuant to workers’ compensation laws or similar legislation or to secure public or statutory obligations; (vii) pledges and deposits to secure the performance of bids, trade contracts, leases, surety and appeal bonds, performance bonds and other obligations of a similar nature, in each case in the ordinary course of business; (viii) defects, imperfections or irregularities in title, easements, covenants and rights of way and other similar liens (or other encumbrances of any type) (in each case, unrecorded and of record), in each case that do not adversely affect in any material respect the current use by the Company Group or, with respect to Owned Real Property, value of the applicable property owned, leased, used or held for use by the Company Group; (ix) zoning, building and other similar codes or restrictions which are not violated in any material respect by the current use by the Company Group of the applicable property owned, leased, used or held for use by the Company Group, (x) liens the existence of which are disclosed in the notes to the consolidated financial statements of the Company included in the Company SEC Reports filed as of the date hereof; (x) any other liens that do not secure a liquidated amount, that have been incurred or suffered in the ordinary course of business, and that would not, individually or in the aggregate, have a material effect on the Company Group, taken as a whole; (xii) statutory, common law or contractual liens (or other encumbrances of any type) of landlords or liens against the interests of the landlord, sublandlord or owner of any Leased Real Property or other real property leased, subleased or licensed by the Company Group; or (xiii) liens in favor of (including exclusive licenses to) any member of the Company Group.\n(ccc) “Person” means any individual, corporation (including any non-profit corporation), limited liability company, joint stock company, general partnership, limited partnership, limited liability partnership, joint venture, estate, trust, firm, Governmental Authority or other enterprise, association, organization or entity.\n(ddd) “Personally Identifiable Information” means all data that identifies an individual or, in combination with any other information or data, is capable of identifying an individual, or which is otherwise defined as ‘personal data,’ ‘personally identifiable information,’ ‘protected health information,’ or similar term under applicable Data Protection Laws.\n(eee) “Processed” or “Processing” means to store, collect, copy, process, transfer, transmit, display, access, use, adapt, record, retrieve, organize, structure, erase or disclose, and any actions that are otherwise defined as ‘processed’ or ‘processing’ under applicable Data Protection Laws.\n(fff) “Repaid Indebtedness” means the Indebtedness set forth on Section 1.1(fff) of the Company Disclosure Letter.\n-11-\n(ggg) “Representatives” means, with respect to any Person, its directors, officers, employees, consultants, agents, representatives and advisors.\n(hhh) “Required Information” means (i) all financial statements, financial data, audit reports and other information regarding the Company and its Subsidiaries of the type that would be required by Regulation S-X promulgated by the SEC and Regulation S-K promulgated by the SEC for a registered public offering of debt securities on a registration statement on Form S-1 under the Securities Act of the Company to consummate the offerings of high yield debt securities contemplated by the Debt Commitment Letter, assuming that such offering(s) were consummated at the same time during the Company’s fiscal year as such offering(s) of debt securities will be made (including all audited financial statements (which, for the avoidance of doubt, will include audited financial statements for and as of the fiscal years ended December 31, 2022, December 31, 2023, and December 31, 2024) and all unaudited financial statements (which will have been reviewed by the Company’s independent public accountants as provided in Statement on Auditing Standards 100)); and (ii)(A) information, financial statements and financial data of the Company and its Subsidiaries that is reasonably requested by Parent in writing and of the type customarily included in an offering memorandum with respect to a private placement of high yield debt securities pursuant to Rule 144A under the Securities Act (including information that would be required by Regulation S-X and Regulation S-K in a registered offering on Form S-1 under the Securities Act to the extent customarily included in such an offering memorandum) or (B) as otherwise necessary to receive from the Company’s independent public accountants (and any other accountant to the extent that financial statements audited or reviewed by such accountants are or would be included in such offering memorandum), customary “comfort” (including “negative assurance” comfort and change period comfort), together with drafts of customary comfort letters that such independent public accountants are prepared to deliver upon the “pricing” of any high-yield bonds being issued in connection with any portion of the Debt Financing, with respect to the financial information to be included in such offering memorandum. Notwithstanding anything to the contrary in clauses (i) and (ii), nothing will require the Company to provide (or be deemed to require the Company to prepare) any (1) pro forma financial statements; (2) description of all or any portion of the Debt Financing, including any “description of notes”, “plan of distribution” or any other information customarily provided by initial purchasers or underwriters in such offering; (3) risk factors relating to all or any component of the Debt Financing or (4) other information required by Rule 3-05, Rule 3-09, Rule 3-10, Rule 3-16 or Rule 4-08 of Regulation S-X, (5) segment reporting or XBRL exhibits, (6) information required by Item 10, Item 302, Item 402 (including any Compensation Discussion and Analysis required by Item 402(b)) and Item 601 of Regulation S-K and information regarding executive compensation and certain related party disclosure related to SEC Release Nos. 33-8732A, 34-54302A and IC-27444A, or (7) any other information customarily excluded from an offering memorandum for private placements of non-convertible high-yield bonds pursuant to Rule 144A).\n(iii) “Sanctioned Country” means any country or region or territory that is the target of comprehensive Sanctions (at the time of this Agreement, Cuba, Iran, North Korea, Syria, and the Crimea, so-called “Donetsk People’s Republic,” and so-called “Luhansk People’s Republic” regions of Ukraine).\n(jjj) “Sanctioned Person” means (i) any Person listed on any U.S., United Kingdom, or European Union Sanctions related list of designated Persons, including the U.S. Department of the Treasury Office of Foreign Assets Control’s (“OFAC”) List of Specially Designated Nationals and Blocked Persons; (ii) the government of a Sanctioned Country or the Government of Venezuela; (iii) any Person that is, in the aggregate, 50 percent or greater owned, directly or indirectly, or whether relevant under applicable Sanctions, controlled by a Person or Persons described in clause (i) or (ii); or (iii) any Person located, organized, or ordinarily resident in a Sanctioned Country.\n(kkk) “Sanctions” means economic or financial sanctions or trade embargoes imposed, administered or enforced from time to time by (i) the U.S. government, including those administered by OFAC or the U.S. Department of State, or (ii) the United Nations Security Council, the European Union, any European Union member state or His Majesty’s Treasury of the United Kingdom.\n-12-\n(lll) “Sarbanes-Oxley Act” means the Sarbanes-Oxley Act of 2002.\n(mmm) “SEC” means the United States Securities and Exchange Commission or any successor thereto.\n(nnn) “Securities Act” means the Securities Act of 1933.\n(ooo) “Software” means all computer software (in object code or source code format), associated databases, and related specifications, designs, documentation and materials.\n(ppp) “Solvent” means, when used with respect to any Person, that, on a consolidated basis as of any date of determination, (i) the amount of the “fair saleable value” of the assets of such Person will, as of such date, exceed (A) the amount of all liabilities of such Person, as of such date, as such amounts are determined in accordance with applicable law governing determinations of the insolvency of debtors, and (B) the amount that will be required to pay the probable liabilities of such Person on its debts as such debts become absolute and matured, (ii) such Person will not have, as of such date, an unreasonably small amount of capital with which to conduct its business, (iii) such Person will be able to pay its liabilities and debts as they mature and (iv) such Person is not insolvent under applicable law.\n(qqq) “Specified Letter” means a pre-consummation letter from the Federal Trade Commission in similar form to that set forth in its blogpost dated August 3, 2021 and posted at this link: https://www.ftc.gov/system/files/attachments/blog_posts/Adjusting%20merger%\n20review%20to%20deal%20with%20the%20surge%20in%20merger%20filings/sample_pre-consummation_warning_letter.pdf, or a letter of, and limited to, similar substance from the Federal Trade Commission or DOJ.\n(rrr) “Specified Data Breach” means the unauthorized (i) disclosure of Personally Identifiable Information in the possession, custody or control of any member of the Company Group or that is processed on behalf of any member of the Company Group; or (ii) access, use, theft, transmission or transfer of Personally Identifiable Information Processed by or in the possession, custody or control of any member of the Company Group that, in the case of each of clauses (i) or (ii), would reasonably be expected to (A) negatively impact in any material respect, the business, reputation, or results of operation of the Company Group; or (B) result in any member of the Company Group having any material obligation under applicable Data Protection Law to provide notification regarding any of the foregoing to any Person or Governmental Authority.\n(sss) “Subsidiary” of any Person means (i) a corporation of which more than 50% of the combined voting power of the outstanding voting equity securities of such corporation is owned, directly or indirectly, by such Person or by one or more other Subsidiaries of such Person or by such Person and one or more other Subsidiaries of such Person; (ii) a partnership of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries thereof, directly or indirectly, is the general partner and has the power to direct the policies, management and affairs of such partnership; (iii) a limited liability company of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, is the manager or managing member and has the power to direct the policies, management and affairs of such limited liability company; or (iv) any other Person (other than a corporation, partnership or limited liability company) in which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, has at least a majority ownership and the power to direct the policies, management and affairs thereof. Notwithstanding anything to the contrary in this Agreement, for purposes of this Agreement, following the Closing, each of the Surviving Corporation and its Subsidiaries will be deemed to be a Subsidiary of Parent.\n-13-\n(ttt) “Superior Proposal” means any bona fide written Acquisition Proposal for an Acquisition Transaction that is fully financed or has fully committed financing to consummate such Acquisition Transaction on terms that the Company Board has determined in good faith, after consultation with its financial advisor and outside legal counsel, (1) is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant, and (2) if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger (taking into account any revisions to this Agreement made or proposed in writing by Parent prior to the time of such determination). For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”\n(uuu) “Tax” means any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.\n(vvv) “Trade Controls” means (i) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered, or enforced by the U.S. government, including the Arms Export Control Act (22 U.S.C. § 1778), the International Emergency Economic Powers Act (50 U.S.C. §§ 1701–1706), Section 999 of the Internal Revenue Code, the U.S. customs laws at Title 19 of the U.S. Code, the Export Control Reform Act of 2018 (50 U.S.C. §§ 4801-4861), the International Traffic in Arms Regulations (22 C.F.R. Parts 120–130), the Export Administration Regulations (15 C.F.R. Parts 730-774), the U.S. customs regulations at 19 C.F.R. Chapter 1, and the Foreign Trade Regulations (15 C.F.R. Part 30); and (ii) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered or enforced by any other country, except to the extent inconsistent with U.S. law.\n(www) “Transaction Litigation” means any Legal Proceeding commenced or threatened by any Person (including any current or former holder of Company Common Stock or any other securities of any member of the Company Group) against a Party or any of its Subsidiaries or any of its or their Representatives or otherwise relating to, involving or affecting such Party or any of its Subsidiaries or any of its or their Representatives, in each case in connection with, arising from or otherwise relating to or regarding the Merger or any other transaction contemplated by this Agreement, including the Support Agreement, including any Legal Proceeding alleging or asserting any misrepresentation or omission in the Information Statement, Registration Statement or any other communications to the Company Stockholders, other than any Legal Proceedings among the Parties related to this Agreement.\n(xxx) “Transaction Documents” means, collectively, this Agreement, the Confidentiality Agreement, the Support Agreement, the Guaranty, and the Equity Commitment Letter.\n(yyy) “Transfer” means to, directly or indirectly, sell, transfer, assign, or similarly dispose of, either voluntarily or involuntarily, by operation of law or otherwise, including by way of Constructive Disposition, or to enter into any contract, option, or other arrangement or understanding with respect to the sale, transfer, assignment, or similar disposition of, any Company Common Stock owned by a Person or any interest (including a beneficial interest) in any Company Common Stock owned by a Person.\n-14-\n(zzz) “WARN Act” means the Worker Adjustment and Retraining Notification Act of 1988 and any similar foreign, state or local law, regulation or ordinance.\n"
+          },
+          {
+            "path": "zz",
+            "start_byte": 32660,
+            "end_byte": 33515,
+            "text": " “Parent Units” means the limited liability company units of Parent designated as Common Units in the A&R Parent LLCA.\n-10-\n(aaa) “Payoff Deliverables” means customary payoff letters reasonably satisfactory to Parent with respect to the Repaid Indebtedness, which shall provide (i) the total amount required to be paid to fully satisfy the applicable Indebtedness and other obligations thereunder (other than those obligations expressly permitted to survive thereunder) (the “Payoff Amounts”), (ii) wire instructions for payment of such Payoff Amounts and (iii) that upon payment of the Payoff Amounts set forth in such payoff letter, all guarantees and liens, if any, in connection with the applicable Repaid Indebtedness shall be automatically and immediately released and terminated.\n(bbb) “Permitted Liens” means any of the following: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(uuu)",
+      "citation_context": {
+        "parent_section_reference": "1.1",
+        "child_section_reference": "1.1",
+        "parent_chapeau_quote": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:",
+        "child_clause_quote": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_DEFINITION_RECORDED",
+      "concept_key": "DEF-TAX",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "61ee9b88765c254ed84446e2ae28a402d27e54724da8cb6dcad4e3e4eeb0110d",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 8678,
+        "absolute_end": 59414,
+        "concept_key": "DEF-TAX",
+        "ordinal": 3,
+        "source_anchor_id": "a5d95be852d6bf9820746ecb9095dcfd43b7cc17336ac8d64b80418fd670d6a0",
+        "provision_instance_id": "d9f457fdd674bf132a34be15a599b5cbc751e6364c325818c4b6e15ead26ce0b",
+        "closure_id": "505e8457373883236b95f1cbed0976c603441135a20019858cf4d10cc78b81cc"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e458f7cf1efa00552c29e7f0550421bfee77bcc9d2c3841dda8877824ae67704",
+        "claim_occurrence_id": "7ce98cfbe81166df9b19b00a162510368347595215f2e73700ff97dda037a79e",
+        "subject_occurrence_id": "d9f457fdd674bf132a34be15a599b5cbc751e6364c325818c4b6e15ead26ce0b",
+        "claim_definition_key": "TAX_DEFINITION_RECORDED",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "d83be672ca65e5d651afdf4a6fa8c9be5e55c479407bfef344b8a815a4b7f8d3",
+          "d487611fa8a5365b80bdd4d72730e881cfb2f86050bd2b78f2f3de7c0879171a"
+        ],
+        "attributes": {
+          "section_reference": "1.1",
+          "assertion_kind": "RECORDED_DEFINITION",
+          "defined_term_ref": "“Tax”",
+          "definition_head_quote": "“Tax” means",
+          "definition_envelope": {
+            "defined_term": "“Tax”",
+            "normalized_term_identity": "tax",
+            "definition_kind": "TERM_DEFINITION",
+            "definition_head_quote": "“Tax” means",
+            "definition_body_quote": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+            "cross_reference_target": null,
+            "owner_hint": null
+          },
+          "defined_term_identity": "tax",
+          "definition_equivalence": "NOT_ASSERTED",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECORDED_DEFINITION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d83be672ca65e5d651afdf4a6fa8c9be5e55c479407bfef344b8a815a4b7f8d3",
+            "evidence_role": "DEFINITION",
+            "excerpt_id": "c9d89c524e581d45816ec640f4b2cc40abedcc6f0f3a0fa82ee2202fe4ef9df8",
+            "document_ordinal": 0,
+            "absolute_start": 47561,
+            "absolute_end": 47576,
+            "ordinal": 0
+          },
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "d487611fa8a5365b80bdd4d72730e881cfb2f86050bd2b78f2f3de7c0879171a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "f13b33c74fbb41c5a91dda7ed0fefee25ae72c90a9e90555abe4d669a7a9f596",
+            "document_ordinal": 0,
+            "absolute_start": 47577,
+            "absolute_end": 48071,
+            "ordinal": 1
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3dbb3cd15e2b57711b7b0c428a8a4cd106cd5b39c762943a5269a9e74e9068ae"
+      },
+      "compiled_candidate": {
+        "section_reference": "1.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e458f7cf1efa00552c29e7f0550421bfee77bcc9d2c3841dda8877824ae67704",
+            "claim_occurrence_id": "7ce98cfbe81166df9b19b00a162510368347595215f2e73700ff97dda037a79e",
+            "subject_occurrence_id": "d9f457fdd674bf132a34be15a599b5cbc751e6364c325818c4b6e15ead26ce0b",
+            "claim_definition_key": "TAX_DEFINITION_RECORDED",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "d83be672ca65e5d651afdf4a6fa8c9be5e55c479407bfef344b8a815a4b7f8d3",
+              "d487611fa8a5365b80bdd4d72730e881cfb2f86050bd2b78f2f3de7c0879171a"
+            ],
+            "attributes": {
+              "section_reference": "1.1",
+              "assertion_kind": "RECORDED_DEFINITION",
+              "defined_term_ref": "“Tax”",
+              "definition_head_quote": "“Tax” means",
+              "definition_envelope": {
+                "defined_term": "“Tax”",
+                "normalized_term_identity": "tax",
+                "definition_kind": "TERM_DEFINITION",
+                "definition_head_quote": "“Tax” means",
+                "definition_body_quote": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+                "cross_reference_target": null,
+                "owner_hint": null
+              },
+              "defined_term_identity": "tax",
+              "definition_equivalence": "NOT_ASSERTED",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECORDED_DEFINITION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d83be672ca65e5d651afdf4a6fa8c9be5e55c479407bfef344b8a815a4b7f8d3",
+                "evidence_role": "DEFINITION",
+                "excerpt_id": "c9d89c524e581d45816ec640f4b2cc40abedcc6f0f3a0fa82ee2202fe4ef9df8",
+                "document_ordinal": 0,
+                "absolute_start": 47561,
+                "absolute_end": 47576,
+                "ordinal": 0
+              },
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "d487611fa8a5365b80bdd4d72730e881cfb2f86050bd2b78f2f3de7c0879171a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "f13b33c74fbb41c5a91dda7ed0fefee25ae72c90a9e90555abe4d669a7a9f596",
+                "document_ordinal": 0,
+                "absolute_start": 47577,
+                "absolute_end": 48071,
+                "ordinal": 1
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3dbb3cd15e2b57711b7b0c428a8a4cd106cd5b39c762943a5269a9e74e9068ae"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "DEFINED_TERM",
+            "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+            "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+            "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+            "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "DEFINED_TERM_VARIANT_REVIEW_REQUIRED",
+          "DEFINITION_EQUIVALENCE_NOT_ASSERTED",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [
+          "MULTI_SPAN_COMPOSED",
+          "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+        ],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "1.1",
+          "normalized_citation": "1.1",
+          "derived_citation": "1.1(uuu)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "zz.i",
+          "depth": 2,
+          "start_byte": 33518,
+          "end_byte": 50736
+        },
+        "chain": [
+          {
+            "path": "zz.i",
+            "start_byte": 33518,
+            "end_byte": 50736,
+            "text": " liens for Taxes, assessments and governmental charges or levies either not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (ii) mechanics, carriers’, workmen’s, warehouseman’s, repairmen’s, materialmen’s or other liens or security interests that are not yet delinquent or that are being contested in good faith and by appropriate proceedings and for which appropriate reserves have been established to the extent required by GAAP; (iii) leases, subleases and licenses (other than capital leases and leases underlying sale and leaseback transactions and licenses of Intellectual Property); (iv) non-exclusive licenses of Intellectual Property granted in the ordinary course of business; (v) liens imposed by applicable law (other than Tax law); (vi) pledges or deposits to secure obligations pursuant to workers’ compensation laws or similar legislation or to secure public or statutory obligations; (vii) pledges and deposits to secure the performance of bids, trade contracts, leases, surety and appeal bonds, performance bonds and other obligations of a similar nature, in each case in the ordinary course of business; (viii) defects, imperfections or irregularities in title, easements, covenants and rights of way and other similar liens (or other encumbrances of any type) (in each case, unrecorded and of record), in each case that do not adversely affect in any material respect the current use by the Company Group or, with respect to Owned Real Property, value of the applicable property owned, leased, used or held for use by the Company Group; (ix) zoning, building and other similar codes or restrictions which are not violated in any material respect by the current use by the Company Group of the applicable property owned, leased, used or held for use by the Company Group, (x) liens the existence of which are disclosed in the notes to the consolidated financial statements of the Company included in the Company SEC Reports filed as of the date hereof; (x) any other liens that do not secure a liquidated amount, that have been incurred or suffered in the ordinary course of business, and that would not, individually or in the aggregate, have a material effect on the Company Group, taken as a whole; (xii) statutory, common law or contractual liens (or other encumbrances of any type) of landlords or liens against the interests of the landlord, sublandlord or owner of any Leased Real Property or other real property leased, subleased or licensed by the Company Group; or (xiii) liens in favor of (including exclusive licenses to) any member of the Company Group.\n(ccc) “Person” means any individual, corporation (including any non-profit corporation), limited liability company, joint stock company, general partnership, limited partnership, limited liability partnership, joint venture, estate, trust, firm, Governmental Authority or other enterprise, association, organization or entity.\n(ddd) “Personally Identifiable Information” means all data that identifies an individual or, in combination with any other information or data, is capable of identifying an individual, or which is otherwise defined as ‘personal data,’ ‘personally identifiable information,’ ‘protected health information,’ or similar term under applicable Data Protection Laws.\n(eee) “Processed” or “Processing” means to store, collect, copy, process, transfer, transmit, display, access, use, adapt, record, retrieve, organize, structure, erase or disclose, and any actions that are otherwise defined as ‘processed’ or ‘processing’ under applicable Data Protection Laws.\n(fff) “Repaid Indebtedness” means the Indebtedness set forth on Section 1.1(fff) of the Company Disclosure Letter.\n-11-\n(ggg) “Representatives” means, with respect to any Person, its directors, officers, employees, consultants, agents, representatives and advisors.\n(hhh) “Required Information” means (i) all financial statements, financial data, audit reports and other information regarding the Company and its Subsidiaries of the type that would be required by Regulation S-X promulgated by the SEC and Regulation S-K promulgated by the SEC for a registered public offering of debt securities on a registration statement on Form S-1 under the Securities Act of the Company to consummate the offerings of high yield debt securities contemplated by the Debt Commitment Letter, assuming that such offering(s) were consummated at the same time during the Company’s fiscal year as such offering(s) of debt securities will be made (including all audited financial statements (which, for the avoidance of doubt, will include audited financial statements for and as of the fiscal years ended December 31, 2022, December 31, 2023, and December 31, 2024) and all unaudited financial statements (which will have been reviewed by the Company’s independent public accountants as provided in Statement on Auditing Standards 100)); and (ii)(A) information, financial statements and financial data of the Company and its Subsidiaries that is reasonably requested by Parent in writing and of the type customarily included in an offering memorandum with respect to a private placement of high yield debt securities pursuant to Rule 144A under the Securities Act (including information that would be required by Regulation S-X and Regulation S-K in a registered offering on Form S-1 under the Securities Act to the extent customarily included in such an offering memorandum) or (B) as otherwise necessary to receive from the Company’s independent public accountants (and any other accountant to the extent that financial statements audited or reviewed by such accountants are or would be included in such offering memorandum), customary “comfort” (including “negative assurance” comfort and change period comfort), together with drafts of customary comfort letters that such independent public accountants are prepared to deliver upon the “pricing” of any high-yield bonds being issued in connection with any portion of the Debt Financing, with respect to the financial information to be included in such offering memorandum. Notwithstanding anything to the contrary in clauses (i) and (ii), nothing will require the Company to provide (or be deemed to require the Company to prepare) any (1) pro forma financial statements; (2) description of all or any portion of the Debt Financing, including any “description of notes”, “plan of distribution” or any other information customarily provided by initial purchasers or underwriters in such offering; (3) risk factors relating to all or any component of the Debt Financing or (4) other information required by Rule 3-05, Rule 3-09, Rule 3-10, Rule 3-16 or Rule 4-08 of Regulation S-X, (5) segment reporting or XBRL exhibits, (6) information required by Item 10, Item 302, Item 402 (including any Compensation Discussion and Analysis required by Item 402(b)) and Item 601 of Regulation S-K and information regarding executive compensation and certain related party disclosure related to SEC Release Nos. 33-8732A, 34-54302A and IC-27444A, or (7) any other information customarily excluded from an offering memorandum for private placements of non-convertible high-yield bonds pursuant to Rule 144A).\n(iii) “Sanctioned Country” means any country or region or territory that is the target of comprehensive Sanctions (at the time of this Agreement, Cuba, Iran, North Korea, Syria, and the Crimea, so-called “Donetsk People’s Republic,” and so-called “Luhansk People’s Republic” regions of Ukraine).\n(jjj) “Sanctioned Person” means (i) any Person listed on any U.S., United Kingdom, or European Union Sanctions related list of designated Persons, including the U.S. Department of the Treasury Office of Foreign Assets Control’s (“OFAC”) List of Specially Designated Nationals and Blocked Persons; (ii) the government of a Sanctioned Country or the Government of Venezuela; (iii) any Person that is, in the aggregate, 50 percent or greater owned, directly or indirectly, or whether relevant under applicable Sanctions, controlled by a Person or Persons described in clause (i) or (ii); or (iii) any Person located, organized, or ordinarily resident in a Sanctioned Country.\n(kkk) “Sanctions” means economic or financial sanctions or trade embargoes imposed, administered or enforced from time to time by (i) the U.S. government, including those administered by OFAC or the U.S. Department of State, or (ii) the United Nations Security Council, the European Union, any European Union member state or His Majesty’s Treasury of the United Kingdom.\n-12-\n(lll) “Sarbanes-Oxley Act” means the Sarbanes-Oxley Act of 2002.\n(mmm) “SEC” means the United States Securities and Exchange Commission or any successor thereto.\n(nnn) “Securities Act” means the Securities Act of 1933.\n(ooo) “Software” means all computer software (in object code or source code format), associated databases, and related specifications, designs, documentation and materials.\n(ppp) “Solvent” means, when used with respect to any Person, that, on a consolidated basis as of any date of determination, (i) the amount of the “fair saleable value” of the assets of such Person will, as of such date, exceed (A) the amount of all liabilities of such Person, as of such date, as such amounts are determined in accordance with applicable law governing determinations of the insolvency of debtors, and (B) the amount that will be required to pay the probable liabilities of such Person on its debts as such debts become absolute and matured, (ii) such Person will not have, as of such date, an unreasonably small amount of capital with which to conduct its business, (iii) such Person will be able to pay its liabilities and debts as they mature and (iv) such Person is not insolvent under applicable law.\n(qqq) “Specified Letter” means a pre-consummation letter from the Federal Trade Commission in similar form to that set forth in its blogpost dated August 3, 2021 and posted at this link: https://www.ftc.gov/system/files/attachments/blog_posts/Adjusting%20merger%\n20review%20to%20deal%20with%20the%20surge%20in%20merger%20filings/sample_pre-consummation_warning_letter.pdf, or a letter of, and limited to, similar substance from the Federal Trade Commission or DOJ.\n(rrr) “Specified Data Breach” means the unauthorized (i) disclosure of Personally Identifiable Information in the possession, custody or control of any member of the Company Group or that is processed on behalf of any member of the Company Group; or (ii) access, use, theft, transmission or transfer of Personally Identifiable Information Processed by or in the possession, custody or control of any member of the Company Group that, in the case of each of clauses (i) or (ii), would reasonably be expected to (A) negatively impact in any material respect, the business, reputation, or results of operation of the Company Group; or (B) result in any member of the Company Group having any material obligation under applicable Data Protection Law to provide notification regarding any of the foregoing to any Person or Governmental Authority.\n(sss) “Subsidiary” of any Person means (i) a corporation of which more than 50% of the combined voting power of the outstanding voting equity securities of such corporation is owned, directly or indirectly, by such Person or by one or more other Subsidiaries of such Person or by such Person and one or more other Subsidiaries of such Person; (ii) a partnership of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries thereof, directly or indirectly, is the general partner and has the power to direct the policies, management and affairs of such partnership; (iii) a limited liability company of which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, is the manager or managing member and has the power to direct the policies, management and affairs of such limited liability company; or (iv) any other Person (other than a corporation, partnership or limited liability company) in which such Person or one or more other Subsidiaries of such Person or such Person and one or more other Subsidiaries of such Person, directly or indirectly, has at least a majority ownership and the power to direct the policies, management and affairs thereof. Notwithstanding anything to the contrary in this Agreement, for purposes of this Agreement, following the Closing, each of the Surviving Corporation and its Subsidiaries will be deemed to be a Subsidiary of Parent.\n-13-\n(ttt) “Superior Proposal” means any bona fide written Acquisition Proposal for an Acquisition Transaction that is fully financed or has fully committed financing to consummate such Acquisition Transaction on terms that the Company Board has determined in good faith, after consultation with its financial advisor and outside legal counsel, (1) is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant, and (2) if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger (taking into account any revisions to this Agreement made or proposed in writing by Parent prior to the time of such determination). For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”\n(uuu) “Tax” means any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.\n(vvv) “Trade Controls” means (i) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered, or enforced by the U.S. government, including the Arms Export Control Act (22 U.S.C. § 1778), the International Emergency Economic Powers Act (50 U.S.C. §§ 1701–1706), Section 999 of the Internal Revenue Code, the U.S. customs laws at Title 19 of the U.S. Code, the Export Control Reform Act of 2018 (50 U.S.C. §§ 4801-4861), the International Traffic in Arms Regulations (22 C.F.R. Parts 120–130), the Export Administration Regulations (15 C.F.R. Parts 730-774), the U.S. customs regulations at 19 C.F.R. Chapter 1, and the Foreign Trade Regulations (15 C.F.R. Part 30); and (ii) all applicable trade, export control, import, and antiboycott laws and regulations imposed, administered or enforced by any other country, except to the extent inconsistent with U.S. law.\n(www) “Transaction Litigation” means any Legal Proceeding commenced or threatened by any Person (including any current or former holder of Company Common Stock or any other securities of any member of the Company Group) against a Party or any of its Subsidiaries or any of its or their Representatives or otherwise relating to, involving or affecting such Party or any of its Subsidiaries or any of its or their Representatives, in each case in connection with, arising from or otherwise relating to or regarding the Merger or any other transaction contemplated by this Agreement, including the Support Agreement, including any Legal Proceeding alleging or asserting any misrepresentation or omission in the Information Statement, Registration Statement or any other communications to the Company Stockholders, other than any Legal Proceedings among the Parties related to this Agreement.\n(xxx) “Transaction Documents” means, collectively, this Agreement, the Confidentiality Agreement, the Support Agreement, the Guaranty, and the Equity Commitment Letter.\n(yyy) “Transfer” means to, directly or indirectly, sell, transfer, assign, or similarly dispose of, either voluntarily or involuntarily, by operation of law or otherwise, including by way of Constructive Disposition, or to enter into any contract, option, or other arrangement or understanding with respect to the sale, transfer, assignment, or similar disposition of, any Company Common Stock owned by a Person or any interest (including a beneficial interest) in any Company Common Stock owned by a Person.\n-14-\n(zzz) “WARN Act” means the Worker Adjustment and Retraining Notification Act of 1988 and any similar foreign, state or local law, regulation or ordinance.\n"
+          },
+          {
+            "path": "zz",
+            "start_byte": 32660,
+            "end_byte": 33515,
+            "text": " “Parent Units” means the limited liability company units of Parent designated as Common Units in the A&R Parent LLCA.\n-10-\n(aaa) “Payoff Deliverables” means customary payoff letters reasonably satisfactory to Parent with respect to the Repaid Indebtedness, which shall provide (i) the total amount required to be paid to fully satisfy the applicable Indebtedness and other obligations thereunder (other than those obligations expressly permitted to survive thereunder) (the “Payoff Amounts”), (ii) wire instructions for payment of such Payoff Amounts and (iii) that upon payment of the Payoff Amounts set forth in such payoff letter, all guarantees and liens, if any, in connection with the applicable Repaid Indebtedness shall be automatically and immediately released and terminated.\n(bbb) “Permitted Liens” means any of the following: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 149,
+            "text": "1.1 Certain Definitions. For all purposes of and pursuant to this Agreement, the following capitalized terms have the following respective meanings:\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1d9d106f915935e37e2764ee960b35d8487752f937486b6e9ea62bee5e4557b2",
+      "closure_id": "28960daa291efb5b923395d5c5eed83e272fc011f808fb2fd04d33ff9b9cac3c",
+      "normalised_phrase": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(c)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "of securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such purchase or other acquisition",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8f0636b24e755606a98dbc086c5c3b731268fb1814f827ec10801612f7c49e8e",
+      "closure_id": "481fbc2cf541749bfd8cf2bf3bf7852502e976a56e53b8f77fc4f92f08ffe92b",
+      "normalised_phrase": "of securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such purchase or other acquisition",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(c)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "would hold securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such transaction",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "749c17827d748bec256e12e297521edf85d35067124dbae74888b1b42ac34867",
+      "closure_id": "4f97e4e8d69198fc8cc975f1e9f80dcb6e1279a9b02b75f5888c7cb74bea2410",
+      "normalised_phrase": "would hold securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such transaction",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(c)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "65bc617b15c1de36bbe518110ebd5bda5b1cf01592b7d42cf71209d953b82bab",
+      "closure_id": "5f82f058afaa584360decf8bbdfdc9702e231d8d6892705a1e5fd77a8971da73",
+      "normalised_phrase": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(ttt)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "SUBSTITUTION_UNCORROBORATED"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "533f1900c53344889db3fc69658834ab2f34365d2f397adf568535431963c983",
+      "closure_id": "97ed775e046151cc494fe11352d50e76d2063f13b5cce19e672e7994388ebc77",
+      "normalised_phrase": "For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a7a634a5ae19f57ac8e85c26570bd2c5ce81da3fff69788d5c7952673662e025",
+      "closure_id": "d35a80fdec7b2ad917c8dc89f9dd1b5fe953e2d543b3fd4a75cfa72f9f74f45a",
+      "normalised_phrase": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1(c)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "61fe4a5cabe9b5d78fbd374cee717a1c4a316b51655f1db38b357261056da286",
+      "closure_id": "ebdabc8dbc8e53726f4dfcbfee47c2726a7be18cc1073caad1187372ed0f48a9",
+      "normalised_phrase": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "23423fbc1c98446720f2884a844d13e258b5fae7eeeca432a8f6788b12ad003a",
+      "closure_id": "6e758cbf4756a29df687b1bf7a9f6242c40863e0beeeb23827df0c03763248d1",
+      "normalised_phrase": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a94677bc85fb4d0b08cf81eecab96dd2585af6270efc8d801b24934799e781a9",
+      "closure_id": "9157c0fa4e15fcbf5f27ac9f4a01e8d57c1f020ae4f814f93790242952a60d13",
+      "normalised_phrase": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5e3f28d26984081fe9f351f27740731760b17f79158e723430a16a63577b59db",
+      "closure_id": "ca8fd4db3e5b98b4a5fff9b89fa7ff71152e6912ad6fb236d80d600fffca6a2f",
+      "normalised_phrase": "the actual knowledge",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_DEFINITION_RECORDED",
+      "concept_key": "DEF-TAX",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e458f7cf1efa00552c29e7f0550421bfee77bcc9d2c3841dda8877824ae67704",
+      "closure_id": "3dbb3cd15e2b57711b7b0c428a8a4cd106cd5b39c762943a5269a9e74e9068ae",
+      "normalised_phrase": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+      "attachment_position": null,
+      "concept_family": "DEF-TAX",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "1.1",
+      "source_citation": "1.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "defined_term": "“Ordinary Course License”",
+          "normalized_term_identity": "ordinary course license",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Ordinary Course License” means",
+          "definition_body_quote": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        },
+        "definition_envelope": {
+          "defined_term": "“Ordinary Course License”",
+          "normalized_term_identity": "ordinary course license",
+          "definition_kind": "TERM_DEFINITION",
+          "definition_head_quote": "“Ordinary Course License” means",
+          "definition_body_quote": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+          "cross_reference_target": null,
+          "owner_hint": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2f254f9cf64bac0a34618d8e065d0aa89df5d5801b4f71d274d093ec06f96c75",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3488efc60e58b1c014b9d80ecf3805bdd77c49bdbab97699ade5dd9361351a44",
+          "document_ordinal": 0,
+          "absolute_start": 31318,
+          "absolute_end": 32655,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "09f49eb01443972c4c2e86c30d03cd9e944131dcca255e45bb728b5ebeb53a7b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+        "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+        "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+        "extraction_provenance_id": "a5305100fae541e6c0b178d991a8d83d07a17419f2400b2c069d369770670dfb"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "b89543c8c58e9b24a2f8e5313e37c88b39192ad1006bc469981df0c248fc7127",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 12,
+      "resolved": 6,
+      "auto_pass": 0,
+      "review_queue": 11,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "c1e270c3a7b6d5945b8f9a122c05d4ee0962a0c2ed14813311d7ba96186e6972"
+  }
+}

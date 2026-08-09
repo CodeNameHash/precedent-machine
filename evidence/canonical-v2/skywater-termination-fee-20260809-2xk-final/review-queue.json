@@ -1,0 +1,240 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a0a04ae785be5d1cda1f02e18554fa309a761af928527ccf4a0f64190fc597b5",
+  "review_queue": [
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(x) in the cases described in clause (a) and (c), $51,573,958.07 (the “Termination Fee”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5afb6a8e774a95dba13529354189c6902cf3f0b9375fee752aa64089c7a1e0db",
+      "closure_id": "344cbbeaabbcf2e12c764f8252f866011536231236447f4d2b0810cc95c51c22",
+      "normalised_phrase": "(x) in the cases described in clause (a) and (c), $51,573,958.07 (the “Termination Fee”)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8fb21d2c031727021cf8301d1646b6e657207ed27fe90a8a8377faa150076d7d",
+      "closure_id": "54f522c6ddfbb5f5e151f6581e10ac5fe5591e5fc4094d09fecb028a26885a8e",
+      "normalised_phrase": "as long as, in either case, such Acquisition Proposal is consummated or such definitive agreement is executed within 12 months after the date of termination of this\n81\nAgreement;",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 727,
+          "end": 747,
+          "excerpt": "the date of this Agreement but on or before the date of any such termination an Acquisition Proposal shall have been made and become publicly known, whether or not publicly withdra",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:PUBLICLY_WITHDRAWN",
+          "start": 811,
+          "end": 829,
+          "excerpt": "isition Proposal shall have been made and become publicly known, whether or not publicly withdrawn, (x) prior to the Company Stockholder Meeting (in the case of a termination con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 1616,
+          "end": 1636,
+          "excerpt": "n amount equal to the Termination Fee not later than the earlier of the date an Acquisition Proposal is consummated or a definitive agreement is entered into by the Company providi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 1727,
+          "end": 1747,
+          "excerpt": "ated or a definitive agreement is entered into by the Company providing for any Acquisition Proposal, as long as, in either case, such Acquisition Proposal is consummated or such d",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TAIL",
+          "pattern_id": "TERMF-TAIL:PHRASE:ACQUISITION_PROPOSAL",
+          "start": 2024,
+          "end": 2044,
+          "excerpt": "r, that for the purpose of this clause (y), all references in the definition of Acquisition Proposal to 20% shall instead refer to 50%. The agreements contained in this Section 10.",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall terminate this Agreement pursuant to Section 9.1(f)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5493e91b6e54df07d7106daf278e52bc4d1067f3b879d2ce90b62af9bb3c4376",
+      "closure_id": "0cf7f72ce940f8c079dea083d267ce3600ba3dea64399289117f4b17b24ecbf5",
+      "normalised_phrase": "the Company shall terminate this Agreement pursuant to Section 9.1(f)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(a)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall terminate this Agreement pursuant to Section 9.1(d)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "02fa061a26b0990d23c975fab638337475e33283f28b50d8cf05ec2d2dd006db",
+      "closure_id": "262bec60452adf40834b5f24c9efe743dea38db74e68c53d9ef72efb5d4ab34a",
+      "normalised_phrase": "Parent shall terminate this Agreement pursuant to Section 9.1(d)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by the Company or Parent pursuant to Section 9.1(b)(i) and the Company Stockholder Approval shall not theretofore have been obtained",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f763909692cdc89b54d8715c219f598a78a95492e5cdd1d0c3a839946412be52",
+      "closure_id": "2cac1f4038b0f9a2437f4711a73ad1ef392895170f4916dac320aed9127a0151",
+      "normalised_phrase": "this Agreement is terminated by the Company or Parent pursuant to Section 9.1(b)(i) and the Company Stockholder Approval shall not theretofore have been obtained",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by Parent pursuant to Section 9.1(e) and the Company Stockholder Approval shall not theretofore have been obtained",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7851e577c8bbb3565ab7ed65fc095009a2fdd292ee078ba36312880784066b36",
+      "closure_id": "94cc7c0ad04932b52691c2d9171851c79dee7149c3b8e80ef47ebf7e779e4ab6",
+      "normalised_phrase": "this Agreement is terminated by Parent pursuant to Section 9.1(e) and the Company Stockholder Approval shall not theretofore have been obtained",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "10.5",
+      "source_citation": "10.5(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is terminated by the Company or Parent pursuant to Section 9.1(b)(ii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5a93bd52092a1028cf9723532c37e22be36bc06d023128e4d5933c00affcee1c",
+      "closure_id": "c4b3f2c5fd9e43443b479c3b81dcf045639241d49c312e952277170205a90ea6",
+      "normalised_phrase": "this Agreement is terminated by the Company or Parent pursuant to Section 9.1(b)(ii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "29b06e8e36dc88074aedfa86f708a8c4f4916f02cb12c1b931d1fbc724a84e7d"
+}

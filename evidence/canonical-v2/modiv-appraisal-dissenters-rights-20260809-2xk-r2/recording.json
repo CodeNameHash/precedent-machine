@@ -1,0 +1,26 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RUN/V3",
+  "model": "TERRA_MEDIUM",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "provider_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "call_count": 1,
+  "calls": [
+    {
+      "request_key": "473b77f7d5c2c87e2218118e1ed112c7fdf6a63589f18dceaec9fa737ea1fc18",
+      "request_identity_version": "SYSTEM_AND_MESSAGES/V1",
+      "request_system": [
+        {
+          "type": "text",
+          "text": "You are a JSON extraction engine. Output ONLY the requested valid JSON. Do not use tools or inspect files. Use only the source text in the request. No explanation, no commentary, no markdown fences, no reasoning — JSON only."
+        }
+      ],
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "GOVERNED SECTION REFERENCE: 2.6\n\nEvery emitted section_reference must equal \"2.6\" exactly. Do not use a relative subsection label and do not add a child reference.\n\nQUOTE FIDELITY: Every quote must be one contiguous byte-identical substring of SOURCE TEXT. Preserve punctuation exactly. Do not complete, shorten, normalise, or re-punctuate a quote. Omit the assertion if you cannot copy its quote exactly.\n\nExtract standalone appraisal settlement-consent and withdrawal-reconversion covenants into appraisal_assertions. Preserve notice, information-right, modality and statute mechanics in mechanics as exact evidence. Never duplicate one fact across the two lists. A mechanics surface label routes evidence only and is not a governed legal code. Availability, conversion and exchange mechanics remain with Consideration. Never assert a negative. Return JSON only.\n{\"appraisal_assertions\":[{\"section_reference\":\"<section>\",\"assertion_kind\":\"SETTLEMENT_CONSENT | WITHDRAWAL_RECONVERSION\",\"quote\":\"<verbatim>\",\"statute_ref\":null}],\"mechanics\":[{\"surface\":\"APPRAISAL_NOTICE | APPRAISAL_INFORMATION_RIGHT | APPRAISAL_MODALITY | APPRAISAL_STATUTE\",\"quote\":\"<one verbatim mechanism>\",\"detail\":\"<factual description only>\"}],\"open_world_candidates\":[{\"observed_quote\":\"<verbatim>\",\"why_unmapped\":\"<brief>\",\"nearest_concept\":null}]}\nSOURCE TEXT:\nSection 2.6 Dissenters’ Rights. No dissenters’ or appraisal rights shall be available with respect to the Mergers.\n"
+        }
+      ],
+      "raw_response_text": "{\"appraisal_assertions\":[],\"mechanics\":[],\"open_world_candidates\":[]}"
+    }
+  ]
+}

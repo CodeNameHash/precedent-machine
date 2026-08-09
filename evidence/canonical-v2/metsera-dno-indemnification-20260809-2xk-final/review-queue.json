@@ -1,0 +1,171 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "4cd23671385d97845e90cd0499ef45ab30f83264e4e4f5300c78be842dd755c5",
+  "review_queue": [
+    {
+      "section_reference": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f33e79c452e5756ca2ca1b30cc87e3ac82d5948c2f9e62a73b499ef7d257baf3",
+      "closure_id": "0105ecc6ad50d9a0ea50eccaf9aa742f7ab304a1de5583b2e059ff00205f0e8d",
+      "normalised_phrase": "neither Parent nor the Surviving Corporation shall be required to pay an aggregate annual premium for such insurance policies in excess of three hundred percent (300%) of the annual premium payable by the Company for coverage for its current fiscal year under the Existing D&O Policies",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "333129540240451b7830693abe2f045a133430bce3ad62c9b3fff0b8bfaa5c0b",
+      "closure_id": "08404eaee42787c2f8277e3d50cc664cb3eb85df4888c6ada3740bc75147a060",
+      "normalised_phrase": "All rights to indemnification and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "source_citation": "6.05(e)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-BENEF",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The provisions of this Section 6.05 are intended to be for the benefit of, and shall be enforceable by, each Indemnified Party, his or her heirs and his or her representatives",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4b7303f8055999ef028c2ce268be0274c988d635721a06bd0ae9524e6af7f37d",
+      "closure_id": "0cbed47fe66425ca95a0826eaf438d119bd68413641bcf18f8f50af322509830",
+      "normalised_phrase": "The provisions of this Section 6.05 are intended to be for the benefit of, and shall be enforceable by, each Indemnified Party, his or her heirs and his or her representatives",
+      "attachment_position": null,
+      "concept_family": "DNO-BENEF",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "be78972847d7e04feaec05a1c5e0b0038d205a2eb5240c67d69cbda762a0123f",
+      "closure_id": "40ffa07ee4ae5a09945bbb260cac177a9c587ad791758dabc81776b8325611ea",
+      "normalised_phrase": "as provided in the Company Charter, the Company By-laws, the organizational documents of any Company Subsidiary",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "source_citation": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "db8c372acb3f4e3a2eab0c0f181bc0099b3a79600ef21e35264db77f0f7f7160",
+      "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
+      "normalised_phrase": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_OBLIGATION",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3ae63813997012dd9c5a08dc093e95cde104646e2f6bf6221081d262e2db8f61",
+      "closure_id": "ac6f5f035e0930631b2192f48258f43f864d7c28f6de11d326d9f5718612f657",
+      "normalised_phrase": "Parent shall either purchase such “tail” insurance policies or, for the period beginning upon as of the Effective Time and ending six (6) years from the Effective Time, cause the Existing D&O Policies to be maintained",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.05",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a5df3a10ce867f186408f278b2c9efd22e2e01b53543be611978ce1e86c7f04d",
+      "closure_id": "bc64be5d30c8f93a9ac7a66c11733a35a350bf2665d22191abc5c7bb2d47d595",
+      "normalised_phrase": "shall continue in full force and effect in accordance with their terms with respect to any claims against any such Indemnified Party arising out of such acts or omissions for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a4d912c5897d6655834937fef4a1416c83312bf08cb304c1d8888ab8aa8b0c39"
+}

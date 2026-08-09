@@ -1,0 +1,364 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "2b6c45b538d78872e60bdea8a2837f7f9326cb35112aa8827808a61df0238ccf",
+  "review_queue": [
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d0bd4b43f037df132d7d0bd098d7e1ed5951565f991978f56923cae13a7f016c",
+      "closure_id": "2162352c8f391215143542e4b9008c8448a41b14b5135dd60150f0ce6bebff58",
+      "normalised_phrase": "The waiting period applicable to the consummation of the Merger under the HSR Act shall have expired or been terminated",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0b7f32aa760e32512630f90c9ef4be7e33295a523185a07c8c596bfcfca12089",
+      "closure_id": "67b136b4b451c2ad3a74ea3a8a872759709a28f07ddf158f1b85776e27d7db30",
+      "normalised_phrase": "No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity (collectively, “Legal Restraints”) preventing or prohibiting the consummation of the Merger shall be in effect.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "STOCKHOLDER_APPROVAL_CONDITION",
+      "concept_key": "COND-M-STOCKHOLDER",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8ccba6c86b264a3e7243e2623d3a4d4b310c3a24cddb349c53ff858805fa5696",
+      "closure_id": "710b58d0b64f4bdd4a5af1f76f11d9d81cc8c10316ef46064791c197293dec1c",
+      "normalised_phrase": "The Company Stockholder Approval shall been duly obtained in accordance with applicable Law, the Company Charter and the Company By-laws at the Company Stockholder Meeting.",
+      "attachment_position": null,
+      "concept_family": "COND-M-STOCKHOLDER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.01",
+      "source_citation": "7.01(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e31956a9f2cdb22711c8f42f737c6aab515ee23373b94e2115bc4aade2574d9b",
+      "closure_id": "c442786fa4a9c8a7b5aed5a021597f6ddf912e2e00572d352bd1b9f653749888",
+      "normalised_phrase": "any approvals or clearances applicable to the Merger as set forth in Section 7.01(a) of the Company Disclosure Letter, will have expired, been terminated or obtained, as applicable.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "NO_MAE_CONDITION_CONTINUING",
+      "concept_key": "COND-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "74c75830cec747e36d003342698a7822ac90e209430f783a83b50b5b1c123428",
+      "closure_id": "0a9d4a27cccdfb96987b3f3a090e586627a1dbbdca926bf58df6c102a30cdace",
+      "normalised_phrase": "Since the date of this Agreement, there shall not have occurred any Company Material Adverse Effect that is continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 659,
+          "end": 690,
+          "excerpt": "ially” or “material” or to any qualification based on the defined term “Company Material Adverse Effect,” as of the date of this Agreement and as of the Effective Time as if made as",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 1058,
+          "end": 1089,
+          "excerpt": "so true and correct has not had, or would not reasonably be expected to have, a Company Material Adverse Effect; (ii) the representations and warranties of the Company contained in Section 3.",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COND-MAE",
+          "pattern_id": "COND-MAE:PHRASE:COMPANY_MAE",
+          "start": 2272,
+          "end": 2303,
+          "excerpt": " performed by it under this Agreement at or prior to the Effective Time.\n(c) No Company Material Adverse Effect. Since the date of this Agreement, there shall not have occurred any Company Ma",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "source_citation": "7.02(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have performed and complied with, in all material respects, its agreements, obligations and covenants required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2b5a61ace9c69d10c201c9b9400bc4be0b5e99c43c93532f8e3af9547ed03c17",
+      "closure_id": "39833f640299221e7381600100db49b9b21eb8d5bac386c7bbd68a50361596d5",
+      "normalised_phrase": "The Company will have performed and complied with, in all material respects, its agreements, obligations and covenants required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.02",
+      "source_citation": "7.02(d)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have furnished Parent with a certificate dated as of the Closing Date signed on its behalf by its Chief Executive Officer or Chief Financial Officer to the effect that the conditions set forth in Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been satisfied.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "30d96cfa17964a12e969fc13b8c710c12ae6c0c8e03d7b02f3260bb19f29b44f",
+      "closure_id": "a9b60a439a4fe6bc88e42b44a059050fa4edac8cb9afe3164b39b37e2f1d5493",
+      "normalised_phrase": "The Company will have furnished Parent with a certificate dated as of the Closing Date signed on its behalf by its Chief Executive Officer or Chief Financial Officer to the effect that the conditions set forth in Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.03",
+      "source_citation": "7.03(c)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and Merger Sub will have furnished the Company with a certificate dated as of the Closing Date signed on its behalf by a duly appointed officer of Parent to the effect that the conditions set forth in Section 7.03(a) and Section 7.03(b) have been satisfied.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5d8d991dcbe08c7c5e0bb996e1a20750f709fd986eff0e059a67feb9c7e1abb3",
+      "closure_id": "6173da409dd15808b5e721f806bc8921c3272745e2f5fc39bae43438386ce534",
+      "normalised_phrase": "Parent and Merger Sub will have furnished the Company with a certificate dated as of the Closing Date signed on its behalf by a duly appointed officer of Parent to the effect that the conditions set forth in Section 7.03(a) and Section 7.03(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.03",
+      "source_citation": "7.03(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each of Parent and Merger Sub will have performed in all material respects the covenants and obligations required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f162f40876a15dd949838909244fb3b84a6d6d0bb5abff6c67c5ad91c02af0a8",
+      "closure_id": "e57fe05fac023b48ea5c6e7fbdba56ea873dd7ccd21905595d1601ae9bd81449",
+      "normalised_phrase": "Each of Parent and Merger Sub will have performed in all material respects the covenants and obligations required to be performed by it under this Agreement at or prior to the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "FRUSTRATION_BREACH_STANDARD",
+      "concept_key": "COND-FRUSTRATE",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7490a23a2cc41cb78ce7260d45ae80a7795b2453bd2fe45672243a61107eddb9",
+      "closure_id": "14fc3073e256dc214a91603e8724a819b52ee0a0b66c88d19b6033e0c65fc2a5",
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-FRUSTRATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "791cd765093d31b02cbde705b5dc0d7562ffc487da1de7078268244ca0fbade6",
+      "closure_id": "c8cddd265cf5dedb31b92e5fd610a250e3a2fa2ff90f6786cdae5bf131e7394d",
+      "normalised_phrase": "The Company may not rely on the failure of any condition set forth in Section 7.01 or Section 7.03 to be satisfied if such failure was primarily caused by its material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "16c5f9671e38bde12bff37b90fdf9a5a6690f341b155298727a8cf1c80ed2a7a",
+      "closure_id": "f07c542764b83d77512d1b34f2c09093ff99069e2aa390179c3b245b62e9ee14",
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.04",
+      "source_citation": "7.04",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "45133e6213c4c0f4691997b2e949991c1781c17a81144b4dae0a00db7bf8c202",
+      "closure_id": "f78404ba33646f917869ff905e7b129f18674edc038231852eb5c99d1072af2c",
+      "normalised_phrase": "Neither Parent nor Merger Sub may rely on the failure of any condition set forth in Section 7.01 or Section 7.02 to be satisfied if such failure was primarily caused by Parent’s or Merger Sub’s material breach of any of its obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "9da0c4b238c1f97f4aa0863d6f5a56c4eeffebee750d5ee76d5acbbe0bb5ff05"
+}

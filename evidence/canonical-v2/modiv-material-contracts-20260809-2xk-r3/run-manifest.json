@@ -1,0 +1,59 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "MATERIAL_CONTRACTS",
+  "purpose": "General extraction run: family MATERIAL_CONTRACTS on deal modiv.",
+  "section_references": [
+    "3.17"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "3.17",
+      "family_id": "MATERIAL_CONTRACTS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV41",
+  "prompt_id": "native-producer-material-contracts/v1",
+  "prompt_version": 1,
+  "agreement_date": "2026-05-03",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T04:50:44.446Z",
+  "total_elapsed_ms": 44962,
+  "extraction_wall_clock_ms": 38927,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "d5beb0a79ab3f7d9b0afa44d0d15a44d2a15b06a",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 1,
+  "run_receipt_id": "e9d2c5cfdfb038aab376b5698c9ae3e12c45d498199cdc627f563680218d8c61",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 1,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

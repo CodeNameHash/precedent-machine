@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:18:08.615Z",
+  "section_reference": "5.12",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"5.12\",\"party_making\":\"Parent\",\"chapeau_quote\":\"Except for such matters as would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect,\",\"limbs\":[{\"limb_path\":[\"(a)\"],\"assertion_quote\":\"Proceeding pending, or to the knowledge of Parent, threatened against Parent or any of its Subsidiaries or any of its Subsidiaries or any of their Oil and Gas Properties\",\"subject\":\"Proceedings\"},{\"limb_path\":[\"(b)\"],\"assertion_quote\":\"judgment, decree, injunction, ruling, order, writ, stipulation, determination or award of any Governmental Entity or arbitrator outstanding against Parent or any of its Subsidiaries\",\"subject\":\"outstanding governmental or arbitral orders\"}],\"qualifiers\":[{\"kind\":\"ACCURACY\",\"code\":\"MAT_MAE_QUALIFIED\",\"quote\":\"Except for such matters as would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect,\",\"attachment\":{\"position\":\"CHAPEAU\",\"governs_path\":null,\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}},{\"kind\":\"KNOWLEDGE\",\"code\":\"ACTUAL\",\"quote\":\"to the knowledge of Parent\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"(a)\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":false}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[]}"
+}

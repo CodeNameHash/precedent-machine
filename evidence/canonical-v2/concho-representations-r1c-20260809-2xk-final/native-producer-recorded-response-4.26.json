@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:15:22.574Z",
+  "section_reference": "4.26",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"4.26\",\"party_making\":\"Company\",\"chapeau_quote\":\"Assuming the accuracy of the representations and warranties set forth in Section 5.16,\",\"limbs\":[{\"limb_path\":[\"Takeover Laws\"],\"assertion_quote\":\"the approval of the Company Board of this Agreement and the Transactions represents all the action necessary to render inapplicable to this Agreement and the Transactions any Takeover Law or any anti-takeover provision in the Company’s Organizational Documents that is applicable to the Company, the shares of Company Common Stock or the Transactions.\",\"subject\":\"Takeover Law and anti-takeover provision inapplicability\"}],\"qualifiers\":[{\"kind\":\"ACCURACY\",\"code\":null,\"quote\":\"Assuming the accuracy of the representations and warranties set forth in Section 5.16,\",\"attachment\":{\"position\":\"CHAPEAU\",\"governs_path\":[\"Takeover Laws\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"Takeover Law and anti-takeover provision applicability\",\"observed_quote\":\"any Takeover Law or any anti-takeover provision in the Company’s Organizational Documents that is applicable to the Company, the shares of Company Common Stock or the Transactions\",\"why_unmapped\":\"This is a representation-specific subject-matter limitation, not an accuracy or knowledge standard.\",\"nearest_concept\":null}]}"
+}

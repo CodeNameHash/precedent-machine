@@ -1,0 +1,213 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b1db529bd75522c7653f2444bed094813fde1399810ee99e69a4f5cad8966980",
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(a)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an amount in cash equal to $505.00 (the “Cash Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d23826bb95d7717a6c547a2be7b2b441d4579b898b7be5edd8e51bbbc66ced93",
+      "closure_id": "4243a1a1c45d11d53cab0dd46fb296a1cbefea2163dcbd1e7015d303890f7665",
+      "normalised_phrase": "an amount in cash equal to $505.00 (the “Cash Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1c4e2223640a2ccdcc565d7ce379ea3b20e31c293817dd4d8c9be3fb185bcb01",
+      "closure_id": "4ede480d3239d7493bc87d44513f7ab04f7340a7e9369ddc6a9f5b9c572a3f94",
+      "normalised_phrase": "held by a Company stockholder who is entitled to demand appraisal rights under Section 262 of the DGCL and who properly demands appraisal of such Company Shares pursuant to, and who complies in all respects with, Section 262 of the DGCL",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 1176,
+          "end": 1193,
+          "excerpt": " (B), a “Cancelled Share” and collectively, “Cancelled Shares”) and (C) Dissenting Shares) shall be automatically converted into the right to receive, and become exchang",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 2142,
+          "end": 2159,
+          "excerpt": "ormerly representing any of the Company Shares (other than Cancelled Shares and Dissenting Shares) shall thereafter represent only the right to receive the Per Share Merger Cons",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 7514,
+          "end": 7531,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) issued and outstanding immediately prior to the Election Deadline shall be ent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 9099,
+          "end": 9116,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares), in such form as the Company shall reasonably specify and as shall be reasonab",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 11154,
+          "end": 11171,
+          "excerpt": "l be treated solely as provided in Section ‎2.3, (2) Cancelled Shares and (3) Dissenting Shares) between the Mailing Date and the Election Deadline. Parent shall determine, in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18242,
+          "end": 18264,
+          "excerpt": "y Share being a “Dissenting Share,” and such Company stockholder being a “Dissenting Stockholder”), shall not be converted into or represent the right to receive the Per Shar",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_STOCKHOLDER",
+          "start": 18575,
+          "end": 18597,
+          "excerpt": "r thereof to only such rights as are granted by Section 262 of the DGCL. If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or ef",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 18761,
+          "end": 18778,
+          "excerpt": "ively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have con",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19194,
+          "end": 19211,
+          "excerpt": "procedures set forth in Section ‎2.2 and shall not thereafter be deemed to be Dissenting Shares. Notwithstanding anything to the contrary contained in this Agreement, if, prio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 19448,
+          "end": 19465,
+          "excerpt": "the right of a Company stockholder to be paid the fair value of such holder’s Dissenting Shares pursuant to Section 262 of the DGCL shall cease. The Company shall give Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:ACRONYM:DISSENTING_SHARES",
+          "start": 20147,
+          "end": 20164,
+          "excerpt": "ayment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or w",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(a)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section ‎2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9af9e3486fcae454d8a5803bb7bd36930ec78c540be67b3d6a9ab07d621f0b80",
+      "closure_id": "b95c14eecaf5e9a9aea164fc3c342322dcc5878068ae1b959eb4e48f86d95afd",
+      "normalised_phrase": "20.200 validly issued, fully paid and non-assessable Parent Shares, subject to Section 2.5 with respect to any Merger Fractional Share Payout (the “Stock Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.5",
+      "source_citation": "2.5",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each holder of Company Shares converted pursuant to the Titanium Merger who would otherwise have been entitled to receive a fraction of a share of Parent Shares (after aggregating all shares represented by the Certificates and Book-Entry Company Shares delivered by such holder) shall receive, in lieu thereof, cash, without interest, in an amount equal to such fractional part of a share of Parent Shares multiplied by the closing price of Parent Shares on the NYSE on the last trading day immediately preceding the Titanium Merger Effective Time, rounded to the nearest cent (with 0.5 of a cent being rounded upward) (the “Merger Fractional Share Payout”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "574cd3940cd9ffc53624228771cfbcea83804d70617e1df012bf9d436478f910",
+      "closure_id": "a3c862d7a4541e8e011808e39077f1986c114fafdfbcd82e0400df8152a78c86",
+      "normalised_phrase": "each holder of Company Shares converted pursuant to the Titanium Merger who would otherwise have been entitled to receive a fraction of a share of Parent Shares (after aggregating all shares represented by the Certificates and Book-Entry Company Shares delivered by such holder) shall receive, in lieu thereof, cash, without interest, in an amount equal to such fractional part of a share of Parent Shares multiplied by the closing price of Parent Shares on the NYSE on the last trading day immediately preceding the Titanium Merger Effective Time, rounded to the nearest cent (with 0.5 of a cent being rounded upward) (the “Merger Fractional Share Payout”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "3a1eb5828d7929d86c96adfae2637ba1cace89a82e1f805cdb8f787e0a2abe26"
+}

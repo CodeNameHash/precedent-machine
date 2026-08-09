@@ -47,7 +47,7 @@ test('IOC uses the nearest preceding chapeau party on a parent provision and a c
         ioc_restriction_assertions: [{
           section_reference: '6.1',
           assertion_kind: 'RESTRICTION_PRESENT',
-          restriction_category: 'MERGE',
+          restriction_category: 'ACQUISITIONS_BUSINESS_COMBINATIONS',
           threshold_basis: null,
           quote: childQuote,
         }],
@@ -173,15 +173,18 @@ test('JOINT_MULTI_PARTY capacity: projectIocWaveAClaims throws INVALID_INHERITED
   );
 });
 
+const CONCEPT_LABELS_EXPECTED = Object.freeze([
+  'IOC-ACCOUNTING', 'IOC-AFFILIATE', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
+  'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-HIRE', 'IOC-INSURANCE', 'IOC-ISSUE', 'IOC-IP', 'IOC-LIEN',
+  'IOC-MERGE', 'IOC-ORDINARY', 'IOC-REALPROP', 'IOC-REGAUTH', 'IOC-REPURCHASE', 'IOC-SETTLE', 'IOC-TAX',
+]);
+
 test('IOC product projection covers only governed presence concepts and rejects long-tail claims', () => {
-  assert.deepEqual(Object.keys(CONCEPT_LABELS).sort(), [
-    'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
-    'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
-  ]);
+  assert.deepEqual(Object.keys(CONCEPT_LABELS).sort(), [...CONCEPT_LABELS_EXPECTED].sort());
   assert.throws(
     () => projectIocWaveAClaims({
       resolved_entries: [{
-        concept_key: 'IOC-REPURCHASE',
+        concept_key: 'IOC-WAIVE',
         resolved_claim_definition_key: 'IOC_RESTRICTION_PRESENT',
       }],
       ioc_restriction_components: [],

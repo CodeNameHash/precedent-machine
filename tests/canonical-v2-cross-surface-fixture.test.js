@@ -104,6 +104,10 @@ test('the F26 preview is compact, inactive and uses one bounded provision layout
   assert.match(component, /Relationship:/);
   assert.match(component, /Qualifies .* limb-B prohibited-action outcomes/);
   assert.match(component, /item\.raw_value\?\.text|raw_value\?\.text/);
+  assert.match(component, /value === null \|\| value === undefined\) return 'Not captured';/);
+  assert.match(component, /return 'Party not captured';/);
+  assert.match(component, /return 'Trigger not captured';/);
+  assert.doesNotMatch(component, /return 'Not applicable';/);
   assert.doesNotMatch(component, /No market data/);
   assert.match(route, /designPreviewServerSideProps/);
   assert.match(route, /NoShopCrossViewPreview/);

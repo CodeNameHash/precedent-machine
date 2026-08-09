@@ -1,0 +1,522 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "9.8"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "9.8",
+      "section_id": "6e3e11034ed1176c140520b619621e02197157f5b4da15a4b76cd1e282f3f282",
+      "parent_section_id": "28a9d929a82b10a15111c502801b4ac8ce14f7654cce3f2f1e25e88aa5199c16",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 362234,
+      "end": 367876,
+      "text_sha256": "650748894a1d146b47ac3d5dc6db58d5c5103112576836c08491c82722859e98",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-specific-performance-remedies/v1",
+      "prompt_version": 3,
+      "prompt_digest": "f02c0c99c664c0a153ff53efbac4097e677b9fd571c0fb758f4378c1b3429823",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "f02c0c99c664c0a153ff53efbac4097e677b9fd571c0fb758f4378c1b3429823",
+        "input_scope_digest": "bb9f72df8fa2487620c1826d76189a8c6ac81a9f5c86d18ee839c349c8a56efd",
+        "proposal_count": 3,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "02433dcbd7821a3c069fa58479812accf02b46b92e0edb1d055fe485c8b44c8e"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "9.8",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3dfb7f71f54e8109a6ed7abe218358f4c9e8333e0c7897770ad2f5c6b7a792f0",
+          "claim_occurrence_id": "c1f2eb0e84abeb4130cd50cc56d1704d67e67e2268b20094a206e868f9fcbaea",
+          "subject_occurrence_id": "ce810463bcb6100e04293ef1b55e59a939af7068fdbde5bc41a709e8d44e7ad3",
+          "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Parties agree that irreparable damage for which monetary damages, even if available, would not be an adequate remedy would occur in the event that the Parties do not perform the provisions of this Agreement, the Equity Commitment Letter or the Guaranty (including any Party failing to take such actions as are required of it hereunder in order to consummate this Agreement, the Equity Commitment Letter or the Guaranty) in accordance with its specified terms or otherwise breach such provisions. The Parties acknowledge and agree that, (A) the Parties will be entitled, in addition to any other remedy to which they are entitled at law or in equity, to an injunction, specific performance and other equitable relief to prevent breaches of this Agreement, the Equity Commitment Letter or the Guaranty and to enforce specifically the terms and provisions hereof; and (B) the right of specific enforcement is an integral part of this Agreement and the Merger and without that right, neither the Company nor the Buyer Parties would have entered into this Agreement. It is explicitly agreed that the Company shall have the right to seek an injunction, specific performance or other equitable remedies in connection with enforcing the Buyer Parties’ obligations to consummate the Merger.\n(ii) The Parties agree not to raise any objections to (A) the granting of an injunction, specific performance or other equitable relief to prevent or restrain breaches of this Agreement, the Equity Commitment Letter or the Guaranty by the Company, on the one hand, or Parent, on the other hand; and (B) the specific performance of the terms and provisions of this Agreement to prevent breaches of, or to enforce compliance with, the covenants, obligations and agreements of the Buyer Parties pursuant to this Agreement, the Equity Commitment Letter or the Guaranty. Each of the Parties hereto agrees that it will not oppose the granting of an injunction, specific performance or any other equitable relief on the basis that any other Party has an adequate remedy at law or that any award of specific performance is not an appropriate remedy for any reason at law or in equity. Any Party seeking an injunction or injunctions to prevent breaches of this Agreement, the Equity Commitment Letter or the Guaranty and to enforce specifically the terms and provisions of this Agreement, the Equity Commitment Letter or the Guaranty will not be required to provide any bond or other security in connection with such injunction or enforcement, and each Party irrevocably waives any right that it may have to require the obtaining, furnishing or posting of any such bond or other security.\n(iii) Notwithstanding the foregoing, the Parties hereby further acknowledge and agree that prior to the Closing, the Company will be entitled to an injunction, specific enforcement and other equitable relief requiring Parent or Merger Sub to consummate the Merger on the terms and conditions in this Agreement (including to cause Parent to exercise its rights to enforce the obligations of Guarantor under the Equity Commitment Letter in order to cause the Equity Financing to be funded in accordance with and subject to the terms and conditions set forth in the Equity Commitment Letter) if, and only if, (i) all conditions set forth in Section 7.1 and Section 7.2 (other than those conditions that by their nature are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing) have been satisfied or waived and remain so satisfied or waived and Parent fails to complete the Closing by the date the Closing is required to have occurred pursuant to Section 2.3, (ii) the Debt Financing has been funded or will be funded at the Closing if the amounts under the Equity Commitment Letter are funded at the Closing (for purposes of this clause (ii), if any amounts committed under the Debt Commitment Letter have been funded into escrow, such amounts will not be considered funded until released from escrow), and (iii) the Company has irrevocably confirmed in a written notice to Parent that (x) all conditions set forth in Section 7.3 have been satisfied (other than those conditions that by their terms are to be satisfied at the Closing, each of which is capable of being satisfied at the Closing) or that it has irrevocably waived any unsatisfied conditions set forth in Section 7.3 and (y) if specific performance is granted and the Financing is funded at the Closing, it is ready, willing and able to close the Merger. For the avoidance of doubt, notwithstanding anything in this Agreement to the contrary, under no circumstances will the Company, directly or indirectly, be entitled to receive both a grant of injunction, specific performance or other equitable remedy to consummate the Closing, on the one hand, and payment of the Parent Termination Fee pursuant to Section 8.3(c), on the other hand.",
+          "canonical_value": true,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "22f5c40863dbc89d24b5314569f6f610c0ef1640fecc9111b59d19d9de92febf"
+          ],
+          "attributes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SPECIFIC_PERFORMANCE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "22f5c40863dbc89d24b5314569f6f610c0ef1640fecc9111b59d19d9de92febf",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "38415669cf057b0df5806bc09941c8895b089f035af29d71301c04c062190b27",
+              "document_ordinal": 0,
+              "absolute_start": 730,
+              "absolute_end": 5636,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "931f83d6015b14cec8b82ddadb8d82f2f42c849672dd4be219fd1c10bf87a3cd"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+          "prompt_digest": "f02c0c99c664c0a153ff53efbac4097e677b9fd571c0fb758f4378c1b3429823",
+          "producer_receipt_id": "02433dcbd7821a3c069fa58479812accf02b46b92e0edb1d055fe485c8b44c8e",
+          "governed_scope_digest": "3429c79946b630aa7bdc9b5ef1843e50cadb2708f2ead05b5bd6d382b943b5d5",
+          "extraction_provenance_id": "36ae738fd7504733ee2a995e5869e96c35002148dbdebe1ea32000432cb00a27"
+        }
+      }
+    },
+    {
+      "section_reference": "9.8",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d9a839be94f22847e802c6344c198d577aab581ca47a4e939515dfce2999d16b",
+          "claim_occurrence_id": "94f6efc23248205290257ebf8ab427d4a247c07300baa9a05106ce3e2bb85bc2",
+          "subject_occurrence_id": "1ce9f00da30191bd89689ae7cef9e8c3220c5342c0deb70221382fb2e22af180",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Except as otherwise provided herein, any and all remedies herein expressly conferred upon a Party will be deemed cumulative with and not exclusive of any other remedy conferred hereby or by law or equity upon such Party, and the exercise by a Party of any one remedy will not preclude the exercise of any other remedy.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "29912fa411565a0197231b9bfbdc61be6a649fb64b91f2ab55c899a428dcf689"
+          ],
+          "attributes": {
+            "why_unmapped": "General remedies effect.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "29912fa411565a0197231b9bfbdc61be6a649fb64b91f2ab55c899a428dcf689",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a8212f89e9a6b17f241419516632783b6648dc08ee46d967350dd4a0f967e9b3",
+              "document_ordinal": 0,
+              "absolute_start": 39,
+              "absolute_end": 357,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6ab675d7825dde21e0b854c8e58349ae3b01b48e1860e1bc7fd706bb65f23c3a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f02c0c99c664c0a153ff53efbac4097e677b9fd571c0fb758f4378c1b3429823",
+          "producer_receipt_id": "02433dcbd7821a3c069fa58479812accf02b46b92e0edb1d055fe485c8b44c8e",
+          "governed_scope_digest": "3429c79946b630aa7bdc9b5ef1843e50cadb2708f2ead05b5bd6d382b943b5d5",
+          "extraction_provenance_id": "adad9e79941d488a37d15fef0ac84f26b3e0e6043c4f98eb12cbd138e329a202"
+        }
+      }
+    },
+    {
+      "section_reference": "9.8",
+      "citation_validation": null,
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3ce421f99da4151ce70608770244dec7530731056a0273bcccaf933d78a8f35b",
+          "claim_occurrence_id": "c3c2247cedd0698d863012d5403cc9a82c22a08cbef192ca25a2412ea0212a67",
+          "subject_occurrence_id": "47899fbf890eb606d0344206dded50b31e67363ab0571c098b10c7c90f6b4acf",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Although the Company may pursue both a grant of specific performance and monetary damages, under no circumstances will the Company be permitted or entitled to receive both a grant of specific performance that results in the occurrence of the Closing and monetary damages (including any monetary damages in lieu of specific performance).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d8996fea241e62abe8b0cd6ae15ec3110b025b9280e88a3e7240ea8e0d84e631"
+          ],
+          "attributes": {
+            "why_unmapped": "Damages and remedy-election effect.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d8996fea241e62abe8b0cd6ae15ec3110b025b9280e88a3e7240ea8e0d84e631",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b37dd3e0ddc8f4157699a4e768686e2c88453356365f942c953f05710a2ddffc",
+              "document_ordinal": 0,
+              "absolute_start": 358,
+              "absolute_end": 694,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2079a2132171db2d7f45c53fb08a021687f03737aeb88ab92e978d713aa56308"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f02c0c99c664c0a153ff53efbac4097e677b9fd571c0fb758f4378c1b3429823",
+          "producer_receipt_id": "02433dcbd7821a3c069fa58479812accf02b46b92e0edb1d055fe485c8b44c8e",
+          "governed_scope_digest": "3429c79946b630aa7bdc9b5ef1843e50cadb2708f2ead05b5bd6d382b943b5d5",
+          "extraction_provenance_id": "adad9e79941d488a37d15fef0ac84f26b3e0e6043c4f98eb12cbd138e329a202"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "9.8",
+      "source_byte_length": 5642,
+      "covered_byte_length": 5560,
+      "coverage_share": 0.9854661467564694,
+      "marker_counts": {
+        "as of": 0,
+        "except": 1,
+        "knowledge": 2,
+        "material": 0,
+        "total": 3
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 3,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "9.8",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 14,
+          "end": 17
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 700,
+          "end": 703
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 726,
+          "end": 729
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1270,
+          "end": 1273
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1599,
+          "end": 1602
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2018,
+          "end": 2022
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2072,
+          "end": 2075
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2317,
+          "end": 2320
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3398,
+          "end": 3403
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4004,
+          "end": 4007
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4393,
+          "end": 4397
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4571,
+          "end": 4575
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4741,
+          "end": 4746
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4820,
+          "end": 4823
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5119,
+          "end": 5122
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5613,
+          "end": 5616
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 13,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 726,
+          "end": 729
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 1270,
+          "end": 1273
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 1599,
+          "end": 1602
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2018,
+          "end": 2022
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2072,
+          "end": 2075
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2317,
+          "end": 2320
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3398,
+          "end": 3403
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4004,
+          "end": 4007
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4393,
+          "end": 4397
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4571,
+          "end": 4575
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4741,
+          "end": 4746
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 4820,
+          "end": 4823
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 5119,
+          "end": 5122
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5613,
+          "end": 5616
+        }
+      ],
+      "disagreement_count": 14
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 3,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "1566bd43e21a14a99602360daac7771ce964b9f133526dca4668b37196241790"
+}

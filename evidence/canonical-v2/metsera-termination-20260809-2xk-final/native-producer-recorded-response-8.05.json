@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:15:04.510Z",
+  "section_reference": "8.05",
+  "prompt_id": "native-producer-termination/v2",
+  "prompt_version": 2,
+  "raw_response_text": "{\"termination_right_assertions\":[{\"section_reference\":\"8.05\",\"assertion_kind\":\"RIGHT_GRANT\",\"trigger_kind\":null,\"terminating_party_scope\":\"ONE_PARTY\",\"terminating_party\":\"The Company\",\"deadline_term\":null,\"day_kind\":null,\"period_kind\":null,\"quote\":\"The Company may terminate this Agreement pursuant to Section 8.01(f)\"}],\"wave_b_mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"(i) the Company Board authorizes the Company to enter into a definitive written agreement constituting a Superior Company Proposal and immediately following such termination, the Company enters into a binding definitive agreement for such Superior Company Proposal\",\"why_unmapped\":\"It asserts conditions to exercise a termination right resembling a superior-proposal termination condition, not a controlled deferred mechanism.\",\"nearest_concept\":\"SUPERIOR_PROPOSAL\"},{\"observed_quote\":\"(ii) the Company has complied in all material respects with Section 5.02, including its obligations under Section 5.02(e) in respect of such Superior Company Proposal\",\"why_unmapped\":\"It asserts a compliance condition and cross-reference for a termination right, not a controlled deferred mechanism.\",\"nearest_concept\":\"NO_SOLICITATION_BREACH\"},{\"observed_quote\":\"(iii) the Company has paid, or simultaneously with the termination of this Agreement pays, the fee due under Section 8.02 that is payable if this Agreement is terminated pursuant to Section 8.01(f).\",\"why_unmapped\":\"It asserts a termination-fee payment condition, which is outside the termination-rights family.\",\"nearest_concept\":null}]}"
+}

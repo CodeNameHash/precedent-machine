@@ -1,7 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { enforceTransactionStepInvariants } = require('../../../lib/schema/topology-detector');
+const {
+  enforceTransactionStepInvariants,
+  TOPOLOGIES,
+} = require('../../../lib/schema/topology-detector');
 
 function step(order, kind = 'MERGER') {
   return {
@@ -30,4 +33,12 @@ test('transaction-step invariant rejects single-merger topology with two steps',
     }),
     /SINGLE_MERGER/,
   );
+});
+
+test('UNDETERMINED may carry zero steps', () => {
+  assert.doesNotThrow(() => enforceTransactionStepInvariants([], {
+    topology: TOPOLOGIES.UNDETERMINED,
+    step_count: 0,
+    primary_step_order: null,
+  }));
 });

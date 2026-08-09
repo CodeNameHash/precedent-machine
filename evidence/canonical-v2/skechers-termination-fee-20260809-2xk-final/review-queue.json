@@ -1,0 +1,468 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "4a0f005f0f26dde6dbe616526962ce52975dd73a123cabe6c44ac3551d767b3e",
+  "review_queue": [
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-REVERSE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "25f739735bc46bc3143456c6752de33336813af069a1dd026bf4b7e4ab89d435",
+      "closure_id": "232f24b995e32a28d1e8abc7789d997db874deda1f8a5b500e6bd492d2fd5330",
+      "normalised_phrase": "then Parent shall promptly, but in no event later than two Business Days after termination of this Agreement, pay to (or cause to be paid to) the Company an amount equal to $534,103,258 (the “Parent Termination Fee”).",
+      "attachment_position": null,
+      "concept_family": "TERMF-REVERSE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 1643,
+          "end": 1658,
+          "excerpt": "rent (or as directed by Parent) an amount equal to $339,883,891 (the “Company Termination Fee”). For purposes of this Section 8.3(b)(i), all references to “15%” in the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 2077,
+          "end": 2092,
+          "excerpt": "nation pay or cause to be paid to Parent (or as directed by Parent) the Company Termination Fee.\n-81-\n(iii) If this Agreement is validly terminated pursuant to Section 8.1(j),",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 2315,
+          "end": 2330,
+          "excerpt": "nation pay or cause to be paid to Parent (or as directed by Parent) the Company Termination Fee.\n(c) Parent Payments. If this Agreement is validly terminated by (i) the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 2972,
+          "end": 2987,
+          "excerpt": "gree that in no event will the Company or Parent be required to pay the Company Termination Fee or Parent Termination Fee, as applicable, on more than one occasion, whether or",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 2991,
+          "end": 3013,
+          "excerpt": "nt will the Company or Parent be required to pay the Company Termination Fee or Parent Termination Fee, as applicable, on more than one occasion, whether or not the Company Terminati",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 2998,
+          "end": 3013,
+          "excerpt": " the Company or Parent be required to pay the Company Termination Fee or Parent Termination Fee, as applicable, on more than one occasion, whether or not the Company Terminati",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 3084,
+          "end": 3099,
+          "excerpt": "ation Fee, as applicable, on more than one occasion, whether or not the Company Termination Fee or Parent Termination Fee, as applicable, may be payable pursuant to more than ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 3103,
+          "end": 3125,
+          "excerpt": "cable, on more than one occasion, whether or not the Company Termination Fee or Parent Termination Fee, as applicable, may be payable pursuant to more than one provision of this Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 3110,
+          "end": 3125,
+          "excerpt": "on more than one occasion, whether or not the Company Termination Fee or Parent Termination Fee, as applicable, may be payable pursuant to more than one provision of this Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 5370,
+          "end": 5392,
+          "excerpt": "ccordance with Section 9.8, (i) the Company’s right to receive payment of the Parent Termination Fee pursuant to Section 8.3(c), any interest and other amounts payable pursuant to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 5377,
+          "end": 5392,
+          "excerpt": "ce with Section 9.8, (i) the Company’s right to receive payment of the Parent Termination Fee pursuant to Section 8.3(c), any interest and other amounts payable pursuant to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 6721,
+          "end": 6743,
+          "excerpt": " the Guaranty or the transactions contemplated hereby, (ii) upon payment of the Parent Termination Fee (or damages in an amount up to the Parent Damage Cap), none of the Parent\n-82-\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 6728,
+          "end": 6743,
+          "excerpt": "aranty or the transactions contemplated hereby, (ii) upon payment of the Parent Termination Fee (or damages in an amount up to the Parent Damage Cap), none of the Parent\n-82-\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:PARENT_TERMINATION_FEE",
+          "start": 8263,
+          "end": 8285,
+          "excerpt": "ction Document or otherwise, shall not exceed an amount equal to the sum of the Parent Termination Fee and any interest and other amounts payable pursuant to Section 8.3(e) and indem",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-REVERSE",
+          "pattern_id": "TERMF-REVERSE:PHRASE:TERMINATION_FEE",
+          "start": 8270,
+          "end": 8285,
+          "excerpt": "ocument or otherwise, shall not exceed an amount equal to the sum of the Parent Termination Fee and any interest and other amounts payable pursuant to Section 8.3(e) and indem",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "818a23ff3ff34221a510c55e9129c63926f48194efba540047fea84993686203",
+      "closure_id": "3264f57486c2cc1398c2b3c82ae0389079bed8d25531596b2ed8df4de459dd12",
+      "normalised_phrase": "then the Company will concurrently with the consummation of such Acquisition Transaction pay or cause to be paid to Parent (or as directed by Parent) an amount equal to $339,883,891 (the “Company Termination Fee”).",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2077,
+          "end": 2092,
+          "excerpt": "nation pay or cause to be paid to Parent (or as directed by Parent) the Company Termination Fee.\n-81-\n(iii) If this Agreement is validly terminated pursuant to Section 8.1(j),",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2315,
+          "end": 2330,
+          "excerpt": "nation pay or cause to be paid to Parent (or as directed by Parent) the Company Termination Fee.\n(c) Parent Payments. If this Agreement is validly terminated by (i) the Compan",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2817,
+          "end": 2832,
+          "excerpt": "cause to be paid to) the Company an amount equal to $534,103,258 (the “Parent Termination Fee”).\n(d) Single Payment Only. The Parties acknowledge and agree that in no even",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2972,
+          "end": 2987,
+          "excerpt": "gree that in no event will the Company or Parent be required to pay the Company Termination Fee or Parent Termination Fee, as applicable, on more than one occasion, whether or",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 2998,
+          "end": 3013,
+          "excerpt": " the Company or Parent be required to pay the Company Termination Fee or Parent Termination Fee, as applicable, on more than one occasion, whether or not the Company Terminati",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3084,
+          "end": 3099,
+          "excerpt": "ation Fee, as applicable, on more than one occasion, whether or not the Company Termination Fee or Parent Termination Fee, as applicable, may be payable pursuant to more than ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3110,
+          "end": 3125,
+          "excerpt": "on more than one occasion, whether or not the Company Termination Fee or Parent Termination Fee, as applicable, may be payable pursuant to more than one provision of this Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 5377,
+          "end": 5392,
+          "excerpt": "ce with Section 9.8, (i) the Company’s right to receive payment of the Parent Termination Fee pursuant to Section 8.3(c), any interest and other amounts payable pursuant to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 6728,
+          "end": 6743,
+          "excerpt": "aranty or the transactions contemplated hereby, (ii) upon payment of the Parent Termination Fee (or damages in an amount up to the Parent Damage Cap), none of the Parent\n-82-\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 8270,
+          "end": 8285,
+          "excerpt": "ocument or otherwise, shall not exceed an amount equal to the sum of the Parent Termination Fee and any interest and other amounts payable pursuant to Section 8.3(e) and indem",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TAIL",
+      "reasons": [
+        "NON_LITERAL_NUMERAL"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "within one year following the termination of this Agreement pursuant to Section 8.1(d) or Section 8.1(f), as applicable, either an Acquisition Transaction is consummated or the Company enters into a definitive agreement providing for the consummation of an Acquisition Transaction which is ultimately consummated",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "fd9e5c90485e73391497424d82085f9293b0288a8635df52663360c482ca7d63",
+      "closure_id": "dd816a43ce6c002227569daf85f73d3cc20483534ce9f640107a6332d0de9b8a",
+      "normalised_phrase": "within one year following the termination of this Agreement pursuant to Section 8.1(d) or Section 8.1(f), as applicable, either an Acquisition Transaction is consummated or the Company enters into a definitive agreement providing for the consummation of an Acquisition Transaction which is ultimately consummated",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent pursuant to Section 8.1(c) and at such time the Company had the right to terminate this Agreement pursuant to Section 8.1(h) or Section 8.1(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a5902f09bf2d190dff0ff4e54642eb3d7f449685e358de7725c584f7daa44af5",
+      "closure_id": "1f64480db77c6af17e528f423977f15ca785751813267c716a322d307375c815",
+      "normalised_phrase": "Parent pursuant to Section 8.1(c) and at such time the Company had the right to terminate this Agreement pursuant to Section 8.1(h) or Section 8.1(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "If this Agreement is validly terminated pursuant to Section 8.1(g)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ab94252e5233cf3b18d9f016e29a9ae8e53eeefe8fea7b6e7e4ba82e627fff3b",
+      "closure_id": "28720e246bc34ac315c69494a3b6737ae2a3d3aa95afc75913e91516639e5401",
+      "normalised_phrase": "If this Agreement is validly terminated pursuant to Section 8.1(g)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)(iii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "If this Agreement is validly terminated pursuant to Section 8.1(j)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f347c8e708b4c8c19e46d9533416d7e73743adeb6f420897ef96a3bf2c4aa126",
+      "closure_id": "8f0468e2c9a8626a2dc120964b61bb7c15d5224a0601eb37e99adda0f71a413c",
+      "normalised_phrase": "If this Agreement is validly terminated pursuant to Section 8.1(j)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company pursuant to Section 8.1(h) or Section 8.1(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e0499b8b8452909d663c4178687c4d623f48e23f74c6c457b079a5a83e5230b5",
+      "closure_id": "d5483d810aed35d792ae76bb2001f3d7505bbc0190ea01e1925061c16be6e760",
+      "normalised_phrase": "the Company pursuant to Section 8.1(h) or Section 8.1(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "this Agreement is validly terminated pursuant to Section 8.1(d) or Section 8.1(f)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "93d9203b247d446468743361ebce89203c1e04f9133bf83c4d4eea84b2b5d651",
+      "closure_id": "d54c32b69d103e4d451eb710df86d880d2f13692fd6dc680f6397333dc741170",
+      "normalised_phrase": "this Agreement is validly terminated pursuant to Section 8.1(d) or Section 8.1(f)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "edc8a7555ff8e4032c035cdb3e8f609cc9c840823fe0082ab9e59f2e397074bb",
+      "closure_id": "8f927edc0f66860e54526ee73c443c734dd059a9cff20411ead2600462d95719",
+      "normalised_phrase": "shall be the sole and exclusive monetary damages remedy",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "7cab57ea2d2e81c0886ff1c7f7925791799754d35429a560d77565ef4acbf531"
+}

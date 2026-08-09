@@ -125,7 +125,7 @@ test('parseArgs: bare --out-dir resolves to the Modiv/TERMINATION_FEE legacy def
   assert.equal(args.deal, 'modiv');
   assert.equal(args.family, mod.DEFAULT_FAMILY);
   assert.equal(args.family, 'TERMINATION_FEE');
-  assert.equal(args.model, 'sonnet');
+  assert.equal(args.profileId, 'TERRA_MEDIUM');
   // Default flipped to true on 2026-08-06 by the owner's decision, taken with
   // the cost in front of him: following citations takes this filing from three
   // model calls to fourteen, and without it a fee trigger stated as a bare
@@ -145,6 +145,24 @@ test('parseArgs: --out-dir is required unless --dry-run', () => {
 
 test('parseArgs: rejects an unrecognised flag', () => {
   assert.throws(() => mod.parseArgs(['--nonsense']), /unrecognised argument: --nonsense/);
+});
+
+test('parseArgs: extraction refuses a Sol profile', () => {
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--profile', 'SOL_HIGH']),
+    /LIVE_PROFILE_FORBIDDEN/,
+  );
+});
+
+test('parseArgs: a replay manifest requires an independent manifest-id pin', () => {
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--replay-source-manifest', 'manifest.json']),
+    /REPLAY_MANIFEST_PIN_REQUIRED/,
+  );
+  assert.throws(
+    () => mod.parseArgs(['--out-dir', '/tmp/whatever', '--replay-manifest-id', 'a'.repeat(64)]),
+    /REPLAY_MANIFEST_PIN_REQUIRED/,
+  );
 });
 
 test('parseArgs: --section-refs must name at least one reference', () => {
@@ -181,7 +199,7 @@ test('resolveRunConfig: bare --out-dir resolves to the unchanged Modiv TERMINATI
   assert.deepEqual(config.sectionRefs, ['7.1', '7.3', '8.12']);
   assert.equal(config.rawHtmlPath, 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
   assert.equal(config.agreementDate, '2026-05-03');
-  assert.equal(config.model, 'sonnet');
+  assert.equal(config.profileId, 'TERRA_MEDIUM');
   assert.equal(config.followCitations, true);
   assert.equal(config.dealPin.raw_bytes_sha256, '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968');
   assert.equal(config.dealPin.canonical_text_sha256, '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e');
@@ -240,7 +258,7 @@ test('resolvePromptVersionInfo: TERMINATION_FEE and MAE_DEFINITION report distin
   assert.equal(typeof termFee.prompt_version, 'number');
 
   const mae = mod.resolvePromptVersionInfo('MAE_DEFINITION');
-  assert.equal(mae.prompt_id, 'mae-definition-producer/v2');
+  assert.equal(mae.prompt_id, 'mae-definition-producer/v3');
   assert.equal(typeof mae.prompt_version, 'number');
 
   assert.notEqual(termFee.prompt_id, mae.prompt_id);
@@ -483,7 +501,7 @@ test('CLI dry run: a different family (MAE_DEFINITION) on a different deal (TopB
   assert.deepEqual(report.section_references, ['3.1(d)(iii)']);
   assert.equal(report.would_call_model, false);
   assert.equal(report.projected_model_call_count, 1);
-  assert.equal(report.prompt.prompt_id, 'mae-definition-producer/v2');
+  assert.equal(report.prompt.prompt_id, 'mae-definition-producer/v3');
   assert.equal(report.sections_resolved.length, 1);
   assert.equal(report.sections_resolved[0].kind, 'SUBSECTION');
   assert.equal(report.sections_resolved[0].start, 67578);

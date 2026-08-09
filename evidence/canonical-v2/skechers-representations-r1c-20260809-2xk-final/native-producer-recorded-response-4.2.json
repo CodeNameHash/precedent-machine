@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:59:59.045Z",
+  "section_reference": "4.2",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"4.2\",\"party_making\":\"Buyer Parties\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[],\"assertion_quote\":\"This Agreement has been duly executed and delivered by each Buyer Party and, assuming the due authorization, execution and delivery by the Company, constitutes a legal, valid and binding obligation of each Buyer Party, enforceable against each Buyer Party in accordance with its terms, subject to the Enforceability Limitations.\",\"subject\":\"enforceability of the Agreement\"}],\"qualifiers\":[{\"kind\":\"THRESHOLD\",\"code\":null,\"quote\":\"subject to the Enforceability Limitations\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":null,\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"enforceability limitations\",\"observed_quote\":\"subject to the Enforceability Limitations\",\"why_unmapped\":\"This defined limitation is a representation-specific enforceability qualification and has no controlled accuracy or knowledge code.\",\"nearest_concept\":null}]}"
+}

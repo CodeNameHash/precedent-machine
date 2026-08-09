@@ -1,0 +1,3184 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "3.1",
+    "3.2",
+    "3.3"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "3.1",
+      "section_id": "a339bd5b7c33db085b7ad830f2f10f4313d6134da60c5df20110d0e9e08b97f1",
+      "parent_section_id": "22831bc1d2d0daa13cff47cf6e043417dafeab7c67b8b2061b83568e5c013577",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 15166,
+      "end": 19189,
+      "text_sha256": "65948010de788205dbce26bdb61e9661efc02ebc941d13bf8d2abedfbba6b70c",
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-consideration/v1",
+      "prompt_version": 2,
+      "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+        "input_scope_digest": "788afebd0273144a6df9a94c22953bca3b9aa84d85c167cbb2595abe03e15a1f",
+        "proposal_count": 6,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "section_id": "4783a487fa1e128509865ee2682fab5ef50c1ad45ff9b6ed1df30015095d7453",
+      "parent_section_id": "22831bc1d2d0daa13cff47cf6e043417dafeab7c67b8b2061b83568e5c013577",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 19189,
+      "end": 24894,
+      "text_sha256": "239a25e8fb35d5cb85a638cdf1ff6c2e028e90c4ccf5fc44555ce89944fdfdb5",
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-consideration/v1",
+      "prompt_version": 2,
+      "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+        "input_scope_digest": "b561a46cf2e82a0dbc719471343b815445c3d96c603880e9d38ed776d57b981c",
+        "proposal_count": 10,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999"
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "section_id": "4647d3a6f644f54133330f86eee3229dc824bd1ef6757daa7d79d0e149c0a7bd",
+      "parent_section_id": "22831bc1d2d0daa13cff47cf6e043417dafeab7c67b8b2061b83568e5c013577",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 24894,
+      "end": 41051,
+      "text_sha256": "f8e757be4f4ea95e19b5a26fd2dad454fe3ad7bc4292381d6ed8691a587a457c",
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-consideration/v1",
+      "prompt_version": 2,
+      "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+        "input_scope_digest": "3c3f4ecdd53d37882c14231f8b809760c0c49b0ed825f09d117a4b101daf0b06",
+        "proposal_count": 11,
+        "evidence_residual_count": 1,
+        "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "3.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.1",
+        "normalized_citation": "3.1",
+        "derived_citation": "3.1(b)(i)"
+      },
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "71a01e66382f20d420a8611970126ffd294b60370511b4e6a76d012c801e4043",
+          "claim_occurrence_id": "a6a15d39481ca710434be26b1a3c6c7a3108ed7dcd7c6642347e71988d536564",
+          "subject_occurrence_id": "da896fa6566b73e8a94a6284eddfeafeec39d3af44fea9d59d5a6190090d82c6",
+          "claim_definition_key": "NATIVE_CONSIDERATION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "“Exchange Ratio” means 1.46.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9cd264dc359bc360b404ee8ff8fd68cd7ee1ba94be58d12ec087d0cbaceb8701"
+          ],
+          "attributes": {
+            "section_reference": "3.1",
+            "assertion_kind": "EXCHANGE_RATIO",
+            "consideration_term_ref": null,
+            "ratio_term_ref": "Exchange Ratio",
+            "issuer_stock_ref": "Parent Common Stock",
+            "appraisal_status": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EXCHANGE_RATIO"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9cd264dc359bc360b404ee8ff8fd68cd7ee1ba94be58d12ec087d0cbaceb8701",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7ed23be4cd94ae20f3d6bc5838c891a86ef8dbfaa5b6a5940555f10214173c86",
+              "document_ordinal": 0,
+              "absolute_start": 1353,
+              "absolute_end": 1385,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "787b8ec7ea298a78646ad82b5769b547e8385aef5d385335aca3443d37537f59"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "CONSIDERATION",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "ad8262c6255cb32b23829c3d9d774d1509b14f288bd6f44cf95b02a005aaf5ba"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c5402f4c1a002abfea2dc8a3cf94eb7497e84081f2a858193b8158bdecc8350c",
+          "claim_occurrence_id": "53dd21446f952344e1de516da4bf7c3e0444b467e98e1708b2f1146a773fe48a",
+          "subject_occurrence_id": "f201787bc9bcaba43a6298e239de53afd60cedd11748289ae27dd5caa09694d4",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "each share of common stock, par value $0.001 per share, of the Company (“Company Common Stock”), issued and outstanding immediately prior to the Effective Time (excluding any Excluded Shares, any Converted Shares, and Company Restricted Stock Awards, which shall be treated as set forth in Section 3.2(a)) (such shares of Company Common Stock, the “Eligible Shares”) shall be converted into the right to receive from Parent that number of fully-paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio (the “Merger Consideration”).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "aadfaa2503d1a5a0770ada5efd115eee20860918801391b05f0b8a5db03aeceb"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Eligible Shares convert into Parent Common Stock under the Exchange Ratio.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "aadfaa2503d1a5a0770ada5efd115eee20860918801391b05f0b8a5db03aeceb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0a29006acaf30cb7bf32615b05931707161675d942f3a49907c076a572851ea5",
+              "document_ordinal": 0,
+              "absolute_start": 758,
+              "absolute_end": 1325,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e554fbb4de38d72a636f983f4323b288d9df8c68e457a8b17bd41639121da319"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "3e6138cc2224d6f32dccd013506e1734d377d2bf6fe1bbe1e801daaae9563a33"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3072693d162e7e212707343a9d6c88b7f4ca414f9cd86fbf774ebda9aa2898ee",
+          "claim_occurrence_id": "764e7702942f37191f1768a173eb3f9aaf6fb2170e990c685f60a59fab912082",
+          "subject_occurrence_id": "ffbd887a12a202745a6435bb2588fcde603353106b83016d7e208fbc0f671857",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Each holder of a share of Company Common Stock that was outstanding immediately prior to the Effective Time (other than Excluded Shares and Converted Shares) shall cease to have any rights with respect thereto, except the right to receive (A) the Merger Consideration, (B) any dividends or other distributions in accordance with Section 3.3(g) and (C) any cash to be paid in lieu of any fractional shares of Parent Common Stock in accordance with Section 3.3(h), in each case to be issued or paid in consideration therefor upon the exchange of any Certificates or Book-Entry Shares, as applicable, in accordance with Section 3.3(a).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "eb0137ad13bcd2a3cc6dbece2ff3bebe02145017e73630dc2654fbc8e32a213c"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Holders receive Merger Consideration, specified distributions and cash for fractional Parent Common Stock upon exchange.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "eb0137ad13bcd2a3cc6dbece2ff3bebe02145017e73630dc2654fbc8e32a213c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9ccbeab054029855ad1e580f114ff437efbc011b06f33c5af62f64411c3afe2b",
+              "document_ordinal": 0,
+              "absolute_start": 1537,
+              "absolute_end": 2169,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2c52a7e2f0329cc6fbcfe5adb68a30c0f76a2009e982c2df46a9d9643519d959"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "3e6138cc2224d6f32dccd013506e1734d377d2bf6fe1bbe1e801daaae9563a33"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4b54166cbd45dc0163457871d34467dd67e507cdd6e28552649c1a7c53592f32",
+          "claim_occurrence_id": "b3b64a9eab50cd404b3a7cfddbe068ff5563c7a612da713ce8e5f1a7a31c9c22",
+          "subject_occurrence_id": "e48fda64a7160eb3ea3e2734ce4c0352a36dffaca17b8eb4240db8b6a3154a4a",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "All shares of Company Common Stock held by the Company as treasury shares or by Parent or Merger Sub immediately prior to the Effective Time and, in each case, not held on behalf of third parties (collectively, “Excluded Shares”) shall automatically be canceled and cease to exist as of the Effective Time, and no consideration shall be delivered in exchange therefor.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "65476c06813f1e46ab02a07cb3d149e8a431b8144d040ca6f3423bca541b327d"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Excluded Shares are cancelled with no consideration.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "65476c06813f1e46ab02a07cb3d149e8a431b8144d040ca6f3423bca541b327d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4b04435b20b3ed607b929a8063f2fb2b588a6180d5706f73325979eb49b79e01",
+              "document_ordinal": 0,
+              "absolute_start": 2176,
+              "absolute_end": 2548,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f90d681f08faf9f6f15d6bdf977aa79cf539767a0589a6f200837c210588eb4c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "3e6138cc2224d6f32dccd013506e1734d377d2bf6fe1bbe1e801daaae9563a33"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e2412801c0eadba4f6cc4d4a51306c8e008f98f18b7c9f00f659b12ebd879cc3",
+          "claim_occurrence_id": "3d9b62e2e30d2d291f1755c377adee3b847535a6e9642917dc1898169a0be852",
+          "subject_occurrence_id": "aecd5d3c48abfab1f80acd216d40ebff404924aac18341dbbb0bab137f2042e0",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Each share of Company Common Stock that is owned by any direct or indirect Subsidiary of the Company or Parent (other than Merger Sub) (“Converted Shares”) shall automatically be converted into a number of fully-paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio (subject to adjustment in accordance with Section 3.1(c)).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b019be169620258ca84459a8948c23c12490aeadef325798989d6f51445ab0e4"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Converted Shares convert into Parent Common Stock under the Exchange Ratio.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b019be169620258ca84459a8948c23c12490aeadef325798989d6f51445ab0e4",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "082453ed683931a45397c15b38f7e5281e2b3c3a93c070c32b95c1b7bd211921",
+              "document_ordinal": 0,
+              "absolute_start": 2549,
+              "absolute_end": 2904,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "dced187092ca7cb88d75f276cc5f680287d97858573250dff323b6c58aa8c39d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "3e6138cc2224d6f32dccd013506e1734d377d2bf6fe1bbe1e801daaae9563a33"
+        }
+      }
+    },
+    {
+      "section_reference": "3.1",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3ef87e14e44152d8321f069d79d8b639f05a993ac128fd8d11b9bb3cb092616c",
+          "claim_occurrence_id": "e6ff076117b126677f3ff6aad6b8c9a786c84112e3a4cde4125167d3e4b50278",
+          "subject_occurrence_id": "6452f3c096720cc278a656485342ddb5c7b7cbb333a591a436437e184068bf4c",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Exchange Ratio shall be equitably adjusted to reflect the effect of such change and, as so adjusted, shall from and after the date of such event, be the Merger Consideration, subject to further adjustment in accordance with this Section 3.1(c).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "62b5665afc4b90391ae094364dd8d5797eb23e0d0719cae55383bb1e97beaec2"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: The Exchange Ratio adjusts for specified changes in Company Common Stock or Parent Common Stock.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "62b5665afc4b90391ae094364dd8d5797eb23e0d0719cae55383bb1e97beaec2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a4f3e181826f974503ac83312df27fb94e595b52ce603d38924d83ed6b60c460",
+              "document_ordinal": 0,
+              "absolute_start": 3579,
+              "absolute_end": 3827,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4675a457af49fca1bba8aca46de8e50c69e794ebc9a74a06ad82a36f82743ac2"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "d53faf29f3af751ae6f268632ac051c9999c13d0f6f391e1de0a96ede1717e07",
+          "producer_receipt_id": "5e6779b42198ef836cf9f2785f1bc8d909295661337c0414be9e6ace1537c8f9",
+          "governed_scope_digest": "b8382f9108abe57bf1ab374d7fc4bef105ad7d4358bcce98163cf462c87cb8b1",
+          "extraction_provenance_id": "3e6138cc2224d6f32dccd013506e1734d377d2bf6fe1bbe1e801daaae9563a33"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.2",
+        "normalized_citation": "3.2",
+        "derived_citation": "3.2(a)"
+      },
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2e815d62e6bcd53512655f99051fb80ee5a7836f04188eb3eafc9f41281f045f",
+          "claim_occurrence_id": "e5d794cc375896539f527e4fefc416c64bb3fdcdbb27f4dfed411f931d790743",
+          "subject_occurrence_id": "beaaeec0d28f932987a5a43d2b16f290258d0735b265b4f418746079a4d797eb",
+          "claim_definition_key": "NATIVE_CONSIDERATION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "At the Effective Time, each outstanding award of restricted Company Common Stock (a “Company Restricted Stock Award”) granted pursuant to the Company’s 2019 Stock Incentive Plan, as amended from time to time, or any predecessor plan (the “Company Stock Plan”), other than as provided in Section 3.2(b), shall be canceled and converted into an award of restricted Parent Common Stock (a “Parent Restricted Stock Award”) in respect of that number of whole shares of Parent Common Stock (rounded to the nearest whole share) equal to the product of (i) the total number of shares of Company Common Stock subject to such Company Restricted Stock Award immediately prior to the Effective Time multiplied by (ii) the Exchange Ratio.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "344b3b3af29abb71c4e2cb489b4159723630e0cea42a58342214dad4a58368f8"
+          ],
+          "attributes": {
+            "section_reference": "3.2",
+            "assertion_kind": "EXCHANGE_RATIO",
+            "consideration_term_ref": null,
+            "ratio_term_ref": "Exchange Ratio",
+            "issuer_stock_ref": "Parent Common Stock",
+            "appraisal_status": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "EXCHANGE_RATIO"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "344b3b3af29abb71c4e2cb489b4159723630e0cea42a58342214dad4a58368f8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8d5bb6a78120d98143d6e3b46747dbe51f39b4bd6b080167086858d8cb84df54",
+              "document_ordinal": 0,
+              "absolute_start": 83,
+              "absolute_end": 822,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aad194ba88106cb9e9b9d0cf254b15384ec9adc34367774f14e21ac3a97e3f22"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "CONSIDERATION",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "c998fc8b698b7893f5a91e2acc69e84bc060afaa1088253fd99212cf372c747e"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "740099940e33f599c4dcb194baf04c04261e847d91cb0892863ba5d808b31f9f",
+          "claim_occurrence_id": "c0a4d66082896270679465ca4854a7f52abb21dd7d5ebeaed32dfd04393e9b61",
+          "subject_occurrence_id": "daf35be90f166afddee9a0160610e1591681f55c8076a04bba7c0240929c0784",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "At the Effective Time, each outstanding award of restricted Company Common Stock (a “Company Restricted Stock Award”) granted pursuant to the Company’s 2019 Stock Incentive Plan, as amended from time to time, or any predecessor plan (the “Company Stock Plan”), other than as provided in Section 3.2(b), shall be canceled and converted into an award of restricted Parent Common Stock (a “Parent Restricted Stock Award”) in respect of that number of whole shares of Parent Common Stock (rounded to the nearest whole share) equal to the product of (i) the total number of shares of Company Common Stock subject to such Company Restricted Stock Award immediately prior to the Effective Time multiplied by (ii) the Exchange Ratio.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9f45a2349a8bb201e2f7d148cf21a0302d9c946b5844567e49b75fc21163745f"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Rollover restricted stock awards convert into rounded Parent restricted stock awards using the Exchange Ratio.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9f45a2349a8bb201e2f7d148cf21a0302d9c946b5844567e49b75fc21163745f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8d5bb6a78120d98143d6e3b46747dbe51f39b4bd6b080167086858d8cb84df54",
+              "document_ordinal": 0,
+              "absolute_start": 83,
+              "absolute_end": 822,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "740c9930e39f63274bd1428d553948a0b4b7895bfcab532319e8f2eaebdeeb90"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "96ec3c42bc3739960d506a8967bdfac3ae66629d45a43bdbd0f84d441ca99712",
+          "claim_occurrence_id": "10d36d5471fef27d7af0687f15008083639425365833a50c8cc7b08e68d060e9",
+          "subject_occurrence_id": "29e492e88202bc1ad46c3c4ff43d51b7c9ca6eee85ed0a27cf4080d5914eeb92",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Each Parent Restricted Stock Award corresponding to a Company Restricted Stock Award outstanding as of the date hereof shall, except as otherwise provided in this Section 3.2(a), be subject to substantially the same terms and conditions as applied to the corresponding Company Restricted Stock Award immediately prior to the Effective Time.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e9ac6b49c2c1af532345fa40b5b4592faaf0462a3a335fd948b4a8242dead143"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Converted Parent restricted stock awards retain substantially the same terms and conditions.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e9ac6b49c2c1af532345fa40b5b4592faaf0462a3a335fd948b4a8242dead143",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3c6ed337eb4971ea1ceb99d3947c3ae73b10584bf8d16cdb7a2fcbece8b49711",
+              "document_ordinal": 0,
+              "absolute_start": 823,
+              "absolute_end": 1163,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d485f74633ad359b0240218023ed3d517fec942eb195bf6e4d6b36d54019ae0e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "233782053ccd456a5059c10ea2b679d9764e6a880d4704cb0eda7d1959223fd5",
+          "claim_occurrence_id": "eaac68ba06c2b3cc215f297037dae02f60ed88aed4b19c11afd8bf4b76bdfd7e",
+          "subject_occurrence_id": "c3389d205fc8d29de95e09d81e7ead84496271b75d249b94715f3f12b8452ce3",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "At the Effective Time, each outstanding Company Restricted Stock Award granted pursuant to the Company Stock Plan prior to the date hereof and that fully vests at the Effective Time pursuant to its terms as in effect as of the date hereof shall fully vest and be converted into the right to receive the Merger Consideration in respect of each share of Company Common Stock subject to such Company Restricted Stock Award immediately prior to the Effective Time.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "99f0b591701bdd5bcfb78134eb275d849d0af3ad3ba4f4d2516f501207012754"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Specified fully vested restricted stock awards convert into the right to receive Merger Consideration.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "99f0b591701bdd5bcfb78134eb275d849d0af3ad3ba4f4d2516f501207012754",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9472ed161214ce8aa3408a75aa6ec4a4c190eba70e5f9dc8039db44bc459f75b",
+              "document_ordinal": 0,
+              "absolute_start": 1204,
+              "absolute_end": 1664,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "57ac56ab66557746e3ac07bc1506b554c084aa930004e5990895e2b8273765bb"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f8fe877b4eba5d208859ea15d621350bc2adf761a93856114ee50026e858fc27",
+          "claim_occurrence_id": "cf76987d05401cee1a69d3298803b7254766597e1906496dd95356757eefee19",
+          "subject_occurrence_id": "da99987d8b9b116aca75dbdb157b844eb8ed0101026662646d73cb145f0f2793",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "At the Effective Time, each 2018-2020, 2019-2021 and 2020-2022 award of performance units denominated in shares of Company Common Stock that is outstanding as of immediately prior to the Effective Time (the “Company Performance Unit Awards”) granted pursuant to the Company Stock Plan, other than as provided in Section 3.2(d), shall vest and be converted into the right to receive the “Cash Equivalent Merger Consideration” (as defined below) (which shall be issued promptly after the Effective Time, or any later date required by Section 409A of the Code) in respect of a number of shares of Company Common Stock equal to the total number of shares of Company Common Stock subject to such Company Performance Unit Award immediately prior to the Effective Time, with performance deemed satisfied at 200% of target (which is two-thirds (2/3) of maximum performance), less applicable Taxes required to be withheld.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6638c7a053119fa9a8e6ad3461ed91f86e60a105c9d9cb8b46e36cd264cc7832"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Specified performance unit awards vest and convert into Cash Equivalent Merger Consideration, with performance deemed satisfied at 200% of target and withholding applied.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6638c7a053119fa9a8e6ad3461ed91f86e60a105c9d9cb8b46e36cd264cc7832",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ced9bf2b90d71877f12cbba96d7921a871e36144c7a2edec00016199b5eb879d",
+              "document_ordinal": 0,
+              "absolute_start": 1704,
+              "absolute_end": 2625,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b825d4e73547795222e761f71faac4910883024a0ffb6179d36d15b4a21c6cc9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "29d4ade18bc221c89b373b497eea24dac4871e22bf83e2b9569fdad7928ff57f",
+          "claim_occurrence_id": "22e93af39a5134835e162b509e2ff63758b78c52b9881c31dadb3c39febc8d1f",
+          "subject_occurrence_id": "df383d47203a94d47bd1e22a9d06a724dc1e2e620360eac356899af9e31ac6a9",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "For purposes of this Agreement, the term “Cash Equivalent Merger Consideration” means the product of (i) the Exchange Ratio, multiplied by (ii) the Parent Closing Price.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8b8ae3c85e65fb27260ef33b2856aa5e0a5afd19907f7265f1810b545698dc0f"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Cash Equivalent Merger Consideration is defined as the product of the Exchange Ratio and the Parent Closing Price.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS",
+              "proration_numerator": "the Exchange Ratio",
+              "proration_denominator": "the Parent Closing Price"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8b8ae3c85e65fb27260ef33b2856aa5e0a5afd19907f7265f1810b545698dc0f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4151e14e3fe441fdee58d05de26a956da2dfd7ddf4b5bbbc39ba4600c0dc59ec",
+              "document_ordinal": 0,
+              "absolute_start": 2626,
+              "absolute_end": 2799,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "42392dacb172307c0c12a6062feade0f1add7f43c7538c0eb6e7836389a4ce2f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "af39864527db041283ee65f76b76cd65e36bd9e76f8533178a3eb4cf448581ad",
+          "claim_occurrence_id": "6d3d9383978ecedb0c2846fb66925889cc9f170ce392bfbb20f2485f7d719a5b",
+          "subject_occurrence_id": "1d1c3464d79289bf07e05e79f5bb2bfccce6a6af06943414ce185ecec320a129",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "At the Effective Time, each outstanding Company Performance Unit Award granted pursuant to the Company Stock Plan that is held by an individual who is a former employee of the Company or its Affiliates as of immediately prior to the Effective Time and that remains eligible to vest by its terms shall be canceled and converted into the right to receive the Cash Equivalent Merger Consideration (which shall be issued promptly after the Effective Time, or any later date required by Section 409A of the Code) in respect of each share of Company Common Stock",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8c0aff614be02140ccf0f54f764f944bab5ea76072b7d9bb62532dbb9e58c62a"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Eligible former-employee performance unit awards convert into Cash Equivalent Merger Consideration.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8c0aff614be02140ccf0f54f764f944bab5ea76072b7d9bb62532dbb9e58c62a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "74d75827a63ec71b16584b4afe154a4a24ef48ec4c696a576369bbf576159a2d",
+              "document_ordinal": 0,
+              "absolute_start": 2854,
+              "absolute_end": 3410,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a02fa577e97344b655969681ec54b5cf966fcd5c88ce4edd734f36a0691586be"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "798795a244da09f62057f596a230606c314a2c662570edb6a5fc4650533be972",
+          "claim_occurrence_id": "cca6d57cdb98890569409982ca72e61395293cb4c62d06f97d763801f2cd25a7",
+          "subject_occurrence_id": "73632367515e55c679fe15004eaea7a2d4315437676bbda26f8f3d8cb0bc0012",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "with the number of shares of Company Common Stock to be prorated to the extent contemplated by the applicable award agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c804287eb2f5b0b04686e8db105464c6644b72ebe0168c72ffb6f4b3c7f89f1f"
+          ],
+          "attributes": {
+            "why_unmapped": "PRORATION_FORMULA: Former-employee performance unit award shares are prorated where the applicable award agreement contemplates proration.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "PRORATION_FORMULA"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c804287eb2f5b0b04686e8db105464c6644b72ebe0168c72ffb6f4b3c7f89f1f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0a3e5287c35a60e3df3d1244889cf2c1fca854859303f1d5e9a0c38cb41221d1",
+              "document_ordinal": 0,
+              "absolute_start": 3791,
+              "absolute_end": 3916,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a097c72e99ba6f0ebe1c8f1d85df58dd7ce962ace4b064caf0fdbeff43fb393b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a526d42235fede4c04c2a2612e3e2d4afae5f00df0d5b6304b9dc0303ae2cd13",
+          "claim_occurrence_id": "a812feab3c4175de8c7b415fadb1ba288bc267111fd9a42bc7e1ba015c8fa8e9",
+          "subject_occurrence_id": "c931498c7d8f012551ebb0005b5c0d73290d146e016520c0a19e0f17c7cc71c9",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "less applicable Taxes required to be withheld.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "adbb55b9381de23f22eabb2b330a1e2a17f1f4f51dac37065cc0939b8449c668"
+          ],
+          "attributes": {
+            "why_unmapped": "WITHHOLDING: Applicable Taxes are withheld from performance unit award consideration.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "WITHHOLDING"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "adbb55b9381de23f22eabb2b330a1e2a17f1f4f51dac37065cc0939b8449c668",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0a2784c6aa0718678e9674d42ee749cd8be0fe413b9e5f3f2dead68efab1b23e",
+              "document_ordinal": 0,
+              "absolute_start": 2579,
+              "absolute_end": 2625,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2151d86310321fef4ab00ca2171586d52f003da01ba162bafb4442d53dfa9791"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "62d9471b58ab6de2a30f6de1c57505afd3c29a132d13c84f13aa721f631a9b88",
+          "claim_occurrence_id": "48e789be8ee1fe9e029da32fc9e4c1bf13ce7431199a5737eb70ba1b649f83af",
+          "subject_occurrence_id": "6484924ba3e07faa5e591f91046bf46683fe281c3947653f69bb3a3b81e37b99",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "then in each case, the terms of such Company Restricted Stock Award or Company Performance Unit Award, as applicable, shall control (and the applicable provisions of this Section 3.2 shall not apply).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "65a34ba9574ba1eb4ec7300c9553f5244b6fbb386be4e8b073c566edd2c5995b"
+          ],
+          "attributes": {
+            "why_unmapped": "EQUITY_AWARD_TREATMENT: Specified post-signing or mutually agreed award terms control instead of Section 3.2 treatment.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EQUITY_AWARD_TREATMENT"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "65a34ba9574ba1eb4ec7300c9553f5244b6fbb386be4e8b073c566edd2c5995b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "07043cb04ad38053ce1a9b3b0eff1f230e80e4729e69da4ed54019af788efaa6",
+              "document_ordinal": 0,
+              "absolute_start": 5504,
+              "absolute_end": 5704,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1bf27c40a758cc8435b5bfcce98cff10080fa0023b8a948bfadceeeb84e77112"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "43aa60a9239fac038b3e9b51f04c0605dbda99711a8908679c8bc6196cf0588d",
+          "producer_receipt_id": "0508807016a061dc09af1257690af7cfbbb559d666ecd8a71b1e424c89684999",
+          "governed_scope_digest": "edf9b392e8a60bc57973892b367791c6d465be36d6b27c8e2e2e5a80358012b5",
+          "extraction_provenance_id": "a2f687773c09837dfb5e9d2bb0a5cdf719c0053fb6084ace97ff7cc00868aeb2"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f00f71fd82972bea3bb241da07f396adc836b89fae03cb4129f9a5ca77ddba6d",
+          "claim_occurrence_id": "c511def117a8d902f7e1f0605d7aca942da53e12430658d72a72c4d9fe0ebe52",
+          "subject_occurrence_id": "589b25c8d163f338d619a8739434ebfe0b6e3db4590babece84be67879fe6d3d",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Exchange Agent shall, pursuant to irrevocable instructions, deliver the Merger Consideration contemplated to be issued in exchange for Eligible Shares pursuant to this Agreement out of the Exchange Fund.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "5d6329632a61457ebc1dd4861339898e85de2921a00bcf3108e1e90a8f146a60"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Exchange Agent delivers Merger Consideration for Eligible Shares from the Exchange Fund.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "5d6329632a61457ebc1dd4861339898e85de2921a00bcf3108e1e90a8f146a60",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "57c49e438383dfaaa2bc8160635536874bc92af842ad2965c25db2be01f668a6",
+              "document_ordinal": 0,
+              "absolute_start": 1099,
+              "absolute_end": 1306,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "73fcb25d8bc38143649e5a87fa47ba8084de564ca5be9c663435f30c8cc6e53f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b776349af55fa8199462b7ea96fdcbb67c4e3d6e9bd7c4d7ebd20bc623c13eda",
+          "claim_occurrence_id": "de3b30a4324dbd8cb448fa17a143eb0c6daae8bb81d0e9bed34f208998330cfd",
+          "subject_occurrence_id": "1f72a5af152e5d23389e7f039bb8c135d94018c75977c85dd0b8fbde70af6c0b",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Upon surrender to the Exchange Agent of a Certificate, together with the Letter of Transmittal, duly completed and validly executed in accordance with the instructions thereto, and such other customary documents as may be reasonably required by the Exchange Agent, the holder of such Certificate shall be entitled to receive in exchange therefor (A) one or more shares of Parent Common Stock (which shall be in uncertificated book-entry form) representing, in the aggregate, the whole number of shares of Parent Common Stock, if any, that such holder has the right to receive pursuant to Section 3.1 (after taking into account all shares of Company Common Stock then held by such holder) and (B) a check in the amount equal to the cash payable in lieu of any fractional shares of Parent Common Stock pursuant to Section 3.3(h) and dividends and other distributions pursuant to Section 3.3(g).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ac6ec9aaafa988f6ee353e1efad7fc70e43033c24205fbc14b601478a7bd6df5"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Certificate holders surrender certificates and transmittal materials for whole Parent stock, fractional-share cash and distributions.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ac6ec9aaafa988f6ee353e1efad7fc70e43033c24205fbc14b601478a7bd6df5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "578654533ef9ab5c830fed72d1c7a963d4a18d2a8eec66920ec432cb4bcc6017",
+              "document_ordinal": 0,
+              "absolute_start": 3679,
+              "absolute_end": 4571,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "85ca660c55f534f28c4a0841ba757376f3d22791c5d64c8ef51d452a0015080b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c3143d2d5bdc41797bc62f1ad5b5cd0700ad458a68008793c4c67bd0bad0d4e8",
+          "claim_occurrence_id": "3cdd85ab781ad5093ac096e286dc4ee6904057682986ac0becd823810787e133",
+          "subject_occurrence_id": "d57539014513027f81a5905bee1ab73bb13f9bc9f0778753191e97bcf9c2b1db",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "With respect to Book-Entry Shares held through DTC, Parent and the Company shall cooperate to establish procedures with the Exchange Agent and DTC to ensure that the Exchange Agent will transmit to DTC or its nominees as soon as reasonably practicable on or after the Closing Date, upon surrender of Eligible Shares held of record by DTC or its nominees in accordance with DTC’s customary surrender procedures, the Merger Consideration, cash in lieu of fractional shares of Parent Common Stock, if any, and any unpaid non-stock dividends and any other dividends or other distributions, in each case, that DTC has the right to receive pursuant to this Article III.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c35edf2dce498426e4c0479308df4a5da4d22799b46bf974057de678171c59d7"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: DTC surrender procedures govern transmission of consideration and related payments for DTC-held shares.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c35edf2dce498426e4c0479308df4a5da4d22799b46bf974057de678171c59d7",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ed4f9bb37f3a0479e33b6d8a2cdb180da3d4c9a249d1ebd8dd60c8a76f7a2357",
+              "document_ordinal": 0,
+              "absolute_start": 5541,
+              "absolute_end": 6206,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "0b8c7113858f93204079f5f012997cd339311eb2f011c913ccc016c82cd13564"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "28e74b5d00b0c41584f1ecc7c839c5bfd884d8b4f95e9475b290f99756fa93e5",
+          "claim_occurrence_id": "8541a5b2564622f839b467d3c9b939682276cf01cc19ea602e5725305f1b1363",
+          "subject_occurrence_id": "90557bac6ae48438b0937f0a0f4685eb9f683c997f60f5bccf10397728dc62db",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "No interest shall be paid or accrued on any amount payable for Eligible Shares pursuant to this Article III.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "757004512235be0704b157e59ec70218bf4386b60dcfe6ee411c19b4140fc51a"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: No interest is payable on amounts for Eligible Shares.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "757004512235be0704b157e59ec70218bf4386b60dcfe6ee411c19b4140fc51a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "6bab1ff7fbb7a712ca8aa6f3a0185d082e43ad97f1bd3a1c05eacf6b56f60a8b",
+              "document_ordinal": 0,
+              "absolute_start": 6212,
+              "absolute_end": 6320,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e1528b3bd9f391a791f5ea88a692c269baece1df40ee8318b14efaa57488a17f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "04b277eb28f57b04a1aff238345ee5b047345aaf28a43fa41eb7926389e7be81",
+          "claim_occurrence_id": "f76cd68e8067be8b8b0a97f332dc8afbcaf2aec8179d1e4baa83a4a7a9ee9b8e",
+          "subject_occurrence_id": "2fe9429eecfc40dc649339876b9b93ba2b94ced39688021852cb1bdae66d96fa",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Any portion of the Exchange Fund that remains undistributed to the former stockholders of the Company on the 180th day after the Closing Date shall be delivered to Parent, upon demand, and any former common stockholders of the Company who have not theretofore received the Merger Consideration, any cash in lieu of fractional shares of Parent Common Stock to which they are entitled pursuant to Section 3.3(h) and any dividends or other distributions with respect to Parent Common Stock to which they are entitled pursuant to Section 3.3(g), in each case without interest thereon, to which they are entitled under this Article III shall thereafter look only to the Surviving Corporation and Parent for payment of their claim for such amounts.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "17fb77157eeed525daa44f014995128e297cba4b6ca39802a34f48300366cc30"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Undistributed Exchange Fund is returned after 180 days; unpaid holders then seek payment from Parent and the Surviving Corporation.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "17fb77157eeed525daa44f014995128e297cba4b6ca39802a34f48300366cc30",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b6fdbecfe6c62b54f0764b7f694477c895645751665d78b178877e132bcf1eda",
+              "document_ordinal": 0,
+              "absolute_start": 9452,
+              "absolute_end": 10194,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b3a7f9fd6ef2178196af9b3f71b60e58aeae2c73257076a156a1893ba87cd273"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1fb0e31faa94ac1fb6e80c9edd4b4ab123c4df4c873678b37385f8ab432e3dd3",
+          "claim_occurrence_id": "be736422571463d4c39cc4a425995ead58a913a782eecffd6e8829ac63d4d00a",
+          "subject_occurrence_id": "83b2a1725692c3b55db5a75013c7cebb6347148fceeba13fc36653c65452e32e",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "If any Certificate shall have been lost, stolen or destroyed, upon the making of an affidavit of that fact by the Person claiming such Certificate to be lost, stolen or destroyed and, if reasonably required by the Surviving Corporation, the posting by such Person of a bond in such reasonable amount as the Surviving Corporation may direct as indemnity against any claim that may be made against it with respect to such Certificate, the Exchange Agent shall issue in exchange for such lost, stolen or destroyed Certificate the Merger Consideration payable in respect of the shares of Company Common Stock formerly represented by such Certificate, any cash in lieu of fractional shares of Parent Common Stock to which the holders thereof are entitled pursuant to Section 3.3(h) and any dividends or other distributions to which the holders thereof are entitled pursuant to Section 3.3(g).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b11ad5659ca26804cad698a53935eaa4435d09ea847d654e47cdda65bd464813"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Lost certificates require an affidavit and may require a bond before exchange payment.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b11ad5659ca26804cad698a53935eaa4435d09ea847d654e47cdda65bd464813",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "be0390f356027eec096009a4e3a4396274c58747f2fe7f8c744b57d8c3c4ff57",
+              "document_ordinal": 0,
+              "absolute_start": 11023,
+              "absolute_end": 11910,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "462cb43420552e225a2c8711bb1f361bf7792f31c28f5b7a489ab5177802fe76"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a7f21f64fc79cccf077678378ad364868bbfbcb63437331db2c16f5b7a809a80",
+          "claim_occurrence_id": "b70e23e32c37405f29911fd11665e0b7c89659a40bda42eba9538cf11b5af787",
+          "subject_occurrence_id": "3d4aea09bca4be8ea20ef07c286da6fb9e501a2caeb6223820f3dac62da380b2",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "No dividends or other distributions declared or made with respect to shares of Parent Common Stock with a record date after the Effective Time shall be paid to the holder of any unsurrendered Certificate with respect to the whole shares of Parent Common Stock that such holder would be entitled to receive upon surrender of such Certificate and no cash payment in lieu of fractional shares of Parent Common Stock shall be paid to any such holder, in each case until such holder shall surrender such Certificate in accordance with this Section 3.3.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "5c6e848917d7d782ec8f2ff438615325c8729a57ec1f97849d53d2a892230bb7"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Distributions and fractional-share cash are withheld until an unsurrendered certificate is surrendered.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "5c6e848917d7d782ec8f2ff438615325c8729a57ec1f97849d53d2a892230bb7",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "903055ded0712bd768d24c1defbb030218aa1d8e86b20d6c5eb28bb54a624291",
+              "document_ordinal": 0,
+              "absolute_start": 11988,
+              "absolute_end": 12535,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2666054af1908b2cb7b6a9a6bb421fa01a910d20384b7293b10b15cc62e69a85"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7f6237f05ffbff869011a7aac37174ba450521007537c1a7a47017dbea9f3324",
+          "claim_occurrence_id": "5b99a587ff707bceaa439e9b11da88da8c2fc19f0e1b3244eb194143168334c4",
+          "subject_occurrence_id": "82b17a96473e3d8d3a7c0270114b3664c24d785e8c40f2e009793ff8439dc68c",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "No certificates or scrip or shares representing fractional shares of Parent Common Stock shall be issued upon the exchange of Eligible Shares and such fractional share interests will not entitle the owner thereof to vote or to have any rights of a stockholder of Parent or a holder of shares of Parent Common Stock.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "4e156ef3d4c38633575803c78a8c2fc9180ba3c9c7aa24a7afa6776ff8ee12c3"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: No fractional Parent stock is issued, and fractional interests have no voting or stockholder rights.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4e156ef3d4c38633575803c78a8c2fc9180ba3c9c7aa24a7afa6776ff8ee12c3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "cc25cc7a0d5e94ba6ff4f9c68fd8e9ebb13c93b0afa2b73877e550c09f2859ce",
+              "document_ordinal": 0,
+              "absolute_start": 13595,
+              "absolute_end": 13910,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "95a564435c90c5d468fc3cf51f4b74fc290b976b3bd49e75f24d349a0372d3c3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "25677714777e5bfe388b17d39f3cdb8e41e4cfaec348509edc54f0b3ef751bdf",
+          "claim_occurrence_id": "ae96455c9a051906a7f05de2f7ff2dde2c751a2502e78667b0c8c47707bfdb9b",
+          "subject_occurrence_id": "cb84d373b508fb2323d6d78c061366a28bac47fd28fd6ac5a6ba593c911db231",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Notwithstanding any other provision of this Agreement, each holder of Eligible Shares exchanged pursuant to the Merger who would otherwise have been entitled to receive a fraction of a share of Parent Common Stock (after taking into account all Certificates and Book-Entry Shares held by such holder) shall receive, in lieu thereof, cash (without interest) in an amount equal to the product of (i) such fractional part of a share of Parent Common Stock multiplied by (ii) the volume weighted average price of Parent Common Stock for the five (5) consecutive trading days ending two (2) trading days prior to the Closing Date as reported by Bloomberg, L.P. (the “Parent Closing Price”).",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "fc7a41b2cf7298dd0445e3d62a9e6b697756022d4c093c8b37a4b2298d7a4e7e"
+          ],
+          "attributes": {
+            "why_unmapped": "EXCHANGE_MECHANICS: Fractional Parent stock is converted into cash using the stated fractional interest and Parent Closing Price inputs.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXCHANGE_MECHANICS"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "fc7a41b2cf7298dd0445e3d62a9e6b697756022d4c093c8b37a4b2298d7a4e7e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5d56815183a2e6e9a54fc468a5548b0c46035b29dc801f7ab9918215a8211c81",
+              "document_ordinal": 0,
+              "absolute_start": 13911,
+              "absolute_end": 14600,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "559ad4e1665734d5c9e6a61136f65a9557720674132443acbe9798bd082fa6f8"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "81644db135107ab5c8f8a3241459270a0ab2a9394ec496a647e2c29dd8069f90",
+          "claim_occurrence_id": "91a3bc52e478c282a2afbc7a77f43ea752905c11d7e8de5cd85849f6d285fcef",
+          "subject_occurrence_id": "4ce10fa9a292befdd99242c42ff8ff308f42d1d82f07a6ba44b8d7c1d1d4e056",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Notwithstanding anything in this Agreement to the contrary, Parent, Merger Sub, the Surviving Corporation and the Exchange Agent shall be entitled to deduct and withhold from any amounts otherwise payable pursuant to this Agreement any amount required to be deducted and withheld with respect to the making of such payment under applicable Law and shall pay the amount deducted or withheld to the appropriate Taxing Authority in accordance with applicable Law.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0c83b6379f89f75cc4b417d8defe466bcc1c3c19bc54c19f9e0ab8e7a04335b2"
+          ],
+          "attributes": {
+            "why_unmapped": "WITHHOLDING: Specified parties may deduct, withhold and remit required amounts under applicable law.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "WITHHOLDING"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0c83b6379f89f75cc4b417d8defe466bcc1c3c19bc54c19f9e0ab8e7a04335b2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "6552aa0f1723f7e5e811bc5e5ac085b99e06fe818e571d43f6856393a6ad3d56",
+              "document_ordinal": 0,
+              "absolute_start": 15152,
+              "absolute_end": 15612,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "78272faa155da59cf2d008e9435e2049380c0f5fda50ac6b068e467a35e79550"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    },
+    {
+      "section_reference": "3.3",
+      "citation_validation": null,
+      "section_family": "CONSIDERATION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6db3b6b4af66fa1d4e57b0ee26ef58ea9df8c52010789bd412c48389374d2061",
+          "claim_occurrence_id": "5b95a382a70c0a31aa7950f8d98e6b3b73b35efb4ac0ade75321c44229f0ecd4",
+          "subject_occurrence_id": "ccad3c7cdfd850dca62fe52df29dd217f8124247ef32bbda0e3688eaffad571b",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "To the extent such amounts are so deducted or withheld and paid over to the appropriate Taxing Authority by Parent, Merger Sub, the Surviving Corporation or the Exchange Agent, as the case may be, such deducted or withheld amounts shall be treated for all purposes of this Agreement as having been paid to the Person in respect of which such deduction or withholding was made.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e96423e99bd9930a19137135bd48410d788f4f7e9623781c9b957a17d93c810e"
+          ],
+          "attributes": {
+            "why_unmapped": "WITHHOLDING: Properly remitted withheld amounts are treated as paid to the affected person.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "WITHHOLDING"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e96423e99bd9930a19137135bd48410d788f4f7e9623781c9b957a17d93c810e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "40e29aa3a28c80bb21ab88324f3076c70edf634806357ca3916cb86cd0cbd697",
+              "document_ordinal": 0,
+              "absolute_start": 15780,
+              "absolute_end": 16156,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e189e5f937a298a8598068fcb25d22f29d904cf3db8d0a0161cb09372c921a8a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "9f11dc572b0dfc6c8046e2395a6fdbb5d9b6a480bdc61893d80d0a80b3c26dc5",
+          "producer_receipt_id": "7e5d68a53d96d2e7c51ca14869ae35bf16cf5c79a23b18d2934bf8ffe9aecf76",
+          "governed_scope_digest": "1835792845a0bfd4871c86799ea59cc9959a9aeb01035081315eca3a5eeb9e2c",
+          "extraction_provenance_id": "099567f5f2dc2e6a1d7e0890994ab1a879151c97a9a93f75c7f96c6a7d034464"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "3.3",
+      "reason": "OPEN_WORLD_QUOTE_UNVERIFIED",
+      "quote_preview": "Following surrender of any such Certificate, there shall be paid to such holder of whole shares of Parent Common Stock i"
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.1",
+      "source_byte_length": 4023,
+      "covered_byte_length": 2206,
+      "coverage_share": 0.5483470047228437,
+      "marker_counts": {
+        "as of": 1,
+        "except": 2,
+        "knowledge": 0,
+        "material": 0,
+        "total": 3
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 3,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.2",
+      "source_byte_length": 5705,
+      "covered_byte_length": 3514,
+      "coverage_share": 0.6159509202453988,
+      "marker_counts": {
+        "as of": 6,
+        "except": 1,
+        "knowledge": 0,
+        "material": 0,
+        "total": 7
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 7,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.3",
+      "source_byte_length": 16157,
+      "covered_byte_length": 5888,
+      "coverage_share": 0.36442408863031506,
+      "marker_counts": {
+        "as of": 4,
+        "except": 1,
+        "knowledge": 0,
+        "material": 0,
+        "total": 5
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.36442408863031506,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 5,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.1",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 231,
+          "end": 234
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 667,
+          "end": 670
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 701,
+          "end": 704
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1063,
+          "end": 1066
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1386,
+          "end": 1390
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1776,
+          "end": 1779
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1806,
+          "end": 1809
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1877,
+          "end": 1880
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1885,
+          "end": 1888
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1995,
+          "end": 1998
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2165,
+          "end": 2168
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2170,
+          "end": 2175
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2899,
+          "end": 2902
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2905,
+          "end": 2908
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2968,
+          "end": 2971
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3118,
+          "end": 3122
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3823,
+          "end": 3826
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3855,
+          "end": 3858
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 9,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 7
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 701,
+          "end": 704
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1386,
+          "end": 1390
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 1776,
+          "end": 1779
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 1806,
+          "end": 1809
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 1885,
+          "end": 1888
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2170,
+          "end": 2175
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2899,
+          "end": 2902
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2905,
+          "end": 2908
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2905,
+          "end": 2908
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2968,
+          "end": 2971
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3118,
+          "end": 3122
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3823,
+          "end": 3826
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3855,
+          "end": 3858
+        }
+      ],
+      "disagreement_count": 13
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.2",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 45,
+          "end": 48
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 391,
+          "end": 394
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 642,
+          "end": 645
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 798,
+          "end": 802
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 997,
+          "end": 1000
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1164,
+          "end": 1167
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1665,
+          "end": 1668
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2031,
+          "end": 2034
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2731,
+          "end": 2734
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2769,
+          "end": 2773
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2800,
+          "end": 2803
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 3966,
+          "end": 3969
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4157,
+          "end": 4160
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4308,
+          "end": 4312
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4428,
+          "end": 4433
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4883,
+          "end": 4886
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4958,
+          "end": 4961
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4981,
+          "end": 4984
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5028,
+          "end": 5031
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5033,
+          "end": 5036
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5379,
+          "end": 5383
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 9,
+        "section_paragraph_marker": 6,
+        "cross_reference_marker": 6
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 642,
+          "end": 645
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 798,
+          "end": 802
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2731,
+          "end": 2734
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2769,
+          "end": 2773
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4157,
+          "end": 4160
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4308,
+          "end": 4312
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4428,
+          "end": 4433
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4981,
+          "end": 4984
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 5033,
+          "end": 5036
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 5379,
+          "end": 5383
+        }
+      ],
+      "disagreement_count": 10
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.3",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 38,
+          "end": 41
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 427,
+          "end": 430
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1017,
+          "end": 1020
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1094,
+          "end": 1097
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1349,
+          "end": 1352
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1369,
+          "end": 1372
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1380,
+          "end": 1383
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1599,
+          "end": 1602
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1674,
+          "end": 1677
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2785,
+          "end": 2788
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2809,
+          "end": 2812
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3671,
+          "end": 3674
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3674,
+          "end": 3677
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4025,
+          "end": 4028
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4371,
+          "end": 4374
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4502,
+          "end": 4505
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4567,
+          "end": 4570
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4572,
+          "end": 4576
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4865,
+          "end": 4868
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4936,
+          "end": 4939
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5311,
+          "end": 5314
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5442,
+          "end": 5445
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5507,
+          "end": 5510
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5512,
+          "end": 5517
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6207,
+          "end": 6211
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6321,
+          "end": 6324
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6501,
+          "end": 6504
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6593,
+          "end": 6596
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7354,
+          "end": 7357
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7446,
+          "end": 7449
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7658,
+          "end": 7661
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7661,
+          "end": 7664
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7996,
+          "end": 7999
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8097,
+          "end": 8100
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8102,
+          "end": 8105
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8261,
+          "end": 8264
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8353,
+          "end": 8356
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9273,
+          "end": 9276
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9383,
+          "end": 9386
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9418,
+          "end": 9421
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9858,
+          "end": 9861
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9989,
+          "end": 9992
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 10195,
+          "end": 10198
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 10978,
+          "end": 10981
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 11796,
+          "end": 11799
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 11906,
+          "end": 11909
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 11911,
+          "end": 11914
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12709,
+          "end": 12712
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12926,
+          "end": 12930
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 13546,
+          "end": 13549
+        },
+        {
+          "token": "(i)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14305,
+          "end": 14308
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14378,
+          "end": 14382
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15129,
+          "end": 15132
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 20,
+        "section_paragraph_marker": 6,
+        "cross_reference_marker": 27
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "start": 1380,
+          "end": 1383
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2809,
+          "end": 2812
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3674,
+          "end": 3677
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 4025,
+          "end": 4028
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 4371,
+          "end": 4374
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4572,
+          "end": 4576
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 4865,
+          "end": 4868
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 4936,
+          "end": 4939
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 5311,
+          "end": 5314
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 5512,
+          "end": 5517
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 6207,
+          "end": 6211
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 6321,
+          "end": 6324
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7661,
+          "end": 7664
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 7661,
+          "end": 7664
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8102,
+          "end": 8105
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 8102,
+          "end": 8105
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9418,
+          "end": 9421
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 9418,
+          "end": 9421
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 12709,
+          "end": 12712
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 12926,
+          "end": 12930
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(i)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14305,
+          "end": 14308
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 14305,
+          "end": 14308
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 14378,
+          "end": 14382
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 15129,
+          "end": 15132
+        }
+      ],
+      "disagreement_count": 24
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 1,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 27,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "a126f623a6423a9be36b64d1b829d6e30f62c2d3c1ddf82e2a85cfc6b2e5d88f"
+}

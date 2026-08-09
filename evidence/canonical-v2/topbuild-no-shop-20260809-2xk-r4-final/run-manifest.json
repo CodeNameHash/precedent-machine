@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "topbuild",
+  "deal_label": "QXO, Inc. / TopBuild Corp.",
+  "section_family": "NO_SHOP",
+  "purpose": "General extraction run: family NO_SHOP on deal topbuild.",
+  "section_references": [
+    "4.3",
+    "4.4"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "4.3",
+      "family_id": "NO_SHOP"
+    },
+    {
+      "section_reference": "4.4",
+      "family_id": "NO_SHOP"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-no-shop/v2",
+  "prompt_version": 3,
+  "agreement_date": "2026-04-18",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T06:37:03.442Z",
+  "total_elapsed_ms": 157780,
+  "extraction_wall_clock_ms": 152738,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "7e933cb6d6f15474ec61d6df1633a7e68c0d65bc",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 2,
+  "run_receipt_id": "f98f4a32c63b78fc9f27393acaec24bb7eaa05d447855f119caeb712e5959976",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 2,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

@@ -168,17 +168,19 @@ const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4
 const FROZEN_F17 = 'c2d43ad9f6fd0008cc09b74d1d2dd75c87793781a40bd79faaa6f91e4b0fae5b';
 const FROZEN_F18 = '49ffa4029d5bc4431b5bf7249c7008d482b41c13e7b01984822742b90027433d';
 const FROZEN_F19 = '8ad419a69175c5c5db1506da15ccaff1d63fbf56c0d4424a123a0e7ebcfbec33';
-const FROZEN_F28 = '1c0a086d1e9d20eb1eadcb6fab09527bbe9483189269e4ce6f8ba31b59402b1f';
-const FROZEN_F29 = '25a9b634ce4e8c3e6f06d6287e9514116f7f13fa1b986ab0f282ca62aae22691';
-const FROZEN_F30 = '971bc5619960cd54fb555a0260ba53f0e8d20f29f95bd6e9553ba8ddaf42be64';
-const FROZEN_F31 = 'd74472b9b5b06fde1e73f7b35fc7dddfec84d9a4a0a87c58851240799d340a29';
-const FROZEN_F32 = '8f2cbebb81fad57ec4baed29a79ebba3c25bafca85112438e6ce1679f89f1a49';
-const FROZEN_F33 = 'd282131065db749b0153dc03df73764a0d3089e6a9ec75e3e7e51603d4b1b230';
-const FROZEN_F34 = '5eafc3fed937525022cdbde1a0f5c42552e875336afa515c9ade580c021707ad';
-const FROZEN_F35 = '5d58ef7417fb0f24747745913f8ae9fc46326b0fd2851b6afcef9e272b978cb6';
-const FROZEN_F36 = '7a5ed596a2079e65c6b947917be263eb63c5c101cf41be081b4e9ec3eb61dce8';
-const FROZEN_F37 = 'dfda9ba796b83ced8cec3d1d14ef57d38b397b888c441f7e2a870bab3db31f0a';
-const FROZEN_F38 = '91179e22631def77047ac47e0ea9287c19507dd59e566101b628c39592465440';
+// Re-pinned 2026-08-09 (Step 2X-I): IOC_RESTRICTION_CONCEPT_KEYS_V25 widened
+// from 10 → 19 V1 categories; every V25+ fixture fingerprint moves.
+const FROZEN_F28 = 'e4586aa5ba73ff83da36271d7936a4ce9ff9882a2b3a96fa18be5a9f59607421';
+const FROZEN_F29 = 'af4d9179911cf509c5e91ed99a9f258a5cf4f5e206e90582d16ad183e4df69d1';
+const FROZEN_F30 = '6c3c6d850755a56a35ab6bfad77a9c05e56545de008b941937fc5149d0b862ea';
+const FROZEN_F31 = '6d7945f57fc87d34be8c47c9c83f5a384a5a09ce985cd14db457544eb3461b8c';
+const FROZEN_F32 = '226536e7a061455439d59226a82f6688e79bec05186d07464ace4c3a2269cf97';
+const FROZEN_F33 = 'e51cfa39c852038268bd5e097a208c7cef13064c2409bfadae85bf7b990f0b44';
+const FROZEN_F34 = 'c7b014b9a4433fd2c7c81bf19dab5b9b6bc0d27d41040a21a7048922d6242045';
+const FROZEN_F35 = 'f75c2389cc64a6fc144531201c2ff77453cbf5cc516a8fb9317f7897c349a83b';
+const FROZEN_F36 = 'a648d91de9329fc46c67bb5e21c30aea274a63b70ea2ed4b6e9ad75d4c0c8b14';
+const FROZEN_F37 = '304ca3db1606a250c22f3605ddb302fb2b14f907cbb4c26668df33350429ffcc';
+const FROZEN_F38 = '25f035808cea0d6ade36e551a25a7e05307b737d82d81e823d7b919d49a99674';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -572,11 +574,16 @@ test('F25 adds only IOC restriction-presence concepts and claim', () => {
   const f25 = compileFixtureContractV25();
   assert.equal(validateContractBundle(f25), true);
   assert.equal(canonicalJson(f25), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V25)));
+  // Step 2X-I: Ben ruled all 25 V1 IOC categories into the producer; V25's
+  // concept set is the 19 rubric-mapped IOC-* codes (DATA_PRIVACY_CYBER
+  // shares IOC-REGAUTH — no dedicated cyber code).
   assert.deepEqual(
     f25.concepts.filter((entry) => !f24.concepts.some((prior) => prior.concept_key === entry.concept_key)),
     [
-      'IOC-ACCOUNTING', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT', 'IOC-DEBT',
-      'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
+      'IOC-ACCOUNTING', 'IOC-AFFILIATE', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
+      'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-HIRE', 'IOC-INSURANCE', 'IOC-IP',
+      'IOC-ISSUE', 'IOC-LIEN', 'IOC-MERGE', 'IOC-ORDINARY', 'IOC-REALPROP',
+      'IOC-REGAUTH', 'IOC-REPURCHASE', 'IOC-SETTLE', 'IOC-TAX',
     ].map((concept_key) => ({ concept_key, version: 1 })).sort((a, b) => a.concept_key.localeCompare(b.concept_key)),
   );
   assert.deepEqual(

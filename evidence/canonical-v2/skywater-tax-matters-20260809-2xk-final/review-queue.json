@@ -1,0 +1,127 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "91e13813bd5c9a8ce580551fef581c8681605b96cf632d9409ae2b5ef4ed8a5e",
+  "review_queue": [
+    {
+      "section_reference": "7.4",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5ad91091c6e0e4e5f5648045305f786ec91892e73990cd43dd443443ee41484f",
+      "closure_id": "cc4e07901308f4d41ae9ec9e31f90783de9e6341b03acf605e056f7b376877b3",
+      "normalised_phrase": "Each of Parent and the Company shall reasonably cooperate with the other and with their respective tax advisors (including by providing drafts and a reasonable opportunity to review and comment on opinions and disclosures relating to the Intended Tax Treatment), and shall use its commercially reasonable efforts in connection with the preparation and issuance of the tax opinion",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.4",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6265cc24dca64e5febf1ca71013bbc525969aa4f3e0d6805b7642c01fe950c11",
+      "closure_id": "ce81405a214a49f1e9c079dd9891acb53c045a582ba4df80baced8f176a97d70",
+      "normalised_phrase": "Neither Parent nor the Company shall, nor shall they permit their respective Subsidiaries to, take any action that would prevent or impede, or could reasonably be expected to prevent or impede, the Mergers from qualifying for the Intended Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 601,
+          "end": 623,
+          "excerpt": "ax purposes and whether the Mergers constitute a reorganization pursuant to the Intended Tax Treatment. If the Threshold Percentage is at least 40%, each of Parent and the Company in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 853,
+          "end": 875,
+          "excerpt": "ed by this Agreement for U.S. federal income tax purposes as qualifying for the Intended Tax Treatment unless otherwise required pursuant to a “determination” within the meaning ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1428,
+          "end": 1450,
+          "excerpt": "be required to file any Tax Returns or take any position in accordance with the Intended Tax Treatment. Each of Parent and the Company further agree to notify the other party as prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 1574,
+          "end": 1596,
+          "excerpt": "ee to notify the other party as promptly as practicable of any challenge to the Intended Tax Treatment by any Governmental Authority.\n(b) The parties hereto each acknowledge and agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 3192,
+          "end": 3214,
+          "excerpt": "s tax advisor a tax opinion to the effect that the Mergers will qualify for the Intended Tax Treatment. The tax advisor to the Company shall be Foley & Lardner LLP or another tax adv",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 3679,
+          "end": 3701,
+          "excerpt": "e opportunity to review and comment on opinions and disclosures relating to the Intended Tax Treatment), and shall use its commercially reasonable efforts in connection with the prep",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 4169,
+          "end": 4191,
+          "excerpt": "tes and other deliverables, to the effect that the Mergers will qualify for the Intended Tax Treatment. Each of Parent and the Company hereto shall use its reasonable best efforts no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TAXM-TREATMENT",
+          "pattern_id": "TAXM-TREATMENT:PHRASE:INTENDED_TAX_TREATMENT",
+          "start": 5380,
+          "end": 5402,
+          "excerpt": " to any condition or contingency with respect to the Mergers qualifying for the Intended Tax Treatment.\n(f) After the date of this Agreement and prior to the Closing Date, each of Pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "746eaf850e66c3f0a1a19f1d6c3837124e216ad6e27d64387893b1338ef29b6d"
+}

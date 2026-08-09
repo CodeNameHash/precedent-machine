@@ -1,0 +1,61 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "c42223cebfe4455a28dda7450c34b1a1878276b68faabbfccd47ece32a1996b3",
+  "review_queue": [
+    {
+      "section_reference": "6.17",
+      "source_citation": "6.17",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Immediately following the execution and delivery of this Agreement, Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "684a0a333d1abe67381ca7adc6b90b9f044cfb51791e5b9d7c942d521655cc41",
+      "closure_id": "dbd1cf9eff781f59200d9f8ad1449a42c18534ad2772095178a9f6d8083a2fac",
+      "normalised_phrase": "Immediately following the execution and delivery of this Agreement, Parent will cause the sole stockholder of Merger Sub to execute and deliver to Merger Sub and the Company a written consent approving the Merger in accordance with the DGCL (the “Parent Written Consent”).",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.4",
+      "source_citation": "6.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "NO_DAY_COUNT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "As promptly as practicable following the execution of this Agreement, Parent shall file with the SEC a registration statement on Form S-4 (the “Registration Statement”), which will include (i) an information statement of the type contemplated by Rule 14c-2 of the Exchange Act containing the information specified in Schedule 14C under the Exchange Act concerning the Written Consent and the transactions (the “Information Statement”) to be prepared by the Company, and (ii) a prospectus in connection with the registration under the Securities Act of the Parent Units to be issued in connection with the Merger (the “Prospectus,” and with the Information Statement, the “Information Statement/Prospectus”), to be prepared by the Parent with the Company’s reasonable cooperation.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "bcda7c85ac380b310310a88a99788ed17185c04ce1168e18a37b2e3114e99225",
+      "closure_id": "53edff0d7deea13f35ff1ecc24844871763c3163a8e4e03ec304cf008200aa2b",
+      "normalised_phrase": "As promptly as practicable following the execution of this Agreement, Parent shall file with the SEC a registration statement on Form S-4 (the “Registration Statement”), which will include (i) an information statement of the type contemplated by Rule 14c-2 of the Exchange Act containing the information specified in Schedule 14C under the Exchange Act concerning the Written Consent and the transactions (the “Information Statement”) to be prepared by the Company, and (ii) a prospectus in connection with the registration under the Securities Act of the Parent Units to be issued in connection with the Merger (the “Prospectus,” and with the Information Statement, the “Information Statement/Prospectus”), to be prepared by the Parent with the Company’s reasonable cooperation.",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "5f84676068279815592c338d611d6ca29784250e46e2aab937b4d35e22de1409"
+}

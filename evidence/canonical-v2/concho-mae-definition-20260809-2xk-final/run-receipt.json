@@ -1,0 +1,3220 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "Annex-A"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "Annex-A",
+      "section_id": "b90e68908af3ad6a59fb8cafaa470207c89bafcab77d114a258dc2707f63f403",
+      "parent_section_id": "b7089cda31fd2172d52ca5e51cfc5da114dc6edbd5a75028f493f0181a41693d",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 309662,
+      "end": 349102,
+      "text_sha256": "0a7105c9a500bfb5318e1279825b546547c704f6f06216907585c7cf4dea1eea",
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "mae-definition-producer/v3",
+      "prompt_version": 3,
+      "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+        "input_scope_digest": "eb346ab920d94f3221341b386c339d7792d881731e7557d0622b38a3e56fc70f",
+        "proposal_count": 26,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "60f0853610cf3acbda2b26c90ce78a043f759deb9d985f1d65ae343b15a05a39",
+          "claim_occurrence_id": "8bcfe2e5925a811155e354ccee1430da10c69b1deaa98c881a6039a840cff7a7",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "would prevent, materially delay or materially impair the ability of such Party or its Subsidiaries to consummate the Transactions",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6e3373e188f802552b0d6d76a72964983c29fdcb642854aa01d5bfd96ff2276d"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(a)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "consummation prevention"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6e3373e188f802552b0d6d76a72964983c29fdcb642854aa01d5bfd96ff2276d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f772c04225f80a52a03ad411470c80dc647b40556bc89b474c01771fec4a0ac6",
+              "document_ordinal": 0,
+              "absolute_start": 16108,
+              "absolute_end": 16237,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "24d2a3f650c5182b739dcc0e3daf7b0ea7a3a9b8eebdd68d1b0cc97aa921a366"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f3646a0e343a353e912c527dba68da3b0c1132bba7b40dd5d82c784e4bfc0b5b",
+          "claim_occurrence_id": "ff2e42c14269d1097012dd09337a74a6496ae81cda310d8918e8cafba471bf49",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "has, or would have, a material adverse effect on the financial condition, business, or results of operations of such Party and its Subsidiaries, taken as a whole",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ec28297bbba2c195f7c227235c94ff2ddb5f7d4810d96a51a7bbf26cddfb026b"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(b)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "business effects"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ec28297bbba2c195f7c227235c94ff2ddb5f7d4810d96a51a7bbf26cddfb026b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f567a2f877f6b646aa7ad8147931cc4be0300c4f358b5a2bb3b84cb842e3ba6e",
+              "document_ordinal": 0,
+              "absolute_start": 16245,
+              "absolute_end": 16406,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "89ab04b2436881ae3b798ac06cc9de726d4d3cf75fb8586fc88f15645185cb2d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(i)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "bc6fea24a8ad3d8a249de5fd5b57151bff9e5870016d398c87d4c77d135ae5e0",
+          "claim_occurrence_id": "a92da0817b53daec4348a81e9ccf033fcb7e4811e3f6675840b394726a094784",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 2,
+          "state": "PRESENT",
+          "raw_value": "general economic conditions (or changes in such conditions) or conditions in the global economy generally;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "66755e3e3316386bb888c2ced2cfe32bab0bd6547226220850966f95701caa77"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(i)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "general economic conditions"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "66755e3e3316386bb888c2ced2cfe32bab0bd6547226220850966f95701caa77",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "148b2f2c3f0489ec31eeb6d04517af4f8f43a06fe5289a60fb0da6126ffb46f1",
+              "document_ordinal": 0,
+              "absolute_start": 16884,
+              "absolute_end": 16990,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "58ec616fd614aac3b37d69e8afc1e59811bb82ef82f468e1fd3e4968d3ccaca4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "9ec1d9ae2d9201e01d94cbff026b4248515c34a9037a39a9995ad52971ed9192",
+          "claim_occurrence_id": "249de7dd0467442bb7b592acfbe16e14ebcd49ef4894ef97b5d56c30cda3183b",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 3,
+          "state": "PRESENT",
+          "raw_value": "conditions (or changes in such conditions) in the securities markets, credit markets, currency markets or other financial markets, including (A) changes in interest rates and changes in exchange rates for the currencies of any countries and (B) any suspension of trading in securities (whether equity, debt, derivative or hybrid securities) generally on any securities exchange or over-the-counter market;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "688b06db9b6c572fa58dc9a58d8babbdc3b0ace397cb539c6355a7d7be3cfe5f"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(ii)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "financial markets conditions"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "688b06db9b6c572fa58dc9a58d8babbdc3b0ace397cb539c6355a7d7be3cfe5f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d498323548f731594f4b38fc4facc4416d0eb4c1c5b9cb6934a75a52f88a25f5",
+              "document_ordinal": 0,
+              "absolute_start": 16996,
+              "absolute_end": 17401,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aa14f9c32d5286338c94879968b697e22c3725b607c83aeee0e57e4b019fe196"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(iii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "175e01761ead6a5c6e1e061dd1f9a4a7ff0cca3e2e5e74b03fa108054745c262",
+          "claim_occurrence_id": "a2a3921b361036d027e4ba0b33523d2b3351f8570d35a188c50b75509a565573",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 4,
+          "state": "PRESENT",
+          "raw_value": "conditions (or changes in such conditions) in the oil and gas exploration, development or production industry (including changes in commodity prices, general market prices and regulatory changes affecting the industry);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bad280d2e696ba5c3bd945b9c98780ac4558a38ae4bdadaf7004c4d7d6483511"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(iii)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "industry conditions"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bad280d2e696ba5c3bd945b9c98780ac4558a38ae4bdadaf7004c4d7d6483511",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3101a65b8023f99d1e5b8a6a8d41130bd620f86da54d72d727b590c8488d4db3",
+              "document_ordinal": 0,
+              "absolute_start": 17412,
+              "absolute_end": 17631,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "bf61b94ab792a7017827040254d951017798b29a8e6aca5649fdd71346f7a086"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(iv)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0e04c981560c79ae8042775616147fc6f953a8b3dfa894eb9ee3a14b4fd4a371",
+          "claim_occurrence_id": "9f9df352ee11393c64650c630a95daba7a796042ea8b51cb26ccf39b88b182a6",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 5,
+          "state": "PRESENT",
+          "raw_value": "political conditions (or changes in such conditions, including any changes or developments arising from or in connection with the November 3, 2020 United States federal elections) or acts of war, sabotage or terrorism (including any escalation or general worsening of any such acts of war, sabotage or terrorism);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a4842a0ea6bcbecaf09e45fd1736bae58ea1bb4035b2b00be45fa22264177229"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(iv)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "political conditions and acts of war, sabotage or terrorism"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a4842a0ea6bcbecaf09e45fd1736bae58ea1bb4035b2b00be45fa22264177229",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d02ed19567acc035e41afa7196f6035dd16efc2882bf9053db92ff220635e028",
+              "document_ordinal": 0,
+              "absolute_start": 17637,
+              "absolute_end": 17950,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "3496b9e37496e95a09c96b4242802ee6e5e41daf362b5f79a8b6b7a447cf6e50"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(v)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e4b56a453306bdd896aeb4aab23f6d9845740f7c424172884cb7f19472195eb9",
+          "claim_occurrence_id": "a369350415dec94fb56a6bea1e9a0a8f582e9dab6804582f492e43f3a2f02c7b",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 6,
+          "state": "PRESENT",
+          "raw_value": "earthquakes, hurricanes, tsunamis, tornadoes, floods, mudslides, wild fires or other natural disasters, pandemics (including the existence and impact of the COVID-19 pandemic) or weather conditions;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b17da03bb69be35c7c802326c3fd9c1905afde8b693fdb88732cd33d0d822d9a"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(v)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "natural disasters, pandemics and weather conditions"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b17da03bb69be35c7c802326c3fd9c1905afde8b693fdb88732cd33d0d822d9a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3b23cf2f5d3d27cdefec19cff6eb239e9660269fc2181d9ea35f3027ad00a8bd",
+              "document_ordinal": 0,
+              "absolute_start": 17955,
+              "absolute_end": 18153,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "174b251351114b6f969a298af17217193814d5850b45790ed6efe6245c925a4a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(vi)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2fd20bd0877bb98dc44f9023bfc60069f32beb77394d59d4027748ea4423b752",
+          "claim_occurrence_id": "2e84b3c86f1991f932329004da2d84389df7681ce14775a7d7c5cef6352861d2",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 7,
+          "state": "PRESENT",
+          "raw_value": "the announcement of this Agreement or the pendency or consummation of the Transactions (other than with respect to any representation or warranty that is intended to address the consequences of the execution or delivery of this Agreement or the announcement or consummation of the Transactions);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d821b767fe14c2e38dd64ef1cfd4d5f1802f6ec608982704814e7a12c4a4fac3"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(vi)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "announcement, pendency or consummation of the Transactions"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d821b767fe14c2e38dd64ef1cfd4d5f1802f6ec608982704814e7a12c4a4fac3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "18dcbaa06d518fc1b7ba8e813061e06e1685eb6eacefb7e9878860c50cf0fad4",
+              "document_ordinal": 0,
+              "absolute_start": 18159,
+              "absolute_end": 18454,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "64215a3397ff74fcb535fa6e88a7b38f65a858b56f8b60e97b58d20fee5336dc"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(vii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "19f83a6d056e511c243403fcf7b4d86e430719b8c76068c2890ee9db7cd650e4",
+          "claim_occurrence_id": "590992897706cbbe35e62b5666665772a2fdcda3968354501fea917ea13125c1",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 8,
+          "state": "PRESENT",
+          "raw_value": "compliance with the terms of, or the taking of any action expressly permitted or required by, this Agreement (except for any obligation under this Agreement to operate in the Ordinary Course (or similar obligation) pursuant to Sections 6.1 or 6.2, as applicable);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9d4efa7ce20bca25f114147af92b4100ce46591d6567500f9eb4145bfd5e41bf"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(vii)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "compliance with the Agreement"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9d4efa7ce20bca25f114147af92b4100ce46591d6567500f9eb4145bfd5e41bf",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fc215c5923c8bfe4b1736f9ae93696b4a356126ec25ff7cd4275f7acd50ecb84",
+              "document_ordinal": 0,
+              "absolute_start": 18461,
+              "absolute_end": 18724,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "17244c08a494b150bc12b00350c7309974116a808bd596c1cdff8b6eafd1d09a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(viii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "df78328d667b02ff86f523261961fccdcfeef51f77c3eb5f934beec3e23c711e",
+          "claim_occurrence_id": "dfba435279226a487441d418a8b71cff538ab20119c4a542e5d67eb04da0ab36",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 9,
+          "state": "PRESENT",
+          "raw_value": "changes in Law or other legal or regulatory conditions, or the interpretation thereof, or changes in GAAP or other accounting standards (or the interpretation thereof), or that result from any action taken for the purpose of complying with any of the foregoing; or",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0bea7dda28b7ddc6be9edf2d7d8d17156c529b2baf74398e7208c1f1d55f9a48"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(viii)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "changes in Law, legal or regulatory conditions, GAAP or accounting standards"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0bea7dda28b7ddc6be9edf2d7d8d17156c529b2baf74398e7208c1f1d55f9a48",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b876dfaa0fbcd09a96b7ddec9cb56144a7d693fbe4fc171ca12eb2a8a9fca281",
+              "document_ordinal": 0,
+              "absolute_start": 18732,
+              "absolute_end": 18996,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "308d239fc2fc9ceb0f20260c7329a9dd289502a7dd942eed5bc983897693125c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ix)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "5cbac7fd4baf3502fa7676894769b12b624b95e5346af3fb81d35e1e556cc9bc",
+          "claim_occurrence_id": "e5f4a77b6945d492b86d7d1b9334b779304309b167824fbec9d5f4aaa7ab75e6",
+          "subject_occurrence_id": "1725eb0e04ef49fad7543bb5546ebc23ff21a235c190a244d05625d17cb5e868",
+          "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 10,
+          "state": "PRESENT",
+          "raw_value": "any changes in such Party’s stock price or the trading volume of such Party’s stock, or any failure by such Party to meet any analysts’ estimates or expectations of such Party’s revenue, earnings or other financial performance or results of operations for any period, or any failure by such Party or any of its Subsidiaries to meet any internal budgets, plans or forecasts of its revenues, earnings or other financial performance or results of operations (it being understood that the facts or occurrences giving rise to or contributing to such changes or failures may constitute, or be taken into account in determining whether there has been or will be, a Material Adverse Effect);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1802e554f1798a262713f5063cd30556790b07315bb2d6766c419bb99278c043"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "limb_path": [
+              "(ix)"
+            ],
+            "limb_path_kind": "MARKER",
+            "subject": "stock price, trading volume and failures to meet estimates, expectations, budgets, plans or forecasts"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1802e554f1798a262713f5063cd30556790b07315bb2d6766c419bb99278c043",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fb5b8fee04a7e032baf0add072ee79db8a48c0a3f3314c86bffe929f181e8d71",
+              "document_ordinal": 0,
+              "absolute_start": 19002,
+              "absolute_end": 19693,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9e064e04553effb6a0d27d490913d682cb1bd45871305086df15fd232057e0e4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "GOVERNED",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "d0291e030df35e286300edb5b9425aef17a525b8360220902cf86f3a613ead1d"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "5321cfbbc039f9f14687e001664c905d48508450f2f7ab01646d57e9d743dc43",
+          "claim_occurrence_id": "d661737ecba02d7ffd38a928972e1d0daf2263067f2974d9fd105375f38ef00e",
+          "subject_occurrence_id": "188b34d6007c092b7c66406186b00439cf278530c3d40ab0b7c8d06b8f2c4413",
+          "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "would prevent, materially delay or materially impair the ability of such Party or its Subsidiaries to consummate the Transactions",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a833a79d1602e8741352bbd800633ff7576a14db2f9617c32c7e3156c3a4aadc"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "prong_code": "CONSUMMATION_PREVENTION",
+            "prong_label": "(a)",
+            "limb_path": [
+              "(a)"
+            ]
+          },
+          "taxonomy_codes": {
+            "prong_code": "CONSUMMATION_PREVENTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a833a79d1602e8741352bbd800633ff7576a14db2f9617c32c7e3156c3a4aadc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f772c04225f80a52a03ad411470c80dc647b40556bc89b474c01771fec4a0ac6",
+              "document_ordinal": 0,
+              "absolute_start": 16108,
+              "absolute_end": 16237,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a45e9982adb114c94d23807c8405410871e73579cefdf4cdcbed6b6283f7e384"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0d69a727421d088b41c1a9f956fd5be9d9267b00abfebe3a96a5e1cf62b81abf",
+          "claim_occurrence_id": "1ec8b5e008f51f38b0fd8274265175d890865149cd49a72ce2bb859bbc2dd747",
+          "subject_occurrence_id": "cbbde2550bfbfc17951101081ee7041ed1f494d99d330e70c2d5d3a6d7e82883",
+          "claim_definition_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "has, or would have, a material adverse effect on the financial condition, business, or results of operations of such Party and its Subsidiaries, taken as a whole",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2b4bee985afbbac53e26f1b3b0dfe7f3981f1c5f6f40cb8b7b7e19498361088d"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "prong_code": "BUSINESS_EFFECTS",
+            "prong_label": "(b)",
+            "limb_path": [
+              "(b)"
+            ]
+          },
+          "taxonomy_codes": {
+            "prong_code": "BUSINESS_EFFECTS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2b4bee985afbbac53e26f1b3b0dfe7f3981f1c5f6f40cb8b7b7e19498361088d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f567a2f877f6b646aa7ad8147931cc4be0300c4f358b5a2bb3b84cb842e3ba6e",
+              "document_ordinal": 0,
+              "absolute_start": 16245,
+              "absolute_end": 16406,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9a6dec6ebe1adc74af069b1618d54f9ed98ed2ea724b7c69cacaf6c573b2aa4b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(i)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6afc1e7c1058903ab987ad746625f56f52365fbae9bf6ac7e0e038eb325835b5",
+          "claim_occurrence_id": "047deb9147e2b5a8fbf740d7c1805cb9188300b94bf8064ebe9690d5691c87b0",
+          "subject_occurrence_id": "16ca82eadc0358284d6b9f115599d5081677d415f292c6c9ae58d815938caded",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "general economic conditions (or changes in such conditions) or conditions in the global economy generally;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "78e48e742c258802aab787ee79cc774ea1beb00692965b6a5915481162aa684d"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "ECONOMY_GENERAL",
+            "clause_label": "(i)",
+            "limb_path": [
+              "(i)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "ECONOMY_GENERAL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "78e48e742c258802aab787ee79cc774ea1beb00692965b6a5915481162aa684d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "148b2f2c3f0489ec31eeb6d04517af4f8f43a06fe5289a60fb0da6126ffb46f1",
+              "document_ordinal": 0,
+              "absolute_start": 16884,
+              "absolute_end": 16990,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "91327714a8c72f3be5001b97470b180842cd95143c5411e0168efae5d34b38e0"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "23d14a9c057292f7c9a5deab7e950a3d967bcd0d8be21201dfaec7d56defebcc",
+          "claim_occurrence_id": "1b339067cf49eb470790656798d05317a19fbea992f83ea0c6705370cb373af5",
+          "subject_occurrence_id": "ce8a7ce6f337c7842368f36678c5facb75460f44c728b009209353f5178cbbf4",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "conditions (or changes in such conditions) in the securities markets, credit markets, currency markets or other financial markets, including (A) changes in interest rates and changes in exchange rates for the currencies of any countries and (B) any suspension of trading in securities (whether equity, debt, derivative or hybrid securities) generally on any securities exchange or over-the-counter market;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9bdd917db66aa1eca09dd3479135bdef27b3f7d4057664ee95d6b0292000ecb9"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "FINANCIAL_MARKETS",
+            "clause_label": "(ii)",
+            "limb_path": [
+              "(ii)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "FINANCIAL_MARKETS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9bdd917db66aa1eca09dd3479135bdef27b3f7d4057664ee95d6b0292000ecb9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d498323548f731594f4b38fc4facc4416d0eb4c1c5b9cb6934a75a52f88a25f5",
+              "document_ordinal": 0,
+              "absolute_start": 16996,
+              "absolute_end": 17401,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "15f35cfab4d8494542095dfe8e71f8cd460db06efa1f3c4c94135b809778bbe5"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(iii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "168f5af59895b12415caf6d6ec4d9981c0a88409c0407b4b13b5e30b9390e2e4",
+          "claim_occurrence_id": "423f4bb77e6a26d3ed78871ef5d1ba43fa88bd48dda11f88c0a3e82d66b85100",
+          "subject_occurrence_id": "0431ec6b202ad7b5f1fc14c3dffab0872ff6ceb84d0b73e5a567d0b0c02d9009",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "conditions (or changes in such conditions) in the oil and gas exploration, development or production industry (including changes in commodity prices, general market prices and regulatory changes affecting the industry);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "49f1c68ae3e417e2b0693431f8fbc074cd94ce6c76e84031f88e5ea5bcf44125"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "INDUSTRY_GENERAL",
+            "clause_label": "(iii)",
+            "limb_path": [
+              "(iii)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "INDUSTRY_GENERAL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "49f1c68ae3e417e2b0693431f8fbc074cd94ce6c76e84031f88e5ea5bcf44125",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3101a65b8023f99d1e5b8a6a8d41130bd620f86da54d72d727b590c8488d4db3",
+              "document_ordinal": 0,
+              "absolute_start": 17412,
+              "absolute_end": 17631,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "43112f9140df63427bee7f02ddeccf04713e11bb5e74611af10a34b9a754b44c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(iv)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f4f0c42e8d4ce2bb7fdbdcd63f83a7860010955e3311ca13015c730252d66a65",
+          "claim_occurrence_id": "a007c72e11fbeb8b81926d77dee583691b00996d79ecd623edc3b9808c53a37f",
+          "subject_occurrence_id": "9049db67d4bdcdc5edf493f857053bd0c23b3b68e0d817e8cef72e06d80a4b81",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "political conditions (or changes in such conditions, including any changes or developments arising from or in connection with the November 3, 2020 United States federal elections) or acts of war, sabotage or terrorism (including any escalation or general worsening of any such acts of war, sabotage or terrorism);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8363a835b43fcea341ca0f1da217377cd154ee6350dafe250a41613a93b1ff6e"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "ACTS_OF_WAR_TERRORISM",
+            "clause_label": "(iv)",
+            "limb_path": [
+              "(iv)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "ACTS_OF_WAR_TERRORISM"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8363a835b43fcea341ca0f1da217377cd154ee6350dafe250a41613a93b1ff6e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d02ed19567acc035e41afa7196f6035dd16efc2882bf9053db92ff220635e028",
+              "document_ordinal": 0,
+              "absolute_start": 17637,
+              "absolute_end": 17950,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aa92a338fb85458e34d5597b4d39f2f02b1e403fc60ab13d2f9524fc7823254b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(v)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "33b8faeb30b58606beac16bfcc4f7cdfde2aaca55a18b526131669b89d4b8b97",
+          "claim_occurrence_id": "5d3d3125da80d5ed9700f8957aaf68493de0f2f89672f87e65ce57fdd4c729c9",
+          "subject_occurrence_id": "4e29fa7172ace08caeca99a207745b536f6fe44c3e3236d31c60130d1abee08f",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "earthquakes, hurricanes, tsunamis, tornadoes, floods, mudslides, wild fires or other natural disasters, pandemics (including the existence and impact of the COVID-19 pandemic) or weather conditions;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "87885f91c39cd09ded1e63020c54cc5ca8b5534f4f803bde6c6ab41ba49ed6b5"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "NATURAL_DISASTERS",
+            "clause_label": "(v)",
+            "limb_path": [
+              "(v)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "NATURAL_DISASTERS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "87885f91c39cd09ded1e63020c54cc5ca8b5534f4f803bde6c6ab41ba49ed6b5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3b23cf2f5d3d27cdefec19cff6eb239e9660269fc2181d9ea35f3027ad00a8bd",
+              "document_ordinal": 0,
+              "absolute_start": 17955,
+              "absolute_end": 18153,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "86f61169fffcc28ae066571966ddcdd82d7cd7552a2e5548e9e2b6d5e9840293"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(v)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6324291db640f1ce37d77925b80894e5bc824db697a401e7051646b1c57fd60f",
+          "claim_occurrence_id": "59421f9f94ae00cfc19761b128952bd76d1fb36888ba3157479c236adc5ddb33",
+          "subject_occurrence_id": "a2fa85f94f177871753db9984108287a20f7f80693558bb4dfb053b3e46e8c9e",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "earthquakes, hurricanes, tsunamis, tornadoes, floods, mudslides, wild fires or other natural disasters, pandemics (including the existence and impact of the COVID-19 pandemic) or weather conditions;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "db5fca0e65109342b8cd4fd0840f755ddfc3952e66ba8402a73cb831a7b8851e"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "PANDEMIC",
+            "clause_label": "(v)",
+            "limb_path": [
+              "(v)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "PANDEMIC"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "db5fca0e65109342b8cd4fd0840f755ddfc3952e66ba8402a73cb831a7b8851e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3b23cf2f5d3d27cdefec19cff6eb239e9660269fc2181d9ea35f3027ad00a8bd",
+              "document_ordinal": 0,
+              "absolute_start": 17955,
+              "absolute_end": 18153,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "856063d06a02ad9e017e5600388f0d1b8e7998825ac94728b9bfdea0c3f0c2e9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(vi)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3d368393a49cc3ea06e6ed0c7a8b512643634e1c6b684dfd3069915ff9e32ef6",
+          "claim_occurrence_id": "e46fe1eb4dc43a195638d4c4a170a3e1e0f6b7fbbd7e5c1c8838e4490ad1e3ee",
+          "subject_occurrence_id": "3581a1cb6c424a800cde39d9a085e698eb0bfce291d2483471486ce64da5ee79",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the announcement of this Agreement or the pendency or consummation of the Transactions (other than with respect to any representation or warranty that is intended to address the consequences of the execution or delivery of this Agreement or the announcement or consummation of the Transactions);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1e3bc17a47b4e45c2ed210ff7add874e67b2bb4b20cb811ed75d612d8760872a"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "ANNOUNCEMENT_OR_PENDENCY",
+            "clause_label": "(vi)",
+            "limb_path": [
+              "(vi)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "ANNOUNCEMENT_OR_PENDENCY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1e3bc17a47b4e45c2ed210ff7add874e67b2bb4b20cb811ed75d612d8760872a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "18dcbaa06d518fc1b7ba8e813061e06e1685eb6eacefb7e9878860c50cf0fad4",
+              "document_ordinal": 0,
+              "absolute_start": 18159,
+              "absolute_end": 18454,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "19afd831a10816214f6a3430979e74c4b348cc9c09a9a9ea97fa21a4365c5f79"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(vii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c2ac0a3eef25bef476de6993a90e0c90af26865966e2c5dec03a869b29efdf54",
+          "claim_occurrence_id": "e6eef4b30653aa247bc232d9d37f0cb11bc83d6496f211754d06472c02847db6",
+          "subject_occurrence_id": "943a250484326648d137e38df4bb10b79797f8d68e56af94477980112bd47803",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "compliance with the terms of, or the taking of any action expressly permitted or required by, this Agreement (except for any obligation under this Agreement to operate in the Ordinary Course (or similar obligation) pursuant to Sections 6.1 or 6.2, as applicable);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "01bc92b800a8c82dae25aa560c9471d5a0fa6fce83c91d4cea15a77cfd63d384"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "COMPLIANCE_WITH_AGREEMENT",
+            "clause_label": "(vii)",
+            "limb_path": [
+              "(vii)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "COMPLIANCE_WITH_AGREEMENT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "01bc92b800a8c82dae25aa560c9471d5a0fa6fce83c91d4cea15a77cfd63d384",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fc215c5923c8bfe4b1736f9ae93696b4a356126ec25ff7cd4275f7acd50ecb84",
+              "document_ordinal": 0,
+              "absolute_start": 18461,
+              "absolute_end": 18724,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "93410dd382e593160c0dbe68319d3af58923e784385c6ad406ff27c2381c462d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(viii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "026767f5d5ad6d67c5d145cc2ae5cc5a09fbdb009342cfd57c8096b498e17597",
+          "claim_occurrence_id": "bc07a4ea2246c1bbe2bcf1d77cdb0ba39a8cd2b36b58e5276adfc0389080597a",
+          "subject_occurrence_id": "a27d26892c350dbdfd613f961dc6a0cb5f3fce0ef124bade3f3cbffb4728e4dd",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "changes in Law or other legal or regulatory conditions, or the interpretation thereof, or changes in GAAP or other accounting standards (or the interpretation thereof), or that result from any action taken for the purpose of complying with any of the foregoing; or",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a11fd693feb0b741771ed8d4943e1235fa7cd8d5095753b19b1b36764940a90a"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "CHANGE_IN_LAW",
+            "clause_label": "(viii)",
+            "limb_path": [
+              "(viii)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "CHANGE_IN_LAW"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a11fd693feb0b741771ed8d4943e1235fa7cd8d5095753b19b1b36764940a90a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b876dfaa0fbcd09a96b7ddec9cb56144a7d693fbe4fc171ca12eb2a8a9fca281",
+              "document_ordinal": 0,
+              "absolute_start": 18732,
+              "absolute_end": 18996,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "db7cebfb2b16a72ed454a97a7e5084436d2e2d35ebe59503b9cb4607993a2266"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(viii)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1fdeb4fd35912a65af70d330973b7d94ec6204a78a612827179b2c73a9b8d56a",
+          "claim_occurrence_id": "099e19dd53a5558d2004af16b4ec2cabb88d89dadebfdb9d2d3e41dc19a68205",
+          "subject_occurrence_id": "abd42fb8fb70538f140e80214cf2228fb80ec5346e58e8d54400d8bce771cb1d",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "changes in Law or other legal or regulatory conditions, or the interpretation thereof, or changes in GAAP or other accounting standards (or the interpretation thereof), or that result from any action taken for the purpose of complying with any of the foregoing; or",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "24ce0c99156bc53d0ea19e1fa37865a84a0e431cf45e319e77e0f564022f3c2b"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "CHANGE_IN_GAAP",
+            "clause_label": "(viii)",
+            "limb_path": [
+              "(viii)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "CHANGE_IN_GAAP"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "24ce0c99156bc53d0ea19e1fa37865a84a0e431cf45e319e77e0f564022f3c2b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b876dfaa0fbcd09a96b7ddec9cb56144a7d693fbe4fc171ca12eb2a8a9fca281",
+              "document_ordinal": 0,
+              "absolute_start": 18732,
+              "absolute_end": 18996,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7c91f34824a4e2cf1ad533218c295ad8513c5f56a2cdec844187b9c7fd874c46"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ix)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0ba4703be2e45e3fdcac5df0c2b02763bc6796d09759f3ed3e6b8c6db8790817",
+          "claim_occurrence_id": "4afa76cf43c78edb93b81828f30409d15acc4ca190806a7145c3df161735d12d",
+          "subject_occurrence_id": "b8d191800626f00aaeee8c53d47e7ec48930f11ba0f808c3be0c013310675f93",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any changes in such Party’s stock price or the trading volume of such Party’s stock, or any failure by such Party to meet any analysts’ estimates or expectations of such Party’s revenue, earnings or other financial performance or results of operations for any period, or any failure by such Party or any of its Subsidiaries to meet any internal budgets, plans or forecasts of its revenues, earnings or other financial performance or results of operations (it being understood that the facts or occurrences giving rise to or contributing to such changes or failures may constitute, or be taken into account in determining whether there has been or will be, a Material Adverse Effect);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "cc46f4cbc4d600513bd08caeb3e37b80e294d1e28fa0ca57a7627bc69c5cc1cb"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "STOCK_PRICE_CHANGES",
+            "clause_label": "(ix)",
+            "limb_path": [
+              "(ix)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "STOCK_PRICE_CHANGES"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "cc46f4cbc4d600513bd08caeb3e37b80e294d1e28fa0ca57a7627bc69c5cc1cb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fb5b8fee04a7e032baf0add072ee79db8a48c0a3f3314c86bffe929f181e8d71",
+              "document_ordinal": 0,
+              "absolute_start": 19002,
+              "absolute_end": 19693,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2fd42b360cd54cf0f0beee7bcd91103b6ebe692461568b23c946379b38f2c21e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ix)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6087d1866a1ea88fcb32657a18bd0068283a47c9c9a1434b5df09ae18648b298",
+          "claim_occurrence_id": "4db08056e73aa23ea3eadd198dfa39947a2caa562ecf7f94b2b155810f505d88",
+          "subject_occurrence_id": "0e8cc36c3f41fc011347108f9eb57541568ff304866e37b48c0cb177b3623616",
+          "claim_definition_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any changes in such Party’s stock price or the trading volume of such Party’s stock, or any failure by such Party to meet any analysts’ estimates or expectations of such Party’s revenue, earnings or other financial performance or results of operations for any period, or any failure by such Party or any of its Subsidiaries to meet any internal budgets, plans or forecasts of its revenues, earnings or other financial performance or results of operations (it being understood that the facts or occurrences giving rise to or contributing to such changes or failures may constitute, or be taken into account in determining whether there has been or will be, a Material Adverse Effect);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ca0e455ae2f13a2c6ca6c5ae0e9765a7811386914eef346b731a997b84c85460"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveout_code": "FAILURE_TO_MEET_PROJECTIONS",
+            "clause_label": "(ix)",
+            "limb_path": [
+              "(ix)"
+            ]
+          },
+          "taxonomy_codes": {
+            "carveout_code": "FAILURE_TO_MEET_PROJECTIONS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ca0e455ae2f13a2c6ca6c5ae0e9765a7811386914eef346b731a997b84c85460",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fb5b8fee04a7e032baf0add072ee79db8a48c0a3f3314c86bffe929f181e8d71",
+              "document_ordinal": 0,
+              "absolute_start": 19002,
+              "absolute_end": 19693,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2f6f4e8fff5cd4fd8c2936aa54a82af9f135711c92155e99bd9a779c79f66406"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    },
+    {
+      "section_reference": "Annex-A",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "Annex-A",
+        "normalized_citation": "Annex-A",
+        "derived_citation": "Annex-A(ix)"
+      },
+      "section_family": "MAE_DEFINITION",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "dc00a433509b1d3ed989c460f6894bfa529ff7149ccdde9096d467b96796fed5",
+          "claim_occurrence_id": "68a9aa082ad94f3b99d25fba2d8fd4a44720893ee00db7010826414ba17b237c",
+          "subject_occurrence_id": "7e5963ca2100935d401183b972bcfe2a5d283a4cd3533df3229d15db1db5f534",
+          "claim_definition_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "except to the extent such Effects directly or indirectly resulting from, arising out of, attributable to or related to the matters described in the foregoing clauses (i) – (v) (excluding any Effect arising from, resulting from or related to COVID-19, COVID-19 Measures or the November 3, 2020 United States federal elections) disproportionately adversely affect such Party and its Subsidiaries, taken as a whole, as compared to other similarly situated industry participants (it being understood and agreed that, for the purposes of determining whether a Party has been disproportionately adversely affected compared to other similarly situated industry participants, the Company shall be compared to independent exploration and production companies primarily focused in the Permian Basin and Parent shall be compared to independent diversified exploration and production companies), in which case only the incremental disproportionate impact shall be taken into account when determining whether a “Material Adverse Effect” has occurred or may, would or could occur.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ae4ac3d29380bc3eaecf5530110df3357b3b977f53076d1fbf63c634ddb3f763"
+          ],
+          "attributes": {
+            "section_reference": "Annex-A",
+            "defined_term_ref": "Material Adverse Effect",
+            "definition_subject": "any Party",
+            "carveback_source_form": "TRAILING_LIST",
+            "applies_to_clause_labels": [
+              "(i)",
+              "(ii)",
+              "(iii)",
+              "(iv)",
+              "(v)"
+            ],
+            "comparison_baseline_phrase": "other similarly situated industry participants",
+            "incremental_impact_phrase": "only the incremental disproportionate impact shall be taken into account",
+            "limb_path": []
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ae4ac3d29380bc3eaecf5530110df3357b3b977f53076d1fbf63c634ddb3f763",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1928f6989f057b0928d7e8ccf3352f07b87c5841a768d815807df5039884c84d",
+              "document_ordinal": 0,
+              "absolute_start": 19713,
+              "absolute_end": 20785,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8ffd77f7ad55520bd383d2c5aa7c2737f33050b1fef7b62d5202913e90b2be67"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "MAE_DEFINITION",
+          "prompt_digest": "9618bb239a55b33b0391af688633a077596d8044f85b0bf9ae8f23ca3be3c967",
+          "producer_receipt_id": "aa6179aca842307cb71b5c230dc7f743ef9157d7e71b41f8cf283b43fdb65bb7",
+          "governed_scope_digest": "f3518221e9522adcaf5a3f14de4ebab4715592f4ecc2c472baffbb55795478db",
+          "extraction_provenance_id": "0a860cdc8b7428c357629377671ec50559b07ee8cb07cf984b2ad8b01a950585"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "Annex-A",
+      "source_byte_length": 39440,
+      "covered_byte_length": 4116,
+      "coverage_share": 0.10436105476673428,
+      "marker_counts": {
+        "as of": 12,
+        "except": 5,
+        "knowledge": 3,
+        "material": 26,
+        "total": 46
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.10436105476673428,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 46,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "Annex-A",
+      "markers_found": [
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 352,
+          "end": 355
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 357,
+          "end": 360
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 362,
+          "end": 365
+        },
+        {
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 367,
+          "end": 370
+        },
+        {
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 374,
+          "end": 377
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 995,
+          "end": 998
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1536,
+          "end": 1539
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1981,
+          "end": 1984
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2681,
+          "end": 2684
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2799,
+          "end": 2803
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2946,
+          "end": 2951
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3308,
+          "end": 3312
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3740,
+          "end": 3743
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4736,
+          "end": 4739
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5173,
+          "end": 5176
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5521,
+          "end": 5524
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5877,
+          "end": 5881
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6343,
+          "end": 6348
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10969,
+          "end": 10972
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11030,
+          "end": 11033
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11205,
+          "end": 11208
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11395,
+          "end": 11398
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11847,
+          "end": 11850
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11899,
+          "end": 11902
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12013,
+          "end": 12016
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12212,
+          "end": 12215
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12405,
+          "end": 12408
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12456,
+          "end": 12459
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12468,
+          "end": 12471
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13007,
+          "end": 13010
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13125,
+          "end": 13129
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13247,
+          "end": 13252
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13364,
+          "end": 13368
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13479,
+          "end": 13482
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13594,
+          "end": 13598
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13956,
+          "end": 13959
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14225,
+          "end": 14228
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14603,
+          "end": 14606
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14925,
+          "end": 14928
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15134,
+          "end": 15137
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15174,
+          "end": 15177
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15512,
+          "end": 15515
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15620,
+          "end": 15623
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16104,
+          "end": 16107
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16241,
+          "end": 16244
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16460,
+          "end": 16463
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16880,
+          "end": 16883
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16991,
+          "end": 16995
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17137,
+          "end": 17140
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17237,
+          "end": 17240
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17406,
+          "end": 17411
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17632,
+          "end": 17636
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17951,
+          "end": 17954
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18154,
+          "end": 18158
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18455,
+          "end": 18460
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18725,
+          "end": 18731
+        },
+        {
+          "token": "(ix)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18997,
+          "end": 19001
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 19879,
+          "end": 19882
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 19887,
+          "end": 19890
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21226,
+          "end": 21229
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21807,
+          "end": 21810
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22191,
+          "end": 22194
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22316,
+          "end": 22319
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22492,
+          "end": 22495
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22591,
+          "end": 22594
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22746,
+          "end": 22749
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22815,
+          "end": 22818
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23146,
+          "end": 23149
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23677,
+          "end": 23680
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24120,
+          "end": 24123
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24304,
+          "end": 24307
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24904,
+          "end": 24907
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 25020,
+          "end": 25024
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 25172,
+          "end": 25177
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 25533,
+          "end": 25537
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 25953,
+          "end": 25956
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 26213,
+          "end": 26217
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 26787,
+          "end": 26790
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 26854,
+          "end": 26857
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 26915,
+          "end": 26918
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27015,
+          "end": 27018
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28226,
+          "end": 28229
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28653,
+          "end": 28656
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28999,
+          "end": 29002
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29355,
+          "end": 29359
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29820,
+          "end": 29825
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30150,
+          "end": 30153
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30562,
+          "end": 30565
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31097,
+          "end": 31100
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31401,
+          "end": 31404
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31960,
+          "end": 31963
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32066,
+          "end": 32070
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32241,
+          "end": 32244
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32541,
+          "end": 32544
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33112,
+          "end": 33115
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33279,
+          "end": 33282
+        },
+        {
+          "token": "(i)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33450,
+          "end": 33453
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 36586,
+          "end": 36589
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 36782,
+          "end": 36785
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 36816,
+          "end": 36819
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 98,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 3
+      },
+      "proposed_tokens": [
+        "(a)",
+        "(b)",
+        "(i)",
+        "(ii)",
+        "(iii)",
+        "(iv)",
+        "(v)",
+        "(vi)",
+        "(vii)",
+        "(viii)",
+        "(ix)"
+      ],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 357,
+          "end": 360
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "start": 362,
+          "end": 365
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 367,
+          "end": 370
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 367,
+          "end": 370
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "start": 374,
+          "end": 377
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 1981,
+          "end": 1984
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10969,
+          "end": 10972
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 11395,
+          "end": 11398
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 12013,
+          "end": 12016
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 12212,
+          "end": 12215
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "start": 12405,
+          "end": 12408
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12468,
+          "end": 12471
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 12468,
+          "end": 12471
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 14603,
+          "end": 14606
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 14925,
+          "end": 14928
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "start": 15134,
+          "end": 15137
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 15174,
+          "end": 15177
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 17137,
+          "end": 17140
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 17237,
+          "end": 17240
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 19887,
+          "end": 19890
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 22492,
+          "end": 22495
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 22591,
+          "end": 22594
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 24120,
+          "end": 24123
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24304,
+          "end": 24307
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 24304,
+          "end": 24307
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 26915,
+          "end": 26918
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 27015,
+          "end": 27018
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 31097,
+          "end": 31100
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 31401,
+          "end": 31404
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "start": 32241,
+          "end": 32244
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 32541,
+          "end": 32544
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "start": 33112,
+          "end": 33115
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "start": 33279,
+          "end": 33282
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 36816,
+          "end": 36819
+        }
+      ],
+      "disagreement_count": 35
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 26,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "eb67b6e9b50a021a5e5e9bc0255edd6718903f4171b168e828736608fa7a9172"
+}

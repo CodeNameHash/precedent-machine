@@ -1,0 +1,86 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b06d8e2d94a5a74b74ced9a43ef96ec0d06c292820de43afa2019dcfda7b009b",
+  "review_queue": [
+    {
+      "section_reference": "2.7",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+      "concept_key": "APPR-SETTLE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "49a9456b59f298d0f9b78cff294b436453edf1cd11a2aa82f1cb1f335f8ae7a0",
+      "closure_id": "0328a52f46cfd9d406da3789ccef15c380870858c5f929936dcf8ecbe4eaf8ab",
+      "normalised_phrase": "The Company may not, except with the prior written consent of Parent, make any payment with respect to any demands for appraisal or settle or offer to settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+      "attachment_position": null,
+      "concept_family": "APPR-SETTLE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "APPR-SETTLE",
+          "pattern_id": "APPR-SETTLE:PHRASE:APPRAISAL_DEMANDS",
+          "start": 6014,
+          "end": 6035,
+          "excerpt": "ded in Section 2.10.\n(ii) The Company will give Parent (A) prompt notice of any demands for appraisal received by the Company, withdrawals of such demands and any other instruments ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "APPR-SETTLE",
+          "pattern_id": "APPR-SETTLE:PHRASE:APPRAISAL_DEMANDS",
+          "start": 6299,
+          "end": 6320,
+          "excerpt": " the opportunity to lead all negotiations and Legal Proceedings with respect to demands for appraisal pursuant to the DGCL in respect of Dissenting Company Shares. The Company may n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.7",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a5325d37cd8bd5df5211a4f0a0c7bcf053574a4d83fb5fb81069a503322f7e68",
+      "closure_id": "5833a888367f242e728efd267f52ecec556495ea79ee2e50792930d914619c1d",
+      "normalised_phrase": "all Dissenting Company Shares held by Company Stockholders who shall have failed to perfect or who shall have effectively withdrawn or lost their rights to appraisal of such Dissenting Company Shares pursuant to Section 262 of the DGCL will cease to be Dissenting Company Shares and will thereupon be deemed to have been converted into, and to have become exchangeable for, as of the Effective Time, the right to receive the Cash Election Consideration (unless such holder of Dissenting Company Shares shall thereafter, but prior to the Election Deadline, otherwise make a Mixed Election in accordance with Section 2.9 of this Agreement), without interest thereon, upon surrender of the Certificates or Uncertificated Shares that formerly evidenced such shares of Company Common Stock in the manner provided in Section 2.10.",
+      "attachment_position": null,
+      "concept_family": "APPR-WITHDRAW",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "APPR-WITHDRAW",
+          "pattern_id": "APPR-WITHDRAW:PHRASE:WITHDRAWAL",
+          "start": 4263,
+          "end": 4279,
+          "excerpt": "ly as the “Dissenting Company Shares” until such time as the holder thereof fails to perfect, withdraws or otherwise loses such holder’s appraisal rights under the Laws o",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "36af548053f037bc6ba2265508d694f322a23550b173fea3edf68ca89d5c4727"
+}

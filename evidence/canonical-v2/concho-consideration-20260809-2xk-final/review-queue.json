@@ -1,0 +1,61 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "a126f623a6423a9be36b64d1b829d6e30f62c2d3c1ddf82e2a85cfc6b2e5d88f",
+  "review_queue": [
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1(b)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "ISSUER_STOCK_REF_NOT_IN_QUOTE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "“Exchange Ratio” means 1.46.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a6a15d39481ca710434be26b1a3c6c7a3108ed7dcd7c6642347e71988d536564",
+      "closure_id": "787b8ec7ea298a78646ad82b5769b547e8385aef5d385335aca3443d37537f59",
+      "normalised_phrase": "“Exchange Ratio” means 1.46.",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "NO_RATIO_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "At the Effective Time, each outstanding award of restricted Company Common Stock (a “Company Restricted Stock Award”) granted pursuant to the Company’s 2019 Stock Incentive Plan, as amended from time to time, or any predecessor plan (the “Company Stock Plan”), other than as provided in Section 3.2(b), shall be canceled and converted into an award of restricted Parent Common Stock (a “Parent Restricted Stock Award”) in respect of that number of whole shares of Parent Common Stock (rounded to the nearest whole share) equal to the product of (i) the total number of shares of Company Common Stock subject to such Company Restricted Stock Award immediately prior to the Effective Time multiplied by (ii) the Exchange Ratio.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e5d794cc375896539f527e4fefc416c64bb3fdcdbb27f4dfed411f931d790743",
+      "closure_id": "aad194ba88106cb9e9b9d0cf254b15384ec9adc34367774f14e21ac3a97e3f22",
+      "normalised_phrase": "At the Effective Time, each outstanding award of restricted Company Common Stock (a “Company Restricted Stock Award”) granted pursuant to the Company’s 2019 Stock Incentive Plan, as amended from time to time, or any predecessor plan (the “Company Stock Plan”), other than as provided in Section 3.2(b), shall be canceled and converted into an award of restricted Parent Common Stock (a “Parent Restricted Stock Award”) in respect of that number of whole shares of Parent Common Stock (rounded to the nearest whole share) equal to the product of (i) the total number of shares of Company Common Stock subject to such Company Restricted Stock Award immediately prior to the Effective Time multiplied by (ii) the Exchange Ratio.",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "3fa92e36c28839dd2bae5abb63e024da2069f78d5585743c195721c374ebd7f6"
+}

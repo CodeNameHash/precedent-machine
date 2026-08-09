@@ -1,0 +1,109 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "skechers",
+  "deal_label": "Beach Acquisition Co Parent, LLC (3G Capital) / Skechers U.S.A., Inc.",
+  "section_family": "GENERAL_COVENANTS",
+  "purpose": "General extraction run: family GENERAL_COVENANTS on deal skechers.",
+  "section_references": [
+    "6.1",
+    "6.7",
+    "6.8",
+    "6.9",
+    "6.12",
+    "6.13",
+    "6.14",
+    "6.15",
+    "6.16",
+    "6.20",
+    "6.21"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "6.1",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.7",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.8",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.9",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.12",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.13",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.14",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.15",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.16",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.20",
+      "family_id": "GENERAL_COVENANTS"
+    },
+    {
+      "section_reference": "6.21",
+      "family_id": "GENERAL_COVENANTS"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-general-covenants/v1",
+  "prompt_version": 2,
+  "agreement_date": "2025-05-04",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T06:49:05.931Z",
+  "total_elapsed_ms": 75395,
+  "extraction_wall_clock_ms": 70846,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "bd66680325ce27b466783a86814134f9808ebf48",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 11,
+  "run_receipt_id": "86eec3741626a88b2131f7e365918baf18fcb9166ae96541266dc2881d20d7c3",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 11,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

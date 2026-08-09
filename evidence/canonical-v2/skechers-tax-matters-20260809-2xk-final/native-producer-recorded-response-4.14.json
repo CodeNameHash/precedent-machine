@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:58:51.136Z",
+  "section_reference": "4.14",
+  "prompt_id": "native-producer-tax-matters/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"tax_assertions\":[{\"section_reference\":\"4.14\",\"assertion_kind\":\"TREATMENT_PROTECTION\",\"quote\":\"Neither Parent, nor Merger Sub or any of their Subsidiaries is aware of the existence of any fact or circumstance, or has taken or agreed to take any action, or knowingly failed to take any action, which fact or circumstance or act or failure to act could reasonably be expected to prevent or impede the Merger from qualifying for the Intended Tax Treatment.\",\"treatment_scope_ref\":null,\"treatment_term_ref\":\"Intended Tax Treatment\",\"tax_opinion_ref\":null,\"representation_letter_ref\":null,\"bearer_ref\":null}],\"mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"For U.S. federal income tax purposes, Parent is, and has been at all times since its formation, properly treated as a corporation.\",\"why_unmapped\":\"Tax classification representation, not a governed tax covenant.\",\"nearest_concept\":null},{\"observed_quote\":\"For U.S. federal income tax purposes, Parent is, and has been at all times since Merger Sub’s formation, properly treated as the sole regarded owner of Merger Sub.\",\"why_unmapped\":\"Tax classification representation, not a governed tax covenant.\",\"nearest_concept\":null}]}"
+}

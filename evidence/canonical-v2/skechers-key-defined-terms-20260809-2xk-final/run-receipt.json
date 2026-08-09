@@ -1,0 +1,5739 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+  "source_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+  "source_byte_length": 380704,
+  "root_section_id": "47ba18d9fc592beec8d2bfeed3ee881b60d80543a9f7a6f4c13add1c990edeeb",
+  "requested_section_references": [
+    "1.1",
+    "1.2"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "1.1",
+      "section_id": "37258e71a3bd951f9b8602bb39e154c4d031d3daa0d652bb644d5efb8ea077a3",
+      "parent_section_id": "f818d5ec9e0844f6f34003f781b62370388d17a14e3732c075facf8d5826c7d3",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 8678,
+      "end": 59414,
+      "text_sha256": "b53f8b797448c4f114b95d383c4a0234b652db02d459223a2ceb4fe8d4db0f87",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-defined-terms/v1",
+      "prompt_version": 2,
+      "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+        "input_scope_digest": "5b5436d9244ef21ed49bd67a14e777a8e0bde8ea42bace0bde8f459b262ad5d7",
+        "proposal_count": 12,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f"
+      }
+    },
+    {
+      "section_reference": "1.2",
+      "section_id": "adbe962294cd4feea2d37e25e249cef3be992ecab5bef21b64036958bcaa5735",
+      "parent_section_id": "f818d5ec9e0844f6f34003f781b62370388d17a14e3732c075facf8d5826c7d3",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 59414,
+      "end": 62897,
+      "text_sha256": "0a7dfda4b8eb695dd0dc0ec2d12b565c9bd81777f697df395f0b1803dea5696a",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-defined-terms/v1",
+      "prompt_version": 2,
+      "prompt_digest": "62897cea5c4a30c498c83ee0b19b40634b928f376dd8b85e69f0b521ff3ce4de",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "62897cea5c4a30c498c83ee0b19b40634b928f376dd8b85e69f0b521ff3ce4de",
+        "input_scope_digest": "ce194bde247428b37f9c6c5bcd04f42e8cca5933e471e642c988305c1c358f54",
+        "proposal_count": 0,
+        "evidence_residual_count": 1,
+        "producer_receipt_id": "590f6394c997211983cd6a1af7db766eaca53e5b999d3de4b376ba44cbed1594"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(c)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "922888b6c15e30a5d8c5c1c7d99d5769fd9404a87ae41625ef649bd8ec406c58",
+          "claim_occurrence_id": "8f0636b24e755606a98dbc086c5c3b731268fb1814f827ec10801612f7c49e8e",
+          "subject_occurrence_id": "94267fc50c374af9db7f0c17668053cc3f301dca01d40e32a53c8531e181fda9",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "of securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such purchase or other acquisition",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e4224aef1fbc05cb62772c85ab7339073d0205fbf53034e8cf68bc191fa5a619",
+            "ecf4a4e64829fbd1f018176f75db9461ee3ae7e7bde5003924f0ed91e1781fba"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "ACQ_THRESHOLD",
+            "definition_head_quote": "“Acquisition Transaction” means",
+            "limb_quote": "of securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such purchase or other acquisition",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Acquisition Transaction",
+            "threshold_basis": "EQUITY_SECURITIES",
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "ACQ_THRESHOLD",
+            "threshold_basis": "EQUITY_SECURITIES"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e4224aef1fbc05cb62772c85ab7339073d0205fbf53034e8cf68bc191fa5a619",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "6de90a3d14bb0975c20fe420b9a4ce0e58312323aeae4fef1b1886709757dd5b",
+              "document_ordinal": 0,
+              "absolute_start": 1218,
+              "absolute_end": 1253,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ecf4a4e64829fbd1f018176f75db9461ee3ae7e7bde5003924f0ed91e1781fba",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d25530c13cfe569b9f4999b07cc07f895049981d5165fc57bfe961771da68e88",
+              "document_ordinal": 0,
+              "absolute_start": 1701,
+              "absolute_end": 1909,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "481fbc2cf541749bfd8cf2bf3bf7852502e976a56e53b8f77fc4f92f08ffe92b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(c)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "367e0a0b7b9878537a9f4aefbaac840abd1b7bd208c4108dd2365f5374b570e9",
+          "claim_occurrence_id": "61fe4a5cabe9b5d78fbd374cee717a1c4a316b51655f1db38b357261056da286",
+          "subject_occurrence_id": "36a07fb7235bfafd60cffab865a219eec54309488adf963439a009fa87d389e1",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "40879c5a1dcb4f902865fe856d51b4c5f4bdb0bb51ea098614e1f7398b5f8fa6",
+            "3fa3ab5911e4f69e41079f1faf0e2252e2e207c80eec8af3711dc363d138281e"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "ACQ_THRESHOLD",
+            "definition_head_quote": "“Acquisition Transaction” means",
+            "limb_quote": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Acquisition Transaction",
+            "threshold_basis": "ASSETS",
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "ACQ_THRESHOLD",
+            "threshold_basis": "ASSETS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "40879c5a1dcb4f902865fe856d51b4c5f4bdb0bb51ea098614e1f7398b5f8fa6",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "6de90a3d14bb0975c20fe420b9a4ce0e58312323aeae4fef1b1886709757dd5b",
+              "document_ordinal": 0,
+              "absolute_start": 1218,
+              "absolute_end": 1253,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3fa3ab5911e4f69e41079f1faf0e2252e2e207c80eec8af3711dc363d138281e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "40ff240a9af308b102bcf9c4a80ffe81583830c2dbbf8bb34feca5b6b01676f9",
+              "document_ordinal": 0,
+              "absolute_start": 2475,
+              "absolute_end": 2709,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ebdabc8dbc8e53726f4dfcbfee47c2726a7be18cc1073caad1187372ed0f48a9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(c)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "9c7e9abd2e0234596e3ee93351c8e25ef9599165e6e55733e37b037b181a1416",
+          "claim_occurrence_id": "65bc617b15c1de36bbe518110ebd5bda5b1cf01592b7d42cf71209d953b82bab",
+          "subject_occurrence_id": "1f2ab687d5c818e894a0453158f371984bf27439fcf18285a74493d9f1d61f44",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "67c62fd223d5f3c8417dd2e34047c7f8fdb3fd9db6332091f162eef75a24ff3a",
+            "ab4bfabfc0207c67c8ec8658a3709dc7bf19266cdd02390e0fcf5ac606fc523c"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "ACQ_THRESHOLD",
+            "definition_head_quote": "“Acquisition Transaction” means",
+            "limb_quote": "of assets constituting or accounting for more than 15% of the consolidated assets, revenue or net income of the Company Group, taken as a whole (measured by the fair market value thereof as of the date of such purchase or acquisition)",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Acquisition Transaction",
+            "threshold_basis": "REVENUE_OR_EARNINGS",
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "ACQ_THRESHOLD",
+            "threshold_basis": "REVENUE_OR_EARNINGS"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "67c62fd223d5f3c8417dd2e34047c7f8fdb3fd9db6332091f162eef75a24ff3a",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "6de90a3d14bb0975c20fe420b9a4ce0e58312323aeae4fef1b1886709757dd5b",
+              "document_ordinal": 0,
+              "absolute_start": 1218,
+              "absolute_end": 1253,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ab4bfabfc0207c67c8ec8658a3709dc7bf19266cdd02390e0fcf5ac606fc523c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "40ff240a9af308b102bcf9c4a80ffe81583830c2dbbf8bb34feca5b6b01676f9",
+              "document_ordinal": 0,
+              "absolute_start": 2475,
+              "absolute_end": 2709,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5f82f058afaa584360decf8bbdfdc9702e231d8d6892705a1e5fd77a8971da73"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(c)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8623068e4f80c10f96acae19608b94bed84e5500960d75dfbe4d66deec4c6643",
+          "claim_occurrence_id": "749c17827d748bec256e12e297521edf85d35067124dbae74888b1b42ac34867",
+          "subject_occurrence_id": "5cd6768fadaae08b547664dd46616d41a39749774ccb107615becc7095ad1148",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "would hold securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such transaction",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bf8935b3864a7b69d4cd1766fe6ca9d05d0acffe729b839a4678d97a7d0f3ad0",
+            "1ef197ee359d648ac386639753021e5eca1708ea1b1f1824fc4f165cfc0cd9c6"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "ACQ_THRESHOLD",
+            "definition_head_quote": "“Acquisition Transaction” means",
+            "limb_quote": "would hold securities representing more than 15% of the total outstanding equity securities of the Company (by vote or economic interests) after giving effect to the consummation of such transaction",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Acquisition Transaction",
+            "threshold_basis": "EQUITY_SECURITIES",
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "ACQ_THRESHOLD",
+            "threshold_basis": "EQUITY_SECURITIES"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bf8935b3864a7b69d4cd1766fe6ca9d05d0acffe729b839a4678d97a7d0f3ad0",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "6de90a3d14bb0975c20fe420b9a4ce0e58312323aeae4fef1b1886709757dd5b",
+              "document_ordinal": 0,
+              "absolute_start": 1218,
+              "absolute_end": 1253,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1ef197ee359d648ac386639753021e5eca1708ea1b1f1824fc4f165cfc0cd9c6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c03723aa3e6b914941015ae3e6dfbe5bfb0ccae040daad1c3eb689b3527d2fa6",
+              "document_ordinal": 0,
+              "absolute_start": 2985,
+              "absolute_end": 3183,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4f97e4e8d69198fc8cc975f1e9f80dcb6e1279a9b02b75f5888c7cb74bea2410"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ss)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d5f2756dbffeb8703f5bdce5b395302bd98bc23ae41d263c2143dcbbd89af1f6",
+          "claim_occurrence_id": "784c6d58034aa98fea428d4d87d3d74825353a83e8ce493c61cdc02bfa5bbb05",
+          "subject_occurrence_id": "71d9b5def1968bb026c0f11da0f4767749c52750e885c0671b28941c7bfaea0c",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the actual knowledge",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "5332037265fa613e18323ccad810865b1a23b42bb3b458b126fe25641d0bbaf6",
+            "8d81b3bfe66be114d02ab002683e8cb9d65227e7ce7d1f1101b96cf9ae4fdb46"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+            "limb_quote": "the actual knowledge",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": "Knowledge",
+            "standard_code": "ACTUAL",
+            "source_code": null,
+            "knowledge_party": "TARGET",
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "standard_code": "ACTUAL",
+            "knowledge_party": "TARGET"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "5332037265fa613e18323ccad810865b1a23b42bb3b458b126fe25641d0bbaf6",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+              "document_ordinal": 0,
+              "absolute_start": 22509,
+              "absolute_end": 22586,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8d81b3bfe66be114d02ab002683e8cb9d65227e7ce7d1f1101b96cf9ae4fdb46",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "2bdac49102b94c50e9ef8d861f8f9756db4a2ef4dd83a39cace625372f8b9c1f",
+              "document_ordinal": 0,
+              "absolute_start": 22587,
+              "absolute_end": 22607,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "47eeee41de9fd343f1925e115042ddeed3c855de202b4846db6e65bf22699676"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ss)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3c42f410bc738fe92406e32b1b10ed6d4f0046605e428fcf414ca4bf6257b845",
+          "claim_occurrence_id": "51d8b90c133eff0bb13f82ea20ffbd920f89f975c376dac7db8957fea61afccb",
+          "subject_occurrence_id": "dde6992cd1f4c98e28f03309ead8e821fa4edd4508b66adfc279a7b88104883e",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "880a09085b9427b1854dad72e6631c55950ec8d5cd65bc18dbf42dc8a46fb812",
+            "29dc631ee30e33ef6454ffd25b8341296808972f4dc026eae465536b6178bcb6"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+            "limb_quote": "after reasonable inquiry of those employees who would reasonably be expected to have actual knowledge of the matter in question",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": "Knowledge",
+            "standard_code": "AFTER_INQUIRY",
+            "source_code": null,
+            "knowledge_party": "TARGET",
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "standard_code": "AFTER_INQUIRY",
+            "knowledge_party": "TARGET"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "880a09085b9427b1854dad72e6631c55950ec8d5cd65bc18dbf42dc8a46fb812",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+              "document_ordinal": 0,
+              "absolute_start": 22509,
+              "absolute_end": 22586,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "29dc631ee30e33ef6454ffd25b8341296808972f4dc026eae465536b6178bcb6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "eee23b9be77305c741331d6bb684006765195c5f4b38fbbab2c84fb50a31106e",
+              "document_ordinal": 0,
+              "absolute_start": 22758,
+              "absolute_end": 22885,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b017ecb31c3a4a6a75ab69bc0e168dad67427f0cc504d46347c642dea35affa7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ss)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "edd5f7e0c638ddb42ad8dfb06346a9cd9a3bbbd5d80fd0de43e45c81825ec527",
+          "claim_occurrence_id": "daadbaec4677e60f253b3f9d8518fc423d6dca0a6b8c3e35595de3570a22b71d",
+          "subject_occurrence_id": "e846eda867e81e969d2b45b4fe2742554cd3c643b51a31aa0a09928d2e05cb5b",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f383aafc99506093cac9f24509ed0af98dbdfc48e5c44d6e86f21d84510de4fe",
+            "8ee97a56abb3a0a0b4a858d899f3ab51fcfec342cc27356995f2d92265401672"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+            "definition_head_quote": "“Knowledge” of the Company, with respect to any matter in question, means",
+            "limb_quote": "(i) the Company’s Chief Financial Officer or General Counsel, (ii) Director, Tax or (iii) Senior Vice President, Global Controller",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": "Knowledge",
+            "standard_code": null,
+            "source_code": "TITLE_CLASS",
+            "knowledge_party": "TARGET",
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+            "source_code": "TITLE_CLASS",
+            "knowledge_party": "TARGET"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f383aafc99506093cac9f24509ed0af98dbdfc48e5c44d6e86f21d84510de4fe",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "86c1f6b11ef6f42c1bbe4cbdbdeeb8d4b8505cd77c7d5b31748ae79c8a69e8a9",
+              "document_ordinal": 0,
+              "absolute_start": 22509,
+              "absolute_end": 22586,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8ee97a56abb3a0a0b4a858d899f3ab51fcfec342cc27356995f2d92265401672",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1223a90f831332ae3dae7c4867eeb5a25d9740f943acc60c9b58b9d438f46319",
+              "document_ordinal": 0,
+              "absolute_start": 22611,
+              "absolute_end": 22743,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6789720fdfb013dc0de9fa74745290b02ffafe88a2404594b5107d0a913ff655"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ttt)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3810166a8ee31f6280ffa2e644efb023e689fa41ab3e83ad716dd1e1c42ee086",
+          "claim_occurrence_id": "e60d401fcd91f68556a9b61c2a20c26ca8d15b5c1ca6666f82ee6c0916082af5",
+          "subject_occurrence_id": "87e16772abaf418f2329f4867f9329e059d6a9cf97109e8b7805a28c2f37ec56",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "de744e97b720af6ac22d041c87a09de84c84c5e264c496207fd6c0cbfad93203",
+            "46c03b2b56b7ed2f5a5d45bf231b90be8ffeeba8a2533bf651fb5e74a505c4c2"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "SUPERIOR_QUALIFIER",
+            "definition_head_quote": "“Superior Proposal” means",
+            "limb_quote": "is reasonably likely to be consummated in accordance with its terms, taking into account all legal, regulatory and financing aspects of the proposal (including certainty of closing) and the identity of the Person making the proposal and other aspects of the Acquisition Proposal that the Company Board deems relevant",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": "Superior Proposal",
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Superior Proposal",
+            "threshold_basis": null,
+            "qualifier_code": "CONSUMMATION_LIKELIHOOD",
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SUPERIOR_QUALIFIER",
+            "qualifier_code": "CONSUMMATION_LIKELIHOOD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "de744e97b720af6ac22d041c87a09de84c84c5e264c496207fd6c0cbfad93203",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+              "document_ordinal": 0,
+              "absolute_start": 46401,
+              "absolute_end": 46430,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "46c03b2b56b7ed2f5a5d45bf231b90be8ffeeba8a2533bf651fb5e74a505c4c2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c2dcff870991a9936ffd978fc11d7dc978f3ff41a9dc432074940a103197f93c",
+              "document_ordinal": 0,
+              "absolute_start": 46743,
+              "absolute_end": 47059,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "df672457ce77313dfea55be5655a06a4f666ba950c9c9fcdb2da85421f76ad07"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ttt)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4a0b221e8ad3db2a43cbc4dc5849c52c04ebd855c80b63b796458d203de7afe2",
+          "claim_occurrence_id": "aba7e955b20c44a1015d51d10285476446c0e8d7273a375b9b5d7e37619fe91d",
+          "subject_occurrence_id": "bf115b399f63bc3216ceb8b9f26f65f9da9c8a43bef7c27ca7ba93428e2f7d71",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bfb0c7c5ff81c4ee9ca7fc8d22d8d31a7f614a7446452d1df4210c786d82332e",
+            "4d6c6c32b46b7d5b901f58dea88651c6ff9c82dcc76646b02bed8898f6e222f0"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "SUPERIOR_QUALIFIER",
+            "definition_head_quote": "“Superior Proposal” means",
+            "limb_quote": "if consummated, would be more favorable, from a financial point of view, to the Company Stockholders (in their capacity as such) than the Merger",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": "Superior Proposal",
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": "Superior Proposal",
+            "threshold_basis": null,
+            "qualifier_code": "FINANCIAL_FAVORABILITY",
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "SUPERIOR_QUALIFIER",
+            "qualifier_code": "FINANCIAL_FAVORABILITY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bfb0c7c5ff81c4ee9ca7fc8d22d8d31a7f614a7446452d1df4210c786d82332e",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+              "document_ordinal": 0,
+              "absolute_start": 46401,
+              "absolute_end": 46430,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "4d6c6c32b46b7d5b901f58dea88651c6ff9c82dcc76646b02bed8898f6e222f0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "06f42e202d248c78a25b055378801dcd0ac4ca78ef3f2b1635e4b3c20156e0c7",
+              "document_ordinal": 0,
+              "absolute_start": 47069,
+              "absolute_end": 47213,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5834480da0885ba38ab615c008f6e990c52a5720fcb2283ac035a47fbeec012a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(ttt)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f86d2c9197545d0b9b5cf6f1768abffbfc3053eee141df2c3d0e965f6bcaeefd",
+          "claim_occurrence_id": "533f1900c53344889db3fc69658834ab2f34365d2f397adf568535431963c983",
+          "subject_occurrence_id": "c79cad88efeef82cdb3f98a604434f76c688e8b63dbd34fb1ead39ddb4ff0f15",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "29367d1036e50a434517ee77b69be1d647ade89fd902952af4c0a553e012ca70",
+            "d60a31107e208825f032b93f40250db4f37ef7971eea20874a42e15f99ab05c0"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "THRESHOLD_SUBSTITUTION",
+            "definition_head_quote": "“Superior Proposal” means",
+            "limb_quote": "For purposes of the reference to an “Acquisition Proposal” in this definition, all references to “15%” in the definition of “Acquisition Transaction” will be deemed to be references to “50%.”",
+            "proposal_term_ref": "Acquisition Proposal",
+            "superior_term_ref": "Superior Proposal",
+            "substitution_from_percent": "15%",
+            "substituted_term_ref": "Acquisition Transaction",
+            "host_term_ref": "Superior Proposal",
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "THRESHOLD_SUBSTITUTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "29367d1036e50a434517ee77b69be1d647ade89fd902952af4c0a553e012ca70",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "ec2144b66f7fa7c25583acf2c1fbce69f6b4ee50dec6c280d36eefa1974d4033",
+              "document_ordinal": 0,
+              "absolute_start": 46401,
+              "absolute_end": 46430,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d60a31107e208825f032b93f40250db4f37ef7971eea20874a42e15f99ab05c0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "91d810a31505c1a010222c4ea13563bdf77055ee0b86f50021a9ba85c07e9980",
+              "document_ordinal": 0,
+              "absolute_start": 47347,
+              "absolute_end": 47554,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "97ed775e046151cc494fe11352d50e76d2063f13b5cce19e672e7994388ebc77"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e3e4487ebd9d7d036e662f30c59d1ef694820b44e6225be460c1205bcd7108c5",
+          "claim_occurrence_id": "32d9ae84b9634411193178e9bfdb3f7dc52d85bac88b6ed0593e0f161cfc15fa",
+          "subject_occurrence_id": "a6d82001f526be0bdc4ad89065cdb49ec57590c2cdc0c3ed624d2402044f50ed",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2f254f9cf64bac0a34618d8e065d0aa89df5d5801b4f71d274d093ec06f96c75"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "“Ordinary Course License”",
+              "normalized_term_identity": "ordinary course license",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Ordinary Course License” means",
+              "definition_body_quote": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "“Ordinary Course License”",
+              "normalized_term_identity": "ordinary course license",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Ordinary Course License” means",
+              "definition_body_quote": "any of the following: (i) a non-exclusive licenses for commercially available off-the-shelf Software; (ii) non-disclosure agreements entered into in the ordinary course of business that do not include licenses to Intellectual Property rights; (iii) employee, contractor and consultant invention assignment agreements entered into in the ordinary course of business; (iv) non-exclusive licenses entered into in the ordinary course of business that are incidental to the transaction contemplated in such license, the commercial purpose of which is primarily for something other than such license; (v) non-exclusive licenses or covenants not to assert Intellectual Property granted to customers, service providers, suppliers, distributors, original equipment manufacturers, resellers and value-added resellers in connection with the use, implementation, reproduction, sale or distribution of any of such grantor’s products in the ordinary course of business; (vi) non-exclusive rights to use or otherwise exploit Intellectual Property of any member of the Company Group for the purposes of promoting such member’s products or services; and (vii) permission or rights to identify a member of the Company Group as a party to a business relationship with such third party, such as a customer or reseller of or supplier to such third party.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2f254f9cf64bac0a34618d8e065d0aa89df5d5801b4f71d274d093ec06f96c75",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3488efc60e58b1c014b9d80ecf3805bdd77c49bdbab97699ade5dd9361351a44",
+              "document_ordinal": 0,
+              "absolute_start": 31318,
+              "absolute_end": 32655,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "09f49eb01443972c4c2e86c30d03cd9e944131dcca255e45bb728b5ebeb53a7b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "a5305100fae541e6c0b178d991a8d83d07a17419f2400b2c069d369770670dfb"
+        }
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "1.1",
+        "normalized_citation": "1.1",
+        "derived_citation": "1.1(uuu)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0eef3fcd67dcdcd1ab96a4383662d144771f953afb9c731fe0c06c621cacd42d",
+          "claim_occurrence_id": "9cd8225840fef83c1c391f4547b0a0488e09ff3bc112c160b054a226fbc7f808",
+          "subject_occurrence_id": "da108ae93e4c509eab7daec28c51f623ca46c852ad51820c161b6cc44e9f44e2",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c2047fe3a20b64fd31abfe9ac0433361d0e54d8f3542c742c5c9d32cab877362",
+            "a1f6445b4ca032b22fb7dac099cbd0fd615c9819ed42a3341785ca3709b9434a"
+          ],
+          "attributes": {
+            "section_reference": "1.1",
+            "assertion_kind": "RECORDED_DEFINITION",
+            "defined_term_ref": "“Tax”",
+            "definition_head_quote": "“Tax” means",
+            "definition_envelope": {
+              "defined_term": "“Tax”",
+              "normalized_term_identity": "tax",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Tax” means",
+              "definition_body_quote": "any United States federal, state, local and non-United States taxes, assessments and similar governmental charges and impositions in the nature of taxes (including taxes based upon or measured by gross receipts, income, profits, sales, use and occupation and value added, ad valorem, transfer, franchise, withholding, payroll, employment, excise and property taxes), together with all interest, penalties and additions imposed with respect to such amounts imposed by any Governmental Authority.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECORDED_DEFINITION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c2047fe3a20b64fd31abfe9ac0433361d0e54d8f3542c742c5c9d32cab877362",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "c9d89c524e581d45816ec640f4b2cc40abedcc6f0f3a0fa82ee2202fe4ef9df8",
+              "document_ordinal": 0,
+              "absolute_start": 47561,
+              "absolute_end": 47576,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a1f6445b4ca032b22fb7dac099cbd0fd615c9819ed42a3341785ca3709b9434a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f13b33c74fbb41c5a91dda7ed0fefee25ae72c90a9e90555abe4d669a7a9f596",
+              "document_ordinal": 0,
+              "absolute_start": 47577,
+              "absolute_end": 48071,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e9a0357300a5521e657ca4064a02761ce7637b792d495e42a52beae080f296af"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "4e023c37a1182ae3e8952a4fd540bf00658e315f1acfdd0ca6fdff1836e3f84e",
+          "producer_receipt_id": "3f249b43812ad28c63a7dd7df1d1e854d74b3f4a655542522b943898b10a924f",
+          "governed_scope_digest": "69fa7566344c959e935e85c71eeff0d8b936dd962017af0df7f86f7e6317ddbd",
+          "extraction_provenance_id": "2471337228bf92ac5c6bb107620026a312c4c94d529430fbb0a34e85055ce78e"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "1.2",
+      "reason": "DEFINITION_ENVELOPE_TERM_UNVERIFIED",
+      "quote_preview": "Intervening Event"
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "1.1",
+      "source_byte_length": 50736,
+      "covered_byte_length": 3573,
+      "coverage_share": 0.07042336802270577,
+      "marker_counts": {
+        "as of": 10,
+        "except": 2,
+        "knowledge": 5,
+        "material": 40,
+        "total": 57
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.07042336802270577,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 57,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "1.2",
+      "source_byte_length": 3483,
+      "covered_byte_length": 0,
+      "coverage_share": 0,
+      "marker_counts": {
+        "as of": 0,
+        "except": 1,
+        "knowledge": 0,
+        "material": 2,
+        "total": 3
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 3,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "1.1",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 149,
+          "end": 152
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 247,
+          "end": 250
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 315,
+          "end": 319
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1059,
+          "end": 1062
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1214,
+          "end": 1217
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1365,
+          "end": 1368
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1485,
+          "end": 1488
+        },
+        {
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1696,
+          "end": 1699
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2309,
+          "end": 2313
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2439,
+          "end": 2442
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2714,
+          "end": 2719
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2949,
+          "end": 2952
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3189,
+          "end": 3192
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3423,
+          "end": 3426
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3576,
+          "end": 3580
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4120,
+          "end": 4123
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4466,
+          "end": 4469
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4752,
+          "end": 4756
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5025,
+          "end": 5029
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5052,
+          "end": 5055
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5333,
+          "end": 5336
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5472,
+          "end": 5475
+        },
+        {
+          "token": "(i)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5926,
+          "end": 5929
+        },
+        {
+          "token": "(j)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5982,
+          "end": 5985
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6051,
+          "end": 6054
+        },
+        {
+          "token": "(l)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6166,
+          "end": 6169
+        },
+        {
+          "token": "(m)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6282,
+          "end": 6285
+        },
+        {
+          "token": "(n)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6378,
+          "end": 6381
+        },
+        {
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6526,
+          "end": 6529
+        },
+        {
+          "token": "(p)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6615,
+          "end": 6618
+        },
+        {
+          "token": "(q)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6679,
+          "end": 6682
+        },
+        {
+          "token": "(r)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6820,
+          "end": 6823
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7629,
+          "end": 7632
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7796,
+          "end": 7800
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8358,
+          "end": 8363
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8460,
+          "end": 8464
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8590,
+          "end": 8593
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8880,
+          "end": 8884
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9227,
+          "end": 9232
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9496,
+          "end": 9502
+        },
+        {
+          "token": "(ix)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9987,
+          "end": 9991
+        },
+        {
+          "token": "(x)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10304,
+          "end": 10307
+        },
+        {
+          "token": "(xi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10470,
+          "end": 10474
+        },
+        {
+          "token": "(xii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10646,
+          "end": 10651
+        },
+        {
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10979,
+          "end": 10985
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11046,
+          "end": 11049
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11199,
+          "end": 11202
+        },
+        {
+          "token": "(xiv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11590,
+          "end": 11595
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11710,
+          "end": 11713
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11715,
+          "end": 11719
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11721,
+          "end": 11725
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11727,
+          "end": 11732
+        },
+        {
+          "token": "(xi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11737,
+          "end": 11741
+        },
+        {
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12121,
+          "end": 12124
+        },
+        {
+          "token": "(t)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12226,
+          "end": 12229
+        },
+        {
+          "token": "(u)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12434,
+          "end": 12437
+        },
+        {
+          "token": "(v)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12530,
+          "end": 12533
+        },
+        {
+          "token": "(w)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12669,
+          "end": 12672
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12773,
+          "end": 12776
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 12861,
+          "end": 12864
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12946,
+          "end": 12949
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13564,
+          "end": 13568
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13847,
+          "end": 13852
+        },
+        {
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 14703,
+          "end": 14706
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15599,
+          "end": 15602
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15697,
+          "end": 15701
+        },
+        {
+          "token": "(cc)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 15836,
+          "end": 15840
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16102,
+          "end": 16105
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16156,
+          "end": 16160
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16858,
+          "end": 16863
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18475,
+          "end": 18479
+        },
+        {
+          "token": "(mm)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18805,
+          "end": 18809
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 19848,
+          "end": 19851
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20140,
+          "end": 20144
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20244,
+          "end": 20249
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20419,
+          "end": 20423
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20468,
+          "end": 20471
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20654,
+          "end": 20658
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 20725,
+          "end": 20730
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21011,
+          "end": 21017
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21201,
+          "end": 21204
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21269,
+          "end": 21272
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21273,
+          "end": 21279
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21364,
+          "end": 21367
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21592,
+          "end": 21595
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21765,
+          "end": 21769
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 21835,
+          "end": 21840
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22138,
+          "end": 22142
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22330,
+          "end": 22333
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22358,
+          "end": 22362
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22611,
+          "end": 22614
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22675,
+          "end": 22679
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 22697,
+          "end": 22702
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23289,
+          "end": 23292
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23320,
+          "end": 23323
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23417,
+          "end": 23421
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23692,
+          "end": 23696
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 23832,
+          "end": 23835
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24205,
+          "end": 24208
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 24835,
+          "end": 24838
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27399,
+          "end": 27402
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27454,
+          "end": 27457
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27570,
+          "end": 27573
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27577,
+          "end": 27582
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 27655,
+          "end": 27659
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28014,
+          "end": 28019
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28384,
+          "end": 28388
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28445,
+          "end": 28448
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28625,
+          "end": 28628
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 28765,
+          "end": 28768
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29240,
+          "end": 29243
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29257,
+          "end": 29260
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29463,
+          "end": 29466
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29639,
+          "end": 29643
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29963,
+          "end": 29968
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30101,
+          "end": 30107
+        },
+        {
+          "token": "(ix)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30119,
+          "end": 30123
+        },
+        {
+          "token": "(x)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30192,
+          "end": 30195
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30309,
+          "end": 30312
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30448,
+          "end": 30451
+        },
+        {
+          "token": "(xi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30602,
+          "end": 30606
+        },
+        {
+          "token": "(xii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30746,
+          "end": 30751
+        },
+        {
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 30793,
+          "end": 30799
+        },
+        {
+          "token": "(xx)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31193,
+          "end": 31197
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31340,
+          "end": 31343
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31420,
+          "end": 31424
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31561,
+          "end": 31566
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31684,
+          "end": 31688
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 31913,
+          "end": 31916
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32276,
+          "end": 32280
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32459,
+          "end": 32464
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 32946,
+          "end": 32949
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33166,
+          "end": 33170
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33228,
+          "end": 33233
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33515,
+          "end": 33518
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 33771,
+          "end": 33775
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34089,
+          "end": 34094
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34247,
+          "end": 34251
+        },
+        {
+          "token": "(v)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34344,
+          "end": 34347
+        },
+        {
+          "token": "(vi)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34402,
+          "end": 34406
+        },
+        {
+          "token": "(vii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34559,
+          "end": 34564
+        },
+        {
+          "token": "(viii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 34781,
+          "end": 34787
+        },
+        {
+          "token": "(ix)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 35215,
+          "end": 35219
+        },
+        {
+          "token": "(x)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 35449,
+          "end": 35452
+        },
+        {
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 35630,
+          "end": 35633
+        },
+        {
+          "token": "(xii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 35879,
+          "end": 35884
+        },
+        {
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 36152,
+          "end": 36158
+        },
+        {
+          "token": "(ccc)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 36244,
+          "end": 36249
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 37575,
+          "end": 37578
+        },
+        {
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 38079,
+          "end": 38082
+        },
+        {
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 38168,
+          "end": 38171
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 38602,
+          "end": 38606
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 38606,
+          "end": 38609
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 39140,
+          "end": 39143
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 39854,
+          "end": 39857
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 39862,
+          "end": 39866
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 40585,
+          "end": 40588
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 40931,
+          "end": 40936
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41279,
+          "end": 41282
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41550,
+          "end": 41554
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41626,
+          "end": 41631
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41825,
+          "end": 41828
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41832,
+          "end": 41836
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 41841,
+          "end": 41846
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 42060,
+          "end": 42063
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 42158,
+          "end": 42162
+        },
+        {
+          "token": "(mmm)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 42377,
+          "end": 42382
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 42844,
+          "end": 42847
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 42951,
+          "end": 42954
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 43142,
+          "end": 43145
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 43282,
+          "end": 43286
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 43407,
+          "end": 43412
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 43490,
+          "end": 43494
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44072,
+          "end": 44075
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44269,
+          "end": 44273
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44484,
+          "end": 44487
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44491,
+          "end": 44495
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44529,
+          "end": 44532
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44651,
+          "end": 44654
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 44904,
+          "end": 44907
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 45208,
+          "end": 45212
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 45489,
+          "end": 45494
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 45820,
+          "end": 45824
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 48105,
+          "end": 48108
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 48800,
+          "end": 48804
+        },
+        {
+          "token": "(xxx)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 49886,
+          "end": 49891
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 158,
+        "section_paragraph_marker": 25,
+        "cross_reference_marker": 3
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 247,
+          "end": 250
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 315,
+          "end": 319
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1365,
+          "end": 1368
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1485,
+          "end": 1488
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "start": 1696,
+          "end": 1699
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2309,
+          "end": 2313
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2439,
+          "end": 2442
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2714,
+          "end": 2719
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2949,
+          "end": 2952
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3189,
+          "end": 3192
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 3189,
+          "end": 3192
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3423,
+          "end": 3426
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3576,
+          "end": 3580
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4466,
+          "end": 4469
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4752,
+          "end": 4756
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 5025,
+          "end": 5029
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 7629,
+          "end": 7632
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 7796,
+          "end": 7800
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 8358,
+          "end": 8363
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 8460,
+          "end": 8464
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 8590,
+          "end": 8593
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 8880,
+          "end": 8884
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 9227,
+          "end": 9232
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(viii)",
+          "family": "ROMAN",
+          "start": 9496,
+          "end": 9502
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ix)",
+          "family": "ROMAN",
+          "start": 9987,
+          "end": 9991
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ROMAN",
+          "start": 10304,
+          "end": 10307
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xi)",
+          "family": "ROMAN",
+          "start": 10470,
+          "end": 10474
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xii)",
+          "family": "ROMAN",
+          "start": 10646,
+          "end": 10651
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "start": 10979,
+          "end": 10985
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 11046,
+          "end": 11049
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 11199,
+          "end": 11202
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xiv)",
+          "family": "ROMAN",
+          "start": 11590,
+          "end": 11595
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 11710,
+          "end": 11713
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 11715,
+          "end": 11719
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 11721,
+          "end": 11725
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 11727,
+          "end": 11732
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xi)",
+          "family": "ROMAN",
+          "start": 11737,
+          "end": 11741
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 12946,
+          "end": 12949
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 13564,
+          "end": 13568
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 13847,
+          "end": 13852
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 15599,
+          "end": 15602
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 15697,
+          "end": 15701
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(cc)",
+          "family": "ROMAN",
+          "start": 15836,
+          "end": 15840
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 16102,
+          "end": 16105
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 16156,
+          "end": 16160
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 16858,
+          "end": 16863
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 18475,
+          "end": 18479
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(mm)",
+          "family": "ROMAN",
+          "start": 18805,
+          "end": 18809
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 19848,
+          "end": 19851
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 20140,
+          "end": 20144
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 20244,
+          "end": 20249
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 20419,
+          "end": 20423
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 20468,
+          "end": 20471
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 20654,
+          "end": 20658
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 20725,
+          "end": 20730
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(viii)",
+          "family": "ROMAN",
+          "start": 21011,
+          "end": 21017
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 21201,
+          "end": 21204
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 21269,
+          "end": 21272
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(viii)",
+          "family": "ROMAN",
+          "start": 21273,
+          "end": 21279
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 21364,
+          "end": 21367
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 21592,
+          "end": 21595
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 21765,
+          "end": 21769
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 21835,
+          "end": 21840
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 22138,
+          "end": 22142
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 22330,
+          "end": 22333
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 22358,
+          "end": 22362
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 22611,
+          "end": 22614
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 22675,
+          "end": 22679
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 22697,
+          "end": 22702
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 23289,
+          "end": 23292
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 23320,
+          "end": 23323
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 23417,
+          "end": 23421
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 23692,
+          "end": 23696
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 23832,
+          "end": 23835
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 24205,
+          "end": 24208
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 24835,
+          "end": 24838
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 27399,
+          "end": 27402
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 27454,
+          "end": 27457
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 27570,
+          "end": 27573
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 27577,
+          "end": 27582
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 27655,
+          "end": 27659
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 28014,
+          "end": 28019
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 28384,
+          "end": 28388
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 28445,
+          "end": 28448
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 28625,
+          "end": 28628
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 28765,
+          "end": 28768
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 29240,
+          "end": 29243
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 29240,
+          "end": 29243
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 29257,
+          "end": 29260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 29463,
+          "end": 29466
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 29639,
+          "end": 29643
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 29963,
+          "end": 29968
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(viii)",
+          "family": "ROMAN",
+          "start": 30101,
+          "end": 30107
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ix)",
+          "family": "ROMAN",
+          "start": 30119,
+          "end": 30123
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ROMAN",
+          "start": 30192,
+          "end": 30195
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 30309,
+          "end": 30312
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 30448,
+          "end": 30451
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xi)",
+          "family": "ROMAN",
+          "start": 30602,
+          "end": 30606
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xii)",
+          "family": "ROMAN",
+          "start": 30746,
+          "end": 30751
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "start": 30793,
+          "end": 30799
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xx)",
+          "family": "ROMAN",
+          "start": 31193,
+          "end": 31197
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 31340,
+          "end": 31343
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 31420,
+          "end": 31424
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 31561,
+          "end": 31566
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 31684,
+          "end": 31688
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 31913,
+          "end": 31916
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 32276,
+          "end": 32280
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 32459,
+          "end": 32464
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 32946,
+          "end": 32949
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 33166,
+          "end": 33170
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 33228,
+          "end": 33233
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 33515,
+          "end": 33518
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 33771,
+          "end": 33775
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 34089,
+          "end": 34094
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 34247,
+          "end": 34251
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "ROMAN",
+          "start": 34344,
+          "end": 34347
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vi)",
+          "family": "ROMAN",
+          "start": 34402,
+          "end": 34406
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(vii)",
+          "family": "ROMAN",
+          "start": 34559,
+          "end": 34564
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(viii)",
+          "family": "ROMAN",
+          "start": 34781,
+          "end": 34787
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ix)",
+          "family": "ROMAN",
+          "start": 35215,
+          "end": 35219
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ROMAN",
+          "start": 35449,
+          "end": 35452
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 35630,
+          "end": 35633
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 35630,
+          "end": 35633
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xii)",
+          "family": "ROMAN",
+          "start": 35879,
+          "end": 35884
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xiii)",
+          "family": "ROMAN",
+          "start": 36152,
+          "end": 36158
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ccc)",
+          "family": "ROMAN",
+          "start": 36244,
+          "end": 36249
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 37575,
+          "end": 37578
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "start": 38079,
+          "end": 38082
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(s)",
+          "family": "ALPHA_LOWER",
+          "start": 38168,
+          "end": 38171
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 38602,
+          "end": 38606
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 38606,
+          "end": 38609
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 39140,
+          "end": 39143
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 39854,
+          "end": 39857
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 39862,
+          "end": 39866
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 40585,
+          "end": 40588
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 40931,
+          "end": 40936
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 41279,
+          "end": 41282
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 41550,
+          "end": 41554
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 41626,
+          "end": 41631
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 41825,
+          "end": 41828
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 41832,
+          "end": 41836
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 41841,
+          "end": 41846
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 42060,
+          "end": 42063
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 42158,
+          "end": 42162
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(mmm)",
+          "family": "ROMAN",
+          "start": 42377,
+          "end": 42382
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 42844,
+          "end": 42847
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 42951,
+          "end": 42954
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 43142,
+          "end": 43145
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 43282,
+          "end": 43286
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 43407,
+          "end": 43412
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 43490,
+          "end": 43494
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 44072,
+          "end": 44075
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 44269,
+          "end": 44273
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 44484,
+          "end": 44487
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 44491,
+          "end": 44495
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 44529,
+          "end": 44532
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 44651,
+          "end": 44654
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 44904,
+          "end": 44907
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 45208,
+          "end": 45212
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 45489,
+          "end": 45494
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 45820,
+          "end": 45824
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 48105,
+          "end": 48108
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 48800,
+          "end": 48804
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(xxx)",
+          "family": "ROMAN",
+          "start": 49886,
+          "end": 49891
+        }
+      ],
+      "disagreement_count": 164
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "1.2",
+      "markers_found": [
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 249,
+          "end": 252
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 290,
+          "end": 293
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 331,
+          "end": 334
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 360,
+          "end": 363
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 430,
+          "end": 433
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 491,
+          "end": 494
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 512,
+          "end": 515
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 515,
+          "end": 518
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 550,
+          "end": 553
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 581,
+          "end": 584
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 584,
+          "end": 587
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 631,
+          "end": 634
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 646,
+          "end": 649
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 734,
+          "end": 737
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 766,
+          "end": 769
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 779,
+          "end": 782
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 815,
+          "end": 818
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 858,
+          "end": 861
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 861,
+          "end": 864
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 923,
+          "end": 926
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 926,
+          "end": 930
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 956,
+          "end": 959
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 987,
+          "end": 990
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1020,
+          "end": 1023
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1053,
+          "end": 1056
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1078,
+          "end": 1081
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1081,
+          "end": 1085
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1132,
+          "end": 1135
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1163,
+          "end": 1166
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1166,
+          "end": 1169
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1236,
+          "end": 1239
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1258,
+          "end": 1261
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1289,
+          "end": 1292
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1312,
+          "end": 1315
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1346,
+          "end": 1349
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1395,
+          "end": 1398
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1424,
+          "end": 1427
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1441,
+          "end": 1444
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1488,
+          "end": 1491
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1491,
+          "end": 1494
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1545,
+          "end": 1548
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1548,
+          "end": 1551
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1572,
+          "end": 1575
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1575,
+          "end": 1578
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1609,
+          "end": 1612
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1612,
+          "end": 1615
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1659,
+          "end": 1662
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1723,
+          "end": 1726
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1748,
+          "end": 1751
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1772,
+          "end": 1775
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1795,
+          "end": 1798
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1817,
+          "end": 1820
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1835,
+          "end": 1838
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1872,
+          "end": 1875
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1933,
+          "end": 1936
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1993,
+          "end": 1996
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2033,
+          "end": 2036
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2063,
+          "end": 2066
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2116,
+          "end": 2119
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2119,
+          "end": 2122
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2133,
+          "end": 2136
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2162,
+          "end": 2165
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2222,
+          "end": 2225
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2225,
+          "end": 2229
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2257,
+          "end": 2260
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2301,
+          "end": 2304
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2399,
+          "end": 2402
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2402,
+          "end": 2406
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2444,
+          "end": 2447
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2447,
+          "end": 2451
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2484,
+          "end": 2487
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2487,
+          "end": 2491
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2531,
+          "end": 2534
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2534,
+          "end": 2538
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2564,
+          "end": 2567
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2567,
+          "end": 2571
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2585,
+          "end": 2588
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2612,
+          "end": 2615
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2615,
+          "end": 2620
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2638,
+          "end": 2641
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2641,
+          "end": 2645
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2663,
+          "end": 2666
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2690,
+          "end": 2693
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2718,
+          "end": 2721
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2753,
+          "end": 2756
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2766,
+          "end": 2769
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2791,
+          "end": 2794
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2850,
+          "end": 2853
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2979,
+          "end": 2982
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3053,
+          "end": 3056
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3075,
+          "end": 3078
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3155,
+          "end": 3158
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3185,
+          "end": 3188
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3201,
+          "end": 3204
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3225,
+          "end": 3228
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3251,
+          "end": 3254
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3254,
+          "end": 3257
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3309,
+          "end": 3312
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3383,
+          "end": 3386
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3407,
+          "end": 3410
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3429,
+          "end": 3432
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3459,
+          "end": 3462
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 104,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 249,
+          "end": 252
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 249,
+          "end": 252
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "start": 290,
+          "end": 293
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 331,
+          "end": 334
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 360,
+          "end": 363
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 360,
+          "end": 363
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 389,
+          "end": 392
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 430,
+          "end": 433
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 491,
+          "end": 494
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 512,
+          "end": 515
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 515,
+          "end": 518
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 550,
+          "end": 553
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 553,
+          "end": 556
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 581,
+          "end": 584
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 584,
+          "end": 587
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 631,
+          "end": 634
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 631,
+          "end": 634
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 646,
+          "end": 649
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 734,
+          "end": 737
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "start": 766,
+          "end": 769
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 779,
+          "end": 782
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 815,
+          "end": 818
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 858,
+          "end": 861
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 861,
+          "end": 864
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 923,
+          "end": 926
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 926,
+          "end": 930
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 956,
+          "end": 959
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 987,
+          "end": 990
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1020,
+          "end": 1023
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1053,
+          "end": 1056
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1053,
+          "end": 1056
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1078,
+          "end": 1081
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1081,
+          "end": 1085
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1132,
+          "end": 1135
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1132,
+          "end": 1135
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1163,
+          "end": 1166
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1166,
+          "end": 1169
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1236,
+          "end": 1239
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1236,
+          "end": 1239
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1258,
+          "end": 1261
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1258,
+          "end": 1261
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1289,
+          "end": 1292
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1312,
+          "end": 1315
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1346,
+          "end": 1349
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1395,
+          "end": 1398
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "start": 1424,
+          "end": 1427
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1441,
+          "end": 1444
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "start": 1488,
+          "end": 1491
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1491,
+          "end": 1494
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1545,
+          "end": 1548
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1548,
+          "end": 1551
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1572,
+          "end": 1575
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1575,
+          "end": 1578
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1609,
+          "end": 1612
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1612,
+          "end": 1615
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1659,
+          "end": 1662
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1723,
+          "end": 1726
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1748,
+          "end": 1751
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1772,
+          "end": 1775
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1795,
+          "end": 1798
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 1817,
+          "end": 1820
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1835,
+          "end": 1838
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1872,
+          "end": 1875
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1933,
+          "end": 1936
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 1993,
+          "end": 1996
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 2033,
+          "end": 2036
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2063,
+          "end": 2066
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2116,
+          "end": 2119
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2116,
+          "end": 2119
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2119,
+          "end": 2122
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2133,
+          "end": 2136
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2162,
+          "end": 2165
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 2222,
+          "end": 2225
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 2225,
+          "end": 2229
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2257,
+          "end": 2260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2257,
+          "end": 2260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2301,
+          "end": 2304
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2399,
+          "end": 2402
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2402,
+          "end": 2406
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2444,
+          "end": 2447
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2447,
+          "end": 2451
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2484,
+          "end": 2487
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2487,
+          "end": 2491
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2531,
+          "end": 2534
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2534,
+          "end": 2538
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2564,
+          "end": 2567
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2567,
+          "end": 2571
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2585,
+          "end": 2588
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2585,
+          "end": 2588
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 2612,
+          "end": 2615
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2615,
+          "end": 2620
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2638,
+          "end": 2641
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2638,
+          "end": 2641
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2641,
+          "end": 2645
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2663,
+          "end": 2666
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2663,
+          "end": 2666
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2690,
+          "end": 2693
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2690,
+          "end": 2693
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 2718,
+          "end": 2721
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "start": 2753,
+          "end": 2756
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 2766,
+          "end": 2769
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 2791,
+          "end": 2794
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "start": 2850,
+          "end": 2853
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2979,
+          "end": 2982
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 2979,
+          "end": 2982
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 3053,
+          "end": 3056
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 3075,
+          "end": 3078
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 3155,
+          "end": 3158
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 3185,
+          "end": 3188
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 3201,
+          "end": 3204
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 3225,
+          "end": 3228
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 3251,
+          "end": 3254
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 3254,
+          "end": 3257
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3309,
+          "end": 3312
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 3309,
+          "end": 3312
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 3383,
+          "end": 3386
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3407,
+          "end": 3410
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 3407,
+          "end": 3410
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 3429,
+          "end": 3432
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 3459,
+          "end": 3462
+        }
+      ],
+      "disagreement_count": 120
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 1,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 12,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "b89543c8c58e9b24a2f8e5313e37c88b39192ad1006bc469981df0c248fc7127"
+}

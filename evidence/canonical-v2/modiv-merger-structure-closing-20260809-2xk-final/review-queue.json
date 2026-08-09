@@ -1,0 +1,359 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "27a2949e2376df97444a8ece2d47e77f565cbd4c07e4d7d6b87e123008065db1",
+  "review_queue": [
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1018213224bebcb234187286ce566aadf2a2a6f38769a93e03f35211462e8010",
+      "closure_id": "8c99e430da0cbefe8543e42310a66d69f072f9c29dd3fa1c4802e010b6f45fca",
+      "normalised_phrase": "OpCo Merger Sub shall be merged with and into the Partnership and the separate existence of OpCo Merger Sub shall thereupon cease and (ii) the Partnership shall be the surviving entity in the OpCo Merger (the “Surviving OpCo”)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 169,
+          "end": 183,
+          "excerpt": "Agreement, and in accordance with the DLLCA and the MGCL, at the Company Merger Effective Time, the Company and Company Merger Sub shall consummate the Company Merger, pursua",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 755,
+          "end": 769,
+          "excerpt": "this Agreement, and in accordance with the DRULPA and DLLCA, at the OpCo Merger Effective Time, the Partnership and OpCo Merger Sub shall consummate the OpCo Merger, pursuant",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.1",
+      "generic_claim_key": "NATIVE_MERGER_TRANSACTION_STEP_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_TRANSACTION_STEP",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "94b937d1734b7d4ea0095f69b1db344f1c739fbd155e4db6aa83255b12a7fba5",
+      "closure_id": "91f13540bb1b97b60703ec5eb07c92d0acb147da5c884f071e08a912b1f40483",
+      "normalised_phrase": "the Company shall be merged with and into Company Merger Sub and the separate existence of the Company shall thereupon cease and (ii) Company Merger Sub shall survive the Company Merger (the “Surviving Company”)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 169,
+          "end": 183,
+          "excerpt": "Agreement, and in accordance with the DLLCA and the MGCL, at the Company Merger Effective Time, the Company and Company Merger Sub shall consummate the Company Merger, pursua",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "MERGER-STRUCTURE",
+          "pattern_id": "MERGER-STRUCTURE:PHRASE:EFFECTIVE_TIME",
+          "start": 755,
+          "end": 769,
+          "excerpt": "this Agreement, and in accordance with the DRULPA and DLLCA, at the OpCo Merger Effective Time, the Partnership and OpCo Merger Sub shall consummate the OpCo Merger, pursuant",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6a681c5b366867963b12a28d19e344b0c4fa0ca70a492de88870c7d3bb5ba4c1",
+      "closure_id": "7c17eb88ade01ba5ca5f0005ce1bd6d0369df718e1d4f95cfbfbf540326dbe0e",
+      "normalised_phrase": "Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "da561d5b1da5169f3665faa41fb73ca2886dd1c20c93ea48d393fa33d2921a0d",
+      "closure_id": "7ee0c400db8f2f2d597806f24e96314448cf4c962e1f60eb719a3f42ee0513ea",
+      "normalised_phrase": "The OpCo Merger shall become effective upon the filing of the OpCo Merger Certificate with the DSOS or on such other date and time as may be mutually agreed to by the Company and Parent and specified in the OpCo Merger Certificate in accordance with the DRULPA and DLLCA (the “OpCo Merger Effective Time”).",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8c67a189397d2062722a2cf8c61a35b265934440d5560628ce3872340898d4ee",
+      "closure_id": "89d567d1857c6949897c5a6259267738b0eac28c8fcb7cc9a7d7ec18290201da",
+      "normalised_phrase": "On the Closing Date, (i) Company Merger Sub and the Company shall duly execute and file articles of merger (the “Company Merger Articles of Merger”) with the State Department of Assessments and Taxation of Maryland (the “SDAT”) in accordance with the Laws of the State of Maryland, (ii) Company Merger Sub shall duly execute and file a certificate of merger (the “Company Merger Certificate”) with the Secretary of State of the State of Delaware (the “DSOS”) in accordance with the Laws of the State of Delaware and (iii) Company Merger Sub and the Company shall make any other filings, recordings or publications required to be made by the Company or Company Merger Sub under the MGCL and the DLLCA in connection with the Company Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "300bc91f3d97fdcbaaf81194e5539db45fa91c202b5c430af4e4e83e008e4ab6",
+      "closure_id": "bae8b522a9a9a4b52a58066d6e35ca966c9c7f71488cbc3ba3a11a461f57d9a4",
+      "normalised_phrase": "The Company Merger shall become effective upon the later of (i) the acceptance for record of the Company Merger Articles of Merger by the SDAT or (ii) the filing of the Company Merger Certificate with the DSOS, or on such other later date and time (not to exceed thirty (30) days after the Company Merger Articles of Merger are accepted for record by the SDAT) as may be mutually agreed to by the Company and Parent and specified in the Company Merger Articles of Merger and the Company Merger Certificate in accordance with the MGCL and the DLLCA (such date and time being hereinafter referred to as the “Company Merger Effective Time”).",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a7a667357246d3b03b7dc7650089422e27f0fc07d450f6e25bef2c12ebf0c736",
+      "closure_id": "e6adfd69f316ba1f0c8c7ea836916717d738696a15b6534891add014cf76a45d",
+      "normalised_phrase": "On the Closing Date, contemporaneously with, or immediately following, the Company Merger Effective Time, (i) the Partnership shall duly execute and file a certificate of merger (the “OpCo Merger Certificate”) with the DSOS in accordance with the Laws of the State of Delaware and (ii) the Company, the Surviving Company, Parent, Parent OpCo, OpCo Merger Sub and the Partnership shall make any other filings, recordings or publications required to be made by any of them under the DRULPA in connection with the OpCo Merger.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f7346f963b7df4ba4a91a19af18fa7b123c023997c21fa77a2449abc1e780825",
+      "closure_id": "3097537b28b194a218f896610d07e2103f72fbc075881b474908af90f64ec8df",
+      "normalised_phrase": "The date on which the Closing occurs is referred to herein as the “Closing Date”.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f130c261e67e8c102f17c8e65cd516f922806d0aee6ccd810eddd1c4987a751e",
+      "closure_id": "9b735448e8c1b9a6d32822297bdf6236af47ffe84b72d47da1f4330e21b28c31",
+      "normalised_phrase": "remotely by exchange of documents and signatures (or their electronic counterparts)",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.5",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c1eca19a3db15274ff2df36888590cf69f5c09f86d64216db3706c91e6e6cb2e",
+      "closure_id": "c370f7c8fa729021a31910ff772bb9b09c19976ee4283a72cefba157a975133e",
+      "normalised_phrase": "The closing of the Mergers (the “Closing”) shall take place (a) (i) on the third Business Day after satisfaction or, to the extent permitted by applicable Law, waiver of the conditions set forth in Article VI (other than those conditions that by their nature are to be satisfied or waived at the Closing, but subject to the satisfaction of such conditions or, to the extent permitted by applicable Law, waiver by the party entitled to waive such conditions) or (ii) if the day in which the aforementioned satisfaction or waiver occurs is within the last five (5) Business Days of any calendar year quarter, then Parent shall have the right but not the obligation to require that the Closing occur on the first (1st) Business Day of the calendar year quarter immediately following the quarter in which such satisfaction or waiver occurs, in all cases, subject to the ongoing satisfaction and waiver of all of the conditions set forth in Article VI at the Closing, in each case, remotely by exchange of documents and signatures (or their electronic counterparts) or (b) at such other time, date and place as may be mutually agreed to in writing by the parties hereto.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4cd1303c3f63d542445398914bff122383f1c3319a91e46d4e513f56dd52f8cb",
+      "closure_id": "94b270cea32b077af3529387713405a7c969220b4c56a645a7283833dfd8fb8d",
+      "normalised_phrase": "The OpCo Merger shall have the effects set forth in the DRULPA and DLLCA.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5fa1607364e9ce257f83548ed7a0bcfa1ef92916330cbdefc23621ff15c648dc",
+      "closure_id": "aad8e0fb6cc8f2251c1f171bd61bc827559ae90b5808c162948d6a819087af90",
+      "normalised_phrase": "The Company Merger shall have the effects set forth in the DLLCA and the MGCL.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0497b65e31236736e7981b86b6447171f5b4df2c168e3b0f0c87e26edfbd60cc",
+      "closure_id": "d424c21101223cf38dc11537a8f5d67160231ba601650d0a1e52a1d6fe14ad11",
+      "normalised_phrase": "Without limiting the generality of the foregoing, and subject thereto, at the OpCo Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Partnership and OpCo Merger Sub shall vest in the Surviving OpCo, and all debts, liabilities, duties and obligations of the Partnership and OpCo Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving OpCo.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.6",
+      "generic_claim_key": "NATIVE_MERGER_STRUCTURE_CANDIDATE",
+      "resolved_claim_definition_key": "MERGER_STRUCTURE_MECHANIC_PRESENT",
+      "concept_key": "MERGER-STRUCTURE",
+      "reasons": [],
+      "materiality_rank": 87,
+      "materiality_label": "MERGER_STRUCTURE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b556e6c2507fac0eb9ecfdac4cd921c24c317c3722488b06c6935e38c66dacc2",
+      "closure_id": "f5a1844ee3c6778c84aa0a573197cc866a86b6ff933c1540c537cfcf31a373af",
+      "normalised_phrase": "Without limiting the generality of the foregoing, and subject thereto, at the Company Merger Effective Time, all the properties, rights, privileges, powers and franchises of the Company and Company Merger Sub shall transfer to, vest in and devolve on the Surviving Company, and all debts, liabilities, duties and obligations of the Company and Company Merger Sub shall become the debts, liabilities, duties and obligations of the Surviving Company.",
+      "attachment_position": null,
+      "concept_family": "MERGER-STRUCTURE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a69b913a8143388c7ca31bca3afb4060616bd5addf6ddfca6860d33794efc2d7"
+}

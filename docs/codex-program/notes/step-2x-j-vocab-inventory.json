@@ -1,0 +1,1397 @@
+{
+  "generated_at": "2026-08-08T23:18:44.216Z",
+  "method": "require()-destructure/property from *taxonomy* modules; mention layers are secondary. V2_RESOLVER = candidate-resolution | *corroboration* | qualifier-kind-lexicon.",
+  "by_consumption": {
+    "MENTION_NO_REQUIRE": 8,
+    "V1_REQUIRE": 52,
+    "UNREFERENCED": 3,
+    "HELPER": 7,
+    "V2_RESOLVER_REQUIRE": 6,
+    "V2_SURFACE_REQUIRE": 1
+  },
+  "vocabulary_export_count": 67,
+  "helper_count": 7,
+  "external_count": 3,
+  "rows": [
+    {
+      "name": "ABSENCE_OF_CHANGES_EXCEPTION_CODES",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ABSENCE_OF_CHANGES_TYPES",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ABSENCE_OF_CHANGES_TYPE_META",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ANTITRUST_APPROVAL_CODES",
+      "kind": "vocabulary",
+      "code_count": 2,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/cond-enrichment.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 6,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ANTITRUST_CONTROL",
+      "kind": "vocabulary",
+      "code_count": 9,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js",
+        "tests/taxonomy-renamed-fields.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "APPLIES_TO_PARTY",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "APPRAISAL_RIGHTS_STATUS",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-appraisal-rights.js",
+        "tests/appraisal-rights-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 2,
+        "V2_RESOLVER": 1,
+        "V1_OR_OTHER": 2,
+        "SCRIPT": 1,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "ASSIGNMENT_PARENT_EXCEPTION",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 6
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ASSIGNMENT_PROVISO",
+      "kind": "vocabulary",
+      "code_count": 2,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 5,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "BIDDER_IDENTITY_REQUIREMENT",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-information-sharing.js",
+        "tests/information-sharing-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "BURDEN_BASELINE",
+      "kind": "vocabulary",
+      "code_count": 6,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 1,
+        "V1_OR_OTHER": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "BURDEN_COMMITMENT",
+      "kind": "vocabulary",
+      "code_count": 9,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js",
+        "tests/taxonomy-renamed-fields.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "V2_OTHER": 1,
+        "V2_RESOLVER": 1,
+        "SCRIPT": 1,
+        "TEST": 5
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "CLEAR_SKIES_FAMILY",
+      "kind": "vocabulary",
+      "code_count": 9,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "COMMON_EXCEPTION_CODES",
+      "kind": "vocabulary",
+      "code_count": 15,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "COMMON_EXCEPTION_META",
+      "kind": "vocabulary",
+      "code_count": 15,
+      "is_meta": true,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "COMP_ITEMS",
+      "kind": "vocabulary",
+      "code_count": 10,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "COMP_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 7,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 5
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "CONSENT_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 6,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "CONSULTATION_TIER",
+      "kind": "vocabulary",
+      "code_count": 6,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js",
+        "tests/taxonomy-renamed-fields.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "COPIES_SCOPE",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-information-sharing.js",
+        "tests/information-sharing-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "EFFORTS_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 7,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/ioc-efforts-standard.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 4,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ENGAGEMENT_NOTICE_TIMING",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-information-sharing.js",
+        "tests/information-sharing-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "EQUITY_INSTRUMENTS",
+      "kind": "vocabulary",
+      "code_count": 10,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/consideration-equity.js",
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 8,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "EQUITY_TREATMENT",
+      "kind": "vocabulary",
+      "code_count": 10,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 5
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "EXCEPTION_CODES",
+      "kind": "vocabulary",
+      "code_count": 23,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/edit-schema.js",
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 9,
+        "SCRIPT": 1,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "FORCE_THE_VOTE",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 4
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "GOVERNING_LAW",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "V2_OTHER": 3,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INFORMATION_SHARING_GRADE",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-information-sharing.js",
+        "tests/information-sharing-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INTEREST_RATE_BASIS",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INTERVENING_EVENT_EXCEPTION_CODES",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-intervening-event.js",
+        "tests/intervening-event-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 4,
+        "SCRIPT": 2,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INTERVENING_EVENT_EXCEPTION_META",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "tests/intervening-event-codebook.test.js"
+      ],
+      "mention_layers": {
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INTERVENING_EVENT_SCOPES",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "UNREFERENCED",
+      "require_files": [],
+      "mention_layers": {},
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "INTERVENING_EVENT_TYPE",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-intervening-event.js",
+        "tests/intervening-event-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_AFFIRMATIVE_SCOPE_CODES",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_AFFIRMATIVE_SCOPE_META",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js",
+        "tests/ioc-scope-pills.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_AFFIRMATIVE_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 7,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_AFFIRMATIVE_STANDARD_META",
+      "kind": "vocabulary",
+      "code_count": 7,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_CATEGORY_CODES",
+      "kind": "vocabulary",
+      "code_count": 14,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 8,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "IOC_CATEGORY_META",
+      "kind": "vocabulary",
+      "code_count": 14,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 3,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "KNOWLEDGE_PERSONS",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": false,
+      "consumption": "UNREFERENCED",
+      "require_files": [],
+      "mention_layers": {},
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "KNOWLEDGE_PERSON_META",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "KNOWLEDGE_QUALIFIER_CODES",
+      "kind": "vocabulary",
+      "code_count": 1,
+      "is_meta": false,
+      "consumption": "UNREFERENCED",
+      "require_files": [],
+      "mention_layers": {},
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "KNOWLEDGE_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 2,
+        "V1_OR_OTHER": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "KNOWLEDGE_STANDARD_META",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/edit-schema.js",
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 1,
+        "V1_OR_OTHER": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "LIST_TAXONOMY_KEYS",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "LITIGATION_OBLIGATION",
+      "kind": "vocabulary",
+      "code_count": 6,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 1,
+        "V2_RESOLVER": 1,
+        "V1_OR_OTHER": 1,
+        "TEST": 4
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "MAE_CARVEOUT_CODES",
+      "kind": "vocabulary",
+      "code_count": 27,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 9,
+        "V2_OTHER": 2,
+        "V2_RESOLVER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "MAE_CARVEOUT_META",
+      "kind": "vocabulary",
+      "code_count": 27,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 1,
+        "V1_OR_OTHER": 2,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "MATERIALITY_CODES",
+      "kind": "vocabulary",
+      "code_count": 13,
+      "is_meta": false,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/qualifier-kind-lexicon.js",
+        "lib/edit-schema.js",
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 6,
+        "V2_OTHER": 2,
+        "V2_RESOLVER": 2,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/canonical-v2/native-producer/qualifier-kind-lexicon.js"
+      ]
+    },
+    {
+      "name": "MATERIAL_CONTRACT_BUCKET_CODES",
+      "kind": "vocabulary",
+      "code_count": 29,
+      "is_meta": false,
+      "consumption": "V2_SURFACE_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/legacy-card-bridge.js",
+        "lib/canonical-v2/material-contracts-product-projection.js",
+        "lib/canonical-v2/native-producer/material-contracts-producer-prompt.js",
+        "lib/parser-v2/extract.js",
+        "tests/canonical-v2-legacy-card-bridge.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 9,
+        "V2_OTHER": 3,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "MATERIAL_CONTRACT_BUCKET_META",
+      "kind": "vocabulary",
+      "code_count": 29,
+      "is_meta": true,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/parser-v2/extract.js",
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 5,
+        "V2_RESOLVER": 1,
+        "SCRIPT": 1,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "MERGER_FORMS",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/deals-index-columns.js",
+        "lib/ingest/deal-metadata-prompt.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 4,
+        "SCRIPT": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "MERGER_FORMS_META",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "ONGOING_UPDATES_STANDARD",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "scripts/code-information-sharing.js",
+        "tests/information-sharing-codebook.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "PULL_REFILE",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "REMEDY_TYPES",
+      "kind": "vocabulary",
+      "code_count": 8,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "REMEDY_TYPE_META",
+      "kind": "vocabulary",
+      "code_count": 8,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "REPRESENTATIVES_STANDARDS",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "tests/raw-enum-labels.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "SEC_FILING_EXCLUSION_CODES",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 5,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "SEC_FILING_EXCLUSION_META",
+      "kind": "vocabulary",
+      "code_count": 5,
+      "is_meta": true,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "SOLICITATION_ACT",
+      "kind": "vocabulary",
+      "code_count": 15,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 7
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "SUPERIOR_DETERMINER",
+      "kind": "vocabulary",
+      "code_count": 4,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "TERMF_TRIGGER_CODES",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/metsfb2-extraction-batch2.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 4,
+        "SCRIPT": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "TERMF_TRIGGER_META",
+      "kind": "vocabulary",
+      "code_count": 12,
+      "is_meta": true,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ],
+      "mention_layers": {
+        "V2_RESOLVER": 1,
+        "SCRIPT": 1
+      },
+      "v2_resolver_mention_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ]
+    },
+    {
+      "name": "TERMINATION_PARTY",
+      "kind": "vocabulary",
+      "code_count": 3,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V2_OTHER": 1,
+        "V1_OR_OTHER": 1,
+        "TEST": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "TIMING_AGREEMENT",
+      "kind": "vocabulary",
+      "code_count": 6,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js",
+        "tests/anti-regulatory-efforts.test.js",
+        "tests/taxonomy-renamed-fields.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 2,
+        "V2_OTHER": 1,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES",
+      "kind": "vocabulary",
+      "code_count": 18,
+      "is_meta": false,
+      "consumption": "MENTION_NO_REQUIRE",
+      "require_files": [],
+      "mention_layers": {
+        "V1_OR_OTHER": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "VESTING_STATUS",
+      "kind": "vocabulary",
+      "code_count": 8,
+      "is_meta": false,
+      "consumption": "V1_REQUIRE",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 5,
+        "SCRIPT": 1
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "formatDict",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "isListTaxonomyKey",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/parser-v2/extract.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 3,
+        "SCRIPT": 1,
+        "TEST": 3
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "isValidTaxonomyCode",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 3,
+        "TEST": 4
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "labelForCode",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/deals-index-columns.js",
+        "lib/feature-compare.js",
+        "lib/queries/claims-adapter.js",
+        "lib/query/executors/filter-then-list.js",
+        "lib/query/field-meta.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 23,
+        "SCRIPT": 2,
+        "TEST": 6
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "normalizeToCode",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/queries/claims-adapter.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 1,
+        "SCRIPT": 2,
+        "TEST": 2
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "taxonomyForFeatureKey",
+      "kind": "helper",
+      "code_count": null,
+      "is_meta": false,
+      "consumption": "HELPER",
+      "require_files": [
+        "lib/feature-compare.js",
+        "lib/parser-v2/extract.js",
+        "lib/queries/claims-adapter.js",
+        "lib/query/executors/filter-then-list.js",
+        "lib/query/field-meta.js",
+        "lib/query/natural-language.js",
+        "lib/schema/validation.js",
+        "tests/anti-regulatory-efforts.test.js"
+      ],
+      "mention_layers": {
+        "V1_OR_OTHER": 26,
+        "SCRIPT": 3,
+        "TEST": 8
+      },
+      "v2_resolver_mention_files": []
+    },
+    {
+      "name": "party-role-aliases.js",
+      "kind": "external_vocab",
+      "external_path": "lib/vocab/party-role-aliases.js",
+      "code_count": null,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ],
+      "mention_layers": {
+        "V2_RESOLVER": 2,
+        "V1_OR_OTHER": 2,
+        "V2_VOCAB": 1,
+        "SCRIPT": 4
+      }
+    },
+    {
+      "name": "ioc-categories.js",
+      "kind": "external_vocab",
+      "external_path": "lib/vocab/ioc-categories.js",
+      "code_count": null,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/ioc-corroboration.js"
+      ],
+      "mention_layers": {
+        "V2_RESOLVER": 3,
+        "V1_OR_OTHER": 2,
+        "V2_VOCAB": 3,
+        "SCRIPT": 6,
+        "TEST": 2
+      }
+    },
+    {
+      "name": "ioc-components.js",
+      "kind": "external_vocab",
+      "external_path": "lib/vocab/ioc-components.js",
+      "code_count": null,
+      "consumption": "V2_RESOLVER_REQUIRE",
+      "require_files": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/canonical-v2/native-producer/ioc-corroboration.js"
+      ],
+      "mention_layers": {
+        "V2_RESOLVER": 3,
+        "SCRIPT": 3,
+        "TEST": 1,
+        "V2_VOCAB": 1
+      }
+    }
+  ],
+  "features": {
+    "definition_count": 551,
+    "display_groups": {
+      "Representations": {
+        "count": 70,
+        "sample_keys": [
+          "absenceOfChangesExceptions",
+          "absenceOfChangesStartDate",
+          "absenceOfChangesType",
+          "antiRelianceRepPresent",
+          "antiRelianceRepText",
+          "aocCitedCovenantNames"
+        ]
+      },
+      "Deal certainty": {
+        "count": 27,
+        "sample_keys": [
+          "absenceOfEnjoiningOrderDetails",
+          "absenceOfEnjoiningOrderPresent",
+          "antitrustApprovals",
+          "approvalDefinition",
+          "bringDownStandard",
+          "bringDownTiers"
+        ]
+      },
+      "Fiduciary out": {
+        "count": 115,
+        "sample_keys": [
+          "acceptableConfidentialityAgreementDefinition",
+          "acquisitionTransactionDefinition",
+          "acquisitionTransactionPctThreshold",
+          "antiClubbingWaiverConditions",
+          "antiClubbingWaiverPermitted",
+          "arcReaffirmDeadlineDays"
+        ]
+      },
+      "Structure": {
+        "count": 27,
+        "sample_keys": [
+          "acceptanceAndPaymentMechanics",
+          "adsPresent",
+          "adsVotingMechanics",
+          "backendMergerMechanic",
+          "buyerBoardDesignation",
+          "closingConditionsPrecedent"
+        ]
+      },
+      "Interim covenants": {
+        "count": 83,
+        "sample_keys": [
+          "accessPurposeLimitation",
+          "accessScope",
+          "additionalTerms",
+          "adjournmentRights",
+          "advancementOfExpenses",
+          "affirmativeLimbs"
+        ]
+      },
+      "Definitions": {
+        "count": 22,
+        "sample_keys": [
+          "acquisitionProposalPercentage",
+          "canonicalTerm",
+          "carveouts",
+          "carveOuts",
+          "carveOutsList",
+          "crossReferences"
+        ]
+      },
+      "Other": {
+        "count": 24,
+        "sample_keys": [
+          "alsoSurfacedAs",
+          "appliesTo",
+          "canonicalCode",
+          "chapeauProviso",
+          "closingDeadline",
+          "inlineDefinition"
+        ]
+      },
+      "Boilerplate": {
+        "count": 41,
+        "sample_keys": [
+          "amendmentsRequirement",
+          "assignmentExceptions",
+          "assignmentProvisos",
+          "assignmentRestrictions",
+          "bondSecurityRequiredForSP",
+          "companyConsentForAssignment"
+        ]
+      },
+      "Termination": {
+        "count": 39,
+        "sample_keys": [
+          "amount",
+          "cap",
+          "companyTerminationFee",
+          "effectOfTermination",
+          "exceptions",
+          "expenseReimbursement"
+        ]
+      },
+      "Regulatory": {
+        "count": 52,
+        "sample_keys": [
+          "appliesToParty",
+          "burdenBaseline",
+          "burdenCap",
+          "burdenCommitment",
+          "burdensomConditionDefined",
+          "burdensomeConditionInTerminationTriggers"
+        ]
+      },
+      "Consideration": {
+        "count": 48,
+        "sample_keys": [
+          "appraisalRightsAvailable",
+          "cashOutAmount",
+          "collar",
+          "collarType",
+          "considerationType",
+          "cutoffDate"
+        ]
+      },
+      "Internal": {
+        "count": 3,
+        "sample_keys": [
+          "flags",
+          "parentProvisionType",
+          "standstillWaiverPermitted_flagRef"
+        ]
+      }
+    }
+  },
+  "category_summary": {
+    "family_count": 24,
+    "row_total": 354,
+    "per_family": {
+      "STRUCT": 11,
+      "CONSID": 16,
+      "NOSOL": 30,
+      "ANTI": 11,
+      "TERMR": 23,
+      "TERMR-B": 6,
+      "TERMR-T": 7,
+      "TERMF": 21,
+      "MAE": 20,
+      "COND-M": 2,
+      "COND-B": 3,
+      "COND-S": 2,
+      "IOC": 3,
+      "COV": 16,
+      "MISC": 22,
+      "COND": 2,
+      "IOC-T": 3,
+      "IOC-B": 3,
+      "NOSOL-T": 30,
+      "NOSOL-B": 30,
+      "NOSOL-M": 30,
+      "TERMR-M": 23,
+      "MAE-DEF": 20,
+      "MAE-DEF-P": 20
+    },
+    "note": "Per-family expected-yield targets for Step 2X-J measurement (PLAN.md). Not itself a codebook vocabulary to consume into corroboration."
+  },
+  "already_consumed_named_in_plan": [
+    "party-role-aliases.js",
+    "TERMF_TRIGGER_META",
+    "ioc-categories.js",
+    "ioc-components.js",
+    "MATERIALITY_CODES"
+  ]
+}

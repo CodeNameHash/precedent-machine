@@ -1,0 +1,763 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "e1d5fd5ebb46a1044ccc9d6a40fab4d7eff3ab6ec3aecab17f8086a33520b570",
+  "review_queue": [
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_COOPERATION_OBLIGATION",
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7b5253737d80ae863c4b8f83f53188d219de344f05df5c04a50a2af274c234b9",
+      "closure_id": "078b1cc56035047b1e54be6e7e237c7b1d51bc399f9fac8218df0229b61766ea",
+      "normalised_phrase": "the Company and Parent and their respective counsel shall, in connection with the efforts referenced in Sections 5.03(a)(i) and (a)(ii), (A) cooperate in all respects with each other in connection with any filing or submission with a Governmental Entity in connection with the transactions contemplated by this Agreement and in connection with any investigation or other inquiry by or before a Governmental Entity relating to the transactions contemplated by this Agreement, including any proceeding initiated by a private person",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2c4515e754916cf7fb62f5357724507d8dd79eec5071238a58c892e86f731c62",
+      "closure_id": "1ac8bfb09c3fbfa906745dc6bd833924a725066c10b90ba28f2a5abd429a983c",
+      "normalised_phrase": "The Company will (i) give Parent the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-CONSULT",
+          "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+          "start": 16867,
+          "end": 16889,
+          "excerpt": "the defense, settlement and prosecution of any Transaction Litigation and (iii) consider in good faith Parent’s advice with respect to such Transaction Litigation. The Company will",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a8c2d79f2f9b6169ca486882545d397594caaebdb00ad55a3df589f20da3727f",
+      "closure_id": "3eb360ec53642036dd973d8bdbb253069ebaf86f9b4d2b6e5fa06c1be95af707",
+      "normalised_phrase": "Parent and the Company (if requested by Parent), along with their respective Subsidiaries, shall use their reasonable best efforts to obtain clearance under any applicable Antitrust Laws so as to enable the parties hereto to consummate the Merger and the other transactions contemplated by this Agreement as promptly as practicable, and in any event prior to the Termination Date",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 13,
+          "end": 36,
+          "excerpt": "Section 5.03 Reasonable Best Efforts; Consultation and Notice.\n(a) (i) Upon the terms and subject to the conditions ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 24,
+          "end": 36,
+          "excerpt": "Section 5.03 Reasonable Best Efforts; Consultation and Notice.\n(a) (i) Upon the terms and subject to the conditions ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 614,
+          "end": 637,
+          "excerpt": " in any event no later than the Termination Date, including using its and their reasonable best efforts to accomplish the following: (A) the satisfaction of the conditions precedent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 625,
+          "end": 637,
+          "excerpt": "nt no later than the Termination Date, including using its and their reasonable best efforts to accomplish the following: (A) the satisfaction of the conditions precedent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 2623,
+          "end": 2646,
+          "excerpt": " Governmental Entities under applicable Antitrust Laws (if any) and (C) use its reasonable best efforts to obtain prompt expiration or termination of any applicable waiting period or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 2634,
+          "end": 2646,
+          "excerpt": "al Entities under applicable Antitrust Laws (if any) and (C) use its reasonable best efforts to obtain prompt expiration or termination of any applicable waiting period or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 3369,
+          "end": 3392,
+          "excerpt": " promptly as practicable, and in any event prior to the Termination Date, which reasonable best efforts shall include (A) proposing, negotiating, committing to and effecting, by conse",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 3380,
+          "end": 3392,
+          "excerpt": "s practicable, and in any event prior to the Termination Date, which reasonable best efforts shall include (A) proposing, negotiating, committing to and effecting, by conse",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 6657,
+          "end": 6680,
+          "excerpt": "ns contemplated by this Agreement, each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 6668,
+          "end": 6680,
+          "excerpt": "ated by this Agreement, each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(c)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-NOTIFY",
+      "reasons": [
+        "NOTIFICATION_OBLIGATION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall give Parent prompt notice of any litigation against the Company and/or its directors relating to the Merger or the other transactions contemplated by this Agreement (“Transaction Litigation”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c47f7553972f665524cf7bf5063276f32981efb5f2efb7d9e27afe2768f15147",
+      "closure_id": "417512d5ad87daf6a0946c3d6209a77c3452cd54d461b0fa61f840718e30d78e",
+      "normalised_phrase": "the Company shall give Parent prompt notice of any litigation against the Company and/or its directors relating to the Merger or the other transactions contemplated by this Agreement (“Transaction Litigation”)",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4a535ccdf1eed4b23f5c3983ebab1f479b6b3f77ea244aff6210b201f30c04fc",
+      "closure_id": "572add5ffff960e994b8114bb86839989cf5e2a0d698746229b7de26c7f9e86a",
+      "normalised_phrase": "The Company will obtain the prior written consent of Parent (such consent not to be unreasonably withheld, conditioned or delayed) prior to settling or satisfying any such claim",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-CONSULT",
+          "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+          "start": 16867,
+          "end": 16889,
+          "excerpt": "the defense, settlement and prosecution of any Transaction Litigation and (iii) consider in good faith Parent’s advice with respect to such Transaction Litigation. The Company will",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6fa5519d6f24045caeb5a3a2bad955095fb59050b1a9a1b3765c8309f1ade473",
+      "closure_id": "618b5abaad1965d7f1aad58c24db248c662660bb445b8f1e54e719e65f4bc178",
+      "normalised_phrase": "where legally permissible, have the right to review in advance, and to the extent practicable each shall consult and consider in good faith the views of the other regarding, any material filing made with, or written materials to be submitted to, any Governmental Entity in connection with the transactions contemplated by this Agreement and of any material communication received or given in connection with any proceeding by a private person, in each case regarding any of the transactions contemplated by this agreement",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-CONSULT",
+          "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+          "start": 16867,
+          "end": 16889,
+          "excerpt": "the defense, settlement and prosecution of any Transaction Litigation and (iii) consider in good faith Parent’s advice with respect to such Transaction Litigation. The Company will",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(v)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-INFO",
+      "reasons": [
+        "INFORMATION_SHARING_OBLIGATION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company and Parent may, as each deems advisable and necessary, reasonably designate any competitively sensitive material provided to the other under this Section 5.03(a) as “Antitrust Counsel Only Material.”",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c32446caafd45dc749cebc592221b0cb3fa38375d947e4ad926575e7f8a365aa",
+      "closure_id": "648fceeb34a6159cdfb07d82635351b6d296115aab9c079392fdccaeb4bc45cf",
+      "normalised_phrase": "The Company and Parent may, as each deems advisable and necessary, reasonably designate any competitively sensitive material provided to the other under this Section 5.03(a) as “Antitrust Counsel Only Material.”",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(iv)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [
+        "COOPERATION_OBLIGATION_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall, and shall cause its Subsidiaries to, provide to Parent such cooperation as may be reasonably requested by Parent",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "75961ac262e38b765694795ffa4cb16e129c70ab44c097b303013d4d9170be55",
+      "closure_id": "651a98ca25b80f879c7ff6f9c59711a509aa23321fed5d68081735c0a3475cab",
+      "normalised_phrase": "the Company shall, and shall cause its Subsidiaries to, provide to Parent such cooperation as may be reasonably requested by Parent",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(ii)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "FILING_REGIME_NOT_SINGLE_NAMED_REGIME"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8730351712b421bd0fc8ca7b5afb461e644c2d9a39c064c0b0db409e2a289a50",
+      "closure_id": "6bebd0d9c343e3d44865ae496b3bdb052c569d1d234c321e1ff8886fa9b138ec",
+      "normalised_phrase": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_LITIGATION_OBLIGATION",
+      "concept_key": "ANTI-LITIGATION",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ec5c034c66ab88b555a56bdefbaf5669fc097f690ae2f79e97010f1e30dd0965",
+      "closure_id": "6d784ac1c0baceb9b14994f5b113e8b4c7e0f7a4a0c7189425ce3ac76cf27f16",
+      "normalised_phrase": "each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, any such action or proceeding, (B) pursue vigorously all available avenues of administrative and judicial appeal and (C) seek to have vacated, lifted, reversed or overturned any judgment that is in effect that prohibits, prevents or restricts consummation of the transactions contemplated by this Agreement",
+      "attachment_position": null,
+      "concept_family": "ANTI-LITIGATION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(v)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-STRATEGY",
+      "reasons": [
+        "STRATEGY_CONTROL_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall, on behalf of the parties and in reasonable consultation with the Company, have the right, in its sole discretion, to determine the nature and timing of any divestitures or other remedial undertakings made for the purpose of securing any required approvals under the Antitrust Laws to the extent any such divestitures or other remedial undertakings would be conditioned upon and only be effective after the Closing",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e1d162be20ba16a87bc4b52a1eb53340457a0fc4a1b646350ff2b8bf76f0f677",
+      "closure_id": "819c11d9cc23a05cd92b88aa7c003196610c04869513208fc415b3f7e92bc64c",
+      "normalised_phrase": "Parent shall, on behalf of the parties and in reasonable consultation with the Company, have the right, in its sole discretion, to determine the nature and timing of any divestitures or other remedial undertakings made for the purpose of securing any required approvals under the Antitrust Laws to the extent any such divestitures or other remedial undertakings would be conditioned upon and only be effective after the Closing",
+      "attachment_position": null,
+      "concept_family": "ANTI-STRATEGY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(ii)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "FILING_REGIME_NOT_SINGLE_NAMED_REGIME"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4c8daacb3cf2c38f790a8e4545c0a2112328496252912dac84eb55cf62d537aa",
+      "closure_id": "848ccd6f8151b0904ee562f095e6d6237da4f6bf12f8c01214537801ff2896f6",
+      "normalised_phrase": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(b)(iii)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-NOTIFY",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent, upon having knowledge, shall give prompt notice to the Company of any Effect that has had or would reasonably be expected to, individually or taken together with all other Effects, impair in any material respect the ability of Parent and Sub to perform its obligations under this Agreement or prevent or materially impeded or materially delay the consummation of the Merger and the other transactions contemplated by this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e748f3c255bcc8a65da204d4609e9c12cbe786c5e2ad9e91e08f2e50d8ebfc2c",
+      "closure_id": "8986bb27aad1952eeddd9c5e44214c8ba03d9796ddeaab30eb809feaf96c01f2",
+      "normalised_phrase": "Parent, upon having knowledge, shall give prompt notice to the Company of any Effect that has had or would reasonably be expected to, individually or taken together with all other Effects, impair in any material respect the ability of Parent and Sub to perform its obligations under this Agreement or prevent or materially impeded or materially delay the consummation of the Merger and the other transactions contemplated by this Agreement",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_FILING_OBLIGATION",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "09987aae3c7b28d4401c5ed368f6da0baef11103e722ecd1ba450c3d017daad6",
+      "closure_id": "8e9c941b3598c06076d173d668736b336c95d69130da03a8395f05ce2988f251",
+      "normalised_phrase": "each of Parent and the Company shall (A) prepare and file any notification and report forms and related material required under the HSR Act and other applicable Antitrust Laws with respect to the transactions contemplated by this Agreement as set forth on Section 5.03(a)(ii) of the Company Letter, and any additional filings or notifications and related material that are necessary, proper or advisable to permit consummation of the transactions contemplated by this Agreement, as promptly as reasonably practicable and advisable",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 1046,
+          "end": 1053,
+          "excerpt": " necessary registrations, declarations and filings (including filings under the HSR Act and other registrations, declarations and filings with, or notices to, Governme",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 2524,
+          "end": 2531,
+          "excerpt": "tion and documentary material that may be requested by the DOJ or FTC under the HSR Act or by other Governmental Entities under applicable Antitrust Laws (if any) and ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5112,
+          "end": 5119,
+          "excerpt": "nd authorizations for the transactions contemplated by this Agreement under the HSR Act or any other applicable Antitrust Laws or from any Governmental Entity so as to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 12637,
+          "end": 12644,
+          "excerpt": "means the Sherman Antitrust Act of 1890, the Clayton Antitrust Act of 1914, the HSR Act, the Federal Trade Commission Act of 1914, Council Regulation 139/2004 of the E",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(b)(ii)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-NOTIFY",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company, upon having knowledge, shall give prompt notice to Parent of any Effect that has had or would reasonably be expected to have, individually or taken together with all other Effects, a Material Adverse Effect",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "57b9b8973d1acae16f37e9344bf23186bd0413b41ec1946e9ac7c5f343ee4fbd",
+      "closure_id": "9e808a918eb439be1ba801dc71f512ca859354fe3dfb6ff68ef83342c74e104d",
+      "normalised_phrase": "The Company, upon having knowledge, shall give prompt notice to Parent of any Effect that has had or would reasonably be expected to have, individually or taken together with all other Effects, a Material Adverse Effect",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "source_citation": "5.03(a)(vi)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-NOACTION",
+      "reasons": [
+        "OBLIGOR_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Neither Parent nor Sub shall, nor shall they permit their respective Subsidiaries to, acquire or agree to acquire any rights, assets, business, person or division thereof (through acquisition, license, joint venture, collaboration or otherwise), if such acquisition would reasonably be expected to increase the risk of not obtaining, or the risk of materially delaying the obtaining of, the consent, approval order or authorization of any Governmental Entity with respect to the Merger or the other transactions contemplated by this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "26d609beb139648cc6977a7118ad5ef06d43ba8ff8c3371c8630d6b1f6790e49",
+      "closure_id": "a331104b094c9ac757bd18398040625f59858ff1ca5667435f67b3661c129bc0",
+      "normalised_phrase": "Neither Parent nor Sub shall, nor shall they permit their respective Subsidiaries to, acquire or agree to acquire any rights, assets, business, person or division thereof (through acquisition, license, joint venture, collaboration or otherwise), if such acquisition would reasonably be expected to increase the risk of not obtaining, or the risk of materially delaying the obtaining of, the consent, approval order or authorization of any Governmental Entity with respect to the Merger or the other transactions contemplated by this Agreement.",
+      "attachment_position": null,
+      "concept_family": "ANTI-NOACTION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5db2285f17846bb8373eb1b59cb8fa02addc7f9aaa3f45775bc6e91a4a454125",
+      "closure_id": "a5b54d7de2f2b30866c00e2720bf2a1e4d14e313e5bac774a19a783c4abe3331",
+      "normalised_phrase": "each of the parties hereto agrees to (and shall cause their respective Subsidiaries to) use its and their respective reasonable best efforts to take, or cause to be taken, all actions and to do, or cause to be done, all things necessary, proper or advisable under applicable Laws to consummate the Merger and the other transactions contemplated by this Agreement as soon as practicable and in any event no later than the Termination Date",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 13,
+          "end": 36,
+          "excerpt": "Section 5.03 Reasonable Best Efforts; Consultation and Notice.\n(a) (i) Upon the terms and subject to the conditions ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 24,
+          "end": 36,
+          "excerpt": "Section 5.03 Reasonable Best Efforts; Consultation and Notice.\n(a) (i) Upon the terms and subject to the conditions ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 614,
+          "end": 637,
+          "excerpt": " in any event no later than the Termination Date, including using its and their reasonable best efforts to accomplish the following: (A) the satisfaction of the conditions precedent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 625,
+          "end": 637,
+          "excerpt": "nt no later than the Termination Date, including using its and their reasonable best efforts to accomplish the following: (A) the satisfaction of the conditions precedent s",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 2623,
+          "end": 2646,
+          "excerpt": " Governmental Entities under applicable Antitrust Laws (if any) and (C) use its reasonable best efforts to obtain prompt expiration or termination of any applicable waiting period or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 2634,
+          "end": 2646,
+          "excerpt": "al Entities under applicable Antitrust Laws (if any) and (C) use its reasonable best efforts to obtain prompt expiration or termination of any applicable waiting period or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 3369,
+          "end": 3392,
+          "excerpt": " promptly as practicable, and in any event prior to the Termination Date, which reasonable best efforts shall include (A) proposing, negotiating, committing to and effecting, by conse",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 3380,
+          "end": 3392,
+          "excerpt": "s practicable, and in any event prior to the Termination Date, which reasonable best efforts shall include (A) proposing, negotiating, committing to and effecting, by conse",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 6657,
+          "end": 6680,
+          "excerpt": "ns contemplated by this Agreement, each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 6668,
+          "end": 6680,
+          "excerpt": "ated by this Agreement, each of Parent and the Company shall use its reasonable best efforts to (A) oppose fully and vigorously, including by defending through litigation, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "530de33f74af299422aa59a958f7ca02da869d355aa0d553e7182169e6f45e62",
+      "closure_id": "c3be3792ad19c46ea487b5516828787cb23b2053fb35710c1398b1dc94f6971f",
+      "normalised_phrase": "the Company and Parent shall (with respect to any in-person discussion or meeting), and shall to the extent practicable (with respect to any telephonic discussion or meeting), provide the other party and its counsel with advance notice of and the opportunity to participate in any material discussion or meeting with any Governmental Entity in respect of any filing, investigation or other inquiry in connection with the transactions contemplated by this Agreement",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-CONSULT",
+          "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+          "start": 16867,
+          "end": 16889,
+          "excerpt": "the defense, settlement and prosecution of any Transaction Litigation and (iii) consider in good faith Parent’s advice with respect to such Transaction Litigation. The Company will",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_BURDEN_COMMITMENT",
+      "concept_key": "ANTI-BURDEN",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dc3043aab7d0d92342a27e813241a31e36d6a60f43aebdc7ab3c78bbacc492bd",
+      "closure_id": "e4cee98fc9be82a93ed95a877db8ef24d628d1c399fb55e30445c6b00761df3e",
+      "normalised_phrase": "Parent and the Company (if requested by Parent), along with their respective Subsidiaries, shall use their reasonable best efforts to obtain clearance under any applicable Antitrust Laws so as to enable the parties hereto to consummate the Merger and the other transactions contemplated by this Agreement as promptly as practicable, and in any event prior to the Termination Date, which reasonable best efforts shall include (A) proposing, negotiating, committing to and effecting, by consent decree, hold separate order or otherwise, the sale, divestiture, disposition, license or other disposition of any Subsidiaries, operations, divisions, businesses, product lines, contracts, customers or assets of Parent or any of its Subsidiaries (including the Company or any of its Subsidiaries), (B) taking or committing to take such other actions that may limit or impact Parent’s or any of its Subsidiaries’ (including the Company’s or any of its Subsidiaries’) freedom of action with respect to, or its ability to retain, any of Parent’s or any of its Subsidiaries’ (including the Company’s or any of its Subsidiaries’)\n34\noperations, divisions, businesses, product lines, contracts, customers or assets, (C) entering into any orders, settlements, undertakings, contracts, consent decrees, stipulations or other agreements to effectuate any of the foregoing or in order to vacate, lift, reverse, overturn, settle or otherwise resolve any order that prevents, prohibits, restricts or delays the consummation of the Merger and the other transactions contemplated by this Agreement, in any case, that may be issued by any court or other Governmental Entity and (D) creating, terminating or divesting relationships, contractual rights or obligations of the Company, Parent or their respective Subsidiaries, in each case in connection with obtaining all, or eliminating any requirement to obtain any, waiting period expirations or terminations, consents, clearances, waivers, exemptions, licenses, orders, registrations, approvals, permits and authorizations for the transactions contemplated by this Agreement under the HSR Act or any other applicable Antitrust Laws or from any Governmental Entity so as to enable the Closing to occur no later than the Termination Date. The Company shall not, unless requested to do so by Parent, commit to or effect any action contemplated in clause (A), (B), (C) or (D) of the immediately preceding sentence. Notwithstanding anything to the contrary contained in this Section 5.03(a)(iii) or elsewhere in this Agreement, but subject to the provisions set forth in Section 5.03(a)(iii) of the Company Letter, none of Parent, the Company or any of their respective Subsidiaries shall be required to take any action, or commit to take any action, or agree to any condition or limitation that (x) is not conditioned on the consummation of the Merger or (y) that would result in, or would reasonably be expected to result in, individually or in the aggregate, (1) a material adverse effect on the Company and its Subsidiaries, taken as a whole, or (2) a material adverse effect on Parent and its Subsidiaries, taken as a whole, measured on a scale relative to the size of the Company and its Subsidiaries, taken as a whole (any of the foregoing, a “Burdensome Condition”).",
+      "attachment_position": null,
+      "concept_family": "ANTI-BURDEN",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-BURDEN",
+          "pattern_id": "ANTI-BURDEN:ACRONYM:BURDENSOME_CONDITION",
+          "start": 7691,
+          "end": 7711,
+          "excerpt": " would reasonably be expected to result in, individually or in the aggregate, a Burdensome Condition. To assist Parent in complying with its obligations set forth in this Section 5",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "80e9b7988620f6181d9f61bc08d22b270db1be0afd67f5fac6aae1cdb07036ac"
+}

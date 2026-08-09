@@ -1211,6 +1211,9 @@ the same day. Many of the 69 may be genuine cross-references correctly declined,
 which the receipt's `limb_enumeration_scan` could show, but "correctly declined"
 and "silently dropped" look identical from outside when nothing is recorded.
 
+**Step 2X-L1 closed the account** — see the section below. All 69 limbs traced;
+replay evidence refreshed without `MAT_MAE_AGGREGATE`.
+
 **2X-E — absence copy.** 14 unsafe wordings across 11 config files now use
 `CONDITION_ABSENT_COPY`, verified as zero remaining. The termination-fees
 provenance pill was deliberately **not** ported: no other family has a genuine
@@ -1269,9 +1272,241 @@ runner, including a dev server left running from the live-verification attempt.
 The pattern cost real time and is now in the handoff's trap list: a gate run is
 only evidence if nothing else is touching the tree.
 
-**Carried forward, all in the plan.** Regenerate the 2X-L replay evidence, which
-still carries the retired MAE code — free by replay, and loud rather than silent
-if forgotten, since re-validation raises `INVALID_CANONICAL_VALUE` and
-quarantines. Publish the 69-limb disposition table that 2X-L1 demands. And the
-placement pass across all 22 flat families, which is the step that actually
-moves the top of the resolution table.
+**Carried forward, all in the plan.** The placement pass across all 22 flat
+families, which is the step that actually moves the top of the resolution table.
+
+---
+
+## Step 2X-L1. Account for every limb — disposition table and replay refresh
+
+**Closed 2026-08-08**, same branch session as the merge follow-up.
+
+**Disposition table published.** All **69** model-emitted limbs on Red Hat
+REPRESENTATIONS §3.01+§3.02 traced to exactly one disposition; **unaccounted=0**.
+Computed from evidence via `scripts/canonical-v2-redhat-reps-limb-disposition.mjs`,
+not asserted by hand:
+
+| disposition | count | reason_code |
+|---|---:|---|
+| `RESIDUAL_QUOTE_UNVERIFIED` | 1 | `LIMB_ASSERTION_QUOTE_UNVERIFIED` |
+| `OPEN_WORLD_ONLY` | 62 | `UNMAPPED_GENERIC_CLAIM_KEY` |
+| `OPEN_WORLD_AND_ASSERTION_NODE` | 6 | `UNMAPPED_GENERIC_CLAIM_KEY` |
+
+Path hygiene on all 69 inputs: MARKER 66, DESCRIPTIVE 3, MIXED 0. The six
+assertion-node feeders are §3.01 `(a)/(i–iii)` and §3.02's three descriptive
+headings — a subset of the 68 open-world limb candidates, not a separate channel.
+
+**2X-L replay evidence regenerated** in place at zero model calls
+(`redhat-representations-20260808-2xl-replay`). `MAT_MAE_AGGREGATE` count in
+`resolution.json`: **0** (was 26 on the stale artefact captured while V41 briefly
+included the retired code). Post-regeneration counts unchanged: 2 trees, 7 path
+nodes, 6 assertion nodes, `resolved=32`, `open_world=100`, 1 adapter residual.
+
+Evidence and commands: `docs/codex-program/notes/step-2x-l1-limb-disposition.md`.
+
+---
+
+## Step 2X-G. The open-world promotion loop
+
+**Closed 2026-08-08** for the gate and the first landed promotion. Further
+shapes still need taxonomy or pattern work; the loop is the mechanism, not a
+one-shot empty of the open-world table.
+
+**Gate.** `lib/canonical-v2/open-world-promotion-gate.js`, re-exported from
+`lib/expected-sets.js`. Ben's ruling (DECISIONS.md §14): promote at **three or
+four deals**, with confidence and fail-closed collision — never a percentage.
+Refuses the three General Covenant 2X-B HOLD would-resolves and new names that
+collide with 2X-J CONSUME.
+
+**Corpus scan.** `scripts/audit/step-2x-g-open-world-promotion-scan.js` over
+169 newest evidence resolutions: **27** shapes with ≥3 deals, **27** gate PASS.
+Only one PASS row names an ungate target today:
+`REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION` (6 deals). The rest are
+`NEEDS_REVIEW` / `NEEDS_CLAIM_DEFINITION_TAXONOMY` / `PRIMARY_PATTERN_WIDEN`.
+
+**First promotion proved on replay.** Skywater no-shop committed evidence
+(`skywater-no-shop-20260808-r1`): open_world **11 → 10**,
+`NO_SHOP_RUBRIC_OPEN_WORLD` **1 → 0**, one resolved claim under `NOSOL-CEASE` /
+`NO_SHOP_CEASE_ACTION`. Test:
+`tests/canonical-v2-open-world-promotion-gate.test.js` (7/7).
+
+Evidence and commands: `docs/codex-program/notes/step-2x-g-open-world-promotion.md`.
+
+---
+
+## Step 2X-H. Record input tokens
+
+**Closed 2026-08-08.** The Claude Code CLI reports `usage.input_tokens` as only
+the non-cached prompt tail (often ~2 on a warm cache). Live telemetry was
+writing that figure unchanged, so fifteen REPRESENTATIONS chunks showed
+**426 input tokens across 172 calls** while output was recorded correctly.
+
+**Fix.** `normalizeProviderUsage` in
+`lib/canonical-v2/native-producer/anthropic-provider.js` sums
+`input_tokens + cache_creation_input_tokens + cache_read_input_tokens` when
+cache fields are present, keeps the CLI tail as `input_tokens_non_cache`, and
+leaves SDK-shaped usage (no cache fields) unchanged. Applied before telemetry
+write and on `provider_usage`.
+
+**Proof.** `CI=true node --test tests/canonical-v2-input-token-telemetry.test.js`
+exit 0. Note: `docs/codex-program/notes/step-2x-h-input-tokens.md`.
+
+---
+
+## Step 2X-I. One prompt bump, not four
+
+**Closed 2026-08-09.** Producer-side changes batched into one digest-invalidation
+window (live re-extract is 2X-K, not required to close this step):
+
+| Piece | What landed |
+|---|---|
+| IOC V1×25 | Producer enum + corroboration V1-keyed; `IOC_PROMPT_VERSION` 6; `DATA_PRIVACY_CYBER` → `IOC-REGAUTH` |
+| MAE limbs | Prompt v3 emits `limbs[]`; `shapeMaeDefinitionLimbAssertionProposals` |
+| 2F2 open-world schema | Bare `[]` → object schema on remaining deferred families (merger-structure among them) |
+| Mutual rights (Ruling 2) | `EITHER_PARTY` mints TARGET+BUYER rows via `resolveMutualPrincipalParties`; product still projects `PARTY_MUTUAL` |
+| Model `transaction_steps` | Merger-structure prompt v3; shaper + `handleMergerTransactionStepCandidate`; `MERGER_TRANSACTION_STEP` V42; `mergeDealTopology` with model-wins precedence |
+
+**Precedence (model vs detector).** Model-extracted steps win
+(`MODEL_EXTRACTED`); detector is fallback always `topology_needs_review`;
+disagreement keeps model topology and forces review. Neither → `UNDETERMINED`.
+
+**Proof.** Focused suites exit 0:
+`tests/canonical-v2-ioc-*.test.js`, MAE/2F2 prompt contracts,
+`tests/canonical-v2-termination-rights-resolution.test.js` (+ limb/product/real-fixture),
+`tests/canonical-v2-deal-topology-from-claims.test.js`,
+`tests/canonical-v2-transaction-topology-detector.test.js` (7/7 detector unchanged).
+
+Notes: `docs/codex-program/notes/step-2x-i-ioc-mae-2f2.md`,
+`step-2x-i-mutual-rights.md`, `step-2x-i-transaction-steps.md`.
+
+**Not claimed.** Live Modiv / family re-extract (2X-K); product UI topology badge;
+Postgres `deal_topology` writer hookup.
+
+---
+
+## Step 2X-F. Topology, with an undetermined state
+
+**Closed 2026-08-09** for the detector half. Model-extracted `transaction_steps`
+closed under 2X-I (`mergeDealTopology`). Product UI wiring remains later.
+
+**Taxonomy.** `UNDETERMINED` (no silent `SINGLE_MERGER`); `PARALLEL_MERGERS`
+(simultaneous dual mergers); `REVERSE_TRIANGULAR_THEN_LLC` (sequential two-step
+without HoldCo). `DOUBLE_DUMMY` kept for HoldCo structures.
+`FORWARD_TRIANGULAR` / `REVERSE_TRIANGULAR` documented as
+`opts.singleStepTopology`-only.
+
+**Detector.** Tender signal tightened to `Acceptance Time` / `251(h)`; named
+mergers from quoted defined terms / `X Merger Effective Time`; merger-scoped
+simultaneity; unconditional single-step default removed.
+
+**Proof.** Seven hash-verified deals via
+`tests/canonical-v2-transaction-topology-detector.test.js`: 4× `SINGLE_MERGER`,
+skywater+topbuild `REVERSE_TRIANGULAR_THEN_LLC` (0 chaining warnings), modiv
+`PARALLEL_MERGERS`. Was 4/7; now 7/7 on the detector half.
+
+Evidence and commands: `docs/codex-program/notes/step-2x-f-topology.md`.
+
+---
+
+## Step 2X-A. One structure service, and point it at every family
+
+**Closed 2026-08-08 for the replay-validated structure and placement work.**
+`resolveGoverningStructure` is the shared UTF-8 boundary service over
+`segmentSubClauses`; it returns a resolved leaf and chapeau chain, or a typed
+undetermined result. `structure-placement.js` annotates resolved, review-queue
+and open-world rows without changing claim identity. The termination structural
+adapter landed separately with 19 of 19 pinned Modiv, Concho and TopBuild spans
+byte-identical to the previous implementation.
+
+The six-mechanism comparison is recorded in
+`docs/codex-program/notes/step-2x-a-mechanism-comparison.md`. The implementation
+record, fixtures and exact parity result are in
+`docs/codex-program/notes/step-2x-a-structure-service.md`.
+
+**Deferred without blocking 2X-K.** The human spot-audit of unflagged
+marker-bearing sections remains a quality follow-up. Derived-limb minting also
+remains separate: the marker-start gate has passed, but no product mint path is
+wired.
+
+---
+
+## Step 2X-A1. Qualifier scope
+
+**Closed 2026-08-08.** A trailing qualifier that names multiple clauses now
+resolves as `NAMED_SUBSET` with each stated path. `in any case` no longer
+forces the all-items reading, because corpus evidence showed it is a false
+friend. The deterministic marker test remains the sole source of the scope
+reading.
+
+**Evidence.** Commit `08f14916`; the focused contract is
+`tests/canonical-v2-qualifier-attachment.test.js`. The corpus finding was 98
+uses of `in the case of clauses (ii) and (iii)`, 40 of `(A) and (B)`, 32 of
+`(B) and (C)`, plus 299 uses of the false-friend phrase in predominately
+non-scope senses.
+
+---
+
+## Step 2X-C. Enforce the non-collision claim
+
+**Closed 2026-08-08.** The report widened to held review-queue quotes before
+enforcement. After the agreed lex-specialis treatment of NOTIFY and LITNOTIFY
+and the Merger Sub pattern correction, it found zero unresolved collisions
+across resolved, open-world and held rows. Primary multi-match enforcement then
+landed as a no-op for the scanned corpus.
+
+**Evidence.** `docs/codex-program/notes/step-2x-c-collision-report.md`,
+`docs/codex-program/notes/step-2x-c-followup.md`, Decision 16, and commit
+`47db480d`.
+
+---
+
+## Step 2X-J. Consume the rest of the V1 vocabulary
+
+**Closed 2026-08-08.** Every taxonomy vocabulary, helper and feature display
+group has a `CONSUME`, `WIDEN` or `DELIBERATELY_UNUSED` disposition. The
+machine-derived inventory reports zero unaccounted entries: 70 vocabulary and
+external-asset rows, 7 helpers, and 12 feature display groups.
+
+**Evidence.** `docs/codex-program/notes/step-2x-j-vocabulary-dispositions.md`,
+the committed `step-2x-j-vocab-inventory.json`, and commit `f99a2be8`.
+
+---
+
+## Step 2X-K. The re-validation ladder
+
+**Campaign closed 2026-08-09.** The live ladder ran in the authorised order:
+Modiv, TopBuild, Skechers, SkyWater, Metsera, Concho and Red Hat. The selected
+runs all have accepted validation, zero residuals, zero quarantines and a
+passing V42 dry import. A separate non-dry-run proof wrote every selected run
+to a fresh in-memory canonical repository: 157 real receipts, zero refusals,
+zero first-import replays and 16,811 published canonical objects. All 157 run
+manifests record both required M3 conditions.
+
+| deal | selected runs | Terra calls | publishable claims | resolved rows |
+|---|---:|---:|---:|---:|
+| Modiv | 10 | 27 | 123 | 123 |
+| TopBuild | 24 | 66 | 349 | 352 |
+| Skechers | 27 | 119 | 219 | 220 |
+| SkyWater | 26 | 106 | 244 | 244 |
+| Metsera | 24 | 93 | 221 | 224 |
+| Concho | 26 | 106 | 252 | 253 |
+| Red Hat | 20 | 41 | 153 | 155 |
+| **Total** | **157** | **558** | **1,561** | **1,571** |
+
+The selected resolutions also retain 2,310 review rows and 2,692 open-world
+rows. These are evidence for later taxonomy work. They do not invalidate the
+campaign. Capitalisation stayed parked. Red Hat miscellaneous boilerplate also
+stayed parked after both bounded attempts returned two JSON objects and
+produced no selectable run.
+
+**Persisted payload seam fixed.** Rebuild and live-run paths now require the
+exact canonical-text-addressed payload path. Absolute paths, traversal and
+symbolic-link components are refused before read or write. A persisted payload
+compressed by a different zlib version is still adopted only after its
+inflated map matches the independently rebuilt map and its recorded digest.
+
+**Blind successor recorded, not waived.** The deterministic successor accounts
+for all 96 cards and resolves 22 against the total floor of 21. Category 4/4,
+clause label 6/6 and qualifier 6/4 pass. Terminating party resolves 6/7 and
+fails. The score therefore records `accepted=false`. The original sample is
+lost, so Ben must rule on the successor before Stage 3 begins.

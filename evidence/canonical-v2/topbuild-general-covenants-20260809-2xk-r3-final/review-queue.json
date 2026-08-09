@@ -1,0 +1,244 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "dcd2c1dd1e32a8a8e3f0596ba2af23a8b5b040f261b2f05dd11fb50dd2a4f239",
+  "review_queue": [
+    {
+      "section_reference": "4.10",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0109f0e8ed78488a255eaa70823162176b8df7027ba442a00ebad74c6801781e",
+      "closure_id": "8f016edef0dd22699926636fd4e32c27ed4b49021ca5faee91d3bf777a12b47f",
+      "normalised_phrase": "(ii) shall consult with the Company regarding any press releases or other public communications (including with respect to this Agreement or the Transactions)",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "19166b328ede3061846f5febeadb46a964dddbeb8c984699e268b1706be01d96",
+      "closure_id": "c1da87faa3e53f15e8c7cab22fafb44410d1ab4a3fdb1b5619be8c3b7e2ff267",
+      "normalised_phrase": "the Company shall not, without the consent of Parent, make any press releases or other public communications (including with respect to this Agreement or the Transactions)",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.10",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c56a4a7e92c134772ec2d6bb068846fa310068b20b3f7ec0f9da6279e20a6824",
+      "closure_id": "d099e999baaa43370ec8655588f1aca2734b2e1a4cefc4e059627ee5d4c78627",
+      "normalised_phrase": "Parent (i) shall not, without the consent of the Company (not to be unreasonably withheld, conditioned or delayed), make any press release or other public communication with respect to this Agreement or the Transactions;",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "716022d31765ad0bdc40690fc47a5811ea136d5a593c2032a78f1088c3801fc8",
+      "closure_id": "80acb8704f9eb493e5c84f0cf057d4b32a36efb00dda036816424ef9d31ba381",
+      "normalised_phrase": "The Company shall give Parent the opportunity to participate in the defense or settlement of any Transaction Litigation and consult with Parent in connection with material strategic decisions relating to the defense or settlement of any such Action.",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "4.18 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3be023956720a97881f06dce9e89852d78ab5baf6c15b6c37af2636c056277dd",
+      "closure_id": "bbabc022597bd7aef5ab8241d9a18ca1ab17fc597aa693fcd491867ee814634e",
+      "normalised_phrase": "the Company agrees that it shall not settle or offer to settle any Transaction Litigation, without the prior written consent of Parent, not to be unreasonably withheld, conditioned or delayed.",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "4.18 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.18",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "01a801a77f8a15e112c290bbc9aef7e5d4d9d3c19bae0188b2f21da36bbb4f87",
+      "closure_id": "e51e59a51ceacfb5244a16d2e05aaffdfe864fa31427f9bb20808307c0c984eb",
+      "normalised_phrase": "The Company shall promptly notify Parent of any stockholder demands, litigations, arbitrations or other similar Action (including any derivative claim) against the Company or its directors, officers or employees relating to the Transactions (collectively, the “Transaction Litigation”) (including by providing copies of all pleadings with respect thereto) and keep Parent fully informed on a prompt basis regarding any Transaction Litigation and all material developments relating thereto.",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "4.18 Transaction Litigation. The Company shall promptly notify Parent of any stockholder demands, litigatio",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.19",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-16B",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "76a65477b3a6c65a45c5b0c8d2a3702fc167f0f87c015109225a157118fab5e6",
+      "closure_id": "f24b99d54ce6760232bd32f1b3179d7ac604a1772959b04e907c7dfd5bba2f70",
+      "normalised_phrase": "The Company and Parent each shall take all such steps as may be necessary or appropriate to ensure that any dispositions of Company Shares (including derivative securities related to such stock) resulting from the Mergers by each individual who is subject to the reporting requirements of Section 16(a) of the Exchange Act with respect to the Company immediately prior to the Titanium Merger Effective Time are exempt under Rule 16b-3 promulgated under the Exchange Act.",
+      "attachment_position": null,
+      "concept_family": "COV-16B",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.8",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ae82acd50d3acc4983a348365c2b734b494afa8c9ad8b802eb440a2c8a07d0c2",
+      "closure_id": "396ef25bef237dab8cbfc82e5515ff30620949770c0a0d0b9d8a583d235a0a5c",
+      "normalised_phrase": "the Company shall cooperate with Parent and use reasonable best efforts to take, or cause to be taken, all actions, and do or cause to be done all things, reasonably necessary, proper or advisable on its part under applicable Laws and rules and policies of NYSE to enable the delisting by the Forward Surviving Company of the Company Shares from NYSE and the deregistration of the Company Shares under the Exchange Act as promptly as practicable after the Forward Merger Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.9",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LIST",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "72aa04dcf69e8a089d9925298acb63e7168bb02323dd8324de215c8c4b8eb6f0",
+      "closure_id": "62b8775d45206c512dd76b9745f849aa24e6d5804948b698e4ac879397c27fb4",
+      "normalised_phrase": "Parent shall use reasonable best efforts to cause the Parent Shares that will be issued in the Parent Share Issuance to be listed on the NYSE, subject to official notice of issuance, prior to the Titanium Merger Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COV-LIST",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "6acd4dafacba7cb614fede313f075578a2a68503c1d0a8d06139a638c7910d8f"
+}

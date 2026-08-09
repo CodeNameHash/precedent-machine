@@ -1,0 +1,1961 @@
+{
+  "4.02": {
+    "schema_version": "LEXICAL_DISAGREEMENT_RECEIPT/V1",
+    "lexicon_version": 16,
+    "lexicon_content_hash": "4eb1bfb365d0aee6569e5c38ce4a4c40fb30bbb43caf5ee941a20cc6354e7ec3",
+    "section_ref": "4.02",
+    "text_sha256": "a4717320a4ad007579d52b973eaa498e8e2a89539a25b648443e8f802e46fb3f",
+    "candidate_digest": "5025be40ec13fedb4c8496743da94dba05573a0185f6ae04a248aefe87e2ad5b",
+    "family_outcomes": [
+      {
+        "family": "ANTI-AGREEMENTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-BURDEN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-CONSULT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-COOPERATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-EFFORTS",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 221,
+            "end": 244,
+            "excerpt": "and its Subsidiaries’ directors, officers and employees to, and shall use its reasonable best efforts to cause the other Company Representatives to, immediately cease and cause to b",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 232,
+            "end": 244,
+            "excerpt": "sidiaries’ directors, officers and employees to, and shall use its reasonable best efforts to cause the other Company Representatives to, immediately cease and cause to b",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+            "start": 2427,
+            "end": 2450,
+            "excerpt": "sidiaries’ directors, officers or employees to, and the Company shall use its reasonable best efforts to cause each investment banker, attorney, accountant or other advisor or repre",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-EFFORTS",
+            "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+            "start": 2438,
+            "end": 2450,
+            "excerpt": " directors, officers or employees to, and the Company shall use its reasonable best efforts to cause each investment banker, attorney, accountant or other advisor or repre",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 4,
+        "matched_count": 0,
+        "unmatched_count": 4,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-FILING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-INFO",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "ANTI-INFO",
+            "pattern_id": "ANTI-INFO:PHRASE:OUTSIDE_COUNSEL",
+            "start": 17384,
+            "end": 17399,
+            "excerpt": "mencing upon the provision of any notice referred to above, the Company (or its outside counsel) shall (A) keep Parent (or its outside counsel) informed on a reasonably curren",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "ANTI-INFO",
+            "pattern_id": "ANTI-INFO:PHRASE:OUTSIDE_COUNSEL",
+            "start": 17431,
+            "end": 17446,
+            "excerpt": "ed to above, the Company (or its outside counsel) shall (A) keep Parent (or its outside counsel) informed on a reasonably current basis regarding the status and terms of discu",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 2,
+        "matched_count": 0,
+        "unmatched_count": 2,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-LITIGATION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOACTION",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "ANTI-STRATEGY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "APPR-WITHDRAW",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-B-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-COV",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-MAE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-REG",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COND-S-REP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-DISSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-PERSHARE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "CONS-RATIO",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-16B",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-ACCESS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CONSENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-CVR",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-DELIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-EMPLOYEE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FDACOMMS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FINANCING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-FURTHER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-INDEMN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LIST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-LITNOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MARKETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MEETING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-MERGESUB",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-NOTIFY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYAGENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PAYOFF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PROXY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-PUBLICITY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-RESIGN",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-SECREPORT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "COV-TAKEOVER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-MAE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "DEF-MAE",
+            "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+            "start": 16550,
+            "end": 16583,
+            "excerpt": "mpany (provided that the underlying causes of such changes may constitute or be taken into account in determining whether there has been an Intervening Event).\n(e) In addition to the obligation",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 1,
+        "matched_count": 0,
+        "unmatched_count": 1,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DEF-WILLFUL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-COORD",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DIVD-SPECIAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-BENEF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-INDEM",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "DNO-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-DELIVERY",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "GTY-PERF",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ACCOUNTING",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CAPEX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CHARTER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-COMP",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-CONTRACT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DEBT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-DIVIDEND",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-ISSUE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-MERGE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-SETTLE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "IOC-TAX",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MERGER-STRUCTURE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "MISC-BOILERPLATE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-CEASE",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-ENFORCE",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-EXCEPT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:UNSOLICITED",
+            "start": 3306,
+            "end": 3317,
+            "excerpt": "ts that are not otherwise prohibited by this Section 4.02(b) (such as answering unsolicited phone calls) shall not (in and of itself) be deemed to facilitate for purposes ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:UNSOLICITED",
+            "start": 6099,
+            "end": 6110,
+            "excerpt": "Company and the Company Representatives may, in response to a bona fide written unsolicited Takeover Proposal, contact the person who made such Takeover Proposal solely to",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 7653,
+            "end": 7670,
+            "excerpt": "es referred to in clause (1) above.\nFor purposes of this Agreement, the term “Superior Proposal” means any binding bona fide unsolicited written offer which did not result f",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:UNSOLICITED",
+            "start": 7702,
+            "end": 7713,
+            "excerpt": "of this Agreement, the term “Superior Proposal” means any binding bona fide unsolicited written offer which did not result from a breach of Section 4.02(b) or any othe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 8636,
+            "end": 8653,
+            "excerpt": "y changes to the terms of this Agreement proposed by Parent in response to such Superior Proposal or otherwise) and (y) would reasonably be expected to be consummated in accorda",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 10113,
+            "end": 10130,
+            "excerpt": " to obtaining the Shareholder Approval, the Company Board may, in response to a Superior Proposal received after the date of this Agreement and not resulting from a breach of th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 10408,
+            "end": 10425,
+            "excerpt": "reement to enter into an alternative Acquisition Agreement with respect to such Superior Proposal in accordance with Section 7.01(f), or resolve or agree to take any such action",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 10651,
+            "end": 10668,
+            "excerpt": "he Company Board shall have first provided prior written notice to Parent (a “Superior Proposal Notice”) at least four (4) Business Days in advance (as modified, extended or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 10791,
+            "end": 10808,
+            "excerpt": " in advance (as modified, extended or continued by this Section 4.02(c), the “Superior Proposal Notice Period”) to the effect that the Company Board is prepared to effect an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 10936,
+            "end": 10953,
+            "excerpt": "y Board is prepared to effect an Adverse Recommendation Change in response to a Superior Proposal, or to terminate this Agreement in accordance with Section 7.01(f), as applicab",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 11171,
+            "end": 11188,
+            "excerpt": "sion of any written agreement relating to the transaction that constitutes such Superior Proposal, (B) during the applicable Superior Proposal Notice Period (or any extension or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 11216,
+            "end": 11233,
+            "excerpt": " transaction that constitutes such Superior Proposal, (B) during the applicable Superior Proposal Notice Period (or any extension or continuation thereof), prior to its effectin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 11728,
+            "end": 11745,
+            "excerpt": "greement proposed by Parent and (C) Parent does not make, within the applicable Superior Proposal Notice Period (or any extension or continuation thereof) after the receipt of s",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12057,
+            "end": 12074,
+            "excerpt": "cial advisor of national reputation), cause the offer previously constituting a Superior Proposal to no longer constitute a Superior Proposal (it being understood and agreed tha",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12101,
+            "end": 12118,
+            "excerpt": "the offer previously constituting a Superior Proposal to no longer constitute a Superior Proposal (it being understood and agreed that any amendment or modification of such Supe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12194,
+            "end": 12211,
+            "excerpt": "osal (it being understood and agreed that any amendment or modification of such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notic",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12232,
+            "end": 12249,
+            "excerpt": "hat any amendment or modification of such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12268,
+            "end": 12285,
+            "excerpt": " such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); and\n(ii) the Company Board shall hav",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12527,
+            "end": 12544,
+            "excerpt": "a financial advisor of nationally recognized reputation, that, in light of such Superior Proposal and taking into account any revised terms proposed by Parent, such Superior Pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12612,
+            "end": 12629,
+            "excerpt": "ior Proposal and taking into account any revised terms proposed by Parent, such Superior Proposal continues to constitute a Superior Proposal and that the failure to make such A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:SUPERIOR_PROPOSAL",
+            "start": 12656,
+            "end": 12673,
+            "excerpt": "ised terms proposed by Parent, such Superior Proposal continues to constitute a Superior Proposal and that the failure to make such Adverse Recommendation Change or to so termin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 12867,
+            "end": 12883,
+            "excerpt": "ith Section 7.01(f), as applicable, would be inconsistent with the directors’ fiduciary duties under applicable Law.\n(d) Notwithstanding any provision in this Agreement to th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 15416,
+            "end": 15432,
+            "excerpt": " such Adverse Recommendation Change would be inconsistent with the directors’ fiduciary duties under applicable Law.\nFor purposes of this Agreement, the term “Intervening E",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-EXCEPT",
+            "pattern_id": "NOSOL-EXCEPT:PHRASE:FIDUCIARY_DUTIES",
+            "start": 16097,
+            "end": 16113,
+            "excerpt": "e Recommendation Change would be reasonably likely to result in a breach of its fiduciary duties under applicable Law; provided that in no event shall the following events, cha",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 26,
+        "matched_count": 2,
+        "unmatched_count": 24,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.012772351615326822
+      },
+      {
+        "family": "NOSOL-MATCH",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 10809,
+            "end": 10822,
+            "excerpt": "dified, extended or continued by this Section 4.02(c), the “Superior Proposal Notice Period”) to the effect that the Company Board is prepared to effect an Adverse Recom",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 11234,
+            "end": 11247,
+            "excerpt": "constitutes such Superior Proposal, (B) during the applicable Superior Proposal Notice Period (or any extension or continuation thereof), prior to its effecting an Adverse R",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 11746,
+            "end": 11759,
+            "excerpt": "by Parent and (C) Parent does not make, within the applicable Superior Proposal Notice Period (or any extension or continuation thereof) after the receipt of such notice, a ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 12286,
+            "end": 12299,
+            "excerpt": "posal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); and\n(ii) the Company Board shall have determined i",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:DAYS_IN_ADVANCE",
+            "start": 13429,
+            "end": 13444,
+            "excerpt": "notice (an “Intervening Event Notice”) to Parent at least four (4) Business Days in advance (as modified, extended or continued by this Section 4.02(d), the “Intervening",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 13531,
+            "end": 13544,
+            "excerpt": "dified, extended or continued by this Section 4.02(d), the “Intervening Event Notice Period”) to the effect that the Company Board is prepared to effect an Adverse Recom",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 13793,
+            "end": 13806,
+            "excerpt": "ning Event in reasonable detail and (B) during the applicable Intervening Event Notice Period (or any extension or continuation thereof), prior to its effecting an Adverse R",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 14279,
+            "end": 14292,
+            "excerpt": "by Parent and (C) Parent does not make, within the applicable Intervening Event Notice Period (or any extension or continuation thereof) after the receipt of such notice, a ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-MATCH",
+            "pattern_id": "NOSOL-MATCH:PHRASE:NOTICE_PERIOD",
+            "start": 14920,
+            "end": 14933,
+            "excerpt": "bove) shall require a new Intervening Event Notice with a new Intervening Event Notice Period of three (3) Business Days); and\n(ii) the Company Board shall have determined i",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 10,
+        "matched_count": 1,
+        "unmatched_count": 9,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.002253944402704733
+      },
+      {
+        "family": "NOSOL-NOTICE",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 1883,
+            "end": 1897,
+            "excerpt": "roposal to the Company Board on a confidential basis. The Company shall provide written notice to Parent of waiver or release of any standstill by the Company, including disc",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 10620,
+            "end": 10634,
+            "excerpt": "itions are satisfied:\n(i) (A) the Company Board shall have first provided prior written notice to Parent (a “Superior Proposal Notice”) at least four (4) Business Days in",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-NOTICE",
+            "pattern_id": "NOSOL-NOTICE:PHRASE:WRITTEN_NOTICE",
+            "start": 13341,
+            "end": 13355,
+            "excerpt": "itions are satisfied:\n(i) (A) the Company Board shall have first provided prior written notice (an “Intervening Event Notice”) to Parent at least four (4) Business Days i",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 3,
+        "matched_count": 0,
+        "unmatched_count": 3,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-PROHIBIT",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:REGEX:SOLICIT_STEM",
+            "start": 16,
+            "end": 28,
+            "excerpt": "Section 4.02 No Solicitation.\n(a) Upon execution and delivery of this Agreement, the Company and its Subsidi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 461,
+            "end": 478,
+            "excerpt": "s or negotiations with any third party conducted heretofore with respect to any Takeover Proposal. In furtherance of the foregoing, promptly following the execution and delivery",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 855,
+            "end": 872,
+            "excerpt": "ntiality agreement in connection with such person’s consideration of making a Takeover Proposal, to promptly return or destroy all non-public information furnished to such per",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 1502,
+            "end": 1519,
+            "excerpt": "to which the Company or any of its Subsidiaries is a party relating to any such Takeover Proposal and shall enforce the provisions of any such agreement; provided that the Compa",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 1793,
+            "end": 1810,
+            "excerpt": "solely to the extent necessary to permit the party referred therein to submit a Takeover Proposal to the Company Board on a confidential basis. The Company shall provide written",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 3958,
+            "end": 3975,
+            "excerpt": "ement or other agreement (each, an “Acquisition Agreement”) relating to any Takeover Proposal; provided, however, that at any time prior to obtaining the Shareholder Approva",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 4105,
+            "end": 4122,
+            "excerpt": "aining the Shareholder Approval, in response to a bona fide written unsolicited Takeover Proposal received after the date of this Agreement that the Company Board determines in ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 4301,
+            "end": 4318,
+            "excerpt": "tes, or could reasonably be expected to lead to, a Superior Proposal, and which Takeover Proposal did not result from a breach of this Section 4.02 or any other provision of thi",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 4709,
+            "end": 4726,
+            "excerpt": "tion with respect to the Company and its Subsidiaries to the person making such Takeover Proposal (and its representatives) pursuant to a confidentiality agreement which contain",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 5871,
+            "end": 5888,
+            "excerpt": "pate in discussions or negotiations with, and only with, the person making such Takeover Proposal (and its representatives) regarding such Takeover Proposal. Notwithstanding any",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 5930,
+            "end": 5947,
+            "excerpt": "e person making such Takeover Proposal (and its representatives) regarding such Takeover Proposal. Notwithstanding anything to the contrary in this Section 4.02(b), the Company ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 6111,
+            "end": 6128,
+            "excerpt": "the Company Representatives may, in response to a bona fide written unsolicited Takeover Proposal, contact the person who made such Takeover Proposal solely to determine whether",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 6163,
+            "end": 6180,
+            "excerpt": "na fide written unsolicited Takeover Proposal, contact the person who made such Takeover Proposal solely to determine whether such person intends to provide any documents (or ad",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 6324,
+            "end": 6341,
+            "excerpt": "documents (or additional documents) containing the terms and conditions of such Takeover Proposal.\nFor purposes of this Agreement, the term “Takeover Proposal” means any pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 6387,
+            "end": 6404,
+            "excerpt": "nditions of such Takeover Proposal.\nFor purposes of this Agreement, the term “Takeover Proposal” means any proposal or offer from any person or group (other than Parent or S",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 9509,
+            "end": 9526,
+            "excerpt": "e or propose to recommend or declare advisable, the approval or adoption of any Takeover Proposal or resolve or agree to take any such action, or adopt or approve any Takeover P",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 9596,
+            "end": 9613,
+            "excerpt": "r Proposal or resolve or agree to take any such action, or adopt or approve any Takeover Proposal, or (z) cause or permit the Company to enter into any Acquisition Agreement con",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 9790,
+            "end": 9807,
+            "excerpt": "ted to, or which is intended to or would reasonably be expected to lead to, any Takeover Proposal (other than a confidentiality agreement referred to in, and in accordance with,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 13068,
+            "end": 13085,
+            "excerpt": "rior to obtaining the Shareholder Approval, and other than in connection with a Takeover Proposal, the Company Board may, in response to an Intervening Event, effect an Adverse ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 16288,
+            "end": 16305,
+            "excerpt": "ments constitute an Intervening Event: (A) the receipt, existence or terms of a Takeover Proposal or any matter relating thereto or consequence thereof or (B) any change in the ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 16901,
+            "end": 16918,
+            "excerpt": "hours after the receipt thereof, advise Parent orally and in writing of (i) any Takeover Proposal or any request for information or inquiry that contemplates or that could reaso",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 17029,
+            "end": 17046,
+            "excerpt": " or inquiry that contemplates or that could reasonably be expected to lead to a Takeover Proposal and (ii) the terms and conditions of such Takeover Proposal, request or inquiry",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 17089,
+            "end": 17106,
+            "excerpt": "pected to lead to a Takeover Proposal and (ii) the terms and conditions of such Takeover Proposal, request or inquiry (including any subsequent amendment or other modification t",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 17262,
+            "end": 17279,
+            "excerpt": "on to such terms and conditions) and the identity of the person making any such Takeover Proposal, request or inquiry. Commencing upon the provision of any notice referred to ab",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 17571,
+            "end": 17588,
+            "excerpt": "rding the status and terms of discussions and negotiations relating to any such Takeover Proposal, request or inquiry and (B) the Company shall, as promptly as practicable (and ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "NOSOL-PROHIBIT",
+            "pattern_id": "NOSOL-PROHIBIT:PHRASE:TAKEOVER_PROPOSAL",
+            "start": 18027,
+            "end": 18044,
+            "excerpt": "ction agreements (including all schedules and exhibits thereto) relating to any Takeover Proposal.\n(f) Nothing contained in this Section 4.02 or elsewhere in this Agreement shal",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 31,
+        "matched_count": 5,
+        "unmatched_count": 26,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.012021036814425245
+      },
+      {
+        "family": "NOSOL-RECOMMEND",
+        "outcome": "LEXICON_FAMILY_UNCOVERED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "NOSOL-REMATCH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0.0034345819469786413
+      },
+      {
+        "family": "REMEDY-SPECIFIC-PERFORMANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-B-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CAP",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CAPITAL_STOCK",
+            "start": 7261,
+            "end": 7274,
+            "excerpt": "0% or more of the outstanding shares of Company Common Stock or of any class of capital stock of, or other equity or voting interests in, one or more of the Subsidiaries of ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:WARRANTS_TO_PURCHASE",
+            "start": 7404,
+            "end": 7424,
+            "excerpt": "r more of the Subsidiaries of the Company (or in each case, options, rights, or warrants to purchase, or securities convertible into or exchangeable for any such securities) which,",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "REP-T-CAP",
+            "pattern_id": "REP-T-CAP:PHRASE:CONVERTIBLE",
+            "start": 7440,
+            "end": 7451,
+            "excerpt": "mpany (or in each case, options, rights, or warrants to purchase, or securities convertible into or exchangeable for any such securities) which, in the aggregate, directly",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 3,
+        "matched_count": 0,
+        "unmatched_count": 3,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-CONTRACTS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-FRAUDCARVEOUT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-INDEPINVEST",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NONRELIANCE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-NOOTHERREPS",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "REP-T-QUALIFIER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-FIRPTA",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TRANSFER",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TAXM-TREATMENT",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-REVERSE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TAIL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMF-TARGET",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-BREACH",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-LEGAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-MUTUAL",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-NOVOTE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-OUTSIDE",
+        "outcome": "LEXICAL_ALL_SIGNALS_MATCHED",
+        "disagreement_set": [],
+        "pattern_hit_count": 0,
+        "matched_count": 0,
+        "unmatched_count": 0,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-RECOMMEND",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:COMPANY_BOARD_RECOMMENDATION",
+            "start": 9129,
+            "end": 9157,
+            "excerpt": "hhold,\n29\nwithdraw, qualify or modify in a manner adverse to Parent or Sub, the Company Board Recommendation (or the recommendation or declaration of advisability by any such committee of ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 9363,
+            "end": 9385,
+            "excerpt": ", resolution or agreement to take such action being referred to herein as an “Adverse Recommendation Change”), (y) recommend, declare advisable or propose to recommend or declare",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 10278,
+            "end": 10300,
+            "excerpt": "breach of this Section 4.02 or any other provision of this Agreement, effect an Adverse Recommendation Change or terminate this Agreement to enter into an alternative Acquisition Agr",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 10889,
+            "end": 10911,
+            "excerpt": "Notice Period”) to the effect that the Company Board is prepared to effect an Adverse Recommendation Change in response to a Superior Proposal, or to terminate this Agreement in ac",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 11318,
+            "end": 11340,
+            "excerpt": "ce Period (or any extension or continuation thereof), prior to its effecting an Adverse Recommendation Change or terminating this Agreement in accordance with Section 7.01(f), the Co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 12708,
+            "end": 12730,
+            "excerpt": "l continues to constitute a Superior Proposal and that the failure to make such Adverse Recommendation Change or to so terminate this Agreement in accordance with Section 7.01(f), as",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 13157,
+            "end": 13179,
+            "excerpt": "Proposal, the Company Board may, in response to an Intervening Event, effect an Adverse Recommendation Change or resolve or agree to take such action, only if all of the following co",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 13611,
+            "end": 13633,
+            "excerpt": "Notice Period”) to the effect that the Company Board is prepared to effect an Adverse Recommendation Change pursuant to this Section 4.02(d), which notice will describe the Interve",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 13877,
+            "end": 13899,
+            "excerpt": "ce Period (or any extension or continuation thereof), prior to its effecting an Adverse Recommendation Change in response to an Intervening Event, the Company and the Company\n30\nRepr",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 15342,
+            "end": 15364,
+            "excerpt": " continues to constitute an Intervening Event and that the failure to make such Adverse Recommendation Change would be inconsistent with the directors’ fiduciary duties under appli",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-RECOMMEND",
+            "pattern_id": "TERMR-RECOMMEND:ACRONYM:ADVERSE_RECOMMENDATION",
+            "start": 16011,
+            "end": 16033,
+            "excerpt": "counsel and a financial advisor of national reputation, that failure to make an Adverse Recommendation Change would be reasonably likely to result in a breach of its fiduciary duties",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 11,
+        "matched_count": 0,
+        "unmatched_count": 11,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      },
+      {
+        "family": "TERMR-SUPERIOR",
+        "outcome": "LEXICAL_UNMATCHED_SIGNALS",
+        "disagreement_set": [
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 4272,
+            "end": 4289,
+            "excerpt": "rmines in good faith constitutes, or could reasonably be expected to lead to, a Superior Proposal, and which Takeover Proposal did not result from a breach of this Section 4.02 ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 7653,
+            "end": 7670,
+            "excerpt": "es referred to in clause (1) above.\nFor purposes of this Agreement, the term “Superior Proposal” means any binding bona fide unsolicited written offer which did not result f",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 8636,
+            "end": 8653,
+            "excerpt": "y changes to the terms of this Agreement proposed by Parent in response to such Superior Proposal or otherwise) and (y) would reasonably be expected to be consummated in accorda",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 10113,
+            "end": 10130,
+            "excerpt": " to obtaining the Shareholder Approval, the Company Board may, in response to a Superior Proposal received after the date of this Agreement and not resulting from a breach of th",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 10408,
+            "end": 10425,
+            "excerpt": "reement to enter into an alternative Acquisition Agreement with respect to such Superior Proposal in accordance with Section 7.01(f), or resolve or agree to take any such action",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 10651,
+            "end": 10668,
+            "excerpt": "he Company Board shall have first provided prior written notice to Parent (a “Superior Proposal Notice”) at least four (4) Business Days in advance (as modified, extended or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 10791,
+            "end": 10808,
+            "excerpt": " in advance (as modified, extended or continued by this Section 4.02(c), the “Superior Proposal Notice Period”) to the effect that the Company Board is prepared to effect an",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 10936,
+            "end": 10953,
+            "excerpt": "y Board is prepared to effect an Adverse Recommendation Change in response to a Superior Proposal, or to terminate this Agreement in accordance with Section 7.01(f), as applicab",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 11171,
+            "end": 11188,
+            "excerpt": "sion of any written agreement relating to the transaction that constitutes such Superior Proposal, (B) during the applicable Superior Proposal Notice Period (or any extension or",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 11216,
+            "end": 11233,
+            "excerpt": " transaction that constitutes such Superior Proposal, (B) during the applicable Superior Proposal Notice Period (or any extension or continuation thereof), prior to its effectin",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 11728,
+            "end": 11745,
+            "excerpt": "greement proposed by Parent and (C) Parent does not make, within the applicable Superior Proposal Notice Period (or any extension or continuation thereof) after the receipt of s",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12057,
+            "end": 12074,
+            "excerpt": "cial advisor of national reputation), cause the offer previously constituting a Superior Proposal to no longer constitute a Superior Proposal (it being understood and agreed tha",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12101,
+            "end": 12118,
+            "excerpt": "the offer previously constituting a Superior Proposal to no longer constitute a Superior Proposal (it being understood and agreed that any amendment or modification of such Supe",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12194,
+            "end": 12211,
+            "excerpt": "osal (it being understood and agreed that any amendment or modification of such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notic",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12232,
+            "end": 12249,
+            "excerpt": "hat any amendment or modification of such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); ",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12268,
+            "end": 12285,
+            "excerpt": " such Superior Proposal shall require a new Superior Proposal Notice with a new Superior Proposal Notice Period of three (3) Business Days); and\n(ii) the Company Board shall hav",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12527,
+            "end": 12544,
+            "excerpt": "a financial advisor of nationally recognized reputation, that, in light of such Superior Proposal and taking into account any revised terms proposed by Parent, such Superior Pro",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12612,
+            "end": 12629,
+            "excerpt": "ior Proposal and taking into account any revised terms proposed by Parent, such Superior Proposal continues to constitute a Superior Proposal and that the failure to make such A",
+            "offset_reproducible": true,
+            "failure_code": null
+          },
+          {
+            "family": "TERMR-SUPERIOR",
+            "pattern_id": "TERMR-SUPERIOR:ACRONYM:SUPERIOR_PROPOSAL",
+            "start": 12656,
+            "end": 12673,
+            "excerpt": "ised terms proposed by Parent, such Superior Proposal continues to constitute a Superior Proposal and that the failure to make such Adverse Recommendation Change or to so termin",
+            "offset_reproducible": true,
+            "failure_code": null
+          }
+        ],
+        "pattern_hit_count": 19,
+        "matched_count": 0,
+        "unmatched_count": 19,
+        "irreproducible_count": 0,
+        "max_evidence_span_share": 0
+      }
+    ],
+    "counts": {
+      "families_total": 101,
+      "families_all_matched": 88,
+      "families_unmatched_signals": 10,
+      "families_uncovered": 3,
+      "total_pattern_hits": 110,
+      "total_matched": 8,
+      "total_unmatched": 102,
+      "total_irreproducible": 0
+    },
+    "lexical_disagreement_receipt_id": "e0642864f4a03e4ef9d12aee7fa7e10c4976b2fb51230d95fcf8cda4e6ce9db3"
+  }
+}

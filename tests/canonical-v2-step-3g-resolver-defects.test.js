@@ -54,18 +54,19 @@ function reasonCounts(entries) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Defect 1: Material Contracts ANY-threshold (line ~4071, pre-Step-3G).
-// Before this fix: 16 open world, 9 of them MATERIAL_CONTRACT_THRESHOLD_
-// UNCORROBORATED (every ANY-tagged threshold candidate in the run).
+// Defect 1: Step 3G reduced Material Contracts from 16 open-world rows to 7
+// by clearing 9 MATERIAL_CONTRACT_THRESHOLD_UNCORROBORATED rows. Step 2X-G
+// later promoted the recurring NONCOMPETE shape, resolving the bucket and
+// paired threshold claims from the same Modiv quote and reducing 7 to 5.
 // ─────────────────────────────────────────────────────────────────────────
-test('Material Contracts: modiv-material-contracts-20260807-replay open-world falls by 9, THRESHOLD_UNCORROBORATED clears to zero', () => {
+test('Material Contracts: Step 3G moves 16 to 7, then Step 2X-G NONCOMPETE moves 7 to 5', () => {
   const result = loadAndResolve('modiv-material-contracts-20260807-replay');
   const counts = reasonCounts(result.open_world);
-  assert.equal(result.open_world.length, 7, 'expected 16 -> 7 (a reduction of 9)');
+  assert.equal(result.open_world.length, 5, 'expected 16 -> 5 (a reduction of 11)');
   assert.equal(counts.MATERIAL_CONTRACT_THRESHOLD_UNCORROBORATED, undefined, 'the ANY-threshold defect must be fully cleared for this run');
-  // Untouched by this fix: the bucket-corroboration gate (a separate,
-  // already-widened check) and the model's own genuine open-world proposals.
-  assert.equal(counts.MATERIAL_CONTRACT_BUCKET_UNCORROBORATED, 4);
+  // Two uncorroborated buckets and three genuine proposals remain after the
+  // separate Step 2X-G NONCOMPETE promotion.
+  assert.equal(counts.MATERIAL_CONTRACT_BUCKET_UNCORROBORATED, 2);
   assert.equal(counts.NATIVE_OPEN_WORLD_PROPOSAL, 3);
 });
 
@@ -163,18 +164,45 @@ test('Step 3F1 pin: the two general-covenants COV-PUBLICITY provisions resolve J
   }
 });
 
-// HOSTILE (review condition 2b). generalCovenantCodeCorroborated answers
-// "does THIS code's vocabulary appear" -- it never checked whether some
-// OTHER, different-owner code's vocabulary also appears in the same quote.
-// Forges a real modiv-general-covenants-20260807-replay COV-NOTIFY
-// candidate's raw_value to a genuinely double-fire quote (real drafting
-// shape: a litigation-notice clause that is simultaneously COV-NOTIFY's
-// "promptly notify" and COV-LITNOTIFY's "Transaction Litigation" -- see
-// tests/canonical-v2-general-covenant-corroboration.test.js for the
-// corroboration-level proof both codes fire). The resolver must not
-// silently trust the model's COV-NOTIFY pick: it must route to
-// review_queue, never resolve, never open_world.
-test('HOSTILE: a genuinely double-firing General Covenant quote routes to review_queue, not resolved', () => {
+test('Step 2X-B: Concho Takeover Laws clauses resolve the section-grounded all-Parties actor end to end', () => {
+  const result = loadAndResolve('concho-general-covenants-20260808-r1');
+  const takeoverRows = result.resolved.filter((entry) => entry.concept_key === 'COV-TAKEOVER');
+  assert.equal(takeoverRows.length, 2);
+  assert.deepEqual(
+    takeoverRows.map((entry) => entry.claim.raw_value).sort(),
+    [
+      'None of the Parties will take any action that would cause the Transactions to be subject to requirements imposed by any Takeover Laws',
+      'each of them will take all reasonable steps within its control to exempt (or ensure the continued exemption of) the Transactions from the Takeover Laws of any state that purport to apply to this Agreement or the Transactions',
+    ].sort(),
+  );
+  for (const entry of takeoverRows) {
+    assert.equal(entry.party.capacity, 'JOINT_MULTI_PARTY');
+    assert.ok(entry.party.value === 'None of the Parties' || entry.party.value === 'each of them');
+  }
+  assert.equal(
+    result.review_queue.some((entry) => entry.concept_family === 'COV-TAKEOVER'
+      && entry.reasons.includes('PARTY_UNRESOLVED')),
+    false,
+  );
+  assert.equal(result.open_world.some((entry) => entry.canonical_value === 'COV-TAKEOVER'), false);
+});
+
+test('Step 2X-B: Metsera Post-Closing SEC Reports clause resolves end to end', () => {
+  const result = loadAndResolve('metsera-general-covenants-20260808-r1');
+  const secReportRows = result.resolved.filter((entry) => entry.concept_key === 'COV-SECREPORT');
+  assert.equal(secReportRows.length, 1);
+  assert.equal(secReportRows[0].party.capacity, 'TARGET');
+  assert.match(secReportRows[0].claim.raw_value, /^The Post-Closing SEC Reports provided by the Company/);
+  assert.equal(result.open_world.some((entry) => entry.canonical_value === 'COV-SECREPORT'
+    && entry.raw_value.startsWith('The Post-Closing SEC Reports provided by the Company')), false);
+});
+
+// DECISIONS.md §16 (lex specialis). A litigation-notice clause fires both
+// COV-NOTIFY and COV-LITNOTIFY at the corroboration level — that is still
+// true and still tested in canonical-v2-general-covenant-corroboration.
+// The resolver no longer holds that pair forever: the more specific code
+// wins, one row coded COV-LITNOTIFY, even when the model asserted NOTIFY.
+test('HOSTILE: NOTIFY+LITNOTIFY dual-coding remaps to COV-LITNOTIFY (specificity), not review_queue', () => {
   const dir = path.join(EVIDENCE_ROOT, 'modiv-general-covenants-20260807-replay');
   const runReceipt = JSON.parse(fs.readFileSync(path.join(dir, 'run-receipt.json'), 'utf8'));
   const adapter = JSON.parse(fs.readFileSync(path.join(dir, 'adapter-result.json'), 'utf8'));
@@ -196,13 +224,20 @@ test('HOSTILE: a genuinely double-firing General Covenant quote routes to review
     contract_vocabulary: compileFixtureContractV38(),
     admitted_source_context: admittedSourceContext,
   });
-  assert.equal(result.resolved.length, 0, 'a genuinely double-firing candidate must not resolve');
-  assert.equal(result.open_world.length, 0, 'a genuinely double-firing candidate must not fall to open_world either');
-  assert.equal(result.review_queue.length, 1);
-  assert.equal(result.review_queue[0].concept_key, 'COV-NOTIFY');
-  assert.deepEqual(result.review_queue[0].reasons, ['GENERAL_COVENANT_CODE_DOUBLE_FIRE']);
-  assert.equal(result.review_queue[0].has_resolution, false);
-  assert.equal(result.review_queue[0].auto_pass, false);
+  assert.equal(result.open_world.length, 0, 'specificity pair must not fall to open_world');
+  assert.equal(result.resolved.length, 1);
+  assert.equal(result.resolved[0].concept_key, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.canonical_value, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.attributes.covenant_code, 'COV-LITNOTIFY');
+  assert.equal(result.resolved[0].claim.attributes.specificity_precedence_from, 'COV-NOTIFY');
+  // Non-auto-pass resolved rows still appear on review_queue with
+  // has_resolution true — that is not a DOUBLE_FIRE hold.
+  const held = result.review_queue.filter((row) => row.has_resolution === false);
+  assert.equal(held.length, 0, 'specificity pair must not produce an unresolved hold');
+  assert.ok(
+    !result.review_queue.some((row) => (row.reasons || []).includes('GENERAL_COVENANT_CODE_DOUBLE_FIRE')),
+    'DOUBLE_FIRE must not fire on the ruled lex-specialis pair',
+  );
 });
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -271,10 +306,11 @@ test('Tax Matters: modiv-tax-matters-20260807-replay open-world falls by 5 (TAX_
 });
 
 // ─────────────────────────────────────────────────────────────────────────
-// Aggregate acceptance criterion: total open-world across the four families
-// falls by at least 30 of the (this Step's own re-measured) baseline.
+// Aggregate acceptance criterion: Step 3G alone falls by at least 30 from
+// its re-measured baseline. Step 2X-G then removes two more Modiv Material
+// Contracts claims without changing the other three family counts.
 // ─────────────────────────────────────────────────────────────────────────
-test('Total open-world across the four Step 3G families falls by at least 30', () => {
+test('Step 3G reduces total open-world by at least 30, then Step 2X-G reduces it by two more', () => {
   const families = [
     'modiv-material-contracts-20260807-replay',
     'modiv-general-covenants-20260807-replay',
@@ -287,11 +323,13 @@ test('Total open-world across the four Step 3G families falls by at least 30', (
   // test above, which each restate their own family's "before" number in a
   // comment.
   const BEFORE_TOTAL = 16 + 12 + 28 + 11;
+  const STEP_3G_AFTER_TOTAL = 7 + 1 + 18 + 6;
   let afterTotal = 0;
   for (const dirName of families) {
     afterTotal += loadAndResolve(dirName).open_world.length;
   }
-  assert.equal(afterTotal, 7 + 1 + 18 + 6);
-  const reduction = BEFORE_TOTAL - afterTotal;
-  assert.ok(reduction >= 30, `expected a reduction of at least 30, got ${reduction} (before ${BEFORE_TOTAL}, after ${afterTotal})`);
+  assert.equal(afterTotal, 5 + 1 + 18 + 6);
+  const step3gReduction = BEFORE_TOTAL - STEP_3G_AFTER_TOTAL;
+  assert.ok(step3gReduction >= 30, `expected Step 3G to reduce at least 30, got ${step3gReduction}`);
+  assert.equal(STEP_3G_AFTER_TOTAL - afterTotal, 2);
 });

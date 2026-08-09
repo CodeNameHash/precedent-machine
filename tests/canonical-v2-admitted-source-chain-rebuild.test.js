@@ -23,6 +23,12 @@ const {
   explainReferenceDivergence,
   createRebuildingSourceReferenceResolver,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
+  assertRecordedSourceMapProvenance,
+  readSourceMapPayload,
+  resolveContainedRepositoryPath,
+} = require('../lib/canonical-v2/source-map-payload-store');
+const { CONVERTER_DIGEST } = require('../lib/canonical-v2/sec-html-canonical-text');
 
 const REPO = path.join(__dirname, '..');
 const REBUILDABLE = path.join(REPO, 'evidence/canonical-v2/modiv-antitrust-20260807-replay');
@@ -40,6 +46,94 @@ test('the policy digest matches the string the runner actually hashes', () => {
   ).digest('hex');
   assert.equal(retrievalPolicyDigestFor('modiv'), expected);
   assert.notEqual(retrievalPolicyDigestFor('modiv'), retrievalPolicyDigestFor('topbuild'));
+});
+
+test('repository payload paths reject traversal and every symbolic-link component', (t) => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'payload-containment-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(root, 'store'));
+  fs.writeFileSync(path.join(root, 'store', 'payload.deflate'), 'payload');
+  fs.symlinkSync(path.join(root, 'store', 'payload.deflate'), path.join(root, 'store', 'linked.deflate'));
+  fs.symlinkSync(path.join(root, 'store'), path.join(root, 'linked-store'));
+
+  assert.equal(
+    resolveContainedRepositoryPath(root, 'store/payload.deflate'),
+    path.join(root, 'store', 'payload.deflate'),
+  );
+  assert.equal(
+    resolveContainedRepositoryPath(root, 'store/new.deflate', { allowMissingLeaf: true }),
+    path.join(root, 'store', 'new.deflate'),
+  );
+  for (const candidate of ['../payload.deflate', '/tmp/payload.deflate']) {
+    assert.throws(() => resolveContainedRepositoryPath(root, candidate), /PATH_(?:TRAVERSAL|INVALID)/);
+  }
+  for (const candidate of ['store/linked.deflate', 'linked-store/payload.deflate']) {
+    assert.throws(() => resolveContainedRepositoryPath(root, candidate), /SYMLINK_REFUSED/);
+  }
+});
+
+test('persisted payload reads reject a symbolic-link swap and close a verified descriptor on failure', (t) => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'payload-secure-read-'));
+  const canonicalTextId = 'a'.repeat(64);
+  const relativePayloadPath = sourceMapPayloadPathFor(canonicalTextId);
+  const payloadPath = path.join(root, relativePayloadPath);
+  const outsidePath = path.join(root, 'outside.deflate');
+  fs.mkdirSync(path.dirname(payloadPath), { recursive: true });
+  fs.writeFileSync(payloadPath, 'inside');
+  fs.writeFileSync(outsidePath, 'outside');
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  const originalOpen = fs.openSync;
+  fs.openSync = (file, flags, ...rest) => {
+    if (file === payloadPath) {
+      fs.unlinkSync(payloadPath);
+      fs.symlinkSync(outsidePath, payloadPath);
+    }
+    return originalOpen(file, flags, ...rest);
+  };
+  try {
+    assert.throws(
+      () => readSourceMapPayload({ repoRoot: root, canonicalTextId }),
+      (error) => error.code === 'PERSISTED_SOURCE_MAP_SYMLINK_REFUSED',
+    );
+  } finally {
+    fs.openSync = originalOpen;
+  }
+
+  fs.unlinkSync(payloadPath);
+  fs.writeFileSync(payloadPath, 'inside');
+  const originalFstat = fs.fstatSync;
+  const originalClose = fs.closeSync;
+  let closeCount = 0;
+  fs.fstatSync = () => {
+    const error = new Error('simulated fstat failure');
+    error.code = 'EIO';
+    throw error;
+  };
+  fs.closeSync = (descriptor) => {
+    closeCount += 1;
+    return originalClose(descriptor);
+  };
+  try {
+    assert.throws(() => readSourceMapPayload({ repoRoot: root, canonicalTextId }), /simulated fstat failure/);
+    assert.equal(closeCount, 1);
+  } finally {
+    fs.fstatSync = originalFstat;
+    fs.closeSync = originalClose;
+  }
+});
+
+test('recorded payload provenance is bound to the canonical-text-addressed store path', () => {
+  const canonicalTextId = 'a'.repeat(64);
+  const expectedPath = sourceMapPayloadPathFor(canonicalTextId);
+  assert.doesNotThrow(() => assertRecordedSourceMapProvenance({
+    source_map_payload_path: expectedPath,
+    source_map_compressed_sha256: 'b'.repeat(64),
+  }, canonicalTextId));
+  assert.throws(() => assertRecordedSourceMapProvenance({
+    source_map_payload_path: 'evidence/canonical-v2/other.deflate',
+    source_map_compressed_sha256: 'b'.repeat(64),
+  }, canonicalTextId), (error) => error.code === 'PERSISTED_SOURCE_MAP_PATH_MISMATCH');
 });
 
 test('it rebuilds the four primitives the writer asks for, and nothing else', () => {
@@ -60,7 +154,17 @@ test('it rebuilds the four primitives the writer asks for, and nothing else', ()
 test('the rebuild lands on the identity the run committed', () => {
   const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
   const adapter = JSON.parse(fs.readFileSync(path.join(REBUILDABLE, 'adapter-result.json'), 'utf8'));
+  const sourceReference = JSON.parse(fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'));
   const reference = adapter.write_set.source_references[0];
+  assert.equal(primitives.conversion.converter_digest, CONVERTER_DIGEST);
+  assert.equal(
+    primitives.conversion.source_map_digest,
+    sourceReference.admitted_source_capture_inputs.source_map_digest,
+  );
+  assert.equal(
+    primitives.conversion.source_map_compressed_sha256,
+    sourceReference.admitted_source_capture_inputs.source_map_compressed_sha256,
+  );
   assert.equal(
     primitives.immutable_source_document.immutable_source_document_id,
     reference.immutable_source_document_id,
@@ -146,7 +250,7 @@ test('a divergence is diagnosed by what actually differs', () => {
   assert.match(documentDrift.diagnosis, /text it never saw/);
 });
 
-test('the identity contract depends on DEFLATE output, which is why history is unimportable', () => {
+test('the identity contract distinguishes DEFLATE output for the same source map', () => {
   // This is the measurement behind that diagnosis, kept as a test so the
   // claim in the module header stays true or fails loudly.
   //
@@ -164,24 +268,16 @@ test('the identity contract depends on DEFLATE output, which is why history is u
   );
   assert.equal(uncompressed.length, conversion.source_map_uncompressed_byte_length);
 
-  // The historical run's compressed digest is unreachable from these bytes at
-  // any available setting. If a future zlib change made it reachable, this
-  // assertion fails and the header's claim needs revisiting -- which is the
-  // point of pinning it.
-  const historical = 'd9da156bd091bc9ed1d3ae4609814b0fa2e016d1da270acc771d57c3f691cb50';
-  let reachable = null;
-  for (const level of [1, 5, 9]) {
-    for (const memLevel of [7, 8, 9]) {
-      const candidate = zlib.deflateRawSync(uncompressed, {
-        level, memLevel, windowBits: 15, strategy: zlib.constants.Z_DEFAULT_STRATEGY,
-      });
-      if (crypto.createHash('sha256').update(candidate).digest('hex') === historical) {
-        reachable = { level, memLevel };
-      }
-    }
-  }
-  assert.equal(reachable, null, 'the historical compressed source map is not reproducible here');
-  assert.notEqual(conversion.source_map_compressed_sha256, historical);
+  const alternative = zlib.deflateRawSync(uncompressed, {
+    level: 1,
+    memLevel: 8,
+    windowBits: 15,
+    strategy: zlib.constants.Z_DEFAULT_STRATEGY,
+  });
+  assert.notEqual(
+    crypto.createHash('sha256').update(alternative).digest('hex'),
+    conversion.source_map_compressed_sha256,
+  );
 });
 
 // ─── The persisted compressed source map ─────────────────────────────────
@@ -219,6 +315,25 @@ test('every regenerated run names a payload that is actually there', () => {
     // path is machine-specific and resolves nowhere else.
     assert.ok(!path.isAbsolute(named), `${run} recorded an absolute payload path`);
   }
+});
+
+test('a run cannot read its persisted payload through an absolute path', () => {
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'chain-absolute-payload-'));
+  const runDirectory = path.join(scratch, 'run');
+  fs.mkdirSync(runDirectory);
+  const reference = JSON.parse(
+    fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'),
+  );
+  reference.admitted_source_capture_inputs.source_map_payload_path = path.join(
+    REPO,
+    reference.admitted_source_capture_inputs.source_map_payload_path,
+  );
+  fs.writeFileSync(path.join(runDirectory, 'source-reference.json'), JSON.stringify(reference));
+  assert.throws(
+    () => rebuildAdmittedSourcePrimitives({ runDirectory }),
+    (error) => error.code === 'PERSISTED_SOURCE_MAP_PATH_INVALID',
+  );
+  fs.rmSync(scratch, { recursive: true, force: true });
 });
 
 test('a payload that inflates to something else is refused', () => {
@@ -293,15 +408,19 @@ test('a run naming a payload that is gone is refused, not quietly rebuilt', () =
   // would produce a different identity, which is the failure the payload
   // exists to prevent.
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'chain-payload-'));
+  const repoRoot = path.join(scratch, 'repo');
   const runDirectory = path.join(scratch, 'run');
   fs.mkdirSync(runDirectory);
   const reference = JSON.parse(
     fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'),
   );
-  reference.admitted_source_capture_inputs.source_map_payload_path = `${SOURCE_MAP_PAYLOAD_STORE}/gone.deflate`;
+  const rawHtmlRelative = reference.admitted_source_capture_inputs.raw_html_path;
+  fs.mkdirSync(path.dirname(path.join(repoRoot, rawHtmlRelative)), { recursive: true });
+  fs.copyFileSync(path.join(REPO, rawHtmlRelative), path.join(repoRoot, rawHtmlRelative));
+  fs.mkdirSync(path.join(repoRoot, SOURCE_MAP_PAYLOAD_STORE), { recursive: true });
   fs.writeFileSync(path.join(runDirectory, 'source-reference.json'), JSON.stringify(reference));
   assert.throws(
-    () => rebuildAdmittedSourcePrimitives({ runDirectory }),
+    () => rebuildAdmittedSourcePrimitives({ runDirectory, repoRoot }),
     (error) => error.code === 'PERSISTED_SOURCE_MAP_NOT_FOUND',
   );
   fs.rmSync(scratch, { recursive: true, force: true });

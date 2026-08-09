@@ -1,0 +1,124 @@
+{
+  "schema": "TERMINATION_LIMB_CHAPEAU_STRUCTURAL_PARITY/V1",
+  "generated": "2026-08-08",
+  "notes": "Pinned chapeau_text values for Step 2X termination structural-half adapter swap. Spans are UTF-8 byte-identical to findTerminationLimbChapeau pre-swap on these sections.",
+  "sections": [
+    {
+      "deal": "modiv",
+      "section_reference": "7.1",
+      "fixture_file": "modiv-section-7.1.txt",
+      "section_start_byte": 321761,
+      "section_end_byte": 331500,
+      "section_sha256": "2e2d8e1798ead938eaf786d03e143e29ac7a11c3c6ecc522d88a3fca726e4d11",
+      "canonical_text_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+      "chapeaux": {
+        "a": {
+          "chapeau_text": "(a) by the mutual written consent of Parent and the Company;",
+          "start_byte": 197,
+          "end_byte": 257,
+          "chapeau_sha256": "2759d6b0ae158853b2b8d77796552ed276c4ada0f79561b3e2b5acf9d7eb1573"
+        },
+        "b": {
+          "chapeau_text": "(b) by either the Company, on the one hand, or Parent, on the other hand, by written notice to the other, if:",
+          "start_byte": 261,
+          "end_byte": 370,
+          "chapeau_sha256": "738aed96022b29801cbac4341cdddd07cdf69ccbef54046b0a87f727e7d16d76"
+        },
+        "c": {
+          "chapeau_text": "(c) by written notice from the Company to Parent, if:",
+          "start_byte": 2105,
+          "end_byte": 2158,
+          "chapeau_sha256": "411bf558f97151b1538a9a2cbe4940e457cf962c9d0429780eaedc742e4d9115"
+        },
+        "d": {
+          "chapeau_text": "(d) by written notice from Parent to the Company, if:",
+          "start_byte": 5212,
+          "end_byte": 5265,
+          "chapeau_sha256": "4086ab6c492a316c7b352d1372873de33084c38436630addd76f96fa987a9339"
+        }
+      }
+    },
+    {
+      "deal": "concho",
+      "section_reference": "8.1",
+      "fixture_file": "concho-section-8.1.txt",
+      "section_start_byte": 273223,
+      "section_end_byte": 276949,
+      "section_sha256": "bfd0cde04adb2a4b166bff1820b4607165a0c49c8df5020577385ab99c95f642",
+      "canonical_text_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+      "chapeaux": {
+        "a": {
+          "chapeau_text": "(a) by mutual written consent of the Company and Parent;",
+          "start_byte": 272,
+          "end_byte": 328,
+          "chapeau_sha256": "73348f90ec59d64e3198d4eda34f3a11765db1174606d27a8764ad6001fa953e"
+        },
+        "b": {
+          "chapeau_text": "(b) by either the Company or Parent:",
+          "start_byte": 329,
+          "end_byte": 365,
+          "chapeau_sha256": "e4185c4bba9db72c8548f17f226e6f70c81998eb561e2eb9ef248cdb31e57318"
+        },
+        "c": {
+          "chapeau_text": "(c) by Parent, prior to, but not after, the time the Company Stockholder Approval is obtained, if the Company Board or a committee thereof shall have effected a Company Change of Recommendation (whether or not such Company Change of Recommendation is permitted by this Agreement);",
+          "start_byte": 2707,
+          "end_byte": 2987,
+          "chapeau_sha256": "a8a4e028c49b70884908c5a69079e73507869c967aba810aab79fc344507cb21"
+        },
+        "d": {
+          "chapeau_text": "(d) by the Company, prior to, but not after, the time the Parent Stockholder Approval is obtained, if the Parent Board or a committee thereof shall have effected a Parent Change of Recommendation (whether or not such Parent Change of Recommendation is permitted by this Agreement);",
+          "start_byte": 2988,
+          "end_byte": 3269,
+          "chapeau_sha256": "c176d0d436c4b794d9a707cd0e49c1598ed9ed02cdae1d6121df87b175761d1f"
+        },
+        "e": {
+          "chapeau_text": "(e) by Parent, if the Company, its Subsidiaries or any of the Company’s directors or executive officers shall have Willfully and Materially Breached the obligations set forth in Section 6.3(b) (No Solicitation by the Company);",
+          "start_byte": 3270,
+          "end_byte": 3498,
+          "chapeau_sha256": "8920baf69df65d9292faa17ab0c1ab6889641d3f4849019c7574f53ec1f2321b"
+        },
+        "f": {
+          "chapeau_text": "(f) by the Company, if Parent, its Subsidiaries or any of Parent’s directors or executive officers shall have Willfully and Materially Breached the obligations set forth in Section 6.4(b) (No Solicitation by Parent).\n",
+          "start_byte": 3502,
+          "end_byte": 3721,
+          "chapeau_sha256": "eb4a6bd8ea80d526ddf0795125ab60b607e9b551bdcaee402ab1eca37d59f91b"
+        }
+      }
+    },
+    {
+      "deal": "topbuild",
+      "section_reference": "6.2",
+      "fixture_file": "topbuild-section-6.2.txt",
+      "section_start_byte": 364374,
+      "section_end_byte": 365781,
+      "section_sha256": "fe532d42c8124c3d1ff204b551f8552b5a5cf07454dc16a8b327f33b88794b9a",
+      "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+      "chapeaux": {
+        "a": {
+          "chapeau_text": "(a) the Titanium Merger has not been consummated by January 17, 2027 (the “Outside Date”);",
+          "start_byte": 174,
+          "end_byte": 268,
+          "chapeau_sha256": "e8ee9973e294a3d4c50ac268e4b575818403e594d13fe733ad6eade7f8902396"
+        },
+        "b": {
+          "chapeau_text": "(b) the Parent Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Parent Stockholder Meeting duly convened (or any adjournment or postponement thereof);",
+          "start_byte": 551,
+          "end_byte": 762,
+          "chapeau_sha256": "fc9236bf63d6f8d11d16853fbb81c40414c5f8ce9d080ea4805b1d62ea12af75"
+        },
+        "c": {
+          "chapeau_text": "(c) the Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof);",
+          "start_byte": 763,
+          "end_byte": 976,
+          "chapeau_sha256": "874923d79600728dc26cb11cb1f63311f72f0e07785a863696e1c8668a068b92"
+        },
+        "d": {
+          "chapeau_text": "(d) a permanent injunction or other Order which is final and non-appealable shall have been issued preventing or prohibiting consummation of the Mergers;",
+          "start_byte": 980,
+          "end_byte": 1133,
+          "chapeau_sha256": "0de5bfbc503dae0fbc87e7433b53849472ac1c5983b80d876204e008c51713c8"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "dividends required to be declared and paid pursuant to the terms of the Convertible Perpetual Preferred Stock, Series B Preferred Stock and Series C Preferred Stock",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Required preferred-stock dividends are recurring and not a coordination covenant or one-time special dividend.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "dd2c56c0a2dd5baf531925b0a172cbf4303fb1a0ec1eb41bbafdafc3ccdfb6b7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "fdd31a272212652eee453d2238fb9ab5e531a5e91f7c0618c4fa870a71a641d3",
+          "document_ordinal": 0,
+          "absolute_start": 4141,
+          "absolute_end": 4305,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a7d8b673b6c94e7b528e5526ba53f06c7de7a97553623b32cac114cfad3e78a5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "303e0ef5db7c75645cde5f026b2e677b6b8dec09ef22dc69808708d04be730de",
+        "producer_receipt_id": "75de72d53564f10b06a9a8136f1b271b786ae98172bfbad793d4b562b2acd4b7",
+        "governed_scope_digest": "737a125bde4d3795c7d31852c62fe5b15debe27b8478c5caf211a62834620c3b",
+        "extraction_provenance_id": "3ff5969e610d1162c2ca2c020f9074d6dad27ad07fce2367d7deff956e4f97d4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.2",
+      "source_citation": "4.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "dividends and distributions paid or made on a pro rata basis by direct or indirect Subsidiaries of Parent in the ordinary course consistent with past practice",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Ordinary-course subsidiary dividends are recurring and not a coordination covenant or one-time special dividend.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1cfbabf97d30bc8b7e5977c79410301c4d8b772ea710f7dc4564082df287178e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "19a7113fbf890da545516f3ee3870c136b28ae1f5ea97993f361800acc028168",
+          "document_ordinal": 0,
+          "absolute_start": 5695,
+          "absolute_end": 5853,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "eea4f6ae6d3240b47a1405b9f4bfe677d8d840481d2eb3de604e92950261f7fa",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "303e0ef5db7c75645cde5f026b2e677b6b8dec09ef22dc69808708d04be730de",
+        "producer_receipt_id": "75de72d53564f10b06a9a8136f1b271b786ae98172bfbad793d4b562b2acd4b7",
+        "governed_scope_digest": "737a125bde4d3795c7d31852c62fe5b15debe27b8478c5caf211a62834620c3b",
+        "extraction_provenance_id": "3ff5969e610d1162c2ca2c020f9074d6dad27ad07fce2367d7deff956e4f97d4"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "756b669d0bf77c15b1aa0ca059b967faf288e72fb41513fa498c9453e7aecb30",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 2,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 2,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "78c7c90a00f343bcf96037d01490bd08d3b584e0f407d5eeae49249194cdb666"
+  }
+}

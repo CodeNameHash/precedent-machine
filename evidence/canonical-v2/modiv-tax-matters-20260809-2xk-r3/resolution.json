@@ -1,0 +1,1835 @@
+{
+  "resolved": [
+    {
+      "section_reference": "3.13",
+      "source_citation": "3.13(p)",
+      "citation_context": {
+        "parent_section_reference": "3.13",
+        "child_section_reference": "3.13",
+        "parent_chapeau_quote": "Section 3.13 Tax Matters.",
+        "child_clause_quote": "The Company is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "584b0799f7bd4452dad3b9e2eedb544c370be4d9ad4032c9bcc6b6e14785f4e7",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 99540,
+        "absolute_end": 109242,
+        "concept_key": "TAXM-TREATMENT",
+        "ordinal": 1,
+        "source_anchor_id": "744616ea3c175cb9c0097942cbb35e68056c22eb2fbbd8fc1c8cb4778248f273",
+        "provision_instance_id": "2b65ab7e164274f14405d53f9f38a1cfea6e33b43115216d12809bee1bbef818",
+        "closure_id": "0c54ec07db18df84beb898d015a7361b3a7b06f1d86a38d7ef7bcbe22623bba1"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5b0b1c64e708b6d42c05b8c441f4b39c8c17b5ac47532f8621c75c9d8d7503c6",
+        "claim_occurrence_id": "097809a4045c51314038a92d7e4b121452cdfacdc3ee2d53f9a9ef0b14e90d65",
+        "subject_occurrence_id": "2b65ab7e164274f14405d53f9f38a1cfea6e33b43115216d12809bee1bbef818",
+        "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "27547c2ca2324d810cb4e94641825b68b75078bb161e93ce9e4a6ffce64b831a"
+        ],
+        "attributes": {
+          "section_reference": "3.13",
+          "assertion_kind": "TREATMENT_PROTECTION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "27547c2ca2324d810cb4e94641825b68b75078bb161e93ce9e4a6ffce64b831a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "edbe45c98a6abec58650788924456972d7c1e216a4d5b86203226e81670e1719",
+            "document_ordinal": 0,
+            "absolute_start": 9541,
+            "absolute_end": 9701,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "a2466c80441f1d86bb94adc8a82c8d5f9a91cbb10a33bbfdd334a326d35df37a"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.13",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.13",
+          "normalized_citation": "3.13",
+          "derived_citation": "3.13"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5b0b1c64e708b6d42c05b8c441f4b39c8c17b5ac47532f8621c75c9d8d7503c6",
+            "claim_occurrence_id": "097809a4045c51314038a92d7e4b121452cdfacdc3ee2d53f9a9ef0b14e90d65",
+            "subject_occurrence_id": "2b65ab7e164274f14405d53f9f38a1cfea6e33b43115216d12809bee1bbef818",
+            "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "27547c2ca2324d810cb4e94641825b68b75078bb161e93ce9e4a6ffce64b831a"
+            ],
+            "attributes": {
+              "section_reference": "3.13",
+              "assertion_kind": "TREATMENT_PROTECTION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "27547c2ca2324d810cb4e94641825b68b75078bb161e93ce9e4a6ffce64b831a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "edbe45c98a6abec58650788924456972d7c1e216a4d5b86203226e81670e1719",
+                "document_ordinal": 0,
+                "absolute_start": 9541,
+                "absolute_end": 9701,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "a2466c80441f1d86bb94adc8a82c8d5f9a91cbb10a33bbfdd334a326d35df37a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "e45361924840aee7eee51a3a368d3b0fe20440fc43af145457fe50effe599737",
+            "producer_receipt_id": "f59a4a697c76aae51ab6a8d5446869749c8a4373930a044b707c6131c08671f9",
+            "governed_scope_digest": "4b274bde037a46e9779b61c675538cccdb8e9814b385b4c990803d1e8a84d39f",
+            "extraction_provenance_id": "ca958ca014d852dee772d7bab3b2feb45de96696434c167e329700a30753974e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.13",
+          "normalized_citation": "3.13",
+          "derived_citation": "3.13(p)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "p",
+          "depth": 1,
+          "start_byte": 9540,
+          "end_byte": 9702
+        },
+        "chain": [
+          {
+            "path": "p",
+            "start_byte": 9540,
+            "end_byte": 9702,
+            "text": " The Company is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 26,
+            "text": "Section 3.13 Tax Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "4.15",
+      "source_citation": "4.15(i)",
+      "citation_context": {
+        "parent_section_reference": "4.15",
+        "child_section_reference": "4.15",
+        "parent_chapeau_quote": "Section 4.15 Tax Matters.",
+        "child_clause_quote": "Parent is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "584b0799f7bd4452dad3b9e2eedb544c370be4d9ad4032c9bcc6b6e14785f4e7",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 184601,
+        "absolute_end": 188453,
+        "concept_key": "TAXM-TREATMENT",
+        "ordinal": 1,
+        "source_anchor_id": "473835f445d81adb6644f2d2c9dcd08cc99f8c9fb5f54036bcaefb7af0e58131",
+        "provision_instance_id": "85d65abad946072ffbf6325ca590fc4ff7690ba8e8fe4ee207e92845f66e3252",
+        "closure_id": "bbec217bb8965def91dc04c3af2ebefbc6c4b3b7ef3519614b662224d762c836"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "0d9424afd1678b73bd443216385e0d6a71e68014b9a2ca191d5288239538e42a",
+        "claim_occurrence_id": "99c074334728d178ce0cd521be2c9fabf7c2f068670a0fed981b669e16ba630e",
+        "subject_occurrence_id": "85d65abad946072ffbf6325ca590fc4ff7690ba8e8fe4ee207e92845f66e3252",
+        "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "09596700af92f2a7213038ec0ed9ba891c937de1836d93d3c709d45341760d2a"
+        ],
+        "attributes": {
+          "section_reference": "4.15",
+          "assertion_kind": "TREATMENT_PROTECTION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "09596700af92f2a7213038ec0ed9ba891c937de1836d93d3c709d45341760d2a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "92ec4b8a40e1807c4f28782228e82fb0860f2ccda6cec91de310481b091e21b1",
+            "document_ordinal": 0,
+            "absolute_start": 3696,
+            "absolute_end": 3851,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7fa3f79f01d1d0fd1627f52e2a0fa89a422ea7a7c25209b3dc3d925c99bde8ab"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.15",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.15",
+          "normalized_citation": "4.15",
+          "derived_citation": "4.15"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0d9424afd1678b73bd443216385e0d6a71e68014b9a2ca191d5288239538e42a",
+            "claim_occurrence_id": "99c074334728d178ce0cd521be2c9fabf7c2f068670a0fed981b669e16ba630e",
+            "subject_occurrence_id": "85d65abad946072ffbf6325ca590fc4ff7690ba8e8fe4ee207e92845f66e3252",
+            "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "09596700af92f2a7213038ec0ed9ba891c937de1836d93d3c709d45341760d2a"
+            ],
+            "attributes": {
+              "section_reference": "4.15",
+              "assertion_kind": "TREATMENT_PROTECTION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "09596700af92f2a7213038ec0ed9ba891c937de1836d93d3c709d45341760d2a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "92ec4b8a40e1807c4f28782228e82fb0860f2ccda6cec91de310481b091e21b1",
+                "document_ordinal": 0,
+                "absolute_start": 3696,
+                "absolute_end": 3851,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7fa3f79f01d1d0fd1627f52e2a0fa89a422ea7a7c25209b3dc3d925c99bde8ab"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "1001889615e44d59f60e3822e2c05a527214c4cde3d8493c4ae886a476f5410d",
+            "producer_receipt_id": "b75b481e80fa4de4d122d82ab2a597c9ee166c3fa22b49ad67d2eec418638a95",
+            "governed_scope_digest": "6b776fe12292e439ea81439e861e81c9e876e5396c695c4caff1b7b08c3e649a",
+            "extraction_provenance_id": "78ba8feab8dd097edfb06a9e1257347942e932608009f188cc47c2ef1bc1b842"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.15",
+          "normalized_citation": "4.15",
+          "derived_citation": "4.15(i)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 3695,
+          "end_byte": 3852
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 3695,
+            "end_byte": 3852,
+            "text": " Parent is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 26,
+            "text": "Section 4.15 Tax Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(b)(i)",
+      "citation_context": {
+        "parent_section_reference": "5.12",
+        "child_section_reference": "5.12",
+        "parent_chapeau_quote": "Section 5.12 Taxes.",
+        "child_clause_quote": "The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act)."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "584b0799f7bd4452dad3b9e2eedb544c370be4d9ad4032c9bcc6b6e14785f4e7",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 296590,
+        "absolute_end": 302102,
+        "concept_key": "TAXM-OPINION",
+        "ordinal": 1,
+        "source_anchor_id": "f57b9d42b54022f5ec317868960179313599c33962c2b624bb116fe024eef0e2",
+        "provision_instance_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+        "closure_id": "017fc869e759bd378aec0984b7cb46875f982ad5b0a7306241c32b6301a6bee7"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "4abade978b6fb900a9657b047cf5b3aaa78aa56b0593d059f2bb7013dbd36a8b",
+        "claim_occurrence_id": "9a16a61c5aa039ba4c7c085a356de8ec53238381a97d6746c37a70276b26b38c",
+        "subject_occurrence_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+        "claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9e8fb3e191c1dc4ca558ccd5168345ad785af9af93806c3383551da0f5c11156"
+        ],
+        "attributes": {
+          "section_reference": "5.12",
+          "assertion_kind": "TAX_OPINION_COOPERATION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": "the opinion described in Section 6.3(d)",
+          "representation_letter_ref": "a “Company Tax Representation Letter”",
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9e8fb3e191c1dc4ca558ccd5168345ad785af9af93806c3383551da0f5c11156",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "b6d1afa9fdf6781a0e333fb945ca62b4ad349e9a0ffb705a2f503ec7ba96b512",
+            "document_ordinal": 0,
+            "absolute_start": 236,
+            "absolute_end": 2317,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c41ab32f16e8a8f894585980e38065bcfffc0fd34de6f82a0d72fefd0da9f072"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "4abade978b6fb900a9657b047cf5b3aaa78aa56b0593d059f2bb7013dbd36a8b",
+            "claim_occurrence_id": "9a16a61c5aa039ba4c7c085a356de8ec53238381a97d6746c37a70276b26b38c",
+            "subject_occurrence_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+            "claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9e8fb3e191c1dc4ca558ccd5168345ad785af9af93806c3383551da0f5c11156"
+            ],
+            "attributes": {
+              "section_reference": "5.12",
+              "assertion_kind": "TAX_OPINION_COOPERATION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": "the opinion described in Section 6.3(d)",
+              "representation_letter_ref": "a “Company Tax Representation Letter”",
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9e8fb3e191c1dc4ca558ccd5168345ad785af9af93806c3383551da0f5c11156",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "b6d1afa9fdf6781a0e333fb945ca62b4ad349e9a0ffb705a2f503ec7ba96b512",
+                "document_ordinal": 0,
+                "absolute_start": 236,
+                "absolute_end": 2317,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c41ab32f16e8a8f894585980e38065bcfffc0fd34de6f82a0d72fefd0da9f072"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+            "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+            "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+            "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12(b)(i)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 203,
+          "end_byte": 3971
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 203,
+            "end_byte": 3971,
+            "text": " Tax Representation Letters.\n(i) The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).\n(ii) Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).\n79\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 20,
+            "text": "Section 5.12 Taxes.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(b)(ii)",
+      "citation_context": {
+        "parent_section_reference": "5.12",
+        "child_section_reference": "5.12",
+        "parent_chapeau_quote": "Section 5.12 Taxes.",
+        "child_clause_quote": "Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act)."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "584b0799f7bd4452dad3b9e2eedb544c370be4d9ad4032c9bcc6b6e14785f4e7",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 296590,
+        "absolute_end": 302102,
+        "concept_key": "TAXM-OPINION",
+        "ordinal": 1,
+        "source_anchor_id": "f57b9d42b54022f5ec317868960179313599c33962c2b624bb116fe024eef0e2",
+        "provision_instance_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+        "closure_id": "017fc869e759bd378aec0984b7cb46875f982ad5b0a7306241c32b6301a6bee7"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "fb2fd62bd195522aa788591ed6743bb9ef1945dbe8769df971c11e0217aa4f0b",
+        "claim_occurrence_id": "6e23cca9c25f326d36f5dca8ae515d7504e94ed78c42e7942d67fbb214e4ebe6",
+        "subject_occurrence_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+        "claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "9d79bdc758596d66d32fa7081cd7d00d09f4d6a6acecaef849601347bbe8daf9"
+        ],
+        "attributes": {
+          "section_reference": "5.12",
+          "assertion_kind": "TAX_OPINION_COOPERATION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": "the opinion described in Section 6.3(d)",
+          "representation_letter_ref": "a “Parent Tax Representation Letter”",
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "9d79bdc758596d66d32fa7081cd7d00d09f4d6a6acecaef849601347bbe8daf9",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "e317a8f841708af45bc5d6f0dd6efc54625d4306fbc5e3d132f588fe23fa2303",
+            "document_ordinal": 0,
+            "absolute_start": 2323,
+            "absolute_end": 3967,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "14ae0d114f8e14247d6e062bea9e20f9a0889a4af1eaa0c97cd47d87b77cc741"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "fb2fd62bd195522aa788591ed6743bb9ef1945dbe8769df971c11e0217aa4f0b",
+            "claim_occurrence_id": "6e23cca9c25f326d36f5dca8ae515d7504e94ed78c42e7942d67fbb214e4ebe6",
+            "subject_occurrence_id": "fda6cffe9566aa06de3b44712235e493a13790e886f629f6e8be8d032ffa9424",
+            "claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9d79bdc758596d66d32fa7081cd7d00d09f4d6a6acecaef849601347bbe8daf9"
+            ],
+            "attributes": {
+              "section_reference": "5.12",
+              "assertion_kind": "TAX_OPINION_COOPERATION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": "the opinion described in Section 6.3(d)",
+              "representation_letter_ref": "a “Parent Tax Representation Letter”",
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9d79bdc758596d66d32fa7081cd7d00d09f4d6a6acecaef849601347bbe8daf9",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "e317a8f841708af45bc5d6f0dd6efc54625d4306fbc5e3d132f588fe23fa2303",
+                "document_ordinal": 0,
+                "absolute_start": 2323,
+                "absolute_end": 3967,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "14ae0d114f8e14247d6e062bea9e20f9a0889a4af1eaa0c97cd47d87b77cc741"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+            "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+            "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+            "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT",
+          "LEXICAL_LEXICON_UNCOVERED_FAMILY"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12(b)(ii)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 203,
+          "end_byte": 3971
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 203,
+            "end_byte": 3971,
+            "text": " Tax Representation Letters.\n(i) The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).\n(ii) Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).\n79\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 20,
+            "text": "Section 5.12 Taxes.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(d)",
+      "citation_context": {
+        "parent_section_reference": "5.12",
+        "child_section_reference": "5.12",
+        "parent_chapeau_quote": "Section 5.12 Taxes.",
+        "child_clause_quote": "Parent shall, with the Company’s good faith cooperation and assistance, prepare, execute and file, or cause to be prepared, executed and filed, all returns, questionnaires, applications or other documents regarding Transfer Taxes, and Parent and the Company shall reasonably cooperate to minimize the amount of such Transfer Taxes to the extent permitted by applicable Law."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TRANSFER_TAX_COOPERATION",
+      "concept_key": "TAXM-TRANSFER",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "584b0799f7bd4452dad3b9e2eedb544c370be4d9ad4032c9bcc6b6e14785f4e7",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 296590,
+        "absolute_end": 302102,
+        "concept_key": "TAXM-TRANSFER",
+        "ordinal": 1,
+        "source_anchor_id": "f57b9d42b54022f5ec317868960179313599c33962c2b624bb116fe024eef0e2",
+        "provision_instance_id": "fe80f22eb5921d8e1fbfe69e58f11711cc7754395f95633408e95c4e0704cfdc",
+        "closure_id": "45c365a2605aabb11b8a059fff0167f946212d0126c90514bd78b43cb9bd64a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "7c704fe660b0650e849b58ce3652371e3988d7bfd6e299f69c862301df1d842c",
+        "claim_occurrence_id": "691cc926b139ab30a11c64639148d7d8d536aa109675e8217aaadf705dda9869",
+        "subject_occurrence_id": "fe80f22eb5921d8e1fbfe69e58f11711cc7754395f95633408e95c4e0704cfdc",
+        "claim_definition_key": "TRANSFER_TAX_COOPERATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent shall, with the Company’s good faith cooperation and assistance, prepare, execute and file, or cause to be prepared, executed and filed, all returns, questionnaires, applications or other documents regarding Transfer Taxes, and Parent and the Company shall reasonably cooperate to minimize the amount of such Transfer Taxes to the extent permitted by applicable Law.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "697f3b7f53d59518294b983d5175af54a90d6f48295a15e24c9d78b64e04e39e"
+        ],
+        "attributes": {
+          "section_reference": "5.12",
+          "assertion_kind": "TRANSFER_COOPERATION",
+          "treatment_scope_ref": null,
+          "treatment_term_ref": null,
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "697f3b7f53d59518294b983d5175af54a90d6f48295a15e24c9d78b64e04e39e",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8f9c4951c538f2c370761541e8f60989a7e6de67ac11bf74e696185284237f62",
+            "document_ordinal": 0,
+            "absolute_start": 4795,
+            "absolute_end": 5170,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "c99ead8007fb369a1025c3861cc78d6bb8b6ce25d9f154a4caa0451400b33cc4"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "7c704fe660b0650e849b58ce3652371e3988d7bfd6e299f69c862301df1d842c",
+            "claim_occurrence_id": "691cc926b139ab30a11c64639148d7d8d536aa109675e8217aaadf705dda9869",
+            "subject_occurrence_id": "fe80f22eb5921d8e1fbfe69e58f11711cc7754395f95633408e95c4e0704cfdc",
+            "claim_definition_key": "TRANSFER_TAX_COOPERATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent shall, with the Company’s good faith cooperation and assistance, prepare, execute and file, or cause to be prepared, executed and filed, all returns, questionnaires, applications or other documents regarding Transfer Taxes, and Parent and the Company shall reasonably cooperate to minimize the amount of such Transfer Taxes to the extent permitted by applicable Law.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "697f3b7f53d59518294b983d5175af54a90d6f48295a15e24c9d78b64e04e39e"
+            ],
+            "attributes": {
+              "section_reference": "5.12",
+              "assertion_kind": "TRANSFER_COOPERATION",
+              "treatment_scope_ref": null,
+              "treatment_term_ref": null,
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "697f3b7f53d59518294b983d5175af54a90d6f48295a15e24c9d78b64e04e39e",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8f9c4951c538f2c370761541e8f60989a7e6de67ac11bf74e696185284237f62",
+                "document_ordinal": 0,
+                "absolute_start": 4795,
+                "absolute_end": 5170,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c99ead8007fb369a1025c3861cc78d6bb8b6ce25d9f154a4caa0451400b33cc4"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+            "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+            "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+            "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.12",
+          "normalized_citation": "5.12",
+          "derived_citation": "5.12(d)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "d",
+          "depth": 1,
+          "start_byte": 4757,
+          "end_byte": 5512
+        },
+        "chain": [
+          {
+            "path": "d",
+            "start_byte": 4757,
+            "end_byte": 5512,
+            "text": " Transfer Taxes; Mitigation of Taxes. Parent shall, with the Company’s good faith cooperation and assistance, prepare, execute and file, or cause to be prepared, executed and filed, all returns, questionnaires, applications or other documents regarding Transfer Taxes, and Parent and the Company shall reasonably cooperate to minimize the amount of such Transfer Taxes to the extent permitted by applicable Law. Parent and the Company shall, upon written request, use commercially reasonable efforts to obtain any certificate or other document from any Governmental Entity or any other Person as may be necessary to mitigate, reduce or eliminate any Tax that could be imposed (including with respect to the transactions contemplated in this Agreement).\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 20,
+            "text": "Section 5.12 Taxes.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "3.13",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5b0b1c64e708b6d42c05b8c441f4b39c8c17b5ac47532f8621c75c9d8d7503c6",
+      "closure_id": "a2466c80441f1d86bb94adc8a82c8d5f9a91cbb10a33bbfdd334a326d35df37a",
+      "normalised_phrase": "The Company is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.15",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0d9424afd1678b73bd443216385e0d6a71e68014b9a2ca191d5288239538e42a",
+      "closure_id": "7fa3f79f01d1d0fd1627f52e2a0fa89a422ea7a7c25209b3dc3d925c99bde8ab",
+      "normalised_phrase": "Parent is not aware of any fact or circumstance that could reasonably be expected to prevent or impede qualification for the Intended Income Tax Treatment.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "fb2fd62bd195522aa788591ed6743bb9ef1945dbe8769df971c11e0217aa4f0b",
+      "closure_id": "14ae0d114f8e14247d6e062bea9e20f9a0889a4af1eaa0c97cd47d87b77cc741",
+      "normalised_phrase": "Parent shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent (a “Parent Tax Representation Letter”), containing customary representations of Parent as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Parent’s REIT Counsel an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of Parent, containing customary representations of Parent as shall be reasonably necessary or appropriate to enable the Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_OPINION_COOPERATION_COVENANT",
+      "concept_key": "TAXM-OPINION",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4abade978b6fb900a9657b047cf5b3aaa78aa56b0593d059f2bb7013dbd36a8b",
+      "closure_id": "c41ab32f16e8a8f894585980e38065bcfffc0fd34de6f82a0d72fefd0da9f072",
+      "normalised_phrase": "The Company shall use reasonable best efforts to (A) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) officer’s certificates, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company (a “Company Tax Representation Letter”), containing customary representations of the Company as shall be reasonably necessary or appropriate to enable Morrison & Foerster LLP (or other counsel described in Section 6.3(d)) to render the opinion described in Section 6.3(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Paul, Weiss, Rifkind, Wharton & Garrison LLP (or other counsel described in Section 6.2(d)) to render the opinion described in Section 6.2(d) on the Closing Date (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and (B) deliver to Morrison & Foerster LLP (or other counsel described in Section 6.2(c)) (“Company’s REIT Counsel”) and Greenberg Traurig, LLP (or other counsel described in Section 6.3(c)) (“Parent’s REIT Counsel”) an officer’s certificate, dated as of the Closing Date (and, if required, as of the effective date of the Form S-4), signed by an officer of the Company, containing customary representations of the Company as shall be reasonably necessary or appropriate to enable the Company’s REIT Counsel to render the opinion described in Section 6.2(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act), and Parent’s REIT Counsel to render the opinion described in Section 6.3(c) (and, if required, as of the effective date of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act).",
+      "attachment_position": null,
+      "concept_family": "TAXM-OPINION",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TRANSFER_TAX_COOPERATION",
+      "concept_key": "TAXM-TRANSFER",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7c704fe660b0650e849b58ce3652371e3988d7bfd6e299f69c862301df1d842c",
+      "closure_id": "c99ead8007fb369a1025c3861cc78d6bb8b6ce25d9f154a4caa0451400b33cc4",
+      "normalised_phrase": "Parent shall, with the Company’s good faith cooperation and assistance, prepare, execute and file, or cause to be prepared, executed and filed, all returns, questionnaires, applications or other documents regarding Transfer Taxes, and Parent and the Company shall reasonably cooperate to minimize the amount of such Transfer Taxes to the extent permitted by applicable Law.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TRANSFER",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TAXM-TRANSFER",
+          "pattern_id": "TAXM-TRANSFER:PHRASE:TRANSFER_TAXES",
+          "start": 4758,
+          "end": 4772,
+          "excerpt": "idiary that is classified as a REIT) for the Company’s 2026 taxable year.\n(d) Transfer Taxes; Mitigation of Taxes. Parent shall, with the Company’s good faith cooperation",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "3.13",
+      "source_citation": "3.13(b)",
+      "reason": "TAX_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "has operated at all times since such date, and will continue to operate until the Closing, in such a manner as to permit it to continue to qualify as a REIT for the taxable year that includes the Company Merger Effective Time",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.13",
+        "assertion_kind": "TREATMENT_PROTECTION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9447e26002c2dbbcd1ac7932fad9b60293320057a572bc471284ef135303570e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9abde1206cc00d293dde3412ca5c783a3f5edaf8a908b8f2b42405da13d46540",
+          "document_ordinal": 0,
+          "absolute_start": 1522,
+          "absolute_end": 1747,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fc37fe23c58c08fe84ec00a77ec281482780c6cebe21e2a18be6cc32bc07e89f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "e45361924840aee7eee51a3a368d3b0fe20440fc43af145457fe50effe599737",
+        "producer_receipt_id": "f59a4a697c76aae51ab6a8d5446869749c8a4373930a044b707c6131c08671f9",
+        "governed_scope_digest": "4b274bde037a46e9779b61c675538cccdb8e9814b385b4c990803d1e8a84d39f",
+        "extraction_provenance_id": "ca958ca014d852dee772d7bab3b2feb45de96696434c167e329700a30753974e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.13",
+        "normalized_citation": "3.13",
+        "derived_citation": "3.13(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.13",
+      "source_citation": "3.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Company and the Company Subsidiaries (i) have complied in all material respects with all applicable Laws, rules and regulations relating to the payment and withholding of Taxes (including withholding of Taxes pursuant to Sections 1441, 1442, 1445, 1446, 1471 through 1474 and 3402 of the Code or similar provisions under any state and foreign Laws)",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Withholding mechanic remains open world.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7c4b79ac1ea008629dfc1ecab9aea0ba4ed5691114fbf6e1df8a7ade8a7894eb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "307bd772bc4324c3d12d04e0eb69c09a62064d9e776c868f55576ac8de21a41e",
+          "document_ordinal": 0,
+          "absolute_start": 6371,
+          "absolute_end": 6723,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f51fcc2bea3635ee21b898e48c86e0c908e1691b55fc921cf6c31e9673c3ce74",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "e45361924840aee7eee51a3a368d3b0fe20440fc43af145457fe50effe599737",
+        "producer_receipt_id": "f59a4a697c76aae51ab6a8d5446869749c8a4373930a044b707c6131c08671f9",
+        "governed_scope_digest": "4b274bde037a46e9779b61c675538cccdb8e9814b385b4c990803d1e8a84d39f",
+        "extraction_provenance_id": "6bf8df85d58fa6624701e33f3b3cdf7ecafef2a83a0f5c35ba41bbbfd96d4ef3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.13",
+      "source_citation": "3.13",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Each entity that is listed in Section 3.13(c) of the Company Disclosure Letter as a partnership, joint venture, or limited liability company has, since the later of the date of its formation and the date on which the Company acquired an interest in such an entity, been treated for U.S. federal income tax purposes as a partnership or disregarded entity, as the case may be, and not as a corporation or an association taxable as a corporation.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Partnership classification mechanic remains open world.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d4f7963e439002dfeb4bd1a8a17f204945541b2dc47ee7acec7deaea50e7085c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "046744198111374efc22c974c4fc91315d82d14a6e58abf17759d75a76b4277e",
+          "document_ordinal": 0,
+          "absolute_start": 2240,
+          "absolute_end": 2683,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a9676a80634e11f3824d052e1d90d63a0a2feccf0e97ef6e7cbaabd907e64759",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "e45361924840aee7eee51a3a368d3b0fe20440fc43af145457fe50effe599737",
+        "producer_receipt_id": "f59a4a697c76aae51ab6a8d5446869749c8a4373930a044b707c6131c08671f9",
+        "governed_scope_digest": "4b274bde037a46e9779b61c675538cccdb8e9814b385b4c990803d1e8a84d39f",
+        "extraction_provenance_id": "6bf8df85d58fa6624701e33f3b3cdf7ecafef2a83a0f5c35ba41bbbfd96d4ef3"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.15",
+      "source_citation": "4.15(b)",
+      "reason": "TAX_TREATMENT_KIND_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "Parent, (i) for all taxable years commencing with its taxable year ended December 31, 2016 through and including its taxable year ending December 31 immediately prior to the taxable year that includes the Company Merger Effective Time, has elected and has been subject to U.S. federal taxation as a REIT and has satisfied all requirements to qualify as a REIT for such years, (ii) has operated at all times since such date, and will continue to operate, in such a manner as to permit it to continue to qualify as a REIT for the taxable year that includes the Company Merger Effective Time and thereafter,",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.15",
+        "assertion_kind": "INTENDED_TREATMENT",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c61b6dbd50013c9bf9073833711226f663e7a4e09e181c9532dba14b683709f2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ff64c2e51d0f669308094682cd70457b37a91ad6c6ccaca45089de14407a2203",
+          "document_ordinal": 0,
+          "absolute_start": 737,
+          "absolute_end": 1341,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "56e3f0ff19f995e88d687af1c0889c0ca768f07085c2b0bb561d64e92c3770ff",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "1001889615e44d59f60e3822e2c05a527214c4cde3d8493c4ae886a476f5410d",
+        "producer_receipt_id": "b75b481e80fa4de4d122d82ab2a597c9ee166c3fa22b49ad67d2eec418638a95",
+        "governed_scope_digest": "6b776fe12292e439ea81439e861e81c9e876e5396c695c4caff1b7b08c3e649a",
+        "extraction_provenance_id": "78ba8feab8dd097edfb06a9e1257347942e932608009f188cc47c2ef1bc1b842"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.15",
+        "normalized_citation": "4.15",
+        "derived_citation": "4.15(b)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.15",
+      "source_citation": "4.15",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Except as set forth on Section 4.15(e) of the Parent Disclosure Letter, there are no Parent Tax Protection Agreements currently in force as of the date of this Agreement.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "TAX_MECHANIC: No Parent Tax Protection Agreements are currently in force, subject to the Parent Disclosure Letter.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fc84ae39e3d2c21f186ad14d998f0717db28ad76f2ed70848ade661933a6ab7c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8581ed28660a4cbabdcf84e191b423943f1e27caf65ae5abb55f6148cf86e48f",
+          "document_ordinal": 0,
+          "absolute_start": 2948,
+          "absolute_end": 3118,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5e91a050459a4bd7fc4bfb58fa92ea68b08df9115b93e56238b8167040db8793",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "1001889615e44d59f60e3822e2c05a527214c4cde3d8493c4ae886a476f5410d",
+        "producer_receipt_id": "b75b481e80fa4de4d122d82ab2a597c9ee166c3fa22b49ad67d2eec418638a95",
+        "governed_scope_digest": "6b776fe12292e439ea81439e861e81c9e876e5396c695c4caff1b7b08c3e649a",
+        "extraction_provenance_id": "13001a4c9daf30f4353007df53cee317ebe77fe40bbd8f0e80d9b712138ccb9d"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(a)",
+      "reason": "TAX_TREATMENT_KIND_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "Parent, the Company and their affiliates shall use their respective reasonable best efforts to cause the Mergers to qualify for the Intended Income Tax Treatment.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.12",
+        "assertion_kind": "INTENDED_TREATMENT",
+        "treatment_scope_ref": "the Mergers",
+        "treatment_term_ref": "the Intended Income Tax Treatment",
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9e49974cf1def7513564dab7060a7032181455aabaf69c762ff171f0af156cda",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "aafc23ed23c6c7c0a46fcaabfa8c2e08713c3886fd4c05e48be6e4e7787714c7",
+          "document_ordinal": 0,
+          "absolute_start": 37,
+          "absolute_end": 199,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "02605738b033a8d9fcb5e60504ae20e15f634789ae02ccd29c445e3b4ad79ca7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+        "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+        "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+        "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.12",
+        "normalized_citation": "5.12",
+        "derived_citation": "5.12(a)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(c)",
+      "reason": "TAX_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "The Company shall use reasonable best efforts to take all actions, and refrain from taking all actions, as are reasonably necessary to ensure that the Company (and any Company Subsidiary that is classified as a REIT) (i) will qualify for taxation as a REIT for U.S. federal income tax purposes for its current taxable year and any other taxable year that includes the Closing Date, and (ii) will not become liable for U.S. federal income Tax under Section 857(b) or 4981 of the Code.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.12",
+        "assertion_kind": "TREATMENT_PROTECTION",
+        "treatment_scope_ref": "the Company (and any Company Subsidiary that is classified as a REIT)",
+        "treatment_term_ref": "will qualify for taxation as a REIT for U.S. federal income tax purposes",
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a227965cfddda6ff85f7ad3f4b40c38dd8d2330a99e48d08b88137c8d8f33975",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "20fae24e50683c73d3ce92ee7dbc17a16f22fcf71095f1e49123116bce0a2012",
+          "document_ordinal": 0,
+          "absolute_start": 3989,
+          "absolute_end": 4472,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3027b201d863df346dd5e0261d10b3d5cc414b1dffe556220cbf33f25b19b58a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+        "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+        "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+        "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.12",
+        "normalized_citation": "5.12",
+        "derived_citation": "5.12(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(c)",
+      "reason": "TAX_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "During the Interim Period, the Company shall use reasonable best efforts to accommodate all reasonable requests of Parent with respect to maintenance of the REIT status of the Company (and any Company Subsidiary that is classified as a REIT) for the Company’s 2026 taxable year.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.12",
+        "assertion_kind": "TREATMENT_PROTECTION",
+        "treatment_scope_ref": "the Company (and any Company Subsidiary that is classified as a REIT)",
+        "treatment_term_ref": "maintenance of the REIT status",
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9949c7e718280ab5c829272cf0986f659a995d0fbece2634c69c173712646a60",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bd2c91855e269d3c8e30e537f0ee42b3b493d2d61de3faa507c9e050f8bd14e5",
+          "document_ordinal": 0,
+          "absolute_start": 4473,
+          "absolute_end": 4753,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c35b6fe3bf52ae657f864e4e8573f43e2b3dd2357cede45a4be26482bceded93",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+        "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+        "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+        "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.12",
+        "normalized_citation": "5.12",
+        "derived_citation": "5.12(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12(d)",
+      "reason": "TAX_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "Parent and the Company shall, upon written request, use commercially reasonable efforts to obtain any certificate or other document from any Governmental Entity or any other Person as may be necessary to mitigate, reduce or eliminate any Tax that could be imposed (including with respect to the transactions contemplated in this Agreement).",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.12",
+        "assertion_kind": "TRANSFER_COOPERATION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0bcc5d07e3aa0e98505a9dcda8ddb1b73793cd4ecb96b6d505d3507bd58187e9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a5bf90076dde4f70460a96d74b8106655decfd450d47a4113e3e9a9cca9bbad6",
+          "document_ordinal": 0,
+          "absolute_start": 5171,
+          "absolute_end": 5511,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "004363249fc2fdbbf6ebb0de10fb64b936e84f7e18939395245d45dac5559e2f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "e4b5fee4df762799c277c7ae05fca506037de5eae6cff561e62bfbb658a89e7c",
+        "producer_receipt_id": "99e2f2186cc870c7ccf20a6856a306e53fc537da2acdbb1e35fd8a8b607819b8",
+        "governed_scope_digest": "53896ca57c738f2e191ea1b4d7ebfb19c6866123d3cb58641e55dee6176839c0",
+        "extraction_provenance_id": "2f1a733ae0b31f15c2f9708a0c534d4fc21e6653ed3026dd1cfa657b3a39857e"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.12",
+        "normalized_citation": "5.12",
+        "derived_citation": "5.12(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "920c374ac74ba7faaf18a9e15a3fc1ebac2b339e5373b3c779e3d8ecdb6f9204",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 4,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a97c2dbae4fbe7d359376b8e38f266c6db28401f08d80260fc6c5fc2330ebc80",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 14,
+      "resolved": 5,
+      "auto_pass": 0,
+      "review_queue": 5,
+      "open_world": 9,
+      "residuals": 0,
+      "provisions": 4,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "32798137a14d3e8df969c768f7a3f46748c9bca766e9eecde57ac642795d5663"
+  }
+}

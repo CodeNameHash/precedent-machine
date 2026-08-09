@@ -1,0 +1,764 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "913bf09f74d66a07090f03baf93cb758caa0e4240380f433227b50f9c483ead3",
+  "review_queue": [
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_EFFORTS_STANDARD",
+      "concept_key": "ANTI-EFFORTS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "518c67cb73a3aecc2bd00ff1b9b3b0e1d6c75620a896b128f466cb0483ccedbe",
+      "closure_id": "06cddb18b46d72303368c6def62c58e0df44a05225cf0a7185c331e08490ed64",
+      "normalised_phrase": "each of the parties shall, and shall cause their respective subsidiaries to, cooperate in good faith and use its reasonable best efforts to promptly take, or cause to be taken, all actions, and to do, or cause to be done, and to assist and cooperate with the other parties in doing, all things necessary, proper or advisable to consummate and make effective, as expeditiously as possible, and in any event prior to the Initial Outside Date, the Merger and the other Transactions",
+      "attachment_position": null,
+      "concept_family": "ANTI-EFFORTS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 14,
+          "end": 37,
+          "excerpt": "SECTION 6.03. Reasonable Best Efforts; Notification. (a) Upon the terms and subject to the conditions set forth in th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 25,
+          "end": 37,
+          "excerpt": "SECTION 6.03. Reasonable Best Efforts; Notification. (a) Upon the terms and subject to the conditions set forth in th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:REASONABLE_BEST",
+          "start": 7466,
+          "end": 7489,
+          "excerpt": "with respect to this Agreement, the Merger and the other Transactions, (iv) use reasonable best efforts to comply with any inquiry or request from the FTC, the DOJ or any other Govern",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:BEST",
+          "start": 7477,
+          "end": 7489,
+          "excerpt": "t to this Agreement, the Merger and the other Transactions, (iv) use reasonable best efforts to comply with any inquiry or request from the FTC, the DOJ or any other Govern",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-EFFORTS",
+          "pattern_id": "ANTI-EFFORTS:PHRASE:COMMERCIAL_REASONABLE",
+          "start": 11263,
+          "end": 11294,
+          "excerpt": "he completion of the Merger under Section 7.01(a).\n(e) The Company will use its commercially reasonable efforts to obtain any consent, approval or waiver, or give any notice, with respect to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_CONSULTATION_RIGHT",
+      "concept_key": "ANTI-CONSULT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "36144b254d65baa53a72e31b85594a5e084adf555746762bfeb427260235055e",
+      "closure_id": "1256aa7fd789b9c475a890a49e578746cefd78ec14b3889c1a0ad9df6e01b2dd",
+      "normalised_phrase": "Parent will consult in advance with, and consider in good faith the views of, the Company in respect of obtaining regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law.",
+      "attachment_position": null,
+      "concept_family": "ANTI-CONSULT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-CONSULT",
+          "pattern_id": "ANTI-CONSULT:PHRASE:GOOD_FAITH_COMMENTS",
+          "start": 5724,
+          "end": 5746,
+          "excerpt": "sactions, and permit the other party to review and discuss in\n-49-\nadvance, and consider in good faith the views of, and secure the participation of, the other party in connection wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_FILING_TIMING_STANDARD",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "01bdbddbebc338e75a3e4c40a0d593a5a2e9ddda472197f6361054a9b929f90b",
+      "closure_id": "3df0057d429d4891239af80c0764a81d23cf159dc7d23bc278c836bfce767ab2",
+      "normalised_phrase": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions and (ii) file, as promptly as reasonably practicable, draft or final form notifications, filings or briefing papers as required or advisable by or under any Foreign Merger Control Law.",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 707,
+          "end": 714,
+          "excerpt": "e obtaining of approvals or clearances required under or in connection with the HSR Act and any Foreign Merger Control Law, and enabling all waiting periods under the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 794,
+          "end": 801,
+          "excerpt": " and any Foreign Merger Control Law, and enabling all waiting periods under the HSR Act and any Foreign Merger Control Law to terminate or expire and (ii) the executio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 4951,
+          "end": 4958,
+          "excerpt": " it is responsible to file to comply substantially with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each of Paren",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5278,
+          "end": 5285,
+          "excerpt": "n with its preparation of any filing or submission which is necessary under the HSR Act or any Foreign Merger Control Law, (ii) give the other party reasonable prior n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8059,
+          "end": 8066,
+          "excerpt": "nal information shall be in substantial compliance with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each party wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8353,
+          "end": 8360,
+          "excerpt": "related expenses incurred to obtain all required regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law; provided that Parent shall bear a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8573,
+          "end": 8580,
+          "excerpt": "ates or the Company or any of its affiliates for the filings required under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9210,
+          "end": 9217,
+          "excerpt": "he views of, the Company in respect of obtaining regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing sen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9394,
+          "end": 9401,
+          "excerpt": "s agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Government",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9614,
+          "end": 9621,
+          "excerpt": " any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9955,
+          "end": 9962,
+          "excerpt": "out the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 10009,
+          "end": 10016,
+          "excerpt": "ts notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_INFORMATION_SHARING_OBLIGATION",
+      "concept_key": "ANTI-INFO",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "95902ca1332cf441e116394105783750739bacfc57299427065832c5b2102d3f",
+      "closure_id": "5e07fddde22ce6c0d8c042383e3e8998161d35fdd76bbe554e7a043f6d9f4551",
+      "normalised_phrase": "Each of Parent and the Company shall (i) promptly furnish to the other party such necessary information and reasonable assistance as the other party may request in connection with its preparation of any filing or submission which is necessary under the HSR Act or any Foreign Merger Control Law",
+      "attachment_position": null,
+      "concept_family": "ANTI-INFO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_STRATEGY_CONTROL",
+      "concept_key": "ANTI-STRATEGY",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dd09ed18f54f699edce0d9648a1920c51883a0a07e7d856752a78ff91d3b248a",
+      "closure_id": "72290570b9e586f5fbe5fe3abbec02cd8373be0c1f7d42c666bb71fd2f932a35",
+      "normalised_phrase": "Parent will, on behalf of the parties, determine and control strategy for dealing with any Governmental Entity in respect of obtaining or concluding the required approval for the Transactions from such Governmental Entity",
+      "attachment_position": null,
+      "concept_family": "ANTI-STRATEGY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_FILING_OBLIGATION",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dce48a0cbe6982f61c269d6181aa0e93cb3de892827753d550a3b8ce2733510e",
+      "closure_id": "83123733e473a10648db61e2586a0cbf9e91f2d3cb664465909dbe6f6cdde853",
+      "normalised_phrase": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions and (ii) file, as promptly as reasonably practicable, draft or final form notifications, filings or briefing papers as required or advisable by or under any Foreign Merger Control Law.",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 707,
+          "end": 714,
+          "excerpt": "e obtaining of approvals or clearances required under or in connection with the HSR Act and any Foreign Merger Control Law, and enabling all waiting periods under the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 794,
+          "end": 801,
+          "excerpt": " and any Foreign Merger Control Law, and enabling all waiting periods under the HSR Act and any Foreign Merger Control Law to terminate or expire and (ii) the executio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 4951,
+          "end": 4958,
+          "excerpt": " it is responsible to file to comply substantially with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each of Paren",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5278,
+          "end": 5285,
+          "excerpt": "n with its preparation of any filing or submission which is necessary under the HSR Act or any Foreign Merger Control Law, (ii) give the other party reasonable prior n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8059,
+          "end": 8066,
+          "excerpt": "nal information shall be in substantial compliance with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each party wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8353,
+          "end": 8360,
+          "excerpt": "related expenses incurred to obtain all required regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law; provided that Parent shall bear a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8573,
+          "end": 8580,
+          "excerpt": "ates or the Company or any of its affiliates for the filings required under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9210,
+          "end": 9217,
+          "excerpt": "he views of, the Company in respect of obtaining regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing sen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9394,
+          "end": 9401,
+          "excerpt": "s agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Government",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9614,
+          "end": 9621,
+          "excerpt": " any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9955,
+          "end": 9962,
+          "excerpt": "out the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 10009,
+          "end": 10016,
+          "excerpt": "ts notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "source_citation": "6.03(b)",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "ANTI-AGREEMENTS",
+      "reasons": [
+        "WITHDRAWAL_EXCEPTION_PERIOD_UNCORROBORATED"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the parties agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Governmental Entity to delay or not to consummate the Merger or any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses (A) and (B), except with the prior written consent of the other party, which consent may not be unreasonably withheld, conditioned or delayed; provided that Parent may, without the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwise agreed by the parties hereto).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1d08364c3821eb866f845665e5e93d16c65f42f6455cf625f8ae5aeef1c75dcb",
+      "closure_id": "84d4df2c1753e93d9b154c586b7f3ca78450eb0a119733dc4a4419106b32f4e4",
+      "normalised_phrase": "the parties agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Governmental Entity to delay or not to consummate the Merger or any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses (A) and (B), except with the prior written consent of the other party, which consent may not be unreasonably withheld, conditioned or delayed; provided that Parent may, without the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwise agreed by the parties hereto).",
+      "attachment_position": null,
+      "concept_family": "ANTI-AGREEMENTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_COOPERATION_OBLIGATION",
+      "concept_key": "ANTI-COOPERATE",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ccc0779435bc7a25f2ed093f52823921f46f145ccfe5fc2cd4e14c101816f109",
+      "closure_id": "8dd7b975d78d0e710ccb3f47067002dcbf8f6df8a2be924e626dfa4a142df6ba",
+      "normalised_phrase": "each of the parties shall, and shall cause their respective subsidiaries to, cooperate in good faith and use its reasonable best efforts to promptly take, or cause to be taken, all actions, and to do, or cause to be done, and to assist and cooperate with the other parties in doing, all things necessary, proper or advisable to consummate and make effective, as expeditiously as possible, and in any event prior to the Initial Outside Date, the Merger and the other Transactions",
+      "attachment_position": null,
+      "concept_family": "ANTI-COOPERATE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_FILING_OBLIGATION",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "badce3322fdafd9cac01c1c73d1f1328c038645c0eba1b737f6f96a5e30cc8fe",
+      "closure_id": "8ebec1cab9ceccdeed185b41ab63591f823f9042a21e113281f8286f860d988b",
+      "normalised_phrase": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 707,
+          "end": 714,
+          "excerpt": "e obtaining of approvals or clearances required under or in connection with the HSR Act and any Foreign Merger Control Law, and enabling all waiting periods under the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 794,
+          "end": 801,
+          "excerpt": " and any Foreign Merger Control Law, and enabling all waiting periods under the HSR Act and any Foreign Merger Control Law to terminate or expire and (ii) the executio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 4951,
+          "end": 4958,
+          "excerpt": " it is responsible to file to comply substantially with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each of Paren",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5278,
+          "end": 5285,
+          "excerpt": "n with its preparation of any filing or submission which is necessary under the HSR Act or any Foreign Merger Control Law, (ii) give the other party reasonable prior n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8059,
+          "end": 8066,
+          "excerpt": "nal information shall be in substantial compliance with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each party wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8353,
+          "end": 8360,
+          "excerpt": "related expenses incurred to obtain all required regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law; provided that Parent shall bear a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8573,
+          "end": 8580,
+          "excerpt": "ates or the Company or any of its affiliates for the filings required under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9210,
+          "end": 9217,
+          "excerpt": "he views of, the Company in respect of obtaining regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing sen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9394,
+          "end": 9401,
+          "excerpt": "s agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Government",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9614,
+          "end": 9621,
+          "excerpt": " any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9955,
+          "end": 9962,
+          "excerpt": "out the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 10009,
+          "end": 10016,
+          "excerpt": "ts notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+      "concept_key": "ANTI-FILING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f82ee7c9ac463fbf41bb5f15d0073152591811f4b18522baa60e795c3b1f5bfb",
+      "closure_id": "ccaf0b88c0b58c081440157da0125f05c2d7096da7291d37628c2a6c3381310e",
+      "normalised_phrase": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+      "attachment_position": null,
+      "concept_family": "ANTI-FILING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 707,
+          "end": 714,
+          "excerpt": "e obtaining of approvals or clearances required under or in connection with the HSR Act and any Foreign Merger Control Law, and enabling all waiting periods under the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 794,
+          "end": 801,
+          "excerpt": " and any Foreign Merger Control Law, and enabling all waiting periods under the HSR Act and any Foreign Merger Control Law to terminate or expire and (ii) the executio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 4951,
+          "end": 4958,
+          "excerpt": " it is responsible to file to comply substantially with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each of Paren",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 5278,
+          "end": 5285,
+          "excerpt": "n with its preparation of any filing or submission which is necessary under the HSR Act or any Foreign Merger Control Law, (ii) give the other party reasonable prior n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8059,
+          "end": 8066,
+          "excerpt": "nal information shall be in substantial compliance with the requirements of the HSR Act or the applicable Foreign Merger Control Law, as the case may be. Each party wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8353,
+          "end": 8360,
+          "excerpt": "related expenses incurred to obtain all required regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law; provided that Parent shall bear a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 8573,
+          "end": 8580,
+          "excerpt": "ates or the Company or any of its affiliates for the filings required under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing or ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9210,
+          "end": 9217,
+          "excerpt": "he views of, the Company in respect of obtaining regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law. Notwithstanding the foregoing sen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9394,
+          "end": 9401,
+          "excerpt": "s agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Government",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9614,
+          "end": 9621,
+          "excerpt": " any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 9955,
+          "end": 9962,
+          "excerpt": "out the consent of the Company, voluntarily withdraw its notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "ANTI-FILING",
+          "pattern_id": "ANTI-FILING:ACRONYM:HSR_ACT",
+          "start": 10009,
+          "end": 10016,
+          "excerpt": "ts notification under the HSR Act on one occasion so long as Parent refiles its HSR Act notification within two (2) business days after such withdrawal (unless otherwi",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "generic_claim_key": "NATIVE_REGULATORY_EFFORTS_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_TIMING_AGREEMENT_RESTRICTION",
+      "concept_key": "ANTI-AGREEMENTS",
+      "reasons": [],
+      "materiality_rank": 63,
+      "materiality_label": "REGULATORY_EFFORTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "876d1ecabfc1a6f41bf5e816e99a9c4bc504955a29e98e6a15b5e7d1143cce41",
+      "closure_id": "d17560849039916f34a6618df24236f28d2792a7c34cee76b7ad596d164ca24c",
+      "normalised_phrase": "the parties agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Governmental Entity to delay or not to consummate the Merger or any of the other Transactions or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, in the case of each of the foregoing clauses (A) and (B), except with the prior written consent of the other party, which consent may not be unreasonably withheld, conditioned or delayed",
+      "attachment_position": null,
+      "concept_family": "ANTI-AGREEMENTS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "8fe548757da1b82e2795123e9ae87f1805ab71a421a315a1fd949a55a3d83728"
+}

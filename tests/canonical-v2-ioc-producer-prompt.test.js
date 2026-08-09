@@ -8,6 +8,7 @@ const {
   RESTRICTION_CATEGORIES,
   buildIocProducerPrompt,
 } = require('../lib/canonical-v2/native-producer/ioc-producer-prompt');
+const { IOC_CATEGORIES_CANONICAL } = require('../lib/vocab/ioc-categories');
 const { classifySectionFamily } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const { shapeIocProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 
@@ -18,11 +19,8 @@ test('IOC producer prompt owns the governed categories and split discipline', ()
     governed_scope: { section_reference: '5.1' },
   });
   assert.equal(prompt.prompt_version, IOC_PROMPT_VERSION);
-  assert.equal(IOC_PROMPT_VERSION, 5);
-  assert.deepEqual(RESTRICTION_CATEGORIES, [
-    'MERGE', 'CONTRACT', 'COMP', 'DEBT', 'TAX', 'CHARTER', 'ISSUE',
-    'ACCOUNTING', 'SETTLE', 'DIVIDEND', 'CAPEX',
-  ]);
+  assert.equal(IOC_PROMPT_VERSION, 6);
+  assert.deepEqual(RESTRICTION_CATEGORIES, IOC_CATEGORIES_CANONICAL.map((entry) => entry.key));
   assert.match(prompt.messages[0].content, /GOVERNED RESTRICTIONS/);
   assert.match(prompt.messages[0].content, /POSITIVES ONLY/);
   assert.match(prompt.messages[0].content, /parent-section chapeau supplies the governed party/);
@@ -43,9 +41,9 @@ test('IOC classifier preserves buyer-before-target order and provider shaping st
   assert.equal(buyer.covenant_side, 'BUYER');
   assert.equal(target.covenant_side, 'TARGET');
   const source = 'The Company shall not incur indebtedness in excess of $10,000,000 in the aggregate.';
-  const shaped = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'DEBT', threshold_basis: null, quote: source }], ioc_mechanics: [], open_world_candidates: [] }, source, { covenant_side: 'TARGET' });
+  const shaped = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'INDEBTEDNESS', threshold_basis: null, quote: source }], ioc_mechanics: [], open_world_candidates: [] }, source, { covenant_side: 'TARGET' });
   assert.equal(shaped.proposals[0].attributes.covenant_side, 'TARGET');
-  const numeric = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'THRESHOLD_AMOUNT', restriction_category: 'DEBT', threshold_basis: 'AGGREGATE', quote: source }], ioc_mechanics: [], open_world_candidates: [] }, source, { covenant_side: 'TARGET' });
+  const numeric = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'THRESHOLD_AMOUNT', restriction_category: 'INDEBTEDNESS', threshold_basis: 'AGGREGATE', quote: source }], ioc_mechanics: [], open_world_candidates: [] }, source, { covenant_side: 'TARGET' });
   assert.equal(numeric.proposals[0].claim_definition_key, 'OPEN_WORLD_PROPOSITION');
   assert.equal(numeric.proposals[0].attributes.why_unmapped, 'IOC_ASSERTION_KIND_UNADJUDICATED');
   assert.equal(shapeIocProposals({ open_world_candidates: [] }, source).proposals.length, 0);

@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:14:39.278Z",
+  "section_reference": "10.12",
+  "prompt_id": "native-producer-remedies-misc/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"boilerplate_assertions\":[{\"assertion_kind\":\"TPB_EXCEPTION\",\"quote\":\"Except for the provisions of (a) Articles II and III (including, for the avoidance of doubt, the rights of the former holders of Company Common Stock to receive the Merger Consideration), and (b) Section 6.3 (which from and after the Effective Time are intended for the benefit of, and shall be enforceable by, the Persons referred to therein and by their respective heirs and representatives), no provision of this Agreement or any other agreement contemplated hereby is intended to confer on any Person other than the parties hereto any rights or remedies.\"}],\"mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"This Agreement (including the Exhibits and Schedules hereto), the Voting Agreement and the Confidentiality Agreement constitute the entire agreement between the parties with respect to the subject matter of this Agreement and supersede all prior agreements and understandings, both oral and written, between the parties with respect to the subject matter hereof and thereof.\",\"why_unmapped\":\"Entire-agreement evidence is outside the requested assertion kinds.\",\"nearest_concept\":null},{\"observed_quote\":\"Notwithstanding the foregoing or any other provision of this Agreement to the contrary, the Company Disclosure Schedules and Parent Disclosure Schedules are “facts ascertainable” as that term is used in Section 251(b) of the DGCL, and do not form part of this Agreement but instead operate upon the terms of this Agreement as provided herein.\",\"why_unmapped\":\"Disclosure-schedule treatment is outside the requested assertion kinds.\",\"nearest_concept\":null}]}"
+}

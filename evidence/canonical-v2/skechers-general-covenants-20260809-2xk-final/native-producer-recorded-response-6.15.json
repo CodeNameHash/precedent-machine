@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:50:05.131Z",
+  "section_reference": "6.15",
+  "prompt_id": "native-producer-general-covenants/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"general_covenants\":[{\"section_reference\":\"6.15\",\"covenant_obligor\":\"the Company\",\"covenant_code\":\"COV-LITNOTIFY\",\"definition_cross_references\":[],\"quote\":\"the Company will provide Parent with prompt notice of all Transaction Litigation (including by providing copies of all pleadings with respect thereto) and keep Parent reasonably informed with respect to the status thereof.\"}],\"open_world_candidates\":[{\"observed_quote\":\"The Company will (a) give Parent the opportunity to participate in the defense, settlement or prosecution of any Transaction Litigation; and (b) consult with Parent with respect to the defense, settlement and prosecution of any Transaction Litigation.\",\"why_unmapped\":\"No exact residual covenant code covers participation and consultation rights in transaction litigation.\",\"nearest_concept\":\"GENERAL_COVENANT_ROUTER\"},{\"observed_quote\":\"The Company may not compromise, settle or come to an arrangement regarding, or agree to compromise, settle or come to an arrangement regarding, any Transaction Litigation unless Parent has consented thereto in writing (which consent will not be unreasonably withheld, conditioned or delayed).\",\"why_unmapped\":\"No exact residual covenant code covers Parent consent to settlement or compromise of transaction litigation.\",\"nearest_concept\":\"GENERAL_COVENANT_ROUTER\"}]}"
+}

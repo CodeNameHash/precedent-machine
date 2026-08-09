@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:59:48.867Z",
+  "section_reference": "8.2",
+  "prompt_id": "native-producer-termination/v2",
+  "prompt_version": 2,
+  "raw_response_text": "{\"termination_right_assertions\":[],\"wave_b_mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"The Party terminating this Agreement pursuant to Section 8.1 (other than pursuant to Section 8.1(a)) must deliver prompt written notice thereof to the other Parties\",\"why_unmapped\":\"It asserts a prompt written notice requirement resembling a notice-delivery obligation, but not a day-count notice window.\",\"nearest_concept\":\"CURE_PERIOD\"},{\"observed_quote\":\"Any proper and valid termination of this Agreement pursuant to Section 8.1 will be effective immediately upon the delivery of written notice by the terminating Party to the other Parties.\",\"why_unmapped\":\"It asserts the effectiveness timing of a termination, resembling a termination-effect mechanic not included in the controlled surfaces.\",\"nearest_concept\":null}]}"
+}

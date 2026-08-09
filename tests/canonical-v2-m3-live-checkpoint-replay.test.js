@@ -30,7 +30,7 @@ const LIVE_CHECKPOINTS = Object.freeze({
     checkpoint_id: '0e6d2b22288b9f20fccc71e136a75b6a6a2de16332d81998c62bf34c04e4c4a4',
     review_packet_id: 'ff3711be465cce52edd29ed599ee975582ca5c15536bb813b7e46756c3c8dbb3',
     assertion: Object.freeze({
-      section_reference: '4.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'CHARTER', threshold_basis: null,
+      section_reference: '4.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'CHARTER_BYLAW_AMENDMENTS', threshold_basis: null,
       quote: 'adopt any amendments to the Charter or its bylaws or, in the case of any Subsidiary that is not a corporation, similar applicable organizational documents;',
     }),
   }),

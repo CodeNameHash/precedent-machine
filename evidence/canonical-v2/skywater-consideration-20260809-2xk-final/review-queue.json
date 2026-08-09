@@ -1,0 +1,61 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b3b628ac2b853a5a3f4fb8e606b6480c94272d3e510752b2bb4fe932822abd73",
+  "review_queue": [
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "an amount in cash, without interest, equal to $15.00 (the “Per Share Cash Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3f2c1d08e98ce4827d9b0406e12521b0cae1ab05c88950c9e51e4dc7a2215905",
+      "closure_id": "a5a967b46714100f57b2bcf0309c8612b0913f80d664d13f22e0e400017154d8",
+      "normalised_phrase": "an amount in cash, without interest, equal to $15.00 (the “Per Share Cash Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "1.4",
+      "source_citation": "1.4(a)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "NO_RATIO_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "such number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3633e0decb14101a59efeb028d1e0cd6410399f62e074fa37ed4796747e851be",
+      "closure_id": "ee471843e386d97fb2bcaa01cc0ab49089bd337d2970c28d23bf803ce003addd",
+      "normalised_phrase": "such number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "228f4a1d16fea3fd64b024891db542dc86d67eb545dd1b4c9896032d12af8d10"
+}

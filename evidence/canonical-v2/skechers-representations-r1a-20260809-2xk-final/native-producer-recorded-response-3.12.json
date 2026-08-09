@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:55:19.389Z",
+  "section_reference": "3.12",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.12\",\"party_making\":\"Company\",\"chapeau_quote\":\"Since January 1, 2025 through the date of this Agreement,\",\"limbs\":[{\"limb_path\":[\"(a)\",\"(i)\"],\"assertion_quote\":\"the business of the Company Group has been conducted, in all material respects, in the ordinary course of business\",\"subject\":\"conduct of the Company Group's business\"}],\"qualifiers\":[{\"kind\":\"TEMPORAL\",\"code\":null,\"quote\":\"Since January 1, 2025 through the date of this Agreement,\",\"attachment\":{\"position\":\"CHAPEAU\",\"governs_path\":null,\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}},{\"kind\":\"ACCURACY\",\"code\":\"MAT_ALL_MATERIAL\",\"quote\":\"in all material respects\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"(a)\",\"(i)\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"ordinary course of business\",\"observed_quote\":\"in the ordinary course of business\",\"why_unmapped\":\"This is a representation-specific commercial standard, not an accuracy or knowledge code.\",\"nearest_concept\":null}]}"
+}

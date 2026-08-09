@@ -7,6 +7,7 @@ const assert = require('node:assert/strict');
 const {
   SCHEMA_VERSION,
   requestKey,
+  requestIdentityKey,
   createRecordingClient,
   createReplayClient,
   replayCoverage,
@@ -174,6 +175,23 @@ test('request keys ignore fields that are not the prompt', () => {
   assert.equal(a, b);
 });
 
+test('V3 recording identity includes an injected system wrapper', async () => {
+  let recording = null;
+  const recorder = createRecordingClient({
+    client: fakeClient(['A']), sink: (value) => { recording = value; },
+  });
+  const wrapped = { system: [{ type: 'text', text: 'JSON ONLY' }], messages: [{ role: 'user', content: 'q' }] };
+  await recorder.messages.create(wrapped);
+  assert.equal(recording.schema_version, 'NATIVE_PRODUCER_RECORDED_RUN/V3');
+  assert.equal(recording.calls[0].request_key, requestIdentityKey(wrapped));
+  const replay = createReplayClient({ recording });
+  assert.equal((await replay.messages.create(wrapped)).content[0].text, 'A');
+  await assert.rejects(
+    () => replay.messages.create({ messages: wrapped.messages }),
+    /REPLAY_MISS/,
+  );
+});
+
 test('it refuses a client or sink that cannot work', () => {
   assert.throws(() => createRecordingClient({ client: null, sink: () => {} }), /REQUIRES_CLIENT/);
   assert.throws(
@@ -198,6 +216,7 @@ test('it refuses a client or sink that cannot work', () => {
 
 const {
   resolveOriginalProviderModelId,
+  resolveOriginalProviderIdentity,
   READABLE_SCHEMA_VERSIONS,
 } = require('../lib/canonical-v2/native-producer/provider-record-replay');
 
@@ -306,5 +325,20 @@ test('an operator who agrees with the record is a no-op', () => {
       declared: 'claude-sonnet-5-via-claude-code-cli(sonnet)',
     }),
     'claude-sonnet-5-via-claude-code-cli(sonnet)',
+  );
+});
+
+test('replay preserves the historical provider identity and refuses an unlabelled provider', () => {
+  const runReceipt = {
+    resolved_sections: [{ producer_receipt: {
+      provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', model_id: 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM',
+    } }],
+  };
+  assert.deepEqual(resolveOriginalProviderIdentity({ runReceipt }), {
+    provider_id: 'OPENAI_CODEX_CLI_SUBSCRIPTION', model_id: 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM',
+  });
+  assert.throws(
+    () => resolveOriginalProviderIdentity({ runReceipt: RECEIPT('model-only') }),
+    /REPLAY_PROVIDER_IDENTITY_UNKNOWN/,
   );
 });

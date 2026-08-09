@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:12:23.021Z",
+  "section_reference": "3.01(m)",
+  "prompt_id": "native-producer-tax-matters/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"tax_assertions\":[],\"mechanics\":[{\"surface\":\"TAX_SHARING_TERMINATION\",\"quote\":\"Neither of the Company nor any of its Subsidiaries (A) is a party to, bound by or currently has any liability under any (x) “closing agreement” as defined in Section 7121 of the Code (or similar provision of state, local, or non-U.S. Law) or (y) tax sharing agreement, tax indemnity agreement or similar agreement, arrangement or practice with respect to taxes, except, in each case, for customary agreements not primarily related to taxes\",\"detail\":\"The Company and its Subsidiaries are not parties to, bound by, or liable under specified tax agreements, subject to the stated exception.\"}],\"open_world_candidates\":[{\"observed_quote\":\"Neither the Company nor any of its Subsidiaries has constituted either a “distributing corporation” or a “controlled corporation” (within the meaning of Section 355(a)(1)(A) of the Code) in any distribution of stock qualifying or intended to qualify for tax-free treatment under Section 355 of the Code within the two-year period ending on the date of this Agreement.\",\"why_unmapped\":\"Historical tax representation, not an operative tax covenant.\",\"nearest_concept\":null},{\"observed_quote\":\"Each of the Company and its Subsidiaries has timely complied in all respects with all applicable Laws relating to the collection, payment and withholding of taxes required to have been collected, withheld or paid in connection with any amounts paid or owing to any employee, independent contractor, stockholder or other third party.\",\"why_unmapped\":\"Withholding mechanics remain open world.\",\"nearest_concept\":null}]}"
+}

@@ -1,0 +1,3230 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "562b3de990c085412d73604f5301d55c242fdc307f90cc4bd0707e50ee34070f",
+  "review_queue": [
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_DEADLINE_DAYS",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "916578b186bcb827d4c75ae6f1f8e007ec0e2d103e186f4563421e2fe9ee3419",
+      "closure_id": "21393a0708142fc9835d34e0708351a37200760d34288780f56a39cf684df54f",
+      "normalised_phrase": "The Company shall hold the Company Stockholder Meeting as soon as practicable (and in any event, within twenty-one (21) business days) after the mailing of the definitive Joint Proxy Statement/Prospectus",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the distribution of which the Parent Board has determined in good faith, following consultation with the Company and based on the advice of outside legal counsel, to be necessary under applicable Law",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "582dc44ba3dc3563711d585994bb23ab4e17fd514088fb2e40fc68c8b569af2e",
+      "closure_id": "21c84e1bca8f3f16e06748d22c6a0816b9ac65178bbc71d62ae8bb34a0b1e39b",
+      "normalised_phrase": "the distribution of which the Parent Board has determined in good faith, following consultation with the Company and based on the advice of outside legal counsel, to be necessary under applicable Law",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "868aa6276e2b9a5b652d6fe977abf93b1acf11464b710c46d50219b12e7292ec",
+      "closure_id": "27cc81b53f03ceb877ca1e3c900dddd0d1bffdcc41298b313587e0bb4a28e46d",
+      "normalised_phrase": "the Company shall, unless otherwise mutually agreed by the Company and Parent, adjourn or postpone the Company Stockholder Meeting for an absence of a quorum;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cbc483f7b55f157772386837109c1febc4628b9a86c74a16a88ee989230f7db4",
+      "closure_id": "2871614b3eb208e3de6dd702dda9e1fbcd2438924544d95d622240fff0764882",
+      "normalised_phrase": "Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(g)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5bba1677f1fe0a41350c794a934b2291a9d55edcf60d42901453ef6f4436dd17",
+      "closure_id": "313f57528dd5f76ce3518d091e527002e18aedd548d1dfc05c72e133964fb290",
+      "normalised_phrase": "the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-PARENT-APPROVAL",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall, no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockholders (the “Parent Stockholder Meeting”) for the purpose of obtaining the Parent Stockholder Approval",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8a9ac4714b26dcae1860ca8bdbecee5d82ffe99a988a6a90879a48b20007fa6d",
+      "closure_id": "6093fa7fe2fece519588a9fd1e52fbd1662205f1af397a6af0751d63c8e1cf24",
+      "normalised_phrase": "Parent shall, no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockholders (the “Parent Stockholder Meeting”) for the purpose of obtaining the Parent Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-PARENT-APPROVAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "58633f60836ac93fcb1dab8878fbf8a4677c083ba6f65c56609d5cc6314683db",
+      "closure_id": "63488fd48ac6a9d1747eb39193899d940c5c37ca7b769505dd9e957c4909a8cb",
+      "normalised_phrase": "Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1727d53dc08df6f3ed882a3729a2c492b8f032ca71de1f18e0bc4df55b59388b",
+      "closure_id": "74d9642719fc17ddc9d80f1fae1b063c888cbfe66832b615c24a3b167f29eb1a",
+      "normalised_phrase": "Each of the Company and Parent shall, in consultation with the other, (i) within two business days following the execution and delivery of this Agreement, commence a broker search pursuant to Section 14a-13 of the Exchange Act in respect of setting a record date for the Company Stockholder Meeting and the Parent Stockholder Meeting, as applicable;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(ii) as promptly as practicable following the date of this Agreement and the completion of such broker search (and in any case within twenty-one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ece0f2b80748f08c2be892a83d14c891ed3ba3a75921b2a2d4abb6ad2d91c0fd",
+      "closure_id": "7612d904e971a3ca443be52fb295a2c7f098f641446a516bb74bf559f8a0e90a",
+      "normalised_phrase": "(ii) as promptly as practicable following the date of this Agreement and the completion of such broker search (and in any case within twenty-one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(g)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7ae0ccebf392446e09e71387eea44f868318ac02d212e13dd48df8849e574dce",
+      "closure_id": "7a887d504381b8d7ec9fa02e3cb9c28f9618a7ca5a5727ef5aa4e1f69bfefb6a",
+      "normalised_phrase": "the Company Board shall recommend to the Company’s stockholders the adoption of this Agreement (the “Company Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus;",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Parent Board shall recommend to Parent’s stockholders the adoption of this Agreement (the “Parent Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus;",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6b9886326656fb28243932f37b96005e17dd84730dc43df87dc3f198c5fab986",
+      "closure_id": "7d3f3384793366c571f566b462ee30c34e70942b6404ea06964d6facb917dd1e",
+      "normalised_phrase": "the Parent Board shall recommend to Parent’s stockholders the adoption of this Agreement (the “Parent Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus;",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(g)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d13c9e14a6f4b5bdd2251b4350cab6206a3e02e0c496e9f9c9d86b3819a4fd9e",
+      "closure_id": "9491cd7e1823af8bb55bd9233aa74789f75a17842caa1c81258105443bc43003",
+      "normalised_phrase": "the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(g)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the distribution of which the Company Board has determined in good faith, following consultation with Parent and based on the advice of outside legal counsel, to be necessary under applicable Law",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9472edb0bc3828e93c7831e810ba88fc1cb76b9eb0400fa9a6776c633fa1cc60",
+      "closure_id": "94cf810a7e2f8a54d1cc0b1b529733dd83ccdd030de0fc5dc93beb91c3d615b4",
+      "normalised_phrase": "the distribution of which the Company Board has determined in good faith, following consultation with Parent and based on the advice of outside legal counsel, to be necessary under applicable Law",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_DEADLINE_DAYS",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9f05a0c04b1eb294e80bbc5afcb85bb34b94633d699b522ee2216f83a150ee43",
+      "closure_id": "9797ab876a14c7aa7b9f9aa826fe2a9dd37989621afb43a007731fd1b6a1398c",
+      "normalised_phrase": "Parent shall convene and hold the Parent Stockholder Meeting as soon as practicable (and in any event, within twenty-one (21) business days) after the mailing of the definitive Joint Proxy Statement/Prospectus",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1f44b7def7a50f9653af929ef77bfb4d99f614dd67fa1e3a471cb4e4e199e521",
+      "closure_id": "9ae8e9c0bbd70c7ed7bd1fe76d94e00884c11dc85f3b9d5806cd1304829a5102",
+      "normalised_phrase": "Parent shall, unless otherwise mutually agreed by Parent and the Company, adjourn or postpone the Parent Stockholder Meeting for an absence of a quorum;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f21d686064ea1a578829d8ee84970fbfdfebc47b33d0c44903e711de9f6e1c99",
+      "closure_id": "a687447d36adf93afe8f499271c3e08bf1eb1e1caf6ea3ad462949bdd5ee5d3b",
+      "normalised_phrase": "Parent shall, no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockholders (the “Parent Stockholder Meeting”) for the purpose of obtaining the Parent Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3a26135628d99cd997b30322e9435d1b2b7caa2cae68b201d811d553ee1f0e71",
+      "closure_id": "c7c3677e11a770c70d4a95742591e408201d9457bd3da2035686ce2245bb64dd",
+      "normalised_phrase": "As promptly as practicable following the date of this Agreement, and in any event within thirty (30) business days of the date of this Agreement, the Company and Parent shall each jointly prepare and cause to be filed with the SEC the Joint Proxy Statement/Prospectus",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 64,
+          "end": 72,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable following ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 83,
+          "end": 98,
+          "excerpt": " Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable following the date of this Agreement",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 486,
+          "end": 494,
+          "excerpt": "ent shall jointly prepare, and Parent shall cause to be filed with the SEC, the Form S-4, in which the Joint Proxy Statement/Prospectus will be included as a prospectus",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 515,
+          "end": 530,
+          "excerpt": "d Parent shall cause to be filed with the SEC, the Form S-4, in which the Joint Proxy Statement/Prospectus will be included as a prospectus. Each of the Company and Parent sha",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 664,
+          "end": 679,
+          "excerpt": "the Company and Parent shall use its reasonable best efforts to cause the Joint Proxy Statement/Prospectus and the Form S-4 to comply as to form in all material respects with ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 699,
+          "end": 707,
+          "excerpt": "s reasonable best efforts to cause the Joint Proxy Statement/Prospectus and the Form S-4 to comply as to form in all material respects with the applicable provisions of",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 844,
+          "end": 852,
+          "excerpt": "pplicable provisions of the Securities Act and the Exchange Act and to have the Form S-4 declared effective under the Securities Act as promptly as reasonably practicab",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 1003,
+          "end": 1011,
+          "excerpt": "practicable after such filing. Without limiting any other provision herein, the Form S-4 and Joint Proxy Statement/Prospectus will contain such information and disclosu",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1022,
+          "end": 1037,
+          "excerpt": "uch filing. Without limiting any other provision herein, the Form S-4 and Joint Proxy Statement/Prospectus will contain such information and disclosure reasonably requested by",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 1159,
+          "end": 1167,
+          "excerpt": "and disclosure reasonably requested by either the Company or Parent so that the Form S-4 and Joint Proxy Statement/Prospectus conform in form and substance to the requi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1178,
+          "end": 1193,
+          "excerpt": "onably requested by either the Company or Parent so that the Form S-4 and Joint Proxy Statement/Prospectus conform in form and substance to the requirements of the Securities ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 1346,
+          "end": 1354,
+          "excerpt": "rities Act and Exchange Act. Notwithstanding the foregoing, prior to filing the Form S-4 (or any amendment or supplement thereto) or filing or distributing the Joint Pr",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1432,
+          "end": 1447,
+          "excerpt": "-4 (or any amendment or supplement thereto) or filing or distributing the Joint Proxy Statement/Prospectus (or any amendment or supplement thereto) or responding to any commen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 2505,
+          "end": 2513,
+          "excerpt": "respect to documents filed by a party that are incorporated by reference in the Form S-4 or Joint Proxy Statement/Prospectus, this right of approval shall apply only wi",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 2523,
+          "end": 2538,
+          "excerpt": "ts filed by a party that are incorporated by reference in the Form S-4 or Joint Proxy Statement/Prospectus, this right of approval shall apply only with respect to information",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 3259,
+          "end": 3267,
+          "excerpt": "ries, to the SEC or the NYSE in connection with the Transactions, including the Form S-4 and the Joint Proxy Statement/Prospectus. In addition, each of the Company and ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3282,
+          "end": 3297,
+          "excerpt": " NYSE in connection with the Transactions, including the Form S-4 and the Joint Proxy Statement/Prospectus. In addition, each of the Company and Parent shall, as promptly as p",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 3581,
+          "end": 3589,
+          "excerpt": "cial statements and related footnotes in connection with the preparation of the Form S-4 and/or the Joint Proxy Statement/Prospectus.\n(c) Each of the Company and Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 3607,
+          "end": 3622,
+          "excerpt": "d footnotes in connection with the preparation of the Form S-4 and/or the Joint Proxy Statement/Prospectus.\n(c) Each of the Company and Parent shall, in consultation with the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 3805,
+          "end": 3818,
+          "excerpt": "usiness days following the execution and delivery of this Agreement, commence a broker search pursuant to Section 14a-13 of the Exchange Act in respect of setting a record d",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 4085,
+          "end": 4098,
+          "excerpt": " as practicable following the date of this Agreement and the completion of such broker search (and in any case within twenty-one (21) business days following the commencemen",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 4188,
+          "end": 4201,
+          "excerpt": "ny case within twenty-one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder M",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 4365,
+          "end": 4373,
+          "excerpt": "ng, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to the extent it becomes necessary to set a new record",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 4839,
+          "end": 4854,
+          "excerpt": "h applicable Law or the rules of the NYSE; and (iii) thereafter cause the Joint Proxy Statement/Prospectus to be mailed to holders of Company Shares and Parent Shares as promp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 5010,
+          "end": 5018,
+          "excerpt": "romptly as reasonably practicable after the declaration of effectiveness of the Form S-4 and, in any event, within five (5) business days following the date the Form S-",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 5091,
+          "end": 5099,
+          "excerpt": "orm S-4 and, in any event, within five (5) business days following the date the Form S-4 is declared effective.\n(d) If at any time prior to the Titanium Merger Effectiv",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 5340,
+          "end": 5348,
+          "excerpt": "diaries, or with respect to information supplied by Parent for inclusion in the Form S-4 or the Joint Proxy Statement/Prospectus, or (ii) any event with respect to the ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5362,
+          "end": 5377,
+          "excerpt": "ct to information supplied by Parent for inclusion in the Form S-4 or the Joint Proxy Statement/Prospectus, or (ii) any event with respect to the Company, or with respect to i",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 5513,
+          "end": 5521,
+          "excerpt": "ny, or with respect to information supplied by the Company for inclusion in the Form S-4 or Joint Proxy Statement/Prospectus, which event is required to be described in",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5531,
+          "end": 5546,
+          "excerpt": "t to information supplied by the Company for inclusion in the Form S-4 or Joint Proxy Statement/Prospectus, which event is required to be described in an amendment of or a sup",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 5641,
+          "end": 5649,
+          "excerpt": "ich event is required to be described in an amendment of or a supplement to the Form S-4 or the Joint Proxy Statement/Prospectus, such event shall be so described, and ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 5663,
+          "end": 5678,
+          "excerpt": "to be described in an amendment of or a supplement to the Form S-4 or the Joint Proxy Statement/Prospectus, such event shall be so described, and such amendment or supplement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 7079,
+          "end": 7087,
+          "excerpt": "arent shall respond to any comments of the SEC or its staff with respect to the Form S-4 or the Joint Proxy Statement/Prospectus as promptly as practicable. The Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 7101,
+          "end": 7116,
+          "excerpt": " any comments of the SEC or its staff with respect to the Form S-4 or the Joint Proxy Statement/Prospectus as promptly as practicable. The Company and Parent shall cooperate w",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:FORM_S_4",
+          "start": 7287,
+          "end": 7295,
+          "excerpt": "her and provide to each other all information necessary in order to prepare the Form S-4 and the Joint Proxy Statement/Prospectus as expeditiously as practicable, and e",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 7310,
+          "end": 7325,
+          "excerpt": " other all information necessary in order to prepare the Form S-4 and the Joint Proxy Statement/Prospectus as expeditiously as practicable, and each of them shall provide prom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 7689,
+          "end": 7704,
+          "excerpt": " no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockh",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 8071,
+          "end": 8086,
+          "excerpt": "“Parent Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus; provided, however, that the Parent Board may fail to make such Pare",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 8990,
+          "end": 9005,
+          "excerpt": "within twenty-one (21) business days) after the mailing of the definitive Joint Proxy Statement/Prospectus and use its reasonable best efforts (subject to any Parent Adverse R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 9567,
+          "end": 9582,
+          "excerpt": "rent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus the distribution of which the Parent Board has determined in good fa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 11769,
+          "end": 11784,
+          "excerpt": " no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockh",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 12161,
+          "end": 12176,
+          "excerpt": "Company Recommendation”) and shall include such recommendation in the Joint Proxy Statement/Prospectus; provided, however, that the Company Board may fail to make such Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 13089,
+          "end": 13104,
+          "excerpt": "within twenty-one (21) business days) after the mailing of the definitive Joint Proxy Statement/Prospectus and use its reasonable best efforts (subject to any Company Adverse ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 13670,
+          "end": 13685,
+          "excerpt": "pany Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospectus the distribution of which the Company Board has determined in good f",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5633dd2a08ac4b631ded990b25654b62b0dda7af28329f9a411e88f3e7ce97de",
+      "closure_id": "e4d6bd0ad7a82c02574a26dc17bd817f87c9019ada490305ffa34d2ec289952d",
+      "normalised_phrase": "The Company shall, no later than twenty-one (21) business days following the mailing of the Joint Proxy Statement/Prospectus, duly call, give notice of, convene and hold a meeting of its stockholders (the “Company Stockholder Meeting”) for the purpose of obtaining the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12,
+          "end": 31,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 43,
+          "end": 62,
+          "excerpt": "4.5 Company Stockholder Meeting and Parent Stockholder Meeting; Form S-4 and Joint Proxy Statement/Prospectus.\n(a) As promptly as practicable ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4210,
+          "end": 4221,
+          "excerpt": "one (21) business days following the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4238,
+          "end": 4257,
+          "excerpt": "wing the commencement of such broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4268,
+          "end": 4287,
+          "excerpt": "broker search), set a record date for the Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Fo",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4310,
+          "end": 4321,
+          "excerpt": "Company Stockholder Meeting or Parent Stockholder Meeting, as applicable, which record date shall be prior to the effectiveness of the Form S-4; provided, however, that to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4447,
+          "end": 4458,
+          "excerpt": "rm S-4; provided, however, that to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as appli",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4475,
+          "end": 4494,
+          "excerpt": "hat to the extent it becomes necessary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 4509,
+          "end": 4528,
+          "excerpt": "sary to set a new record date for the Company Stockholder Meeting or the Parent Stockholder Meeting, as applicable, to comply with applicable Law or the rules of the NYSE, the Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 4734,
+          "end": 4745,
+          "excerpt": "ltation with the other party, take such actions as may be required to set a new record date to comply with applicable Law or the rules of the NYSE; and (iii) thereafter ca",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9322,
+          "end": 9341,
+          "excerpt": "written consent of the Company, adjourn, postpone or otherwise delay the Parent Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) Parent may, without th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 9461,
+          "end": 9480,
+          "excerpt": "ing sentence, (i) Parent may, without the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9492,
+          "end": 9511,
+          "excerpt": "ithout the prior written consent of the Company, adjourn or postpone the Parent Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10214,
+          "end": 10233,
+          "excerpt": " obtain such a quorum as promptly as practicable and shall reconvene the Parent Stockholder Meeting at the earliest practicable date on which the Parent Board reasonably expects, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 10451,
+          "end": 10470,
+          "excerpt": "rum and (B) Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a tot",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10482,
+          "end": 10501,
+          "excerpt": "ithout the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10677,
+          "end": 10688,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of the Company, the matters contemplated by ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11197,
+          "end": 11216,
+          "excerpt": "Parent shall propose to be voted on by the stockholders of Parent at the Parent Stockholder Meeting. Parent shall otherwise coordinate and cooperate with the Company with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11324,
+          "end": 11343,
+          "excerpt": "rdinate and cooperate with the Company with respect to the timing of the Parent Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Parent ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11423,
+          "end": 11442,
+          "excerpt": " and will otherwise comply with all legal requirements applicable to the Parent Stockholder Meeting. Parent shall provide updates to the Company with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11542,
+          "end": 11561,
+          "excerpt": "de updates to the Company with respect to the proxy solicitation for the Parent Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13424,
+          "end": 13443,
+          "excerpt": "ior written consent of Parent, adjourn, postpone or otherwise delay the Company Stockholder Meeting. Notwithstanding the immediately preceding sentence, (i) the Company may, witho",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:ADJOURN_OR_POSTPONE",
+          "start": 13563,
+          "end": 13582,
+          "excerpt": "ing sentence, (i) the Company may, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 13595,
+          "end": 13614,
+          "excerpt": "y, without the prior written consent of Parent, adjourn or postpone the Company Stockholder Meeting to distribute any supplement or amendment to the Joint Proxy Statement/Prospect",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14325,
+          "end": 14344,
+          "excerpt": "obtain such a quorum as promptly as practicable and shall reconvene the Company Stockholder Meeting at the earliest practicable date on which the Company Board reasonably expects,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONE_OR_ADJOURN",
+          "start": 14558,
+          "end": 14577,
+          "excerpt": "rum and (B) the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14590,
+          "end": 14609,
+          "excerpt": "t, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 14785,
+          "end": 14796,
+          "excerpt": "ng ten (10) business days or (z) if doing so would require the setting of a new record date. Without the prior written consent of Parent, the matters contemplated by the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15170,
+          "end": 15189,
+          "excerpt": " shall propose to be voted on by the stockholders of the Company at the Company Stockholder Meeting. The Company shall otherwise coordinate and cooperate with Parent with respect ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15298,
+          "end": 15317,
+          "excerpt": " coordinate and cooperate with Parent with respect to the timing of the Company Stockholder Meeting and will otherwise comply with all legal requirements applicable to the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15398,
+          "end": 15417,
+          "excerpt": "and will otherwise comply with all legal requirements applicable to the Company Stockholder Meeting. The Company shall provide updates to Parent with respect to the proxy solicita",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15518,
+          "end": 15537,
+          "excerpt": "rovide updates to Parent with respect to the proxy solicitation for the Company Stockholder Meeting (including interim results) within twenty-four (24) hours following a written r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15733,
+          "end": 15752,
+          "excerpt": " Company and Parent shall use their reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provid",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15768,
+          "end": 15787,
+          "excerpt": " reasonable best efforts to hold the Company Stockholder Meeting and the Parent Stockholder Meeting on the same day and at the same time; provided that in no event shall either pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15910,
+          "end": 15929,
+          "excerpt": "ided that in no event shall either party adjourn, postpone or delay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 15973,
+          "end": 15992,
+          "excerpt": "elay the Company Stockholder Meeting (in the case of the Company) or the Parent Stockholder Meeting (in the case of Parent) pursuant to this provision without the prior written co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "and the Company and Parent shall jointly prepare, and Parent shall cause to be filed with the SEC, the Form S-4",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ae3d4cdeb824422f82d51853f8d4f4a49632300e53ffb54d769e7b0f637914d8",
+      "closure_id": "ea7cbd364287dcd65a901801123bfdade2ee5f14c38669511769a085aa241385",
+      "normalised_phrase": "and the Company and Parent shall jointly prepare, and Parent shall cause to be filed with the SEC, the Form S-4",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(f)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "121c4a4c020839052db541e9b9d17d3e15b50a09ce1d7e4d7836fd3b440d8c1d",
+      "closure_id": "ed2f5a786cd089c1a00fbe9737734cda51226443f3d5b0d6cdbc95d444d5a18a",
+      "normalised_phrase": "Parent shall not, without the prior written consent of the Company, postpone or adjourn the Parent Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.5",
+      "source_citation": "4.5(g)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7dc4dc78ed3e1bcb7c36c04a8c5ea8a061d6c8789c38eefc731c47ffc06d2aa4",
+      "closure_id": "edc5af4b68135da83d20286edec7f355f3b7783bffa0d4ab049ea9e3b6dfc976",
+      "normalised_phrase": "the Company shall not, without the prior written consent of Parent, postpone or adjourn the Company Stockholder Meeting pursuant to this clause (ii) (x) more than a total of three (3) times, (y) for a period exceeding ten (10) business days or (z) if doing so would require the setting of a new record date.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "96aba7a38dbfe00660333e1d1a18fb427f9ae70566b92149206c81b8c0dc61e0"
+}

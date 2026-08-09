@@ -18,27 +18,27 @@ const sourceText = admittedSourceContext.canonical_text.text;
 const contractBundle = compileFixtureContractV34();
 
 const EXPECTED_RESTRICTIONS = Object.freeze([
-  ['4.1(vii)', 'DEBT', 'redeem, repurchase, prepay, defease, incur, assume, endorse, guarantee or otherwise become liable for any Indebtedness'],
-  ['4.1(vii)', 'DEBT', 'materially modify the terms of any Indenture or the Senior Notes or take any action that would result in a Default or Event of Default (each, as such term is defined in the applicable Indenture) under any Indenture or the Senior Notes'],
-  ['4.1(viii)', 'SETTLE', 'release, assign, compromise, pay, discharge, waive, settle, agree to settle, or satisfy any Action against the Company or any of its Affiliates or its or their respective directors, officers, managers, employees or agents (including any Action relating to this Agreement or the Transactions) or other rights, claims, liabilities or obligations (absolute, accrued, asserted or unasserted, contingent or otherwise)'],
-  ['4.1(viii)', 'SETTLE', 'waive any claims of substantial value of more than $10,000,000 in the aggregate'],
-  ['4.1(ix)', 'CAPEX', 'make, commit to make or authorize any capital expenditure'],
-  ['4.1(x)', 'ACCOUNTING', 'make any material changes with respect to financial accounting policies or procedures'],
-  ['4.1(xi)', 'CONTRACT', 'enter into any Contract which would have been a Company Material Contract or Company Real Property Lease if entered into prior to the date hereof'],
-  ['4.1(xi)', 'CONTRACT', 'amend any Company Material Contract or Company Real Property Lease in any material respect or terminate any Company Material Contract or Company Real Property Lease'],
-  ['4.1(xi)', 'CONTRACT', 'waive or grant any release or relinquishment of any material rights under, or renew, any Company Material Contract or Company Real Property Lease'],
-  ['4.1(xii)', 'TAX', 'make, change or revoke any material Tax election'],
-  ['4.1(xii)', 'TAX', 'settle or compromise any audit or proceeding relating to a material Tax liability or material refund of Tax'],
-  ['4.1(xii)', 'TAX', 'enter into any Tax sharing agreement (other than contracts described in the parenthetical contained in Section ‎3.1(l)(iii)(A)) or material closing agreement within the meaning of Section 7121 of the Code (or any comparable provision of state, local or foreign Tax Law)'],
-  ['4.1(xii)', 'TAX', 'change any material method of Tax accounting or Tax period'],
-  ['4.1(xii)', 'TAX', 'except upon the request of a Tax Authority, execute any waivers extending the statutory period of limitations with respect to any material Tax Return'],
-  ['4.1(xii)', 'TAX', 'file any amended income or other material Tax Return'],
-  ['4.1(xii)', 'TAX', 'request any Tax ruling'],
-  ['4.1(xiv)', 'COMP', 'grant any new rights to severance or termination payments or severance or termination benefits to any Company Service Provider'],
-  ['4.1(xiv)', 'COMP', 'increase the compensation or employee benefits of any Company Service Provider'],
-  ['4.1(xiv)', 'COMP', 'establish, adopt, terminate or amend any Benefit Plan (or any arrangement that would be a Benefit Plan if in effect on the date hereof) (other than any ordinary course changes to any Benefit Plan that is a group health plan that does not materially increase the Company’s cost with respect to such benefits) or any collective bargaining agreement'],
-  ['4.1(xiv)', 'COMP', 'take any action to accelerate the vesting, payment or funding of any compensation or benefits under any Benefit Plan with respect to any Company Service Provider'],
-  ['4.1(xiv)', 'COMP', 'hire, promote or terminate the employment (other than for cause) of any Company Employee with a “Management-Level” description in the employee census (provided to Parent prior to the date hereof) of “VPO/Regional Manager” or above (the “VPO/Regional Managers”)'],
+  ['4.1(vii)', 'INDEBTEDNESS', 'redeem, repurchase, prepay, defease, incur, assume, endorse, guarantee or otherwise become liable for any Indebtedness'],
+  ['4.1(vii)', 'INDEBTEDNESS', 'materially modify the terms of any Indenture or the Senior Notes or take any action that would result in a Default or Event of Default (each, as such term is defined in the applicable Indenture) under any Indenture or the Senior Notes'],
+  ['4.1(viii)', 'LITIGATION_SETTLEMENTS', 'release, assign, compromise, pay, discharge, waive, settle, agree to settle, or satisfy any Action against the Company or any of its Affiliates or its or their respective directors, officers, managers, employees or agents (including any Action relating to this Agreement or the Transactions) or other rights, claims, liabilities or obligations (absolute, accrued, asserted or unasserted, contingent or otherwise)'],
+  ['4.1(viii)', 'LITIGATION_SETTLEMENTS', 'waive any claims of substantial value of more than $10,000,000 in the aggregate'],
+  ['4.1(ix)', 'CAPITAL_EXPENDITURES', 'make, commit to make or authorize any capital expenditure'],
+  ['4.1(x)', 'ACCOUNTING_CHANGES', 'make any material changes with respect to financial accounting policies or procedures'],
+  ['4.1(xi)', 'MATERIAL_CONTRACTS', 'enter into any Contract which would have been a Company Material Contract or Company Real Property Lease if entered into prior to the date hereof'],
+  ['4.1(xi)', 'MATERIAL_CONTRACTS', 'amend any Company Material Contract or Company Real Property Lease in any material respect or terminate any Company Material Contract or Company Real Property Lease'],
+  ['4.1(xi)', 'MATERIAL_CONTRACTS', 'waive or grant any release or relinquishment of any material rights under, or renew, any Company Material Contract or Company Real Property Lease'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'make, change or revoke any material Tax election'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'settle or compromise any audit or proceeding relating to a material Tax liability or material refund of Tax'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'enter into any Tax sharing agreement (other than contracts described in the parenthetical contained in Section ‎3.1(l)(iii)(A)) or material closing agreement within the meaning of Section 7121 of the Code (or any comparable provision of state, local or foreign Tax Law)'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'change any material method of Tax accounting or Tax period'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'except upon the request of a Tax Authority, execute any waivers extending the statutory period of limitations with respect to any material Tax Return'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'file any amended income or other material Tax Return'],
+  ['4.1(xii)', 'TAX_ELECTIONS', 'request any Tax ruling'],
+  ['4.1(xiv)', 'EMPLOYEE_COMPENSATION', 'grant any new rights to severance or termination payments or severance or termination benefits to any Company Service Provider'],
+  ['4.1(xiv)', 'EMPLOYEE_COMPENSATION', 'increase the compensation or employee benefits of any Company Service Provider'],
+  ['4.1(xiv)', 'BENEFIT_PLANS', 'establish, adopt, terminate or amend any Benefit Plan (or any arrangement that would be a Benefit Plan if in effect on the date hereof) (other than any ordinary course changes to any Benefit Plan that is a group health plan that does not materially increase the Company’s cost with respect to such benefits) or any collective bargaining agreement'],
+  ['4.1(xiv)', 'BENEFIT_PLANS', 'take any action to accelerate the vesting, payment or funding of any compensation or benefits under any Benefit Plan with respect to any Company Service Provider'],
+  ['4.1(xiv)', 'EMPLOYEE_HIRING_TERMINATION', 'hire, promote or terminate the employment (other than for cause) of any Company Employee with a “Management-Level” description in the employee census (provided to Parent prior to the date hereof) of “VPO/Regional Manager” or above (the “VPO/Regional Managers”)'],
 ]);
 
 const OPEN_WORLD_QUOTE = 'agree, authorize or commit to do any of the foregoing, or authorize, recommend or announce an intention to do any of the foregoing';
@@ -59,7 +59,7 @@ test('TopBuild IOC replay keeps each post-vii sibling on its own source-tree cit
       const shaped = shapeIocProposals({
         ioc_restriction_assertions: [
           ...EXPECTED_RESTRICTIONS,
-          ['4.1(xvi)', 'CONTRACT', OPEN_WORLD_QUOTE],
+          ['4.1(xvi)', 'MATERIAL_CONTRACTS', OPEN_WORLD_QUOTE],
         ].map(([, restrictionCategory, quote]) => ({
           section_reference: '4.1',
           assertion_kind: 'RESTRICTION_PRESENT',
@@ -109,7 +109,7 @@ test('TopBuild IOC replay keeps each post-vii sibling on its own source-tree cit
   assert.equal(replayed.resolved.filter((entry) => entry.source_citation === '4.1(vii)').length, 2);
   assert.ok(replayed.resolved
     .filter((entry) => entry.source_citation === '4.1(vii)')
-    .every((entry) => entry.claim.attributes.restriction_category === 'DEBT'));
+    .every((entry) => entry.claim.attributes.restriction_category === 'INDEBTEDNESS'));
 
   assert.equal(replayed.open_world.length, 1);
   assert.equal(replayed.open_world[0].source_citation, '4.1(xvi)');

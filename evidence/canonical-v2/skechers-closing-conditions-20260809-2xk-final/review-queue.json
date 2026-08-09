@@ -1,0 +1,512 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "bbe88f333d54d5e8432171547f426ddac7f8bfa6c991036726204ef47436cb17",
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "db97eecd67f438f508b8b12d10698fcf6d0fa847823eefe82d361b7c05867766",
+      "closure_id": "388d0580414fb4cf1f99db6a830c92a984072787faa5c0297d8cdc81690bcefd",
+      "normalised_phrase": "The Registration Statement shall have become effective in accordance with the provisions of the Securities Act.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0c143742681ecdca1e63a149c99cdc255edf169eb20edae627f2f7f0d76b8015",
+      "closure_id": "681c388586b1ea5b00d6eff9a71b3a2f825f21b6d18217498f4d77c819a21615",
+      "normalised_phrase": "No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "APPROVAL_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "586edfdb8768fff043ac96b13800b775c1f0bcb1f489f5ec31f7229c357fcea9",
+      "closure_id": "68efdaed92cdfde7524a4255814aa18aae057b2b3b8c77b154eb30460d9a6598",
+      "normalised_phrase": "the approvals, clearances or expirations of waiting periods under any other applicable Antitrust and Foreign Investment Laws as set forth on Section 6.2(a) of the Company Disclosure Letter will have occurred or been obtained.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "REGULATORY_APPROVAL_CONDITION",
+      "concept_key": "COND-REG",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bdee49b357ba65881f064945dfffa75c42dfd478024f13885749f03b9b07864a",
+      "closure_id": "9e4da6cfe40c31e733ffc51bad3d885744be554c82359d12c29f1c5e383e7c57",
+      "normalised_phrase": "The waiting period (and any extensions thereof) applicable to the Merger pursuant to the HSR Act will have expired or otherwise been terminated (including by way of a positive clearance decision)",
+      "attachment_position": null,
+      "concept_family": "COND-REG",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "S4_CONDITION_COMPONENT",
+      "concept_key": "COND-M-S4",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1e5bf47c2e4bdcdbbe548101452c8fc34c5a8efe68d30e0d5d2396dd1c6eed07",
+      "closure_id": "afc97f4f2414377a3e7eabed1697babbd6c75d4a43d3be9bc441f67a5dee969e",
+      "normalised_phrase": "No stop order suspending the effectiveness of the Registration Statement shall have been issued and remain in effect, and no Legal Proceedings for that purpose shall have commenced or been threatened in writing by the SEC, unless subsequently withdrawn.",
+      "attachment_position": null,
+      "concept_family": "COND-M-S4",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "LEGAL_RESTRAINT_CONDITION",
+      "concept_key": "COND-M-LEGAL",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bedb7da1a57897089b6288f84be4483982dbcc4da6fe4b3a0d17862eae51b9f1",
+      "closure_id": "f9fcb40901877373d193f811c5a13b37fb74d7315958327226a3939ef65ba4e6",
+      "normalised_phrase": "No temporary restraining order, preliminary or permanent injunction or other judgment or order issued by any court of competent jurisdiction or other legal or regulatory restraint or prohibition preventing the consummation of the Merger will be in effect, nor will any action have been taken by any Governmental Authority of competent jurisdiction, and no statute, rule, regulation or order will have been enacted, entered, enforced or deemed applicable to the Merger, that, in each case, prohibits, makes illegal, or enjoins the consummation of the Merger.",
+      "attachment_position": null,
+      "concept_family": "COND-M-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(a)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have received the Written Consent.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c824a014a2a5792405bdb4dc42245453cd8440e9e0670d726853333b0cc62db0",
+      "closure_id": "fe1bef7f3d7c0820e13674b4e9f83245806839acc6cc8f3fca524f8b6ae45502",
+      "normalised_phrase": "The Company will have received the Written Consent.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-B-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c77dd2d09065a94f5f1cb4922ca03850bf5ffebb0380d0ad5384af503c2bb6dd",
+      "closure_id": "16c82059de5824eca740989866f606f58c5f27e55d0b5133ff69641d607ed105",
+      "normalised_phrase": "The Buyer Parties will have received a certificate of the Company, validly executed for and on behalf of the Company and in the name of the Company by a duly authorized executive officer thereof, certifying that the conditions set forth in Section 7.2(a), Section 7.2(b) and Section 7.2(d) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-B-CERT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(e)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "No approval or clearance set forth on Section 7.1(b) shall have been granted subject to the imposition of a Detriment.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cd0ec4eff98bce695d426edac160b81ebc35912fcc921f752795849f467dedd4",
+      "closure_id": "23e72d4230e73a34386c25f35e828f4adfb13dacfef31d72b63158a16687e5ba",
+      "normalised_phrase": "No approval or clearance set forth on Section 7.1(b) shall have been granted subject to the imposition of a Detriment.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Company will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by it at or prior to the Closing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f752526ab82112cdaaf868a2a87818c5dbbb7bc529065aac03f9cc766b10ab42",
+      "closure_id": "3e568194c216f3066fddead8fd9e8dbee5ea47787fc17a0f70912e1d44a3c280",
+      "normalised_phrase": "The Company will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by it at or prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(a)(i)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Other than the representations and warranties listed in Section 7.2(a)(ii) and Section 7.2(a)(iii), the representations and warranties of the Company set forth in this Agreement will be true and correct (without giving effect to any materiality or Company Material Adverse Effect qualifications set forth therein) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct as of such earlier date), except for such failures to be true and correct that would not, individually or in the aggregate, have a Company Material Adverse Effect.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e72adb0c32685445a2f0684d0b1a5dae697eb20242d2909bb9f1943621c9850e",
+      "closure_id": "9a67214651ebb1e02b032d2e7e85084fbc363f2d0e276c4f0be9c39e9064ad67",
+      "normalised_phrase": "Other than the representations and warranties listed in Section 7.2(a)(ii) and Section 7.2(a)(iii), the representations and warranties of the Company set forth in this Agreement will be true and correct (without giving effect to any materiality or Company Material Adverse Effect qualifications set forth therein) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct as of such earlier date), except for such failures to be true and correct that would not, individually or in the aggregate, have a Company Material Adverse Effect.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties set forth in Section 3.1 (other than the second sentence thereof), Section 3.2, Section 3.3(d), the last two sentences of Section 3.7(a), the last sentence of Section 3.7(b), Section 3.7(c) (other than the first sentence thereof), Section 3.7(d) and Section 3.12(a)(ii) that (A) are not qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all material respects as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all material respects as of such earlier date); and (B) are qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all respects (without disregarding such Company Material Adverse Effect or other materiality qualifications) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all respects as of such earlier date).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d2e7d51385ad7ca558edefd2f4a0c45dbd7d33102b0f7815c2a04fcca450d500",
+      "closure_id": "a44ea605cbf1d64b18be30ae24aad467aea5ba1a987e1139ef57b9f3520f4a7f",
+      "normalised_phrase": "The representations and warranties set forth in Section 3.1 (other than the second sentence thereof), Section 3.2, Section 3.3(d), the last two sentences of Section 3.7(a), the last sentence of Section 3.7(b), Section 3.7(c) (other than the first sentence thereof), Section 3.7(d) and Section 3.12(a)(ii) that (A) are not qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all material respects as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all material respects as of such earlier date); and (B) are qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all respects (without disregarding such Company Material Adverse Effect or other materiality qualifications) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all respects as of such earlier date).",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties set forth in Section 3.1 (other than the second sentence thereof), Section 3.2, Section 3.3(d), the last two sentences of Section 3.7(a), the last sentence of Section 3.7(b), Section 3.7(c) (other than the first sentence thereof), Section 3.7(d) and Section 3.12(a)(ii) that (A) are not qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all material respects as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all material respects as of such earlier date); and (B) are qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all respects (without disregarding such Company Material Adverse Effect or other materiality qualifications) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all respects as of such earlier date).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "514c816da5224f98245e5056903be2c501ed4a2f2451fcc52139a8167b78e890",
+      "closure_id": "c93b6e9e21018b0e568186984779f69f31fb3206e76222f4ff5a961125d68fd8",
+      "normalised_phrase": "The representations and warranties set forth in Section 3.1 (other than the second sentence thereof), Section 3.2, Section 3.3(d), the last two sentences of Section 3.7(a), the last sentence of Section 3.7(b), Section 3.7(c) (other than the first sentence thereof), Section 3.7(d) and Section 3.12(a)(ii) that (A) are not qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all material respects as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all material respects as of such earlier date); and (B) are qualified by Company Material Adverse Effect or other materiality qualifications will be true and correct in all respects (without disregarding such Company Material Adverse Effect or other materiality qualifications) as of the Closing Date as if made at and as of the Closing Date (except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct in all respects as of such earlier date).",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties set forth in Section 3.7(a) (other than the last two sentences thereof), Section 3.7(b) (other than the last sentence thereof), the first sentence of Section 3.7(c), and Section 3.25 will be true and correct in all respects as of the Closing Date (in each case (A) without giving effect to any Company Material Adverse Effect or other materiality qualifications; and (B) except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct as of such earlier date), except for any inaccuracies that are de minimis in nature and amount.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "25c6fb5ab6e1b837b7657175f80498b8865e1dd50535a0b0382d43bf6b68050b",
+      "closure_id": "e558add572a4c2eb51b0ac4e89537c630b1b524d20872150f84ab9e3ae8353e1",
+      "normalised_phrase": "The representations and warranties set forth in Section 3.7(a) (other than the last two sentences thereof), Section 3.7(b) (other than the last sentence thereof), the first sentence of Section 3.7(c), and Section 3.25 will be true and correct in all respects as of the Closing Date (in each case (A) without giving effect to any Company Material Adverse Effect or other materiality qualifications; and (B) except to the extent that any such representation and warranty expressly speaks as of an earlier date, in which case such representation and warranty will be true and correct as of such earlier date), except for any inaccuracies that are de minimis in nature and amount.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.2",
+      "source_citation": "7.2(d)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "CONDITION_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "No Company Material Adverse Effect will have occurred after the date hereof that is continuing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "19d798da4e2904d2d1ba373bc6aac9bfd68aa65596a3d3b317d5059fe3723ad0",
+      "closure_id": "e93294bac3f138258d16c1c874ecfa669fbc6130e44cf4e5591e0e4987ee7577",
+      "normalised_phrase": "No Company Material Adverse Effect will have occurred after the date hereof that is continuing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "OBLIGOR_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The Buyer Parties will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by the Buyer Parties at or prior to the Closing.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a1c8a237e521693de8d661276392c713d6deabb6eebf2609f4fbdd497f2924bf",
+      "closure_id": "0165278153bbd3ebafd053630a989c61b09e1ce0ee2d5bf83abb7d5cea9ea415",
+      "normalised_phrase": "The Buyer Parties will have performed and complied in all material respects with all covenants, obligations and conditions of this Agreement required to be performed and complied with by the Buyer Parties at or prior to the Closing.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(a)(iii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c9f9e1604c8a1f6d5228422e33ddcea2b89b1b0b594ffd7eab87a8991f2fb88a",
+      "closure_id": "25988b0689deab227fb49da658b74ebf4ae9a2252ef7960a34eab261575e144d",
+      "normalised_phrase": "The representations and warranties of the Buyer Parties set forth in Section 4.15 will be true and correct in all respects as of the date hereof and as of the Closing Date as if made and at and as of the Closing Date, except for any inaccuracies that are de minimis in nature and amount.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(a)(i)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Other than the representations and warranties set forth in Section 4.14(c) and Section 4.15, the representations and warranties of the Buyer Parties set forth in this Agreement will be true and correct on and as of the Closing Date with the same force and effect as if made on and as of such date, except for (i) any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement; and (ii) those representations and warranties that address matters only as of a particular date, which representations will have been true and correct as of such particular date, except for any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e6b6664c53972dec06052c2daba8d25cb71417c8de41f0073868787b848426ce",
+      "closure_id": "665bc608c7bd32c49aa19fe4ed07c557b8f1c13534949dc5ce7ffe31e67f0814",
+      "normalised_phrase": "Other than the representations and warranties set forth in Section 4.14(c) and Section 4.15, the representations and warranties of the Buyer Parties set forth in this Agreement will be true and correct on and as of the Closing Date with the same force and effect as if made on and as of such date, except for (i) any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement; and (ii) those representations and warranties that address matters only as of a particular date, which representations will have been true and correct as of such particular date, except for any failure to be so true and correct that would not, individually or in the aggregate, prevent or materially delay the consummation of the Merger or the ability of the Buyer Parties to fully perform their respective covenants and obligations pursuant to this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": "OFFICER_CERTIFICATE_REQUIRED",
+      "concept_key": "COND-S-CERT",
+      "reasons": [],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "080732d803c1414cbfa076cf3685492d9045ee853fac6b6ccdcf9adb6e26726a",
+      "closure_id": "a4b7422ef12b56ae3f0bdc218d2d112623c09a9e23002b01165c5c9676d99d86",
+      "normalised_phrase": "The Company will have received a certificate of the Buyer Parties, validly executed for and on behalf of the Buyer Parties and in the respective names of the Buyer Parties by a duly authorized officer thereof, certifying that the conditions set forth in Section 7.3(a) and Section 7.3(b) have been satisfied.",
+      "attachment_position": null,
+      "concept_family": "COND-S-CERT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(a)(ii)",
+      "generic_claim_key": "NATIVE_CLOSING_CONDITION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COND-PENDING",
+      "reasons": [
+        "REP_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 70,
+      "materiality_label": "CLOSING_CONDITIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date, other than to the extent the failure of such representations and warranties to be true and correct as of the Closing (A) is a result of a change in applicable law after the date of this Agreement, (B) does not cause the Merger to fail to qualify for the Intended Tax Treatment, it being understood and agreed that such failure of such representations and warranties to be true and correct as of the Closing will not be considered to cause the Merger to fail to so qualify if Paul, Weiss, Rifkind, Wharton & Garrison LLP opines that the Merger “should” qualify for the Intended Tax Treatment based on customary Tax representation letters which shall be delivered by Parent and the Company which are satisfactory to such counsel, it being further understood that if Parent proposes an alternative structure that could be utilized in lieu of the current transaction structure that leaves all of the Company’s stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment, Parent and the Company shall use reasonable best efforts to implement such alternative structure or (C) is a result of any action taken by the Company, its Affiliates or the Company Stockholders.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "19c1fc1eb87ec47fb272480b7b7521040b04c8297c2a658fa483baeb32d88ef6",
+      "closure_id": "c563db6a7f7246de027b26a3e12a164d867517f1773f0e4a32031c06062b5700",
+      "normalised_phrase": "The representations and warranties of the Buyer Parties set forth in Section 4.14(c) will be true and correct in all material respects as of the date hereof and as of the Closing Date as if made at and as of the Closing Date, other than to the extent the failure of such representations and warranties to be true and correct as of the Closing (A) is a result of a change in applicable law after the date of this Agreement, (B) does not cause the Merger to fail to qualify for the Intended Tax Treatment, it being understood and agreed that such failure of such representations and warranties to be true and correct as of the Closing will not be considered to cause the Merger to fail to so qualify if Paul, Weiss, Rifkind, Wharton & Garrison LLP opines that the Merger “should” qualify for the Intended Tax Treatment based on customary Tax representation letters which shall be delivered by Parent and the Company which are satisfactory to such counsel, it being further understood that if Parent proposes an alternative structure that could be utilized in lieu of the current transaction structure that leaves all of the Company’s stockholders in substantially the same economic and tax position had the Merger qualified for the Intended Tax Treatment, Parent and the Company shall use reasonable best efforts to implement such alternative structure or (C) is a result of any action taken by the Company, its Affiliates or the Company Stockholders.",
+      "attachment_position": null,
+      "concept_family": "COND-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "869c0f71796229cd54d91f568fa0af0af05906bb56034a7e7ca8470b1440ac57"
+}

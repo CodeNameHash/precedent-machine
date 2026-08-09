@@ -1,0 +1,2614 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "6.5"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.5",
+      "section_id": "caa4aa7da6d39898c577a22bee9c1f52d919859da6cb78cc49da71535f3fa1d0",
+      "parent_section_id": "f897cf53a78420a2e15aa0e5e5627c1fa563c19dab8ca096ea177e851f6daa83",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 369416,
+      "end": 381113,
+      "text_sha256": "6083932f8cfc15a52ee25634940def973cdbe8f8a37ca3639b97f7cb6d3e2b7f",
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-termination-fee/v1",
+      "prompt_version": 3,
+      "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+        "input_scope_digest": "8f1367e3f5675f9ebd452759c2b5d3f05cb31dde819ececde43760cc0e09953d",
+        "proposal_count": 13,
+        "evidence_residual_count": 2,
+        "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "afe6c680304ecbcd76b37c7889501d47d7b490452d76693a16ef5edda8356de9",
+          "claim_occurrence_id": "e6d591c8553532e62f5551cdc03120ea49ed8f46d9f282d6dd09db6c046feb8a",
+          "subject_occurrence_id": "b9216e3548559605a6e713bee9a8ba8994da759dba80f08d5f2b4e3ea49ba637",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "“Company Termination Fee” shall mean a cash amount equal to $600,000,000.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "5757488635a961780de79965ab6e1d2eebf4cefdf54510c7f0f8bb8d1c56e827"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "SELLER",
+            "payer_party": "the Company",
+            "fee_term_ref": "Company Termination Fee"
+          },
+          "taxonomy_codes": {
+            "fee_side": "SELLER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "5757488635a961780de79965ab6e1d2eebf4cefdf54510c7f0f8bb8d1c56e827",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "dc26a3b187ef76f5e9b4b7ed6a1277ffde432b09571e205cb2bb3fb1464053a8",
+              "document_ordinal": 0,
+              "absolute_start": 5106,
+              "absolute_end": 5183,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a80fc439db480c744367c45938ee7e8a74cde99116e0414e6a7760abc35cca42"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_AMOUNT",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "d697792ac781eb2f3886098683694d05e06a97600e65c588a07208d07e1a95cf"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(c)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "840bbadb16169e90e5fe2ea06afc446bb7c3b9bcd91476905f244088d12d21ee",
+          "claim_occurrence_id": "fe85dcce6d0b6caae2b5e5aa6e66dcb7b9ba6e3946baf71891d3d0f31a6cbfb4",
+          "subject_occurrence_id": "1a376723ef66ea40a9b47133e0fac4180ca4353aa8bc861f2d287c0bbbf69df3",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "“Parent Termination Fee” shall mean a cash amount equal to $600,000,000.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8b746a24e9e4b0f7c18bd0d11aa2741a8d2f6185a811441d0baa7cfeb3b407e0"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "BUYER",
+            "payer_party": "Parent",
+            "fee_term_ref": "Parent Termination Fee"
+          },
+          "taxonomy_codes": {
+            "fee_side": "BUYER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8b746a24e9e4b0f7c18bd0d11aa2741a8d2f6185a811441d0baa7cfeb3b407e0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "a5ca680a7f05b521f82dc0ca4230560cb2ac8fb77fe4fb4c81ce9656c2c6c50f",
+              "document_ordinal": 0,
+              "absolute_start": 9229,
+              "absolute_end": 9305,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "25ee3bda96a2d70f1aeea63431f52b0180361c4600263754d393542a4ed28de2"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_AMOUNT",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "d697792ac781eb2f3886098683694d05e06a97600e65c588a07208d07e1a95cf"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "1de49f40573b421794c4bac13dd3e8cf75cfca72ab47cea4a1a5f34b99b08e5a",
+          "claim_occurrence_id": "1aedae169810f1dde0266ba5d19a1188c57f43aa34df022b370054908a01dfd9",
+          "subject_occurrence_id": "b233dbd0708f16b19c5bd2d113064bbc381b0a8684f9b799a655b69b7fcb3a8e",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company Stockholder Approval shall not theretofore have been obtained",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0a11b615b49fa598c09ce77e8cad9ddb2e567ab448ef2ef0f1ede6c1c4dbe627"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "SELLER",
+            "trigger_code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION"
+          },
+          "taxonomy_codes": {
+            "trigger_code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0a11b615b49fa598c09ce77e8cad9ddb2e567ab448ef2ef0f1ede6c1c4dbe627",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "99914c4696943257fb62b4927895c69e37ca4d7254b86b0b0974f4d259e662b9",
+              "document_ordinal": 0,
+              "absolute_start": 2531,
+              "absolute_end": 2604,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c0d983328aa7ea6be0ec94731420b5bac7bc0f5a450a53045aba232da333403a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TRIGGER",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "af1324e92d4897c9a69567bdb879768bf9f359b85ec3175b7be43e68cf0e92aa"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b5baad13e60974e4e42b0b754178d19d2c66e1caa15c73ccee3bb053a614c7ef",
+          "claim_occurrence_id": "866f8ef05987cf52e36e0005e56af5b9fabf2aa6845a8cc1bfee15193d9e220e",
+          "subject_occurrence_id": "9815665cb6cc30cec9e03577d6629bf75bb67c967138f6816f58a1c60aa26354",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "a breach of any other covenant or agreement of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7b1ac925b2b97fcfe0c76dcbba4d21fa42d3813533aa39e3f006ab947c974ab1"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "SELLER",
+            "trigger_code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION"
+          },
+          "taxonomy_codes": {
+            "trigger_code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7b1ac925b2b97fcfe0c76dcbba4d21fa42d3813533aa39e3f006ab947c974ab1",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "67120e747e4ec3abd54c89c438d0fba7eefec540e7933672608dc3b9c7befad4",
+              "document_ordinal": 0,
+              "absolute_start": 2834,
+              "absolute_end": 2895,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "01fa6c947a8b441c52b918f93e2867cf4d3e9cef3ee7aae693fdd67d9c67e483"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TRIGGER",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "af1324e92d4897c9a69567bdb879768bf9f359b85ec3175b7be43e68cf0e92aa"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(c)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d47fd9fff13fdcd0d46efa69d507967adffce2c858d4221b9fb9bf27c5d05d6f",
+          "claim_occurrence_id": "726e6c67ca034ffe096f674a0211864870df024b890f3169500a1ba422fdf827",
+          "subject_occurrence_id": "eca6fedc92a033127dadccd3a0a860c6f1f7b8c612fe4e8a3dbb34dd3f683243",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Parent Stockholder Approval shall not theretofore have been obtained",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "308d0384e355c14a23ca3651a858465e2abb25b3c01386c0df427b366e0f59fa"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "BUYER",
+            "trigger_code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION"
+          },
+          "taxonomy_codes": {
+            "trigger_code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "308d0384e355c14a23ca3651a858465e2abb25b3c01386c0df427b366e0f59fa",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "04284145b0f3153c564641346238bfd4d3811a46919dab990d69364c57bb5036",
+              "document_ordinal": 0,
+              "absolute_start": 6624,
+              "absolute_end": 6696,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fa96563b32a295e82f95d9efa455254a9a6f2dc8cd8260145a4c5e3de51b8224"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TRIGGER",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "af1324e92d4897c9a69567bdb879768bf9f359b85ec3175b7be43e68cf0e92aa"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d670cdec7adc1a9833edf28885ed2f08a98bec43ac64e53e0ee6d30740ffec96",
+          "claim_occurrence_id": "ae9c3ee9574003beec122ba70f46be9ad3f4242a6603e9d58f6fc2558495cec5",
+          "subject_occurrence_id": "e515b1297001930711ae9e6a6d2dba7608d7b1b64f93ba25e8ee4e6513554a95",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any other covenant or agreement of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "61b98583800807bf7fd9621a6def027befe52256d704ec83fcc8219d9da949cd"
+          ],
+          "attributes": {
+            "section_reference": "6.5",
+            "fee_side": "BUYER",
+            "trigger_code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION"
+          },
+          "taxonomy_codes": {
+            "trigger_code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "61b98583800807bf7fd9621a6def027befe52256d704ec83fcc8219d9da949cd",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "bf6f7768ecf4ee1080453fe748e56a716b7bb9a8914c2fd2edbd00fec3834b51",
+              "document_ordinal": 0,
+              "absolute_start": 2846,
+              "absolute_end": 2895,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "451b37450028ca5070fb833a460e70e315621bf42f4f1e8bc60e9e54899a85fe"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TRIGGER",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "af1324e92d4897c9a69567bdb879768bf9f359b85ec3175b7be43e68cf0e92aa"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2c744def38687eda249459149d7fdc2a0c84af4efa3d76c061e481ed92e264d0",
+          "claim_occurrence_id": "386a093c7c2cd7f1a94a5a99f78c70e3d14b2bd5583d908418273a977e73af5c",
+          "subject_occurrence_id": "67f2723b8c08113686f0eef713cc17566ca02b0e24d9ee5693550e8bed856579",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "at any time on or prior to the twelve (12) month anniversary of such termination",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "03c7469217611ab6ef502a280dba4288ec42cc6063567b23dbbe97a31fa66504"
+          ],
+          "attributes": {
+            "section_reference": "6.5"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "03c7469217611ab6ef502a280dba4288ec42cc6063567b23dbbe97a31fa66504",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8ea9ec200e2f58e39db163135ffe0d9882012a60d511f01ea5b8c518a6db808f",
+              "document_ordinal": 0,
+              "absolute_start": 3999,
+              "absolute_end": 4079,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6434cb66c4f71de5205b268e92edc1836a28838845bbadbfa24a9da239a2c45c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TAIL_PERIOD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "728f2036ad3d728ab0f7458730e6db1e8c44f068c49d14daa8e5aa6182d3270f"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.5",
+        "normalized_citation": "6.5",
+        "derived_citation": "6.5(b)"
+      },
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "bf3f1c08ab210aa9124af3309a7cd5cfabf64f0619b1712e63f61b7a24fd01ea",
+          "claim_occurrence_id": "b3227eebacee5c4acbf9eb2fc0e60870d914815d288ec5613f0ec45af36bb21b",
+          "subject_occurrence_id": "67f2723b8c08113686f0eef713cc17566ca02b0e24d9ee5693550e8bed856579",
+          "claim_definition_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "at any time on or prior to the twelve (12) month anniversary of such termination",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3d8a0275d4c41ba6d1f440f4fa0af43540fc0ddf4133c929bf5a5d9466bb7bda"
+          ],
+          "attributes": {
+            "section_reference": "6.5"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3d8a0275d4c41ba6d1f440f4fa0af43540fc0ddf4133c929bf5a5d9466bb7bda",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8ea9ec200e2f58e39db163135ffe0d9882012a60d511f01ea5b8c518a6db808f",
+              "document_ordinal": 0,
+              "absolute_start": 3999,
+              "absolute_end": 4079,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a8de1930ee113672e4be1b9e4c0d800c0095ef8894c31d50df12dfc72f24fc67"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "FEE_TAIL_PERIOD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "728f2036ad3d728ab0f7458730e6db1e8c44f068c49d14daa8e5aa6182d3270f"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "716a558d6b43dba1a58b1337f68b223c2e1b16f18398258a3ef0db5073c510d1",
+          "claim_occurrence_id": "20e49ed7608ccdc90dd86dac274c58e5867c438f15b8e1ecfeb02ad02028558d",
+          "subject_occurrence_id": "3f9d9e3f803a7451de1b89012cbb78a5a15d9200869bbf66c0b53c8d90acf671",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(z) at any time on or prior to the twelve (12) month anniversary of such termination the Company or any of its Subsidiaries enters into a definitive agreement with respect to any Company Acquisition Proposal or the transactions contemplated by any Company Acquisition Proposal are consummated (provided that solely for purposes of this clause, “50%” shall be substituted for “20%” in the definition of Company Acquisition Proposal)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3e1703eb01299145a8d60a42263dce353829473f479e8d2d999eb38b64f1205f"
+          ],
+          "attributes": {
+            "why_unmapped": "TAIL_FEE_STRUCTURE: Company-side tail fee structure.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "TAIL_FEE_STRUCTURE",
+              "section_reference": "6.5",
+              "period_quote": "at any time on or prior to the twelve (12) month anniversary of such termination",
+              "arming_event_quote": "such termination",
+              "qualifying_transaction_quote": "the Company or any of its Subsidiaries enters into a definitive agreement with respect to any Company Acquisition Proposal or the transactions contemplated by any Company Acquisition Proposal are consummated",
+              "threshold_quote": "“50%” shall be substituted for “20%” in the definition of Company Acquisition Proposal",
+              "same_proposal_requirement_quote": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3e1703eb01299145a8d60a42263dce353829473f479e8d2d999eb38b64f1205f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1764542ce8d1ec52f6106a2841172386830ef094e2770ed463e3412e28e789b4",
+              "document_ordinal": 0,
+              "absolute_start": 3995,
+              "absolute_end": 4434,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d1c38a9b70b3e17d9d020b39b6c69fcced4ba183076f5b9cdec961e33f80b32a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "c64ce17755ee6b451f1aa9b932f6037064d691642efce4bf8fb8b60ed74e984e"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "efa181fa69e4e41e6d93981b555d3f04c25d9304be1e438c13aec452c003cee8",
+          "claim_occurrence_id": "81c4ff7cc80263d12e6ee1eacb49bdb7c1a9ec52d268d50b66d3fe0db12dbe91",
+          "subject_occurrence_id": "499bf7da50bde5d19195323493af62560944054adb6693fc1e1980ff9ebb021f",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(z) at any time on or prior to the twelve (12) month anniversary of such termination Parent or any of its Subsidiaries enters into a definitive agreement with respect to any Parent Acquisition Proposal or the transactions contemplated by any Parent Acquisition Proposal are consummated (provided that solely for purposes of this clause, “50%” shall be substituted for “20%” in the definition of Parent Acquisition Proposal)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7504eb3adf56052a0f920311dcf64c3cabf7e38e700002ee1d9baba69e82f3ec"
+          ],
+          "attributes": {
+            "why_unmapped": "TAIL_FEE_STRUCTURE: Parent-side tail fee structure.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "TAIL_FEE_STRUCTURE",
+              "section_reference": "6.5",
+              "period_quote": "at any time on or prior to the twelve (12) month anniversary of such termination",
+              "arming_event_quote": "such termination",
+              "qualifying_transaction_quote": "Parent or any of its Subsidiaries enters into a definitive agreement with respect to any Parent Acquisition Proposal or the transactions contemplated by any Parent Acquisition Proposal are consummated",
+              "threshold_quote": "“50%” shall be substituted for “20%” in the definition of Parent Acquisition Proposal",
+              "same_proposal_requirement_quote": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7504eb3adf56052a0f920311dcf64c3cabf7e38e700002ee1d9baba69e82f3ec",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9f7a5d98a2d261db8f7518706440e5e109feab373ee47b583921c1796b79b285",
+              "document_ordinal": 0,
+              "absolute_start": 8137,
+              "absolute_end": 8568,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "54c2541c44deaaeca72a88535e255981d7cea28ff2ee068c25ebfa3baee41801"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "c64ce17755ee6b451f1aa9b932f6037064d691642efce4bf8fb8b60ed74e984e"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d9339f7d6204b76c82b0d920f8f9e89a672204eced45669016cf1e53b90c7928",
+          "claim_occurrence_id": "b7f279a1b1ecce413696118ec3d519a0872538da831175cdd9b2d595427219a1",
+          "subject_occurrence_id": "86f1b90ade4d26498309e277fd11a786bb0b8858b31d591e6be8c81d554acbb9",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company or Parent, as applicable, shall reimburse the other for all costs and expenses (including disbursements and reasonable fees of counsel) incurred in the collection of such overdue amount",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "7a1bac98f720169a9c7a27910ff28e956ca60ec5ebed4fe3a345f24c5daa1c20"
+          ],
+          "attributes": {
+            "why_unmapped": "EXPENSE_REIMBURSEMENT: Reimbursement of collection costs for an overdue fee amount.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "EXPENSE_REIMBURSEMENT",
+              "section_reference": "6.5"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "7a1bac98f720169a9c7a27910ff28e956ca60ec5ebed4fe3a345f24c5daa1c20",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "64847deff206733efa4c93d33703049d62f0dc258519b853f48d222d69868ff8",
+              "document_ordinal": 0,
+              "absolute_start": 10390,
+              "absolute_end": 10587,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "14c5107ca893b88ca88dfc7c44f4fc6866d7f54b9e9903469a61a27e901fb77a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "c64ce17755ee6b451f1aa9b932f6037064d691642efce4bf8fb8b60ed74e984e"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "261b4b06a2bc0804dc2fe756d2c50ef6f463eb997d5afc77cbc95693c845164e",
+          "claim_occurrence_id": "bf5e8328a3848205f0a058f465a6ab986cff66d9622cddd79b51d8085f8499e5",
+          "subject_occurrence_id": "64621c5828e156dbf0ae7573d92044dbce89fd7011b3b1d6b55286766ec07098",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company or Parent, as applicable, shall pay to the other interest on such amount from and including the date payment of such amount was due to but excluding the date of actual payment at the prime rate set forth in The Wall Street Journal in effect on the date such payment was required to be made plus 2%.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b62bbab297da17fdce402785c911629264b145cac1a910a285f72752824c38aa"
+          ],
+          "attributes": {
+            "why_unmapped": "LATE_PAYMENT_INTEREST: Interest applies to an overdue fee amount.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "LATE_PAYMENT_INTEREST",
+              "section_reference": "6.5",
+              "interest_present": true,
+              "benchmark_quote": "the prime rate set forth in The Wall Street Journal in effect on the date such payment was required to be made plus 2%",
+              "due_date_reference_quote": "the date payment of such amount was due"
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b62bbab297da17fdce402785c911629264b145cac1a910a285f72752824c38aa",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "05e466f613197021ad61055663485b88590dd49abe648c04d230c998cde02d91",
+              "document_ordinal": 0,
+              "absolute_start": 10597,
+              "absolute_end": 10907,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1833b44d856606008a50dd02c4e00b00d08274705ea34625c6c2a66a6c5dae68"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "c64ce17755ee6b451f1aa9b932f6037064d691642efce4bf8fb8b60ed74e984e"
+        }
+      }
+    },
+    {
+      "section_reference": "6.5",
+      "citation_validation": null,
+      "section_family": "TERMINATION_FEE",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "abc4860df1ef6fa089a276a3edac643b7167f9030ac0ce79c99a300d6d1d50aa",
+          "claim_occurrence_id": "cdaca3e5705b9ddc358a1dafb6105e1d13877abb13d962bac5d2f7efa35efd8f",
+          "subject_occurrence_id": "adf4699993d3d269afcd013bd66db634a896242fd7b25c34dabfe3128daabe05",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in the event that the Parent Termination Fee or the Company Termination Fee is payable and actually paid to Parent or the Company in accordance with this Article ‎VI, payment of such Parent Termination Fee or Company Termination Fee, as applicable, shall be the sole and exclusive remedy of the non-terminating party and its respective Affiliates against the other party or such other party’s stockholders, directors, officers, Affiliates and other representatives, for any loss or damage based upon, arising out of or relating to this Agreement or the negotiation, execution or performance hereof or the Transactions, except in the case of fraud or any willful and material breach of this Agreement by such other party.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6d7a972afe273fc9705be27b3119637da4d88e595bb62dd4aa11a09bc610726d"
+          ],
+          "attributes": {
+            "why_unmapped": "SOLE_REMEDY_EVIDENCE: Payment of an applicable termination fee is the sole and exclusive remedy, subject to carve-outs.",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "surface": "SOLE_REMEDY_EVIDENCE",
+              "section_reference": "6.5",
+              "owner_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+              "payment_context_quote": "the Parent Termination Fee or the Company Termination Fee is payable and actually paid to Parent or the Company in accordance with this Article ‎VI",
+              "remedy_effect_quote": "shall be the sole and exclusive remedy of the non-terminating party and its respective Affiliates",
+              "carve_outs": [
+                {
+                  "kind": "FRAUD",
+                  "quote": "fraud"
+                },
+                {
+                  "kind": "WILLFUL_BREACH",
+                  "quote": "willful and material breach of this Agreement"
+                }
+              ]
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6d7a972afe273fc9705be27b3119637da4d88e595bb62dd4aa11a09bc610726d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7fd6b5d6234bf2f22d296409fa04b53a3820407897af53ebe61750ac9cc75186",
+              "document_ordinal": 0,
+              "absolute_start": 10972,
+              "absolute_end": 11696,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "954cc2a5e549562e4d324e5a6dd91994dded6b6f0779bae30b363f79283e9f1b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "f380361d467d7b8607a9fc8d8f795095ccc709eca20f0821e63b7da2d0ca4b63",
+          "producer_receipt_id": "1c877c03effc819cdda32e00cbda40282700d5fa476122fbdcc17f38bb3dc218",
+          "governed_scope_digest": "f5d1867a24d6a2171cadb4242e80865897f8dbcb022a96d8aa00b9b2646fe456",
+          "extraction_provenance_id": "c64ce17755ee6b451f1aa9b932f6037064d691642efce4bf8fb8b60ed74e984e"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [
+    {
+      "section_reference": "6.5",
+      "reason": "FEE_TRIGGER_QUOTE_UNVERIFIED",
+      "quote_preview": "a breach of the Company’s obligations under Section ‎4.3"
+    },
+    {
+      "section_reference": "6.5",
+      "reason": "FEE_TRIGGER_QUOTE_UNVERIFIED",
+      "quote_preview": "a breach of Parent’s obligations under Section ‎4.4"
+    }
+  ],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.5",
+      "source_byte_length": 11697,
+      "covered_byte_length": 2460,
+      "coverage_share": 0.21031033598358553,
+      "marker_counts": {
+        "as of": 0,
+        "except": 1,
+        "knowledge": 6,
+        "material": 5,
+        "total": 12
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.21031033598358553,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 12,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.5",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 43,
+          "end": 46
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 447,
+          "end": 450
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 729,
+          "end": 733
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 826,
+          "end": 829
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1707,
+          "end": 1710
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1743,
+          "end": 1746
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1801,
+          "end": 1804
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1804,
+          "end": 1807
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1807,
+          "end": 1810
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1828,
+          "end": 1831
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1831,
+          "end": 1835
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1923,
+          "end": 1926
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2008,
+          "end": 2011
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2011,
+          "end": 2014
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2014,
+          "end": 2017
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2035,
+          "end": 2038
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2038,
+          "end": 2042
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2044,
+          "end": 2048
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2125,
+          "end": 2128
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2254,
+          "end": 2257
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2257,
+          "end": 2260
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2260,
+          "end": 2263
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2278,
+          "end": 2281
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2281,
+          "end": 2285
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2290,
+          "end": 2295
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2296,
+          "end": 2299
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2351,
+          "end": 2354
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2411,
+          "end": 2414
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2437,
+          "end": 2440
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2443,
+          "end": 2446
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2523,
+          "end": 2526
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2606,
+          "end": 2609
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2664,
+          "end": 2667
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2899,
+          "end": 2902
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2957,
+          "end": 2960
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2960,
+          "end": 2963
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2963,
+          "end": 2966
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3079,
+          "end": 3084
+        },
+        {
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3086,
+          "end": 3089
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3184,
+          "end": 3187
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3275,
+          "end": 3278
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3296,
+          "end": 3299
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3593,
+          "end": 3596
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3655,
+          "end": 3658
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3660,
+          "end": 3663
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3668,
+          "end": 3671
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3808,
+          "end": 3811
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3884,
+          "end": 3887
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3891,
+          "end": 3894
+        },
+        {
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3995,
+          "end": 3998
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4464,
+          "end": 4467
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4469,
+          "end": 4473
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4478,
+          "end": 4483
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4654,
+          "end": 4657
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4680,
+          "end": 4683
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4764,
+          "end": 4768
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4791,
+          "end": 4794
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4878,
+          "end": 4883
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4906,
+          "end": 4909
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5799,
+          "end": 5802
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5835,
+          "end": 5838
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5898,
+          "end": 5901
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5901,
+          "end": 5904
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5904,
+          "end": 5907
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5925,
+          "end": 5928
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5928,
+          "end": 5932
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6020,
+          "end": 6023
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6110,
+          "end": 6113
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6113,
+          "end": 6116
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6116,
+          "end": 6119
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6137,
+          "end": 6140
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6140,
+          "end": 6144
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6146,
+          "end": 6150
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6227,
+          "end": 6230
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6361,
+          "end": 6364
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6364,
+          "end": 6367
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6367,
+          "end": 6370
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6374,
+          "end": 6378
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6383,
+          "end": 6388
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6389,
+          "end": 6392
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6444,
+          "end": 6447
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6504,
+          "end": 6507
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6530,
+          "end": 6533
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6536,
+          "end": 6539
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6616,
+          "end": 6619
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6698,
+          "end": 6701
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6761,
+          "end": 6764
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7057,
+          "end": 7060
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7120,
+          "end": 7123
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7123,
+          "end": 7126
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7126,
+          "end": 7129
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7241,
+          "end": 7246
+        },
+        {
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7248,
+          "end": 7251
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7341,
+          "end": 7344
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7437,
+          "end": 7440
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7458,
+          "end": 7461
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7737,
+          "end": 7740
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7799,
+          "end": 7802
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7804,
+          "end": 7807
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7812,
+          "end": 7815
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7951,
+          "end": 7954
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8027,
+          "end": 8030
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8034,
+          "end": 8037
+        },
+        {
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8137,
+          "end": 8140
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8598,
+          "end": 8601
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8603,
+          "end": 8607
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8612,
+          "end": 8617
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8779,
+          "end": 8782
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8805,
+          "end": 8808
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8889,
+          "end": 8893
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8916,
+          "end": 8919
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9003,
+          "end": 9008
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9031,
+          "end": 9034
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 9929,
+          "end": 9932
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10024,
+          "end": 10027
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10046,
+          "end": 10049
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10340,
+          "end": 10343
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10361,
+          "end": 10364
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10386,
+          "end": 10389
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10592,
+          "end": 10596
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 10908,
+          "end": 10911
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 74,
+        "section_paragraph_marker": 5,
+        "cross_reference_marker": 42
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 447,
+          "end": 450
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 729,
+          "end": 733
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 826,
+          "end": 829
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1743,
+          "end": 1746
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 1804,
+          "end": 1807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 1807,
+          "end": 1810
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1831,
+          "end": 1835
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 1923,
+          "end": 1926
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2011,
+          "end": 2014
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2014,
+          "end": 2017
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2038,
+          "end": 2042
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2044,
+          "end": 2048
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2257,
+          "end": 2260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2260,
+          "end": 2263
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2281,
+          "end": 2285
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2290,
+          "end": 2295
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2296,
+          "end": 2299
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2351,
+          "end": 2354
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2411,
+          "end": 2414
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2443,
+          "end": 2446
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 2606,
+          "end": 2609
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 2899,
+          "end": 2902
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2960,
+          "end": 2963
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2963,
+          "end": 2966
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3079,
+          "end": 3084
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3086,
+          "end": 3089
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 3086,
+          "end": 3089
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 3593,
+          "end": 3596
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3655,
+          "end": 3658
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3660,
+          "end": 3663
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 3668,
+          "end": 3671
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3808,
+          "end": 3811
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3884,
+          "end": 3887
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 3891,
+          "end": 3894
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "start": 3995,
+          "end": 3998
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4464,
+          "end": 4467
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4469,
+          "end": 4473
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4478,
+          "end": 4483
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 4654,
+          "end": 4657
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 4764,
+          "end": 4768
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 4878,
+          "end": 4883
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 5835,
+          "end": 5838
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 5901,
+          "end": 5904
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 5904,
+          "end": 5907
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 5928,
+          "end": 5932
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 6113,
+          "end": 6116
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 6116,
+          "end": 6119
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6140,
+          "end": 6144
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6146,
+          "end": 6150
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 6364,
+          "end": 6367
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 6367,
+          "end": 6370
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6374,
+          "end": 6378
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 6383,
+          "end": 6388
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 6389,
+          "end": 6392
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 6504,
+          "end": 6507
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6530,
+          "end": 6533
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 6536,
+          "end": 6539
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 6698,
+          "end": 6701
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 7057,
+          "end": 7060
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 7123,
+          "end": 7126
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 7126,
+          "end": 7129
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 7241,
+          "end": 7246
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7248,
+          "end": 7251
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 7248,
+          "end": 7251
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 7737,
+          "end": 7740
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 7799,
+          "end": 7802
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 7804,
+          "end": 7807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 7812,
+          "end": 7815
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 7951,
+          "end": 7954
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 8027,
+          "end": 8030
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 8034,
+          "end": 8037
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "start": 8137,
+          "end": 8140
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 8598,
+          "end": 8601
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 8603,
+          "end": 8607
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 8612,
+          "end": 8617
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 8779,
+          "end": 8782
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8805,
+          "end": 8808
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 8889,
+          "end": 8893
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 8916,
+          "end": 8919
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 9003,
+          "end": 9008
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 10386,
+          "end": 10389
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 10592,
+          "end": 10596
+        }
+      ],
+      "disagreement_count": 82
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 2,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 13,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "c05f43441af2a9b8da5b38a9558531eceae146b5e829903eebfe55ba8eadd90f"
+}

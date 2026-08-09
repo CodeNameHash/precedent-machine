@@ -1,0 +1,51 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "eab6e8e011a097841581e3b5e1ee7406b7a6b737d37ff07848dda291419a739f",
+  "review_queue": [
+    {
+      "section_reference": "9.11",
+      "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+      "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+      "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 25,
+      "materiality_label": "REMEDIES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a1b9951149c8c6e3ceee928882fc974bcf354a30d457bb31d59f1f798ce6259a",
+      "closure_id": "0fdc4c6b0ceef6be138b36003dadc6e53bf95fd5a49a83b9ff0e5f9f53b01f6d",
+      "normalised_phrase": "The Parties agree that irreparable damage, for which monetary damages would not be an adequate remedy, would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached by the Parties. Prior to the termination of this Agreement pursuant to Section 8.1, it is accordingly agreed that the Parties shall be entitled to an injunction or injunctions, or any other appropriate form of specific performance or equitable relief, to prevent breaches of this Agreement and to enforce specifically the terms and provisions hereof in any court of competent jurisdiction, in each case in accordance with this Section 9.11, this being in addition to any other remedy to which they are entitled under the terms of this Agreement at law or in equity.",
+      "attachment_position": null,
+      "concept_family": "REMEDY-SPECIFIC-PERFORMANCE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 5,
+          "end": 25,
+          "excerpt": "9.11 Specific Performance. The Parties agree that irreparable damage, for which monetary damages would no",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "REMEDY-SPECIFIC-PERFORMANCE",
+          "pattern_id": "REMEDY-SPECIFIC-PERFORMANCE:PHRASE:SPECIFIC_PERFORMANCE",
+          "start": 957,
+          "end": 977,
+          "excerpt": "rees not to raise any objections to the availability of the equitable remedy of specific performance to prevent or restrain breaches or threatened breaches of, or to enforce compli",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "595dcba9c65ad2922579010335271f8bf358ddfe13e4898b9e234af86f7ccfc7"
+}

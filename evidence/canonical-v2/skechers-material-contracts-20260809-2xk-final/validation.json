@@ -1,0 +1,125 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "15b3488834435abdc367342ed9b4b7d103c697468dbf84a400b5a7863fc306c9",
+      "deal_key": "deal:skechers-material-contracts:5e1d6f13ab83e3f9",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 138882,
+        "absolute_start": 138782,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "6c7d5b9f6cb9ccca1eda74700cea90d12cb8447ec86f5f720636561bdbeb66e9",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "9e1bbf710c189f2945e9b2a76e13a72ae146d756fc39a36e24906ed464b098a7",
+        "exact_text": "all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "cff21331f04c2e824bdcc343bb17de9e5cf782451b91b3a2fc8305bf8fec2fb5",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "f519cc5f41ed0a9cd71174e17f906327a30d29672801bbab3f595c7add76ade9"
+          }
+        ],
+        "output_text_hash": "9e1bbf710c189f2945e9b2a76e13a72ae146d756fc39a36e24906ed464b098a7",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "122688478962287fbc2b86b0b7044d5de17fa7c87acd4dce61bb405b73852b89",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [],
+    "components": [],
+    "claims": [],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [
+      {
+        "attempted_claim_definition_key": "OPEN_WORLD_PROPOSITION",
+        "candidate_id": "1148b36c9f20fbc30391ebd2699b38436ee627397170bcfdfda0906689271b04",
+        "canonical_value": null,
+        "closure_id": "daee0d13633aa0b9614bf2ee7a261a8814111a40c6a5d816ec7f9bec12de070c",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "raw_value": "all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE/V1",
+        "section_reference": "3.13"
+      }
+    ],
+    "open_world_candidate_occurrences": [
+      {
+        "attributes": {
+          "nearest_concept": "REP-T-CONTRACTS",
+          "why_unmapped": "The undefined term \"Material Contracts\" may include multiple contract types and does not directly prove a single controlled bucket or threshold."
+        },
+        "candidate_id": "1148b36c9f20fbc30391ebd2699b38436ee627397170bcfdfda0906689271b04",
+        "canonical_value": null,
+        "closure_id": "daee0d13633aa0b9614bf2ee7a261a8814111a40c6a5d816ec7f9bec12de070c",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "open_world_candidate_occurrence_id": "9972c31b95915f50227d8f1c526f425d3d2fe0207a7b31054a410bf5411471c6",
+        "raw_value": "all Material Contracts to or by which the Company Group is a party or is bound as of the date hereof",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_OCCURRENCE/V1"
+      }
+    ],
+    "open_world_evidence_references": [
+      {
+        "absolute_end": 138882,
+        "absolute_start": 138782,
+        "closure_id": "daee0d13633aa0b9614bf2ee7a261a8814111a40c6a5d816ec7f9bec12de070c",
+        "document_ordinal": 0,
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "evidence_reference_id": "f6b60a8f643b4464547ef0a4fe52a5c1ad6c02705539800f81e39a2561555041",
+        "evidence_role": "OPERATIVE_TEXT",
+        "excerpt_id": "cff21331f04c2e824bdcc343bb17de9e5cf782451b91b3a2fc8305bf8fec2fb5",
+        "open_world_candidate_occurrence_id": "9972c31b95915f50227d8f1c526f425d3d2fe0207a7b31054a410bf5411471c6",
+        "ordinal": 0
+      }
+    ],
+    "open_world_candidate_dispositions": [
+      {
+        "closure_id": "daee0d13633aa0b9614bf2ee7a261a8814111a40c6a5d816ec7f9bec12de070c",
+        "disposition_code": "UNGOVERNED_UNREVIEWED",
+        "evidence_governance": "UNGOVERNED_OPEN_WORLD_EVIDENCE",
+        "final_disposition_id": "6e4e1d91a9387fdcbbbf96434168d2f49487867a2f5baaa4797fbcf15001bac8",
+        "open_world_candidate_occurrence_id": "9972c31b95915f50227d8f1c526f425d3d2fe0207a7b31054a410bf5411471c6",
+        "reason_code": "NATIVE_OPEN_WORLD_PROPOSAL",
+        "schema_version": "NATIVE_OPEN_WORLD_CANDIDATE_DISPOSITION/V1"
+      }
+    ],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "deal_admission_id": "15b3488834435abdc367342ed9b4b7d103c697468dbf84a400b5a7863fc306c9",
+        "governed_deal_key": "deal:skechers-material-contracts:5e1d6f13ab83e3f9",
+        "immutable_source_document_id": "08fd217ea2561699fd43cb6c75ee26c358c018084956322c92e1e19d7ecce154",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "a8663ed9e48231e088ab21faed3ebea3f1006b59b6dd6ef358511d319ceda18e",
+        "source_admission_manifest_id": "cd518ad18e64ffdead9f1a4aec266d05b5eec52a7f7c0e717cbac7f049ffb6cb",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 5,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

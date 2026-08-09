@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T04:56:13.597Z",
+  "section_reference": "1.1",
+  "prompt_id": "native-producer-merger-structure/v1",
+  "prompt_version": 3,
+  "raw_response_text": "{\"structure_assertions\":[{\"assertion_kind\":\"EFFECTIVE_TIME\",\"quote\":\"at the Company Merger Effective Time\"},{\"assertion_kind\":\"EFFECTS\",\"quote\":\"such that, immediately following the Company Merger, Parent shall be the sole member and manager of the Surviving Company.\"},{\"assertion_kind\":\"EFFECTIVE_TIME\",\"quote\":\"at the OpCo Merger Effective Time\"}],\"structure_mechanics\":[],\"transaction_steps\":[{\"step_order\":1,\"step_kind\":\"MERGER\",\"disappearing_entity\":\"Company\",\"surviving_entity\":\"Surviving Company\",\"parent_entity\":\"Parent\",\"concurrency\":\"SEQUENTIAL\",\"quote\":\"pursuant to which (i) the Company shall be merged with and into Company Merger Sub and the separate existence of the Company shall thereupon cease and (ii) Company Merger Sub shall survive the Company Merger (the “Surviving Company”)\"},{\"step_order\":2,\"step_kind\":\"MERGER\",\"disappearing_entity\":\"OpCo Merger Sub\",\"surviving_entity\":\"Surviving OpCo\",\"parent_entity\":null,\"concurrency\":\"SEQUENTIAL\",\"quote\":\"pursuant to which (i) OpCo Merger Sub shall be merged with and into the Partnership and the separate existence of OpCo Merger Sub shall thereupon cease and (ii) the Partnership shall be the surviving entity in the OpCo Merger (the “Surviving OpCo”)\"}],\"open_world_candidates\":[]}"
+}

@@ -39,7 +39,7 @@
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "e9552beb34ba4070b3b95b70c2cad22ba6b40c7f27f1d5e5fae2fa8a0852e2b7",
+        "claim_revision_id": "4382bc8a1b6610181ea201ec37e19460529b1991ec2d985b8c34c88260593aa2",
         "claim_occurrence_id": "bc3cb1c2412f6eaf59877dfdb87b8e94853a24d39547c928b0306ad0919abe39",
         "subject_occurrence_id": "899c69f0d3de1dc3ed7e1bad0fa79fda6894a06b683cd03a947b101f2064a033",
         "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -81,8 +81,8 @@
           "answer_provenance": {
             "tag": "MECHANICAL",
             "pins": {
-              "mapping_table_version": 20,
-              "qualifier_kind_lexicon_version": 4
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
             }
           },
           "enrichment_state": "UNENRICHED",
@@ -108,7 +108,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "21e7285d49b2ac6d91b0ca817e7f916c12f05846b0de0cf3d4d78d5504b8919d"
+        "closure_id": "8b12d033bddb3a10189e08fe7216abc482d715e00b5e9400e8a0fd2f447176e5"
       },
       "compiled_candidate": {
         "section_reference": "3.1(b)",
@@ -125,7 +125,7 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "e9552beb34ba4070b3b95b70c2cad22ba6b40c7f27f1d5e5fae2fa8a0852e2b7",
+            "claim_revision_id": "4382bc8a1b6610181ea201ec37e19460529b1991ec2d985b8c34c88260593aa2",
             "claim_occurrence_id": "bc3cb1c2412f6eaf59877dfdb87b8e94853a24d39547c928b0306ad0919abe39",
             "subject_occurrence_id": "899c69f0d3de1dc3ed7e1bad0fa79fda6894a06b683cd03a947b101f2064a033",
             "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -167,8 +167,8 @@
               "answer_provenance": {
                 "tag": "MECHANICAL",
                 "pins": {
-                  "mapping_table_version": 20,
-                  "qualifier_kind_lexicon_version": 4
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
                 }
               },
               "enrichment_state": "UNENRICHED",
@@ -194,7 +194,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "21e7285d49b2ac6d91b0ca817e7f916c12f05846b0de0cf3d4d78d5504b8919d"
+            "closure_id": "8b12d033bddb3a10189e08fe7216abc482d715e00b5e9400e8a0fd2f447176e5"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -228,6 +228,34 @@
           "normalized_citation": "3.1(b)",
           "derived_citation": "3.1(b)(i)"
         }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 26,
+          "end_byte": 779
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 26,
+            "end_byte": 779,
+            "text": " The authorized capital stock of the Company consists of (A) 250,000,000 Company Shares, of which 28,142,327 Company Shares were outstanding as of the close of business on April 17, 2026 (including 119,994 Company Shares subject to Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof. All of the outstanding Company Shares have been duly authorized and are validly issued, fully paid and nonassessable. As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 23,
+            "text": "(b) Capital Structure.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
       }
     },
     {
@@ -269,7 +297,7 @@
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "033ca22e978492927d87edc7dea5ca7472e62d9bcf1b9b7fd51bf2fa9d361225",
+        "claim_revision_id": "33806adbf0bc950d032d7a789dbbe87504504529fddb90a799c68e830758bf26",
         "claim_occurrence_id": "0e54d1cf2c9881bfacd9fdb14c0f51e578a531198c9e61d8ac1fcf9878ac5d7b",
         "subject_occurrence_id": "b5f7f983176ee721152fd5e2fdb913a58123c8e02fdcd30a97ff97574a2086d6",
         "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -311,8 +339,8 @@
           "answer_provenance": {
             "tag": "MECHANICAL",
             "pins": {
-              "mapping_table_version": 20,
-              "qualifier_kind_lexicon_version": 4
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
             }
           },
           "enrichment_state": "UNENRICHED",
@@ -338,7 +366,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "68b36870295e5e520a5b8adcb1a803a8c6fcdcb22a7f418d16579029d45eaae5"
+        "closure_id": "4685e69d142a6418f934533f575e9bf0c2a08953cb937a057f20ef8c5f8217e5"
       },
       "compiled_candidate": {
         "section_reference": "3.1(b)",
@@ -355,7 +383,7 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "033ca22e978492927d87edc7dea5ca7472e62d9bcf1b9b7fd51bf2fa9d361225",
+            "claim_revision_id": "33806adbf0bc950d032d7a789dbbe87504504529fddb90a799c68e830758bf26",
             "claim_occurrence_id": "0e54d1cf2c9881bfacd9fdb14c0f51e578a531198c9e61d8ac1fcf9878ac5d7b",
             "subject_occurrence_id": "b5f7f983176ee721152fd5e2fdb913a58123c8e02fdcd30a97ff97574a2086d6",
             "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -397,8 +425,8 @@
               "answer_provenance": {
                 "tag": "MECHANICAL",
                 "pins": {
-                  "mapping_table_version": 20,
-                  "qualifier_kind_lexicon_version": 4
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
                 }
               },
               "enrichment_state": "UNENRICHED",
@@ -424,7 +452,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "68b36870295e5e520a5b8adcb1a803a8c6fcdcb22a7f418d16579029d45eaae5"
+            "closure_id": "4685e69d142a6418f934533f575e9bf0c2a08953cb937a057f20ef8c5f8217e5"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -458,6 +486,34 @@
           "normalized_citation": "3.1(b)",
           "derived_citation": "3.1(b)(i)"
         }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 26,
+          "end_byte": 779
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 26,
+            "end_byte": 779,
+            "text": " The authorized capital stock of the Company consists of (A) 250,000,000 Company Shares, of which 28,142,327 Company Shares were outstanding as of the close of business on April 17, 2026 (including 119,994 Company Shares subject to Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof. All of the outstanding Company Shares have been duly authorized and are validly issued, fully paid and nonassessable. As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 23,
+            "text": "(b) Capital Structure.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
       }
     },
     {
@@ -499,7 +555,7 @@
       },
       "claim": {
         "schema_version": "CLAIM_REVISION/V1",
-        "claim_revision_id": "fc0f58b95d3afa6b38a686dd0869737b6d1df23056f54fe1eddb83687c86cd44",
+        "claim_revision_id": "a7f17381bdc37c26b4878da048017956c5b27224da600874c47d3d15d9049b00",
         "claim_occurrence_id": "e551eb6f8fe4eeb1b61eab78199a4ab415c1b4b20a441dc4e53c46b441f8e467",
         "subject_occurrence_id": "c3c21fff765887191b0393dd93a0a48fce54f8412f5b7a4f4fb1386b14ee14e4",
         "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -538,8 +594,8 @@
           "answer_provenance": {
             "tag": "MECHANICAL",
             "pins": {
-              "mapping_table_version": 20,
-              "qualifier_kind_lexicon_version": 4
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
             }
           },
           "enrichment_state": "UNENRICHED",
@@ -565,7 +621,7 @@
         "publication_state": "VALIDATED",
         "retained_residuals": [],
         "quarantine": null,
-        "closure_id": "7ddd762b3ae47aef4c08fe1c82b551719cb010ae9be47bac0531ba8c1419f766"
+        "closure_id": "94f3aa99e0077f049715d53f9cab8afca2392d933a6faecd50eb15fe8f256ba9"
       },
       "compiled_candidate": {
         "section_reference": "3.1(b)",
@@ -582,7 +638,7 @@
           "kind": "claim",
           "claim": {
             "schema_version": "CLAIM_REVISION/V1",
-            "claim_revision_id": "fc0f58b95d3afa6b38a686dd0869737b6d1df23056f54fe1eddb83687c86cd44",
+            "claim_revision_id": "a7f17381bdc37c26b4878da048017956c5b27224da600874c47d3d15d9049b00",
             "claim_occurrence_id": "e551eb6f8fe4eeb1b61eab78199a4ab415c1b4b20a441dc4e53c46b441f8e467",
             "subject_occurrence_id": "c3c21fff765887191b0393dd93a0a48fce54f8412f5b7a4f4fb1386b14ee14e4",
             "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
@@ -621,8 +677,8 @@
               "answer_provenance": {
                 "tag": "MECHANICAL",
                 "pins": {
-                  "mapping_table_version": 20,
-                  "qualifier_kind_lexicon_version": 4
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
                 }
               },
               "enrichment_state": "UNENRICHED",
@@ -648,7 +704,7 @@
             "publication_state": "VALIDATED",
             "retained_residuals": [],
             "quarantine": null,
-            "closure_id": "7ddd762b3ae47aef4c08fe1c82b551719cb010ae9be47bac0531ba8c1419f766"
+            "closure_id": "94f3aa99e0077f049715d53f9cab8afca2392d933a6faecd50eb15fe8f256ba9"
           },
           "extraction_provenance": {
             "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
@@ -682,6 +738,34 @@
           "normalized_citation": "3.1(b)",
           "derived_citation": "3.1(b)(i)"
         }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "i",
+          "depth": 1,
+          "start_byte": 26,
+          "end_byte": 779
+        },
+        "chain": [
+          {
+            "path": "i",
+            "start_byte": 26,
+            "end_byte": 779,
+            "text": " The authorized capital stock of the Company consists of (A) 250,000,000 Company Shares, of which 28,142,327 Company Shares were outstanding as of the close of business on April 17, 2026 (including 119,994 Company Shares subject to Company Restricted Stock Awards) and (B) 10,000,000 shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof. All of the outstanding Company Shares have been duly authorized and are validly issued, fully paid and nonassessable. As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 23,
+            "text": "(b) Capital Structure.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
       }
     }
   ],
@@ -696,27 +780,17 @@
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "e9552beb34ba4070b3b95b70c2cad22ba6b40c7f27f1d5e5fae2fa8a0852e2b7",
-      "closure_id": "21e7285d49b2ac6d91b0ca817e7f916c12f05846b0de0cf3d4d78d5504b8919d",
-      "normalised_phrase": "as of the close of business on April 17, 2026",
-      "attachment_position": "ITEM",
-      "concept_family": "REP-T-CAP"
-    },
-    {
-      "section_reference": "3.1(b)",
-      "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
-      "resolved_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
-      "concept_key": "REP-T-CAP",
-      "reasons": [],
-      "materiality_rank": 55,
-      "materiality_label": "REPRESENTATIONS",
-      "auto_pass": false,
-      "has_resolution": true,
-      "claim_revision_id": "033ca22e978492927d87edc7dea5ca7472e62d9bcf1b9b7fd51bf2fa9d361225",
-      "closure_id": "68b36870295e5e520a5b8adcb1a803a8c6fcdcb22a7f418d16579029d45eaae5",
+      "claim_revision_id": "33806adbf0bc950d032d7a789dbbe87504504529fddb90a799c68e830758bf26",
+      "closure_id": "4685e69d142a6418f934533f575e9bf0c2a08953cb937a057f20ef8c5f8217e5",
       "normalised_phrase": "as of the date hereof",
       "attachment_position": "ITEM",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -728,11 +802,39 @@
       "materiality_label": "REPRESENTATIONS",
       "auto_pass": false,
       "has_resolution": true,
-      "claim_revision_id": "fc0f58b95d3afa6b38a686dd0869737b6d1df23056f54fe1eddb83687c86cd44",
-      "closure_id": "7ddd762b3ae47aef4c08fe1c82b551719cb010ae9be47bac0531ba8c1419f766",
+      "claim_revision_id": "4382bc8a1b6610181ea201ec37e19460529b1991ec2d985b8c34c88260593aa2",
+      "closure_id": "8b12d033bddb3a10189e08fe7216abc482d715e00b5e9400e8a0fd2f447176e5",
+      "normalised_phrase": "as of the close of business on April 17, 2026",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.1(b)",
+      "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+      "concept_key": "REP-T-CAP",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a7f17381bdc37c26b4878da048017956c5b27224da600874c47d3d15d9049b00",
+      "closure_id": "94f3aa99e0077f049715d53f9cab8afca2392d933a6faecd50eb15fe8f256ba9",
       "normalised_phrase": "As of April 17, 2026,",
       "attachment_position": "CHAPEAU",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -753,7 +855,13 @@
       "closure_id": "c1f1c41c46f4cd1ac53f801fd605173e739bce37a1e81774f58f840c2d42ae5a",
       "normalised_phrase": "as of the close of business on April 17, 2026",
       "attachment_position": "ITEM",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -774,7 +882,13 @@
       "closure_id": "e0b01d4ffaefd57cfb38270ea29ffba4977157a54b9743c82c95d56ba14f6dbf",
       "normalised_phrase": "correct and complete",
       "attachment_position": "ITEM",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -795,7 +909,13 @@
       "closure_id": "ede23fd83f7b2abfdd1a6f57dce06935ab5f3d760d89243c3a293a3fdae08946",
       "normalised_phrase": "As of April 17, 2026,",
       "attachment_position": "ITEM",
-      "concept_family": "REP-T-CAP"
+      "concept_family": "REP-T-CAP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     }
   ],
   "open_world": [
@@ -853,7 +973,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -910,7 +1036,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -967,7 +1099,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1023,7 +1161,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1079,7 +1223,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1135,7 +1285,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1192,7 +1348,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1249,7 +1411,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1306,7 +1474,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1362,7 +1536,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1418,7 +1598,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1474,7 +1660,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1531,7 +1723,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1588,7 +1786,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1645,7 +1849,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1701,7 +1911,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1757,7 +1973,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1813,7 +2035,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1869,7 +2097,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1925,7 +2159,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -1981,7 +2221,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2049,7 +2295,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2116,7 +2368,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2184,7 +2442,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2251,7 +2515,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2318,7 +2588,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2385,7 +2661,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2450,7 +2732,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2517,7 +2805,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2584,7 +2878,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     },
     {
       "section_reference": "3.1(b)",
@@ -2651,7 +2951,13 @@
           "prompt_version": 5
         }
       },
-      "section_family_ai_unverified": null
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
     }
   ],
   "residuals": [
@@ -3685,8 +3991,8 @@
     "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
     "run_receipt_id": "777f2b22ef7e530844758b45e5ee1d879045d31a7cbf0aa705bb05580122cf68",
     "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
-    "mapping_table_version": 20,
-    "qualifier_kind_lexicon_version": 4,
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
     "measurement_date_parse_version": 2,
     "schedule_reference_parse_version": 1,
     "share_count_parse_version": 1,
@@ -3697,7 +4003,7 @@
     "no_shop_prerequisite_corroboration_table_version": 1,
     "mae_corroboration_table_version": 1,
     "termination_deadline_parse_version": 1,
-    "cure_period_parse_version": 1,
+    "cure_period_parse_version": 2,
     "proxy_meeting_parse_version": 1,
     "antitrust_regulatory_parse_version": 1,
     "per_share_cash_parse_version": 1,
@@ -3717,6 +4023,6 @@
       "limb_component_trees": 1,
       "ioc_restriction_components": 0
     },
-    "resolution_receipt_id": "606d2c44b1d6e3ec241041404c4c87c625d9a122bb52275850b4348cc421b209"
+    "resolution_receipt_id": "1557c6b2af6ae85d64ea415999690f882a960031bf011c7c03f4872f3ec0f2d0"
   }
 }

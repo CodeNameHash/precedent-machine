@@ -1,0 +1,59 @@
+{
+  "run_wall_clock_ms": 47719,
+  "calls": [
+    {
+      "call_index": 0,
+      "section_reference": "3.01(v)",
+      "wall_clock_ms": 21689,
+      "usage": {
+        "input_tokens": 17826,
+        "cached_input_tokens": 16128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1042,
+        "reasoning_output_tokens": 0
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe55c-dc0c-7210-b07a-f43905d7e50c",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    },
+    {
+      "call_index": 1,
+      "section_reference": "3.02(f)",
+      "wall_clock_ms": 20010,
+      "usage": {
+        "input_tokens": 17783,
+        "cached_input_tokens": 16128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 960,
+        "reasoning_output_tokens": 303
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe55d-2f4e-7493-a14e-57987f587f4d",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    },
+    {
+      "call_index": 2,
+      "section_reference": "8.03(p)",
+      "wall_clock_ms": 5941,
+      "usage": {
+        "input_tokens": 17389,
+        "cached_input_tokens": 16128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 0
+      },
+      "requested_model_profile": "TERRA_MEDIUM",
+      "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+      "served_model": null,
+      "served_model_status": "NOT_REPORTED_BY_CODEX_JSONL",
+      "provider_request_id": "019fe55d-7d9e-71c3-a96b-49c7c940e944",
+      "attribution_basis": "ORDERED_PINNED_SECTION"
+    }
+  ]
+}

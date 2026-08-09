@@ -1,0 +1,652 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "1127722c24c2644dbddb022f98ba1df0d02096c419cca6da7f73f97196ddf844",
+  "review_queue": [
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-BREACH",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "312e5f0b4a5146d5c2cf0e6d70df577d44940943709ce2c1a60581f9709b7c1c",
+      "closure_id": "0972fc058b964a4215e3c89b70b50a7525c1fa9e62ab4e8318eac5380e132a04",
+      "normalised_phrase": "in the event of a breach by the other Party of any representation, warranty, covenant or other agreement contained in this Agreement",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-LEGAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "80b483178ab9b497be7f35649fb7776447cb6c2705c01ef3baef57e8529f15b6",
+      "closure_id": "0cd20a3cc371fa93a5419f83c80bde53fbee96fe7bbfe83b3f21e1ec7265bca3",
+      "normalised_phrase": "if any Governmental Entity having jurisdiction over any Party shall have issued any order, decree, ruling or injunction or taken any other action permanently restraining, enjoining or otherwise prohibiting the consummation of the Merger and such order, decree, ruling or injunction or other action shall have become final and nonappealable",
+      "attachment_position": null,
+      "concept_family": "TERMR-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-LEGAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f0147aab3287b91866c19cb8802e4a2144756a2b982897be0b6ba3d3690f9d75",
+      "closure_id": "0d71158dd2f04b6f036f75a42ba215ab4abc2413ebfbc4926d3bc1fc9477a388",
+      "normalised_phrase": "if any Governmental Entity having jurisdiction over any Party shall have issued any order, decree, ruling or injunction or taken any other action permanently restraining, enjoining or otherwise prohibiting the consummation of the Merger and such order, decree, ruling or injunction or other action shall have become final and nonappealable",
+      "attachment_position": null,
+      "concept_family": "TERMR-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "47a9b62cb4df28101abb923bc30f8ea2bc8924026ff574c49559dc5d950cddc5",
+      "closure_id": "0f5bab76df87df7112e6c9af880f1a1541b310dfdeee2146424d7989d380ab98",
+      "normalised_phrase": "if the Company Board or a committee thereof shall have effected a Company Change of Recommendation",
+      "attachment_position": null,
+      "concept_family": "TERMR-RECOMMEND",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-RECOMMEND",
+          "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+          "start": 2930,
+          "end": 2954,
+          "excerpt": "l have effected a Company Change of Recommendation (whether or not such Company Change of Recommendation is permitted by this Agreement);\n(d) by the Company, prior to, but not after, t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-RECOMMEND",
+          "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+          "start": 3212,
+          "end": 3236,
+          "excerpt": "all have effected a Parent Change of Recommendation (whether or not such Parent Change of Recommendation is permitted by this Agreement);\n(e) by Parent, if the Company, its Subsidiarie",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_OUTSIDE_DATE",
+      "concept_key": "TERMR-OUTSIDE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9fdf17ad0146755dad4daeb3aa850da2d0ca27cb711a7d4f3163ac1f3a739199",
+      "closure_id": "1411966b4e8f5b4ec38f17fc75bcb9dbfa1b2cbf8497bee197d6a73715898b1a",
+      "normalised_phrase": "if the Merger shall not have been consummated on or before 5:00 p.m. Houston time, on April 30, 2021(such date, the “End Date”)",
+      "attachment_position": null,
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1915,
+          "end": 1923,
+          "excerpt": "ction 7.3(a) or (b), as applicable (and such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1952,
+          "end": 1960,
+          "excerpt": "nd such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) thirty (30) days after the giving of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 2137,
+          "end": 2145,
+          "excerpt": " the breaching Party of such breach and (ii) two (2) Business Days prior to the End Date) (a “Terminable Breach”); provided, however, that the terminating Party is ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(b)(iii)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-BREACH",
+      "reasons": [
+        "PERIOD_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "two (2) Business Days prior to the End Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b491920d1072d86a7aa01ada902e8ad3a09d48b52630df906978c48f30df7176",
+      "closure_id": "3ac20991003cf9438b3fbd0512fca393e2bafddd80cc7fd070f91e67872020e1",
+      "normalised_phrase": "two (2) Business Days prior to the End Date",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ee9c800ce5c5c7b7b238fccc130847b6d71fe34a04894cd9f167a3e0ad80a2cc",
+      "closure_id": "470721426c47c44a10076f84f28330bbd9015965f45d9d7b83a9c7bec906347e",
+      "normalised_phrase": "(B) the Parent Stockholder Approval shall not have been obtained upon a vote held at a duly held Parent Stockholders Meeting, or at any adjournment or postponement thereof",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_OUTSIDE_DATE",
+      "concept_key": "TERMR-OUTSIDE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8a5c14fc5900afdd0eb30125bf26cc68e9c607ad325e1148a0386eca2541cc92",
+      "closure_id": "4db0be056ddf5b6836e31424c8b2d9483ad0f1b96f41e2da6f32b5335688c67d",
+      "normalised_phrase": "if the Merger shall not have been consummated on or before 5:00 p.m. Houston time, on April 30, 2021(such date, the “End Date”)",
+      "attachment_position": null,
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1915,
+          "end": 1923,
+          "excerpt": "ction 7.3(a) or (b), as applicable (and such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1952,
+          "end": 1960,
+          "excerpt": "nd such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) thirty (30) days after the giving of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 2137,
+          "end": 2145,
+          "excerpt": " the breaching Party of such breach and (ii) two (2) Business Days prior to the End Date) (a “Terminable Breach”); provided, however, that the terminating Party is ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-OUTSIDE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "691358928d700c64f9a6b04b8b1e797147244a5ad27af9ed984f67b1a6d90278",
+      "closure_id": "5c14b2f0e786575cacaeadafee57aa6eec34bfe7ee114ed21e9aa79682c11cf1",
+      "normalised_phrase": "if the Merger shall not have been consummated on or before 5:00 p.m. Houston time, on April 30, 2021",
+      "attachment_position": null,
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1915,
+          "end": 1923,
+          "excerpt": "ction 7.3(a) or (b), as applicable (and such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1952,
+          "end": 1960,
+          "excerpt": "nd such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) thirty (30) days after the giving of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 2137,
+          "end": 2145,
+          "excerpt": " the breaching Party of such breach and (ii) two (2) Business Days prior to the End Date) (a “Terminable Breach”); provided, however, that the terminating Party is ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(b)(iii)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-BREACH",
+      "reasons": [
+        "PERIOD_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "thirty (30) days after the giving of written notice to the breaching Party of such breach",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "20302814bfb05db1a9b8d0eb6cc760a4d6c9a3f9274ffa9e8d7dafe058b9c0b8",
+      "closure_id": "645a6df46d5d39bcc59b9fd1d4c6c2b5a1c45d029affb183f50de04bee3c2637",
+      "normalised_phrase": "thirty (30) days after the giving of written notice to the breaching Party of such breach",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-RECOMMEND",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4984e40d6830d56a2770829842a53a271f13744e7a964ddb16fc66af3653a791",
+      "closure_id": "68c3ba2b0a3cd53b4613cfff3e729b16d31ac193174c697c915e5863719d4255",
+      "normalised_phrase": "if the Parent Board or a committee thereof shall have effected a Parent Change of Recommendation",
+      "attachment_position": null,
+      "concept_family": "TERMR-RECOMMEND",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-RECOMMEND",
+          "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+          "start": 2930,
+          "end": 2954,
+          "excerpt": "l have effected a Company Change of Recommendation (whether or not such Company Change of Recommendation is permitted by this Agreement);\n(d) by the Company, prior to, but not after, t",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-RECOMMEND",
+          "pattern_id": "TERMR-RECOMMEND:ACRONYM:CHANGE_OF_RECOMMENDATION",
+          "start": 3212,
+          "end": 3236,
+          "excerpt": "all have effected a Parent Change of Recommendation (whether or not such Parent Change of Recommendation is permitted by this Agreement);\n(e) by Parent, if the Company, its Subsidiarie",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "21b3875ca7d11005ac6e3c0f990707c50da4f63bcd8ccc8a8d65baba554a88d2",
+      "closure_id": "7aebf2b26f09b9377d557c36519c88d4c6dcb859a1bf81fc8bd6dddd5a5f4acd",
+      "normalised_phrase": "if (A) the Company Stockholder Approval shall not have been obtained upon a vote held at a duly held Company Stockholders Meeting, or at any adjournment or postponement thereof",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "source_citation": "8.1(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMR-PENDING",
+      "reasons": [
+        "TRIGGER_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the Company, its Subsidiaries or any of the Company’s directors or executive officers shall have Willfully and Materially Breached the obligations set forth in Section 6.3(b) (No Solicitation by the Company)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b9f8a6e2d220375d6c7c0951abf4278ab4f15c3f94d39584f50db13787cbc13b",
+      "closure_id": "8b84b6ba460a26731ad4287d0a1fc3670cc8885083557e1bfe5c93bb5f20e363",
+      "normalised_phrase": "if the Company, its Subsidiaries or any of the Company’s directors or executive officers shall have Willfully and Materially Breached the obligations set forth in Section 6.3(b) (No Solicitation by the Company)",
+      "attachment_position": null,
+      "concept_family": "TERMR-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-MUTUAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "41c0e9cf5b3262542d86812000303ff3d731c4b2e502eaf4b500513085f81951",
+      "closure_id": "91653842aeac356bfdcd95cdace1ecea903dfd76cd90209c92c6b2bb2d0bd555",
+      "normalised_phrase": "by mutual written consent of the Company and Parent",
+      "attachment_position": null,
+      "concept_family": "TERMR-MUTUAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-BREACH",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5b0c2aa6f08e7ebf4e5a95726f9e6f38a4a86f4daa980ed1607f0e18b6ea5891",
+      "closure_id": "93fc1f827d9ef74b20196e725c9b87aea37e0f4cc1256adfe3515fb01c007dc9",
+      "normalised_phrase": "in the event of a breach by the other Party of any representation, warranty, covenant or other agreement contained in this Agreement",
+      "attachment_position": null,
+      "concept_family": "TERMR-BREACH",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cad3f2895b9b3000272867d6ab9a5ad1db7c7c473d59af35fc06f81244944f64",
+      "closure_id": "b64240020f7adee8ee96c5b791e84fa2f7a69bceeaf56a53ed6c67ca3a9fb3be",
+      "normalised_phrase": "(B) the Parent Stockholder Approval shall not have been obtained upon a vote held at a duly held Parent Stockholders Meeting, or at any adjournment or postponement thereof",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-NOVOTE",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bf6acdcfce05bafa23a029da2e98a1d44fdcee18b148a66ff3975656bb6ff96a",
+      "closure_id": "c6fbdb9395d3f21f9a0c1ed04bfa5f1483f668f4c4157cbea5529968621b03ac",
+      "normalised_phrase": "if (A) the Company Stockholder Approval shall not have been obtained upon a vote held at a duly held Company Stockholders Meeting, or at any adjournment or postponement thereof",
+      "attachment_position": null,
+      "concept_family": "TERMR-NOVOTE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-LEGAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "03c105cd2c5fec89ac382cd6d412d324550eb10a08ee3ff08e066dd4e9eeb273",
+      "closure_id": "cf6297347d4644d4d76a4ccbbefd0a34e69594f56484cad239b0d97fba770b75",
+      "normalised_phrase": "if there shall be adopted any Law that permanently makes consummation of the Merger illegal or otherwise permanently prohibited",
+      "attachment_position": null,
+      "concept_family": "TERMR-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-MUTUAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ecbcef57d0007996e1d769e41f5a54a3b767340b3860eca01a77f573b72a9732",
+      "closure_id": "ed48f82dbfd7fd96a0033c5b53d6073c681508abe61ac88e6da26e66db95b2f0",
+      "normalised_phrase": "by mutual written consent of the Company and Parent",
+      "attachment_position": null,
+      "concept_family": "TERMR-MUTUAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-LEGAL",
+      "reasons": [],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4bd783e91a824ee2f96f5ef79011ab6a86a7137a17d4db37de4a76cf0e53d0d8",
+      "closure_id": "ed534c9846008bbe5fbf1b8d4bdd0b00968ebb581c51da7f30c449ba80958c55",
+      "normalised_phrase": "if there shall be adopted any Law that permanently makes consummation of the Merger illegal or otherwise permanently prohibited",
+      "attachment_position": null,
+      "concept_family": "TERMR-LEGAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.1",
+      "generic_claim_key": "NATIVE_TERMINATION_RIGHT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_RIGHT_GRANT",
+      "concept_key": "TERMR-OUTSIDE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 10,
+      "materiality_label": "TERMINATION_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a2436199e95e8a47947ab7bb32ffcf3cdf201ac1699d36c57d2a68d6e55e8be6",
+      "closure_id": "ee9f24b8bc1344e14041faa6a3cbb454af34a3d6b0da7234f094f582d71439d1",
+      "normalised_phrase": "if the Merger shall not have been consummated on or before 5:00 p.m. Houston time, on April 30, 2021",
+      "attachment_position": null,
+      "concept_family": "TERMR-OUTSIDE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1915,
+          "end": 1923,
+          "excerpt": "ction 7.3(a) or (b), as applicable (and such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 1952,
+          "end": 1960,
+          "excerpt": "nd such breach is not curable prior to the End Date, or if curable prior to the End Date, has not been cured by the earlier of (i) thirty (30) days after the giving of ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMR-OUTSIDE",
+          "pattern_id": "TERMR-OUTSIDE:ACRONYM:END_DATE",
+          "start": 2137,
+          "end": 2145,
+          "excerpt": " the breaching Party of such breach and (ii) two (2) Business Days prior to the End Date) (a “Terminable Breach”); provided, however, that the terminating Party is ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "710b5b1a6d0b3896c7857ec9b1719f0d8e898327801c1da1bf000dbea0c07166"
+}

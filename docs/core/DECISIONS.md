@@ -1516,3 +1516,71 @@ baseline, and already the regression pin held at 12 → 12 while six deals moved
 Because replay costs zero model calls and the prompt bump invalidates digests,
 the ladder is climbed twice: a free replay-validated resolver phase, one prompt
 bump, then a live phase.
+
+---
+
+## 15. Step 2X free-phase follow-ups: DECIDED 2026-08-08
+
+Five rulings after the free-phase landings (2X-L1, H, A, A1, B scaffold, C
+report-only). Modiv re-run is authorised when the plan reaches it (2X-K), not
+before the free-phase order below.
+
+**Derived limb identity: design now, mint only after stability.** Annotation
+stays for now — it already buys scope, inheritance, cross-deal comparison and
+dedup; only absence needs identity, and document-level absence is served by the
+sectionizer inventory. The gate is not design readiness but **marker-start
+stability**: rerun the corpus survey after the three segmenter changes (colon
+rule, `MAX_DEPTH` 3→5, `(x)/(y)/(z)`) and show **zero marker-start moves**
+across the ~2,360 markers. Minting before that bakes in roughly 1% wrong
+content-addressed identities. Schema to design now, exactly as Fable specified:
+identity `{canonical_text_id, marker_start_byte}`; path and parentage out of
+identity; ordinal dropped rather than stabilised; **new schema**, not a bent
+`PROVISION_COMPONENT/V1`. Retrofitting is expensive; deferring the mint is cheap.
+
+**2X-C: wider scan before enforce.** Zero collisions on resolved+open_world is
+not yet a result — `review_queue` (held) quotes were skipped, and that is where
+ambiguity lives. Scan held quotes. If that is also zero, **enforce immediately**
+(enforcement is then a no-op, the safest moment for a regressive-risk change).
+
+**2X-B: hold scaffolds; corpus pass with quotes before any promotion.** Relaxed
+patterns invented for guaranty/tax are not the same operation as IOC's curated
+`ioc-categories.js`. Second-chance is additive, so a wrong pattern manufactures
+a wrong claim in the fail-closed path. Gate second-chance to report-only until a
+corpus pass reports what each pattern would newly resolve (with quotes) and that
+report is reviewed. Then promote, or not.
+
+**Termination adapter swap: yes, next, structural half only.** Byte-identical
+fixture parity is the gate. Direction grammar and capacity comparison stay in
+`candidate-resolution.js` — do not let the swap quietly absorb more than the
+structural half Fable approved.
+
+**Free-phase order after the swap: 2X-J, then 2X-G, then 2X-F.** J first
+(pure curation, feeds B's fallbacks and G's "already governed"). G second
+(compounding win). F last of the three — most of its acceptance needs
+`transaction_steps` from the prompt bump, and the `UNDETERMINED` hazard is not
+live while the detector is unwired.
+
+---
+
+## 16. General-covenant dual-coding: lex specialis — DECIDED 2026-08-08
+
+Follow-up to the Step 2X-C held-quote collision report
+(`docs/codex-program/notes/step-2x-c-followup.md`). Four held collisions; three
+root causes.
+
+**NOTIFY ↔ LITNOTIFY: semantic overlap → more specific wins.** A Transaction
+Litigation notice clause genuinely is both a general notice obligation and a
+litigation-notice obligation. Independently drafted Concho §6.11 and TopBuild
+§4.18 share the shape. Ben: **precedence — the more specific code wins. One
+row, coded `COV-LITNOTIFY`.** Clean comparison. Accepted cost: a cross-deal
+query for bare "notice obligations" keyed only on `COV-NOTIFY` misses these
+rows unless the query surface later includes LITNOTIFY in that family.
+
+**16B ↔ MERGESUB and PUBLICITY ↔ MERGESUB: accidental overlap → tighten
+pattern.** `COV-MERGESUB`'s old `Merger Sub … shall` proximity fired on
+ordinary joint-obligor drafting. Not a taxonomy call — regex engineering.
+Pattern narrowed to Merger Sub *compliance* content.
+
+**Enforcement of primary multi-match refusal** still waits until held
+collisions are zero after these fixes (or only residual HOLD pairs remain that
+are not specificity-resolved).

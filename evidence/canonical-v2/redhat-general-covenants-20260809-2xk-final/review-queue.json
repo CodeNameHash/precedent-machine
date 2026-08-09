@@ -1,0 +1,112 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "6d3dc8993338d2aa1d7e7eac3b152c0a28aef3194e9d26292eb49f785967b487",
+  "review_queue": [
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8a9102d8004078e01b76fddd8caef13a04d306253f04c1774d501ae9c254858a",
+      "closure_id": "550bd8fbfedbb9d7b69a31ef8d808793ddfd4a4563d32bd9114b19b1dd7bd9a1",
+      "normalised_phrase": "Parent will hold, and will direct its officers, employees, investment bankers, attorneys, accountants and other advisors and representatives to hold, any and all information received from the Company confidential in accordance with the Confidentiality Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 13,
+          "end": 34,
+          "excerpt": "Section 5.02 Access to Information; Confidentiality. The Company shall, and shall cause each of its Subsidiaries t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.07",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "49be0b7d6130a1a404065492714fdcca7af8ade53037b72a99837676da91b37d",
+      "closure_id": "d3382460a2eb0035a6152a97530e7b63c42cfd32c0924f3f7fb6e44b20764862",
+      "normalised_phrase": "the Company, on the one hand, and Parent and Sub, on the other hand, shall, to the extent at all reasonably practicable, consult with the other parties to this Agreement before making, and give such other parties to this Agreement a reasonable opportunity to review and comment upon, any press release or other public statements with respect to this Agreement, the Merger and the other transactions contemplated by this Agreement, and shall not issue any such press release or make any such public statement prior to such reasonably practicable consultation",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 13,
+          "end": 33,
+          "excerpt": "Section 5.07 Public Announcements. The parties agree that the initial press release to be issued with respect to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.09",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "023e9b893342d7484b40059600e20ed5d4668a8776381de31ed4ddd3d4b3348d",
+      "closure_id": "5eeb9dcaa8f8378d674c27f9a022bdb0940faa221b664feac39006d03c98f06a",
+      "normalised_phrase": "the Company shall cooperate with Parent and use its reasonable best efforts to take, or cause to be taken, all actions and do, or cause to be done, all things reasonably necessary, proper or advisable on its part pursuant to applicable Law and the rules and regulations of NYSE to cause (a) the delisting of the Company Common Stock from NYSE as promptly as practicable after the Effective Time and (b) the deregistration of the Company Common Stock pursuant to the Exchange Act as promptly as practicable after such delisting.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 28,
+          "end": 37,
+          "excerpt": "Section 5.09 Stock Exchange Delisting; Deregistration. Prior to the Effective Time, the Company shall cooperate with ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "82de5ae6e63402909a8a297dc4918bbac5d00878d4ab9a9dc379f8a0e4cfba5a"
+}

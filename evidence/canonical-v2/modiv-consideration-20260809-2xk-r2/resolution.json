@@ -1,0 +1,1787 @@
+{
+  "resolved": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(i)",
+      "citation_context": {
+        "parent_section_reference": "2.1",
+        "child_section_reference": "2.1",
+        "parent_chapeau_quote": "Section 2.1 Company Common Share Merger Consideration, Company Preferred Share Merger Consideration and Effect on Company Common Shares and Company Preferred Shares.",
+        "child_clause_quote": "each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ab62abbd9fa4f3c93f586fd9181ccc9fad36a8256d0f63d18a53615b78cf31ea",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 22584,
+        "absolute_end": 27285,
+        "concept_key": "CONS-RATIO",
+        "ordinal": 1,
+        "source_anchor_id": "c3739787f3fbb58f318ee4844ac6b2e0941864c24c2e9570255d7f8cacb9baea",
+        "provision_instance_id": "cc8e24c212d0ba8fe99cae232a98e095ef9040ff68a160e1a224cfc534d3bce2",
+        "closure_id": "babaa620d2bc75ed0557c9989eda1818e83a6aa9f628a4c8fc0454af356a0f08"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "eefd97a62ba2a475f847ba68fc7dd104becd0b97d66c1afa0d64da723335d770",
+        "claim_occurrence_id": "04b215d50a7abae6b1cf060d3baea0b2f9e73e60a6e4b9c1d0194185d6142610",
+        "subject_occurrence_id": "cc8e24c212d0ba8fe99cae232a98e095ef9040ff68a160e1a224cfc534d3bce2",
+        "claim_definition_key": "EXCHANGE_RATIO_VALUE",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+        "canonical_value": "1.975",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e5368a59209ea44337f22070b5373cef0e08e025dca425e1541831daaa519d15"
+        ],
+        "attributes": {
+          "section_reference": "2.1",
+          "assertion_kind": "EXCHANGE_RATIO",
+          "consideration_term_ref": null,
+          "ratio_term_ref": "Exchange Ratio",
+          "issuer_stock_ref": "Parent Common Stock",
+          "appraisal_status": null,
+          "statute_ref": null,
+          "defined_term_value": "1.975",
+          "defined_term_lineage": [
+            "Exchange Ratio"
+          ],
+          "definition_source_citations": [
+            "8.12(u)"
+          ],
+          "definition_source_quotes": [
+            "“Exchange Ratio” means 1.975."
+          ],
+          "exchange_ratio_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "EXCHANGE_RATIO"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e5368a59209ea44337f22070b5373cef0e08e025dca425e1541831daaa519d15",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "85b3a2aad684b21d66b0af261c1a2771bdf0758f334fd31b48cc4d6010cc1b8a",
+            "document_ordinal": 0,
+            "absolute_start": 1082,
+            "absolute_end": 1595,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "26abc0f7acb3872fae4193979dbfe391674a78da681ed7be13f581961dd3ed27"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "eefd97a62ba2a475f847ba68fc7dd104becd0b97d66c1afa0d64da723335d770",
+            "claim_occurrence_id": "04b215d50a7abae6b1cf060d3baea0b2f9e73e60a6e4b9c1d0194185d6142610",
+            "subject_occurrence_id": "cc8e24c212d0ba8fe99cae232a98e095ef9040ff68a160e1a224cfc534d3bce2",
+            "claim_definition_key": "EXCHANGE_RATIO_VALUE",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+            "canonical_value": "1.975",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e5368a59209ea44337f22070b5373cef0e08e025dca425e1541831daaa519d15"
+            ],
+            "attributes": {
+              "section_reference": "2.1",
+              "assertion_kind": "EXCHANGE_RATIO",
+              "consideration_term_ref": null,
+              "ratio_term_ref": "Exchange Ratio",
+              "issuer_stock_ref": "Parent Common Stock",
+              "appraisal_status": null,
+              "statute_ref": null,
+              "defined_term_value": "1.975",
+              "defined_term_lineage": [
+                "Exchange Ratio"
+              ],
+              "definition_source_citations": [
+                "8.12(u)"
+              ],
+              "definition_source_quotes": [
+                "“Exchange Ratio” means 1.975."
+              ],
+              "exchange_ratio_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "EXCHANGE_RATIO"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e5368a59209ea44337f22070b5373cef0e08e025dca425e1541831daaa519d15",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "85b3a2aad684b21d66b0af261c1a2771bdf0758f334fd31b48cc4d6010cc1b8a",
+                "document_ordinal": 0,
+                "absolute_start": 1082,
+                "absolute_end": 1595,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "26abc0f7acb3872fae4193979dbfe391674a78da681ed7be13f581961dd3ed27"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CONSIDERATION",
+            "prompt_digest": "89416a9bd7b469bea6c1f040d5844f813e6b3cc7488df6df67fd123eaf92cd37",
+            "producer_receipt_id": "476cd09b7935c4c6ddb36d869c37c5e2da9f6122526b440417c9fb05e3b36de9",
+            "governed_scope_digest": "6e42eeaaf9c35040a014b1aa227892759f223d66654bfcfd84a8ecc1b52438e1",
+            "extraction_provenance_id": "41e8fbc9abd1ce1d59ae08d3a3ec3e18905a1b03f1351258ba22f7633167683c"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 60,
+        "materiality_label": "CONSIDERATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.1",
+          "normalized_citation": "2.1",
+          "derived_citation": "2.1(b)(i)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "b",
+          "depth": 1,
+          "start_byte": 679,
+          "end_byte": 3213
+        },
+        "chain": [
+          {
+            "path": "b",
+            "start_byte": 679,
+            "end_byte": 3213,
+            "text": " Company Common Share Merger Consideration; Company Preferred Share Consideration; Conversion of Company Common Shares and Company Preferred Shares.\n(i) Company Common Share Merger Consideration. At the Company Merger Effective Time, by virtue of the Company Merger and without any action on the part of the Company, Parent, Company Merger Sub, the Partnership or any of the respective holders thereof, each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio, without interest (as may be adjusted pursuant to Section 2.7) (the “Per Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”). The aggregate amount of Parent Common Stock issuable to holders of Company Common Shares as the Per Company Common Share Merger Consideration, together with the aggregate amount of cash payable to holders of Company Common Shares as the Fractional Per Company Common Share Merger Consideration, is hereinafter referred to as the “Company Common Share Merger Consideration.”\n6\n(ii) Company Preferred Share Merger Consideration. At the Company Merger Effective Time, by virtue of the Company Merger and without any action on the part of the Company, Parent, Company Merger Sub, OpCo Merger Sub, the Partnership or any of the respective holders thereof, each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”). The aggregate amount of cash payable to holders of Company Preferred Shares as the Per Preferred Share Merger Consideration is hereinafter referred to as the “Company Preferred Share Merger Consideration.”\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 166,
+            "text": "Section 2.1 Company Common Share Merger Consideration, Company Preferred Share Merger Consideration and Effect on Company Common Shares and Company Preferred Shares.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "2.6",
+      "source_citation": "2.6",
+      "citation_context": {
+        "parent_section_reference": "2.6",
+        "child_section_reference": "2.6",
+        "parent_chapeau_quote": "Section 2.6 Dissenters’ Rights.",
+        "child_clause_quote": "No dissenters’ or appraisal rights shall be available with respect to the Mergers."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "ab62abbd9fa4f3c93f586fd9181ccc9fad36a8256d0f63d18a53615b78cf31ea",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 50293,
+        "absolute_end": 50412,
+        "concept_key": "CONS-DISSENT",
+        "ordinal": 1,
+        "source_anchor_id": "8bfc286c593c47ef1091b33a20db326d478eb3069e213b044752ee4fedbfb558",
+        "provision_instance_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "closure_id": "ba3e97390c2c98ba9f7d89671335e66a9b958cd158054bfe9003b35a9a580926"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "82eb33ebeb0b4402e3a68e0d0d077d2635c91a22f8cec74e29e12ffa4d2fe917",
+        "claim_occurrence_id": "6fff561d1d22fed25434edc8cb592b83e96bcdc424b73422027f10efe4efc14f",
+        "subject_occurrence_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+        "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+        "canonical_value": "NOT_AVAILABLE",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022"
+        ],
+        "attributes": {
+          "section_reference": "2.6",
+          "assertion_kind": "APPRAISAL_STATUS",
+          "consideration_term_ref": null,
+          "ratio_term_ref": null,
+          "issuer_stock_ref": null,
+          "appraisal_status": "NOT_AVAILABLE",
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 4
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "APPRAISAL_STATUS",
+          "appraisal_status": "NOT_AVAILABLE"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ba0257c235dfc097ba8a54541d8e5ada2cbe5af59fd09d2f19ec876e77396f6b",
+            "document_ordinal": 0,
+            "absolute_start": 34,
+            "absolute_end": 118,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "f7dc2025e1976156f9b1c688af8a753f39283504113133bea555727969eeaa05"
+      },
+      "compiled_candidate": {
+        "section_reference": "2.6",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.6",
+          "normalized_citation": "2.6",
+          "derived_citation": "2.6"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "82eb33ebeb0b4402e3a68e0d0d077d2635c91a22f8cec74e29e12ffa4d2fe917",
+            "claim_occurrence_id": "6fff561d1d22fed25434edc8cb592b83e96bcdc424b73422027f10efe4efc14f",
+            "subject_occurrence_id": "090fbc45d56ad6683c10d0e095d8e3bb62b71d7c74680e6836957b6225de220c",
+            "claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+            "canonical_value": "NOT_AVAILABLE",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022"
+            ],
+            "attributes": {
+              "section_reference": "2.6",
+              "assertion_kind": "APPRAISAL_STATUS",
+              "consideration_term_ref": null,
+              "ratio_term_ref": null,
+              "issuer_stock_ref": null,
+              "appraisal_status": "NOT_AVAILABLE",
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 4
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "APPRAISAL_STATUS",
+              "appraisal_status": "NOT_AVAILABLE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "010d6bee0a56d4bb9c1bd3598d5bf957c479d38cfa2a2b8eba5f97dc72abc022",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "ba0257c235dfc097ba8a54541d8e5ada2cbe5af59fd09d2f19ec876e77396f6b",
+                "document_ordinal": 0,
+                "absolute_start": 34,
+                "absolute_end": 118,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "f7dc2025e1976156f9b1c688af8a753f39283504113133bea555727969eeaa05"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "CONSIDERATION",
+            "prompt_digest": "4b806acc509ef4886cb81ba8d631df28e3707787143d8cdd3b3a4f3aff697c7f",
+            "producer_receipt_id": "e6c524c8c66bfe3a6f25a65338978e111131a4a52d52bb05592d36e8293517c2",
+            "governed_scope_digest": "b162fe2bd456f18e966dab94c90e33d3115a8f0783841308ae9da08284ed40b0",
+            "extraction_provenance_id": "939e96b19578c8f54c50e5336a5a66beb774c9306545839b4da7db77a34762bd"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 60,
+        "materiality_label": "CONSIDERATION",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "2.6",
+          "normalized_citation": "2.6",
+          "derived_citation": "2.6"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 119
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 119,
+            "text": "Section 2.6 Dissenters’ Rights. No dissenters’ or appraisal rights shall be available with respect to the Mergers.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "eefd97a62ba2a475f847ba68fc7dd104becd0b97d66c1afa0d64da723335d770",
+      "closure_id": "26abc0f7acb3872fae4193979dbfe391674a78da681ed7be13f581961dd3ed27",
+      "normalised_phrase": "each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-RATIO",
+          "pattern_id": "CONS-RATIO:PHRASE:IN_LIEU_OF_FRACTIONAL_SHARES",
+          "start": 1749,
+          "end": 1777,
+          "excerpt": "r Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d192ba30a80002109d6e8e5e6fb26d9477d607c6c97e0af74317922ebfb353b5",
+      "closure_id": "688e6545df09450f2cc8148fa519988b8c3eaa67a11c92ecad24a868e2da57aa",
+      "normalised_phrase": "each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ec00c8aa18d386517ef76bed3bf0e2044806cc017f700af2d4f83ccbdf1259fa",
+      "closure_id": "afabb3481cc4a974080def5069d145979789df09e9c9985b004823d127160a87",
+      "normalised_phrase": "plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "plus the right to receive cash in lieu of fractional interests of Parent OP Units, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, without interest (the “Fractional Per OpCo Common Unit Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6006092dc48817e0bfc786e1829a27ed7485f4488dca6aa7ff51eec824d16d97",
+      "closure_id": "a967d3f85ec8314963570aecae9d21f2a523f324be2b266464c9facb1983bf91",
+      "normalised_phrase": "plus the right to receive cash in lieu of fractional interests of Parent OP Units, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, without interest (the “Fractional Per OpCo Common Unit Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Class C Unit (including each Converted Class X Unit), other than Excluded Units, issued and outstanding immediately prior to the OpCo Merger Effective Time, shall be cancelled and extinguished and automatically converted into and shall thereafter represent the right to receive from Parent OpCo that number of validly issued, fully paid and nonassessable OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio (as may be adjusted pursuant to Section 2.7) (the “Per OpCo Common Unit Merger Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cf3541641c8dc3b3c4ad2ec99ddf652132b0468597f0883618a1874f6b0d4697",
+      "closure_id": "aadd4f5d04319a4a81ccc5203b7ca6e33e0248dc1acf8011ebe9df666fb874eb",
+      "normalised_phrase": "each Class C Unit (including each Converted Class X Unit), other than Excluded Units, issued and outstanding immediately prior to the OpCo Merger Effective Time, shall be cancelled and extinguished and automatically converted into and shall thereafter represent the right to receive from Parent OpCo that number of validly issued, fully paid and nonassessable OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio (as may be adjusted pursuant to Section 2.7) (the “Per OpCo Common Unit Merger Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.6",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "82eb33ebeb0b4402e3a68e0d0d077d2635c91a22f8cec74e29e12ffa4d2fe917",
+      "closure_id": "f7dc2025e1976156f9b1c688af8a753f39283504113133bea555727969eeaa05",
+      "normalised_phrase": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "At the Company Merger Effective Time, by virtue of the Company Merger and without any action on the part of the Company, Parent, Company Merger Sub, the Partnership or any of the respective holders thereof, each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio, without interest (as may be adjusted pursuant to Section 2.7) (the “Per Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Company Common Shares convert automatically into Parent Common Stock at the Exchange Ratio, with cash for fractional shares.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0cc4b693e615a103fd80e2ad4c29a45dc0834cae8edeb4dc4106590847ef78f4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "bafc55d5cd5095b181e2ee24ab7b34ee6b7e4a1d1ddee4bb965c7f8e37ef2be2",
+          "document_ordinal": 0,
+          "absolute_start": 875,
+          "absolute_end": 2004,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "927a0d895f78da159cd4e06ce2b4baa33550b98b071b701bfcac6765cb906d4a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "89416a9bd7b469bea6c1f040d5844f813e6b3cc7488df6df67fd123eaf92cd37",
+        "producer_receipt_id": "476cd09b7935c4c6ddb36d869c37c5e2da9f6122526b440417c9fb05e3b36de9",
+        "governed_scope_digest": "6e42eeaaf9c35040a014b1aa227892759f223d66654bfcfd84a8ecc1b52438e1",
+        "extraction_provenance_id": "98f0f4779ae1e1b2b226da510c186ec47d8a44e48687a568869edb3d701a8211"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "At the Company Merger Effective Time, by virtue of the Company Merger and without any action on the part of the Company, Parent, Company Merger Sub, OpCo Merger Sub, the Partnership or any of the respective holders thereof, each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Company Preferred Shares convert automatically into cash equal to the Per Preferred Share Liquidation Price.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "722425283db61a0e648e2db6589ad1d1e99383fdc6ce59178665ba8d83b9e1d2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "80dc45b3748cfb5574f23d9c163f716023faea8940e40e3c1c97bfa7c65237e4",
+          "document_ordinal": 0,
+          "absolute_start": 2436,
+          "absolute_end": 3002,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8ddc01293a01593aa536f7f215cfea9e4348d216f6601b474158715f40dd6644",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "89416a9bd7b469bea6c1f040d5844f813e6b3cc7488df6df67fd123eaf92cd37",
+        "producer_receipt_id": "476cd09b7935c4c6ddb36d869c37c5e2da9f6122526b440417c9fb05e3b36de9",
+        "governed_scope_digest": "6e42eeaaf9c35040a014b1aa227892759f223d66654bfcfd84a8ecc1b52438e1",
+        "extraction_provenance_id": "98f0f4779ae1e1b2b226da510c186ec47d8a44e48687a568869edb3d701a8211"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each issued and outstanding Company Common Share or Company Preferred Share that is owned by Parent, Company Merger Sub or any Subsidiary of Parent, the Company or Company Merger Sub immediately prior to the Company Merger Effective Time (collectively, the “Excluded Shares”), if any, shall automatically be canceled and shall cease to exist, and no cash, Parent Common Stock, Per Company Common Share Merger Consideration, Per Company Preferred Share Merger Consideration, or other consideration shall be delivered or deliverable in exchange therefor.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Excluded Shares are cancelled without consideration.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0afff351b5fe6a25ddd8f0d155ba004d1fc3e544ccecc307f8bc9642029440f9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b6dee0ece57c8de7ecbbe29bd877c95726232d0056c47aabd125237ba17a5095",
+          "document_ordinal": 0,
+          "absolute_start": 3361,
+          "absolute_end": 3917,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4725220f219a9dd288022ab2fa22517c091c612e6adc2600193c380431b4b1a4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "89416a9bd7b469bea6c1f040d5844f813e6b3cc7488df6df67fd123eaf92cd37",
+        "producer_receipt_id": "476cd09b7935c4c6ddb36d869c37c5e2da9f6122526b440417c9fb05e3b36de9",
+        "governed_scope_digest": "6e42eeaaf9c35040a014b1aa227892759f223d66654bfcfd84a8ecc1b52438e1",
+        "extraction_provenance_id": "98f0f4779ae1e1b2b226da510c186ec47d8a44e48687a568869edb3d701a8211"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Each Class X Unit outstanding immediately prior to the OpCo Merger Effective Time, by virtue of the OpCo Merger, and without any further action on the part of Parent, Parent OpCo, Company Merger Sub, OpCo Merger Sub, the Company, the Partnership or any of the respective holders thereof, shall vest in full immediately prior to the OpCo Merger Effective Time, and shall be converted into one Class C Unit (as converted, each, a “Converted Class X Unit”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EQUITY_AWARD_TREATMENT: Each Class X Unit vests and converts into one Class C Unit.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EQUITY_AWARD_TREATMENT"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fafb19cfc7fcec3eee520e0800bc1919ae70f8c0a27c0997902a7f599efcbc0c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "96a2ac2345fef80f184becb5d5aa390119fdf81a20f8043a151faa103d485a04",
+          "document_ordinal": 0,
+          "absolute_start": 127,
+          "absolute_end": 585,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "edd5be28d2dcec64b40780e0e2a0d7beecc272631922470c4ba2f294e7161b61",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b6959eb0f16e18f0e467d426fe35d551c5ff496bb955da3eb6547abae34f1c30",
+        "producer_receipt_id": "997c57bc78dc249294720b49bf8e9cfa4c64ecfeb1b7f71e249d530fca8c68b8",
+        "governed_scope_digest": "c170bc0c0bd652403760d51ccf9f92514cf65629a3269cc5ba55a27ecca51e1a",
+        "extraction_provenance_id": "a1e89b9d9ae78b9e6c9cccdc7575d7786fe92ee64a1aa2d1a2d48e9d8ae58eaa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "each Class C Unit (including each Converted Class X Unit), other than Excluded Units, issued and outstanding immediately prior to the OpCo Merger Effective Time, shall be cancelled and extinguished and automatically converted into and shall thereafter represent the right to receive from Parent OpCo that number of validly issued, fully paid and nonassessable OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio (as may be adjusted pursuant to Section 2.7) (the “Per OpCo Common Unit Merger Consideration”) plus the right to receive cash in lieu of fractional interests of Parent OP Units, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, without interest (the “Fractional Per OpCo Common Unit Merger Consideration”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Class C Units convert into Parent OP Units at the Exchange Ratio and cash for fractional interests.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7030ac1f85d27594e14de2008b3469ab5c11d25c38485dda6d9f2bb0660d2bb9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7f6ed34735735be930bf0e8c1a8a80576083a545717feef4277fd914561c4886",
+          "document_ordinal": 0,
+          "absolute_start": 824,
+          "absolute_end": 1690,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ed16f1f7c92ce8c45e0da7a90604282dc3fe2da09dfebeea6e8e60925cd8ab71",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b6959eb0f16e18f0e467d426fe35d551c5ff496bb955da3eb6547abae34f1c30",
+        "producer_receipt_id": "997c57bc78dc249294720b49bf8e9cfa4c64ecfeb1b7f71e249d530fca8c68b8",
+        "governed_scope_digest": "c170bc0c0bd652403760d51ccf9f92514cf65629a3269cc5ba55a27ecca51e1a",
+        "extraction_provenance_id": "a1e89b9d9ae78b9e6c9cccdc7575d7786fe92ee64a1aa2d1a2d48e9d8ae58eaa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The aggregate amount of Parent OP Units issuable to holders of Class C Units (including the Converted Class X Units) as the Per OpCo Common Unit Merger Consideration, together with the aggregate amount of cash payable to holders of Class C Units (including the Converted Class X Units) as the Fractional Per OpCo Common Unit Merger Consideration, is herein referred to as the “OpCo Common Unit Merger Consideration”.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Defines OpCo Common Unit Merger Consideration as Parent OP Units and fractional cash.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2a0b11b02708c4f1564df45a425db057ea2067017a0032a6a35ec8540a410229",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "44aa0b3f675f6b103b3d9b8a135ad9275a221dcbbab6e02502ef45056aaccdff",
+          "document_ordinal": 0,
+          "absolute_start": 1691,
+          "absolute_end": 2111,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "adb08b1c7c4476cb2b4ab0893ff09de8b6579d9b43bb016dbc6cc047ff0f27f9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b6959eb0f16e18f0e467d426fe35d551c5ff496bb955da3eb6547abae34f1c30",
+        "producer_receipt_id": "997c57bc78dc249294720b49bf8e9cfa4c64ecfeb1b7f71e249d530fca8c68b8",
+        "governed_scope_digest": "c170bc0c0bd652403760d51ccf9f92514cf65629a3269cc5ba55a27ecca51e1a",
+        "extraction_provenance_id": "a1e89b9d9ae78b9e6c9cccdc7575d7786fe92ee64a1aa2d1a2d48e9d8ae58eaa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "All such Parent OP Units issued to holders of Class C Units (including the Converted Class X Units) as Per OpCo Common Unit Merger Consideration, shall be issued in a transaction exempt from the registration requirements of the Securities Act.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Parent OP Units are issued in an exempt transaction.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "58d17bf8cf2419099f7b7e1baea97d33b4e82bd0d39e2ef5c1785222806e2188",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7134a9d142ffb9bb12c10d7650956a1c8c318a630d1eea468a9903dbd579683f",
+          "document_ordinal": 0,
+          "absolute_start": 2112,
+          "absolute_end": 2355,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4635872152975708ac93dbc5573b702c0d4f61452c396eb5b17eab0c9c5fde7e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "b6959eb0f16e18f0e467d426fe35d551c5ff496bb955da3eb6547abae34f1c30",
+        "producer_receipt_id": "997c57bc78dc249294720b49bf8e9cfa4c64ecfeb1b7f71e249d530fca8c68b8",
+        "governed_scope_digest": "c170bc0c0bd652403760d51ccf9f92514cf65629a3269cc5ba55a27ecca51e1a",
+        "extraction_provenance_id": "a1e89b9d9ae78b9e6c9cccdc7575d7786fe92ee64a1aa2d1a2d48e9d8ae58eaa"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Parent shall deposit or cause to be deposited with the Exchange Agent in trust for the benefit of the holders of Company Common Shares, Company Preferred Shares and Partnership Units (other than Excluded Shares and Excluded Units, as the case may be) (i) an aggregate number of shares of Parent Common Stock and an aggregate amount of cash in lieu of fractional shares equal to the Company Common Share Merger Consideration to be delivered in respect of the Company Common Shares, (ii) an aggregate amount of cash equal to the Company Preferred Share Merger Consideration and (iii) an aggregate amount of Parent OP Units and an aggregate amount of cash in lieu of fractional shares equal to the OpCo Common Unit Merger Consideration (the foregoing clauses (i), (ii) and (iii), together with the cash deposited to pay any dividends or other distributions pursuant to Section 2.3(i), shall be referred to in this Agreement as the “Exchange Fund”).",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Parent funds the Exchange Fund with stock, Parent OP Units, cash consideration, and cash in lieu of fractional shares.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "987780b35b887bffbda0b790e5a2e721e232e271d930e04834dd3f5cfeb792f4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9dd1df571fd4df7873429006cf43ae8deaac78ce20797711017e2284d8b11294",
+          "document_ordinal": 0,
+          "absolute_start": 1085,
+          "absolute_end": 2034,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "559eee5cbf250bec17586b75f780384dde9f902882adee184f943e06955194c9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The Exchange Agent shall, pursuant to written instructions by Parent, deliver the Parent Common Stock and cash payable in lieu of fractional shares comprising the Company Common Share Merger Consideration, the cash comprising the Company Preferred Share Merger Consideration and the Parent OP Units and cash in lieu of fractional shares comprising the OpCo Common Unit Merger Consideration, in each case as contemplated to be issued or paid pursuant to Section 2.1 and Section 2.2, together with the cash comprising any dividends or other distributions payable in accordance with Section 2.3(i), out of the Exchange Fund.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: The Exchange Agent delivers the specified merger consideration and related distributions from the Exchange Fund.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "25c8232e8d7c1352d5aef23544b70d0bb2d2df99ff116fa094a1872292506a5d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "77fdaef2552346ee5e1c0c96832f99b2abc9a3e7f429bfd5c23baeb89f2d6f44",
+          "document_ordinal": 0,
+          "absolute_start": 2230,
+          "absolute_end": 2851,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "77dfd61f39ca6378f02796583513e1ddcb4a8e621dc7e20bec8669804fd37093",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "As soon as reasonably practicable after the Company Merger Effective Time and the OpCo Merger Effective Time, as applicable, and in any event not later than the second (2nd) Business Day following the Company Merger Effective Time and the OpCo Merger Effective Time, as applicable, Parent shall cause the Exchange Agent to send to each holder of record of (i) an outstanding Company Common Share or an outstanding Company Preferred Share represented by a Certificate or an outstanding Book-Entry Share immediately prior to the Company Merger Effective Time (other than the Excluded Shares) and (ii) an outstanding Book-Entry Unit immediately prior to the OpCo Merger Effective Time (other than the Excluded Units) the following: (x) a letter of transmittal (which shall specify that delivery shall be effected, and risk of loss and title shall pass, only upon (in the case of holders of Certificates) proper delivery of the Certificates (or effective affidavits of loss in lieu thereof) to the Exchange Agent) in such form as Parent and the Company may reasonably agree, for use in effecting delivery of Company Common Share Merger Consideration or Company Preferred Share Merger Consideration (as applicable) pursuant to Section 2.1 and OpCo Common Unit Merger Consideration pursuant to Section 2.2, and (y) instructions for use in effecting the surrender of Certificates (or effective affidavits of loss in lieu thereof) or of Book-Entry Shares or Book-Entry Units, as applicable, in exchange for the Company Common Share Merger Consideration, Company Preferred Share Merger Consideration or OpCo Common Unit Merger Consideration, as applicable, in such form as Parent and the Company may reasonably agree.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Parent must send transmittal materials and surrender instructions by the second Business Day after the applicable effective time.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "97e1fe14af034d075bc11d544f84c55ef412afb708f2d93169c2a1a0702ee0e9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "1e72544bd8009508895377fdb3b53fb21ce74530b6bc0bb6e2204c7ae72a807a",
+          "document_ordinal": 0,
+          "absolute_start": 3946,
+          "absolute_end": 5654,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a33bc03a4c4f417a45413e0b7d04055c8940431c7b33a3f695d6f0f190c2d793",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "the holder of such Company Common Shares, Company Preferred Shares or Partnership Units shall be entitled to receive in exchange therefor the Company Common Share Merger Consideration, Company Preferred Share Merger Consideration or OpCo Common Unit Merger Consideration, as applicable, pursuant to the provisions of this Article II, in each case, less any applicable withholding Taxes, together with any dividends or other distributions payable in accordance with Section 2.3(i);",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "WITHHOLDING: Merger consideration is paid less applicable withholding Taxes.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "WITHHOLDING"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "158f8b027e705cfa48d8174f11982083d2aa694d0d7e40054fd54de4636d5408",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a032358a6b5456df3b1778f833154b2f2e53c9bb7ecaad3ffed6c340b89abb53",
+          "document_ordinal": 0,
+          "absolute_start": 6056,
+          "absolute_end": 6536,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8c9fb1214bbd588ab110e088c6dee56ab1ea9fc15ad1297f303e5646aae3c0b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Notwithstanding anything to the contrary herein, no person shall be issued OpCo Common Unit Merger Consideration, nor shall such person be admitted to Parent OpCo, or considered a limited partner of Parent OpCo, without first executing a joinder to the Parent OpCo Partnership Agreement, as amended by the Parent OpCo Partnership Agreement Amendment, in accordance with its terms.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: A recipient must execute the required partnership-agreement joinder before receiving OpCo Common Unit Merger Consideration.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5137d7ea67d2cc322e1b4396ec1c9801a5edc9bccacc52d17c181dcd23c5ccc7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b4ffe98c73f5785ed01769117b5a4aa0e2051a1c2adbe9850d97d0263b950c99",
+          "document_ordinal": 0,
+          "absolute_start": 8242,
+          "absolute_end": 8622,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9afe5177b908781458a3e030d2cf7f455d4a47b96f6b4abdc31a7658bddf9c63",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Notwithstanding anything to the contrary contained in this Agreement, no holder of Book-Entry Shares or Book-Entry Units shall be required to deliver a Certificate or, in the case of holders of Book-Entry Shares held through The Depository Trust Company, an executed letter of transmittal, to receive the Merger Consideration that such holder is entitled to receive pursuant to this Agreement; provided, that such holder (other than any such holder of Book-Entry Shares held through the Depository Trust Company) shall still be obligated to deliver a duly executed IRS Form W-9 prior to receipt of any Merger Consideration hereunder.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Book-entry holders have modified certificate and transmittal requirements, with a W-9 condition for specified holders.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9e9601570fee1ac3e25830b63ad75d0db3951ff13235aeb80f09010bf4999495",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "408e08881dc747698483611fb5518f7ea05120795e9b930d4b5dfb32192cd576",
+          "document_ordinal": 0,
+          "absolute_start": 8623,
+          "absolute_end": 9256,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "b468dc71b02f4be1e93e6b9d7aab10d84f8e32adb5aa283781535b75948cf026",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "No interest shall be paid or accrue on any Company Common Share Merger Consideration, Company Preferred Share Merger Consideration or OpCo Common Unit Merger Consideration payable upon surrender of any Certificate, Book-Entry Share or Book-Entry Unit.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: No interest accrues on merger consideration payable upon surrender.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "33dd40a7b97ba21530d799a4d94ee3a0354244cff10231c601a0878f9d8f1629",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "59272fdb7de91cd5dc827ded8a29d0818c5f49aac568c7bffe3184cd69084783",
+          "document_ordinal": 0,
+          "absolute_start": 7519,
+          "absolute_end": 7770,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fa1733cd5cecf628ecde4c941a2a54a14e5ff9cd732cb8cb9143455f32d59e52",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Any holder of Company Common Shares, Company Preferred Shares or Partnership Units who has not exchanged his, her or its Company Common Shares, Company Preferred Shares or Partnership Units in accordance with this Section 2.3 prior to that time shall thereafter look only to Parent for delivery of the Company Common Share Merger Consideration or Company Preferred Share Merger Consideration, or Parent OpCo for the OpCo Common Unit Merger Consideration in respect of such holder’s Company Common Shares, Company Preferred Shares or Partnership Units.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: After unclaimed Exchange Fund amounts are returned, holders look to Parent or Parent OpCo for delivery of consideration.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b81d6ac97fb34e7b1b2550a983c6a31837ff3176f33614cf32936dcdc5de8630",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "03011350daeee7474bd51a3137aff4311a52ef787fae8e02a89807952a860fce",
+          "document_ordinal": 0,
+          "absolute_start": 11586,
+          "absolute_end": 12139,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "06ac90ed6cd5cb3470ea638671da47682af93d756d367121bf3675a95f093a03",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Notwithstanding anything in this Agreement to the contrary, no fractional shares of Parent Common Stock or Parent OP Units will be issued upon the conversion of Company Common Shares or Partnership Units, as applicable, pursuant to this Article II.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: No fractional Parent Common Stock or Parent OP Units are issued.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f04813253395390e068c7b15c1e090ebd4bf7c231deb8f0cb83a90a071f32343",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "47c806b8cfd82058f4769761648bffc217006e3ae3899a5acb569604d4b10681",
+          "document_ordinal": 0,
+          "absolute_start": 14196,
+          "absolute_end": 14444,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "827f45ac3027bd28e5e0e4e5af9881787fcde6fe76ddf6379f94e02c519be910",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In lieu of any such fractional shares, each holder of Company Common Shares or Partnership Units who would otherwise be entitled to such fractional shares shall be entitled to an amount in cash, without interest, rounded to the nearest cent, equal to the product of (a) the amount of the fractional share interest in a share of Parent Common Stock or Parent OP Unit, as applicable, to which such holder would, but for this Section 2.3(h), be entitled under Article II and (b) the Parent Stock Price.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Fractional interests are paid in cash based on the fractional interest and the Parent Stock Price.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e2e5831e34d6e7cffdd8b22486dbee2a86d9c602f53fbe7bd447dc033a5b2907",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f08d3675381d7fa67e9ffdf7a15169aa0de27d919d23efd1c6767cbffcd52312",
+          "document_ordinal": 0,
+          "absolute_start": 14445,
+          "absolute_end": 14944,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4ec8baa5a6940d3831c4f6dc4b4cce704f45a0edf6d85fcbe58a0aa136d1cc12",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "The payment of cash in lieu of fractional shares of Parent Common Stock or Parent OP Units (as applicable) is not a separately bargained-for consideration but merely represents a mechanical rounding-off of the fractions in the exchange.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Cash for fractional shares is a mechanical rounding payment, not separately bargained-for consideration.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "155149db193cb657a6cb048b5e5e1fd235ce2e5b532621ccdaca126e5640736a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "16e6f870b2fe4ed980e45e2b6e2bf222619f10e9cbe00e528a43c32be4ea5813",
+          "document_ordinal": 0,
+          "absolute_start": 15307,
+          "absolute_end": 15543,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "366bb8fd0305b70eaa9811c628ac3b4d320754faf815416c0988b42b9cf4c9e3",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Notwithstanding anything to the contrary herein, the consideration to be issued under this Article II shall be aggregated on a per holder basis (and not, for the avoidance of doubt, on a per account basis to the extent a holder may have multiple accounts) when calculating the amount of cash to be paid under this Article II in respect of fractional shares; provided that, for the avoidance of doubt, a holder of Company Common Shares or Partnership Units shall not receive an amount of cash with respect to this Section 2.3(h), in the aggregate, in excess of the Parent Stock Price.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: Fractional-share cash is calculated per holder rather than per account and is capped at the Parent Stock Price.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS",
+          "cash_cap": "a holder of Company Common Shares or Partnership Units shall not receive an amount of cash with respect to this Section 2.3(h), in the aggregate, in excess of the Parent Stock Price"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0f777c8ff1e3fb14f26525669c45e7b6b4b3e191090311f59ab62d143edf37bb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "aef04cfc53cb5b2d6d7eb487d4ffd0c9916e7fc3d72213d12ce6aa0ee8ff874d",
+          "document_ordinal": 0,
+          "absolute_start": 15544,
+          "absolute_end": 16127,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "123f3aa1b8f553ce027c79f04128e3474606b7d2e202e3ee4cbd3e691f9438c2",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.3",
+      "source_citation": "2.3",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "After the surrender in accordance with this Section 2.3 of a Company Common Share or Partnership Unit to be converted into Parent Common Stock or Parent OP Unit pursuant to Section 2.1(b)(i) or Section 2.2(a), respectively, the holder thereof shall be entitled to receive (in addition to Company Common Share Merger Consideration or OpCo Common Unit Merger Consideration payable to such holder pursuant to this Article II), without interest, (i) the amount of dividends or other distributions with a record date after the Company Merger Effective Time or the OpCo Merger Effective Time, as applicable, theretofore paid with respect to such Parent Common Stock or Parent OP Units to which such holder is entitled pursuant to this Agreement and (ii) at the appropriate payment date, the amount of dividends or other distributions with a record date after the Company Merger Effective Time or the OpCo Merger Effective Time, as applicable, but prior to such surrender with a payment date subsequent to such surrender payable with respect to such Parent Common Stock or Parent OP Units, as applicable.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "EXCHANGE_MECHANICS: After surrender, holders receive specified post-effective-time dividends and distributions without interest.",
+        "nearest_concept": null,
+        "structured_mechanic": {
+          "surface": "EXCHANGE_MECHANICS"
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0b4a54cc32ca8f06fafb95bd44785d56ea099bc2dffbb31e10de679e580485b1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9005bac241b04edc5469404505a4c940f21106ad15acc1ccca6805b8d1c2b63c",
+          "document_ordinal": 0,
+          "absolute_start": 16683,
+          "absolute_end": 17780,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "96f9989910883f1b0bd21af5f21b4d6d700f465fbe805fdf93eee143d9a5e754",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "26009f51642ad36b5d68f76e62c682c06f7b30ae2e42684200f2f8196ef8dbbb",
+        "producer_receipt_id": "45537809eabc8328fdbd4f434303419094f9df863f213b1599415ab62cc8aeba",
+        "governed_scope_digest": "3b6fae8b653babc14d24c5d1b8cada4445435dfe2fd0ace736f35ef4250ede9e",
+        "extraction_provenance_id": "5f7f020b1272ce2082798843bad9073b6d5bd424e3825edf3cc0983103bff8bc"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "structured_per_share_cash_values": [
+    {
+      "schema_version": "STRUCTURED_PER_SHARE_CASH_VALUE/V2",
+      "consideration_term_ref": "Per Company Preferred Share Merger Consideration",
+      "operator": "BASE_PLUS_VARIABLE",
+      "base_amount": "25.00",
+      "currency": "USD",
+      "variable_component": "accrued and unpaid dividends, if any, to, but not including, the Closing Date",
+      "defined_term_lineage": [
+        "Per Company Preferred Share Merger Consideration",
+        "Per Preferred Share Liquidation Price"
+      ],
+      "source_citations": [
+        "2.1(b)(ii)",
+        "8.12(zz)"
+      ],
+      "operative_quote": "each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "definition_quote": "“Per Preferred Share Liquidation Price” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date.",
+      "raw_formula": "an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date",
+      "structured_per_share_cash_value_id": "589bc4e2e42897c4a9e545c4013029bb7def2b9337a66e66434d844b064a0520"
+    }
+  ],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "6c93645c4615e6f07a62a30328d2c1c764573a28f12dabedacabdf6360cd9cfc",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 4,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 1,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a97c2dbae4fbe7d359376b8e38f266c6db28401f08d80260fc6c5fc2330ebc80",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 26,
+      "resolved": 2,
+      "auto_pass": 0,
+      "review_queue": 6,
+      "open_world": 20,
+      "residuals": 0,
+      "provisions": 2,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "6beba9fdea18c4d641e5670ff18ce70b1cea5bacf4052cfc7ddfdd4a2674da62"
+  }
+}

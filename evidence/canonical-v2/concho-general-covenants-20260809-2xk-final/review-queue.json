@@ -1,0 +1,346 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "b7d91188ac4e42935c94ab01457f647526e3244a9360fdbed4a843b499360e88",
+  "review_queue": [
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f0491b9f2dc89228cf0c0cc0e0c15522deffc79828a9288fed837ab95a0f746c",
+      "closure_id": "02ac61e23d2a7611260613b7f7b839adff1e1ab4cc6aba4effd5f088cd00dd58",
+      "normalised_phrase": "the Company or Parent, as applicable, shall promptly notify the other Party of such Transaction Litigation and shall keep the other Party reasonably informed with respect to the status thereof.",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "6.11 Transaction Litigation. In the event any Proceeding by any Governmental Entity or other Person is comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 326,
+          "end": 348,
+          "excerpt": " or seeks damages in connection therewith, including stockholder litigation (“Transaction Litigation”), the Company or Parent, as applicable, shall promptly notify the other Part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 953,
+          "end": 975,
+          "excerpt": " to defend, consent to the entry of any judgment, settle or offer to settle any Transaction Litigation without the prior written consent of Parent (which consent shall not be unreaso",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_LITNOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-LITNOTIFY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "80aaea2fe19ea4b05b110175c60fe865098d107a1c7db1c725bee99c19c4fab6",
+      "closure_id": "579e877a57d6723aa3a9435619441ae5d70411bb148bcabde75b7fa5e426fa92",
+      "normalised_phrase": "The Company shall give Parent a reasonable opportunity to participate in the defense or settlement of any Transaction Litigation and shall consult regularly with Parent in good faith and give reasonable consideration to Parent’s advice with respect to such Transaction Litigation;",
+      "attachment_position": null,
+      "concept_family": "COV-LITNOTIFY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 5,
+          "end": 27,
+          "excerpt": "6.11 Transaction Litigation. In the event any Proceeding by any Governmental Entity or other Person is comm",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 326,
+          "end": 348,
+          "excerpt": " or seeks damages in connection therewith, including stockholder litigation (“Transaction Litigation”), the Company or Parent, as applicable, shall promptly notify the other Part",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-LITNOTIFY",
+          "pattern_id": "COV-LITNOTIFY:PHRASE:LITIGATION",
+          "start": 953,
+          "end": 975,
+          "excerpt": " to defend, consent to the entry of any judgment, settle or offer to settle any Transaction Litigation without the prior written consent of Parent (which consent shall not be unreaso",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.12",
+      "source_citation": "6.12",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "No Party shall, and each will cause its Representatives not to, issue any public announcements or make other public disclosures regarding this Agreement or the Transactions, without the prior written approval of the other Party.",
+      "canonical_value": "COV-PUBLICITY",
+      "original_claim_occurrence_id": "3465976d7523b3ca0044f7a2dfb031ab19702ba29784d943734314f75fbcfeb1",
+      "closure_id": "93846bac031c0b8d2afa7442380fc88de8b8396a693d846eda0837c1a627c76b",
+      "normalised_phrase": "No Party shall, and each will cause its Representatives not to, issue any public announcements or make other public disclosures regarding this Agreement or the Transactions, without the prior written approval of the other Party.",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.14",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "99d470370ec66bc131191bc80791d5941fe0d200b07b66ad33e90a7b9d9326aa",
+      "closure_id": "6c382a742e21692b15b46e323dea7a4087a39573fd725563fa2ecd114f02e7ac",
+      "normalised_phrase": "The Company shall give prompt notice to Parent, and Parent shall give prompt notice to the Company, upon becoming aware of (i) any condition, event or circumstance that will result in any of the conditions in Sections 7.2(a) or 7.3(a) not\n-70-\nbeing met, or (ii) the failure by such Party to comply with or satisfy in any material respect any covenant, condition or agreement to be complied with or satisfied by it under this Agreement;",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.15",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-16B",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d5f545a80c07c377eb86d5639a7bd7f5150b5c7ddeebc378e595b431643fc797",
+      "closure_id": "8aa5b8ef30930f4e1d24fceb4eb4ef9982391f7f0e93ac17a00282c247e0426f",
+      "normalised_phrase": "Parent, Merger Sub and the Company shall take all such steps as may be required to cause any dispositions of equity securities of the Company (including derivative securities) or acquisitions of equity securities of Parent (including derivative securities) in connection with this Agreement by each individual who is subject to the reporting requirements of Section 16(a) of the Exchange Act with respect to the Company, or will become subject to such reporting requirements with respect to Parent, to be exempt under Rule 16b-3 under the Exchange Act.",
+      "attachment_position": null,
+      "concept_family": "COV-16B",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.16",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4f62e0e9720dd84424cb85545095115c06d1b1cb4e1e172c3c95b169f383ea98",
+      "closure_id": "1bc4754d40091270ed61074e433cba2d179f2af077afbe9c2453e3c313184a7a",
+      "normalised_phrase": "Prior to the Closing Date, the Company shall cooperate with Parent and use reasonable best efforts to take, or cause to be taken, all actions, and do or cause to be done all things, reasonably necessary, proper or advisable on its part under applicable Law and rules and policies of the NYSE to enable the delisting by the Surviving Corporation of the shares of Company Common Stock from the NYSE and the deregistration of the shares of Company Common Stock under the Exchange Act as promptly as practicable after the Effective Time, and in any event no more than ten (10) days after the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.19",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_TAKEOVER_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-TAKEOVER",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "01781e5b9da0076b9d1bae1630d0a8679b84f1847df055ae1ffad465a14596eb",
+      "closure_id": "176d43c876a306c3f8f6d8eac1092977a4621850c260a1b68ef351a5f8f92015",
+      "normalised_phrase": "each of them will take all reasonable steps within its control to exempt (or ensure the continued exemption of) the Transactions from the Takeover Laws of any state that purport to apply to this Agreement or the Transactions",
+      "attachment_position": null,
+      "concept_family": "COV-TAKEOVER",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-TAKEOVER",
+          "pattern_id": "COV-TAKEOVER:PHRASE:TAKEOVER",
+          "start": 5,
+          "end": 18,
+          "excerpt": "6.19 Takeover Laws. None of the Parties will take any action that would cause the Transactions to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.19",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_TAKEOVER_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-TAKEOVER",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "65e5c564767676f51ef52cc69f1016a33afd32e465d58325b84ee57c66e8c324",
+      "closure_id": "4f622104b173b5cb3c1aaa0da4f6d3175f75f9a19761214c6fd7867d004f4078",
+      "normalised_phrase": "None of the Parties will take any action that would cause the Transactions to be subject to requirements imposed by any Takeover Laws",
+      "attachment_position": null,
+      "concept_family": "COV-TAKEOVER",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-TAKEOVER",
+          "pattern_id": "COV-TAKEOVER:PHRASE:TAKEOVER",
+          "start": 5,
+          "end": 18,
+          "excerpt": "6.19 Takeover Laws. None of the Parties will take any action that would cause the Transactions to ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.20",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_MERGESUB_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-MERGESUB",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "7d924300ebfb8174b6ca0c1b0ff3eb3d3ff197e31101ce6527c18fdc80355d0a",
+      "closure_id": "c4481c85b2100964f8110d447cdda9899ad08e76f17f4c1457b9089024a82288",
+      "normalised_phrase": "Parent shall take all action necessary to cause Merger Sub and the Surviving Corporation to perform their respective obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-MERGESUB",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MERGESUB",
+          "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+          "start": 20,
+          "end": 30,
+          "excerpt": "6.20 Obligations of Merger Sub. Parent shall take all action necessary to cause Merger Sub and the Surviving C",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.7",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d6ffc85b0a1b84922299132617c1f8d2ceefa415351b057f6f020a4fc86f70ae",
+      "closure_id": "47a270bf86ec3baf05a9ad8eded0b69d5846089641244eb8f3400ddf1d29f979",
+      "normalised_phrase": "The Company shall, and shall cause each of its Subsidiaries to, afford to Parent and its Representatives, during the period prior to the earlier of the Effective Time and the termination of this Agreement pursuant to the terms of Section 8.1, reasonable access, at reasonable times upon reasonable prior notice, to the officers, key employees, agents, properties, offices and other facilities of the Company and its Subsidiaries and to their books, records, contracts and documents and shall, and shall cause each of its Subsidiaries to, furnish reasonably promptly to Parent and its Representatives such information concerning its and its Subsidiaries’ business, properties, contracts, records and personnel as may be reasonably requested, from time to time, by or on behalf of Parent;",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 4,
+          "end": 25,
+          "excerpt": "6.7 Access to Information.\n(a) Subject to applicable Law and the other provisions of this Section 6.7, th",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "befbc4ef50017c29b19202b1877297a777527c06133be5439006fd465d56ae48"
+}

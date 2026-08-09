@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T06:58:28.847Z",
+  "section_reference": "3.25",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.25\",\"party_making\":\"Company\",\"chapeau_quote\":\"Except for the Advisor,\",\"limbs\":[{\"limb_path\":[\"Brokers\"],\"assertion_quote\":\"Except for the Advisor, there is no financial advisor, investment banker, broker, finder, agent or other Person that has been retained by or is authorized to act on behalf of the Company Group or the Company Board, who is entitled to any financial advisor’s, investment banking, brokerage, finder’s or other non-hours based fee or commission in connection with the Merger.\",\"subject\":\"retained or authorised brokers and fees\"}],\"qualifiers\":[{\"kind\":\"THRESHOLD\",\"code\":null,\"quote\":\"Except for the Advisor,\",\"attachment\":{\"position\":\"CHAPEAU\",\"governs_path\":null,\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"Advisor exception\",\"observed_quote\":\"Except for the Advisor,\",\"why_unmapped\":\"The exception identifies a representation-specific excluded adviser and is not an accuracy or knowledge standard.\",\"nearest_concept\":null}]}"
+}

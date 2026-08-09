@@ -1,0 +1,99 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "51a2ff5ffab1e30147a08b2ad1d21c9662573414cc7d135ca45654ba492a56e8",
+  "review_queue": [
+    {
+      "section_reference": "9.07",
+      "generic_claim_key": "NATIVE_EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e06c184229b324c15933074dbac5444cf006178512cdc7273c0ff316b5a08cd1",
+      "closure_id": "0262979114c2f83511c44269f2b71502d787c61e903023fe4c458da53e5ecdf3",
+      "normalised_phrase": "neither Parent nor Merger Sub is relying or has relied on any such representation or warranty, with respect to the Company or any of the Company Subsidiaries or with respect to any other information made available to Parent or Merger Sub, or their respective Representatives, in connection with the Transactions, including the accuracy or completeness thereof.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.07",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "3ca0e40fd5e3f5aa0a5d9aa12f1ac4173e332150e076065058eeac62b90ded5b",
+      "closure_id": "0a1be10697769a22905fe3ac3d4416a01dab20cf611dd10c9fca6b9007c26837",
+      "normalised_phrase": "the Company acknowledges that, except for the representations and warranties contained in Article IV, none of Parent, Merger Sub or any other Person on behalf of Parent or Merger Sub makes any other express or implied representation or warranty",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 59,
+          "end": 83,
+          "excerpt": "SECTION 9.07. Entire Agreement; Third-Party Beneficiaries; No Other Representations or Warranties. (a) This Agreement, the Confidentiality Agreement, the Voting an",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.07",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "59c0bfd39f9ddb8d749cd5fe6f296b89cd0277d0d84168c73075a5e19d90ef82",
+      "closure_id": "bd96400b6900d8a1ea56fd0722cac6abc1063aa85838d5c1a700f41110898395",
+      "normalised_phrase": "Each of Parent and Merger Sub acknowledges that, except for the representations and warranties contained in Article III, neither the Company nor any Person on behalf of the Company makes any other express or implied representation or warranty",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 59,
+          "end": 83,
+          "excerpt": "SECTION 9.07. Entire Agreement; Third-Party Beneficiaries; No Other Representations or Warranties. (a) This Agreement, the Confidentiality Agreement, the Voting an",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "9aa10c8d097d56ebd943a5b159ddb231c99d93779318687ff1a2e7056e5aef1e"
+}

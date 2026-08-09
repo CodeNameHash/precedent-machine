@@ -1,0 +1,498 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "41db6591b7372be1d3a35fb89bcde17b62fd12a6ceff288cd9323bf48d648e78",
+  "review_queue": [
+    {
+      "section_reference": "6.01",
+      "source_citation": "6.01",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY-MERGERSUB-APPROVAL",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d92d27bfc2c50bdb3bde34c1969a9cdcd8ea23dcfe470a8a2e3b13635fa0639e",
+      "closure_id": "9142e9f656fedc7817406ddc88ca3a117c1de21e17d123a6694c45595c9f3041",
+      "normalised_phrase": "Immediately following the execution of this Agreement, Parent, as sole stockholder of Merger Sub, shall adopt this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY-MERGERSUB-APPROVAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "PROXY_FILING_DEADLINE_DAYS",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b6bdba1e1045e1cb605ea0fa9cd6ebc2c8d5ee249b63268cbcd24583d8d483a0",
+      "closure_id": "028ff44cb86c8a8091fd4843a4d9506c55d88e285360676cb737e902959adf52",
+      "normalised_phrase": "The Company will, as soon as practicable following the date of this Agreement and in any event within ten (10) business days, prepare and file with the SEC the Proxy Statement in preliminary form",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 14,
+          "end": 29,
+          "excerpt": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 545,
+          "end": 560,
+          "excerpt": "and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all corresp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 781,
+          "end": 796,
+          "excerpt": " the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shal",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 956,
+          "end": 971,
+          "excerpt": "l occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1244,
+          "end": 1259,
+          "excerpt": "t. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1476,
+          "end": 1491,
+          "excerpt": "suggested by Parent and its counsel. The Company shall (i) commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1700,
+          "end": 1715,
+          "excerpt": "st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:PRELIMINARY_FORM",
+          "start": 1716,
+          "end": 1735,
+          "excerpt": " after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:NO_FURTHER_COMMENTS",
+          "start": 1934,
+          "end": 1953,
+          "excerpt": ") within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 2061,
+          "end": 2074,
+          "excerpt": "ake all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subjec",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "including establishing a record date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0893036c2446fd670cbdb149ef1c8ceeeaf018d9ffe89bb8a36432309d9eb406",
+      "closure_id": "2394470bc7ff36fdf4c7ee3193839b3812a467525c0887283fee7598d8d35e10",
+      "normalised_phrase": "including establishing a record date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BOARD_RECOMMENDATION_INCLUSION",
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "47738692810bf6e011c0a22a22974960e45427f236891485a3c49f6c88cc0179",
+      "closure_id": "6667986f5649c45335b19c30b350f54160ada3e810aa3b0d865f50425f2b4b2c",
+      "normalised_phrase": "the Proxy Statement will include the Company Board Recommendation",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 14,
+          "end": 29,
+          "excerpt": "SECTION 6.10. Proxy Statement. The Company will, as soon as practicable following the date of this Agreement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 545,
+          "end": 560,
+          "excerpt": "and of any request by the SEC or its staff for amendments or supplements to the Proxy Statement or for additional information and will supply Parent with copies of all corresp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 781,
+          "end": 796,
+          "excerpt": " the one hand, and the SEC or its staff, on the other hand, with respect to the Proxy Statement. If at any time prior to receipt of the Company Stockholder Approval there shal",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 956,
+          "end": 971,
+          "excerpt": "l occur any event that should be set forth in an amendment or supplement to the Proxy Statement, including correcting any information that has become false or misleading in an",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1244,
+          "end": 1259,
+          "excerpt": "t. Parent and its counsel shall be given a reasonable opportunity to review the Proxy Statement before it is filed with the SEC and the Company shall give due consideration to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1476,
+          "end": 1491,
+          "excerpt": "suggested by Parent and its counsel. The Company shall (i) commence mailing the Proxy Statement to the Company’s stockholders as promptly as practicable after filing with th",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:REGEX:PROXY_STATEMENT",
+          "start": 1700,
+          "end": 1715,
+          "excerpt": "st) business day after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:PRELIMINARY_FORM",
+          "start": 1716,
+          "end": 1735,
+          "excerpt": " after the date that is ten (10) calendar days after filing the Proxy Statement in preliminary form if, prior to such date, the SEC does not provide comments or indicates that it ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:NO_FURTHER_COMMENTS",
+          "start": 1934,
+          "end": 1953,
+          "excerpt": ") within three (3) business days of being informed by the SEC staff that it has no further comments on the document, and (ii) take all necessary action, including establishing a r",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-PROXY",
+          "pattern_id": "COV-PROXY:PHRASE:BROKER_SEARCH",
+          "start": 2061,
+          "end": 2074,
+          "excerpt": "ake all necessary action, including establishing a record date and completing a broker search pursuant to Section 14a-13 of the Exchange Act, to permit the foregoing. Subjec",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "MEETING_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "and completing a broker search pursuant to Section 14a-13 of the Exchange Act",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "74a7725e86494b31edae1c369b85249e187c575719b463d87fbf7ea2bab27a1f",
+      "closure_id": "efc7fc8368a2dd20c154a8752f303b35a5b778b28c48f57ee7e203df20e7a29e",
+      "normalised_phrase": "and completing a broker search pursuant to Section 14a-13 of the Exchange Act",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_DEADLINE_DAYS",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9deced85da826d22019379c40fe27b7957f70a2a222a24d8d37b4f93103a9d1d",
+      "closure_id": "21b9a54ec61f475d291f9ad0f112069b358b31655901f0da019d02598e919b2d",
+      "normalised_phrase": "The Company will schedule the Company Stockholders Meeting to be held within thirty (30) calendar days of the initial mailing of the Proxy Statement",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14,
+          "end": 34,
+          "excerpt": "SECTION 6.11. Stockholders Meeting. The Company will, as soon as practicable following the date of this Agreement,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 749,
+          "end": 769,
+          "excerpt": "n or by proxy at such meeting to adopt this Agreement, will adjourn the Company Stockholders Meeting and reconvene the Company Stockholders Meeting at the earliest practicable date",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 796,
+          "end": 816,
+          "excerpt": "eement, will adjourn the Company Stockholders Meeting and reconvene the Company Stockholders Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1049,
+          "end": 1069,
+          "excerpt": "at, without Parent’s prior consent, the Company shall not adjourn the Company Stockholders Meeting more than fifteen (15) calendar days past the originally scheduled date.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d7920606ea4a0ecfaaff2905835c7000643f86748dff2af7775b93fa044606c9",
+      "closure_id": "4b701f84b310046ea7cddc7580ce4d61205b4cf930c0b4c42e7237e3fd6f9bfa",
+      "normalised_phrase": "The Company will, as soon as practicable following the date of this Agreement, duly call, give notice of, convene and hold a meeting of its stockholders (the “Company Stockholders Meeting”) for the purpose of seeking the Company Stockholder Approval",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 14,
+          "end": 34,
+          "excerpt": "SECTION 6.11. Stockholders Meeting. The Company will, as soon as practicable following the date of this Agreement,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 749,
+          "end": 769,
+          "excerpt": "n or by proxy at such meeting to adopt this Agreement, will adjourn the Company Stockholders Meeting and reconvene the Company Stockholders Meeting at the earliest practicable date",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 796,
+          "end": 816,
+          "excerpt": "eement, will adjourn the Company Stockholders Meeting and reconvene the Company Stockholders Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 1049,
+          "end": 1069,
+          "excerpt": "at, without Parent’s prior consent, the Company shall not adjourn the Company Stockholders Meeting more than fifteen (15) calendar days past the originally scheduled date.\n",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if there are not sufficient affirmative votes represented in person or by proxy at such meeting to adopt this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "81c51e14a6feb42ccf9995634573d30e70c302e1104d940b5dff9a32d135da61",
+      "closure_id": "d86813bea7d230e519917d16a9c1fc6da609b92d03e7355825b2dba33a7d7c28",
+      "normalised_phrase": "if there are not sufficient affirmative votes represented in person or by proxy at such meeting to adopt this Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.11",
+      "source_citation": "6.11",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_ABSENT"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "provided that, without Parent’s prior consent, the Company shall not adjourn the Company Stockholders Meeting more than fifteen (15) calendar days past the originally scheduled date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6e706daa8090ec1425e84b2895e098cebdfef1578e29e6b7e3b13c60c9e7f1d5",
+      "closure_id": "db706c94181884ad84f3e9a79aa663aa604dbba84e738090c2bc5b8fd232bb2f",
+      "normalised_phrase": "provided that, without Parent’s prior consent, the Company shall not adjourn the Company Stockholders Meeting more than fifteen (15) calendar days past the originally scheduled date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "0e9ace7ca2427c717113db9f1ab9d818dc922c9d41add556da5e7751fb7c1e80"
+}

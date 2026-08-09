@@ -1,0 +1,151 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "3.4"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "3.4",
+      "section_id": "6478aa00a16f365af0b731159bd28614dd95d9f094fc3773424780b97db6b42e",
+      "parent_section_id": "22831bc1d2d0daa13cff47cf6e043417dafeab7c67b8b2061b83568e5c013577",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 41051,
+      "end": 41183,
+      "text_sha256": "551e4f534661fc90e0251d1ed2081915d3e4c144093ba0439bb7afaf871c87d8",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-appraisal/v1",
+      "prompt_version": 2,
+      "prompt_digest": "94bcf5193b1dbfb8fc35c0bb48b4ddea1b1310c6b38c89198aa03cf823c2db1f",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "94bcf5193b1dbfb8fc35c0bb48b4ddea1b1310c6b38c89198aa03cf823c2db1f",
+        "input_scope_digest": "29928080239baec6be7f997bc20c9f0b95f99ab4058abdd4b9fae03e5d08af59",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "6b66d535c0d2f191f739c7b73334f2d43f25a668edcfba736422eee8373b0dc3"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "3.4",
+      "citation_validation": null,
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c5034612b9e89f57c23267a9470469e7e7da52ae0d40be248899f2e2904f8854",
+          "claim_occurrence_id": "fe14a478640951a4b29d619264c8c1c5c82dbe8a6cdb8d256e487b49945fa696",
+          "subject_occurrence_id": "182a254be9119acb4a89f518559feafd06330b495707058bff3259391555ad35",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "In accordance with the DGCL, no appraisal rights shall be available with respect to the Transactions.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "6099cee6f99e122ddb1970f49ba2fac83d8c2c589a048339cd491c22da9bbbe9"
+          ],
+          "attributes": {
+            "why_unmapped": "APPRAISAL_STATUTE: Appraisal rights are addressed under the DGCL for the Transactions.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "6099cee6f99e122ddb1970f49ba2fac83d8c2c589a048339cd491c22da9bbbe9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4be735d5cba1d5f2c3f1350bc7d217d123aa55db1dcd294d0f857a6b2557ca1e",
+              "document_ordinal": 0,
+              "absolute_start": 25,
+              "absolute_end": 126,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f161812d2a5f967f9ae5a10ce92eb820e61be9b1ea7d634877ca8d670cfabdd7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "94bcf5193b1dbfb8fc35c0bb48b4ddea1b1310c6b38c89198aa03cf823c2db1f",
+          "producer_receipt_id": "6b66d535c0d2f191f739c7b73334f2d43f25a668edcfba736422eee8373b0dc3",
+          "governed_scope_digest": "2cef9b96c1f85bf4c8a23fb07aec3ee1d6fb5f7e3b0c2f6b4cec6de7ff4c9bda",
+          "extraction_provenance_id": "884d81bfe33b4499c6f451f020697c15b4cd8fd32f31a6dde5619a6ddf7cb75c"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "3.4",
+      "source_byte_length": 132,
+      "covered_byte_length": 101,
+      "coverage_share": 0.7651515151515151,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "3.4",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 1,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "905a010bc833de1adeeaa1831b06e7a968e93078501d37de2a1596f9c0634475"
+}

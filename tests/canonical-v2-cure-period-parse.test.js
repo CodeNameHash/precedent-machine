@@ -22,7 +22,7 @@ const FIXTURE_DIR = path.join(__dirname, 'fixtures', 'canonical-v2', 'terminatio
 const CURE_FIXTURE = fs.readFileSync(path.join(FIXTURE_DIR, 'cure-period.txt'), 'utf8');
 
 test('CURE_PERIOD_PARSE_VERSION is an exported, versioned constant', () => {
-  assert.equal(CURE_PERIOD_PARSE_VERSION, 1);
+  assert.equal(CURE_PERIOD_PARSE_VERSION, 2);
 });
 
 const THIRTY_DAY_CURE_QUOTE = 'which is not cured within the earlier of (1) the Outside Date and (2) 30 days '
@@ -134,6 +134,12 @@ test('lower-case "business days" resolves', () => {
   const result = parseCurePeriod('not cured within 5 business days following written notice');
   assert.equal(result.outcome, 'RESOLVED');
   assert.equal(result.canonical_value, '5');
+});
+
+test('explicit "calendar days" resolves without treating the word calendar as a date', () => {
+  const result = parseCurePeriod('has not been cured prior to thirty (30) calendar days after written notice');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '30');
 });
 
 test('a section reference is never mistaken for a day count', () => {

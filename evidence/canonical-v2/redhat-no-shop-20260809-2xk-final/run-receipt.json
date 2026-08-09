@@ -1,0 +1,4212 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "source_byte_length": 264358,
+  "root_section_id": "3d90818eb9590ab0940e2daff9eb6c2a5579fbc2ed81c4fe940f54c10c670113",
+  "requested_section_references": [
+    "4.02"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.02",
+      "section_id": "0fe1fee45e863ad2d982bc203c14175ddcad06577dd9c773cda1e4931ad21766",
+      "parent_section_id": "aa4dbccb69958f7c91e6cf0dfeb1a658316a9f3a339e03ca23db84e0d713379c",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 129121,
+      "end": 147755,
+      "text_sha256": "a4717320a4ad007579d52b973eaa498e8e2a89539a25b648443e8f802e46fb3f",
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-no-shop/v2",
+      "prompt_version": 3,
+      "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+        "input_scope_digest": "3b4749822a3f09ae82ec23ad6c34200e537bd1e9b7d37be200a62e8b15d2a819",
+        "proposal_count": 44,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "fcca6e9fc68393755ef77be9a0fb0e01d814badfbf13418794f429265970984a",
+          "claim_occurrence_id": "9d4d57dc7d16afecb22ad676149ad1379538fea2b28e6ee6253b3ddda10efd28",
+          "subject_occurrence_id": "fc5809749de4b2df545487ef94b70667d307a79e8c1c0bbc24b39a2fb10ca606",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "solicit",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "69f132a8f9c06623bad794469f0c5c6cdbbb5f592d2b74782da513438191f4f4"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "69f132a8f9c06623bad794469f0c5c6cdbbb5f592d2b74782da513438191f4f4",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "847bb8374dbe6dda57873b5a60d59e859d91a302d1fd127f60df8910f53049ab",
+              "document_ordinal": 0,
+              "absolute_start": 2949,
+              "absolute_end": 2956,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "443ec1f7af72733826600b1d3b4c9bf04fd8e09f0dcccde91e9190f894fe06ba"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3b35e40a1b5b50d2c530fdea71d185837f68b79b791c552326389332ab62ca84",
+          "claim_occurrence_id": "e23b0f1e4a274611c317e38ed091385feb0d0d0d8b660a6165fbd723aa35c27b",
+          "subject_occurrence_id": "aec156a774486dc41bbe54ed6c54b5136eff164e9d4ecbe493af03a6dcdddaae",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "initiate",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2d50aee7d0434570bc1effab624145da515f6b8c835c90d8c1f97395aee39d50"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "INITIATE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "INITIATE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2d50aee7d0434570bc1effab624145da515f6b8c835c90d8c1f97395aee39d50",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "921bca79d41ef6e3dc6e140585fe2701f10c7d0eb8c986d14a355edd2b797893",
+              "document_ordinal": 0,
+              "absolute_start": 2958,
+              "absolute_end": 2966,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "70242dee0a62759f145e9719b563bff7d54bc21159aa6821ab3a0297ebf62446"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "d2aefd513dce490ae5ac8f2cba994115c7179c2d8e54cfe22fca6ee9ed6e149f",
+          "claim_occurrence_id": "46cd56612474048c2058aeb8620252cbf7e5180a1f03051cde670224478ebc4e",
+          "subject_occurrence_id": "c077660eeadf7e5856d13865c2affaa00288b32a54e2e095440cb70128240693",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "knowingly encourage",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "eacd6ae1345b70b0f054f60f4faa40f21b4b427ca08fe975f452724ef6a74d44"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "ENCOURAGE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "ENCOURAGE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "eacd6ae1345b70b0f054f60f4faa40f21b4b427ca08fe975f452724ef6a74d44",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "19e197d9751dd1b4ce9c871f4260f90a1e185b8980ece5d25361c39e717bf0fd",
+              "document_ordinal": 0,
+              "absolute_start": 2970,
+              "absolute_end": 2989,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "81d4eb821fb36e9007303da66ca1bbef18036cc93034b39569901a0a4f98c428"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7e5cb753e66fa068eb28dda1fb8b7b7f0f286c625e817375fc9caf9bfe6c8e5d",
+          "claim_occurrence_id": "f095721434f391a3cc26ebf91bcd1539bf00d2e963fde1d610af995316f477aa",
+          "subject_occurrence_id": "9448d4156dc5dab2b82c61f710e1880686886fa2311865f461901547be50744c",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "knowingly take any other action to facilitate, any Takeover Proposal or any inquiries or the making of any proposal that would reasonably be expected to lead to a Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8a893f4037bf62830bf77b556e1b2a302124dfa19df70f1e421dd3e561bc36e0"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "FACILITATE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "FACILITATE_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8a893f4037bf62830bf77b556e1b2a302124dfa19df70f1e421dd3e561bc36e0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7e3eed0e1bd6e90db7866470b1090a2aa17d90066e23e360e3c0e3a2cbde51fa",
+              "document_ordinal": 0,
+              "absolute_start": 2994,
+              "absolute_end": 3174,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5396a0cea5935765d308f0c1fbc5f670c0b870a622b96a9eed8ffedb451dd1c6"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "6b1c3e16873b0a0b83679779addd9275d69f1e95100c296365aaeb02a02def00",
+          "claim_occurrence_id": "c2b2c0abf6b7a1bae951ceaa2a66a5ac94514ebdf8dacc0034af6c924ef7ad60",
+          "subject_occurrence_id": "473dfdb8edc5ce0df61fe0f746f8849fe6a2af3869db061c3eeab835b70d714a",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "enter into, continue or otherwise participate in any discussions or negotiations regarding",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "5dce4a5b59c16570aa258a0c0d6ecd7285a2fab81492f304e04f5cf2890e84fd"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": null,
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "5dce4a5b59c16570aa258a0c0d6ecd7285a2fab81492f304e04f5cf2890e84fd",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "278701719afb896e3e0c4d410a6e5f85b910bfff7554b1914d669530dd42ffed",
+              "document_ordinal": 0,
+              "absolute_start": 3466,
+              "absolute_end": 3556,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "734f5a462ffc6adfd9b4d58899469321fa99ab4394b83c830b9c17e94033994e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "89e5e3dc4de92d783f4b06b827deb4d4f50092ef6cd1b423a71aa55d9c2f9d92",
+          "claim_occurrence_id": "901402377fdffb602359b2e577cf19384bfd835107fbdf8fb75f07471db87c38",
+          "subject_occurrence_id": "2bb969fa3a4b4a5530363d02bf1c228b7cb6e918a14d820bb583b0a857e03084",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "furnish to any person (or any representative thereof) any information with respect to any Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1ca4ab18b7296ddcfb36ea54e8786956216b35192d052220b57a4c2fd66cb199"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "FURNISH_NONPUBLIC_INFORMATION",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "FURNISH_NONPUBLIC_INFORMATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1ca4ab18b7296ddcfb36ea54e8786956216b35192d052220b57a4c2fd66cb199",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f6bbe6c7fe8dcbd9fece18bc12675de554bfba7477f786ebbcad1e420354ea33",
+              "document_ordinal": 0,
+              "absolute_start": 3561,
+              "absolute_end": 3668,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "27e96fa8cb0e11f8fc1117d6b939bd4add5c60b7e3b2358e433aeec25255d9d4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "283d5e02510db8947401911085b374dd56aff86705ea882ae36a52d3e84ebc57",
+          "claim_occurrence_id": "918fba2aa7bb3fe6e59f7ffc596d1ff1a7956d1dcbaeb69f55aef769496357fd",
+          "subject_occurrence_id": "b204e66adc8a1248b2b14cf42fc3c06aa470834ef97188ee5dd3ea65c1d9e49a",
+          "claim_definition_key": "NATIVE_NO_SHOP_ACTION_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "execute or enter into any letter of intent, memorandum of understanding, agreement in principle, acquisition agreement, merger agreement, option agreement, joint venture agreement,\n28\npartnership agreement or other agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d4293ce4969afe978cbed5cec57ca2c0acc2598edc313bcea7dce58d56f37ae0"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "action_code": "ENTER_ALTERNATIVE_AGREEMENT",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "action_code": "ENTER_ALTERNATIVE_AGREEMENT"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d4293ce4969afe978cbed5cec57ca2c0acc2598edc313bcea7dce58d56f37ae0",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f91d138045d5be77c5eb636c1d6a4690f8b5f849cf5f0c814ffdfbe7e88444e8",
+              "document_ordinal": 0,
+              "absolute_start": 3678,
+              "absolute_end": 3902,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e4387b1a199ab4a3e76a02e6684d1c8a4736f1865368aa75f636114b466ad6a1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "5f994b9090b73f96c4f596307987496e932f42d5951dfc07e97bc21deeb0623f",
+          "claim_occurrence_id": "a8b7338aca92b5db7b5a9f71307188fb6e3519eb0dcdb33ff7cd2a471f1d11d2",
+          "subject_occurrence_id": "bf1e81f1b0965e5fcad68081ad0df8aff516b6a9bf73bc842a00a0d164f9c072",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "at any time prior to obtaining the Shareholder Approval",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "22e867138a21c1c48b20f354859ddb33b6c5aa04938e447865c0f6c2ea1d34f4"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "WINDOW_SIGNING_TO_STOCKHOLDER_APPROVAL",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "WINDOW_SIGNING_TO_STOCKHOLDER_APPROVAL"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "22e867138a21c1c48b20f354859ddb33b6c5aa04938e447865c0f6c2ea1d34f4",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d8acdb5720f544c1b46d910cbfbd7f9bc787e37b5180de9594bc182a9ef6e972",
+              "document_ordinal": 0,
+              "absolute_start": 4001,
+              "absolute_end": 4056,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b2830284f814f80e0f97d1c75f8d7fbe7fcc59beb4c62fc20f1e0f949bb664fc"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "4a1c2112f86a0481429ff21e0df806c136a2cf8b79e6084fdcf2bd1d9b3e3308",
+          "claim_occurrence_id": "3850048050155fdc0489bbadda5f7369bc7b9a03e9c2c9242450240b9f2da882",
+          "subject_occurrence_id": "b642c73a5f9899844fe3e99bb4dbfe84a628d88e712c7869233f1ca5aeaa259f",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in response to a bona fide written unsolicited Takeover Proposal received after the date of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "648393834bdca20dab5c34c2797797a82949c5a47da66b45eb7a0820059ea603"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "BONA_FIDE_UNSOLICITED_WRITTEN_PROPOSAL_RECEIVED",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "BONA_FIDE_UNSOLICITED_WRITTEN_PROPOSAL_RECEIVED"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "648393834bdca20dab5c34c2797797a82949c5a47da66b45eb7a0820059ea603",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "611bb0780d6456effbef4a819417c53400c3fa4dfca45911568816fea59cc510",
+              "document_ordinal": 0,
+              "absolute_start": 4058,
+              "absolute_end": 4164,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "517f31d09bd04281f4598c52152e13539f698c3a975615cb5037ee89cc16c7d8"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "12cfc2e3f333159c7ab076f26502c83dc7fce98efdeb89a7ed0ce2a89df9abd2",
+          "claim_occurrence_id": "38dcda1a9c2d6118f6af679e120abcc6345eb053b790c161590f3eff6d6d1eb0",
+          "subject_occurrence_id": "42698100a91ad03cefbd43dcc5a08f7207822189863e8ff1345b7c26aa496dd1",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "that the Company Board determines in good faith constitutes, or could reasonably be expected to lead to, a Superior Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0ab0f5c17dd8de5103cbde2b202439617a3b682875ba69e04372f52fb54262d3"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "BOARD_GOOD_FAITH_SUPERIOR_PROPOSAL_PATH_DETERMINATION",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "BOARD_GOOD_FAITH_SUPERIOR_PROPOSAL_PATH_DETERMINATION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0ab0f5c17dd8de5103cbde2b202439617a3b682875ba69e04372f52fb54262d3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5e65a49007fdb66147e6b7c17a86c5883d2025f193615c6840034f5c25961b8c",
+              "document_ordinal": 0,
+              "absolute_start": 4165,
+              "absolute_end": 4289,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fc0dafe3bccbefb72dc90ecb4b47c3fddd204f46b1a348fc8124522512e22e3a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b0e94e645ff7c14b64aacbc6fd57eeb4982aee8a5ddcd2d5e8ef5deda31b600e",
+          "claim_occurrence_id": "ab9a5989f959f2ff2286e54315d1572b77536fd09ca0ba065d02ed6fdd1cfabe",
+          "subject_occurrence_id": "a79ae8b2e17e5427ef7c33aa12c39dfbc8c8b475c703186db0f7d25494919f73",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "which Takeover Proposal did not result from a breach of this Section 4.02 or any other provision of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "55369a9546819342d7aa1cf5196b1fa00810132c4033b04016abcd3e6deac3af"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "PROPOSAL_NOT_RESULTING_FROM_COVENANT_OBLIGOR_NO_SHOP_BREACH",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "PROPOSAL_NOT_RESULTING_FROM_COVENANT_OBLIGOR_NO_SHOP_BREACH"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "55369a9546819342d7aa1cf5196b1fa00810132c4033b04016abcd3e6deac3af",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ac085ee2812b0c676f5dd5ecf3c4a04307629ddf02cd312f5ef3f1fc8919d7cc",
+              "document_ordinal": 0,
+              "absolute_start": 4295,
+              "absolute_end": 4409,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a83050d263d461a36cfaff7780691ef143c0fa02c748831ebeb25e5bc9386cf9"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "07269e8618adf0f279f3b63205bd6992d58290a887a1ab46d17612dc05cbe239",
+          "claim_occurrence_id": "0231b4c501266fefcd1b49a9b46ea383333861ba16fe464cd2842ba1989a83e7",
+          "subject_occurrence_id": "71ed159cbf2a13662380bddd6b4b684c8e2c424c316867fc07b70f01f843747e",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "subject to compliance with Section 4.02(e)",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0eb32425b5e49644200cf9ef10cce176b9a7ebeabcb349928675fbace72cbe81"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "SUBJECT_TO_INITIAL_PROPOSAL_NOTICE",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "SUBJECT_TO_INITIAL_PROPOSAL_NOTICE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0eb32425b5e49644200cf9ef10cce176b9a7ebeabcb349928675fbace72cbe81",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5744a3f2423c41ce985616f54247e7eadaa3f42b1fd33ec5e96def857aa476e7",
+              "document_ordinal": 0,
+              "absolute_start": 4523,
+              "absolute_end": 4565,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f572a1b9b96afe32743077bb5fa237be05399f3965a9b815aace8656c2d7be77"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "5924463c2d6af2dd5be99afe19153bca850aecd07447db36c2eb2eb04470df7b",
+          "claim_occurrence_id": "2a42426ea028dcf82136f119c4d95a1ce123b23368734a989d9857733310a19c",
+          "subject_occurrence_id": "5eec261b39c4bac6c975a286bf2380facb6eed9a26795df6c7adaefaef1ae5bc",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "pursuant to a confidentiality agreement which contains terms that are at least as restrictive in all material respects on such person as those contained in the Confidentiality Agreement dated October 3, 2018 between Parent and the Company",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "0854cb57bd672cf9cf094ae7e304b9383711c141f7b8e1a23d445ec8f8c494ac"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "ACCEPTABLE_CONFIDENTIALITY_AGREEMENT_REQUIRED",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "ACCEPTABLE_CONFIDENTIALITY_AGREEMENT_REQUIRED"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "0854cb57bd672cf9cf094ae7e304b9383711c141f7b8e1a23d445ec8f8c494ac",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "aa251fe5d81bc7c30bae75fd4195853935dbd406c8c1b2d55676ec13e0eb19a3",
+              "document_ordinal": 0,
+              "absolute_start": 4753,
+              "absolute_end": 4991,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7e7a3616c0081eabfea5427bbff5409b0ee7c6276dc7db0bbed17636c4202f26"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "faa74e450d5f1d040a3fc96637ad58ec0e59a4d07099e9181721c53f6bfd0b6f",
+          "claim_occurrence_id": "ee0740c4655e6572779019c189d3f06fac691bebe07d5477f1e4965c8ef606b0",
+          "subject_occurrence_id": "c2e465d3bd205718076260c22a5077b25649fe762a6111d6baf39ec1a7f021c8",
+          "claim_definition_key": "NATIVE_NO_SHOP_EXCEPTION_PREREQUISITE_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "provided that all such information has previously been provided, or is concurrently provided, to Parent",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2f19cb4942a22fbc89a5a9256775027a69ab1c6b8b454822bf9833efde79bee8"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "prerequisite_code": "NONPUBLIC_INFORMATION_PREVIOUSLY_OR_SUBSTANTIALLY_SIMULTANEOUSLY_PROVIDED_TO_PROTECTED_PARTY",
+            "permitted_action_context": "furnish information with respect to the Company and its Subsidiaries",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {
+            "prerequisite_code": "NONPUBLIC_INFORMATION_PREVIOUSLY_OR_SUBSTANTIALLY_SIMULTANEOUSLY_PROVIDED_TO_PROTECTED_PARTY"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2f19cb4942a22fbc89a5a9256775027a69ab1c6b8b454822bf9833efde79bee8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ce976c5ad801f621b3b59f2161276b92fe8bb11ce5242b8c2db7a7664818fe0a",
+              "document_ordinal": 0,
+              "absolute_start": 5671,
+              "absolute_end": 5774,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a5a2e7ccae4969449da49f9087f412e6ad1daedec6eb1d1dd8d933fbe6f73c6f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)(i)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "beca51cbefbff34307b38c24468f276ae2325da9ef3fc4b8fc394f9741093c0f",
+          "claim_occurrence_id": "fb1b63d1e508310d38952c4d194a40b29dbbfb128213dcd5bb41b5e6b1452b28",
+          "subject_occurrence_id": "556e3c128bbfff1d4a3e369429f9058b66ff4db3565c42c7a1a296988de10c8c",
+          "claim_definition_key": "NATIVE_NO_SHOP_MATCH_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "at least four (4) Business Days in advance",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e7765d5507539d47af731bd57a383decfaecb1b0acdbc96a544f98f9b6489e0d"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "INITIAL_MATCH",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e7765d5507539d47af731bd57a383decfaecb1b0acdbc96a544f98f9b6489e0d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5f116b017855f72cd45feb1838babcfe9a15556e2bee10f3403dd2d219d64935",
+              "document_ordinal": 0,
+              "absolute_start": 10680,
+              "absolute_end": 10722,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "72d518c51d397d80f86ca3208f38f2842964880d8becd9c26d452de4c3b56b68"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)(i)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "14a5b0639b80abe4a81a8145a6f425e6dba6998a663019166a8c93f572802f13",
+          "claim_occurrence_id": "a66b9ca89f16a71c1dd633558f7b06f3c46961dd893c6260739d718b0ba8c9e9",
+          "subject_occurrence_id": "9b6069a94919fbe680fbd4a1f79d6df8947b5a7747c25e7ed2aa211e627538b9",
+          "claim_definition_key": "NATIVE_NO_SHOP_REMATCH_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "a new Superior Proposal Notice Period of three (3) Business Days",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a4eb10230ce769d0870b7bcbc93d3ef2be0a2ee8b18b37a1e394936e9d74afe2"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "SUBSEQUENT_MATCH",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a4eb10230ce769d0870b7bcbc93d3ef2be0a2ee8b18b37a1e394936e9d74afe2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4d9ccdae9413743191867534b463ab4517276d9c196e863cb6c488fbbf5a299d",
+              "document_ordinal": 0,
+              "absolute_start": 12262,
+              "absolute_end": 12326,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8b166f8bba1ee1e197704e225d1fc3ef518e22d3fb71a07f5e4a6484ab964088"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)(i)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b3510228764f7afc529fa7c55527e53ef93811e40af1eccf6866e11d887c4d75",
+          "claim_occurrence_id": "050ff733d304f2a2fdcc41fc0992ff92a7d92a9774b57f18b1714426a20e83d3",
+          "subject_occurrence_id": "556e3c128bbfff1d4a3e369429f9058b66ff4db3565c42c7a1a296988de10c8c",
+          "claim_definition_key": "NATIVE_NO_SHOP_MATCH_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "at least four (4) Business Days in advance",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "95549124c11d9c7eb6d6c0809ca4516db03477d152fd08c7d47a2f08b164040f"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "INITIAL_MATCH",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "95549124c11d9c7eb6d6c0809ca4516db03477d152fd08c7d47a2f08b164040f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5f116b017855f72cd45feb1838babcfe9a15556e2bee10f3403dd2d219d64935",
+              "document_ordinal": 0,
+              "absolute_start": 10680,
+              "absolute_end": 10722,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8a378804ed0f8821a0c73e62a51d34e56dc8005702503dc1b1c5ac11bbe40517"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(d)(i)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3753bf304275dd615f53fbccbe313a84e22ca39e1ffc6812636180d8f0e1f86a",
+          "claim_occurrence_id": "0d63071dc81bea051dd989c45e994738349e05c0b38cfc18b62338c7d45d3d09",
+          "subject_occurrence_id": "722b4fcec734ba397abfa7193454551569256f06d7d1aefb3fe77c9b492b1893",
+          "claim_definition_key": "NATIVE_NO_SHOP_REMATCH_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "a new Intervening Event Notice Period of three (3) Business Days",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "79407b7de37030b64b05640bae5848134c851ccc58932b8e5002304a396ab75b"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "SUBSEQUENT_MATCH",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "79407b7de37030b64b05640bae5848134c851ccc58932b8e5002304a396ab75b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "02a98bfd1250d1b444749d539204f2a6c9debad1700db05e795e2c4a22432960",
+              "document_ordinal": 0,
+              "absolute_start": 14896,
+              "absolute_end": 14960,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4b8e9a99144fced4f9e8657e5ae0f6668acd43f99090765c5da9b6c12180e349"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(e)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ce05d586e3bbfb769b8688bf99f26ef4ff739755b92215a6bf28ee4b0027f887",
+          "claim_occurrence_id": "c1e84d68b15c101a0a53e3e182acc88d58edc69bbf9581390279fcb2d0fa7158",
+          "subject_occurrence_id": "3866c013c97159c8dd8427a3281b1206b36767b4f1890d6764ed05bb192815d2",
+          "claim_definition_key": "NATIVE_NO_SHOP_NOTICE_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "within 24 hours after the receipt thereof",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bcdac75841cb72ee0473efa4e2e0b6946614a5497239365aef826fb9f962ece7"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "NOTICE",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bcdac75841cb72ee0473efa4e2e0b6946614a5497239365aef826fb9f962ece7",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "597ccc4c9285e5e617b1ff6ccc3936e83f40ce50d5b516afa6cf96cd31b5dcfa",
+              "document_ordinal": 0,
+              "absolute_start": 16811,
+              "absolute_end": 16852,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "26eb9a24bc97988e6bfe574ff655218e22db992c0a1c378bd8cab3c9c5e0b1a7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(e)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7ade9789a1efcd11049abfdf8b0288b2efbad0799b9abd7448303dbc5e7ddbc9",
+          "claim_occurrence_id": "9f65ab132e3c19cb5abf5c50c0d9182f6f4d97401a69cb08a3873028f1db2e02",
+          "subject_occurrence_id": "f17127b7dc889b1703cae640f08128aa14720e8580249a02d992ce13a8a90c1d",
+          "claim_definition_key": "NATIVE_NO_SHOP_NOTICE_PERIOD_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "within twenty-four (24) hours following the receipt or delivery thereof",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a1abb8411e5fc1905d8a5f747968227c31f7bede39981b9cb0844a431b320ddf"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "period_role": "NOTICE",
+            "covenant_obligor": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a1abb8411e5fc1905d8a5f747968227c31f7bede39981b9cb0844a431b320ddf",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "9bec17f4f7d28602caf1b72c5c09c85a6fbb8545df3a6f1d3ec24bb29842fb1c",
+              "document_ordinal": 0,
+              "absolute_start": 17681,
+              "absolute_end": 17752,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "0b03af68e2ddc783d40338fee3198323d1a9d9f27b39368af6614b62705beec8"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3378121d2ceef69b648e8820db9adff9fdcf69ab4d9fc5113df610fb61862795",
+          "claim_occurrence_id": "35b1ac86cab506458d7c56328ac0e59c9df78ebbb733e156e7ec519567d5f57a",
+          "subject_occurrence_id": "cc9d99228c224e421d1c75d526f68799b31257a901ba0aaa662050788687d30c",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "immediately cease and cause to be terminated, any and all existing activities, discussions or negotiations with any third party conducted heretofore with respect to any Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ad304907a3e137d5adb17a571ca46deaefc2738104b3da40c2a2b1d8eccb127e"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "CEASE_ACTION",
+            "proposed_canonical_value": "CEASE_EXISTING_DISCUSSIONS_OR_NEGOTIATIONS",
+            "covenant_obligor": "the Company and its Subsidiaries"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CEASE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ad304907a3e137d5adb17a571ca46deaefc2738104b3da40c2a2b1d8eccb127e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "586c3754a58558f01f83ab76254f9b5b33f883252838d24e855aad80dc74602b",
+              "document_ordinal": 0,
+              "absolute_start": 292,
+              "absolute_end": 478,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1ad370db325085553fd5cdb1da75bb8319f64601bcba4807e9f0a339a8569abd"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0b9d491f0c27943df898d934a3522a2fd343bc49b68970a5a2c8c92ec4709333",
+          "claim_occurrence_id": "ccdba0e70e610b6bdb4f38037a12d61ec16082e42916dea27b111f8b0e844f7c",
+          "subject_occurrence_id": "d3ad7b8f0b3ebb637c218d5d9000d24c4e4205dce66af3e002bd2c6ba0ea23b5",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "shall use its reasonable best efforts to cause the other Company Representatives to",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "96269d7050f6e5aeb5e4de04eba81a19be6dd08e7ba860dab5f493bd07b3b8f8"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "REPRESENTATIVE_CONTROL_STANDARD",
+            "proposed_canonical_value": "REASONABLE_BEST_EFFORTS",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "REPRESENTATIVE_CONTROL_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "96269d7050f6e5aeb5e4de04eba81a19be6dd08e7ba860dab5f493bd07b3b8f8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7a6912adf49cc65228644fcde411c5af205d88a9142bbe545cc0f8a915651891",
+              "document_ordinal": 0,
+              "absolute_start": 207,
+              "absolute_end": 290,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "85f4d9d235347460eb5df096316d63a32d32e2375831d14a9e006303458df921"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2b22ff3bae7acb86f11703d8eb18d0ee7d42f0a6b950f377964c100eca3d6ede",
+          "claim_occurrence_id": "a10f66ea78a9dbe187bc4e2be9cca3fa2d1321f93e0447e5f52d8ebe1b59ebbc",
+          "subject_occurrence_id": "3dcaaf7e97f58104f498db3f60348f9bb05a0487aa247269663246d9acf18c50",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "request that each person and its representatives (other than Parent and its representatives) that has, prior to the execution and delivery of this Agreement, executed a confidentiality agreement in connection with such person’s consideration of making a Takeover Proposal, to promptly return or destroy all non-public information furnished to such person by or on behalf of the Company or any of its Subsidiaries prior to the date of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "edb435546bab8620287f9a8ddd984a3c3ac92a1b7ddd832c665dd5bc812cb760"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "CEASE_ACTION",
+            "proposed_canonical_value": "REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CEASE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "edb435546bab8620287f9a8ddd984a3c3ac92a1b7ddd832c665dd5bc812cb760",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "943726d1ef5d46bc879fa07c6c0746bb080cd2e6849bebe9a781cb803c27a5b8",
+              "document_ordinal": 0,
+              "absolute_start": 599,
+              "absolute_end": 1049,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "955bd7f62b9414d7e2174241f8ef4621ceda64a3cc7ca9db048bf4a1fb07c871"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b503b7de6985490e283a99e47784a97d29c16a30c4664f2caccc67c170b77eb2",
+          "claim_occurrence_id": "9bb1e2c9af2e224b9119ea71d0bab776b90a10dc25222a6d9ae9bbbdab88938e",
+          "subject_occurrence_id": "50064b522d952aa7ac0151d8bff63cb4bebba95746b754eb1be3011ad0913b6f",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "immediately terminate all physical and electronic data room access for such persons and their representatives to diligence or other information regarding the Company or any of its Subsidiaries",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ae9a4c94b87e5bc3ce8e3629dad8bd4b32b74b888c44e568519165bb9ac57519"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "CEASE_ACTION",
+            "proposed_canonical_value": "TERMINATE_DATA_ROOM_ACCESS",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "CEASE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ae9a4c94b87e5bc3ce8e3629dad8bd4b32b74b888c44e568519165bb9ac57519",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "94c958cf9eb3f6ce570bc2d9a2026744b1b4eb0645978dd7db654f3b6cff230c",
+              "document_ordinal": 0,
+              "absolute_start": 1059,
+              "absolute_end": 1251,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "4370f2ea8d51d8c9af78da3b7db7a4222db2c6a636119e27773d8204f2c2491c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0548deb9f022b1b76da13f55280ec48021aaf422d78fbd9248a372816793d7ca",
+          "claim_occurrence_id": "a7b6fb0ca50bb91a5caf295ebb1a84295dab2f0eb411c80a14adecc3a7c793e5",
+          "subject_occurrence_id": "4ade0043cca74c8829c8083e06ba74e48f19b593e0969c61c3ef582e051a5f10",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "it shall instruct and cause each applicable Subsidiary, if any, to instruct each such director, officer, employee, investment banker, attorney, accountant or other advisor or representative of the Company or any of its Subsidiaries (collectively, “Company Representatives”) not to",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "260e1b1a41be90c02196a18a7b66c9bef8c4857a678894ef961efdf6e4c1a286"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "REPRESENTATIVE_CONTROL_STANDARD",
+            "proposed_canonical_value": "INSTRUCT_NOT_TO",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "REPRESENTATIVE_CONTROL_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "260e1b1a41be90c02196a18a7b66c9bef8c4857a678894ef961efdf6e4c1a286",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "de6feba1386d333dd80ab8e22f62de6e42b0546c6fe0a6a097259e3af3ab9071",
+              "document_ordinal": 0,
+              "absolute_start": 2658,
+              "absolute_end": 2942,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fdce499cba9c54bce8a8138fab34521b07b65f766e2fabcca2aeb7a3f38706fb"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "eccac2d72f45d1129f6b1a35218307bc9c2994061a514a29ebacc1d6fa87e4b1",
+          "claim_occurrence_id": "44eb107b78ec8c295f48f20c782990a4900b620251956899209e21b10c08de7d",
+          "subject_occurrence_id": "f453c4d058f0beb7dc211490552d47707e9f28b5214e016c2f06e30809040446",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The Company shall not modify, amend or terminate, or waive, release or assign, any provisions of, any confidentiality or standstill agreement (or any similar agreement) to which the Company or any of its Subsidiaries is a party relating to any such Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b8ddd81672462cec4a65e8b88b5e3a1fab6bc724c12d887be914a55e228443b3"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "STANDSTILL_ACTION",
+            "proposed_canonical_value": "NO_WAIVER_RELEASE_OR_MODIFICATION",
+            "covenant_obligor": "The Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STANDSTILL_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b8ddd81672462cec4a65e8b88b5e3a1fab6bc724c12d887be914a55e228443b3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b0d9f7dfeef52f8652b14cfc218f10c54eedfb9e926377f67ebf5694c6ddc695",
+              "document_ordinal": 0,
+              "absolute_start": 1253,
+              "absolute_end": 1519,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "097d87cf903331e0238847798955aedee206cf1e045cb8e162386a57c272a5fc"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0b8514423451a27649aa241e5c71a4c178e6ab5b720bfffe0e0797bcca9b732b",
+          "claim_occurrence_id": "d04225c43d63e642db5de07dd26d69aafc0c6fb4877eb5a7972f43853979bdae",
+          "subject_occurrence_id": "e938d96c483d82bffe5621f155aad4141923aa758c8b7689a0cfdff61db84a06",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "shall enforce the provisions of any such agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "43f084e6e0994b097cc6aa54cc413930ecade2a8cb394c9dd1f83733a7de09e9"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "STANDSTILL_ACTION",
+            "proposed_canonical_value": "ENFORCE",
+            "covenant_obligor": "The Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STANDSTILL_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "43f084e6e0994b097cc6aa54cc413930ecade2a8cb394c9dd1f83733a7de09e9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "33df2f95e7df117f792d44e72bb67b67144dda2a7d5aefe3768fa4dff995eac4",
+              "document_ordinal": 0,
+              "absolute_start": 1524,
+              "absolute_end": 1574,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "83666ab4a2de15f2699396a4c9554e3290de1be7de1c1a582ad15701da8e525d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(a)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "fa99c6e9e59ea1091ebed7c12b1dba215e787b8453cfb643d26b8d86cb928b27",
+          "claim_occurrence_id": "d42bbcbe6436498130c38785b1f8c3204acf69f1cd7f6ba5990c6a7c15abc096",
+          "subject_occurrence_id": "e703f920c0002f07ba8dd11e069ab23362ed1dd24061e9904714d878fb9b90ed",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company shall be permitted on a confidential basis to release or waive any explicit or implicit standstill obligations solely to the extent necessary to permit the party referred therein to submit a Takeover Proposal to the Company Board on a confidential basis",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d867ef2efc36e8af9756e463acb64f65c146730266cfc028efb0af8a70124cbe"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "STANDSTILL_ACTION",
+            "proposed_canonical_value": "PERMIT_WAIVER_FOR_CONFIDENTIAL_PROPOSAL",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "STANDSTILL_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d867ef2efc36e8af9756e463acb64f65c146730266cfc028efb0af8a70124cbe",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c8c58a5fc633fb7207b308ed9024f0b596e5fa69d45fba1dd2fc3e91fbe16b43",
+              "document_ordinal": 0,
+              "absolute_start": 1590,
+              "absolute_end": 1855,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ce1ee64b9e7d06c64a2bb140f1130a2c78e5d650f9a7064d7ea0a84b70b0ff7b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(b)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e321f2a005f3b06e8395098d815b5559f48588792667ccb6346b0753d5ff4993",
+          "claim_occurrence_id": "37482a652d09c0d364106136e264d4e59496e50012d965ba3d0123f4f2f92bcc",
+          "subject_occurrence_id": "8ce45b4a1de1138ba12ff813c7988a3a787f81573f52721eef55c439f72ac997",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company Board determines in good faith constitutes, or could reasonably be expected to lead to, a Superior Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e7d14f54e96ddc5f4880380d332e1c81b4db8f287ac0bdff7fa4d76042ef91ce"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "FIDUCIARY_ENGAGEMENT_STANDARD",
+            "proposed_canonical_value": "CONSTITUTES_OR_COULD_REASONABLY_BE_EXPECTED_TO_LEAD",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "FIDUCIARY_ENGAGEMENT_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e7d14f54e96ddc5f4880380d332e1c81b4db8f287ac0bdff7fa4d76042ef91ce",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "92f93bfe1e2033631a6124dc2b5d66615d2ff8b54baa087b3281085d28867f54",
+              "document_ordinal": 0,
+              "absolute_start": 4170,
+              "absolute_end": 4289,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ba4a8bf9d29999beb97eae8a91d82b32e3c224c69631a0c25c43b4f8cc593098"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)(ii)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b779e2be6b850c303342e4527d46a1a4d46e35747d61c8191c849350c8dbb71f",
+          "claim_occurrence_id": "6b991e65085aec9d17ee8558c1e051c426a55e9ae54f98ad14aac242e1cd3a8a",
+          "subject_occurrence_id": "0617459eb2d00089fff38d44e40c63c011bcd6bbedb2371ce41f2bc7e3752468",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the failure to make such Adverse Recommendation Change or to so terminate this Agreement in accordance with Section 7.01(f), as applicable, would be inconsistent with the directors’ fiduciary duties under applicable Law",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3583d21dcb1fe5d7a86a4275166409a83405ed8b37abb55fe4571fce36b57cdb"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD",
+            "proposed_canonical_value": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3583d21dcb1fe5d7a86a4275166409a83405ed8b37abb55fe4571fce36b57cdb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1b007717c3a88af5db79faa3f6c2cf822e635416107f9241b723499271191a97",
+              "document_ordinal": 0,
+              "absolute_start": 12683,
+              "absolute_end": 12904,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "92e70217b18725e4e6dc341285d1b792d0a9c657d2a534a15699442d70558a6d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(d)(ii)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "7d3f2d5a0b56e06ba89bb19e578210a60678f15e91e3e51a8e23a4314c11a165",
+          "claim_occurrence_id": "8f64273c106b69644a3884f6cdb6e3f9b61f471577fbfa468eaa338a6476ea08",
+          "subject_occurrence_id": "8b9166c1a19bc8180ed43a9d0359f58e0f499ae1f020f1dc8a04a8c4ee047e52",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the failure to make such Adverse Recommendation Change would be inconsistent with the directors’ fiduciary duties under applicable Law",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "694fb79484dc2ac0f1e6ab5e65cee0b67ec506442c0f14b0c6e0923834a403fc"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD",
+            "proposed_canonical_value": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "694fb79484dc2ac0f1e6ab5e65cee0b67ec506442c0f14b0c6e0923834a403fc",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "233b2c3ac585320e00f8c3d0b285c469ee04c47ad7202680cf7727d37f6d651f",
+              "document_ordinal": 0,
+              "absolute_start": 15317,
+              "absolute_end": 15453,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "fcff274e8d08a06d823c6f0a1b52af7b8e47723f763d44269f598c9076ec1c09"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "c77517b5e6454dd70ed3097d29051be9a491e6e81511535ae01a4aee0a995dfe",
+          "claim_occurrence_id": "aeab80b09235665617255fcee1e8de358c63af07a07b45c4a20011ec5ab34d15",
+          "subject_occurrence_id": "d3c4d666a6dfdeefc13937686b0ba26efb1e07825ebb97f0b2177e6330b499d7",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "withhold, withdraw, qualify or modify in a manner adverse to Parent or Sub",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "b133fa3bfd242fb0d0f66ad2ba44a5a225a00212b7e413ff49a40c12e33ce338"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "WITHDRAW_QUALIFY_OR_MODIFY_RECOMMENDATION",
+            "covenant_obligor": "the Company Board nor any committee thereof"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b133fa3bfd242fb0d0f66ad2ba44a5a225a00212b7e413ff49a40c12e33ce338",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8f04119b8704cda35ae3a4f2838d52c70daa1da72cfae7e5d73f64e195a901ab",
+              "document_ordinal": 0,
+              "absolute_start": 8947,
+              "absolute_end": 9021,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b721033e32fb5442245aae386619fafbadc480f66ae4c2b6710039d7fab2f556"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2a8a2791acd655ecdf8e0113491562276e782fccb300874fe78dda8e0d7e6499",
+          "claim_occurrence_id": "6f0e2569b50a80e255ad567ca4bac52f05e1e692fab2bed0911f72457fb0b537",
+          "subject_occurrence_id": "7c25126fcafce147df847ef3e92d98c66d003b5abcce4f8162ec5daf2bfbc3b5",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "recommend, declare advisable or propose to recommend or declare advisable, the approval or adoption of any Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f15ece225cdc90723cfdff14d9922221bb4718df262642aaab182d1115e05cb3"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "APPROVE_ENDORSE_OR_RECOMMEND_ACQUISITION_PROPOSAL",
+            "covenant_obligor": "the Company Board nor any committee thereof"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f15ece225cdc90723cfdff14d9922221bb4718df262642aaab182d1115e05cb3",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "973c28838c938416b14ac90ae4a2b3b2725d5f652066d0b584327618209344b5",
+              "document_ordinal": 0,
+              "absolute_start": 9402,
+              "absolute_end": 9526,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "a4d438ce45c15a0807532a427854b48bb2b7c823b49c06080031b0ada310f83c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a4c695a9f21e3252f7b61b488bbf41940a466123cf8b88934436339c0b19156f",
+          "claim_occurrence_id": "09cef286e0a3b322eb9e0c13bdf2607315b4f7d09b8aecabab0121839ff620df",
+          "subject_occurrence_id": "aaa0a5f37a0e87ff5b197b6178d82230473ac9e78f116e674059117d31bfe24e",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "cause or permit the Company to enter into any Acquisition Agreement constituting or related to, or which is intended to or would reasonably be expected to lead to, any Takeover Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c5a6c096ee032e93387358fe48f6df1d3ccba7c46e170c26ffbf220c8ba03785"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "ENTER_ALTERNATIVE_AGREEMENT",
+            "covenant_obligor": "the Company Board nor any committee thereof"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c5a6c096ee032e93387358fe48f6df1d3ccba7c46e170c26ffbf220c8ba03785",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ce2bfce848fb3bf99865e741a2b33e54ef28db299370eecb37208e589bd6d575",
+              "document_ordinal": 0,
+              "absolute_start": 9622,
+              "absolute_end": 9807,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f3cb4841affa7e988a56e125d6e24011e4d6171f43fdcef1e6ac402dcc86878a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cd125e6c8e19d2b0b5a78505cd50ee5eafdc8e9617caf7a1ffeb45c9d0a42204",
+          "claim_occurrence_id": "76fcf2c14983ba9f2b51e849e6a4474e7acc52bcef6009ecaac2f8b32e50814d",
+          "subject_occurrence_id": "cd877295285e0f391089406a2c297240a5f6efe4f57c3a9725b81c0eda23b4d8",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "resolve or agree to take any such action",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "d06d83a180ccd09d646ddb92c5473bd121c38220fc6f9c7652196996dc266146"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "RESOLVE_OR_AGREE_TO_FOREGOING",
+            "covenant_obligor": "the Company Board nor any committee thereof"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d06d83a180ccd09d646ddb92c5473bd121c38220fc6f9c7652196996dc266146",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "b82a94bf1652ed6c2743d834ee73a4a577525727fd03cb270fba808ebf896bbe",
+              "document_ordinal": 0,
+              "absolute_start": 9530,
+              "absolute_end": 9570,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b573f51ed6b6d674f9030e1e54084bf1e0bcd244ced2870e4260b0ee89d3defc"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a9481ddf74c471c805dcf82eea761fdc3ddc4e82c621efafe050e08ad27287b0",
+          "claim_occurrence_id": "643d0b82c3c285d6652f5781943dbb40abf3dcf30e02ab718d0f6ece559678af",
+          "subject_occurrence_id": "0868332675db913d670bf9538d9f115331c06727d4deabcb1dbd6119ed63a0e9",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in response to a Superior Proposal received after the date of this Agreement and not resulting from a breach of this Section 4.02 or any other provision of this Agreement",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "634e73e3e66115ffcf79fb0f17ec798cf0bcb0ff866611e976ec38e321817ea5"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_TRIGGER",
+            "proposed_canonical_value": "SUPERIOR_PROPOSAL",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_TRIGGER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "634e73e3e66115ffcf79fb0f17ec798cf0bcb0ff866611e976ec38e321817ea5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fa149b5d95446acaf4ec215d9498bf441ce082e2007e511938a3331c2cd5f0a0",
+              "document_ordinal": 0,
+              "absolute_start": 10096,
+              "absolute_end": 10266,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1b593bc6800fdd8e6784fabead7f9f2702d8f5ad510b0718a094457127cfcb8c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8dcc19aa3d28ed99d789ee2ff40cdbccc749a6701bb9526cb8ee2c25fd42f0a6",
+          "claim_occurrence_id": "87d55f80c7505eaa8d190804b5954f7a235c87af9d876b472e324e53ee3958bc",
+          "subject_occurrence_id": "1a4d5e7f11a32c5814b13f4f5daac419ace44cd51a80c7c4fedb18fec1c6469f",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "effect an Adverse Recommendation Change",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1349eeb0b3288df339c1640a25e88ba90b669feb6c1ff403fb83460ec111368a"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "WITHDRAW_QUALIFY_OR_MODIFY_RECOMMENDATION",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1349eeb0b3288df339c1640a25e88ba90b669feb6c1ff403fb83460ec111368a",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "00503da71f67cd70cfb764598959475d712bdd83006bc93d003539c296b3c913",
+              "document_ordinal": 0,
+              "absolute_start": 10268,
+              "absolute_end": 10307,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5f4b0186954660b56bdb71104c919f873d6548ac0e0d0341ac96b2eeb385fd02"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e7d40fc88907952b706045ed6a662692c46c78271a3c51652cfcda197fffb153",
+          "claim_occurrence_id": "236493f7d7e0521da0a6eea79ac2aedfaa3d1f13f6341f319ff18d7448752784",
+          "subject_occurrence_id": "c997023950428e61834691b605d93731e58db420d4fb22108fca577e6662d399",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "terminate this Agreement to enter into an alternative Acquisition Agreement with respect to such Superior Proposal",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "555d1d357cce96c990333cf314d04f7204184812e6d83ac80cf3c3ae8fea8f1b"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "ENTER_ALTERNATIVE_AGREEMENT",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "555d1d357cce96c990333cf314d04f7204184812e6d83ac80cf3c3ae8fea8f1b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "50ed41287587d4ecfa6e1a851241d805bc1b1b77be6cf087b5b4ee8a65bc1a4d",
+              "document_ordinal": 0,
+              "absolute_start": 10311,
+              "absolute_end": 10425,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "b93a8cc98d5510c9502eb9416aeb21e510285f8a48daa4880a49729dd475db45"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(d)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "75f53948e0131ce63982a6e698d338a22afe16babba501ccf1257908749358c9",
+          "claim_occurrence_id": "e677be9199326bd60ad19f27b429f349dda919db8d83f0fc7e9b691a4204a85f",
+          "subject_occurrence_id": "5f30c7751b542815b1be0a829a171325de27f52d39b290bf4bde84d3ad3c0545",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "in response to an Intervening Event",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c5108a310b97d28b90fdaf3930c0d6c787d227eec225acf2de4b4efc8bf8c7c6"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_TRIGGER",
+            "proposed_canonical_value": "INTERVENING_EVENT",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_TRIGGER"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c5108a310b97d28b90fdaf3930c0d6c787d227eec225acf2de4b4efc8bf8c7c6",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ac2961bb309d3c52154f920b0efa19a0432bf6f64ae58fa8801c1ca480ee3b74",
+              "document_ordinal": 0,
+              "absolute_start": 13110,
+              "absolute_end": 13145,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "22567b48f68de9706f9cf758c7d6008e8e5eb80f7bf082605720fdb3c65d4a95"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(c)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "14ddc19023008c1d541957ce6ee90ecd96ef472b1804173549193413e5c93382",
+          "claim_occurrence_id": "3df9a6ea1a48858bb985dd1b33e1fbaa4313251b6e322b2087070a5360df2f89",
+          "subject_occurrence_id": "1a4d5e7f11a32c5814b13f4f5daac419ace44cd51a80c7c4fedb18fec1c6469f",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 1,
+          "state": "PRESENT",
+          "raw_value": "effect an Adverse Recommendation Change",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "8e48e44d1a132f88c72ffb842c905662b9b8a75d21a3264cdf71c835592e1a38"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION",
+            "proposed_canonical_value": "WITHDRAW_QUALIFY_OR_MODIFY_RECOMMENDATION",
+            "covenant_obligor": "the Company Board"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_CHANGE_ACTION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8e48e44d1a132f88c72ffb842c905662b9b8a75d21a3264cdf71c835592e1a38",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "00503da71f67cd70cfb764598959475d712bdd83006bc93d003539c296b3c913",
+              "document_ordinal": 0,
+              "absolute_start": 10268,
+              "absolute_end": 10307,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "bb43cd97422ce8d944cf282eb0994e7d2b30a28b6c5c322dc23b4c43144aab3d"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(f)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2e95e71884897dab61033dafc357f6ee76c7bf9b58f70c50272f7e387bd8f255",
+          "claim_occurrence_id": "2a16f482e587f74d36f7b298cefa764fc578db927690927afdb086e8c15a99b2",
+          "subject_occurrence_id": "b976fb1e5450bf79d23989c10bd42d26e26a2443574847448ffe24833ad3ca9f",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "taking and disclosing to its shareholders a position contemplated by Rule 14d-9 and Rule 14e-2(a) promulgated under the Exchange Act",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1c967c118de103be579b32a384f6f5c3277803b60f5c86f703c94444da8f1a83"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_SAFE_DISCLOSURE",
+            "proposed_canonical_value": "RULE_14D9_OR_14E2_DISCLOSURE",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_SAFE_DISCLOSURE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1c967c118de103be579b32a384f6f5c3277803b60f5c86f703c94444da8f1a83",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7603130596079f915c72ded62a1bdf88f9f2e326e298ae21bc509f54a633ac70",
+              "document_ordinal": 0,
+              "absolute_start": 18156,
+              "absolute_end": 18288,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "75edf95762b83bb430693903645a1af1e956b3b1a0602b45547e9143969ac6d1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.02",
+        "normalized_citation": "4.02",
+        "derived_citation": "4.02(f)"
+      },
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "8257339d4e5b92890aafd7baf0d0cb12403fa3fe8a76907720457a5a4e09686c",
+          "claim_occurrence_id": "78ad3dfff11fcda0f6d32174bdfed001c6cabcc8b477674e3524c67cefe78430",
+          "subject_occurrence_id": "b1260dc22d6c14bdb1cbe18f7a48ee2e517683b7b1799e200be5c98fd436224c",
+          "claim_definition_key": "NATIVE_NO_SHOP_WAVE_B_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "making any disclosure to its shareholders if, in the good faith judgment of the Company Board, failure to so disclose would be inconsistent with applicable Law",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "f661bbaabcb8c92fdf40c7bdb0b1d61f015552e475d15050476b8f82604ee07c"
+          ],
+          "attributes": {
+            "section_reference": "4.02",
+            "assertion_kind": "RECOMMENDATION_SAFE_DISCLOSURE",
+            "proposed_canonical_value": "DISCLOSURE_REQUIRED_BY_LAW",
+            "covenant_obligor": "the Company"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "RECOMMENDATION_SAFE_DISCLOSURE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "f661bbaabcb8c92fdf40c7bdb0b1d61f015552e475d15050476b8f82604ee07c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "7e11b3b2d1f18dbbddf3a1b13418a3341787dd7b4f26a19e72fa1690ec1c26bd",
+              "document_ordinal": 0,
+              "absolute_start": 18297,
+              "absolute_end": 18456,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "790d59e79ca8df0bd5c892c4e8aa4d173973043ce20c5abfa2d005d618c2922a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "NO_SHOP",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "bc6ec607718c8ea2ace6035b5870fd654b0a2063fd34ecec18371792859830d4"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": null,
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "115d9235322a437cc34f66462bb1a89f005f06d5c0b8750426c11616102e51c2",
+          "claim_occurrence_id": "caf1e0d9e0883cc286ad311b0d40ab93fa6b64866f2e5c6884f8db544f9ed272",
+          "subject_occurrence_id": "e6ba48d43d8deb7847b5ca9a793a77d52c099f8735ad02751a1d78311b843c08",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "shall not publicly announce any intention to",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "859b1075d442a6e1ccb6933f8bb8e32c5b291c1b6aa92c825b5aec96cb0170c2"
+          ],
+          "attributes": {
+            "why_unmapped": "It prohibits a public announcement of intent, which resembles a no-shop restriction but has no controlled action code.",
+            "nearest_concept": "ACTION_CODE"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "859b1075d442a6e1ccb6933f8bb8e32c5b291c1b6aa92c825b5aec96cb0170c2",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "33e895278065c52c51ae6d3e9770e4a7b67f2bdb5716a83b5dfcc8f14ebb8051",
+              "document_ordinal": 0,
+              "absolute_start": 2584,
+              "absolute_end": 2628,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8b41d912307a46568abe83b5ed5859778011e040b235ae1d0c4440df728be269"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "76d95289a7b54fd4ecbbeca516166724fcf74ea384c2275e32ddfd85611e2224"
+        }
+      }
+    },
+    {
+      "section_reference": "4.02",
+      "citation_validation": null,
+      "section_family": "NO_SHOP",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "0ec391a44f75e70aa2a5cc87d5da2cc350adb00f20c58c2b37b52b7026dba974",
+          "claim_occurrence_id": "14cabbe406d7ebc9ab38f0670a864f421df8cd883f99148f018eb84c0c80ba60",
+          "subject_occurrence_id": "a93483c7769fdd8e9bddc70cd1509f96f06bd23e066b7d48807671368a394c4b",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company and the Company Representatives may, in response to a bona fide written unsolicited Takeover Proposal, contact the person who made such Takeover Proposal solely to determine whether such person intends to provide any documents (or additional documents) containing the terms and conditions of such Takeover Proposal.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "fd23b70c68ad7a859f63d495a7682f08dc5908550c47fc31b95289bec7d1b3cb"
+          ],
+          "attributes": {
+            "why_unmapped": "It permits a limited contact to seek proposal documents, which resembles a fiduciary-exception engagement permission but has no controlled assertion.",
+            "nearest_concept": "FIDUCIARY_ENGAGEMENT_STANDARD"
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "fd23b70c68ad7a859f63d495a7682f08dc5908550c47fc31b95289bec7d1b3cb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "93880649a8443f281ae19aab507e389ae5d74c8d2dad4001d1cb2dd9f0362509",
+              "document_ordinal": 0,
+              "absolute_start": 6015,
+              "absolute_end": 6342,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d94d67f5a7c105a01c431156ee30445e69411351288831fcc71a6158ad659bd1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "99aa661e7415acc38a5dbe37dd06d911246bc3bc05fba686e8b896f7540a1e68",
+          "producer_receipt_id": "dea252e24656553945b28074b1390f76734ad906b52f46afa66683880c7de99e",
+          "governed_scope_digest": "424c17a48faaf89d3fcb427d88db115e1011915c9e58786f4ea5bc83d5f3480b",
+          "extraction_provenance_id": "76d95289a7b54fd4ecbbeca516166724fcf74ea384c2275e32ddfd85611e2224"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.02",
+      "source_byte_length": 18634,
+      "covered_byte_length": 5275,
+      "coverage_share": 0.2830846839111302,
+      "marker_counts": {
+        "as of": 1,
+        "except": 1,
+        "knowledge": 0,
+        "material": 2,
+        "total": 4
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0.2830846839111302,
+          "threshold": 0.5
+        },
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 4,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.02",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 30,
+          "end": 33
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 595,
+          "end": 598
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1054,
+          "end": 1058
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2190,
+          "end": 2193
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2945,
+          "end": 2948
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 3283,
+          "end": 3286
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3461,
+          "end": 3465
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3672,
+          "end": 3677
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4562,
+          "end": 4565
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4610,
+          "end": 4613
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5780,
+          "end": 5783
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 6010,
+          "end": 6013
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 7778,
+          "end": 7781
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8324,
+          "end": 8327
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8672,
+          "end": 8675
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8850,
+          "end": 8853
+        },
+        {
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8943,
+          "end": 8946
+        },
+        {
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9398,
+          "end": 9401
+        },
+        {
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9618,
+          "end": 9621
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 9900,
+          "end": 9903
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10457,
+          "end": 10460
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10562,
+          "end": 10565
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10566,
+          "end": 10569
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10779,
+          "end": 10782
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 11017,
+          "end": 11020
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11190,
+          "end": 11193
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 11409,
+          "end": 11412
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11680,
+          "end": 11683
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12333,
+          "end": 12337
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 12803,
+          "end": 12806
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12906,
+          "end": 12909
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13283,
+          "end": 13286
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13287,
+          "end": 13290
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 13501,
+          "end": 13504
+        },
+        {
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 13670,
+          "end": 13673
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 13749,
+          "end": 13752
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14213,
+          "end": 14216
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 14967,
+          "end": 14971
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16247,
+          "end": 16250
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16363,
+          "end": 16366
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 16630,
+          "end": 16633
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16704,
+          "end": 16707
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16709,
+          "end": 16712
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16714,
+          "end": 16717
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16722,
+          "end": 16725
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 16893,
+          "end": 16896
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17051,
+          "end": 17055
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17407,
+          "end": 17410
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 17613,
+          "end": 17616
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 18046,
+          "end": 18049
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18152,
+          "end": 18155
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18250,
+          "end": 18253
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 18292,
+          "end": 18296
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 18626,
+          "end": 18629
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 37,
+        "section_paragraph_marker": 4,
+        "cross_reference_marker": 13
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 595,
+          "end": 598
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 1054,
+          "end": 1058
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2945,
+          "end": 2948
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 3461,
+          "end": 3465
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3672,
+          "end": 3677
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 4610,
+          "end": 4613
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 5780,
+          "end": 5783
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 8324,
+          "end": 8327
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 8672,
+          "end": 8675
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8850,
+          "end": 8853
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 8850,
+          "end": 8853
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(x)",
+          "family": "ALPHA_LOWER",
+          "start": 8943,
+          "end": 8946
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(y)",
+          "family": "ALPHA_LOWER",
+          "start": 9398,
+          "end": 9401
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(z)",
+          "family": "ALPHA_LOWER",
+          "start": 9618,
+          "end": 9621
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 10562,
+          "end": 10565
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 10566,
+          "end": 10569
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 10779,
+          "end": 10782
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 11190,
+          "end": 11193
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 11680,
+          "end": 11683
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 12333,
+          "end": 12337
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12906,
+          "end": 12909
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 12906,
+          "end": 12909
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 13283,
+          "end": 13286
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 13287,
+          "end": 13290
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 13501,
+          "end": 13504
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(d)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 13670,
+          "end": 13673
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 13749,
+          "end": 13752
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 14213,
+          "end": 14216
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 14967,
+          "end": 14971
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 16247,
+          "end": 16250
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 16363,
+          "end": 16366
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 16704,
+          "end": 16707
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "start": 16709,
+          "end": 16712
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 16714,
+          "end": 16717
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "start": 16722,
+          "end": 16725
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 16893,
+          "end": 16896
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 17051,
+          "end": 17055
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 17407,
+          "end": 17410
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 17613,
+          "end": 17616
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 18152,
+          "end": 18155
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "start": 18250,
+          "end": 18253
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 18292,
+          "end": 18296
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 18626,
+          "end": 18629
+        }
+      ],
+      "disagreement_count": 43
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 44,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "4d51ddc63a6486320f94af35dcafc317d66043699d62ca6520e9fbc9a23427e2"
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "8e4016c270b8409183dfae944464123d988ef005dd7598eb2db5884159b66fcb",
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_WITHDRAWAL_RECONVERSION",
+      "concept_key": "APPR-WITHDRAW",
+      "reasons": [],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "917b8ff5da98c9a1c858614fd355018f4e81640ffed999eca75c135f975d3a7c",
+      "closure_id": "1fe2b5dcd02054dd0c60e91d9a1d962ce9751d7001bbd0d08745c280349c2a77",
+      "normalised_phrase": "If any Dissenting Stockholder fails to perfect such stockholder’s dissenters’ rights under the DGCL or effectively withdraws or otherwise loses such rights to appraisal with respect to any Dissenting Shares, each such Dissenting Share shall thereupon automatically be deemed to have converted at the Titanium Merger Effective Time into the right to receive, without any interest thereon, the Per Share Merger Consideration to which the holder of such Company Share would be entitled pursuant to Section 2.1(a)(i), pursuant to the exchange procedures set forth in Section 2.2 and shall not thereafter be deemed to be Dissenting Shares.",
+      "attachment_position": null,
+      "concept_family": "APPR-WITHDRAW",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_SETTLEMENT_CONSENT",
+      "concept_key": "APPR-SETTLE",
+      "reasons": [],
+      "materiality_rank": 88,
+      "materiality_label": "APPRAISAL_DISSENTERS_RIGHTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "274a57e21f5bc4a17b6a2de650c4fb802db34b17949add214ce7cf62a34175f2",
+      "closure_id": "fde94ee0f32d6c4040d68b340e08f7f60869c5ad6dc8019266193690d78f83ba",
+      "normalised_phrase": "The Company shall not, without the prior written consent of Parent, make any payment voluntarily with respect to any demand for appraisal with respect to any Dissenting Shares, offer to settle or settle, or approve the withdrawal of, any such demands or waive any failure to timely deliver a written demand for appraisal or otherwise to comply with Section 262 of the DGCL or agree to do any of the foregoing.",
+      "attachment_position": null,
+      "concept_family": "APPR-SETTLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "653cf44c0c3d677bb83a11d2b78a22569613d5b58ab89215b0a6e0a452996c74"
+}

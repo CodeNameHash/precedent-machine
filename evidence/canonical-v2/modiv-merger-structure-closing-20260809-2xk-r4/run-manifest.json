@@ -1,0 +1,74 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "modiv",
+  "deal_label": "Modiv, Inc. / Global Net Lease, Inc.",
+  "section_family": "MERGER_STRUCTURE_CLOSING",
+  "purpose": "General extraction run: family MERGER_STRUCTURE_CLOSING on deal modiv.",
+  "section_references": [
+    "1.1",
+    "1.4",
+    "1.5",
+    "1.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "1.1",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.4",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.5",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    },
+    {
+      "section_reference": "1.6",
+      "family_id": "MERGER_STRUCTURE_CLOSING"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV41",
+  "prompt_id": "native-producer-merger-structure/v1",
+  "prompt_version": 3,
+  "agreement_date": "2026-05-03",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T04:55:53.246Z",
+  "total_elapsed_ms": 55205,
+  "extraction_wall_clock_ms": 50433,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "8e0ad44613bb5ddc48856e3f66b599130d311ecb",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 4,
+  "run_receipt_id": "aa72b84e03eacd2341c5b0e6cb81a84eecdc226e72a9c0a58c2303336da0357b",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 4,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

@@ -1,0 +1,941 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "source_byte_length": 412860,
+  "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+  "requested_section_references": [
+    "4.23",
+    "7.11"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "4.23",
+      "section_id": "e08aeed9cadfa7fdf8c86d9ecd8b6b7d754e20014b887cecb4255a8c0dd6bd13",
+      "parent_section_id": "b9fe57814c47304c564d199e68f4176fc129eb95e159819a0710796e481c8622",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 351900,
+      "end": 354833,
+      "text_sha256": "a44556be41a8222c493c53b7390db7eabd709eb51a00ffa3563dd02f1c7e167c",
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-tax-matters/v1",
+      "prompt_version": 2,
+      "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+        "input_scope_digest": "d6a0d6fb615663b8309f4c89e1c7a64340fd8dab0a3677faa22954838010ae61",
+        "proposal_count": 8,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b"
+      }
+    },
+    {
+      "section_reference": "7.11",
+      "section_id": "755fd92b6053841196a732c57f032b53cb5fc9c68274f87bcd2914451ef04dee",
+      "parent_section_id": "1c24ef91a0fa2ba30952fc2f82d9d4242a7f724d8dd2b3a6795d7446a1392466",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 398339,
+      "end": 398562,
+      "text_sha256": "2fea9508e3ae33ed4db5c903906f55b460bbb41131c3ca1fa556362888b31ffc",
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-tax-matters/v1",
+      "prompt_version": 2,
+      "prompt_digest": "2b309ca06e323b7c82181b7c9ae65110f56f8ee8011e4aa63cbed4d3429672a4",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "2b309ca06e323b7c82181b7c9ae65110f56f8ee8011e4aa63cbed4d3429672a4",
+        "input_scope_digest": "d0df97523749dfe32fbaac1d7af55382e51a381f9d9fdcd7fa6b24bb60b6b966",
+        "proposal_count": 1,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "e28c1697fc0f42e6f6aecbd57be502fbd5715f1109d978f145874e811f27e9b5"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(a)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3027060340a6f4c60c1eaddb641e721a9eb2b41c846f3421a0f314b8df36234c",
+          "claim_occurrence_id": "93319d73182d0a1c0049df600322752173e001227d6504dc239bdba048086ea0",
+          "subject_occurrence_id": "5bb0017804bc33309fe8d0c1bca7f52552bdccdc06207ac6478bfc4f19d24f72",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent, the Company and their Affiliates shall use their respective reasonable best efforts to cause the Mergers to qualify for the Intended Tax Treatment.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2ec75d89eb76c651f9bc838e3c55e8be0c69b18c9f7c5ec4d56dc86049a795f4"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "INTENDED_TREATMENT",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": "Intended Tax Treatment",
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2ec75d89eb76c651f9bc838e3c55e8be0c69b18c9f7c5ec4d56dc86049a795f4",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fe5a31207a817dd2f86caa3e72134232ac8c891b72f410d97fe126394387bb91",
+              "document_ordinal": 0,
+              "absolute_start": 35,
+              "absolute_end": 190,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "3a5c116fbfc8d61c7077deee49aedfc2bc7c086b30767fde24bed91bba9e3d27"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(b)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3b98684b1e8c6e29809903342d19901b2f0f185500acfed317bde8c8d1eb2330",
+          "claim_occurrence_id": "6a6e9a3e479d46140138d31b173122264b3c3b3809c913db00a60a6941038da8",
+          "subject_occurrence_id": "f0aeaea6226f68b39bb3a50b463b63625a906ed260c7386c85b5b12d0f9fbd47",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Each of Parent and the Company shall use its reasonable best efforts and cooperate with one another to obtain (i) any opinion required by the SEC regarding the Intended Tax Treatment to be prepared and submitted in connection with the declaration of effectiveness of the Form S-4, satisfying the requirements of Item 601 of Regulation S-K under the Securities Act (the “SEC Tax Opinion”), such opinion to be prepared by Jones Day (or another nationally recognized law firm reasonably satisfactory to the Company and Parent (it being understood and agreed that Paul, Weiss, Rifkind, Wharton & Garrison LLP is such a law firm reasonably satisfactory to the Company and Parent)) and (ii) the Closing Tax Opinion.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "38810101a2aa31b100e82b1b26ccc6be815e56082bca14401599d837bb09dceb"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "TAX_OPINION_COOPERATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": "Intended Tax Treatment",
+            "tax_opinion_ref": "the “SEC Tax Opinion”",
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "38810101a2aa31b100e82b1b26ccc6be815e56082bca14401599d837bb09dceb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c0c081a599d20b99d9e5f2c82f2efd1a81ad196c7c152e452fa64b836768bbc9",
+              "document_ordinal": 0,
+              "absolute_start": 209,
+              "absolute_end": 922,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c442ff942d5408472e8dbb12a0d2b7744e8db8594981c96876176ff03e34b158"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(b)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "456d6f4c0e22640402d09d0f86afa91502f8e684929d83ec2727cccad9377520",
+          "claim_occurrence_id": "ebffc4fdd185bc3d3581dc55eaed168958d4280e02ac5ed1b00d1f99486e014e",
+          "subject_occurrence_id": "4d06861be10f198f81bf9b973ef0fdbc7d1fdca94df418d5975802af4b35bee5",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "In connection with the foregoing, the officers of each of Parent, Titanium Merger Sub, Forward Merger Sub and the Company shall execute and deliver to the counsel delivering the SEC Tax Opinion or the Closing Tax Opinion, as applicable, a certificate containing customary representations and statements reasonably necessary or appropriate for such counsel to render such opinion, in form and substance reasonably acceptable to such counsel, dated as of the effective date of the Form S-4 for the SEC Tax Opinion or the Closing Date for the Closing Tax Opinion.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9cc16c0195428154d71b148519b850a81a503b281656c14da630408f998c73ee"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "TAX_OPINION_COOPERATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": "the SEC Tax Opinion or the Closing Tax Opinion",
+            "representation_letter_ref": "a certificate containing customary representations and statements reasonably necessary or appropriate for such counsel to render such opinion",
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9cc16c0195428154d71b148519b850a81a503b281656c14da630408f998c73ee",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "6f6108be6213285ccb21b28b9cf723290e86bf781263e53622c3990d7578bed4",
+              "document_ordinal": 0,
+              "absolute_start": 923,
+              "absolute_end": 1483,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "8c87f8ffad246715c025a0233c550bec72fd8d9023b66322c0c993634b6856b3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(b)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "9722539498767469096b681bfb41d9f43fe6c0eec52e79cf55aefc2967213ab6",
+          "claim_occurrence_id": "646e965f1048af691b6fc0ed7c7418bc592145cb425450f0bc3f5668027c5a02",
+          "subject_occurrence_id": "716b0374a4c420d19f51a6b6bed6fb512beb9646bacc9806d22a9bf61746661e",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent and the Company shall use reasonable best efforts to provide such other information as reasonably requested by the applicable counsel for purposes of rendering the SEC Tax Opinion or the Closing Tax Opinion, as applicable.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "2dca3fcb809f4d57cbbbc10d0f786772535bcad841324fd900df92260a38ac4e"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "TAX_OPINION_COOPERATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": "the SEC Tax Opinion or the Closing Tax Opinion",
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "2dca3fcb809f4d57cbbbc10d0f786772535bcad841324fd900df92260a38ac4e",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "87d2b1d805886aa61a9c8148f96648ea5d7030852f739769692ecfd7576096ba",
+              "document_ordinal": 0,
+              "absolute_start": 1484,
+              "absolute_end": 1713,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "3cd309bfcd8845c62978014ae2e6b73c939d13e95bfaf5bbbd118cb75a59dad7"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(c)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2bdbb3925995402d2eec167ff9ea44a74d55fdf906cf495bd4ad87772337a8d0",
+          "claim_occurrence_id": "25e63e467ab20dfedde04f7b0d92bcf17bcfd3ba66effe539090b78a45fe62b6",
+          "subject_occurrence_id": "25755c70730f8450b939278a6f68cc91cce9fd5e30dd7ea6aacd754185d3af99",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The parties intend, for U.S. federal (and applicable state and local) income Tax purposes, that the Titanium Merger and Forward Merger, taken together, shall qualify for the Intended Tax Treatment.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1889e505895327e05b182bfd84c3389e75c8144118d437da368920ea13c70ddb"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "INTENDED_TREATMENT",
+            "treatment_scope_ref": "U.S. federal (and applicable state and local) income Tax purposes",
+            "treatment_term_ref": "Intended Tax Treatment",
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1889e505895327e05b182bfd84c3389e75c8144118d437da368920ea13c70ddb",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "78e23132d52ea77949f87c4a30a76a33bb2f1ed5e0e743a688df316dbc028559",
+              "document_ordinal": 0,
+              "absolute_start": 1736,
+              "absolute_end": 1933,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "99539a7d388bde0e0ea832b1b22662c77f2c3c7c3dd2e6cb32d00d686b11c027"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(c)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "cd2b328b3620cf69bace8d2ffa75bb148c195b47bf4b8b612b7fe9a4ee8b9086",
+          "claim_occurrence_id": "205cb17dc9eefef4efedcc0a758e9a2976183f13a04aa0f56fde727b018e1d09",
+          "subject_occurrence_id": "60fd45c1665bb1ba29e50a7fc939ab5123ab27ab5e12259c292e4724035c5419",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "None of the parties or their respective Affiliates shall take or cause to be taken, or fail to take or cause to be failed to be taken, any action that would reasonably be expected to prevent or impede qualification of the Mergers, taken together, for such Intended Tax Treatment.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3d8ddb8d2ac46211373bd6dd292b3813d0e5f02b8241d2a6cb9d62923edbdf75"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "TREATMENT_PROTECTION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": "Intended Tax Treatment",
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3d8ddb8d2ac46211373bd6dd292b3813d0e5f02b8241d2a6cb9d62923edbdf75",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "37a6a175f31d7a4af42141643e4f199f12026736d8561e17608cddb76e96856a",
+              "document_ordinal": 0,
+              "absolute_start": 1934,
+              "absolute_end": 2213,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ad5520b500375f1c5f9e7d7ec33603a3d270c5d8d82c97e9b6e3576a3dc41c1c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.23",
+        "normalized_citation": "4.23",
+        "derived_citation": "4.23(c)"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "722c3b2c5c983bb2ca87d5e33034f33cb0dd5b731a4cd50fd89e075b3e03e4b0",
+          "claim_occurrence_id": "25d07b7a0dc69b3b11bbb68d3a0a126c5b58b2a2c4df0656e39cdc79f1b3970c",
+          "subject_occurrence_id": "6b2191d07d96cfb6bf7c00d4b3d02f14d4c99ccd4bc7cfbee3b5639373b003b5",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Each party shall, and shall cause its Affiliates to, prepare and file all Tax Returns in a manner consistent with the Intended Tax Treatment and each party shall not, and shall cause its Affiliates not to, take any position that is inconsistent with the Intended Tax Treatment on any Tax Return, in any audit, examination or other proceeding relating to Taxes or otherwise, in all cases, unless otherwise required by a change in applicable Tax Law after the date hereof or a “determination” within the meaning of Section 1313(a) of the Code.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "c14d306376006b770238341d2b5f11b3dedf15cf867600e883f83244d40bd344"
+          ],
+          "attributes": {
+            "section_reference": "4.23",
+            "assertion_kind": "TREATMENT_PROTECTION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": "Intended Tax Treatment",
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "c14d306376006b770238341d2b5f11b3dedf15cf867600e883f83244d40bd344",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e264f86ac0a9b07651d51f5247b474e2dd9f8fc9aacae4dcb5696f573328d0b4",
+              "document_ordinal": 0,
+              "absolute_start": 2214,
+              "absolute_end": 2759,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "d966809c96dacd70de9ac6bbfa144c2035c5ffdef4ce403249e265f67b2a4d7e"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "223db019e1d26a29191abb0644345564e7516dd87907106c97bde410edb21c12"
+        }
+      }
+    },
+    {
+      "section_reference": "4.23",
+      "citation_validation": null,
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e27c9d10fc8e89b1ffcfc3589961b578f5a6e6f8a39573f6e9bcd32d72975b88",
+          "claim_occurrence_id": "3c055348a653ebcf989790a42fe73dcae5bc07bd337a408d1a4efaae53637a46",
+          "subject_occurrence_id": "40d8eec29d74a13aeeac0651635c207dd7bc00b14c1c55daff86c0556df935db",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "The parties hereby adopt this Agreement as a “plan of reorganization” within the meaning of Section 368 of the Code and the Treasury Regulations promulgated thereunder.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "15e22d36ccb79bf2c1dc4952c06ec6937039089027f51ef0030b7960446ce414"
+          ],
+          "attributes": {
+            "why_unmapped": "Adoption mechanics do not match a governed legal code.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "15e22d36ccb79bf2c1dc4952c06ec6937039089027f51ef0030b7960446ce414",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "642db17999dfd7963992ca80ae24f228ff4903b93e530d48f96723f4f64ae21d",
+              "document_ordinal": 0,
+              "absolute_start": 2760,
+              "absolute_end": 2932,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "73c162cedff9f9936d39975f6bb8c6905f11853eda44a08e05d62214b5439b35"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "4a58730bf31b63c2925bd2b5f3a402d653ef2069fbc68f73c8384b5c1e4399b1",
+          "producer_receipt_id": "e718369dd6a3b9a122c86661e7404b7b253c2afe3fe695f8fe91b87604e3096b",
+          "governed_scope_digest": "c243fd68759fdba8521d651cb66af4305813eef2ec0c184665471288323c8ebd",
+          "extraction_provenance_id": "2db60c461e7193e7c09036fead49e2821a85bb81a15384d992eadcdeb7a6342b"
+        }
+      }
+    },
+    {
+      "section_reference": "7.11",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "7.11",
+        "normalized_citation": "7.11",
+        "derived_citation": "7.11"
+      },
+      "section_family": "TAX_MATTERS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "b765d403c78ef5e9a7989012fcf1baeef34ff66c2fa65ab1f845853315fac514",
+          "claim_occurrence_id": "b2cee96dc718f501c0e59c0a0dbf2085dc53812ce7a480f55a3526c48a517812",
+          "subject_occurrence_id": "deacc364c0f0e2d4b0781882a2d2b920c46d4a3bafaf50cbf7cf6fc9d88b93e5",
+          "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "All transfer, documentary, sales, use, stamp, registration and other such similar Taxes imposed with respect to the Mergers shall be paid by Parent, Titanium Merger Sub and Forward Merger Sub when due.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "938b2f5e1d2ceea1bea227c5d3045c6c67e0750651538fbc13043c1419df863c"
+          ],
+          "attributes": {
+            "section_reference": "7.11",
+            "assertion_kind": "TRANSFER_ALLOCATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": "Parent, Titanium Merger Sub and Forward Merger Sub",
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "938b2f5e1d2ceea1bea227c5d3045c6c67e0750651538fbc13043c1419df863c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "0f7774773304be187f9e23ee258d1f809f5fea4e0d2d54659f581b6761011cf7",
+              "document_ordinal": 0,
+              "absolute_start": 21,
+              "absolute_end": 222,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "cb4fb4828f0401de6a9ecc1175f1c49cc7519a7dacc6dd0494469fbc3638acca"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "TAX_MATTERS",
+          "prompt_digest": "2b309ca06e323b7c82181b7c9ae65110f56f8ee8011e4aa63cbed4d3429672a4",
+          "producer_receipt_id": "e28c1697fc0f42e6f6aecbd57be502fbd5715f1109d978f145874e811f27e9b5",
+          "governed_scope_digest": "6584e1512bda1e82cfdd50ce643f3996d8a90d157c28ab3a9f63eee3018efbd7",
+          "extraction_provenance_id": "13ca91b5da85640214b7cca13095df173b915a11af9bb2ac6951e8f65d5824e5"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "4.23",
+      "source_byte_length": 2933,
+      "covered_byte_length": 2850,
+      "coverage_share": 0.9717013296965564,
+      "marker_counts": {
+        "as of": 1,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 1
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 1,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    },
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "7.11",
+      "source_byte_length": 223,
+      "covered_byte_length": 201,
+      "coverage_share": 0.9013452914798207,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "4.23",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 18,
+          "end": 21
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 191,
+          "end": 194
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 319,
+          "end": 322
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 893,
+          "end": 897
+        },
+        {
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1717,
+          "end": 1720
+        },
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 2743,
+          "end": 2746
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 3,
+        "section_paragraph_marker": 2,
+        "cross_reference_marker": 1
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 319,
+          "end": 322
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 893,
+          "end": 897
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 1717,
+          "end": 1720
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 1717,
+          "end": 1720
+        }
+      ],
+      "disagreement_count": 4
+    },
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "7.11",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 9,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "d83ef2ccddd603b943dbe5b3322e9bd87f3a4cbc88bd47c68a62153c60f79bb9"
+}

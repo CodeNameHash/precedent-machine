@@ -36,7 +36,7 @@ const {
 
 // ─── Version ───
 
-test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 4', () => {
+test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 5', () => {
   // P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
   // section 1): 1 -> 2. Stage 3 (structural-inheritance-diagnosis.md;
   // Ben's never-alias materiality ruling): 2 -> 3 -- two qualifier-only
@@ -44,7 +44,9 @@ test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 4', () => {
   // Step 2X-D / DECISIONS.md entry 14 (2026-08-08): 3 -> 4 -- revert the
   // MAT_MAE_AGGREGATE / MAT_MAE_QUALIFIED split; aggregate phrase classifies
   // as MAT_MAE_QUALIFIED.
-  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 4);
+  // Step 2X-K blind-successor recovery: 4 -> 5 for the bounded negative-MAE
+  // tolerance grammar.
+  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 5);
 });
 
 test('QUALIFIER_KINDS enumerates the six families', () => {
@@ -272,6 +274,36 @@ test('whitelist non-match yields null code (whole-quote exact matching, no prece
   assert.equal(result.lexiconKind, 'ACCURACY');
   assert.equal(result.outcome, 'REVIEW');
   assert.equal(result.reason, QUALIFIER_KIND_UNCLASSIFIED);
+});
+
+test('negative MAE tolerance failure variants classify into the existing MAE code only', () => {
+  const quotes = [
+    'other than where the failure to have such power and authority would not reasonably be expected to, individually or in the aggregate, have a Company Material Adverse Effect',
+    'except for such Rights-of-Way the absence of which would not reasonably be expected to have a Company Material Adverse Effect',
+    'such other Consents the failure of which to obtain would not have a Company Material Adverse Effect',
+    'except for such failures to be valid and binding as would not reasonably be expected to have a Company Material Adverse Effect',
+  ];
+  for (const quote of quotes) {
+    const result = classifyQualifierQuote({ quote, modelKind: 'ACCURACY' });
+    assert.equal(result.outcome, 'CLASSIFIED');
+    assert.equal(result.code, ACCURACY_CODES.MAT_MAE_QUALIFIED);
+  }
+  assert.notEqual(
+    classifyQualifierQuote({
+      quote: 'other than where Tax matters would not reasonably be expected to have a Company Material Adverse Effect',
+      modelKind: 'ACCURACY',
+    }).outcome,
+    'CLASSIFIED',
+    'a negative MAE tail without one of the closed failure grammars stays held',
+  );
+  assert.notEqual(
+    classifyQualifierQuote({
+      quote: 'other than where the failure to qualify would reasonably be expected to have a Company Material Adverse Effect',
+      modelKind: 'ACCURACY',
+    }).outcome,
+    'CLASSIFIED',
+    'an affirmative MAE proposition is not a tolerance qualifier',
+  );
 });
 
 test('every ACCURACY_CODE_WHITELIST entry is a unique exact phrase mapped to a registered code', () => {

@@ -1,0 +1,361 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "01212cf68de32ef810a011de93c18d56389ec6094a0542514b6d795a37b14a5f",
+  "review_queue": [
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_KNOWLEDGE_STANDARD",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1369c47640cdfa7434c494b8a5cbe868306b677db451d0718a6d0ba62259ad43",
+      "closure_id": "4c3111c134d5517eeaf5280676260774b101a594298b6632dfe3e7d06a6d3794",
+      "normalised_phrase": "with the actual knowledge that the taking of such act or failure to take such act would result in such material breach of this or material failure to perform.",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "WILLFUL_BREACH_DEFINITION",
+      "concept_key": "DEF-WILLFUL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e060d189db9ce60b33156cc05ffcf893921e0fd50baa941ae372e1b29d0cb63f",
+      "closure_id": "9fc1a67b69ba0e590b429f0963924804008cdc0e1e681fb66d8f5d4865f5bb23",
+      "normalised_phrase": "a material breach of, or a material failure to perform, any representation, warranty or covenant set forth in this Agreement, in each case that is the consequence of an intentional act or intentional omission by a party with the actual knowledge that the taking of such act or failure to take such act would result in such material breach of this or material failure to perform.",
+      "attachment_position": null,
+      "concept_family": "DEF-WILLFUL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8558eba91de8c4bd456aca6af0ff3091234ccd695db6f22a7702d8b7503e6414",
+      "closure_id": "3cad92abc2748afcfe6801233ebacb48483ea0d6c96b12d3634613e52d222c4d",
+      "normalised_phrase": "fifty percent (50%) or more of the aggregate voting power of the capital stock of the Company or of the surviving entity or the resulting direct or indirect parent of the Company or such surviving entity",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "dd0f2cd233a3cdbe19cf1f0566a3c17e8a9d9316b1662cbcb11b8f0247b2da8e",
+      "closure_id": "59671c7e77fd7a0a6a56cf872e67bcebb14644b5cf731715b79dee2613a62c0a",
+      "normalised_phrase": "any Company Takeover Proposal",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ce7e0de069e0f5eef7bb2d9125cff74c1422dc2bbf31ff73adb01c32e29abf2c",
+      "closure_id": "5e6c3e924076c121f1e7be2f0e0ab50bdc68ad2eed1a81fa8bb0932c047c80da",
+      "normalised_phrase": "on terms which the Company Board determines, in good faith, after consultation with its outside counsel and financial advisor, would result in greater value to the stockholders of the Company from a financial point of view than the Transactions, taking into account all the terms and conditions (including all financial, regulatory, financing, conditionality, legal and other terms and conditions) of such proposal and this Agreement (taking into account amendments and modifications to this Agreement proposed by Parent pursuant to Section 5.02(e))",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_DEFINITION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "36faccbd4707877d8acd6405f26a86cea755f97cc1377c67369453a1855c5088",
+      "closure_id": "939366464ac39cd852a7ba37d1127396c89d99782b5f2bd74086d48373792d34",
+      "normalised_phrase": "a material event, fact, circumstance, development, occurrence or change not known to or reasonably foreseeable by the Company Board at the time the Company Board initially resolved to make the Company Board Recommendation (or if known or reasonably foreseeable, the consequences of which were not known or reasonably foreseeable), which event, fact, circumstance, development, occurrence or change becomes known to the Company Board prior to the date on which the Company Stockholder Approval is obtained",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_QUALIFIER",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4cf68249b9aa98044f6113b2052c68e1ef83c4a02a2f1b0a00cfc2c5b5bf0b65",
+      "closure_id": "d2ef3ef9724b538e43970a77eec23b0fa4193bbfd4301fc140af9d3ed464e18b",
+      "normalised_phrase": "that, relative to the Transactions, is reasonably likely to be completed on the terms proposed, taking into account all financial, regulatory, financing, timing, conditionality, legal and other aspects of such proposal",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "93ec2c1f65111f7f8cb70ac40fcf5b7f7d245cba50710803e1ed47f81c037a14",
+      "closure_id": "df9121139fae4477243bd629bada54d2ab0582344e9468dcae5273c0776eda56",
+      "normalised_phrase": "twenty percent (20%) or more (based on the fair market value thereof, as determined in good faith by the Company Board) of the assets (including capital stock of the Company Subsidiaries) of the Company and Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "ACQUISITION_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-ACQPROPOSAL",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "cf58c967e4447251e8258cfac19e223c215da0da9bda18fd77a7c0cc74257cf8",
+      "closure_id": "e25cc6e84ef8be33dd19012d63f1aaa5a614a432da65813c24d792fb9c15b04b",
+      "normalised_phrase": "assets to which twenty percent (20%) or more of the revenues, earnings or assets of Company and Company Subsidiaries, taken as a whole and on a consolidated basis, are attributable",
+      "attachment_position": null,
+      "concept_family": "DEF-ACQPROPOSAL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d5224fe4fde93ef03e3054239fc286424d16102e53018f8bdfd8be31a91eb70f",
+      "closure_id": "e5804f5078a64e70e25e107392b631d49c2262843bd9278c034e1f58000e7528",
+      "normalised_phrase": "fifty percent (50%) or more (based on the fair market value thereof, as determined in good faith by the Company Board) of the assets (including capital stock of the Company Subsidiaries) of the Company and Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.02",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "INTERVENING_EVENT_EXCLUSION",
+      "concept_key": "DEF-INTERVENING",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "30b3aeb842f3135fd4cae8a28639143280e151d10a3cb82f52e1d08caffaed59",
+      "closure_id": "ff02f72806fb46c595b7d72111466f8c951b9874587ff252fd85f97fe9bd3234",
+      "normalised_phrase": "changes in the market price or trading volume of Company Common Stock",
+      "attachment_position": null,
+      "concept_family": "DEF-INTERVENING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(iii)",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-SUPERIOR",
+      "reasons": [
+        "DEFINED_TERM_REF_NOT_IN_HEAD"
+      ],
+      "materiality_rank": 40,
+      "materiality_label": "FIDUCIARY",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "all references to twenty percent (20%) in such definition shall be deemed references to fifty percent (50%).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7be0553cb64c4b5b86cd997c32cf37fb176f6c8c90007e827ab8ee759906f15f",
+      "closure_id": "a8b00456a44949dcfd9d20b7c23fd405397f8ce84e64378fa64882fce371647f",
+      "normalised_phrase": "all references to twenty percent (20%) in such definition shall be deemed references to fifty percent (50%).",
+      "attachment_position": null,
+      "concept_family": "DEF-SUPERIOR",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "STANDARD_CODE_OUT_OF_ENUM"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the actual knowledge of such Person’s executive officers.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b397995515b7c6108df89ee1b97f6ef2fd7ff36e1a534dc7536420296bbdcfff",
+      "closure_id": "1f8c71d485cd1383a2dc093f2323c4b8df5ccc0fdc728b857d5b4a07dc3b5114",
+      "normalised_phrase": "the actual knowledge of such Person’s executive officers.",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_PERSON_SOURCE",
+      "concept_key": "DEF-KNOWLEDGE",
+      "reasons": [
+        "MULTI_SPAN_COMPOSED",
+        "NESTED_OR_CROSS_REFERENCED_EVIDENCE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9d0df853c103dda7e9bbfaadcd42baa775255e0f835928aab88a0f78748c92d5",
+      "closure_id": "a5ef15d6c498e62a658f9f1df533a9bed3ead17c82a7e7040d707a5c26c5fe34",
+      "normalised_phrase": "the actual knowledge of such Person’s executive officers.",
+      "attachment_position": null,
+      "concept_family": "DEF-KNOWLEDGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "4ca76eb52d074cd60d22ce0117684016609f4d09506f0b23b7068978207c082a"
+}

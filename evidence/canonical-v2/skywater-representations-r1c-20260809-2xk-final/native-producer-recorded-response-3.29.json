@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:30:22.521Z",
+  "section_reference": "3.29",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.29\",\"party_making\":\"the Company\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[\"Section 3.29 Reorganization\"],\"assertion_quote\":\"the Company is not aware, after reasonable diligence, of the existence of any fact or circumstance that could reasonably be expected to prevent or impede the Mergers from qualifying for the Intended Tax Treatment.\",\"subject\":\"awareness of facts or circumstances affecting Intended Tax Treatment\"}],\"qualifiers\":[{\"kind\":\"KNOWLEDGE\",\"code\":\"AFTER_INQUIRY\",\"quote\":\"not aware, after reasonable diligence,\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"Section 3.29 Reorganization\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"tax qualification outcome\",\"observed_quote\":\"could reasonably be expected to prevent or impede the Mergers from qualifying for the Intended Tax Treatment\",\"why_unmapped\":\"This is a representation-specific tax qualification condition, not an accuracy or knowledge standard.\",\"nearest_concept\":null}]}"
+}

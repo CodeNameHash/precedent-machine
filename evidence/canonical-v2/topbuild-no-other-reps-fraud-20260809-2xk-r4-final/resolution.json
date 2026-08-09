@@ -1,0 +1,811 @@
+{
+  "resolved": [
+    {
+      "section_reference": "3.1",
+      "source_citation": "3.1(w)",
+      "citation_context": {
+        "parent_section_reference": "3.1",
+        "child_section_reference": "3.1(w)",
+        "parent_chapeau_quote": "3.1 Representations and Warranties of the Company. Except as set forth",
+        "child_clause_quote": "(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”)."
+      },
+      "governing_context_quote": "(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Parent",
+        "capacity": "BUYER"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 47755,
+        "absolute_end": 131511,
+        "concept_key": "REP-B-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Parent",
+          "capacity": "BUYER"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "79660286fdefb1554614bd2592769fc7d67dc2757d501d30a5b332730de2d4df",
+        "provision_instance_id": "b029cb406774ea8f8d1c4e824687d1ed569ad5d55fe6ade26e4266ce0b83f7b4",
+        "closure_id": "e7b64afa5be4524dfc01c32fd1f6e29d3a854f8dd6bc25ea1e258cb0a0b1ec14"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "e06a7a637cdbdbcf0b14961630d0aeb6024bec0967395d30254d138fe1d57053",
+        "claim_occurrence_id": "3ad189a7521517d2c5bed764a1af4c4f0ed98a1492de31348125914a29fdf8d5",
+        "subject_occurrence_id": "b029cb406774ea8f8d1c4e824687d1ed569ad5d55fe6ade26e4266ce0b83f7b4",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company acknowledges that except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "ad9866dafb07fdc1e398a740c6c5a2bca19524ac719a6f6c3e2a69479e2a3493"
+        ],
+        "attributes": {
+          "representation_side": "BUYER",
+          "representation_maker_ref": "none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent",
+          "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b)",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "ad9866dafb07fdc1e398a740c6c5a2bca19524ac719a6f6c3e2a69479e2a3493",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "879d393893bfc758c31e2615e60a7b4ae9e35aca2c6181d3f215d73ea1d9f683",
+            "document_ordinal": 0,
+            "absolute_start": 82599,
+            "absolute_end": 83755,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "e4286ddeadd0078c5c5539ccb9e9ccbca4831eebeaaaf8fe559424ec7ce1989f"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.1",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.1",
+          "normalized_citation": "3.1",
+          "derived_citation": "3.1(w)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "e06a7a637cdbdbcf0b14961630d0aeb6024bec0967395d30254d138fe1d57053",
+            "claim_occurrence_id": "3ad189a7521517d2c5bed764a1af4c4f0ed98a1492de31348125914a29fdf8d5",
+            "subject_occurrence_id": "b029cb406774ea8f8d1c4e824687d1ed569ad5d55fe6ade26e4266ce0b83f7b4",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company acknowledges that except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "ad9866dafb07fdc1e398a740c6c5a2bca19524ac719a6f6c3e2a69479e2a3493"
+            ],
+            "attributes": {
+              "representation_side": "BUYER",
+              "representation_maker_ref": "none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent",
+              "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b)",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "ad9866dafb07fdc1e398a740c6c5a2bca19524ac719a6f6c3e2a69479e2a3493",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "879d393893bfc758c31e2615e60a7b4ae9e35aca2c6181d3f215d73ea1d9f683",
+                "document_ordinal": 0,
+                "absolute_start": 82599,
+                "absolute_end": 83755,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "e4286ddeadd0078c5c5539ccb9e9ccbca4831eebeaaaf8fe559424ec7ce1989f"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "49519bb953d26e6c7788f454fa6978c6b98e87a83d6da7aad04303e3b4dfc15d",
+            "producer_receipt_id": "e63df4a646b795faf341815a204327eba44cfde66bcae4f9e20a66fcbeff93c4",
+            "governed_scope_digest": "4a6db0fe3473c02c60e6ba2f1527f1ad260c9f1b3f32c70d359284dcd67b3ba4",
+            "extraction_provenance_id": "6c10846338999add3e79edcbca2d67512d5ea037f5b090ef0228bded552fa9ad"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.1",
+          "normalized_citation": "3.1",
+          "derived_citation": "3.1(w)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "vii.F.f.vii.R",
+          "depth": 5,
+          "start_byte": 72521,
+          "end_byte": 83756
+        },
+        "chain": [
+          {
+            "path": "vii.F.f.vii.R",
+            "start_byte": 72521,
+            "end_byte": 83756,
+            "text": " any Contract deemed to be a “material contract” (as such term is defined in Item 601(b)(10) of Regulation S-K of the SEC) (all contracts of the type described in this Section ‎3.1(p)(i), together with all amendments, extensions, modifications, guarantees and supplements thereto, being referred to in this Agreement as “Company Material Contracts”).\n32\n(ii) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) neither the Company nor any of its Subsidiaries nor, to the Knowledge of the Company, any other party, is in material breach of or default under the terms of any Company Material Contract; (B) each Company Material Contract is a valid and binding obligation of the Company or its Subsidiaries which is party thereto and, to the Knowledge of the Company, of each other party thereto, and is in full force and effect, except that such enforcement may be subject to the Bankruptcy and Equity Exception; and (C) neither the Company nor any of its Subsidiaries has received any written, or, to the Knowledge of the Company, oral, notice of termination or breach with respect to, and, to the Knowledge of the Company, no party has threatened to terminate, any Company Material Contract. Except for any Company Material Contracts filed without redaction as exhibits to the Company Reports, a copy of each Company Material Contract has been made available to Parent.\n(q) Real Property.\n(i) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) the Company or a Subsidiary of the Company, as applicable, owns good, defensible, and marketable fee simple title to each real property owned by the Company or any Subsidiary (such property collectively, the “Company Owned Real Property”), and (B) the Company or a Subsidiary of the Company, as applicable, has a good and valid leasehold or subleasehold interest in each lease, sublease and other agreement and in each parcel of Company Leased Real Property, under or with respect to which the Company or any of its Subsidiaries uses or occupies or has the right to use or occupy any real property (the “Company Leased Real Property” and such leases, subleases and other agreements, together with all amendments, extensions, modifications, guarantees and supplements thereto, are, collectively, the “Company Real Property Leases”), in each case is free and clear of all Liens, title defects and title exceptions other than any Permitted Tax Liens and Liens that are not individually or in the aggregate, material to the Company and its Subsidiaries, taken as a whole. Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (1) each Company Real Property Lease is valid, binding and in full force and effect, subject to the limitation of such enforcement by the Bankruptcy and Equity Exception and (2) neither the Company nor any Company Subsidiary, as applicable, has given to or received from any lessor or sublessor of such Company Leased Real Property any written notice of, nor does there exist, any default, event or circumstance that with notice or lapse of time, or both, would constitute a default on the part of the Company or, if applicable, a Subsidiary or, to the Knowledge of the Company, the lessor or sublessor thereunder of such Company Leased Real Property.\n33\n(ii) Except as does not and would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, (A) there are no leases, subleases, licenses, rights or other agreements affecting any portion of the Company Owned Real Property or the Company Leased Real Property (other than the Company Real Property Leases) that would reasonably be expected to adversely affect the existing use of such Company Owned Real Property or the Company Leased Real Property by the Company or its Subsidiaries in the operation of its business thereon, and (B) there are no outstanding options or rights of first refusal, first offer or first negotiation in favor of any other party to purchase or lease any Company Owned Real Property or any portion thereof or interest therein.\n(iii) Except as does not and would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is currently subleasing, licensing or otherwise granting any person the right to use or occupy any portion of a Company Owned Real Property or Company Leased Real Property that would reasonably be likely to adversely affect the existing use of such Company Owned Real Property or Company Leased Real Property by the Company or its Subsidiaries in the operation of its business thereon.\n(iv) There is no pending or, to the Knowledge of the Company, threatened condemnation, eminent domain or similar proceeding with respect to any Company Owned Real Property or Company Leased Real Property, except proceedings which would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect.\n(v) Except as does not and would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, all buildings, structures, fixtures and improvements and all other physical elements of each parcel of Company Owned Real Property and Company Leased Real Property: (A) are in adequate operating condition and repair, subject to ordinary wear and tear, and are structurally sound and free of any material defects, and (B) are in compliance with zoning, building and other similar restrictions.\n34\n(r) Customer and Supplier Relationships. Section ‎3.1(r) of the Company Disclosure Letter sets forth a true, correct and complete list of the ten (10) largest customers of the Company (based on gross revenue in calendar year 2025) (“Major Customers”). Section ‎3.1(r) of the Company Disclosure Letter sets forth a true, correct and complete list of the ten (10) largest suppliers of the Company (based on aggregate purchases made by the Company in calendar year 2025) (“Major Suppliers”). Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, during the twelve (12) months prior to the date of this Agreement, no Major Customer or Major Supplier has provided notice in writing that it will permanently stop or materially decrease purchasing or supplying services, materials or products from or to the Company or is otherwise involved in, or, to the Knowledge of the Company, is threatening, a material dispute with the Company or any of its Subsidiaries.\n(s) Brokers and Finders. Neither the Company nor any of its Subsidiaries has employed any broker or finder or incurred any liability for any brokerage fees or commissions or finder’s fees in connection with the Transactions, except that the Company has employed Goldman Sachs & Co. LLC and RBC Capital Markets, LLC (the “Company Financial Advisors”) as its financial advisors whose fees are set forth on Section ‎3.1(s) of the Company Disclosure Letter and will be paid by the Company at its sole cost and expense. The Company has delivered to Parent prior to the execution of this Agreement complete and correct copies of all agreements under which such fee, commission or other like payment is payable and any related indemnification and other agreements.\n(t) Information Supplied. None of the information supplied or to be supplied by the Company for inclusion or incorporation by reference in (i) the Form S-4 will, at the time the Form S-4 or any amendment or supplement thereto is declared effective under the Securities Act, contain any untrue statement of a material fact or omit to state a material fact required to be stated therein or necessary to make the statements made therein, in light of the circumstances under which they were made, not misleading or (ii) the Joint Proxy Statement/Prospectus will, at the time it is first distributed to the Company’s stockholders and Parent’s stockholders and at the time of each of the Company Stockholder Meeting and Parent Stockholder Meeting, contain any untrue statement of a material fact or omit to state a material fact required to be stated therein or necessary to make the statements made therein, in light of the circumstances under which they were made, not misleading. The Joint Proxy Statement/Prospectus will comply as to form in all material respects with the requirements of the Securities Act and the Exchange Act, except that no representation is made by the Company with respect to statements made or incorporated by reference therein based on information supplied by Parent, Titanium Merger Sub or Forward Merger Sub for inclusion or incorporation by reference therein.\n(u) Opinion of Financial Advisor. The Company Board has received the opinions of the Company Financial Advisors to the effect that, as of the date of such opinions and based on and subject to the assumptions, qualifications, limitations and other matters set forth therein, the consideration to be received by the holders of Company Shares (other than Parent, Titanium Merger Sub, Forward Merger Sub and their respective Affiliates) in the Mergers, taken together as an integrated transaction, is fair, from a financial point of view, to such holders.\n35\n(v) Confidentiality and Other Agreements. Neither the Company nor any of its Subsidiaries is party to or bound by (i) any standstill agreements or exclusivity agreements or (ii) any confidentiality agreements that contain exclusivity provisions or standstill provisions in each case that would prohibit or restrict the Company or any of its Subsidiaries from engaging in any acquisition, disposition, joint venture or strategic alliance or other similar transaction or any solicitation of proxies in respect of such transactions with any third party or its Subsidiaries or Affiliates.\n(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and warranties contained in Section ‎3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section ‎5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).\n"
+          },
+          {
+            "path": "vii.F.f.vii",
+            "start_byte": 54833,
+            "end_byte": 60762,
+            "text": " Neither the Company nor any of its Subsidiaries has participated in any “listed transaction” within the meaning of Treasury Regulation Section 1.6011-4(b)(2).\n(viii) Except to the extent specifically and adequately reserved for, in accordance with GAAP, on the Company Financial Statements, neither the Company nor any of its Subsidiaries will be required to include any item of income in, or exclude any item of deduction from, taxable income for any taxable period (or portion thereof) ending after the Closing Date as a result of any (A) change in method of accounting made prior to the Closing, (B) installment sale or open transaction disposition made prior to the Closing or (C) prepaid amount received prior to the Closing outside of the ordinary course of business.\n(ix) No claim has been made by a Tax Authority in writing in a jurisdiction where the Company or any of its Subsidiaries does not file Tax Returns that it is or may be subject to Tax by the jurisdiction.\n(x) The charges, accruals, and reserves for Taxes with respect to the Company and its Subsidiaries reflected on the Company Financial Statements filed with the SEC prior to the date hereof are adequate, in accordance with GAAP, to cover Taxes payable by the Company and its Subsidiaries with respect to periods ending on or prior to the date of such Company Financial Statements.\n(xi) None of the Company, its Subsidiaries, or their Affiliates has taken any action or knows of any fact, agreement, plan or other circumstance that would reasonably be expected to prevent the Integrated Transaction from qualifying for the Intended Tax Treatment.\n28\nAs used in this Agreement, (A) the term “Tax” (including, with correlative meaning, the term “Taxes”) shall mean all federal, state, local and foreign income, profits, capital gain, franchise, gross receipts, customs duty, capital stock, severances, stamp, payroll, sales, employment, unemployment, disability, use, property, withholding, excise, production, value added, occupancy and other taxes of any nature whatsoever, together with all interest, penalties and additions imposed with respect to such amounts and any interest in respect of such penalties and additions, (B) the term “Tax Return” includes all returns and reports (including elections, declarations, disclosures, schedules, and information returns) supplied or required to be supplied to a Tax Authority relating to Taxes, including any amendment thereof or attachment thereto and (C) the term “Tax Authority” means with respect to any Tax, the governmental authority responsible for the imposition, assessment, collection or other administration or enforcement of such Tax.\n(m) Labor Matters.\n(i) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, neither the Company nor any of its Subsidiaries is the subject of any proceeding asserting that the Company or any of its Subsidiaries is seeking to compel it to bargain with any labor union or labor organization.\n(ii) Except as set forth in Section ‎3.1(m)(ii) of the Company Disclosure Letter, neither the Company nor any of its Subsidiaries is a party to or otherwise bound by any collective bargaining agreement or other Contract with a labor union, labor organization or works council. Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, there has not been, since the Applicable Date, any labor strike, dispute, walk-out, work stoppage, slow-down or lockout involving the Company or any of its Subsidiaries.\n(iii) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and its Subsidiaries are in compliance with all applicable Laws in respect of employment, employment practices, classification, labor, terms and conditions of employment and wages and hours with respect to the Company Employees and independent contractors.\n(iv) Except for such matters that, individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect, with respect to Company Employees and independent contractors, the Company and its Subsidiaries have not received written notice of any pending or threatened (A) unfair labor practice charge or complaint before the National Labor Relations Board or any other Governmental Entity against them, (B) employee or labor complaints, grievances or arbitrations in each case, against or with respect to them, (C) charge or complaint against or with respect to them before the Equal Employment Opportunity Commission or any other Governmental Entity responsible for the prevention of unlawful employment practices or (D) investigation against or with respect to them by any Governmental Entity responsible for the enforcement of labor, employment, wages and hours of work, child labor, immigration, or occupational safety and health Laws, in each case, by any Company Employees alleging breach of any express or implied contract of employment, any applicable Law governing employment or the termination thereof or other discriminatory, wrongful or tortious conduct in connection with the employment relationship.\n29\n(n) Intellectual Property.\n(i) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, the Company and each of its Subsidiaries has the right to use all Intellectual Property (1) owned or purported to be owned by the Company or any of its Subsidiaries or (2) otherwise used in or necessary for the conduct of the business of the Company or any of its Subsidiaries as conducted as of the date hereof (together, the “Material Intellectual Property”).\n(ii) Except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect, since January 1, 2023: "
+          },
+          {
+            "path": "vii.F.f",
+            "start_byte": 50375,
+            "end_byte": 50956,
+            "text": " which contains or emits radioactive particles, waves or materials, including radon gas.\nAs used in this Agreement, “Release” means any release, generation, emission, transport, spill, discharge, deposit, leakage, emission, distribution or disposal, or any uncontained storage or accumulation in violation of any Environmental Law, involving or with respect to any Hazardous Substance.\n(l) Taxes.\nIn each case of clauses (i)-(x) of this Section ‎3.1(l), except as would not be reasonably expected to have, individually or in the aggregate, a Company Material Adverse Effect:\n"
+          },
+          {
+            "path": "vii.F",
+            "start_byte": 48515,
+            "end_byte": 49604,
+            "text": " neither the Company nor any of its Subsidiaries (or any predecessor entity) has assumed or provided any indemnification with respect to or has otherwise become subject to, as a result of a Contract, any liability of any Person under any Environmental Law.\nAs used in this Agreement, the term “Environmental Law” means any applicable federal, state, local and foreign statutes, rules, regulations, codes, orders and ordinances, including common law, and including all binding administrative rulings and decisions, concerning pollution or protection of the soil, subsoil, surface waters, round waters, aquifers, land, wetlands, streams, sediments, surface or subsurface strata and ambient air (“Environment”), including all those relating to public or occupational health and safety, and the use, handling, treatment, storage, labeling, Release, threatened Release, control, investigation, cleanup or remediation of any Hazardous Substances.\n26\nAs used in this Agreement, “Hazardous Substance” means any substance, material or waste, whether solid, liquid or gaseous in nature: "
+          },
+          {
+            "path": "vii",
+            "start_byte": 36552,
+            "end_byte": 47303,
+            "text": " Except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan that constitutes a “nonqualified deferred compensation plan” subject to Section 409A of the Code (excluding any Benefit Plans or portion of a Benefit Plan grandfathered under Section 409A of the Code, which the Company represents have not been modified or operated in a manner that would be reasonably expected to jeopardize such grandfathered status) complies and, at all times has complied, both in form and operation, with the requirements of, and has not resulted in the application of any penalty tax under, Section 409A of the Code and the final regulations and other applicable guidance thereunder.\n(viii) Except as contemplated in this Agreement, neither the execution and delivery of this Agreement nor the consummation of the Transactions will, either alone or in combination with another event, (A) entitle (1) any director or officer of the Company (each a “Company D&O”) or (2) except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider to any payment or benefit (including any enhanced or accelerated benefit, or lapse of repurchase rights or obligations, with respect to the A&R 2015 Plan or other benefit under any compensation plan or arrangement of the Company), (B) accelerate the time of payment, vesting or funding, or increase the amount of compensation due to (1) any such Company D&O or (2) except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, any other Company Service Provider, or result in any limitation on the right of the Company or any of its Subsidiaries to amend, merge, or terminate from any Benefit Plan or related trust, or (C) result in any payment (whether in cash or property or the vesting of property) to any “disqualified individual” (as such term is defined in Treasury Regulation Section 1.280G-1) that would (individually or in combination with any other such payment) constitute an “excess parachute payment” (as defined in Section 280G(b)(1) of the Code). The execution of this Agreement (either alone or in conjunction with any other event) shall not result in the funding of any grantor, “rabbi” or similar trust pursuant to any Benefit Plan, and the Company has taken, or has caused its applicable Subsidiaries to take, all actions necessary to amend any Benefit Plans, trust agreements or documents that might otherwise have required grantor, “rabbi” or similar trust funding as a result of the execution of this Agreement, so that no such requirement shall take effect. As used in this Agreement, “Company Service Provider” means any Company Employee, any current or former independent contractor or any current or former officer or director of the Company or any of its Subsidiaries.\n23\n(ix) No Benefit Plan provides for the gross-up or reimbursement of Taxes under Sections 4999 or 409A of the Code.\n(x) Except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, no Benefit Plan provides welfare benefits, including death or medical benefits (whether or not insured), beyond retirement or termination of service, other than coverage mandated solely by applicable Law and continued coverage for which the applicable employee bears the full cost.\n(xi) Except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect, each Benefit Plan maintained outside of the United States (A) that is required to be registered with a Governmental Entity has been registered (and where applicable accepted for registration) and has been maintained in good standing with the applicable Governmental Entity, (B) if it is intended to qualify for special tax treatment, meets all requirements for such treatment, (C) if it is intended to be funded and/or book-reserved, is fully funded and/or book-reserved, as appropriate, based upon reasonable actuarial assumptions, (D) has been maintained and operated in accordance with, and is in compliance with, its terms, all applicable Laws, government taxation and funding requirements, and with any agreement entered into with a union or labor organization and (E) has no pending or, to the Knowledge of the Company, threatened litigation relating thereto.\n(xii) Except as would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, (A) the Company Options, Company Restricted Stock Awards, RSU Awards and PSU Awards outstanding as of the date hereof have been granted in accordance with the terms of the A&R 2015 Plan and applicable Laws, and (B) none of the Company Options was granted with an exercise price below the fair market value of the Company Shares (within the meaning of Section 409A of the Code) on the date of grant.\n(xiii) Since the Applicable Date, to the Knowledge of the Company, there are no actions, suits, investigations or proceedings pending or, to the Knowledge of the Company, threatened in writing related to any material allegations of sexual harassment, other sexual misconduct or race discrimination by any director or Company Service Provider listed on Section ‎3.1(h)(xiii) of the Company Disclosure Letter (individuals listed on Section ‎3.1(h)(xiii) of the Company Disclosure Letter, the “ELT Members”) or any of their employee direct reports. Since the Applicable Date, to the Knowledge of the Company, neither the Company nor any of its Subsidiaries have entered into any settlement agreements related to material allegations of sexual harassment, other sexual misconduct or race discrimination by any director or ELT Member or any of their employee direct reports.\n24\n(i) Compliance with Laws; Licenses.\n(i) The businesses of each of the Company and its Subsidiaries have not been since the Applicable Date, and are not being, conducted in violation of any applicable federal, state, local or foreign law, statute or ordinance, common law, or any rule, regulation, standard, judgment, order, writ, injunction, decree, arbitration award, agency requirement, license or permit of any Governmental Entity (collectively, “Laws”), except for violations that would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. Except with respect to regulatory matters covered by Section ‎4.7, no investigation, inquiry, examination or review by any Governmental Entity with respect to the Company or any of its Subsidiaries is pending or, to the Knowledge of the Company, threatened, nor has any Governmental Entity indicated an intention to conduct the same, except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect. The Company and its Subsidiaries each has obtained and is in compliance with all permits, certifications, approvals, registrations, consents, authorizations, franchises, variances, exemptions and orders issued or granted by a Governmental Entity (“Licenses”) necessary to conduct its business as presently conducted, except as would not, individually or in the aggregate, reasonably be expected to have a Company Material Adverse Effect.\n(ii) Without limiting the other provisions of this Section ‎3.1(i), and except as would not have and would not be reasonably expected to, individually or in the aggregate, have a Company Material Adverse Effect, the Company and its Subsidiaries are and, since January 1, 2021, have been in compliance with all statutory and regulatory requirements under the Foreign Corrupt Practices Act of 1977, as amended (15 U.S.C. §§ 78dd-1, et seq.), the Anti-Kickback Act of 1986, as amended, the Organization for Economic Cooperation and Development Convention Against Bribery of Foreign Officials in International Business Transactions and all legislation implementing such convention and all other applicable international anti-bribery conventions, and all other applicable anti-corruption, bribery, money laundering and similar Laws and orders (including any applicable written standards, requirements, directives or policies of any Governmental Entity) (the “Anti-Bribery Laws”).\n(iii) Without limiting the other provisions of this Section ‎3.1(i), except as would not, individually or in the aggregate, be reasonably expected to have a Company Material Adverse Effect, each of the Company and its Subsidiaries is and will remain in compliance in all respects with all United States economic sanctions, Laws, executive orders, and implementing regulations as promulgated by the United States Treasury Department’s Office of Foreign Assets Control (“OFAC”), and all applicable anti-money laundering and counter-terrorism financing provisions of the Bank Secrecy Act and all regulations issued pursuant to it. None of the Company or any of its Subsidiaries (A) is a Person designated by the United States government on the list of the Specially Designated Nationals and Blocked Persons (the “SDN List”) with which a United States Person cannot deal with or otherwise engage in business transactions, (B) is a Person who is otherwise the target of United States economic sanctions Laws such that a United States Person cannot deal or otherwise engage in business transactions with such Person or (C) is controlled by (including by virtue of such Person being a director or owning voting shares or interests), or acts, directly or indirectly, for or on behalf of, any Person on the SDN List or a foreign government that is the target of United States economic sanctions prohibitions.\n25\n(j) Takeover Statutes. Assuming that the representations and warranties of Parent, Titanium Merger Sub and Forward Merger Sub set forth in Section ‎3.2(m) are true and correct, (i) no restrictions contained in any “fair price,” “moratorium,” “control share acquisition” or other similar anti-takeover statute or regulation (each, a “Takeover Statute”) or any anti-takeover provision in the Company’s Charter or Bylaws is applicable to the execution, delivery or performance of this Agreement or the consummation of the Mergers, and (ii) the Company Board has taken the necessary action to render the restrictions of Section 203 of the DGCL inapplicable to the execution, delivery or performance of this Agreement and the consummation of the Transactions (including the Mergers).\n(k) Environmental Matters. Except for such matters that, individually or in the aggregate, are not reasonably expected to have a Company Material Adverse Effect: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 71,
+            "text": "3.1 Representations and Warranties of the Company. Except as set forth "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(r)",
+      "citation_context": {
+        "parent_section_reference": "3.2",
+        "child_section_reference": "3.2(r)",
+        "parent_chapeau_quote": "3.2 Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub. Except as set forth",
+        "child_clause_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)."
+      },
+      "governing_context_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 131511,
+        "absolute_end": 179129,
+        "concept_key": "REP-T-NOOTHERREPS",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 2,
+        "source_anchor_id": "a4a1b7ef3611bfe7d384a567a2f2d068d654a0332de8a29bcaab634f4774e8f0",
+        "provision_instance_id": "13737219e1b5d1c23c6bedf9761f2a9ae6340cd846767e876add2e133eef6d9a",
+        "closure_id": "675538ea095b230a26b97495d534e0053515c50de55d9442c56465e1228b81b0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "ea6f6eea9b9a47ddd77ad3fcb9b805fcc124f7cb891eea211039558b77b086dc",
+        "claim_occurrence_id": "05a8373a00807f7c4ec9acea63b3d3c6034dc8421f4d9882f5616c8f414f37df",
+        "subject_occurrence_id": "13737219e1b5d1c23c6bedf9761f2a9ae6340cd846767e876add2e133eef6d9a",
+        "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "3b9ea452034a0a7f13eaef8d999239e0d4184948da81d277adca531d216fe180"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "representation_maker_ref": "the Company",
+          "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "3b9ea452034a0a7f13eaef8d999239e0d4184948da81d277adca531d216fe180",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a9abc01e36a4653c98eb41ebdc85128c083c52ec30ff14607de523d219cbac39",
+            "document_ordinal": 0,
+            "absolute_start": 46760,
+            "absolute_end": 47617,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "264df30eefc6d07269477ca4a8f22db719a64cc4b5f6643ea25173aad77186ea"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.2",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "ea6f6eea9b9a47ddd77ad3fcb9b805fcc124f7cb891eea211039558b77b086dc",
+            "claim_occurrence_id": "05a8373a00807f7c4ec9acea63b3d3c6034dc8421f4d9882f5616c8f414f37df",
+            "subject_occurrence_id": "13737219e1b5d1c23c6bedf9761f2a9ae6340cd846767e876add2e133eef6d9a",
+            "claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "3b9ea452034a0a7f13eaef8d999239e0d4184948da81d277adca531d216fe180"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "representation_maker_ref": "the Company",
+              "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "3b9ea452034a0a7f13eaef8d999239e0d4184948da81d277adca531d216fe180",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a9abc01e36a4653c98eb41ebdc85128c083c52ec30ff14607de523d219cbac39",
+                "document_ordinal": 0,
+                "absolute_start": 46760,
+                "absolute_end": 47617,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "264df30eefc6d07269477ca4a8f22db719a64cc4b5f6643ea25173aad77186ea"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "123f1385018d85548ae0fa1e35844fb42b2c9de9dcf6cad9441d80f7e6edba6e",
+            "producer_receipt_id": "4d9e8252b8b04cfa35e22459dfa2fb26eec798c9025574e653602807dfcf4f8a",
+            "governed_scope_digest": "15da28b858eac2dcfa209f37c5ee0a26607a4175167e405dc1c5c820b68a7f46",
+            "extraction_provenance_id": "e887841d41952bd1ba0f06e45ba10c1c7ce9b2669f93d8c0edc5a49725d9d08d"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "vi.vii",
+        "annotation_only": true,
+        "same_style_paths": [
+          "vi.i",
+          "vi.ii",
+          "vi.iii",
+          "vi.iv",
+          "vi.v",
+          "vi.vi",
+          "vi.vii"
+        ]
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "source_citation": "3.2(r)",
+      "citation_context": {
+        "parent_section_reference": "3.2",
+        "child_section_reference": "3.2(r)",
+        "parent_chapeau_quote": "3.2 Representations and Warranties of Parent, Titanium Merger Sub and Forward Merger Sub. Except as set forth",
+        "child_clause_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)."
+      },
+      "governing_context_quote": "(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "Company",
+        "capacity": "TARGET"
+      },
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "0abf06269d845ebc247ba94724aae454f6c0dd07db34f065d119e3b2902a0e72",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "absolute_start": 131511,
+        "absolute_end": 179129,
+        "concept_key": "REP-T-NONRELIANCE",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 3,
+        "source_anchor_id": "a4a1b7ef3611bfe7d384a567a2f2d068d654a0332de8a29bcaab634f4774e8f0",
+        "provision_instance_id": "31b1f989c0a0bbf12c27d4ec57922c4d137319c9f0e22a9103a84c5b3bb8376b",
+        "closure_id": "cbe188db6c4b04b164832fbd88e19aa45e6bdb714a091495a6906f51345968c5"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "179c819d9b88714ea34a12a7f8ea44edf2b81b2affb4430027fd93d45eed588d",
+        "claim_occurrence_id": "23a1ee706836955f0e033212a7d6427b5cacc3de60fdbdd74c0db98dbc32bf26",
+        "subject_occurrence_id": "31b1f989c0a0bbf12c27d4ec57922c4d137319c9f0e22a9103a84c5b3bb8376b",
+        "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5b8a6e25e9dc907e54397ae02f9e0a89de1378da0b1fc794395f5dd13bc76c5a"
+        ],
+        "attributes": {
+          "representation_side": "TARGET",
+          "relying_party_ref": "Parent, Titanium Merger Sub and Forward Merger Sub",
+          "disclaimed_representation_party_ref": "the Company",
+          "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5b8a6e25e9dc907e54397ae02f9e0a89de1378da0b1fc794395f5dd13bc76c5a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a9abc01e36a4653c98eb41ebdc85128c083c52ec30ff14607de523d219cbac39",
+            "document_ordinal": 0,
+            "absolute_start": 46760,
+            "absolute_end": 47617,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "5a089de5e229fb1103aa58989948e94025764b17b3416af7fe99622c3bf71fd9"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.2",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "179c819d9b88714ea34a12a7f8ea44edf2b81b2affb4430027fd93d45eed588d",
+            "claim_occurrence_id": "23a1ee706836955f0e033212a7d6427b5cacc3de60fdbdd74c0db98dbc32bf26",
+            "subject_occurrence_id": "31b1f989c0a0bbf12c27d4ec57922c4d137319c9f0e22a9103a84c5b3bb8376b",
+            "claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b).",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5b8a6e25e9dc907e54397ae02f9e0a89de1378da0b1fc794395f5dd13bc76c5a"
+            ],
+            "attributes": {
+              "representation_side": "TARGET",
+              "relying_party_ref": "Parent, Titanium Merger Sub and Forward Merger Sub",
+              "disclaimed_representation_party_ref": "the Company",
+              "agreement_scope_quote": "except for the representations and warranties contained in Section ‎3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section ‎5.2(b)",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "normalisation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "derivation_version": "NATIVE_NO_OTHER_REPS_FRAUD_PRODUCER/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5b8a6e25e9dc907e54397ae02f9e0a89de1378da0b1fc794395f5dd13bc76c5a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a9abc01e36a4653c98eb41ebdc85128c083c52ec30ff14607de523d219cbac39",
+                "document_ordinal": 0,
+                "absolute_start": 46760,
+                "absolute_end": 47617,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "5a089de5e229fb1103aa58989948e94025764b17b3416af7fe99622c3bf71fd9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "NO_OTHER_REPS_FRAUD",
+            "prompt_digest": "123f1385018d85548ae0fa1e35844fb42b2c9de9dcf6cad9441d80f7e6edba6e",
+            "producer_receipt_id": "4d9e8252b8b04cfa35e22459dfa2fb26eec798c9025574e653602807dfcf4f8a",
+            "governed_scope_digest": "15da28b858eac2dcfa209f37c5ee0a26607a4175167e405dc1c5c820b68a7f46",
+            "extraction_provenance_id": "e887841d41952bd1ba0f06e45ba10c1c7ce9b2669f93d8c0edc5a49725d9d08d"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "3.2",
+          "normalized_citation": "3.2",
+          "derived_citation": "3.2(r)"
+        }
+      },
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "SAME_STYLE_CHAIN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "path": "vi.vii",
+        "annotation_only": true,
+        "same_style_paths": [
+          "vi.i",
+          "vi.ii",
+          "vi.iii",
+          "vi.iv",
+          "vi.v",
+          "vi.vi",
+          "vi.vii"
+        ]
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "3.1",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e06a7a637cdbdbcf0b14961630d0aeb6024bec0967395d30254d138fe1d57053",
+      "closure_id": "e4286ddeadd0078c5c5539ccb9e9ccbca4831eebeaaaf8fe559424ec7ce1989f",
+      "normalised_phrase": "The Company acknowledges that except for the representations and warranties contained in Section 3.2 (as modified by the Parent Disclosure Letter) or the certificate delivered pursuant to Section 5.3(b), none of Parent, Titanium Merger Sub, Forward Merger Sub nor any other Person on behalf of Parent, Titanium Merger Sub, Forward Merger Sub or any other Subsidiary of Parent makes any other express or implied representation or warranty with respect to Parent or Titanium Merger Sub, Forward Merger Sub or any Subsidiary of Parent or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties, whether made by Parent, Titanium Merger Sub or Forward Merger Sub or any of their Affiliates or their respective directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives (such directors, officers, managers, employees, investment bankers, attorneys, accountants and other advisors and representatives, collectively, the “Representatives”).",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 82559,
+          "end": 82583,
+          "excerpt": "f such transactions with any third party or its Subsidiaries or Affiliates.\n(w) No Other Representations or Warranties. The Company acknowledges that except for the representations and",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ea6f6eea9b9a47ddd77ad3fcb9b805fcc124f7cb891eea211039558b77b086dc",
+      "closure_id": "264df30eefc6d07269477ca4a8f22db719a64cc4b5f6643ea25173aad77186ea",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 46720,
+          "end": 46744,
+          "excerpt": "uant to this Agreement is fair from a financial point of view to Parent.\n48\n(r) No Other Representations or Warranties. Parent, Titanium Merger Sub and Forward Merger Sub acknowledge t",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.2",
+      "generic_claim_key": "NATIVE_NON_RELIANCE_ACKNOWLEDGMENT_CANDIDATE",
+      "resolved_claim_definition_key": "NON_RELIANCE_ACKNOWLEDGMENT_PRESENT",
+      "concept_key": "REP-T-NONRELIANCE",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "179c819d9b88714ea34a12a7f8ea44edf2b81b2affb4430027fd93d45eed588d",
+      "closure_id": "5a089de5e229fb1103aa58989948e94025764b17b3416af7fe99622c3bf71fd9",
+      "normalised_phrase": "Parent, Titanium Merger Sub and Forward Merger Sub acknowledge that neither the Company nor any other Person on behalf of the Company or any Subsidiary of the Company makes, or has made, any other express or implied representation or warranty with respect to the Company or any Subsidiary of the Company or the Transactions and any other assets, rights or obligations to be transferred hereunder or pursuant hereto, and Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty, and the Company disclaims any other representations or warranties, whether made by the Company, any of its Affiliates or their respective Representatives, except for the representations and warranties contained in Section 3.1 (as modified by the Company Disclosure Letter) or the certificate delivered pursuant to Section 5.2(b).",
+      "attachment_position": null,
+      "concept_family": "REP-T-NONRELIANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "a2340212dd3ac0b12f919e267f84edd8a69346660157789a96f950864cd2abe8",
+    "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "c3f9c0f6a74cd752d5659701a9299cf5d5391f091c948249c914020e9aea10d2"
+  }
+}

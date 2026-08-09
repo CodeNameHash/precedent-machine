@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:21:09.372Z",
+  "section_reference": "3.24",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.24\",\"party_making\":\"the Company\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[\"Interested Party Transactions\"],\"assertion_quote\":\"To the knowledge of the Company, no event has occurred since the date of the Company’s last proxy statement to its stockholders that would be required to be reported by the Company in accordance with Item 404 of Regulation S-K promulgated by the SEC.\",\"subject\":\"reportable interested-party events\"}],\"qualifiers\":[{\"kind\":\"KNOWLEDGE\",\"code\":null,\"quote\":\"To the knowledge of the Company\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"Interested Party Transactions\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}},{\"kind\":\"TEMPORAL\",\"code\":null,\"quote\":\"since the date of the Company’s last proxy statement to its stockholders\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"Interested Party Transactions\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"SEC reporting requirement\",\"observed_quote\":\"would be required to be reported by the Company in accordance with Item 404 of Regulation S-K promulgated by the SEC\",\"why_unmapped\":\"This first slice does not express representation-specific SEC reporting standards.\",\"nearest_concept\":null}]}"
+}

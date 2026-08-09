@@ -98,12 +98,11 @@
  * to proceed on any mismatch, rather than trusting a committed value
  * blindly.
  *
- * MODEL BACKEND. No ANTHROPIC_API_KEY is assumed. Drives the model via the
- * Claude Code subscription CLI (`claude -p`), injected through
- * createAnthropicProvider's `client` seam, capturing full usage/cost/
- * duration telemetry from `--output-format json`. `maxRetries: 0`: a failed
- * call fails the run, it does not silently retry and blur the call count
- * this run exists partly to report.
+ * MODEL BACKEND. Live extraction uses only the Terra medium profile through
+ * saved ChatGPT subscription authentication. The runner removes API-key and
+ * access-token variables from every child process, requires `codex login
+ * status` to report ChatGPT authentication, and parses the documented JSONL
+ * event stream. A failed call fails the run. It does not retry.
  *
  * Usage:
  *   node scripts/canonical-v2-live-extraction-run.mjs \
@@ -115,7 +114,7 @@
  *        must name its sections explicitly>] \
  *     [--out-dir <path, required unless --dry-run>] \
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
- *     [--model <claude CLI model alias, default "sonnet">] \
+ *     [--profile <TERRA_MEDIUM, the only live extraction profile>] \
  *     [--no-follow-citations] \
  *     [--call-timeout-ms <positive integer. Default is DERIVED from the \
  *        output ceiling via derivedCallTimeoutMs(): 4.3s + 8.23ms/token + 25%%, \
@@ -123,10 +122,10 @@
  *     [--v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON, \
  *        default: none -- condition 1 (v1<->v2 comparator) then stays \
  *        unevaluated for every claim, recorded explicitly in run-manifest.json>] \
- *     [--replay-model-id <the producer model_id the replayed run used. Only \
- *        for hand-assembled fixture sets that carry no run-receipt.json; a \
- *        replay of a real run reads the identity from that run's receipt and \
- *        REFUSES this flag if it disagrees>] \
+ *     [--replay-source-manifest <sealed manifest with every source fixture, \
+ *        receipt and hash explicitly listed>] \
+ *     [--replay-model-id <historical model_id assertion, checked against the \
+ *        sealed receipts>] \
  *     [--dry-run]
  *
  * REPLAY REPORTS THE LIVE RUN'S MODEL, NOT ITSELF. Replay is a transport: the
@@ -161,27 +160,34 @@
  */
 
 import {
-  readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync,
+  readFileSync, writeFileSync, mkdirSync, existsSync, lstatSync,
 } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { spawn, spawnSync } from 'node:child_process';
+import { dirname, resolve, relative, isAbsolute, sep } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
-const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const { sha256Hex, contentId, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
-const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
+const {
+  buildVerifiedSecSourceAdmission,
+  buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload,
+} = require('../lib/canonical-v2/sec-source-admission');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const {
-  retrievalPolicyDigestFor, sourceMapPayloadPathFor,
+  retrievalPolicyDigestFor, adoptPersistedSourceMapPayload,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const {
+  sourceMapPayloadPathFor, resolveContainedRepositoryPath, resolveSourceMapPayloadPath, readSourceMapPayload,
+} = require('../lib/canonical-v2/source-map-payload-store');
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
+const { bindNativePromptToGovernedScope } = require('../lib/canonical-v2/native-producer/native-prompt-binding');
 // V38, not V34. The runner sat on V34 while the resolver dispatch table and
 // claim definitions for three antitrust assertion kinds had already landed in
 // V38, so every one of those candidates fell out as open world for want of a
@@ -199,15 +205,16 @@ const {
 // Same reason the V34 -> V38 move recorded above: resolving against an
 // older bundle turns already-governed vocabulary into open-world rows
 // for want of a home that exists.
-const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
-const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const { createAnthropicProvider, normalizeProviderUsage } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const { createCodexCliProvider, PROVIDER_ID: CODEX_PROVIDER_ID, resolveProfile } = require('../lib/canonical-v2/native-producer/codex-cli-provider');
+const { createCodexCliClient, JSON_ONLY_INSTRUCTION } = require('../lib/llm-cli-client');
 const {
   createRecordingClient,
-  createReplayClient,
   createOrderedReplayClient,
   buildRecordingFromSectionFixtures,
   replayCoverage,
-  resolveOriginalProviderModelId,
+  resolveOriginalProviderIdentity,
 } = require('../lib/canonical-v2/native-producer/provider-record-replay');
 const {
   getProducerPromptModule, listRegisteredSectionFamilies,
@@ -267,6 +274,21 @@ function repoRelative(absolutePath) {
   return absolutePath.startsWith(root) ? absolutePath.slice(root.length) : absolutePath;
 }
 
+// A recording kept with its run output moves when the run directory moves.
+// Preserve that relationship in the manifest instead of preserving the
+// machine-specific absolute path used to create it. An explicitly separate
+// recording destination remains explicit, because moving the run directory
+// does not move that file.
+function manifestRecordingPath({ outDir, recordPath }) {
+  if (!recordPath || !outDir) return recordPath || null;
+  const pathFromOutDir = relative(outDir, resolve(recordPath));
+  const isInsideOutDir = pathFromOutDir
+    && pathFromOutDir !== '..'
+    && !pathFromOutDir.startsWith(`..${sep}`)
+    && !isAbsolute(pathFromOutDir);
+  return isInsideOutDir ? pathFromOutDir.split(sep).join('/') : recordPath;
+}
+
 function scriptRelativePath() {
   return repoRelative(fileURLToPath(import.meta.url));
 }
@@ -277,17 +299,6 @@ function scriptRelativePath() {
 // matching scripts/nets-eligibility-report.mjs's own `sectionBodyText`.
 function sectionBodyText(canonicalText, section) {
   return Buffer.from(canonicalText, 'utf8').slice(section.start, section.end).toString('utf8');
-}
-
-// A run directory's own receipt, which is where the model identity of that
-// run is recorded. Returns null when the directory has no receipt -- a run
-// whose extraction failed writes none -- and the caller turns that into a
-// refusal, because a replay with no identity to reproduce must not proceed
-// under an invented one.
-function readRunReceiptIfPresent(runDir) {
-  const receiptPath = resolve(runDir, 'run-receipt.json');
-  if (!existsSync(receiptPath)) return null;
-  return JSON.parse(readFileSync(receiptPath, 'utf8'));
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1078,7 +1089,7 @@ function parseArgs(argv) {
   const out = {
     deal: DEFAULT_DEAL,
     family: DEFAULT_FAMILY,
-    model: 'sonnet',
+    profileId: 'TERRA_MEDIUM',
     rawHtml: null,
     sectionRefs: null,
     agreementDate: null,
@@ -1098,7 +1109,8 @@ function parseArgs(argv) {
       case '--section-refs': out.sectionRefs = argv[++i].split(',').map((s) => s.trim()).filter(Boolean); break;
       case '--out-dir': out.outDir = argv[++i]; break;
       case '--agreement-date': out.agreementDate = argv[++i]; out.agreementDateGiven = true; break;
-      case '--model': out.model = argv[++i]; break;
+      case '--profile': out.profileId = argv[++i]; break;
+      case '--model': throw new Error('--model is retired. Use --profile TERRA_MEDIUM. Live extraction only permits Terra.');
       case '--follow-citations': out.followCitations = true; break;
       case '--no-follow-citations': out.followCitations = false; break;
       case '--call-timeout-ms': {
@@ -1110,8 +1122,10 @@ function parseArgs(argv) {
       }
       case '--dry-run': out.dryRun = true; break;
       case '--record': out.recordPath = argv[++i]; break;
-      case '--replay': out.replayPath = argv[++i]; break;
-      case '--replay-from-run': out.replayFromRunDir = argv[++i]; break;
+      case '--replay': throw new Error('--replay is retired. Use a sealed --replay-source-manifest with explicit call identity and hashes.');
+      case '--replay-source-manifest': out.replaySourceManifestPath = argv[++i]; break;
+      case '--replay-manifest-id': out.replayManifestId = argv[++i]; break;
+      case '--replay-from-run': throw new Error('--replay-from-run is retired. Use a sealed --replay-source-manifest with explicit fixture hashes.');
       // An operator assertion of the producer identity, for hand-assembled
       // fixture sets that carry no receipt. Checked against the record, never
       // trusted over it.
@@ -1120,15 +1134,21 @@ function parseArgs(argv) {
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
-  if (out.replayModelId && !out.replayPath && !out.replayFromRunDir) {
+  if (out.replayModelId && !out.replaySourceManifestPath) {
     throw new Error('--replay-model-id states which model produced a REPLAYED run; it means nothing on a live run');
   }
+  if (Boolean(out.replaySourceManifestPath) !== Boolean(out.replayManifestId)) {
+    throw new Error('REPLAY_MANIFEST_PIN_REQUIRED: --replay-source-manifest and --replay-manifest-id must be supplied together');
+  }
   if (!out.dryRun && !out.outDir) throw new Error('--out-dir is required (unless --dry-run)');
-  if ([out.recordPath, out.replayPath, out.replayFromRunDir].filter(Boolean).length > 1) {
+  if ([out.recordPath, out.replaySourceManifestPath].filter(Boolean).length > 1) {
     throw new Error('MUTUALLY_EXCLUSIVE: --record captures live responses, --replay consumes them; pick one');
   }
-  if (out.dryRun && (out.recordPath || out.replayPath || out.replayFromRunDir)) {
+  if (out.dryRun && (out.recordPath || out.replaySourceManifestPath)) {
     throw new Error('--dry-run never reaches a model, so it cannot --record or --replay');
+  }
+  if (out.profileId !== 'TERRA_MEDIUM') {
+    throw new Error('LIVE_PROFILE_FORBIDDEN: extraction only permits --profile TERRA_MEDIUM. Sol is reserved for review and escalation.');
   }
   if (out.sectionRefs && out.sectionRefs.length === 0) throw new Error('--section-refs must name at least one section reference');
   return out;
@@ -1191,14 +1211,14 @@ function resolveRunConfig(args) {
     rawHtmlPath,
     sectionRefs: Object.freeze([...sectionRefs]),
     agreementDate,
-    model: args.model,
+    profileId: args.profileId,
     followCitations: args.followCitations,
     timeoutMs: args.timeoutMs,
     dryRun: args.dryRun,
     outDir: args.outDir,
     recordPath: args.recordPath || null,
-    replayPath: args.replayPath || null,
-    replayFromRunDir: args.replayFromRunDir || null,
+    replaySourceManifestPath: args.replaySourceManifestPath || null,
+    replayManifestId: args.replayManifestId || null,
     replayModelId: args.replayModelId || null,
     v1SnapshotPath: args.v1SnapshotPath || null,
   });
@@ -1343,10 +1363,19 @@ function loadAndVerifySource({ dealPin, deal, rawHtmlPath }) {
  * loaded/verified source data -- no I/O of its own.
  */
 function buildAdmittedContext({
-  deal, family, dealPin, verified,
+  deal, family, dealPin, verified, locallyValidatedConversion = null,
+  recordedSourceMapProvenance = null,
 }) {
   const { capture, conversion, verification } = verified;
-  const admissionBundle = buildVerifiedSecSourceAdmission({ capture, conversion, verification });
+  const admissionBundle = recordedSourceMapProvenance
+    ? buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload({
+      capture,
+      locally_validated_conversion: locallyValidatedConversion,
+      adopted_conversion: conversion,
+      verification,
+      recorded_source_map_provenance: recordedSourceMapProvenance,
+    })
+    : buildVerifiedSecSourceAdmission({ capture, conversion, verification });
   const dealKeySlug = `${deal}-${family.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const dealKey = `deal:${dealKeySlug}:${sha256Hex(dealPin.retrieval_url).slice(0, 16)}`;
   const dealAdmissionId = sha256Hex(`deal-admission-${dealKeySlug}:${dealPin.retrieval_url}`);
@@ -1362,6 +1391,51 @@ function buildAdmittedContext({
   return {
     admissionBundle, admittedSourceContext, dealKey, dealAdmissionId,
   };
+}
+
+// The local conversion has already passed the strict converter and verifier
+// checks. A payload from the shared store may differ only in DEFLATE bytes,
+// so adopt it only through the rebuild module's inflation-and-digest check.
+function adoptStoredSourceMapPayload({ verified, payloadBytes }) {
+  const sourceMapCompressedSha256 = sha256Hex(payloadBytes);
+  return {
+    verified: {
+      ...verified,
+      conversion: adoptPersistedSourceMapPayload({
+        conversion: verified.conversion,
+        payloadBytes,
+        expectedSha256: sourceMapCompressedSha256,
+      }),
+    },
+    sourceMapCompressedSha256,
+  };
+}
+
+function persistOrAdoptSourceMapPayload({ repoRoot, verified }) {
+  const canonicalTextId = verified.conversion.canonical_text_id;
+  const sourceMapPayloadPath = sourceMapPayloadPathFor(canonicalTextId);
+  const absolutePayloadPath = resolveSourceMapPayloadPath({
+    repoRoot,
+    canonicalTextId,
+    allowMissingLeaf: true,
+  });
+  mkdirSync(dirname(absolutePayloadPath), { recursive: true });
+  let created = false;
+  try {
+    writeFileSync(
+      absolutePayloadPath,
+      Buffer.from(verified.conversion.source_map_payload_base64, 'base64'),
+      { flag: 'wx' },
+    );
+    created = true;
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  const adopted = adoptStoredSourceMapPayload({
+    verified,
+    payloadBytes: readSourceMapPayload({ repoRoot, canonicalTextId }),
+  });
+  return { ...adopted, sourceMapPayloadPath, created };
 }
 
 /**
@@ -1441,7 +1515,7 @@ function buildDryRunReport({
     raw_html_path: verified.rawHtmlPath,
     retrieval_url: config.dealPin.retrieval_url,
     agreement_date: config.agreementDate,
-    model_cli_alias: config.model,
+    requested_model_profile: config.profileId,
     follow_citations: config.followCitations,
     source: {
       raw_bytes_length: verified.rawBytes.length,
@@ -1490,214 +1564,201 @@ function runProvenance() {
   };
 }
 
-// The output ceiling the CLI is asked for, and the figure the provider's
-// overflow guard measures against. They must be the same number: the guard's
-// question is "did we get back everything we asked for, or was generation cut
-// at the limit", and a guard set to a different limit answers a different
-// question.
-//
-// 64,000 is Claude Code's own per-model default and was the ceiling four
-// TopBuild/Modiv calls hit (71,907 / 71,430 / 65,210 / 74,080 attempted),
-// producing tail fragments of one answer that the parser correctly refused.
-// Raising it was ruled on 2026-08-08 and then MEASURED, because a static read
-// of the CLI's minified per-model table says `upperLimit` is 64,000 on every
-// branch and that read predicted this would not work. It does: TopBuild
-// NO_SHOP §4.3 returned **69,576 output tokens** under this setting and
-// extracted 67 publishable claims, a family that had never extracted on that
-// document at all. The table is not the behaviour; the run is.
-const CLI_MAX_OUTPUT_TOKENS = 128000;
+const DEFAULT_CODEX_CALL_TIMEOUT_MS = 20 * 60 * 1000;
 
-// ONE function derives the ceiling, for both the child environment and the
-// guard that measures against it. Two derivations would be two sources of
-// truth for one number, which is the shape of the defect this whole area
-// exists to close.
-//
-// A malformed override fails the run at startup rather than being forwarded.
-// The alternative -- pass the string to the CLI and let the guard reject it
-// numerically -- silently splits the two apart: the CLI would generate under
-// one ceiling while the guard measured another, and the guard would be wrong
-// exactly when it mattered.
-// The call timeout is DERIVED from the output ceiling, not fixed alongside it.
-//
-// Fable's latency ruling measured duration = 4.3s + 8.23ms per output token,
-// R^2 = 0.993. So a call permitted to emit N tokens can legitimately take
-// 4.3s + 8.23N milliseconds, and a timeout shorter than that does not protect
-// against a hung call -- it guarantees failure on the largest legitimate ones.
-//
-// This was not hypothetical for ten minutes. Raising the ceiling from 64,000
-// to 128,000 doubled the longest legitimate call while the timeout stayed at
-// its 600,000ms default, and Skechers KEY_DEFINED_TERMS -- 1.1 plus 1.2, the
-// definitions article -- died at exactly 600,000ms on the first attempt after
-// the change. Two numbers that must move together, kept in one place so they
-// cannot drift, the same fix applied to the ceiling itself above.
-const MS_PER_OUTPUT_TOKEN = 8.23;
-const CALL_FIXED_OVERHEAD_MS = 4300;
-const CALL_TIMEOUT_SAFETY = 1.25;
+const SEALED_REPLAY_SOURCE_MANIFEST_SCHEMA = 'SEALED_REPLAY_SOURCE_MANIFEST/V1';
+const REPLAY_LIVE_REQUIRED = Object.freeze(new Set([
+  'TERMINATION_FEE:7.1',
+  'TERMINATION_FEE:7.3',
+  'TERMINATION_FEE:8.12',
+  'CAPITALISATION:3.2',
+  'CAPITALISATION:4.2',
+]));
+const PROMPT_DIGEST_DOMAIN = 'NATIVE_PRODUCER_PROMPT/V1';
 
-function derivedCallTimeoutMs(maxOutputTokens) {
-  return Math.ceil(
-    (CALL_FIXED_OVERHEAD_MS + (MS_PER_OUTPUT_TOKEN * maxOutputTokens)) * CALL_TIMEOUT_SAFETY,
-  );
-}
-
-function effectiveMaxOutputTokens() {
-  const raw = process.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS;
-  if (raw === undefined || raw === '') return CLI_MAX_OUTPUT_TOKENS;
-  const override = Number(raw);
-  if (!Number.isInteger(override) || override <= 0) {
-    throw new Error(
-      `INVALID_OUTPUT_CEILING: CLAUDE_CODE_MAX_OUTPUT_TOKENS is "${raw}", which is not a positive `
-      + 'integer. Refusing rather than forwarding it: the CLI and the overflow guard must generate '
-      + 'and measure against the SAME number, and a value only one of them understands puts them '
-      + 'quietly out of step.',
-    );
-  }
-  return override;
-}
-
-function childEnv() {
-  const env = { ...process.env };
-  delete env.ANTHROPIC_API_KEY; // force subscription auth, not metered billing
-  // Set from the same resolver the guard uses, so the ceiling asked for and
-  // the ceiling measured cannot drift. An operator override still works --
-  // that is how the 64,000 figure was falsified in the first place.
-  env.CLAUDE_CODE_MAX_OUTPUT_TOKENS = String(effectiveMaxOutputTokens());
-  return env;
-}
-
-function runClaudeCli(promptText, { model, timeoutMs = 10 * 60 * 1000 } = {}) {
-  return new Promise((resolvePromise, reject) => {
-    const child = spawn('claude', ['-p', '--output-format', 'json', '--model', model], {
-      env: childEnv(),
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    let out = '';
-    let err = '';
-    const timer = setTimeout(() => {
-      child.kill('SIGKILL');
-      reject(new Error(`claude -p timed out after ${timeoutMs}ms`));
-    }, timeoutMs);
-    child.stdout.on('data', (d) => { out += d; });
-    child.stderr.on('data', (d) => { err += d; });
-    child.on('error', (e) => { clearTimeout(timer); reject(e); });
-    child.on('close', (code) => {
-      clearTimeout(timer);
-      if (code !== 0) return reject(new Error(`claude -p exited ${code}: ${err.slice(0, 800)}`));
-      resolvePromise(out);
-    });
-    child.stdin.write(promptText);
-    child.stdin.end();
+function resolveContainedEvidenceFile(repoRoot, relativePath, label, expectedType = 'file') {
+  return resolveContainedRepositoryPath(repoRoot, relativePath, {
+    codePrefix: 'REPLAY_SOURCE',
+    expectedType,
+    label,
   });
 }
 
-function flattenMessages(params) {
-  const parts = [];
-  if (params.system) {
-    const sys = Array.isArray(params.system) ? params.system.map((b) => b.text || '').join('\n') : String(params.system);
-    if (sys.trim()) parts.push(sys);
-  }
-  for (const m of params.messages || []) {
-    const content = typeof m.content === 'string' ? m.content : (m.content || []).map((b) => b.text || '').join('\n');
-    parts.push(content);
-  }
-  return parts.join('\n\n');
+function replaySourceManifestId(manifest) {
+  const body = { ...(manifest || {}) };
+  delete body.manifest_id;
+  return contentId(SEALED_REPLAY_SOURCE_MANIFEST_SCHEMA, body);
 }
 
-// Sections are processed by native-extraction-run.js in the exact order of
-// the `section_references` array it is given (see that module's `resolved
-// = references.map(...)` then `for (const { reference, node } of resolved)`).
-// This client relies on that documented ordering -- never on parsing the
-// prompt text -- to label each recorded call/fixture with the section
-// reference it belongs to, and writes ONE recorded-response fixture PER
-// CALL (a fixed path would silently overwrite itself across multiple calls
-// in a multi-section run).
-function makeMeasuredCliClient({
-  model, telemetry, orderedSectionRefs, fixtureOutDir, config, promptInfo,
+function currentPromptDigests({ fullText, documentHash, resolvedNodesByRef, config }) {
+  const builder = getProducerPromptModule(config.family);
+  return new Map(config.sectionRefs.map((reference) => {
+    const node = resolvedNodesByRef[reference];
+    const sourceText = utf8Slice(fullText, node.start, node.end);
+    const scope = Object.freeze({
+      schema_version: 'NATIVE_EXTRACTION_GOVERNED_SCOPE/V1', document_hash: documentHash,
+      section_reference: reference, section_id: node.section_id, parent_section_id: node.parent_section_id,
+      kind: node.kind, depth: node.depth, start: node.start, end: node.end,
+      text_sha256: node.text_sha256, source_text: sourceText,
+    });
+    const prompt = bindNativePromptToGovernedScope({
+      prompt: builder({ source_text: sourceText, governed_scope: scope, known_definitions: [] }),
+      governed_scope: scope,
+    });
+    return [reference, contentId(PROMPT_DIGEST_DOMAIN, {
+      system: [{ type: 'text', text: JSON_ONLY_INSTRUCTION }],
+      messages: prompt.messages,
+    })];
+  }));
+}
+
+function loadSealedReplaySourceManifest({
+  manifestPath, expectedManifestId, orderedSectionRefs, currentPromptDigestByRef, family,
 }) {
+  const repoRoot = process.cwd();
+  const absoluteManifest = resolveContainedEvidenceFile(repoRoot, manifestPath, 'manifest');
+  const manifest = JSON.parse(readFileSync(absoluteManifest, 'utf8'));
+  if (!manifest || manifest.schema_version !== SEALED_REPLAY_SOURCE_MANIFEST_SCHEMA || !Array.isArray(manifest.sections)) {
+    throw new Error(`REPLAY_SOURCE_MANIFEST_SCHEMA_MISMATCH: expected ${SEALED_REPLAY_SOURCE_MANIFEST_SCHEMA}`);
+  }
+  if (typeof expectedManifestId !== 'string' || !/^[a-f0-9]{64}$/.test(expectedManifestId)) {
+    throw new Error('REPLAY_MANIFEST_PIN_REQUIRED: expectedManifestId must be an independently supplied 64-character digest');
+  }
+  const computedManifestId = replaySourceManifestId(manifest);
+  if (manifest.manifest_id !== computedManifestId || expectedManifestId !== computedManifestId) {
+    throw new Error(
+      `REPLAY_MANIFEST_SEAL_MISMATCH: embedded=${manifest.manifest_id || null} expected=${expectedManifestId} computed=${computedManifestId}`,
+    );
+  }
+  const seen = new Set();
+  for (const entry of manifest.sections) {
+    if (!entry || typeof entry.section_reference !== 'string' || entry.section_reference === '') {
+      throw new Error('REPLAY_SOURCE_MANIFEST_SECTION_REQUIRED: every entry needs section_reference');
+    }
+    if (seen.has(entry.section_reference)) throw new Error(`REPLAY_SOURCE_MANIFEST_DUPLICATE_SECTION: ${entry.section_reference}`);
+    seen.add(entry.section_reference);
+  }
+  const requested = new Set(orderedSectionRefs);
+  if (requested.size !== orderedSectionRefs.length) throw new Error('REPLAY_TARGET_DUPLICATE_SECTION: requested section references must be unique');
+  const missing = orderedSectionRefs.filter((reference) => !seen.has(reference));
+  const unused = [...seen].filter((reference) => !requested.has(reference));
+  if (missing.length > 0 || unused.length > 0) {
+    throw new Error(`REPLAY_SOURCE_MANIFEST_COVERAGE_MISMATCH: missing=${missing.join(',') || 'none'} unused=${unused.join(',') || 'none'}`);
+  }
+  if (manifest.sections.length !== orderedSectionRefs.length) {
+    throw new Error(`REPLAY_SOURCE_MANIFEST_COUNT_MISMATCH: manifest has ${manifest.sections.length} section(s), run requires ${orderedSectionRefs.length}`);
+  }
+  const fixtures = [];
+  const sourceSections = [];
+  for (const [index, entry] of manifest.sections.entries()) {
+    if (!entry || entry.section_reference !== orderedSectionRefs[index]) {
+      throw new Error(`REPLAY_SOURCE_MANIFEST_ORDER_MISMATCH: entry ${index + 1} must explicitly name ${orderedSectionRefs[index]}`);
+    }
+    if (REPLAY_LIVE_REQUIRED.has(`${family}:${entry.section_reference}`)) {
+      throw new Error(`REPLAY_LIVE_REQUIRED: ${family} ${entry.section_reference} has prompt or source-identity drift and must run live on Terra`);
+    }
+    if (!entry.source_call || typeof entry.source_call.prompt_digest !== 'string'
+      || typeof entry.source_call.producer_receipt_id !== 'string') {
+      throw new Error(`REPLAY_SOURCE_CALL_IDENTITY_REQUIRED: section ${entry.section_reference} needs source_call.prompt_digest and source_call.producer_receipt_id`);
+    }
+    const currentDigest = currentPromptDigestByRef.get(entry.section_reference);
+    if (entry.source_call.prompt_digest !== currentDigest) {
+      throw new Error(`REPLAY_PROMPT_DIGEST_MISMATCH: section ${entry.section_reference} source_call=${entry.source_call.prompt_digest} current=${currentDigest}`);
+    }
+    const runDir = resolveContainedEvidenceFile(
+      repoRoot, entry.source_run_dir, `sections[${index}].source_run_dir`, 'directory',
+    );
+    if (!lstatSync(runDir).isDirectory()) throw new Error(`REPLAY_SOURCE_NOT_DIRECTORY: ${entry.source_run_dir}`);
+    const fixturePath = resolveContainedEvidenceFile(runDir, entry.fixture_file, `sections[${index}].fixture_file`);
+    const receiptPath = resolveContainedEvidenceFile(runDir, entry.run_receipt_file, `sections[${index}].run_receipt_file`);
+    const fixtureBytes = readFileSync(fixturePath);
+    const receiptBytes = readFileSync(receiptPath);
+    if (sha256Hex(fixtureBytes) !== entry.fixture_sha256 || sha256Hex(receiptBytes) !== entry.run_receipt_sha256) {
+      throw new Error(`REPLAY_SOURCE_HASH_MISMATCH: section ${entry.section_reference} no longer matches its sealed manifest`);
+    }
+    const fixture = JSON.parse(fixtureBytes.toString('utf8'));
+    if (fixture.section_reference !== entry.section_reference) {
+      throw new Error(`REPLAY_SOURCE_FIXTURE_REFERENCE_MISMATCH: expected ${entry.section_reference}, got ${fixture.section_reference}`);
+    }
+    fixtures.push(fixture);
+    const receipt = JSON.parse(receiptBytes.toString('utf8'));
+    const sourceSection = (receipt.resolved_sections || []).find((section) => section.section_reference === entry.section_reference);
+    if (!sourceSection || sourceSection.prompt_digest !== entry.source_call.prompt_digest
+      || !sourceSection.producer_receipt
+      || sourceSection.producer_receipt.producer_receipt_id !== entry.source_call.producer_receipt_id) {
+      throw new Error(`REPLAY_SOURCE_CALL_RECEIPT_MISMATCH: section ${entry.section_reference} does not match the sealed source_call identity`);
+    }
+    sourceSections.push(sourceSection);
+  }
+  return Object.freeze({
+    manifest_path: manifestPath,
+    manifest,
+    fixtures: Object.freeze(fixtures),
+    source_calls: Object.freeze(manifest.sections.map((entry) => Object.freeze({
+      section_reference: entry.section_reference,
+      source_call: entry.source_call,
+      replay_target: Object.freeze({ prompt_digest: currentPromptDigestByRef.get(entry.section_reference) }),
+    }))),
+    run_receipt: Object.freeze({ resolved_sections: Object.freeze(sourceSections) }),
+  });
+}
+
+function makeMeasuredCodexClient({ client, telemetry, orderedSectionRefs, fixtureOutDir, config, promptInfo }) {
   return {
     messages: {
       async create(params) {
         const callIndex = telemetry.calls.length;
-        // Attribution is BY CALL ORDER against the pinned section list, and
-        // that is only sound while the run issues exactly one call per pinned
-        // section. --follow-citations dispatches additional calls beyond that
-        // list, so the index overruns and every extra call used to be labelled
-        // `unknown-call-N`. The committed
-        // modiv-termination-fee-citation-following-20260806 run has 11 of its
-        // 14 calls labelled that way. They are not unknown: they are citation
-        // follow-ups, a known and expected category, and calling them unknown
-        // both loses that information and implies a defect where there is none.
-        //
-        // The section reference is NOT recoverable from the prompt at this
-        // seam -- checked -- so this records the attribution basis alongside
-        // the label rather than pretending to a precision it does not have.
-        // A consumer that needs per-call section identity for follow-up calls
-        // must get it from the citation-following module, not from here.
         const withinPinnedList = callIndex < orderedSectionRefs.length;
-        const sectionReference = withinPinnedList
-          ? orderedSectionRefs[callIndex]
-          : `citation-followup-${callIndex - orderedSectionRefs.length + 1}`;
-        const attributionBasis = withinPinnedList
-          ? 'ORDERED_PINNED_SECTION'
-          : 'CITATION_FOLLOWUP_UNATTRIBUTED';
-        const prompt = flattenMessages(params);
+        const sectionReference = withinPinnedList ? orderedSectionRefs[callIndex] : `citation-followup-${callIndex - orderedSectionRefs.length + 1}`;
         const startedAt = Date.now();
-        // An explicit --call-timeout-ms wins; otherwise the timeout follows the
-        // ceiling, so raising one can never silently outrun the other.
-        const rawCliOutput = await runClaudeCli(prompt, {
-          model,
-          timeoutMs: config.timeoutMs || derivedCallTimeoutMs(effectiveMaxOutputTokens()),
-        });
-        const wallClockMs = Date.now() - startedAt;
-        const parsed = JSON.parse(rawCliOutput);
-        if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
+        const response = await client.messages.create(params);
+        const usage = normalizeProviderUsage(response.usage);
+        const threadId = response.codex_thread_id || response.provider_request_id || null;
         telemetry.calls.push({
           call_index: callIndex,
           section_reference: sectionReference,
-          wall_clock_ms: wallClockMs,
-          duration_ms_reported: parsed.duration_ms,
-          duration_api_ms_reported: parsed.duration_api_ms,
-          total_cost_usd_cli: parsed.total_cost_usd,
-          usage: parsed.usage,
-          model_usage: parsed.modelUsage,
-          served_model: parsed.model || null,
-          attribution_basis: attributionBasis,
-          session_id: parsed.session_id,
+          wall_clock_ms: Date.now() - startedAt,
+          usage,
+          requested_model_profile: config.profileId,
+          requested_model_id: providerModelIdForProfile(config.profileId),
+          served_model: null,
+          served_model_status: 'NOT_REPORTED_BY_CODEX_JSONL',
+          provider_request_id: threadId,
+          attribution_basis: withinPinnedList ? 'ORDERED_PINNED_SECTION' : 'CITATION_FOLLOWUP_UNATTRIBUTED',
         });
-        const rawResponseText = parsed.result || '';
+        const rawResponseText = Array.isArray(response.content)
+          ? response.content.map((part) => part && part.text || '').join('') : '';
         const fixtureSlug = sectionReference.replace(/[^a-zA-Z0-9.]+/g, '_');
         writeFileSync(resolve(fixtureOutDir, `native-producer-recorded-response-${fixtureSlug}.json`), JSON.stringify({
           schema_version: 'NATIVE_PRODUCER_RECORDED_RESPONSE/V1',
-          model: `claude-sonnet-5 (served via Claude Code subscription CLI, \`claude -p --model ${model}\`, no ANTHROPIC_API_KEY available in this environment)`,
+          provider_id: CODEX_PROVIDER_ID,
+          model_id: providerModelIdForProfile(config.profileId),
           recorded_at: new Date().toISOString(),
           section_reference: sectionReference,
-          note: `General extraction run: deal=${config.deal}, family=${config.family}, `
-            + `section_references=${JSON.stringify(config.sectionRefs)} (all dispatched as ${config.family} via `
-            + `section_family_assignments), prompt_id=${promptInfo.prompt_id}, prompt_version=${promptInfo.prompt_version}. `
-            + 'request_messages omitted here; raw_response_text is the model\'s literal output including its '
-            + '```json fence, byte-for-byte as returned.',
+          prompt_id: promptInfo.prompt_id,
+          prompt_version: promptInfo.prompt_version,
           raw_response_text: rawResponseText,
         }, null, 2));
-        // `usage` travels ON THE RESPONSE, not only into telemetry. The
-        // provider's overflow guard reads `response.provider_usage ?? usage`,
-        // and this client used to return content alone -- so the guard read
-        // `null` and could not fire on a single real run. The 69,576-token
-        // NO_SHOP call that proved the ceiling raise works is exactly the call
-        // it should have caught if the ceiling had still been 64,000, and it
-        // said nothing. A guard whose input never arrives is not a guard.
-        return { content: [{ type: 'text', text: rawResponseText }], usage: parsed.usage };
+        return { ...response, usage };
       },
     },
   };
 }
 
+function providerModelIdForProfile(profileId) {
+  const profile = resolveProfile(profileId);
+  return `${profile.model};reasoning=${profile.reasoning_effort};profile=${profile.profile_id}`;
+}
+
 async function main() {
-  // Before anything else, including --dry-run. A malformed ceiling is a
-  // configuration error, and finding it at the first model call -- minutes in,
-  // on a path a dry run never reaches -- is finding it too late.
-  effectiveMaxOutputTokens();
   const args = parseArgs(process.argv.slice(2));
   const config = resolveRunConfig(args);
+  const repoRoot = process.cwd();
+  // Capture repository state before creating the output directory or writing
+  // any run artefact. The artefacts are intentionally committed evidence, so
+  // sampling at manifest-write time would make an initially clean run report
+  // itself as dirty solely because it produced its own evidence.
+  const codeProvenance = Object.freeze(runProvenance());
   const promptInfo = resolvePromptVersionInfo(config.family);
   const logPrefix = `[extraction:${config.deal}:${config.family}]`;
 
@@ -1706,23 +1767,63 @@ async function main() {
   if (config.dryRun) process.stderr.write(`${logPrefix} --dry-run: resolving pins and sections, will not call a model\n`);
 
   const outDir = config.outDir ? resolve(config.outDir) : null;
+  let sealedReplayPreflight = null;
+  let sealedReplayIdentityPreflight = null;
+  let sealedReplayRecordingPreflight = null;
+  if (config.replaySourceManifestPath) {
+    // Validate the complete replay authority before creating the output
+    // directory or writing source-reference evidence. A bad seal must leave
+    // no partial run that looks started.
+    const preflightVerified = loadAndVerifySource({
+      dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath,
+    });
+    const { admittedSourceContext: preflightContext } = buildAdmittedContext({
+      deal: config.deal, family: config.family, dealPin: config.dealPin, verified: preflightVerified,
+    });
+    const preflightText = preflightVerified.conversion.canonical_text;
+    const preflightSections = sectionizeAndResolve({
+      sourceText: preflightText,
+      documentHash: preflightContext.document_hash,
+      sectionRefs: config.sectionRefs,
+      sectionExpectations: config.dealPin.section_expectations || {},
+    });
+    sealedReplayPreflight = loadSealedReplaySourceManifest({
+      manifestPath: config.replaySourceManifestPath,
+      expectedManifestId: config.replayManifestId,
+      orderedSectionRefs: config.sectionRefs,
+      currentPromptDigestByRef: currentPromptDigests({
+        fullText: preflightText,
+        documentHash: preflightContext.document_hash,
+        resolvedNodesByRef: preflightSections.resolvedNodesByRef,
+        config,
+      }),
+      family: config.family,
+    });
+    sealedReplayIdentityPreflight = resolveOriginalProviderIdentity({
+      runReceipt: sealedReplayPreflight.run_receipt,
+      declaredModelId: config.replayModelId,
+      source: `the sealed source manifest at ${config.replaySourceManifestPath}`,
+    });
+    sealedReplayRecordingPreflight = buildRecordingFromSectionFixtures({
+      fixtures: sealedReplayPreflight.fixtures,
+      orderedSectionRefs: config.sectionRefs,
+      model: 'sealed-legacy-fixtures',
+      providerId: sealedReplayIdentityPreflight.provider_id,
+      providerModelId: sealedReplayIdentityPreflight.model_id,
+    });
+  }
   if (outDir) mkdirSync(outDir, { recursive: true });
 
   const runStartedAt = Date.now();
 
   // ─── Step 1: reuse the ALREADY-ADMITTED committed source (no live fetch) ───
 
-  const verified = loadAndVerifySource({ dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath });
-  process.stderr.write(`${logPrefix} reused committed raw HTML at ${verified.rawHtmlPath}, sha256=${verified.rawBytesSha256} (MATCHES pin)\n`);
-
-  const { admittedSourceContext } = buildAdmittedContext({
-    deal: config.deal, family: config.family, dealPin: config.dealPin, verified,
+  const locallyVerified = loadAndVerifySource({
+    dealPin: config.dealPin, deal: config.deal, rawHtmlPath: config.rawHtmlPath,
   });
-  const documentHash = admittedSourceContext.document_hash; // = raw HTML sha256
-  const fullText = verified.conversion.canonical_text;
-
-  process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
-  process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
+  let verified = locallyVerified;
+  let sourceMapPayloadPath = null;
+  let recordedSourceMapProvenance = null;
 
   // Persist the compressed source map before writing the reference that names
   // it, so a run directory never points at a payload that is not there.
@@ -1743,16 +1844,33 @@ async function main() {
   // was writing a 1.4 MB file into committed evidence every time the test
   // suite exercised the runner's argument parsing. A dry run needs no
   // payload, because it has no write-set to import.
-  let sourceMapPayloadPath = null;
   if (outDir && !config.dryRun) {
-    sourceMapPayloadPath = sourceMapPayloadPathFor(verified.conversion.canonical_text_id);
-    const absolutePayloadPath = resolve(sourceMapPayloadPath);
-    if (!existsSync(absolutePayloadPath)) {
-      mkdirSync(dirname(absolutePayloadPath), { recursive: true });
-      writeFileSync(absolutePayloadPath, Buffer.from(verified.conversion.source_map_payload_base64, 'base64'));
+    const persisted = persistOrAdoptSourceMapPayload({ repoRoot, verified: locallyVerified });
+    sourceMapPayloadPath = persisted.sourceMapPayloadPath;
+    verified = persisted.verified;
+    recordedSourceMapProvenance = {
+      source_map_payload_path: sourceMapPayloadPath,
+      source_map_compressed_sha256: persisted.sourceMapCompressedSha256,
+    };
+    if (persisted.created) {
       process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
     }
   }
+
+  process.stderr.write(`${logPrefix} reused committed raw HTML at ${verified.rawHtmlPath}, sha256=${verified.rawBytesSha256} (MATCHES pin)\n`);
+  const { admittedSourceContext } = buildAdmittedContext({
+    deal: config.deal,
+    family: config.family,
+    dealPin: config.dealPin,
+    verified,
+    locallyValidatedConversion: recordedSourceMapProvenance ? locallyVerified.conversion : null,
+    recordedSourceMapProvenance,
+  });
+  const documentHash = admittedSourceContext.document_hash; // = raw HTML sha256
+  const fullText = verified.conversion.canonical_text;
+
+  process.stderr.write(`${logPrefix} document_hash = ${documentHash}\n`);
+  process.stderr.write(`${logPrefix} canonical_text_sha256 = ${verified.conversion.canonical_text_sha256} (MATCHES pin)\n`);
 
   if (outDir) {
     writeFileSync(resolve(outDir, 'source-reference.json'), JSON.stringify({
@@ -1838,7 +1956,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV41();
+  const contractBundle = compileFixtureContractV42();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -1847,78 +1965,67 @@ async function main() {
     family_id: config.family,
   }));
 
-  // Record/replay (PLAN.md Stage 2 prerequisite). The ladder's gate compares
-  // resolved counts across rounds; without replay it cannot tell a regression
-  // from a fresh sample of a nondeterministic model.
-  let liveClient = makeMeasuredCliClient({
-    model: config.model, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
-  });
+  // Record/replay uses the exact prompt passed to Codex. In particular, the
+  // JSON-only wrapper is outside the recording client, so it is part of the
+  // V3 request identity and cannot change without causing a replay miss.
+  let liveClient;
   let replayClientRef = null;
-  // The producer model identity a replay must present: the LIVE model that
-  // produced the recorded text, never the replay mechanism and never a path.
-  // Resolved before the client is built so an unidentifiable replay fails
-  // before it does any work.
-  let replayProviderModelId = null;
-  const liveProviderModelId = `claude-sonnet-5-via-claude-code-cli(${config.model})`;
-  if (config.replayFromRunDir) {
-    // Replay a HISTORICAL run from the per-section fixtures it already wrote.
-    // Weaker keying than --replay (ordered, not request-hashed) because those
-    // fixtures carry no request messages -- see the module header.
-    const fixtures = readdirSync(resolve(config.replayFromRunDir))
-      .filter((name) => /^native-producer-recorded-response-.+\.json$/.test(name))
-      .map((name) => JSON.parse(readFileSync(resolve(config.replayFromRunDir, name), 'utf8')));
-    replayProviderModelId = resolveOriginalProviderModelId({
-      runReceipt: readRunReceiptIfPresent(config.replayFromRunDir),
-      declared: config.replayModelId,
-      source: `the run in ${config.replayFromRunDir}`,
-    });
-    const recording = buildRecordingFromSectionFixtures({
-      fixtures,
-      orderedSectionRefs: config.sectionRefs,
-      model: `legacy-fixtures(${config.replayFromRunDir})`,
-      providerModelId: replayProviderModelId,
-    });
+  let replayIdentity = null;
+  let sealedReplaySourceCalls = null;
+  const liveProviderModelId = providerModelIdForProfile(config.profileId);
+  if (config.replaySourceManifestPath) {
+    const sealed = sealedReplayPreflight;
+    sealedReplaySourceCalls = sealed.source_calls;
+    replayIdentity = sealedReplayIdentityPreflight;
+    const recording = sealedReplayRecordingPreflight;
     replayClientRef = createOrderedReplayClient({ recording });
     replayClientRef.recording = recording;
     liveClient = replayClientRef;
-  } else if (config.replayPath) {
-    const recording = JSON.parse(readFileSync(resolve(config.replayPath), 'utf8'));
-    // A V1 recording carries only the CLI alias, so fall back to the receipt
-    // of the run the recording sits beside -- the same run that produced it.
-    replayProviderModelId = resolveOriginalProviderModelId({
-      recording,
-      runReceipt: readRunReceiptIfPresent(dirname(resolve(config.replayPath))),
-      declared: config.replayModelId,
-      source: `the recording at ${config.replayPath}`,
+  } else {
+    const rawClient = createCodexCliClient({
+      model: resolveProfile(config.profileId).model,
+      reasoningEffort: resolveProfile(config.profileId).reasoning_effort,
+      maxAttempts: 1,
+      ephemeral: true,
+      ignoreUserConfig: true,
+      ignoreRules: true,
+      isolated: true,
+      timeoutMs: config.timeoutMs || DEFAULT_CODEX_CALL_TIMEOUT_MS,
     });
-    replayClientRef = createReplayClient({ recording });
-    replayClientRef.recording = recording;
-    liveClient = replayClientRef;
-  } else if (config.recordPath) {
-    liveClient = createRecordingClient({
-      client: liveClient,
-      model: config.model,
-      providerModelId: liveProviderModelId,
-      // Written after every call rather than at the end, so a run that dies
-      // partway still leaves a usable recording of what it did ask.
-      sink: (recording) => {
-        writeFileSync(resolve(config.recordPath), `${JSON.stringify(recording, null, 2)}\n`);
-      },
+    let transport = makeMeasuredCodexClient({
+      client: rawClient, telemetry, orderedSectionRefs: config.sectionRefs, fixtureOutDir: outDir, config, promptInfo,
     });
+    if (config.recordPath) {
+      transport = createRecordingClient({
+        client: transport,
+        model: config.profileId,
+        providerId: CODEX_PROVIDER_ID,
+        providerModelId: liveProviderModelId,
+        sink: (recording) => writeFileSync(resolve(config.recordPath), `${JSON.stringify(recording, null, 2)}\n`),
+      });
+    }
+    liveClient = transport;
   }
 
-  const providerOptions = {
-    // Replay reproduces the live run, so it reports the live run's model.
-    // This used to be `replay(<path>)`, which made producer_receipt_id -- and
-    // therefore closure_id -- a function of where the files happened to sit:
-    // the same Modiv evidence replayed from evidence/ and from a scratchpad
-    // copy minted two different identities for identical claims.
-    model: replayProviderModelId || liveProviderModelId,
-    maxOutputTokens: effectiveMaxOutputTokens(),
-    client: liveClient,
-    maxRetries: 0,
-  };
-  const provider = createAnthropicProvider(providerOptions);
+  const provider = replayIdentity
+    ? async (input) => {
+      const output = await createAnthropicProvider({
+        providerId: replayIdentity.provider_id,
+        model: replayIdentity.model_id,
+        client: liveClient,
+        maxRetries: 0,
+        maxOutputTokens: null,
+        includeRawResponse: true,
+        transformPrompt(prompt) {
+          return Object.freeze({
+            ...prompt,
+            system: Object.freeze([{ type: 'text', text: JSON_ONLY_INSTRUCTION }]),
+          });
+        },
+      })(input);
+      return Object.freeze({ ...output, provider_id: replayIdentity.provider_id, model_id: replayIdentity.model_id });
+    }
+    : createCodexCliProvider({ profileId: config.profileId, client: liveClient, timeoutMs: config.timeoutMs || DEFAULT_CODEX_CALL_TIMEOUT_MS });
 
   process.stderr.write(`${logPrefix} starting ${config.sectionRefs.length} LIVE extraction call(s)...\n`);
   const extractionStart = Date.now();
@@ -2093,26 +2200,38 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV41',
+    contract_bundle_version: 'compileFixtureContractV42',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,
-    model_cli_alias: config.model,
+    requested_model_profile: replayIdentity ? null : config.profileId,
+    requested_model_id: replayIdentity ? replayIdentity.model_id : liveProviderModelId,
+    requested_models: Object.freeze([
+      replayIdentity ? replayIdentity.model_id : liveProviderModelId,
+    ]),
     follow_citations: config.followCitations,
     max_retries: 0,
     run_started_at: new Date(runStartedAt).toISOString(),
     total_elapsed_ms: totalElapsedMs,
     extraction_wall_clock_ms: extractionWallClockMs,
     replay: replayReport,
-    recorded_to: config.recordPath || null,
+    replay_eligibility: sealedReplaySourceCalls ? Object.freeze({
+      source_calls: sealedReplaySourceCalls,
+      replay_targets: Object.freeze(receipt.resolved_sections.map((section) => Object.freeze({
+        section_reference: section.section_reference,
+        prompt_digest: section.prompt_digest,
+        producer_receipt_id: section.producer_receipt && section.producer_receipt.producer_receipt_id,
+      }))),
+    }) : null,
+    recorded_to: manifestRecordingPath({ outDir, recordPath: config.recordPath }),
     // Change-detection inputs (PLAN.md Stage 2). With these a later run can
     // decide whether a (deal, family) pair needs re-running at all, instead
     // of re-running everything and comparing samples of a nondeterministic
-    // model. `model_cli_alias` above is the alias the operator typed;
-    // `resolved_models` is what the CLI reported actually serving each call,
-    // which is the one that matters -- a model swap behind an unchanged
-    // alias would otherwise trigger no re-run at all.
-    code_provenance: runProvenance(),
+    // model. Codex JSONL records the requested model in the command but does
+    // not report the model actually served. Keep those facts separate:
+    // requested_models records configuration; resolved_models stays empty
+    // unless a future transport event reports the served model explicitly.
+    code_provenance: codeProvenance,
     resolved_models: Object.freeze([...new Set(
       telemetry.calls.map((call) => call.served_model).filter(Boolean),
     )]),
@@ -2176,7 +2295,14 @@ export {
   resolvePromptVersionInfo,
   loadAndVerifySource,
   buildAdmittedContext,
+  adoptStoredSourceMapPayload,
+  persistOrAdoptSourceMapPayload,
   sectionizeAndResolve,
   buildDryRunReport,
+  currentPromptDigests,
+  loadSealedReplaySourceManifest,
+  replaySourceManifestId,
+  resolveContainedEvidenceFile,
+  REPLAY_LIVE_REQUIRED,
   main,
 };

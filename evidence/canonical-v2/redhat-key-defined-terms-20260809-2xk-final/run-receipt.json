@@ -1,0 +1,2719 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "ae199e572529baeda02530a3fd7e9df050c5d9e7dcdfec5d7dd1ac162753696e",
+  "source_sha256": "dcdbf66142d25cbe56ed2bc1fbd26939aaf86056bf34188176c48b5944d31c5e",
+  "source_byte_length": 264358,
+  "root_section_id": "3d90818eb9590ab0940e2daff9eb6c2a5579fbc2ed81c4fe940f54c10c670113",
+  "requested_section_references": [
+    "8.03"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "8.03",
+      "section_id": "86d04eb89b5881e8a52a328aa18c233b7bf4fa569d552f66a8b7b6ebbf9712b4",
+      "parent_section_id": "381bbad404d6e75c3eacd5b65006ca8a5a1e3313c842b4f64d4fe690aa79f048",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 237143,
+      "end": 250704,
+      "text_sha256": "2e708d90b805def11099e55bdf53f098e4dea6d6b64d7bf649c14f48c7ec5a25",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-defined-terms/v1",
+      "prompt_version": 2,
+      "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+        "input_scope_digest": "b1ecef254a4de9f84268bbce852b430c492c1d9bb0957e52f5870c66f31b4869",
+        "proposal_count": 17,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "8.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "8.03",
+        "normalized_citation": "8.03",
+        "derived_citation": "8.03(k)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "514bada678129f554b26ed0769a8fb3b1b38e1e957d78459156a3418f3184578",
+          "claim_occurrence_id": "799248d64222c5933481b05ee66b63b766d867ab26d70d739c0fce4dea48b8f2",
+          "subject_occurrence_id": "e6e1bf179a4bc285054ccad42bca6ba91a74fdb3d1aaf396edf10a9864889143",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the actual knowledge",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a18e6cd78e8f42a2ccfde2cabcf6d7010e51ce5e97c089d66eea0c525175069a",
+            "ba68726fd185f6abfabe7640952be03aed19eb3f806e78e8281ba629e851a1ef"
+          ],
+          "attributes": {
+            "section_reference": "8.03",
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "definition_head_quote": "“knowledge” means",
+            "limb_quote": "the actual knowledge",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": "knowledge",
+            "standard_code": "ACTUAL",
+            "source_code": null,
+            "knowledge_party": "TARGET",
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "KNOWLEDGE_STANDARD",
+            "standard_code": "ACTUAL",
+            "knowledge_party": "TARGET"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a18e6cd78e8f42a2ccfde2cabcf6d7010e51ce5e97c089d66eea0c525175069a",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "60c7266dcdc9bd21800970d64ea4503db1e0cf67287475dcd6817c2915a34015",
+              "document_ordinal": 0,
+              "absolute_start": 5848,
+              "absolute_end": 5869,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ba68726fd185f6abfabe7640952be03aed19eb3f806e78e8281ba629e851a1ef",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3a437b1055bde1b3d3d31809cc41c864150b1cb678e8034cd66b12b5ebe94242",
+              "document_ordinal": 0,
+              "absolute_start": 5911,
+              "absolute_end": 5931,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e5b886aefc0f24a69d05d640e78dd23fa37691c062937aa7052ba2c475c20c1b"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "a0fe6896a7694e20836a7b1dae749248ab48e757745ffe032e3bbd5560fab3f0"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "8.03",
+        "normalized_citation": "8.03",
+        "derived_citation": "8.03(k)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ea79e1b0b3d337c1332d1dabd0c42cf40b24cff705926b45417a49e6f9cf75ae",
+          "claim_occurrence_id": "3722ae286ac99bc3301537f0f25c9570096bca5653ed6d744947a76850752c40",
+          "subject_occurrence_id": "97aeb87d0d0882bd602c23a926572d9bec471ae5689cd87808c5c0db88af7003",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the persons identified in Section 8.03(k) of the Company Letter",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1bdd75066d274064cafc7969143b497e4c00768155415b0609a1b021928de778",
+            "b18c8f8c397c2912b614cf8a9b9b9391ba1348c56ca45fa6681be7936d6a9311"
+          ],
+          "attributes": {
+            "section_reference": "8.03",
+            "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+            "definition_head_quote": "“knowledge” means",
+            "limb_quote": "the persons identified in Section 8.03(k) of the Company Letter",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": "knowledge",
+            "standard_code": null,
+            "source_code": "SCHEDULE_REFERENCE",
+            "knowledge_party": "TARGET",
+            "named_persons": [],
+            "breach_term_ref": null
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "KNOWLEDGE_PERSON_SOURCE",
+            "source_code": "SCHEDULE_REFERENCE",
+            "knowledge_party": "TARGET"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1bdd75066d274064cafc7969143b497e4c00768155415b0609a1b021928de778",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "60c7266dcdc9bd21800970d64ea4503db1e0cf67287475dcd6817c2915a34015",
+              "document_ordinal": 0,
+              "absolute_start": 5848,
+              "absolute_end": 5869,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "b18c8f8c397c2912b614cf8a9b9b9391ba1348c56ca45fa6681be7936d6a9311",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "3633f0aa61d356ef61abe8bf5f0ee1abbe4cfc4ec646edad17b70aa330e4d9f2",
+              "document_ordinal": 0,
+              "absolute_start": 5935,
+              "absolute_end": 5998,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f14a2c3d19eded826886d88932bea93ea5365676bb11331babf9ec0a275147db"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "a0fe6896a7694e20836a7b1dae749248ab48e757745ffe032e3bbd5560fab3f0"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "8.03",
+        "normalized_citation": "8.03",
+        "derived_citation": "8.03(p)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ece4cb6ed651a99d92c9b03e9f19e45b9cffd51fbcb6234098450047901290d9",
+          "claim_occurrence_id": "1b34b0daec6c3aaa9d6ad5cf53e162d673eb48b37c2f4d11fe335df6a470cc64",
+          "subject_occurrence_id": "a4854607c6870b569ba693bfbdf86cbc36c86b3bbfc9a3a9cf312187384aad91",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "an act or omission (including a failure to cure circumstances) taken or omitted to be taken",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a8b175459dfa64e4d837bd46ba8170ad6dabc6ddfedce345c78c02915ffffa7d",
+            "8d05e1fc4458731d3e9575fc59a0f013f002d0e2d8d3b11301d321e1588549c5"
+          ],
+          "attributes": {
+            "section_reference": "8.03",
+            "assertion_kind": "WILLFUL_DEFINITION",
+            "definition_head_quote": "“Willful Breach” means",
+            "limb_quote": "an act or omission (including a failure to cure circumstances) taken or omitted to be taken",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": null,
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": "Willful Breach"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "WILLFUL_DEFINITION"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a8b175459dfa64e4d837bd46ba8170ad6dabc6ddfedce345c78c02915ffffa7d",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "54406a6afa0a8f393af2babcb0a10d88c2d21bf2d09014df26a777fc7488d147",
+              "document_ordinal": 0,
+              "absolute_start": 13134,
+              "absolute_end": 13160,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "8d05e1fc4458731d3e9575fc59a0f013f002d0e2d8d3b11301d321e1588549c5",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "e291eb3da613ebc0ece4415594348881f841f81c534ff487944644c1cb9a9187",
+              "document_ordinal": 0,
+              "absolute_start": 13223,
+              "absolute_end": 13314,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "e558025a8049a0c65293b5685e288a972154fcc809cd2e486771c43d60aca145"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "a0fe6896a7694e20836a7b1dae749248ab48e757745ffe032e3bbd5560fab3f0"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "8.03",
+        "normalized_citation": "8.03",
+        "derived_citation": "8.03(p)"
+      },
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "504e6c57de726b011495ac5bdcdbec52bfdb4eaf5a8434b507fc3226c12b8699",
+          "claim_occurrence_id": "f2d25948e59905f538d3f3b936c83faaa3cccd9a1f630da8a9966267722ce117",
+          "subject_occurrence_id": "c4cb3c17c5430b1de5f4fd2031f66c2484b94dc0addcf506df032a389b80c41c",
+          "claim_definition_key": "NATIVE_DEFINED_TERM_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "e37b71f62f477b0b660951b6ca099c3d088898ca729ffb070a6304efef336b96",
+            "d8da762be52737503a155bcb1e8c7db6441695a736b113a9fabf211eb3e0d94f"
+          ],
+          "attributes": {
+            "section_reference": "8.03",
+            "assertion_kind": "WILLFUL_STANDARD",
+            "definition_head_quote": "“Willful Breach” means",
+            "limb_quote": "the breaching party intentionally takes (or intentionally fails to take) and knows (or reasonably should have known) would, or would reasonably be expected to, cause a material breach of such representation, warranty, agreement or covenant.",
+            "proposal_term_ref": null,
+            "superior_term_ref": null,
+            "substitution_from_percent": null,
+            "substituted_term_ref": null,
+            "host_term_ref": null,
+            "threshold_basis": null,
+            "qualifier_code": null,
+            "event_term_ref": null,
+            "exclusion_code": null,
+            "knowledge_term_ref": null,
+            "standard_code": "ACTUAL_OR_CONSTRUCTIVE",
+            "source_code": null,
+            "knowledge_party": null,
+            "named_persons": [],
+            "breach_term_ref": "Willful Breach"
+          },
+          "taxonomy_codes": {
+            "assertion_kind": "WILLFUL_STANDARD",
+            "standard_code": "ACTUAL_OR_CONSTRUCTIVE"
+          },
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "e37b71f62f477b0b660951b6ca099c3d088898ca729ffb070a6304efef336b96",
+              "evidence_role": "DEFINITION",
+              "excerpt_id": "54406a6afa0a8f393af2babcb0a10d88c2d21bf2d09014df26a777fc7488d147",
+              "document_ordinal": 0,
+              "absolute_start": 13134,
+              "absolute_end": 13160,
+              "ordinal": 0
+            },
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "d8da762be52737503a155bcb1e8c7db6441695a736b113a9fabf211eb3e0d94f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "c6981764986bdbacdccdf7a8252cecfe99b100ea02fa1d7b7d5cc7172290eeca",
+              "document_ordinal": 0,
+              "absolute_start": 13320,
+              "absolute_end": 13560,
+              "ordinal": 1
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "c0843bf1a9d8ae1bce5c798851fd86db9e75a61b1b80344f2d364537b887a98f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DEFINED_TERM",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "a0fe6896a7694e20836a7b1dae749248ab48e757745ffe032e3bbd5560fab3f0"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "f18367d8566f91242b53454106dd1c5e64678242f2bfc3ca71d3ddf34592b333",
+          "claim_occurrence_id": "3fc3aeec631b572c85eb6ae1464030d23b203eebc3f213311013ac54c760054f",
+          "subject_occurrence_id": "004cea27e9c970ac42868a9786daf6c9b136c8192a65f7e4d47724ae1c0071aa",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1e62afd8b0d823f35fdb2aa499f83eb704daae1553556e845f03de76b7193382"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "affiliate",
+              "normalized_term_identity": "affiliate",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“affiliate” means",
+              "definition_body_quote": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "affiliate",
+              "normalized_term_identity": "affiliate",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“affiliate” means",
+              "definition_body_quote": "with respect to any person, any other person directly or indirectly controlling, controlled by or under common control with such first person;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1e62afd8b0d823f35fdb2aa499f83eb704daae1553556e845f03de76b7193382",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "18fb3663583ff3f02f8d5be045b15e75471f69fe37389c4ce80b941063620349",
+              "document_ordinal": 0,
+              "absolute_start": 85,
+              "absolute_end": 227,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "203ba24bd8b83124ab1b42ccdc91e35688aa9fae39d8059e0a6c1f6e28409388"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "3eafdbd19b8dd0bd451f5b831636993f143b14542e9d50f3efdf9416244ce010",
+          "claim_occurrence_id": "4c02eef3f4744f84517efed0f027c1a0909ebbdc6207f6681e61386ede3ff0f7",
+          "subject_occurrence_id": "3f6d3ecff89e7763ddb98c5249c4904da0809f48d982ed837e239ad91c8f80e0",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "3534e8869a93106a9491ddb027941101555406a9fca2fb70434b1fa95147486f"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Benefit Agreement",
+              "normalized_term_identity": "benefit agreement",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Benefit Agreement” means",
+              "definition_body_quote": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Benefit Agreement",
+              "normalized_term_identity": "benefit agreement",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Benefit Agreement” means",
+              "definition_body_quote": "(1) any employment, deferred compensation, change in control, severance, termination, employee benefit, loan, indemnification, retention, equity or equity-based compensation, consulting or similar Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, (2) any Contract between the Company or any of its Subsidiaries, on the one hand, and any Company Personnel, on the other hand, the benefits of which are contingent, or the terms of which are altered, upon the occurrence of a transaction involving the Company of the nature contemplated by this Agreement (alone or in combination with any other event) or (3) any trust or insurance Contract or other agreement to fund or otherwise secure payment of any compensation or benefit to be provided to any Company Personnel;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "3534e8869a93106a9491ddb027941101555406a9fca2fb70434b1fa95147486f",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "acf140ae46fdd756691b412bf452594240ed6dd258b8a4239e3b90627e32586a",
+              "document_ordinal": 0,
+              "absolute_start": 262,
+              "absolute_end": 1096,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "ce2c0fa9d6cc47e3087818af0da153a3fa294ca7e734cff85a4dfa704b0b24fd"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "ec3e8b365f80b10dfd6be063a1a5074da45c87871def2ab1625eb7b807073ba7",
+          "claim_occurrence_id": "a2354d3a032c24f02ab906ba3c97e27b1e6118f913db67cdff1b9c446e0de7dd",
+          "subject_occurrence_id": "68a65d191628c418ee8be849d08b8b2646324723515ee1bed5906fda9ab7c983",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ded0a01537898dae9383336fcc6ea3003caaef610975ee8b4be895059d18bc1b"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Benefit Plan",
+              "normalized_term_identity": "benefit plan",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Benefit Plan” means",
+              "definition_body_quote": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Benefit Plan",
+              "normalized_term_identity": "benefit plan",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Benefit Plan” means",
+              "definition_body_quote": "any bonus, pension, profit sharing, deferred compensation, incentive compensation, equity or equity-based compensation, performance, retirement, thrift, savings, cafeteria, paid time off, perquisite, fringe benefit, vacation, unemployment, severance, change in control, termination, retention, disability, death benefit, hospitalization, medical or other welfare benefit or other similar plan, program, policy, arrangement or understanding (whether oral or written, formal or informal, funded or unfunded and whether or not legally binding or subject to the Laws of the United States), sponsored, maintained, contributed to or required to be sponsored, maintained or contributed to by the Company, any of its Subsidiaries or any Commonly Controlled Entity, in each case, providing compensation or benefits to any Company Personnel, including the Company Stock Plans, but not including the Benefit Agreements and any Multiemployer Plan;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ded0a01537898dae9383336fcc6ea3003caaef610975ee8b4be895059d18bc1b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "ddfbbd84528065095f921712a7ef375295f7f9b57e5c578a80553ccccd92ac4d",
+              "document_ordinal": 0,
+              "absolute_start": 1126,
+              "absolute_end": 2061,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "881a2363a5b3e4b50ce2d7925fea877572b3d493f1a3c5bee86df8d1fec99d66"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a0caacfaa8eb26e67733748f9ac2315c75a1964344647b8331cd9f5244de7046",
+          "claim_occurrence_id": "2368416e96adcc6fd255c40bed1924aae14eacc6d0e333efa26fd7e48720fda1",
+          "subject_occurrence_id": "e3aaec75083c1ece5cbe52870c37633cc844d3aba8fa0e61f2f073bfd813d9ac",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "365ef26ef43203475dbf2b305a22e6e089e7298d73dac09b5b1264aba9e9745d"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Business Day",
+              "normalized_term_identity": "business day",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Business Day” means",
+              "definition_body_quote": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Business Day",
+              "normalized_term_identity": "business day",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Business Day” means",
+              "definition_body_quote": "any day other than (i) a Saturday or a Sunday, (ii) a day on which commercial banks in New York City or the Delaware Secretary is authorized or required by Law to be closed or (iii) any day on which the principal office of the SEC in Washington, D.C. are not open to accept filings.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "365ef26ef43203475dbf2b305a22e6e089e7298d73dac09b5b1264aba9e9745d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "f6316a7c1ac2bf9312c908c96b5b42854c6ccd5ce36e059bf2d716514a265f8b",
+              "document_ordinal": 0,
+              "absolute_start": 2091,
+              "absolute_end": 2373,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9db378a77f01b7b339ac59e532bcc8bb13640956e39779f3b18d93ddb60aad48"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "824423d2409659affff09dd050b28135bea3182073d8fe165545cac1af6b6b68",
+          "claim_occurrence_id": "0ea63f9649ecd6cf9fb73ae740472e41220f9a3cdd14f00fa9b767ee6f2da1e8",
+          "subject_occurrence_id": "7640ee326db285fcf8614a947a63f7edc1766e65e3daf5db9af0c212e8219ead",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the call option transactions evidenced by:\n(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "323dedf96e55b36866ff8d4798dac825eecc22cb6ff6c7158ae2d90873d73a12"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Call Options",
+              "normalized_term_identity": "call options",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Call Options” means",
+              "definition_body_quote": "the call option transactions evidenced by:\n(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Call Options",
+              "normalized_term_identity": "call options",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Call Options” means",
+              "definition_body_quote": "the call option transactions evidenced by:\n(i) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Barclays Bank PLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Call Option Transaction, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Call Option Transaction, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Call Option”;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "323dedf96e55b36866ff8d4798dac825eecc22cb6ff6c7158ae2d90873d73a12",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "55eff56ca97affbdda9ff4bd9239c123b7201cfa1fc890632f93d821d05416a9",
+              "document_ordinal": 0,
+              "absolute_start": 2403,
+              "absolute_end": 4010,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "2e6eadc544bf9ab6ab8e76de3408e636e2d173863b414fec1c034b6a4d469d88"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "37c1a8c18f1003ebfaf4772d0630e5d980d807a65ca3fb27c88ea88c1f9901ea",
+          "claim_occurrence_id": "da4c5ee6283603021a850fbb173a39dd3230667c39be58da317dad419bf5e3c0",
+          "subject_occurrence_id": "edaba0e43b5e46077e882df5d92e8ec8368a9b2002b8759c70475075a4195c17",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "9f36816576bd3c270bf20c5669c052a931228349e42e345c7161b367e28454d9"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Commonly Controlled Entity",
+              "normalized_term_identity": "commonly controlled entity",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Commonly Controlled Entity” means",
+              "definition_body_quote": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law;",
+              "cross_reference_target": "Section 414(b), (c), (m) or (o) of the Code",
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Commonly Controlled Entity",
+              "normalized_term_identity": "commonly controlled entity",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Commonly Controlled Entity” means",
+              "definition_body_quote": "any person or entity that, together with the Company, is treated as a single employer under Section 414(b), (c), (m) or (o) of the Code or with respect to which the Company is otherwise jointly or severally liable under applicable Law;",
+              "cross_reference_target": "Section 414(b), (c), (m) or (o) of the Code",
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "9f36816576bd3c270bf20c5669c052a931228349e42e345c7161b367e28454d9",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "1dcb4dd65a19cb62661b170eccdd0f69c5d859f3c0f4be0145446eda54cc0305",
+              "document_ordinal": 0,
+              "absolute_start": 4057,
+              "absolute_end": 4292,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "9f08068870d73bd687a97db7c819d579f63563a9c7e1f8fcaebbb80e5e76867f"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "de1764dfd79b456ca2687e5087e531742bafac000a8ba40afaf41e38e5a2e040",
+          "claim_occurrence_id": "878235e6d8b9feb34368da6933e84660d2c2f94582e5b5d3c1c85ff322f320ec",
+          "subject_occurrence_id": "2fa605c4af2d42a056bcd9580f722d73a99e351076c88a029ca25e6c2f46a3e8",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "eaebbf7b56da713ff44c307dd8cdf50b2957bcb0c1b84c5006bf3741c5ff8db1"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Company Personnel",
+              "normalized_term_identity": "company personnel",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Company Personnel” means",
+              "definition_body_quote": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Company Personnel",
+              "normalized_term_identity": "company personnel",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Company Personnel” means",
+              "definition_body_quote": "any current or former director, officer, employee, contractor or consultant of the Company or any of its Subsidiaries;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "eaebbf7b56da713ff44c307dd8cdf50b2957bcb0c1b84c5006bf3741c5ff8db1",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "51c2fd2f35a0c6de789558b52b9402285e7abd5ac268ff693dc0f4f5f8ef5251",
+              "document_ordinal": 0,
+              "absolute_start": 4327,
+              "absolute_end": 4445,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "468e47bc838e470c17763b124d744c51996269461f792f19074c8829e7f00670"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a6750256d9df05a3bbf706218ffc2c9248e4dfe1500bbea849a5b545afabe5c4",
+          "claim_occurrence_id": "caed4038231ef1864b45632262c2dd7e63e8c9b6a60254d76d102e56b2f5f591",
+          "subject_occurrence_id": "b1ea71c89d8c2b2e91b335a5907f7311f43838345affdcf5666e2700c99d6ecd",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ed9178a06489e8ef9ac912969ec084de2850fc335c431d9f98cd10f8cc2ed008"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Contract",
+              "normalized_term_identity": "contract",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Contract” means",
+              "definition_body_quote": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Contract",
+              "normalized_term_identity": "contract",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Contract” means",
+              "definition_body_quote": "any loan or credit agreement, bond, debenture, note, mortgage, indenture, guarantee, lease or other contract, commitment, agreement, instrument, arrangement, understanding, obligation, undertaking or license, whether oral or written.",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ed9178a06489e8ef9ac912969ec084de2850fc335c431d9f98cd10f8cc2ed008",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "bafc183487fe30cb8b558b8bb2f00e63e2a50cbd55391cc8c7c5874aaee05b31",
+              "document_ordinal": 0,
+              "absolute_start": 4471,
+              "absolute_end": 4704,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "6d21678d541a3db813b7c3916a66380c79bd5aaeafaf716490ba21f4c2676d3a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "a39e58311f0301948b733b9e67750ec721647a1323dcba3d0aad7d188ccee229",
+          "claim_occurrence_id": "e3e8b6007e4eb60673919f577bd4d6d496ee72d928edc1bc380a6ffb314cdb66",
+          "subject_occurrence_id": "f93915694bd3afd585c58b7437d649573812fc760f208f61bf62968bdfee3083",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "ea235ecf20cb1d50291ff5d2aebce220b28291deb14f98b795abcf1207157e7b"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Convertible Notes",
+              "normalized_term_identity": "convertible notes",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Convertible Notes” means",
+              "definition_body_quote": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Convertible Notes",
+              "normalized_term_identity": "convertible notes",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Convertible Notes” means",
+              "definition_body_quote": "the 0.25% convertible senior notes due 2019 issued pursuant to the Notes Indenture;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "ea235ecf20cb1d50291ff5d2aebce220b28291deb14f98b795abcf1207157e7b",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "fdd4e229c44526889dabb970efc4a54d9ead4f0128c761c63c1c8a094e26d39b",
+              "document_ordinal": 0,
+              "absolute_start": 4739,
+              "absolute_end": 4822,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "afa90ada7711c68ca336c4d2bdb4e5dc910821563fbc1a77417047b41e60e7c4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "111043c43e0696e5dd54ca85387d58257cd727d7991fefc4a315be3c8b14ac12",
+          "claim_occurrence_id": "378e0ca11c9c8266e0d7cf6513d78c08b7856711f63954d900905de63f8c33bd",
+          "subject_occurrence_id": "aa9fdb2bee1be7d32ef53302c224ac2ffdbd12d8678d4e873c643b6e6fde423d",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business);",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "da0ccb0dfd35eda2e72fcbe63f7f0b6ed5dc61014c29fb6c82cddee1577d02d8"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Indebtedness",
+              "normalized_term_identity": "indebtedness",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Indebtedness” means",
+              "definition_body_quote": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business);",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Indebtedness",
+              "normalized_term_identity": "indebtedness",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Indebtedness” means",
+              "definition_body_quote": "any (A) indebtedness for borrowed money, (B) indebtedness evidenced by any bond, debenture, note, mortgage, indenture or other debt instrument or debt security, (C) accounts payable to trade creditors and accrued expenses not arising in the ordinary course of business, (D) capital lease obligations, (E) liabilities arising out of interest rate and currency swap arrangements and any other arrangements designed to provide protection against fluctuations in interest or currency rates, (F) liabilities under sale-and-leaseback transactions, agreements to repurchase securities sold and other similar financing transactions, (G) liabilities arising from any breach of any of the foregoing or (H) guarantees with respect to any indebtedness or obligation of a type described in clauses (A) through (G) above of any other person (other than, in the case of clauses (A) and (B), accounts payable to trade creditors and accrued expenses, in each case arising in the ordinary course of business);",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "da0ccb0dfd35eda2e72fcbe63f7f0b6ed5dc61014c29fb6c82cddee1577d02d8",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "d61e963bce382897ae831030060e9d804bf43cd826ec79f6f4e086f84b796c0b",
+              "document_ordinal": 0,
+              "absolute_start": 4852,
+              "absolute_end": 5843,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "7d57f9cc893e00d10656804a6f14781ae4a65f22ce87404b0933d761bbb77373"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "9ea196d7ef54f74cd04834584c2d4ec259b7c2ee7bca785315e7153f0cc1cd3c",
+          "claim_occurrence_id": "bd27811d50d82d37d01ad4d02d3ea79875e928ae344d965ca5e3fb2bf9c70336",
+          "subject_occurrence_id": "c59356415800c01588d28c81c6462087766b4532e45a2ee6595104464c71da0d",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "cc7d62235e26318146adcdfe6c34841671dd37b23aced4875e7736ddc7b23b6d"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "person",
+              "normalized_term_identity": "person",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“person” means",
+              "definition_body_quote": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "person",
+              "normalized_term_identity": "person",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“person” means",
+              "definition_body_quote": "any natural person, corporation, limited liability company, partnership, joint venture, trust, business association, Governmental Entity or other entity;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "cc7d62235e26318146adcdfe6c34841671dd37b23aced4875e7736ddc7b23b6d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4c061531f0f94926a02e3a8f22227c3d5efa368c1433e03e128db47612e4d8c5",
+              "document_ordinal": 0,
+              "absolute_start": 10589,
+              "absolute_end": 10742,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "f5cf055d6e4d766e3178460fe179f0c608a2184a1cfaa391841fbe843a1344fa"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e647ff0bc31982d39dcd43c7dd666d389500bd8c7e7af4d3f459116f4791570f",
+          "claim_occurrence_id": "e06250fdb96a81e14555e7a42c56064e72a0175d2dc64315c796653a07b49b89",
+          "subject_occurrence_id": "0d6c1b25d5562759f171f0fd974d2619cbbd59ee6c906dd34e0557916b98a341",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "49239884e0a6c6e861f71a006f99b23bffe683d34510678bcfc0ebf2bbdb2499"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Subsidiary",
+              "normalized_term_identity": "subsidiary",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "a “Subsidiary” of any person means",
+              "definition_body_quote": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Subsidiary",
+              "normalized_term_identity": "subsidiary",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "a “Subsidiary” of any person means",
+              "definition_body_quote": "any other person (i) more than 50% of whose outstanding shares or securities representing the right to vote for the election of directors or other managing authority of such other person are, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists, or (ii) which does not have outstanding shares or securities with such right to vote, as may be the case in a partnership, joint venture or unincorporated association, but more than 50% of whose ownership interest representing the right to make the decisions for such other person is, now or hereafter, owned or controlled, directly or indirectly, by such first person, but such other person shall be deemed to be a Subsidiary only so long as such ownership or control exists;",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "49239884e0a6c6e861f71a006f99b23bffe683d34510678bcfc0ebf2bbdb2499",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "8b3c527ceb84fbfbb6f5971bbb0e595d985efb06492f944a7c070bcd334aac2d",
+              "document_ordinal": 0,
+              "absolute_start": 10786,
+              "absolute_end": 11646,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "5e6aa75abc3788861d2ae5d2fab69241550cb5d5b92a07abb2b08316c8b7f91a"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    },
+    {
+      "section_reference": "8.03",
+      "citation_validation": null,
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "821abc5d24afcf52912b39acedd02282c1c8e2d0fa0fd9255111f9f2dc4c2413",
+          "claim_occurrence_id": "860c090d628c6dccaaec268ef58839fd36a93e63e46f855af05d926cd1070884",
+          "subject_occurrence_id": "ec09546cd073b12b914ea8b645d71e51f9ea53b49b0cf7cb0e5a4086c550eb09",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the warrant transactions evidenced by:\n(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "bd93425515a21a43200e7c93b8454650f00219af313a2a77cfc7cc58ba12cd5d"
+          ],
+          "attributes": {
+            "why_unmapped": "DEFINITION_ENVELOPE: exact definition evidence retained pending structured review",
+            "nearest_concept": null,
+            "structured_mechanic": {
+              "defined_term": "Warrants",
+              "normalized_term_identity": "warrants",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Warrants” means",
+              "definition_body_quote": "the warrant transactions evidenced by:\n(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+              "cross_reference_target": null,
+              "owner_hint": null
+            },
+            "definition_envelope": {
+              "defined_term": "Warrants",
+              "normalized_term_identity": "warrants",
+              "definition_kind": "TERM_DEFINITION",
+              "definition_head_quote": "“Warrants” means",
+              "definition_body_quote": "the warrant transactions evidenced by:\n(i) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Barclays Bank PLC; and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Barclays Bank PLC;\n(ii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and JPMorgan Chase Bank, National Association and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and JPMorgan Chase Bank, National Association;\n(iii) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Morgan Stanley & Co. International plc and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Morgan Stanley & Co. International plc;\n(iv) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and RBC Capital Markets, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and RBC Capital Markets, LLC; and\n(v) (A) the letter agreement re: Base Warrants, dated as of October 1, 2014, between the Company and Wells Fargo Securities, LLC and (B) the letter agreement re: Additional Warrants, dated as of October 2, 2014, between the Company and Wells Fargo Securities, LLC; where each such transaction shall be a “Warrant”; and",
+              "cross_reference_target": null,
+              "owner_hint": null
+            }
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "bd93425515a21a43200e7c93b8454650f00219af313a2a77cfc7cc58ba12cd5d",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "4c960350ee6b5042bd67acbb000e85f59be7636ce08e8b3eb5b0ad3c7bb680e1",
+              "document_ordinal": 0,
+              "absolute_start": 11672,
+              "absolute_end": 13126,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "12f3bb894b906655a0f5ab1409236ae1c8d2fce14b98cb39bbedcaafa09b7fc1"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "fae7a0038cbd23b7a6a466cab991fca5555ee3f00f0cbf70a51da324bb3e5f45",
+          "producer_receipt_id": "49b0cbd6cac4500da21f2ca3480c722a5538632662a694af7617a84101ff5607",
+          "governed_scope_digest": "95f57ac542c3e67063fd54600895b694cd8eb634fe8a7ad727a6e19703a7dff7",
+          "extraction_provenance_id": "6048e73f07a4a17840e1c7b1dc7724d157188787b6c91c219c07243a90ccddd8"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "8.03",
+      "source_byte_length": 13561,
+      "covered_byte_length": 8388,
+      "coverage_share": 0.6185384558660866,
+      "marker_counts": {
+        "as of": 20,
+        "except": 0,
+        "knowledge": 2,
+        "material": 8,
+        "total": 30
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": 0,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "QUALIFIER_MARKER_GAP",
+          "qualifiers_emitted_count": 0,
+          "marker_total": 30,
+          "ratio": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "8.03",
+      "markers_found": [
+        {
+          "token": "(a)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 58,
+          "end": 61
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 228,
+          "end": 231
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 1097,
+          "end": 1100
+        },
+        {
+          "token": "(d)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2062,
+          "end": 2065
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2110,
+          "end": 2113
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2138,
+          "end": 2142
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2267,
+          "end": 2272
+        },
+        {
+          "token": "(e)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 2374,
+          "end": 2377
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2446,
+          "end": 2449
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2450,
+          "end": 2453
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2584,
+          "end": 2587
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2721,
+          "end": 2725
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2726,
+          "end": 2729
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 2884,
+          "end": 2887
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3045,
+          "end": 3050
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3051,
+          "end": 3054
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3206,
+          "end": 3209
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3364,
+          "end": 3368
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3369,
+          "end": 3372
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3510,
+          "end": 3513
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3658,
+          "end": 3661
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3662,
+          "end": 3665
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3806,
+          "end": 3809
+        },
+        {
+          "token": "(f)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4014,
+          "end": 4017
+        },
+        {
+          "token": "(b)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 4160,
+          "end": 4163
+        },
+        {
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4165,
+          "end": 4168
+        },
+        {
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4170,
+          "end": 4173
+        },
+        {
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4177,
+          "end": 4180
+        },
+        {
+          "token": "(g)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4293,
+          "end": 4296
+        },
+        {
+          "token": "(h)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4446,
+          "end": 4449
+        },
+        {
+          "token": "(i)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4705,
+          "end": 4708
+        },
+        {
+          "token": "(j)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 4823,
+          "end": 4826
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4856,
+          "end": 4859
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4893,
+          "end": 4896
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5013,
+          "end": 5016
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5122,
+          "end": 5125
+        },
+        {
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5153,
+          "end": 5156
+        },
+        {
+          "token": "(F)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5339,
+          "end": 5342
+        },
+        {
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5477,
+          "end": 5480
+        },
+        {
+          "token": "(H)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5544,
+          "end": 5547
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5637,
+          "end": 5640
+        },
+        {
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5649,
+          "end": 5652
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5715,
+          "end": 5718
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 5723,
+          "end": 5726
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 5844,
+          "end": 5847
+        },
+        {
+          "token": "(k)",
+          "family": "ALPHA_LOWER",
+          "classification": "CROSS_REFERENCE_MARKER",
+          "start": 5973,
+          "end": 5976
+        },
+        {
+          "token": "(l)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 6000,
+          "end": 6003
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6234,
+          "end": 6237
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6413,
+          "end": 6417
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 6796,
+          "end": 6799
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7220,
+          "end": 7223
+        },
+        {
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7507,
+          "end": 7510
+        },
+        {
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 7956,
+          "end": 7959
+        },
+        {
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8527,
+          "end": 8530
+        },
+        {
+          "token": "(F)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 8823,
+          "end": 8826
+        },
+        {
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9086,
+          "end": 9089
+        },
+        {
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9618,
+          "end": 9621
+        },
+        {
+          "token": "(H)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 9958,
+          "end": 9961
+        },
+        {
+          "token": "(I)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10120,
+          "end": 10123
+        },
+        {
+          "token": "(J)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10364,
+          "end": 10367
+        },
+        {
+          "token": "(m)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 10566,
+          "end": 10569
+        },
+        {
+          "token": "(n)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 10743,
+          "end": 10746
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 10803,
+          "end": 10806
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11173,
+          "end": 11177
+        },
+        {
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 11647,
+          "end": 11650
+        },
+        {
+          "token": "(i)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11711,
+          "end": 11714
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11715,
+          "end": 11718
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11835,
+          "end": 11838
+        },
+        {
+          "token": "(ii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11957,
+          "end": 11961
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 11962,
+          "end": 11965
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12105,
+          "end": 12108
+        },
+        {
+          "token": "(iii)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12251,
+          "end": 12256
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12257,
+          "end": 12260
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12397,
+          "end": 12400
+        },
+        {
+          "token": "(iv)",
+          "family": "ROMAN",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12540,
+          "end": 12544
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12545,
+          "end": 12548
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12671,
+          "end": 12674
+        },
+        {
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12804,
+          "end": 12807
+        },
+        {
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12808,
+          "end": 12811
+        },
+        {
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12937,
+          "end": 12940
+        },
+        {
+          "token": "(p)",
+          "family": "ALPHA_LOWER",
+          "classification": "SECTION_PARAGRAPH_MARKER",
+          "start": 13130,
+          "end": 13133
+        }
+      ],
+      "classification_counts": {
+        "enumeration_marker": 63,
+        "section_paragraph_marker": 16,
+        "cross_reference_marker": 2
+      },
+      "proposed_tokens": [],
+      "disagreements": [
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2110,
+          "end": 2113
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2138,
+          "end": 2142
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 2267,
+          "end": 2272
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 2446,
+          "end": 2449
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2450,
+          "end": 2453
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2584,
+          "end": 2587
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 2721,
+          "end": 2725
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 2726,
+          "end": 2729
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 2884,
+          "end": 2887
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 3045,
+          "end": 3050
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3051,
+          "end": 3054
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3206,
+          "end": 3209
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 3364,
+          "end": 3368
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3369,
+          "end": 3372
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3510,
+          "end": 3513
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 3658,
+          "end": 3661
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 3658,
+          "end": 3661
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 3662,
+          "end": 3665
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 3806,
+          "end": 3809
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(c)",
+          "family": "ALPHA_LOWER",
+          "start": 4165,
+          "end": 4168
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 4170,
+          "end": 4173
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(m)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 4170,
+          "end": 4173
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(o)",
+          "family": "ALPHA_LOWER",
+          "start": 4177,
+          "end": 4180
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 4856,
+          "end": 4859
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 4893,
+          "end": 4896
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 5013,
+          "end": 5016
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 5122,
+          "end": 5125
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "start": 5153,
+          "end": 5156
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(F)",
+          "family": "ALPHA_UPPER",
+          "start": 5339,
+          "end": 5342
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "start": 5477,
+          "end": 5480
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(H)",
+          "family": "ALPHA_UPPER",
+          "start": 5544,
+          "end": 5547
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 5637,
+          "end": 5640
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "start": 5649,
+          "end": 5652
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 5715,
+          "end": 5718
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 5723,
+          "end": 5726
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 6234,
+          "end": 6237
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 6413,
+          "end": 6417
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 6796,
+          "end": 6799
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 7220,
+          "end": 7223
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(C)",
+          "family": "ALPHA_UPPER",
+          "start": 7507,
+          "end": 7510
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(D)",
+          "family": "ALPHA_UPPER",
+          "start": 7956,
+          "end": 7959
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(E)",
+          "family": "ALPHA_UPPER",
+          "start": 8527,
+          "end": 8530
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(F)",
+          "family": "ALPHA_UPPER",
+          "start": 8823,
+          "end": 8826
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "start": 9086,
+          "end": 9089
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(G)",
+          "family": "ALPHA_UPPER",
+          "start": 9618,
+          "end": 9621
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(H)",
+          "family": "ALPHA_UPPER",
+          "start": 9958,
+          "end": 9961
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(I)",
+          "family": "ALPHA_UPPER",
+          "start": 10120,
+          "end": 10123
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(J)",
+          "family": "ALPHA_UPPER",
+          "start": 10364,
+          "end": 10367
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 10803,
+          "end": 10806
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 11173,
+          "end": 11177
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(i)",
+          "family": "ROMAN",
+          "start": 11711,
+          "end": 11714
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 11715,
+          "end": 11718
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 11835,
+          "end": 11838
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(ii)",
+          "family": "ROMAN",
+          "start": 11957,
+          "end": 11961
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 11962,
+          "end": 11965
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 12105,
+          "end": 12108
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iii)",
+          "family": "ROMAN",
+          "start": 12251,
+          "end": 12256
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 12257,
+          "end": 12260
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 12397,
+          "end": 12400
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(iv)",
+          "family": "ROMAN",
+          "start": 12540,
+          "end": 12544
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 12545,
+          "end": 12548
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 12671,
+          "end": 12674
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "AMBIGUOUS_MARKER_FAMILY",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "classification": "ENUMERATION_MARKER",
+          "start": 12804,
+          "end": 12807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(v)",
+          "family": "AMBIGUOUS_MARKER_FAMILY",
+          "start": 12804,
+          "end": 12807
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(A)",
+          "family": "ALPHA_UPPER",
+          "start": 12808,
+          "end": 12811
+        },
+        {
+          "type": "LIMB_ENUMERATION_DISAGREEMENT",
+          "reason": "MARKER_WITHOUT_LIMB",
+          "token": "(B)",
+          "family": "ALPHA_UPPER",
+          "start": 12937,
+          "end": 12940
+        }
+      ],
+      "disagreement_count": 66
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 17,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "832410ddabdbb194ac8d3a7c799eb70384c8e79845277a663292c745fa6eeb70"
+}

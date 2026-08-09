@@ -318,8 +318,8 @@ test('a Termination Fee titled section is NOT classified TERMINATION (the shared
   assert.equal(result.section_family, 'TERMINATION_FEE');
 });
 
-test('MAPPING_TABLE_VERSION is 20; materiality rank 10 TERMINATION_RIGHTS tier is unchanged and covers every TERMR- concept, including the two new ones', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+test('MAPPING_TABLE_VERSION is 21; materiality rank 10 TERMINATION_RIGHTS tier is unchanged and covers every TERMR- concept, including the two new ones', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 21);
   const tier = MATERIALITY_TABLE.find((t) => t.label === 'TERMINATION_RIGHTS');
   assert.equal(tier.rank, 10);
   assert.deepEqual([...tier.concept_key_prefixes], ['TERMR-']);
@@ -381,7 +381,7 @@ test('positional gate: "by Parent" and "Columbus may terminate" both corroborate
 // End-to-end resolution (synthetic candidates, real fixture bytes).
 // ═══════════════════════════════════════════════════════════════════════
 
-test('a mutual RIGHT_GRANT resolves TERMR-MUTUAL, mints the full three-key EITHER_PRINCIPAL_PARTY party, and passes validate-write-set.js\'s closed party contract', async () => {
+test('a mutual RIGHT_GRANT resolves TERMR-MUTUAL, mints two principal-party rows (TARGET and BUYER), and passes validate-write-set.js\'s closed party contract', async () => {
   const quote = 'by mutual written consent of the Company and Parent by action of their respective boards of directors.';
   assert.ok(MUTUAL_FIXTURE.includes(quote));
   const { resolution } = await resolveTerminationAssertions('deal:termr-mutual', MUTUAL_FIXTURE, {
@@ -393,16 +393,19 @@ test('a mutual RIGHT_GRANT resolves TERMR-MUTUAL, mints the full three-key EITHE
     ],
   });
   const resolved = resolution.resolved.filter((e) => e.generic_claim_key === TERMINATION_RIGHT_CLAIM_KEY);
-  assert.equal(resolved.length, 1);
-  const entry = resolved[0];
-  assert.equal(entry.concept_key, 'TERMR-MUTUAL');
-  assert.equal(entry.claim.canonical_value, true);
-  assert.deepEqual(entry.party, {
-    role: 'TERMINATION_RIGHT_HOLDER', value: 'the Company and Parent', capacity: EITHER_PRINCIPAL_PARTY_CAPACITY,
-  });
-  assert.equal(entry.triage.materiality_rank, 10);
-  assertPartyMatchesClosedContract(entry.party);
-  assertPartyMatchesClosedContract(entry.provision_instance.party);
+  assert.equal(resolved.length, 2);
+  const capacities = resolved.map((e) => e.party.capacity).sort();
+  assert.deepEqual(capacities, ['BUYER', 'TARGET']);
+  for (const entry of resolved) {
+    assert.equal(entry.concept_key, 'TERMR-MUTUAL');
+    assert.equal(entry.claim.canonical_value, true);
+    assert.equal(entry.party.role, 'TERMINATION_RIGHT_HOLDER');
+    assert.ok(entry.party.value);
+    assert.notEqual(entry.party.capacity, EITHER_PRINCIPAL_PARTY_CAPACITY);
+    assertPartyMatchesClosedContract(entry.party);
+    assertPartyMatchesClosedContract(entry.provision_instance.party);
+  }
+  assert.equal(resolved[0].triage.materiality_rank, 10);
 });
 
 test('a target-breach quote resolves with BUYER as terminator (the v1-suffix inversion guard, verified by construction)', async () => {
@@ -453,10 +456,12 @@ test('an OUTSIDE_DATE assertion resolves TERMR-OUTSIDE with the parsed ISO date 
     ],
   });
   const resolved = resolution.resolved.filter((e) => e.generic_claim_key === TERMINATION_RIGHT_CLAIM_KEY);
-  assert.equal(resolved.length, 1);
+  assert.equal(resolved.length, 2);
   assert.equal(resolved[0].concept_key, 'TERMR-OUTSIDE');
+  assert.equal(resolved[1].concept_key, 'TERMR-OUTSIDE');
   assert.equal(resolved[0].claim.canonical_value, '2021-11-22');
   assert.equal(resolved[0].claim.attributes.deadline_term_ref, 'Outside Date');
+  assert.deepEqual(resolved.map((e) => e.party.capacity).sort(), ['BUYER', 'TARGET']);
 });
 
 test('an OUTSIDE_DATE assertion missing deadline_term queues DEADLINE_TERM_REF_NOT_IN_QUOTE', async () => {
@@ -511,8 +516,10 @@ test('a genuine vote-failure quote resolves TERMR-NOVOTE', async () => {
     ],
   });
   const resolved = resolution.resolved.filter((e) => e.generic_claim_key === TERMINATION_RIGHT_CLAIM_KEY);
-  assert.equal(resolved.length, 1);
+  assert.equal(resolved.length, 2);
   assert.equal(resolved[0].concept_key, 'TERMR-NOVOTE');
+  assert.equal(resolved[1].concept_key, 'TERMR-NOVOTE');
+  assert.deepEqual(resolved.map((e) => e.party.capacity).sort(), ['BUYER', 'TARGET']);
 });
 
 test('"by either Parent or the Company" labelled ONE_PARTY queues PARTY_SCOPE_UNCORROBORATED (the either-check runs first)', async () => {
@@ -643,12 +650,15 @@ test('a CURE claim and a NOTICE claim in the same section never collide or dedup
 });
 
 test('assertion/trigger incoherence: a CURE_PERIOD hanging off a MUTUAL_CONSENT right queues ASSERTION_TRIGGER_INCOHERENT', async () => {
-  const quote = 'by mutual written consent, not cured within 30 days following written notice to Parent';
+  // terminating_party_ref must split into TARGET+BUYER so the 2X-I mutual
+  // mint path reaches the assertion/trigger coherence gate (a one-sided
+  // ref would queue MUTUAL_PARTY_UNRESOLVED first).
+  const quote = 'by mutual written consent of the Company and Parent, not cured within 30 days following written notice';
   const { resolution } = await resolveTerminationAssertions('deal:termr-incoherent', shell(quote), {
     termination_right_assertions: [
       assertion({
         assertionKind: 'CURE_PERIOD', triggerKind: 'MUTUAL_CONSENT', partyScope: 'EITHER_PARTY',
-        terminatingParty: 'Parent', dayKind: 'CALENDAR', periodKind: 'CURE', quote,
+        terminatingParty: 'the Company and Parent', dayKind: 'CALENDAR', periodKind: 'CURE', quote,
       }),
     ],
   });
@@ -684,6 +694,7 @@ test('materiality rank 10 on every resolved claim and every review item', async 
   });
   const resolved = resolution.resolved.filter((e) => e.generic_claim_key === TERMINATION_RIGHT_CLAIM_KEY);
   assert.equal(resolved[0].triage.materiality_rank, 10);
+  assert.equal(resolved.length, 2);
 
   const { resolution: resolutionQueued } = await resolveTerminationAssertions('deal:termr-materiality-queued', shell(quote), {
     termination_right_assertions: [
@@ -701,7 +712,7 @@ test('additivity re-pin: the resolution receipt threads mapping_table_version 17
   const { resolution } = await resolveTerminationAssertions('deal:termr-additivity', shell('no termination assertions here'), {
     termination_right_assertions: [],
   });
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 21);
   assert.equal(resolution.resolution_receipt.termination_deadline_parse_version, 1);
-  assert.equal(resolution.resolution_receipt.cure_period_parse_version, 1);
+  assert.equal(resolution.resolution_receipt.cure_period_parse_version, 2);
 });
