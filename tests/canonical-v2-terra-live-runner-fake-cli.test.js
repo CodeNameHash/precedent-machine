@@ -283,3 +283,35 @@ exit 94
     fs.rmSync(scratch, { recursive: true, force: true });
   }
 });
+
+test('a concurrent payload winner is securely read, verified, and adopted after EEXIST', async (t) => {
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'source-map-eexist-'));
+  t.after(() => fs.rmSync(scratch, { recursive: true, force: true }));
+  const runner = await import(RUNNER_URL);
+  const locallyVerified = runner.loadAndVerifySource({
+    dealPin: runner.DEAL_PINS.topbuild,
+    deal: 'topbuild',
+    rawHtmlPath: runner.DEAL_PINS.topbuild.raw_html_path,
+  });
+  const uncompressed = zlib.inflateRawSync(Buffer.from(
+    locallyVerified.conversion.source_map_payload_base64,
+    'base64',
+  ));
+  const winningPayload = zlib.deflateRawSync(uncompressed, { level: 0 });
+  const canonicalTextId = locallyVerified.conversion.canonical_text_id;
+  const payloadPath = path.join(scratch, sourceMapPayloadPathFor(canonicalTextId));
+  fs.mkdirSync(path.dirname(payloadPath), { recursive: true });
+  fs.writeFileSync(payloadPath, winningPayload);
+
+  const result = runner.persistOrAdoptSourceMapPayload({
+    repoRoot: scratch,
+    verified: locallyVerified,
+  });
+  assert.equal(result.created, false);
+  assert.equal(result.sourceMapCompressedSha256, sha256Hex(winningPayload));
+  assert.equal(
+    result.verified.conversion.source_map_compressed_sha256,
+    sha256Hex(winningPayload),
+  );
+  assert.equal(result.verified.conversion.source_map_digest, locallyVerified.conversion.source_map_digest);
+});

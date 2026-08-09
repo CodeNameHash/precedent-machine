@@ -29,7 +29,8 @@ function makeHermeticRepo() {
   const repoRoot = mkdtempSync(join(tmpdir(), 'blind-successor-'));
   const run = 'hermetic-run';
   const runDir = join(repoRoot, 'evidence', 'canonical-v2', run);
-  const payloadRelativePath = 'evidence/canonical-v2/_admitted-source-map-payloads/hermetic.deflate';
+  const canonicalTextId = 'a'.repeat(64);
+  const payloadRelativePath = `evidence/canonical-v2/_admitted-source-map-payloads/${canonicalTextId}.deflate`;
   const payloadPath = join(repoRoot, payloadRelativePath);
   const rawRelativePath = 'raw/hermetic.htm';
   const rawPath = join(repoRoot, rawRelativePath);
@@ -110,7 +111,7 @@ function makeHermeticRepo() {
     cards_per_stratum: 8,
   });
   return {
-    repoRoot, run, runDir, cohortPath: 'cohort.json', payloadBytes, payloadPath,
+    repoRoot, run, runDir, cohortPath: 'cohort.json', canonicalTextId, payloadBytes, payloadPath,
     rawBytes, rawPath, compiledCandidates,
   };
 }
@@ -122,7 +123,12 @@ function hermeticModules(fixture, disposition) {
     loadAndVerifySource({ rawHtmlPath }) {
       calls.load += 1;
       assert.deepEqual(readFileSync(resolve(fixture.repoRoot, rawHtmlPath)), fixture.rawBytes);
-      return { conversion: { canonical_text: fixture.rawBytes.toString('utf8') } };
+      return {
+        conversion: {
+          canonical_text: fixture.rawBytes.toString('utf8'),
+          canonical_text_id: fixture.canonicalTextId,
+        },
+      };
     },
     resolveContainedEvidenceFile(repoRoot, path) {
       assert.equal(repoRoot, fixture.repoRoot);
@@ -692,7 +698,7 @@ test('hermetic end-to-end scoring reconstructs and adopts source bytes determini
     assert.equal(generated.sample.cards.length, 32);
     assert.equal(generated.key.cards.length, 32);
     assert.deepEqual(generated.key.cards[0].source_binding.source_map_payload, {
-      path: 'evidence/canonical-v2/_admitted-source-map-payloads/hermetic.deflate',
+      path: `evidence/canonical-v2/_admitted-source-map-payloads/${fixture.canonicalTextId}.deflate`,
       sha256: sha256(fixture.payloadBytes),
     });
 
@@ -712,7 +718,7 @@ test('hermetic end-to-end scoring reconstructs and adopts source bytes determini
       resolverModule: acceptedModules.resolverModule,
     });
     assert.equal(JSON.stringify(accepted), JSON.stringify(repeated));
-    assert.equal(accepted.score_id, '028552c39b4016d2cdabc61c9f6b7f16b92d9ab4674ed6f3176cf1755d0999fc');
+    assert.equal(accepted.score_id, '20f715feb0be13d42b90fb793bcc245e104ec20641f6d4e0733e71a414bd57fa');
     assert.equal(accepted.acceptance.accepted, true);
     assert.equal(accepted.acceptance.all_cards_accounted, true);
     assert.deepEqual(accepted.acceptance.unnamed_historical_strata_exact_comparison, {
@@ -735,6 +741,37 @@ test('hermetic end-to-end scoring reconstructs and adopts source bytes determini
     assert.ok(refused.results.every((result) => result.current_channel === 'REVIEW'));
     assert.notEqual(refused.score_id, accepted.score_id);
     assert.deepEqual(refusedModules.calls, { load: 1, adopt: 1, admitted: 1, resolve: 2 });
+  } finally {
+    rmSync(fixture.repoRoot, { recursive: true, force: true });
+  }
+});
+
+test('scoring rejects a non-canonical payload path before it reaches a payload reader', async () => {
+  const fixture = makeHermeticRepo();
+  try {
+    const sourceReferencePath = join(fixture.runDir, 'source-reference.json');
+    const sourceReference = JSON.parse(readFileSync(sourceReferencePath, 'utf8'));
+    sourceReference.admitted_source_capture_inputs.source_map_payload_path = 'evidence/canonical-v2/not-canonical.deflate';
+    writeJson(sourceReferencePath, sourceReference);
+    const generated = successor.buildBlindSuccessorSample({
+      repoRoot: fixture.repoRoot,
+      cohortPath: fixture.cohortPath,
+    });
+    const modules = hermeticModules(fixture, 'RESOLVED');
+    modules.runnerModule.resolveContainedEvidenceFile = () => {
+      throw new Error('payload reader reached before provenance validation');
+    };
+    await assert.rejects(
+      successor.scoreBlindSuccessor({
+        repoRoot: fixture.repoRoot,
+        cohortPath: fixture.cohortPath,
+        key: generated.key,
+        runnerModule: modules.runnerModule,
+        resolverModule: modules.resolverModule,
+      }),
+      (error) => error.code === 'PERSISTED_SOURCE_MAP_PATH_MISMATCH',
+    );
+    assert.equal(modules.calls.adopt, 0);
   } finally {
     rmSync(fixture.repoRoot, { recursive: true, force: true });
   }

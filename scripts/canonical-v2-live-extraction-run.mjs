@@ -162,7 +162,7 @@
 import {
   readFileSync, writeFileSync, mkdirSync, existsSync, lstatSync,
 } from 'node:fs';
-import { resolve, relative, isAbsolute, sep } from 'node:path';
+import { dirname, resolve, relative, isAbsolute, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -182,7 +182,7 @@ const {
   retrievalPolicyDigestFor, adoptPersistedSourceMapPayload,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const {
-  sourceMapPayloadPathFor, resolveContainedRepositoryPath, resolveSourceMapPayloadPath,
+  sourceMapPayloadPathFor, resolveContainedRepositoryPath, resolveSourceMapPayloadPath, readSourceMapPayload,
 } = require('../lib/canonical-v2/source-map-payload-store');
 const {
   sectionizeAdmittedSource, findSectionByReference,
@@ -1411,6 +1411,33 @@ function adoptStoredSourceMapPayload({ verified, payloadBytes }) {
   };
 }
 
+function persistOrAdoptSourceMapPayload({ repoRoot, verified }) {
+  const canonicalTextId = verified.conversion.canonical_text_id;
+  const sourceMapPayloadPath = sourceMapPayloadPathFor(canonicalTextId);
+  const absolutePayloadPath = resolveSourceMapPayloadPath({
+    repoRoot,
+    canonicalTextId,
+    allowMissingLeaf: true,
+  });
+  mkdirSync(dirname(absolutePayloadPath), { recursive: true });
+  let created = false;
+  try {
+    writeFileSync(
+      absolutePayloadPath,
+      Buffer.from(verified.conversion.source_map_payload_base64, 'base64'),
+      { flag: 'wx' },
+    );
+    created = true;
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  const adopted = adoptStoredSourceMapPayload({
+    verified,
+    payloadBytes: readSourceMapPayload({ repoRoot, canonicalTextId }),
+  });
+  return { ...adopted, sourceMapPayloadPath, created };
+}
+
 /**
  * Sectionizes the admitted source and resolves every requested section
  * reference against the tree BEFORE any model call is made, exactly as
@@ -1818,28 +1845,14 @@ async function main() {
   // suite exercised the runner's argument parsing. A dry run needs no
   // payload, because it has no write-set to import.
   if (outDir && !config.dryRun) {
-    sourceMapPayloadPath = sourceMapPayloadPathFor(locallyVerified.conversion.canonical_text_id);
-    const absolutePayloadPath = resolveSourceMapPayloadPath({
-      repoRoot,
-      canonicalTextId: locallyVerified.conversion.canonical_text_id,
-      allowMissingLeaf: true,
-    });
-    if (existsSync(absolutePayloadPath)) {
-      const adopted = adoptStoredSourceMapPayload({
-        verified: locallyVerified,
-        payloadBytes: readFileSync(absolutePayloadPath),
-      });
-      verified = adopted.verified;
-      recordedSourceMapProvenance = {
-        source_map_payload_path: sourceMapPayloadPath,
-        source_map_compressed_sha256: adopted.sourceMapCompressedSha256,
-      };
-    } else {
-      writeFileSync(
-        absolutePayloadPath,
-        Buffer.from(locallyVerified.conversion.source_map_payload_base64, 'base64'),
-        { flag: 'wx' },
-      );
+    const persisted = persistOrAdoptSourceMapPayload({ repoRoot, verified: locallyVerified });
+    sourceMapPayloadPath = persisted.sourceMapPayloadPath;
+    verified = persisted.verified;
+    recordedSourceMapProvenance = {
+      source_map_payload_path: sourceMapPayloadPath,
+      source_map_compressed_sha256: persisted.sourceMapCompressedSha256,
+    };
+    if (persisted.created) {
       process.stderr.write(`${logPrefix} persisted compressed source map at ${sourceMapPayloadPath}\n`);
     }
   }
@@ -2283,6 +2296,7 @@ export {
   loadAndVerifySource,
   buildAdmittedContext,
   adoptStoredSourceMapPayload,
+  persistOrAdoptSourceMapPayload,
   sectionizeAndResolve,
   buildDryRunReport,
   currentPromptDigests,

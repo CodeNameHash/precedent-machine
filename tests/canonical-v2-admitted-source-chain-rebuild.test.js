@@ -25,6 +25,7 @@ const {
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const {
   assertRecordedSourceMapProvenance,
+  readSourceMapPayload,
   resolveContainedRepositoryPath,
 } = require('../lib/canonical-v2/source-map-payload-store');
 const { CONVERTER_DIGEST } = require('../lib/canonical-v2/sec-html-canonical-text');
@@ -68,6 +69,57 @@ test('repository payload paths reject traversal and every symbolic-link componen
   }
   for (const candidate of ['store/linked.deflate', 'linked-store/payload.deflate']) {
     assert.throws(() => resolveContainedRepositoryPath(root, candidate), /SYMLINK_REFUSED/);
+  }
+});
+
+test('persisted payload reads reject a symbolic-link swap and close a verified descriptor on failure', (t) => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'payload-secure-read-'));
+  const canonicalTextId = 'a'.repeat(64);
+  const relativePayloadPath = sourceMapPayloadPathFor(canonicalTextId);
+  const payloadPath = path.join(root, relativePayloadPath);
+  const outsidePath = path.join(root, 'outside.deflate');
+  fs.mkdirSync(path.dirname(payloadPath), { recursive: true });
+  fs.writeFileSync(payloadPath, 'inside');
+  fs.writeFileSync(outsidePath, 'outside');
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  const originalOpen = fs.openSync;
+  fs.openSync = (file, flags, ...rest) => {
+    if (file === payloadPath) {
+      fs.unlinkSync(payloadPath);
+      fs.symlinkSync(outsidePath, payloadPath);
+    }
+    return originalOpen(file, flags, ...rest);
+  };
+  try {
+    assert.throws(
+      () => readSourceMapPayload({ repoRoot: root, canonicalTextId }),
+      (error) => error.code === 'PERSISTED_SOURCE_MAP_SYMLINK_REFUSED',
+    );
+  } finally {
+    fs.openSync = originalOpen;
+  }
+
+  fs.unlinkSync(payloadPath);
+  fs.writeFileSync(payloadPath, 'inside');
+  const originalFstat = fs.fstatSync;
+  const originalClose = fs.closeSync;
+  let closeCount = 0;
+  fs.fstatSync = () => {
+    const error = new Error('simulated fstat failure');
+    error.code = 'EIO';
+    throw error;
+  };
+  fs.closeSync = (descriptor) => {
+    closeCount += 1;
+    return originalClose(descriptor);
+  };
+  try {
+    assert.throws(() => readSourceMapPayload({ repoRoot: root, canonicalTextId }), /simulated fstat failure/);
+    assert.equal(closeCount, 1);
+  } finally {
+    fs.fstatSync = originalFstat;
+    fs.closeSync = originalClose;
   }
 });
 

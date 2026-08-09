@@ -22,6 +22,10 @@ const {
 const {
   buildLexicalDisagreementReceipt,
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
+const {
+  assertRecordedSourceMapProvenance,
+  readSourceMapPayload,
+} = require('../lib/canonical-v2/source-map-payload-store');
 
 const COHORT_SCHEMA = 'STEP_2X_K_BLIND_SUCCESSOR_COHORT/V1';
 const SAMPLE_SCHEMA = 'STEP_2X_K_BLIND_SUCCESSOR_SAMPLE/V1';
@@ -101,17 +105,9 @@ function sourceBinding({ repoRoot, run, sourceReferencePath }) {
   if (typeof payloadPath !== 'string' || typeof declaredPayloadSha !== 'string') {
     fail('SOURCE_MAP_BINDING_INCOMPLETE', `${run} has an incomplete persisted source-map binding`);
   }
-  const absolutePayloadPath = resolveContainedPath(repoRoot, payloadPath, `${run}.source_map_payload_path`);
-  if (!existsSync(absolutePayloadPath)) {
-    fail('SOURCE_MAP_PAYLOAD_MISSING', `${run} persisted source-map payload is missing`, { payload_path: payloadPath });
-  }
-  const actualPayloadSha = digestFile(absolutePayloadPath);
-  if (actualPayloadSha !== declaredPayloadSha) {
-    fail('SOURCE_MAP_PAYLOAD_DIGEST_MISMATCH', `${run} persisted source-map payload differs from source-reference.json`);
-  }
   return Object.freeze({
     source_reference_sha256: digestFile(sourceReferencePath),
-    source_map_payload: Object.freeze({ path: payloadPath, sha256: actualPayloadSha }),
+    source_map_payload: Object.freeze({ path: payloadPath, sha256: declaredPayloadSha }),
   });
 }
 
@@ -502,14 +498,6 @@ function verifyRunHashes(repoRoot, card) {
   if ((frozenPayload?.path || null) !== referencedPath || (frozenPayload?.sha256 || null) !== referencedSha) {
     fail('SOURCE_MAP_BINDING_MISMATCH', `${card.source_run} source-map path or digest differs from the frozen key`);
   }
-  if (frozenPayload) {
-    const payloadPath = resolveContainedPath(
-      repoRoot, frozenPayload.path, `${card.source_run}.source_map_payload_path`,
-    );
-    if (!existsSync(payloadPath) || digestFile(payloadPath) !== frozenPayload.sha256) {
-      fail('SOURCE_MAP_PAYLOAD_DIGEST_MISMATCH', `${card.source_run} persisted source-map payload differs from the frozen key`);
-    }
-  }
   return runDir;
 }
 
@@ -528,11 +516,12 @@ async function resolveSourceRun({ repoRoot, sourceRun, runner, resolverModule = 
   let verified = locallyVerified;
   let recordedSourceMapProvenance = null;
   const captureInputs = sourceReference.admitted_source_capture_inputs;
-  if (captureInputs?.source_map_payload_path) {
-    const payloadPath = runner.resolveContainedEvidenceFile(
-      repoRoot, captureInputs.source_map_payload_path, `${sourceRun}.source_map_payload_path`,
-    );
-    const payloadBytes = readFileSync(payloadPath);
+  if (captureInputs?.source_map_payload_path || captureInputs?.source_map_compressed_sha256) {
+    assertRecordedSourceMapProvenance(captureInputs, locallyVerified.conversion.canonical_text_id);
+    const payloadBytes = readSourceMapPayload({
+      repoRoot,
+      canonicalTextId: locallyVerified.conversion.canonical_text_id,
+    });
     const actual = sha256Hex(payloadBytes);
     if (actual !== captureInputs.source_map_compressed_sha256) {
       fail('SOURCE_MAP_PAYLOAD_DIGEST_MISMATCH', `${sourceRun} names different compressed bytes`);
