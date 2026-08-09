@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { compileFixtureContractV23, compileFixtureContractV24 } = require('../lib/canonical-v2/contract-bundle');
 const { classifySectionFamily, SECTION_FAMILY_RULE_CLASSIFIED } = require('../lib/canonical-v2/native-producer/section-family-classifier');
-const { buildClosingConditionsProducerPrompt } = require('../lib/canonical-v2/native-producer/closing-conditions-producer-prompt');
+const { buildClosingConditionsProducerPrompt, PROMPT_VERSION } = require('../lib/canonical-v2/native-producer/closing-conditions-producer-prompt');
 const { shapeClosingConditionProposals, CLOSING_CONDITION_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { produceCandidateProposals } = require('../lib/canonical-v2/native-producer/provider-interface');
@@ -33,6 +33,17 @@ test('closing-condition producer preserves a byte-exact positive candidate', () 
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, CLOSING_CONDITION_CLAIM_KEY);
   assert.equal(shaped.proposals[0].raw_value, QUOTE);
+});
+
+test('closing-condition prompt limits the closed accuracy vocabulary and obligor requirement to bring-down tiers', () => {
+  const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
+  assert.equal(PROMPT_VERSION, 5);
+  assert.equal(prompt.prompt_version, 5);
+  assert.match(prompt.messages[0].content, /MAT_ALL_RESPECTS \| MAT_ALL_RESPECTS_DE_MINIMIS \| MAT_ALL_MATERIAL \| MAT_MAE_QUALIFIED/);
+  assert.match(prompt.messages[0].content, /Only a BRING_DOWN_TIER requires a non-empty condition_obligor quoted in its own quote/);
+  assert.match(prompt.messages[0].content, /For BRING_DOWN_TIER, accuracy_standard must be exactly one of those four values and may not be null/);
+  assert.match(prompt.messages[0].content, /For every other assertion_kind, set accuracy_standard and condition_obligor to null/);
+  assert.match(prompt.messages[0].content, /prevent or materially delay.*open_world_candidates/i);
 });
 
 test('live provider dispatches closing conditions through its own prompt and permits an omitted assertions array', async () => {

@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { compileFixtureContractV26, compileFixtureContractV29 } = require('../lib/canonical-v2/contract-bundle');
 const { parseDayCount, parseAdjournmentCount } = require('../lib/canonical-v2/native-producer/proxy-meeting-count-parse');
-const { buildProxyMeetingProducerPrompt } = require('../lib/canonical-v2/native-producer/proxy-meeting-producer-prompt');
+const { buildProxyMeetingProducerPrompt, PROMPT_VERSION } = require('../lib/canonical-v2/native-producer/proxy-meeting-producer-prompt');
 const { shapeProxyMeetingProposals, PROXY_MEETING_COVENANT_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { classifySectionFamily } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const {
@@ -45,6 +45,13 @@ test('proxy-meeting provider shape retains only byte-exact proposed facts', () =
   assert.equal(prompt.prompt_id, 'native-producer-proxy-meeting/v1');
   const shaped = shapeProxyMeetingProposals({ proxy_meeting_assertions: [{ section_reference: '6.3', assertion_kind: 'MEETING_DEADLINE', anchor_kind: 'MAILING', day_kind: 'CALENDAR', meeting_ref: 'special meeting', quote }], open_world_candidates: [] }, quote);
   assert.equal(shaped.proposals[0].claim_definition_key, PROXY_MEETING_COVENANT_CLAIM_KEY);
+});
+
+test('proxy-meeting prompt routes qualitative timing to open world', () => {
+  const prompt = buildProxyMeetingProducerPrompt({ source_text: 'The Company shall act as promptly as reasonably practicable.', governed_scope: { section_reference: '6.3' } });
+  assert.equal(PROMPT_VERSION, 2);
+  assert.equal(prompt.prompt_version, 2);
+  assert.match(prompt.messages[0].content, /qualitative timing.*open_world_candidates/i);
 });
 
 test('proxy and meeting titles classify as one family after punctuation-only normalisation', async () => {
