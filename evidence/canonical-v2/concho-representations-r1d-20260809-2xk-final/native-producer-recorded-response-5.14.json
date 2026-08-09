@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:19:00.815Z",
+  "section_reference": "5.14",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"5.14\",\"party_making\":\"Parent\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[],\"assertion_quote\":\"The Parent Board has received the oral opinion of Goldman Sachs & Co. LLC (“Goldman Sachs”) addressed to the Parent Board, to be confirmed in a written opinion, to the effect that, as of the date of such opinion, and based upon and subject to the factors and assumptions set forth in Goldman Sachs’ written opinion, the Exchange Ratio pursuant to this Agreement is fair from a financial point of view to Parent.\",\"subject\":\"receipt of financial advisor opinion\"}],\"qualifiers\":[{\"kind\":\"TEMPORAL\",\"code\":null,\"quote\":\"as of the date of such opinion\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"financial advisor opinion assumptions and factors\",\"observed_quote\":\"based upon and subject to the factors and assumptions set forth in Goldman Sachs’ written opinion\",\"why_unmapped\":\"This describes opinion-specific assumptions and factors, not an accuracy or knowledge standard.\",\"nearest_concept\":null},{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"financial fairness opinion\",\"observed_quote\":\"the Exchange Ratio pursuant to this Agreement is fair from a financial point of view to Parent\",\"why_unmapped\":\"This is a representation-specific commercial opinion attribute, not an accuracy or knowledge standard.\",\"nearest_concept\":null}]}"
+}

@@ -1,0 +1,956 @@
+{
+  "resolved": [
+    {
+      "section_reference": "4.12",
+      "source_citation": "4.12(l)",
+      "citation_context": {
+        "parent_section_reference": "4.12",
+        "child_section_reference": "4.12",
+        "parent_chapeau_quote": "4.12 Taxes.",
+        "child_clause_quote": "Neither the Company nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7a8797c65b4d2550332903e00ad6fd42658b41162df3c0457650518e4dea755f",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 70212,
+        "absolute_end": 75802,
+        "concept_key": "TAXM-TREATMENT",
+        "ordinal": 1,
+        "source_anchor_id": "279acd88485fb5de4c2d939ed5f1d23e5e377587b95fb03938cfc5386a7414fd",
+        "provision_instance_id": "533a95a1503d0dceb2148ab80a05132a50ff7375882127f7a98afeb0cb926475",
+        "closure_id": "a64b793e8fadf4d7d5de40ce0fcd2c9a86c475876f572cbe6d28155f8501deca"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "31e7923928211da2fc6340aa1490c2de64c952384b219d53687add0d6b2066ad",
+        "claim_occurrence_id": "c149f0fff03a50afe1defdd31c5adaebb897530ce9c5694020dac5dec774ab92",
+        "subject_occurrence_id": "533a95a1503d0dceb2148ab80a05132a50ff7375882127f7a98afeb0cb926475",
+        "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Neither the Company nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "b5ae87d69ddd7efc1e382595280c0d68dd361e79db2d2dd1d9eab5bcc4796697"
+        ],
+        "attributes": {
+          "section_reference": "4.12",
+          "assertion_kind": "TREATMENT_PROTECTION",
+          "treatment_scope_ref": "Section 368(a) of the Code",
+          "treatment_term_ref": "“reorganization”",
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "b5ae87d69ddd7efc1e382595280c0d68dd361e79db2d2dd1d9eab5bcc4796697",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "19e45b5305aa4e6b93de12826c80185ebe8ef57f6aa0ebf5a634f924eea588d1",
+            "document_ordinal": 0,
+            "absolute_start": 5168,
+            "absolute_end": 5455,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "59aa09cf1a45eb231383697926d27258ad5034a023e7c5a39381feb77883f16b"
+      },
+      "compiled_candidate": {
+        "section_reference": "4.12",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.12",
+          "normalized_citation": "4.12",
+          "derived_citation": "4.12"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "31e7923928211da2fc6340aa1490c2de64c952384b219d53687add0d6b2066ad",
+            "claim_occurrence_id": "c149f0fff03a50afe1defdd31c5adaebb897530ce9c5694020dac5dec774ab92",
+            "subject_occurrence_id": "533a95a1503d0dceb2148ab80a05132a50ff7375882127f7a98afeb0cb926475",
+            "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Neither the Company nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "b5ae87d69ddd7efc1e382595280c0d68dd361e79db2d2dd1d9eab5bcc4796697"
+            ],
+            "attributes": {
+              "section_reference": "4.12",
+              "assertion_kind": "TREATMENT_PROTECTION",
+              "treatment_scope_ref": "Section 368(a) of the Code",
+              "treatment_term_ref": "“reorganization”",
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "b5ae87d69ddd7efc1e382595280c0d68dd361e79db2d2dd1d9eab5bcc4796697",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "19e45b5305aa4e6b93de12826c80185ebe8ef57f6aa0ebf5a634f924eea588d1",
+                "document_ordinal": 0,
+                "absolute_start": 5168,
+                "absolute_end": 5455,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "59aa09cf1a45eb231383697926d27258ad5034a023e7c5a39381feb77883f16b"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "a54015defccfbd45671c5955f27b006b0269a48edc630c3970a7f9364b0d45a2",
+            "producer_receipt_id": "70ddb52a6bb2e328c6567fbac09b6a8987a7224cf01347bca69f64ee2c01b414",
+            "governed_scope_digest": "277e624f9cc4cd929994b45c46fbf421d13f4b085bf6771973c26b2c14e40bbd",
+            "extraction_provenance_id": "f0046ca94e1a33ef56009468731ce620969d93c0ff441929fcbc4df76dbe35fd"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "4.12",
+          "normalized_citation": "4.12",
+          "derived_citation": "4.12(l)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "l",
+          "depth": 1,
+          "start_byte": 5167,
+          "end_byte": 5456
+        },
+        "chain": [
+          {
+            "path": "l",
+            "start_byte": 5167,
+            "end_byte": 5456,
+            "text": " Neither the Company nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.\n"
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 12,
+            "text": "4.12 Taxes.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "source_citation": "5.11",
+      "citation_context": {
+        "parent_section_reference": "5.11",
+        "child_section_reference": "5.11",
+        "parent_chapeau_quote": "5.11 Taxes. Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368",
+        "child_clause_quote": "Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7a8797c65b4d2550332903e00ad6fd42658b41162df3c0457650518e4dea755f",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 128747,
+        "absolute_end": 129042,
+        "concept_key": "TAXM-TREATMENT",
+        "ordinal": 1,
+        "source_anchor_id": "de981fe672044acb49010680c6c847c2c642284e17ec4ddc1571d697cae63f2a",
+        "provision_instance_id": "bbc478f438ede08b968d871957b32b436c9f4710340ff5f004d33106e9f28b1e",
+        "closure_id": "b7da35bb08fe464fe52c3ccd3a7f93b18eadb103cf0a9d030c045f9ca9c3712b"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "329356b82985110eafa1009d9c3ae6fc099b9cf9627253a8f8a32e91cbdb598a",
+        "claim_occurrence_id": "4d88201eb9c9134bd2d5c22b9c0b255b454713e549d7d8bcc206ead7c0f62dcc",
+        "subject_occurrence_id": "bbc478f438ede08b968d871957b32b436c9f4710340ff5f004d33106e9f28b1e",
+        "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "2bd02e466274507694e3437ed5b258399e64721fef5c50ee536df1fed1a8880a"
+        ],
+        "attributes": {
+          "section_reference": "5.11",
+          "assertion_kind": "TREATMENT_PROTECTION",
+          "treatment_scope_ref": "the Merger",
+          "treatment_term_ref": "“reorganization” within the meaning of Section 368(a) of the Code",
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2bd02e466274507694e3437ed5b258399e64721fef5c50ee536df1fed1a8880a",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "8f520b1d8eef7f1f6f7c37df54b4b861ff24713900b2a284fe696d5b669db1f5",
+            "document_ordinal": 0,
+            "absolute_start": 12,
+            "absolute_end": 294,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "831ae9c6868238b53d6ca4a75e76466be40eec29a144ade5800776f488b71a65"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.11",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.11",
+          "normalized_citation": "5.11",
+          "derived_citation": "5.11"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "329356b82985110eafa1009d9c3ae6fc099b9cf9627253a8f8a32e91cbdb598a",
+            "claim_occurrence_id": "4d88201eb9c9134bd2d5c22b9c0b255b454713e549d7d8bcc206ead7c0f62dcc",
+            "subject_occurrence_id": "bbc478f438ede08b968d871957b32b436c9f4710340ff5f004d33106e9f28b1e",
+            "claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "2bd02e466274507694e3437ed5b258399e64721fef5c50ee536df1fed1a8880a"
+            ],
+            "attributes": {
+              "section_reference": "5.11",
+              "assertion_kind": "TREATMENT_PROTECTION",
+              "treatment_scope_ref": "the Merger",
+              "treatment_term_ref": "“reorganization” within the meaning of Section 368(a) of the Code",
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2bd02e466274507694e3437ed5b258399e64721fef5c50ee536df1fed1a8880a",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "8f520b1d8eef7f1f6f7c37df54b4b861ff24713900b2a284fe696d5b669db1f5",
+                "document_ordinal": 0,
+                "absolute_start": 12,
+                "absolute_end": 294,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "831ae9c6868238b53d6ca4a75e76466be40eec29a144ade5800776f488b71a65"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "b0feb0003320135d5f0a61b2880500302450e225ad4c9ca7d0886020136d1087",
+            "producer_receipt_id": "3379b1eb66146a44a9706f7e4eb70f6f41f2cd78b07120882cc14f9cbf7e89ae",
+            "governed_scope_digest": "6024ba746fb0c372e0a681008fdef5c17d6a9222f5c630aea38b19e9813f55b3",
+            "extraction_provenance_id": "bdbbf068029e5ec8ec3bb71e0e5685d19ff10236b3bc72ea7f14cfa3cd519e65"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.11",
+          "normalized_citation": "5.11",
+          "derived_citation": "5.11"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 295
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 295,
+            "text": "5.11 Taxes. Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.\n"
+          }
+        ],
+        "markerless": true,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "source_citation": "6.18",
+      "citation_context": {
+        "parent_section_reference": "6.18",
+        "child_section_reference": "6.18",
+        "parent_chapeau_quote": "6.18 Tax Matters. Each of Parent, Merger Sub and the Company will (and will cause its respective Subsidiaries to) use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368",
+        "child_clause_quote": "use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368(a) of the Code."
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "INTENDED_TAX_TREATMENT_KIND",
+      "concept_key": "TAXM-TREATMENT",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "7a8797c65b4d2550332903e00ad6fd42658b41162df3c0457650518e4dea755f",
+        "canonical_text_id": "8f4a9c5d21d31ea1730a55a23f11f815f0fef961572d4984c2a09ea716bbf5e3",
+        "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+        "absolute_start": 261923,
+        "absolute_end": 263196,
+        "concept_key": "TAXM-TREATMENT",
+        "ordinal": 1,
+        "source_anchor_id": "9eb6ab1b5ecc09a05ee2950cec843d581df86fae96cb6dc13c505da53937075b",
+        "provision_instance_id": "c9a4667a1d518b33358435e600e468d66a8c8c01dd63f6ffaefef8066b7fe95d",
+        "closure_id": "0658061282bcf2a986b1748354e506c43468216bfaf5b803366275d939e626f8"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "a8eacbb4162f712e61ec7b44bb00207c46dbb81de76b1767c8032f01b374d0b0",
+        "claim_occurrence_id": "089266594c14f4b5067f7085a3f85197c5c5c8cd73491e806ae648cfd8e61517",
+        "subject_occurrence_id": "c9a4667a1d518b33358435e600e468d66a8c8c01dd63f6ffaefef8066b7fe95d",
+        "claim_definition_key": "INTENDED_TAX_TREATMENT_KIND",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368(a) of the Code.",
+        "canonical_value": "REORG_368A",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "8495704a00ed6060cad0ee7b92ad2be4a741a7693b920ded8af0f413839d19c6"
+        ],
+        "attributes": {
+          "section_reference": "6.18",
+          "assertion_kind": "INTENDED_TREATMENT",
+          "treatment_scope_ref": "the Merger",
+          "treatment_term_ref": "as a “reorganization” within the meaning of Section 368(a) of the Code",
+          "tax_opinion_ref": null,
+          "representation_letter_ref": null,
+          "bearer_ref": null,
+          "dividend_term_ref": null,
+          "statute_ref": null,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "8495704a00ed6060cad0ee7b92ad2be4a741a7693b920ded8af0f413839d19c6",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "690ab669f95b0e1b09ddf90a861b1b6b2958efb53d99e7766ec739bb5bb213c4",
+            "document_ordinal": 0,
+            "absolute_start": 114,
+            "absolute_end": 475,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "7109ebde9bbf1c7ad7160937c70b2e1542ec8ff37db2d39129e725d4555d2859"
+      },
+      "compiled_candidate": {
+        "section_reference": "6.18",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.18",
+          "normalized_citation": "6.18",
+          "derived_citation": "6.18"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "a8eacbb4162f712e61ec7b44bb00207c46dbb81de76b1767c8032f01b374d0b0",
+            "claim_occurrence_id": "089266594c14f4b5067f7085a3f85197c5c5c8cd73491e806ae648cfd8e61517",
+            "subject_occurrence_id": "c9a4667a1d518b33358435e600e468d66a8c8c01dd63f6ffaefef8066b7fe95d",
+            "claim_definition_key": "INTENDED_TAX_TREATMENT_KIND",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368(a) of the Code.",
+            "canonical_value": "REORG_368A",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "8495704a00ed6060cad0ee7b92ad2be4a741a7693b920ded8af0f413839d19c6"
+            ],
+            "attributes": {
+              "section_reference": "6.18",
+              "assertion_kind": "INTENDED_TREATMENT",
+              "treatment_scope_ref": "the Merger",
+              "treatment_term_ref": "as a “reorganization” within the meaning of Section 368(a) of the Code",
+              "tax_opinion_ref": null,
+              "representation_letter_ref": null,
+              "bearer_ref": null,
+              "dividend_term_ref": null,
+              "statute_ref": null,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "8495704a00ed6060cad0ee7b92ad2be4a741a7693b920ded8af0f413839d19c6",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "690ab669f95b0e1b09ddf90a861b1b6b2958efb53d99e7766ec739bb5bb213c4",
+                "document_ordinal": 0,
+                "absolute_start": 114,
+                "absolute_end": 475,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "7109ebde9bbf1c7ad7160937c70b2e1542ec8ff37db2d39129e725d4555d2859"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "TAX_MATTERS",
+            "prompt_digest": "dfc1e34ef6764c47a77a0bd5ec3ce14f7d3b76ad484e25aedc38cd45b704b55a",
+            "producer_receipt_id": "79cabee0431023b4e01af8436d37cebc5a8268f6c61946b9ec8a39796b4fde37",
+            "governed_scope_digest": "a9835f18a29425a68fb9f82ac367c21e43fb6e12ab2567848cde223b26b96b9d",
+            "extraction_provenance_id": "e71e5bd68ba5bc2a42b14f355aa1f03dc839aae89d34498bf4df45a08902c7d7"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": true,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [],
+        "materiality_rank": 81,
+        "materiality_label": "TAX_MATTERS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "6.18",
+          "normalized_citation": "6.18",
+          "derived_citation": "6.18"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": null,
+          "depth": 0,
+          "start_byte": 0,
+          "end_byte": 701
+        },
+        "chain": [
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 701,
+            "text": "6.18 Tax Matters. Each of Parent, Merger Sub and the Company will (and will cause its respective Subsidiaries to) use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368(a) of the Code. At the request of Parent or the Company, each of Parent, Merger Sub and the Company will use its reasonable best efforts and will cooperate with one another to obtain any opinion(s) of counsel to be issued in connection with "
+          }
+        ],
+        "markerless": false,
+        "marker_tier": null,
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "4.12",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "31e7923928211da2fc6340aa1490c2de64c952384b219d53687add0d6b2066ad",
+      "closure_id": "59aa09cf1a45eb231383697926d27258ad5034a023e7c5a39381feb77883f16b",
+      "normalised_phrase": "Neither the Company nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.11",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "TAX_TREATMENT_PROTECTION_COVENANT",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "329356b82985110eafa1009d9c3ae6fc099b9cf9627253a8f8a32e91cbdb598a",
+      "closure_id": "831ae9c6868238b53d6ca4a75e76466be40eec29a144ade5800776f488b71a65",
+      "normalised_phrase": "Neither Parent nor any of its Subsidiaries is aware of the existence of any fact, or has taken or agreed to take any action, that would reasonably be expected to prevent or impede the Merger from qualifying as a “reorganization” within the meaning of Section 368(a) of the Code.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "INTENDED_TAX_TREATMENT_KIND",
+      "concept_key": "TAXM-TREATMENT",
+      "reasons": [],
+      "materiality_rank": 81,
+      "materiality_label": "TAX_MATTERS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a8eacbb4162f712e61ec7b44bb00207c46dbb81de76b1767c8032f01b374d0b0",
+      "closure_id": "7109ebde9bbf1c7ad7160937c70b2e1542ec8ff37db2d39129e725d4555d2859",
+      "normalised_phrase": "use its reasonable best efforts to cause the Merger to qualify, and will not take or knowingly fail to take (and will cause its Subsidiaries not to take or knowingly fail to take) any actions that would, or would reasonably be expected to, prevent or impede the Merger from qualifying, as a “reorganization” within the meaning of Section 368(a) of the Code.",
+      "attachment_position": null,
+      "concept_family": "TAXM-TREATMENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "4.12",
+      "source_citation": "4.12(f)",
+      "reason": "TAX_TREATMENT_KIND_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "Neither the Company nor any of its Subsidiaries has constituted a “distributing corporation” or a “controlled corporation” in a distribution of stock intended to qualify for tax-free treatment under Section 355 of the Code",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "4.12",
+        "assertion_kind": "INTENDED_TREATMENT",
+        "treatment_scope_ref": "Section 355 of the Code",
+        "treatment_term_ref": "tax-free treatment",
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "954ef06df0cb05c8afce340b815b0532ab9298c36c21ad24ac519136da5327c4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3238488f910fb42a0b6daf003d84ceeb5a851b27103d64f88431e43b03cf2a3d",
+          "document_ordinal": 0,
+          "absolute_start": 2791,
+          "absolute_end": 3021,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "62f8e06f1400b8c6d76750de0998f4c31aa291c54ac1ca297a9550c89a11b355",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "a54015defccfbd45671c5955f27b006b0269a48edc630c3970a7f9364b0d45a2",
+        "producer_receipt_id": "70ddb52a6bb2e328c6567fbac09b6a8987a7224cf01347bca69f64ee2c01b414",
+        "governed_scope_digest": "277e624f9cc4cd929994b45c46fbf421d13f4b085bf6771973c26b2c14e40bbd",
+        "extraction_provenance_id": "f0046ca94e1a33ef56009468731ce620969d93c0ff441929fcbc4df76dbe35fd"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "4.12",
+        "normalized_citation": "4.12",
+        "derived_citation": "4.12(f)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.12",
+      "source_citation": "4.12",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Neither the Company nor any of its Subsidiaries will be required to include any material item of income in, or to exclude any material item of deduction from, taxable income in any taxable period (or portion thereof) ending after the Closing Date as a result of any closing agreement, installment sale or open transaction on or prior to the Closing Date, any accounting method change or agreement with any Taxing Authority, any prepaid amount received on or prior to the Closing Date, any intercompany transaction or excess loss account described in Section 1502 of the Code (or any corresponding provision of Law with respect to Taxes), or any election pursuant to Section 108(i) of the Code (or any similar provision of Law) made with respect to any taxable period ending on or prior to the Closing Date.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "TAX_MECHANIC: No specified pre-Closing tax items or methods require material post-Closing income inclusions or deduction exclusions.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "925dae67f80551d0c47b9851ef99311d8bc1292e318ff6a63348d9a9164266a9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5f8609e025b819e4fbcbbdb39656999a3ad0da1b1cf204907bf082baf91fcc1c",
+          "document_ordinal": 0,
+          "absolute_start": 4110,
+          "absolute_end": 4916,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "42f277de5ebe2a759ad682500a5f7e4b7f78f2ba499ca5185bca0a18c7ed950c",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "a54015defccfbd45671c5955f27b006b0269a48edc630c3970a7f9364b0d45a2",
+        "producer_receipt_id": "70ddb52a6bb2e328c6567fbac09b6a8987a7224cf01347bca69f64ee2c01b414",
+        "governed_scope_digest": "277e624f9cc4cd929994b45c46fbf421d13f4b085bf6771973c26b2c14e40bbd",
+        "extraction_provenance_id": "b41ddfca1668a922c4cbf7a4d724298481b6926c6b75198f291e18f56326bf72"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.18",
+      "source_citation": "6.18",
+      "reason": "TAX_ASSERTION_OPEN_WORLD",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "each of Parent, Merger Sub and the Company will use its reasonable best efforts and will cooperate with one another to obtain any opinion(s) of counsel to be issued in connection with (x) the consummation of the transactions contemplated by this Agreement and/or (y) the declaration of effectiveness of the Registration Statement by the SEC, in each case, regarding the U.S. federal income tax treatment of the transactions contemplated by this Agreement, which cooperation shall include, for the avoidance of doubt, the delivery by Parent, Merger Sub and the Company of duly executed certificates containing such representations, warranties and covenants as may be reasonably necessary or appropriate to enable such counsel to render any such opinion(s).",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "6.18",
+        "assertion_kind": "TAX_OPINION_COOPERATION",
+        "treatment_scope_ref": null,
+        "treatment_term_ref": null,
+        "tax_opinion_ref": "any opinion(s) of counsel to be issued in connection with (x) the consummation of the transactions contemplated by this Agreement and/or (y) the declaration of effectiveness of the Registration Statement by the SEC, in each case, regarding the U.S. federal income tax treatment of the transactions contemplated by this Agreement",
+        "representation_letter_ref": "the delivery by Parent, Merger Sub and the Company of duly executed certificates containing such representations, warranties and covenants as may be reasonably necessary or appropriate to enable such counsel to render any such opinion(s)",
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3aaf1569b90fa5978e35ef64dbe8cc3fc58d456ff6e11106006fe38e69ea7ed1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "9d92614b1a929c6c02bd6d5d7724dfab4a5315f67d293cd314e8f9627e480130",
+          "document_ordinal": 0,
+          "absolute_start": 517,
+          "absolute_end": 1272,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "851378ca8fa377d7d7ec4bc0cca725aea14f9d60e82ea25e2f1d42e1a2766d09",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "dfc1e34ef6764c47a77a0bd5ec3ce14f7d3b76ad484e25aedc38cd45b704b55a",
+        "producer_receipt_id": "79cabee0431023b4e01af8436d37cebc5a8268f6c61946b9ec8a39796b4fde37",
+        "governed_scope_digest": "a9835f18a29425a68fb9f82ac367c21e43fb6e12ab2567848cde223b26b96b9d",
+        "extraction_provenance_id": "e71e5bd68ba5bc2a42b14f355aa1f03dc839aae89d34498bf4df45a08902c7d7"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.18",
+        "normalized_citation": "6.18",
+        "derived_citation": "6.18"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "4557c7cfb32ebd65a9def443c9ba908e9250620fd91f12248a064fedeb144549",
+    "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 6,
+      "resolved": 3,
+      "auto_pass": 0,
+      "review_queue": 3,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 3,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "18084a0b98beb79b143971ee02748209745269f6a5293377cbd4dcb3401f30b0"
+  }
+}

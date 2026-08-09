@@ -1,0 +1,64 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_MANIFEST/V1",
+  "script": "scripts/canonical-v2-live-extraction-run.mjs",
+  "deal": "concho",
+  "deal_label": "ConocoPhillips / Concho Resources Inc.",
+  "section_family": "PROXY_MEETING",
+  "purpose": "General extraction run: family PROXY_MEETING on deal concho.",
+  "section_references": [
+    "6.5",
+    "6.6"
+  ],
+  "section_family_assignments": [
+    {
+      "section_reference": "6.5",
+      "family_id": "PROXY_MEETING"
+    },
+    {
+      "section_reference": "6.6",
+      "family_id": "PROXY_MEETING"
+    }
+  ],
+  "contract_bundle_version": "compileFixtureContractV42",
+  "prompt_id": "native-producer-proxy-meeting/v1",
+  "prompt_version": 1,
+  "agreement_date": "2020-10-18",
+  "requested_model_profile": "TERRA_MEDIUM",
+  "requested_model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "requested_models": [
+    "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM"
+  ],
+  "follow_citations": false,
+  "max_retries": 0,
+  "run_started_at": "2026-08-09T07:14:53.479Z",
+  "total_elapsed_ms": 113706,
+  "extraction_wall_clock_ms": 108179,
+  "replay": null,
+  "replay_eligibility": null,
+  "recorded_to": "recording.json",
+  "code_provenance": {
+    "commit": "b06c4126cdb534451e2a3490df2f977192d86a94",
+    "working_tree_clean": true
+  },
+  "resolved_models": [],
+  "model_call_count": 2,
+  "run_receipt_id": "a43e54299ebd320dd3dba88c214f87f98cd2001ef47f0bc14e382556963bf367",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "m3_auto_pass_conditions": {
+    "v1v2_comparison": {
+      "supplied": false,
+      "reason": "NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then."
+    },
+    "lexical_disagreement": {
+      "supplied": true,
+      "sections_covered": 2,
+      "resolution_receipt_counts": {
+        "both_nets_clean": 0,
+        "lexical_receipt_stale_sections": 0,
+        "lexical_receipt_malformed_sections": 0
+      }
+    },
+    "claims_both_nets_clean": 0
+  }
+}

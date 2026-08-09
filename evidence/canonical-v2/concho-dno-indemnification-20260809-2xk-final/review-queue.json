@@ -1,0 +1,198 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "9344a12503581ff1bd53c09a614020a16aee0aaf78ef3fcbee9be1deec7de63a",
+  "review_queue": [
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "CHARTER_PROTECTION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e6fa8d99a3da38aa1f166d7069e59d5f64f0e7a8e2a1b7bd18d57eb9227d6dc9",
+      "closure_id": "09bb7b6c664e1b7fd22324c0321f81ff4dbb6390334a0b17b793b30f844ea206",
+      "normalised_phrase": "Parent and the Surviving Corporation shall not amend, repeal or otherwise modify any provision in the Organizational Documents of the Surviving Corporation or any of its Subsidiaries in any manner that would affect (or manage the Surviving Corporation or its Subsidiaries, with the intent to or in a manner that would) adversely the rights thereunder of any Indemnified Person to indemnification, exculpation and advancement except to the extent required by applicable Law.",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10(a)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-INDEM",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent and the Surviving Corporation shall, jointly and severally, pay expenses incurred in connection therewith in advance of the final disposition of any such Proceeding to each Indemnified Person to the fullest extent permitted under applicable Law",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4c9bc40839a500354ebf0cb8a7ba244106824f583a4fe7dfc0fafeae84566146",
+      "closure_id": "12e733eef1ff834a681ca67755d35c1f4352f47b27cffe81a0d5514001a31ce7",
+      "normalised_phrase": "Parent and the Surviving Corporation shall, jointly and severally, pay expenses incurred in connection therewith in advance of the final disposition of any such Proceeding to each Indemnified Person to the fullest extent permitted under applicable Law",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_OBLIGATION",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "849636628b1b69f1108e0b13efaf23268c4562e4bfe4c8fed8db4c34af7ea4a7",
+      "closure_id": "21bfc323c5ae0434fa8e211503c04aa826e2f361b65b2c5457a85622e52249be",
+      "normalised_phrase": "Parent and the Surviving Corporation will cause to be put in place, and Parent shall fully prepay immediately prior to the Effective Time, “tail” insurance policies",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "27f0cc22b47cfeee613c7e3d17d9488fc17a3100d6b6f825c671c9aceb4d4271",
+      "closure_id": "22e8f7d31d7475edf26696cb912588b26f533c51f06af07067355b9e415fc65c",
+      "normalised_phrase": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "INDEMNIFICATION_CONTINUATION",
+      "concept_key": "DNO-INDEM",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a29f6737e26ff733ba215f31f01944ea9b51eaaa33bad45e4ac1a2896be45d18",
+      "closure_id": "30948805ce16c8a24ac0dc02d020d09d64cf5cdcca637e3868f8e20e3dd3aae2",
+      "normalised_phrase": "from the Effective Time, Parent and the Surviving Corporation shall, jointly and severally, indemnify, defend and hold harmless each Person",
+      "attachment_position": null,
+      "concept_family": "DNO-INDEM",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10(d)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-TAIL",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "if the cost of such insurance coverage exceeds such amount, the Surviving Corporation shall obtain a policy with the greatest coverage available for a cost not exceeding such amount.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e29972f9446c8a176bd5bf6879bea2b599d660b40e77acf5281b0f49974bb887",
+      "closure_id": "67901c7c8563d5dd55d5d286609774b3e896dcef21a376f84aac3a5661ae0d96",
+      "normalised_phrase": "if the cost of such insurance coverage exceeds such amount, the Surviving Corporation shall obtain a policy with the greatest coverage available for a cost not exceeding such amount.",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": "TAIL_PREMIUM_CAP_PERCENT",
+      "concept_key": "DNO-TAIL",
+      "reasons": [],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "310db825e8763f90de37947f5ad1ca887047fbcbcb9c78b063515e00cb7ce774",
+      "closure_id": "75521e02f3bd5dfddb2aea0b6af053c3a833c130972ab3da3beb7f5f4ba38816",
+      "normalised_phrase": "in no event shall the aggregate cost of the D&O Insurance exceed during the Tail Period 300% of the current aggregate annual premium paid by the Company for such purpose",
+      "attachment_position": null,
+      "concept_family": "DNO-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.10",
+      "source_citation": "6.10(e)",
+      "generic_claim_key": "NATIVE_DNO_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DNO-BENEF",
+      "reasons": [
+        "DNO_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 85,
+      "materiality_label": "DNO_INDEMNIFICATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "The provisions of this Section 6.10 are intended to be for the benefit of, and shall be enforceable by, the Parties and each Person entitled to indemnification or insurance coverage or expense advancement pursuant to this Section 6.10, and his heirs and Representatives.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2f51c49213efbd76a734031b138ece8a506e17cf303bc52813b567455bbb97c6",
+      "closure_id": "c6b269fd7568b8973c0883819e98de04fd607612f8f0e28b79b1f114129ae95d",
+      "normalised_phrase": "The provisions of this Section 6.10 are intended to be for the benefit of, and shall be enforceable by, the Parties and each Person entitled to indemnification or insurance coverage or expense advancement pursuant to this Section 6.10, and his heirs and Representatives.",
+      "attachment_position": null,
+      "concept_family": "DNO-BENEF",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "1a53e28b8ed9a0c04ee9a29e9beb09350e91566486285f637734daedf2bae010"
+}

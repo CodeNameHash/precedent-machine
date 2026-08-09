@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:18:52.275Z",
+  "section_reference": "Annex-A",
+  "prompt_id": "native-producer-termination-fee/v1",
+  "prompt_version": 3,
+  "raw_response_text": "{\"fee_amount_assertions\":[],\"fee_trigger_assertions\":[],\"tail_period_assertions\":[],\"wave_b_mechanics\":[],\"open_world_candidates\":[{\"observed_quote\":\"“Company Termination Fee” means $300,000,000.\",\"why_unmapped\":\"It defines a termination-fee amount but does not identify the payer party.\",\"nearest_concept\":\"fee_amount_assertions\"},{\"observed_quote\":\"“Parent Termination Fee” means $450,000,000.\",\"why_unmapped\":\"It defines a termination-fee amount but does not identify the payer party.\",\"nearest_concept\":\"fee_amount_assertions\"},{\"observed_quote\":\"“Company Expenses” means $142,500,000.\",\"why_unmapped\":\"It defines an expenses amount but does not state an expense-reimbursement mechanism.\",\"nearest_concept\":\"EXPENSE_REIMBURSEMENT\"},{\"observed_quote\":\"“Parent Expenses” means a cash amount equal to $95,000,000.\",\"why_unmapped\":\"It defines an expenses amount but does not state an expense-reimbursement mechanism.\",\"nearest_concept\":\"EXPENSE_REIMBURSEMENT\"}]}"
+}

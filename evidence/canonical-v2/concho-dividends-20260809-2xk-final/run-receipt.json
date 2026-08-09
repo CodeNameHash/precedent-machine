@@ -1,0 +1,299 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+  "source_sha256": "30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5",
+  "source_byte_length": 351804,
+  "root_section_id": "dc7e1fa5ad26f81727accb880808959ffe61ec66522ddf275b1c136eba44c3cd",
+  "requested_section_references": [
+    "6.21"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "6.21",
+      "section_id": "e0ab7f5ea816a58abdca4903a2223f2eb84fc33e28d1d72eeba2a7b0a6c7b8df",
+      "parent_section_id": "fc504fba9909b282b4e4f171cfc258828ca3908fc97b126cda603e997a86bebb",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 263769,
+      "end": 265015,
+      "text_sha256": "c0215a1c39bbb4441634af84fbce5282ef3d17a0afdc56f23bf2d542acaa6699",
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-dividends/v1",
+      "prompt_version": 2,
+      "prompt_digest": "0f76febe9c2336ef6d82285f680dbd3fbc2ab61db5518ee90faa494a985f268f",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "0f76febe9c2336ef6d82285f680dbd3fbc2ab61db5518ee90faa494a985f268f",
+        "input_scope_digest": "9deb4e5c4a689cc39539ab149eaa637291009cb7e6e42c0c252ee34a4841eb0d",
+        "proposal_count": 3,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "a14a61e98cfdea0842b06134847105538723c888f420931f7fb09bd70badd9a5"
+      }
+    }
+  ],
+  "compiled_candidates": [
+    {
+      "section_reference": "6.21",
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "6.21",
+        "normalized_citation": "6.21",
+        "derived_citation": "6.21"
+      },
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "2a68c1a345d817e8fc9750421b23ff5e99c60b29ae63229b5a43ee01df8a2242",
+          "claim_occurrence_id": "41d4e042e9ba54c914c1418bb9c3ee979d79e60c515b06452ae906bfe2387b22",
+          "subject_occurrence_id": "02bc70f13c92f66568f8fcf0d01840ef5e1fb11113b27741a5c8ffcca7616fdb",
+          "claim_definition_key": "NATIVE_DIVIDENDS_CANDIDATE",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "Parent and the Company shall each coordinate their record and payment dates for their regular quarterly dividends to ensure that the holders of Company Common Stock shall not receive two (2) dividends, or fail to receive one (1) dividend, in any quarter with respect to their Company Common Stock and the Parent Common Stock that such holders receive in exchange therefor in the Merger.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "1f2f072156fe7242fbf04915548d1dd653bf1c1cf0f709c543d282aec548c29c"
+          ],
+          "attributes": {
+            "section_reference": "6.21",
+            "assertion_kind": "COORDINATION",
+            "treatment_scope_ref": null,
+            "treatment_term_ref": null,
+            "tax_opinion_ref": null,
+            "representation_letter_ref": null,
+            "bearer_ref": null,
+            "dividend_term_ref": null,
+            "statute_ref": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "1f2f072156fe7242fbf04915548d1dd653bf1c1cf0f709c543d282aec548c29c",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "830039fce5ac886680cec8447523f9e2445ca79f2975d0d0625867dc676785b3",
+              "document_ordinal": 0,
+              "absolute_start": 42,
+              "absolute_end": 428,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "188c2dc4182930166f87968f776d39facd158d90301c8f8ee1a5e8fea42686d4"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "DIVIDENDS",
+          "prompt_digest": "0f76febe9c2336ef6d82285f680dbd3fbc2ab61db5518ee90faa494a985f268f",
+          "producer_receipt_id": "a14a61e98cfdea0842b06134847105538723c888f420931f7fb09bd70badd9a5",
+          "governed_scope_digest": "ef1492f3ce0d9ac767608fd4e8a84fe2fdc81cb89a2dae5b8065768e4af495c6",
+          "extraction_provenance_id": "493d7905e2704403b5f522e937e31b21d987328844a1923ee0566733e5715301"
+        }
+      }
+    },
+    {
+      "section_reference": "6.21",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "596876ab8a37a3bb9272278fa04d97c31c7a57b704de64b6c704eaa77d98894e",
+          "claim_occurrence_id": "eab32178ca87531a44c4958905cbf96087cbe016d8803116e265f6ee2dadb357",
+          "subject_occurrence_id": "1af82072842bc63dcc372ee1c0d5036916e1feeac29155282620393741b82b6b",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "the Company shall ensure that the date on which any quarterly dividend is declared and the record date with respect to any quarterly dividend shall be no later than five (5) Business Days following the one (1) year anniversary of such dates for the corresponding quarter of the preceding year;",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "a9432f8fad92eb40fe2dd23b0ca7003f1dbe5369f2d23c826dfc3af5f98ba799"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_COORDINATION: The Company must set each quarterly dividend declaration date and record date no later than five Business Days after the one-year anniversary of the corresponding prior-year dates.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "a9432f8fad92eb40fe2dd23b0ca7003f1dbe5369f2d23c826dfc3af5f98ba799",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "13169c5d323c31ed6249de1e9519544233f1c65663faa3e06451c0ce1b2d5d4c",
+              "document_ordinal": 0,
+              "absolute_start": 506,
+              "absolute_end": 799,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "1944bb2be4788156936204ffc42391f64d16a57b7860501c2331582014bf76c3"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "0f76febe9c2336ef6d82285f680dbd3fbc2ab61db5518ee90faa494a985f268f",
+          "producer_receipt_id": "a14a61e98cfdea0842b06134847105538723c888f420931f7fb09bd70badd9a5",
+          "governed_scope_digest": "ef1492f3ce0d9ac767608fd4e8a84fe2fdc81cb89a2dae5b8065768e4af495c6",
+          "extraction_provenance_id": "797c82ee489f207a2493c02ebf8c8d0f4563e0aa22007d2de598fe0949ff25b9"
+        }
+      }
+    },
+    {
+      "section_reference": "6.21",
+      "citation_validation": null,
+      "section_family": "DIVIDENDS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "covenant_side": null,
+      "ok": true,
+      "candidate": {
+        "kind": "claim",
+        "claim": {
+          "schema_version": "CLAIM_REVISION/V1",
+          "claim_revision_id": "e5807e7cb70e3b6a7911b73fffd799217c40f32aaf682f833b1d4f69d3f51e0c",
+          "claim_occurrence_id": "efda8d0d9b038ee81e120455695e3abffab1959f4f027e471efa60c93e380c02",
+          "subject_occurrence_id": "0921e000e2e83a5c9fa87e0cfddf37a49c5ba4b92e7f8255e8a896c3e46ceaf9",
+          "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+          "claim_definition_version": 1,
+          "ordinal": 0,
+          "state": "PRESENT",
+          "raw_value": "provided, however, that in the quarter in which the Closing occurs, if the record date of Parent’s quarterly dividend has been declared and is a date prior to the Effective Time, then such quarterly dividend declaration date and record date of the Company shall occur no later than such date as is necessary to ensure that holders of Company Common Stock receive a quarterly dividend in accordance with the first sentence of this Section 6.21.",
+          "canonical_value": null,
+          "unit": null,
+          "day_basis": null,
+          "denominator": null,
+          "scope": null,
+          "applicability": null,
+          "not_examined": null,
+          "failure": null,
+          "evidence_ids": [
+            "be0988a7dd6bed4248283389dca9560fb669b33ed9b07d4208af45a5e04c4229"
+          ],
+          "attributes": {
+            "why_unmapped": "DIVIDEND_FINAL_PERIOD: For the Closing quarter, if Parent's quarterly dividend record date has been declared and precedes the Effective Time, the Company's declaration and record dates must occur in time to ensure Company Common Stock holders receive one quarterly dividend.",
+            "nearest_concept": null
+          },
+          "taxonomy_codes": {},
+          "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+          "evidence": [
+            {
+              "schema_version": "CLAIM_EVIDENCE/V1",
+              "claim_evidence_id": "be0988a7dd6bed4248283389dca9560fb669b33ed9b07d4208af45a5e04c4229",
+              "evidence_role": "OPERATIVE_TEXT",
+              "excerpt_id": "5afe6993a665f427516460f185314d3bd6ab1e51b63f6792ab07b0734ed2159c",
+              "document_ordinal": 0,
+              "absolute_start": 800,
+              "absolute_end": 1245,
+              "ordinal": 0
+            }
+          ],
+          "publication_state": "VALIDATED",
+          "retained_residuals": [],
+          "quarantine": null,
+          "closure_id": "aad84154a0f896dff4b5cff4173958359347a09f5790fab529379fecd867741c"
+        },
+        "extraction_provenance": {
+          "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+          "extractor_id": "canonical-v2-native-extraction-run/v1",
+          "extractor_version": "1",
+          "proposal_kind": "OPEN_WORLD",
+          "prompt_digest": "0f76febe9c2336ef6d82285f680dbd3fbc2ab61db5518ee90faa494a985f268f",
+          "producer_receipt_id": "a14a61e98cfdea0842b06134847105538723c888f420931f7fb09bd70badd9a5",
+          "governed_scope_digest": "ef1492f3ce0d9ac767608fd4e8a84fe2fdc81cb89a2dae5b8065768e4af495c6",
+          "extraction_provenance_id": "797c82ee489f207a2493c02ebf8c8d0f4563e0aa22007d2de598fe0949ff25b9"
+        }
+      }
+    }
+  ],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "6.21",
+      "source_byte_length": 1246,
+      "covered_byte_length": 1124,
+      "coverage_share": 0.9020866773675762,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": []
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "6.21",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 3,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "c903a9344cfd3e187c62f37d4d4f4949d438b49cff9f0bd2f5f3d01e5131879f"
+}

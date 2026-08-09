@@ -1,0 +1,104 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "3.4",
+      "source_citation": "3.4",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "In accordance with the DGCL, no appraisal rights shall be available with respect to the Transactions.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "APPRAISAL_STATUTE: Appraisal rights are addressed under the DGCL for the Transactions.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6099cee6f99e122ddb1970f49ba2fac83d8c2c589a048339cd491c22da9bbbe9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4be735d5cba1d5f2c3f1350bc7d217d123aa55db1dcd294d0f857a6b2557ca1e",
+          "document_ordinal": 0,
+          "absolute_start": 25,
+          "absolute_end": 126,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f161812d2a5f967f9ae5a10ce92eb820e61be9b1ea7d634877ca8d670cfabdd7",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "94bcf5193b1dbfb8fc35c0bb48b4ddea1b1310c6b38c89198aa03cf823c2db1f",
+        "producer_receipt_id": "6b66d535c0d2f191f739c7b73334f2d43f25a668edcfba736422eee8373b0dc3",
+        "governed_scope_digest": "2cef9b96c1f85bf4c8a23fb07aec3ee1d6fb5f7e3b0c2f6b4cec6de7ff4c9bda",
+        "extraction_provenance_id": "884d81bfe33b4499c6f451f020697c15b4cd8fd32f31a6dde5619a6ddf7cb75c"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "905a010bc833de1adeeaa1831b06e7a968e93078501d37de2a1596f9c0634475",
+    "document_hash": "3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 1,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 1,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "8b53418802372cdf7725e1b075c0c4e7f1a84027d2fe343bf8d0d47a2a133d64"
+  }
+}

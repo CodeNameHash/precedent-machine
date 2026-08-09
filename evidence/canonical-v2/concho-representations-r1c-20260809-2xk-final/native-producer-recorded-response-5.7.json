@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:18:04.897Z",
+  "section_reference": "5.7",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"5.7\",\"party_making\":\"Parent\",\"chapeau_quote\":\"Subject to the accuracy of the first sentence of Section 4.8,\",\"limbs\":[{\"limb_path\":[],\"assertion_quote\":\"the Joint Proxy Statement and the Registration Statement will comply as to form in all material respects with the provisions of the Exchange Act and the Securities Act, respectively, and the rules and regulations thereunder\",\"subject\":\"form compliance with securities laws\"}],\"qualifiers\":[{\"kind\":\"ACCURACY\",\"code\":\"MAT_ALL_MATERIAL\",\"quote\":\"in all material respects\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"cross-representation accuracy condition\",\"observed_quote\":\"Subject to the accuracy of the first sentence of Section 4.8,\",\"why_unmapped\":\"This conditions the representation by reference to another representation and is not an accuracy or knowledge standard.\",\"nearest_concept\":\"ACCURACY\"},{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"information-source carve-out\",\"observed_quote\":\"provided, however, that no representation is made by Parent with respect to statements made therein based on information supplied by the Company specifically for inclusion or incorporation by reference therein.\",\"why_unmapped\":\"This is a representation-specific information-source carve-out, not an accuracy or knowledge qualifier.\",\"nearest_concept\":null}]}"
+}

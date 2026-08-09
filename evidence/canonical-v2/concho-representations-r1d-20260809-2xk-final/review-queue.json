@@ -1,0 +1,56 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "86718e6b2bd1b5c30e0a1a6cd88b5cb1fd1fb7a5afe68b62e21fb29cb21cf8e0",
+  "review_queue": [
+    {
+      "section_reference": "5.10",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4f2d4019f1b6846533c29e0619790a11eb5862bad1afa2a211b46e6c151f1163",
+      "closure_id": "7ec5e9b03f7d071c668eb095eec15320d94fdd9face9b5fa9438fff4c6d54f4c",
+      "normalised_phrase": "to the knowledge of Parent",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-B-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.12",
+      "source_citation": "5.12",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Except for such matters as would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect,",
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "original_claim_occurrence_id": "734a4223d177cfaafbd8b0c72ff8e152df45962ee94cfe14aef41cda4415ad86",
+      "closure_id": "27f19992d24c6709f82ad0563e37688d9c0afb8d2bd8b1ea01f3ac390347fb94",
+      "normalised_phrase": "Except for such matters as would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect,",
+      "attachment_position": "CHAPEAU",
+      "concept_family": "REP-B-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "79a82320974651c5b743af4dbb00a963100eb0359574de767a8874f208e564bc"
+}

@@ -1,0 +1,321 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d1de74dd5bf2d965ed18434c9ba945634f665daaf15a261a6bf5bee7dcfadcea",
+  "review_queue": [
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "38c9b49a129cd760ec59a8d3b1b7d735eec165147b66c0763a2970ac914a4ea3",
+      "closure_id": "4c1a440989cbf2d2a853adb2e36b91397e9ccbffa07aaba71ff657f06553f10d",
+      "normalised_phrase": "within twelve (12) months after the date of such termination, the Company enters into a definitive agreement with respect to a Company Competing Proposal (or publicly approves or recommends to the stockholders of the Company or otherwise does not oppose, in the case of a tender or exchange offer, a Company Competing Proposal) or consummates a Company Competing Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Company Terminable Breach)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f26f45149f57f60fcd63527e2a0c8e8e0538fc19c234dc481218bcf5e59fac07",
+      "closure_id": "1028e1886f5636f4efd99d4f247bce4f6abbb89d2ecaf3d4c82d770925b6e562",
+      "normalised_phrase": "(Company Terminable Breach)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Parent Terminable Breach)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ba5d3eb82f32db2889afb10cb3c51249ff3c3d79d814240bdc88269c504e287d",
+      "closure_id": "232fd2bf71740868463575ba58742e0ba58a72885788d7258e812508368b36c8",
+      "normalised_phrase": "(Parent Terminable Breach)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Parent Change of Recommendation)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a4f22f81e810ac2c96f8eb2a535ce83bd22707e5e74d69f17b2e4a94466c2a79",
+      "closure_id": "3737bbebc340a22567589ba204cdaeef9f816c17acdae5d295eca4a20b359eed",
+      "normalised_phrase": "(Parent Change of Recommendation)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Company Change of Recommendation)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0310d6caadb4c469ec1e080e47f4b2962f34f15cc77c70c6cb17d06d1ec56325",
+      "closure_id": "6d62b1b9ba692d272ed1afc2cc76b68a524a2ef4b444ecd56fbcfc51a35d04e3",
+      "normalised_phrase": "(Company Change of Recommendation)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(End Date)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9eac209ab68cb5e94eb5ffcbc1a24d1fb7835ba473386efe1baf87e9aaa7cdc5",
+      "closure_id": "752f2821b58c08b14d28c4d3cd2eea967c8e7d20e75571062a469bbd4a114ad2",
+      "normalised_phrase": "(End Date)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(d)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Failure to Obtain Company Stockholder Approval)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ba1e82cc7cb626ca6cf5b733e225b7dcedc90cf6dc920678d070edeff9f352db",
+      "closure_id": "a2c049e885b55a250f7bbeabc39d3d3328e2f3376a60a7749df2bfc898d03ad1",
+      "normalised_phrase": "(Failure to Obtain Company Stockholder Approval)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(No Solicitation by Parent)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "685c256ea087b6e419d8e644622d57f3e0e2d95d0ccbec1275b27b7681b418ed",
+      "closure_id": "a7c7debdc45c92ee93147bc817d4c96bf31abdf215db559c6a1a288df3bfd179",
+      "normalised_phrase": "(No Solicitation by Parent)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(d)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(Failure to Obtain Parent Stockholder Approval)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cb1fb56be195f3239136688dd8b022549eaac1e36f6e670923870455d3439e8c",
+      "closure_id": "bcce5bf61325f7b714aa023846556002f943a3631da4bade2e0cebcae56ad35e",
+      "normalised_phrase": "(Failure to Obtain Parent Stockholder Approval)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(e)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(End Date)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "555ccceaf27b64a2c11845391e8f6c08d7638eb1a8b3be98a5bf2300616813d7",
+      "closure_id": "bfac65381270338326a88aa67643be1b66f5a041f6ca135f5df6ef5aa5db7626",
+      "normalised_phrase": "(End Date)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "source_citation": "8.3(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(No Solicitation by the Company)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "db9ed1aea13629452d5f5ac7946fc12576631a475c49b755768a009c5e33f802",
+      "closure_id": "f3f951d401de0f3bb64799ab046458eedd5c8fca8519734a874f42dfb9c32fd5",
+      "normalised_phrase": "(No Solicitation by the Company)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.3",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "39a979713ce9557d847e88f9467c0c7c90a99c84f29ccd103d748a7d2f47d01f",
+      "closure_id": "7ae59a5fa2d4e4e1fd81c94fe1b5bdfc09a2d92725610cd97cc9e866ddbc8577",
+      "normalised_phrase": "shall be the sole and exclusive remedies",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "bf9b920035c2c820fda30210d69cf524a6f4f0c99a6e2af004c8a7c6b01d4649"
+}

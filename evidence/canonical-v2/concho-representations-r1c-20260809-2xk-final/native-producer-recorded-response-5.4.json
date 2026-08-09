@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:16:54.268Z",
+  "section_reference": "5.4",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"5.4\",\"party_making\":\"Parent\",\"chapeau_quote\":\"No Consent from any Governmental Entity is required to be obtained or made by Parent or any of its Subsidiaries in connection with the execution, delivery and performance of this Agreement by Parent and Merger Sub or the consummation by Parent and Merger Sub of the Transactions, except for:\",\"limbs\":[{\"limb_path\":[\"(f)\"],\"assertion_quote\":\"any such Consent that the failure to obtain or make would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect.\",\"subject\":\"Governmental Entity Consent\"}],\"qualifiers\":[{\"kind\":\"THRESHOLD\",\"code\":null,\"quote\":\"would not reasonably be expected to have, individually or in the aggregate, a Parent Material Adverse Effect\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"(f)\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"governmental consent requirement and specified exceptions\",\"observed_quote\":\"No Consent from any Governmental Entity is required to be obtained or made by Parent or any of its Subsidiaries in connection with the execution, delivery and performance of this Agreement by Parent and Merger Sub or the consummation by Parent and Merger Sub of the Transactions, except for:\",\"why_unmapped\":\"This is a substantive consent representation and exception structure, not an accuracy or knowledge qualifier.\",\"nearest_concept\":null}]}"
+}
