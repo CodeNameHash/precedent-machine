@@ -1333,6 +1333,25 @@ Evidence and commands: `docs/codex-program/notes/step-2x-g-open-world-promotion.
 
 ---
 
+## Step 2X-H. Record input tokens
+
+**Closed 2026-08-08.** The Claude Code CLI reports `usage.input_tokens` as only
+the non-cached prompt tail (often ~2 on a warm cache). Live telemetry was
+writing that figure unchanged, so fifteen REPRESENTATIONS chunks showed
+**426 input tokens across 172 calls** while output was recorded correctly.
+
+**Fix.** `normalizeProviderUsage` in
+`lib/canonical-v2/native-producer/anthropic-provider.js` sums
+`input_tokens + cache_creation_input_tokens + cache_read_input_tokens` when
+cache fields are present, keeps the CLI tail as `input_tokens_non_cache`, and
+leaves SDK-shaped usage (no cache fields) unchanged. Applied before telemetry
+write and on `provider_usage`.
+
+**Proof.** `CI=true node --test tests/canonical-v2-input-token-telemetry.test.js`
+exit 0. Note: `docs/codex-program/notes/step-2x-h-input-tokens.md`.
+
+---
+
 ## Step 2X-F. Topology, with an undetermined state
 
 **Closed 2026-08-09** for the detector half. Model-extracted `transaction_steps`

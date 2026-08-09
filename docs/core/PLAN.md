@@ -2571,19 +2571,10 @@ scan rows need Ben/taxonomy before promote; do not auto-apply.
 
 ## Step 2X-H. Record input tokens
 
-**What it is.** Call telemetry across the fifteen REPRESENTATIONS chunks reports
-**426 input tokens across 172 calls**, which is impossible. Output is recorded
-correctly at 2,734,334.
-
-**Why.** Without input tokens no run can be costed and no two prompt variants
-can be compared. Every cost statement made from this telemetry, including in
-this plan, is output-only and must be read that way.
-
-**Change.** `lib/canonical-v2/native-producer/anthropic-provider.js` and the
-telemetry writer in `scripts/canonical-v2-live-extraction-run.mjs`.
-
-**Proves it is done.** A single recorded call carries an input token count
-consistent with its own prompt length, checked by hand once.
+**MOVED TO COMPLETED.md (2026-08-08)** — CLI `input_tokens` is the non-cached
+tail only; `normalizeProviderUsage` sums cache fields. Proof:
+`tests/canonical-v2-input-token-telemetry.test.js`. Note:
+`docs/codex-program/notes/step-2x-h-input-tokens.md`.
 
 ---
 
