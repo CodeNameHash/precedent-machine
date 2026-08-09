@@ -559,20 +559,12 @@ test('a quarantined closure cannot publish later under a new idempotency key', a
 
 test('an injected failure rolls back every staged object and receipt', async () => {
   const { repository, writer } = setup();
+  const before = repository.snapshot();
   repository.injectFailureOnce('claims');
   await assert.rejects(writer.write({
     operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-4', writeSet: fixtureWriteSet(),
   }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
-  assert.deepEqual(repository.snapshot(), {
-    intakeCaptures: [],
-    sources: [], sourceAdmissions: [], deals: [], dealAdmissionRecords: [],
-    excerpts: [], definition_occurrences: [], validated_semantic_graphs: [],
-    provisions: [], components: [], condition_groups: [], claims: [], relationships: [],
-    open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
-    open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],
-    reviewed_source_specific_rows: [], incomplete_canonical_result_rows: [],
-    productCandidateResults: [], residuals: [], quarantines: [], receipts: [],
-  });
+  assert.deepEqual(repository.snapshot(), before);
   assert.equal(repository.transactionCount, 1);
 });
 

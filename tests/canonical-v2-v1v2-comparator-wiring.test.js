@@ -249,15 +249,16 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   // QUALIFIER_KIND_LEXICON_VERSION 3 -> 4. Same class of re-pin as Stage 3
   // (2 -> 3) below: lexicon version folds into answer_provenance, so
   // claim_revision_ids and this receipt id move; fixture regenerated via
-  // resolveCandidates on the same run-receipt — counts unchanged (3/6/31/1).
-  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '1557c6b2af6ae85d64ea415999690f882a960031bf011c7c03f4872f3ec0f2d0');
+  // resolveCandidates on the same run-receipt. Counts remain 3/6/31/1 while
+  // current evidence context and registry provenance are retained.
+  assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3');
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
   assert.equal(baseline.resolution_receipt.mapping_table_version, 21);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '1557c6b2af6ae85d64ea415999690f882a960031bf011c7c03f4872f3ec0f2d0',
+    '444542e5e5b5cec373274d366bdc9fd1e5414135185d21738ee0df86084391f3',
     // Re-pinned again (Stage 3, QUALIFIER_KIND_LEXICON_VERSION 2 -> 3): the
     // lexicon version is folded into every mechanically-resolved claim's
     // answer_provenance, so the version bump re-keys claim_revision_ids and
