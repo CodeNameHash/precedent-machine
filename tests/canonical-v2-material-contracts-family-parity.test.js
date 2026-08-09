@@ -19,6 +19,7 @@ const { getProducerPromptModule } = require('../lib/canonical-v2/native-producer
 const {
   buildMaterialContractsProducerPrompt,
   MATERIAL_CONTRACT_BUCKET_KINDS,
+  PROMPT_VERSION,
 } = require('../lib/canonical-v2/native-producer/material-contracts-producer-prompt');
 const { classifySectionFamily, SECTION_FAMILY_RULE_CLASSIFIED } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const {
@@ -161,6 +162,13 @@ test('Material Contracts registers its exact contract, producer and title route'
   assert.equal(getProducerPromptModule('MATERIAL_CONTRACTS'), buildMaterialContractsProducerPrompt);
   assert.ok(MATERIAL_CONTRACT_BUCKET_KINDS.includes('SUPPLY'));
   assert.equal(MATERIAL_CONTRACT_BUCKET_KINDS.includes('OTHER'), false);
+  assert.equal(PROMPT_VERSION, 2);
+  const prompt = buildMaterialContractsProducerPrompt({
+    source_text: GROUNDED_QUOTE,
+    governed_scope: { section_reference: SECTION_REFERENCE },
+  });
+  assert.match(prompt.messages[0].content, /Every discrete contract-inclusion list item without a quantitative floor is an ANY threshold/);
+  assert.match(prompt.messages[0].content, /Never list a term merely because it is capitalised, appears in the quote, or affects only the parties or scope/);
   assert.equal(MAPPING_TABLE_VERSION, 21);
   const classification = await classifySectionFamily({ title: 'Material Contracts' });
   assert.equal(classification.section_family, 'MATERIAL_CONTRACTS');

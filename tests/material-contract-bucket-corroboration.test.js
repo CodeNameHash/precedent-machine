@@ -33,3 +33,40 @@ test('HOSTILE: adjacent competition, budget and regulator language do not corrob
     assert.equal(synonyms.some((pattern) => pattern.test(quote)), false, quote);
   }
 });
+
+test('Step 2X-K exact Terra IP licence formulations corroborate only their directed bucket', () => {
+  const cases = [
+    [
+      'any material Contract pursuant to which (i) the Company or any of the Company Subsidiaries licenses, acquires or is otherwise permitted to use the Intellectual Property of any third party',
+      'IP_LICENSES_IN',
+    ],
+    [
+      'pursuant to which a third party licenses or is otherwise permitted to use any Company Intellectual Property',
+      'IP_LICENSES_OUT',
+    ],
+  ];
+  for (const [quote, expectedBucket] of cases) {
+    const matchingBuckets = Object.entries(MATERIAL_CONTRACT_BUCKET_META)
+      .filter(([, meta]) => meta.synonyms.some((pattern) => pattern.test(quote)))
+      .map(([bucket]) => bucket)
+      .sort();
+    assert.deepEqual(matchingBuckets, [expectedBucket], quote);
+  }
+});
+
+test('HOSTILE: generic licence and affiliate wording does not corroborate as Terra IP formulations', () => {
+  const inbound = MATERIAL_CONTRACT_BUCKET_META.IP_LICENSES_IN.synonyms;
+  const outbound = MATERIAL_CONTRACT_BUCKET_META.IP_LICENSES_OUT.synonyms;
+  const affiliate = MATERIAL_CONTRACT_BUCKET_META.AFFILIATE_TRANSACTIONS.synonyms;
+  for (const quote of [
+    'The Company may use a third party service provider under an ordinary commercial contract.',
+    'A third party is otherwise permitted to use any Company asset for maintenance work.',
+    'The Company licenses, acquires or is otherwise permitted to use a third party data feed.',
+  ]) {
+    assert.equal(inbound.some((pattern) => pattern.test(quote)), false, quote);
+    assert.equal(outbound.some((pattern) => pattern.test(quote)), false, quote);
+  }
+  assert.equal(affiliate.some((pattern) => pattern.test(
+    'The Company shall provide notice to an affiliate before a public announcement.',
+  )), false);
+});
