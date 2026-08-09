@@ -38,10 +38,21 @@ to derive it fresh from the current code.
 
 ## Current work — read this before touching the branch
 
-`claude/codex-handoff-plan-status-77wn7n` is 189 commits ahead of `main`. The
-merge is split: docs land now, code is held on three named blockers.
+**Step 2X merged to `main` as `c40b7bb1` on 2026-08-08** — 207 commits, all
+three blockers closed, gates re-run after the merge because `main` had moved.
+`docs/codex-program/notes/HANDOFF-2026-08-08.md` records how that was reached
+and where every 2X artefact lives.
 
-**`docs/codex-program/notes/HANDOFF-2026-08-08.md`** says where every artefact
-lives, what is blocked and why, the traps this session hit, and what to do next
-in order. Read it first. The plan step it implements is **Step 2X-0** in
-`PLAN.md`; the work it precedes is Step 2X, sub-steps A to L.
+**The open work is Stage 2Y in `PLAN.md`, and it is PROPOSED, not settled.**
+Added 2026-08-09 after every one of the **4,241 unresolved reason-code
+occurrences** in the corpus was diagnosed to a mechanism. It is written against
+the standard Ben set on 2026-08-09 — *"at thousands of agreements this doesn't
+work; the system needs to be fucking good"* — so its measure is unattended
+correctness, not what a reviewer sees. Four rulings are open at the top of the
+stage, each with a stated default.
+
+The evidence sits in `docs/codex-program/notes/stage-2y/`:
+`unresolved-register.json` is the row-level register (155 rows, one per
+family/reason-code pair, summing to exactly 4,241); the `diag-*.md` files carry
+the per-cluster diagnoses; `done-reaudit.md` re-audits the 2X sweep's DONE rows
+and finds three false closes.

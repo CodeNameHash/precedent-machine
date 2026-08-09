@@ -1,7 +1,10 @@
 // Review V2 ("Mergertrace") — ordered section list.
-// Mirrors REVIEW_TABLE_CONFIGS in pages/review/[id].js (same 19 configs,
-// same order) without touching the monolith. Each non-empty section gets a
-// dot colour cycled from the Mergertrace prototype palette.
+// Derived from REVIEW_TABLE_CONFIGS in pages/review-v1/[id].js — NOT
+// pages/review/[id].js, which has no array of that name. That V1 array has 19
+// configs; this one has 20, in the same order plus parentIocExceptionsConfig,
+// which V1 never carried. So it mirrors the order, not the contents. Each
+// non-empty section gets a dot colour cycled from the Mergertrace prototype
+// palette.
 
 import { structureMechanicsConfig } from '../review/table-configs/structure-mechanics.config';
 import { textOf, valueText } from '../review/table-configs/card-utils';

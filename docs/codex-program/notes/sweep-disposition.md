@@ -15,6 +15,13 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 `asset-sweep-tests.md`, `topology-investigation.md`,
 `cross-family-consistency.md`, `revalidation-ladder.md`.
 
+**Re-audited 2026-08-09.** Every DONE and CRITERION row was checked against what
+canonical-V2 actually `require`s, rather than against its own claim: 18 TRUE
+CLOSE, **3 FALSE CLOSE**, 5 unverifiable from source alone. The three are marked
+in the tables below and re-pointed at a Stage 2Y step. Full working:
+`stage-2y/done-reaudit.md`. A DONE row is a claim to test, not a fact — the same
+rule this repository applies to header comments.
+
 ## Structure and inheritance
 
 | finding | disposition | where |
@@ -43,8 +50,8 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 | `taxonomy.js` — 54 vocabularies, 429 codes, one consumed | PLAN | 2X-J |
 | `MAE_CARVEOUT_META` 27 codes unconsumed | PLAN | 2X-J |
 | `lib/schema/features.js` 551 feature definitions unconsumed | PLAN | 2X-J |
-| `category-summary-features.js` — ~200 expected rows, annotated with PW question numbers | CRITERION | per-family expected yield in 2X-J |
-| `canonical-conditions.js` — canonical code first, regex fallback | **DONE** | reused for 2X-E |
+| `category-summary-features.js` — ~200 expected rows, annotated with PW question numbers | CRITERION — **re-audit 2026-08-09: FALSE CLOSE** | zero canonical-V2 consumers despite the CRITERION framing. Re-pointed at **2Y-H**, where the topic list must be checked against these rows rather than written from memory |
+| `canonical-conditions.js` — canonical code first, regex fallback | ~~DONE~~ **re-audit 2026-08-09: FALSE CLOSE** | 2X-E consumed one string constant (`CONDITION_ABSENT_COPY`) while 18 canonical rows went unread. The unread rows bear on `CONDITION_KIND_UNCORROBORATED` (34). Carried to **2Y-C** as registry input |
 | `employee-benefits.js` — bundled inherits standard and quote, direct beats inferred, `bundled` flag | CRITERION | provenance-flag pattern, required of every derived value |
 | `lib/vocab/` — 3 real, 1 partial, 3 empty scaffolds | DROP | the three empty ones are Ben's to fill; do not populate |
 | Open-world promotion does not exist | PLAN | 2X-G |
@@ -61,7 +68,7 @@ Source notes: `asset-sweep-lib-root.md`, `asset-sweep-parser-schema.md`,
 | `ClauseSidebar.jsx` implements fact→limb→clause expansion | CRITERION | the reference implementation for Ben's ruling 3 |
 | `nosol-section.config.js` GROUP_DEFS assembles sub-families as limbs | CRITERION | working chapeau precedent for 2X-A |
 | `CanonicalReviewSection.jsx` throws on incomplete certified evidence | CRITERION | refusal discipline to preserve |
-| `REVIEW_V2_CONFIGS` lists 20 configs; its header says 19 | **DONE** | stale-header instance, corrected |
+| `REVIEW_V2_CONFIGS` lists 20 configs; its header says 19 | ~~DONE~~ **re-audit 2026-08-09: FALSE CLOSE, now genuinely CLOSED** | The disposition claimed the header was corrected; it was not — a stale-header row that was itself stale. It also pointed at `pages/review/[id].js`, which has no `REVIEW_TABLE_CONFIGS`; the real 19-entry array is in `pages/review-v1/[id].js`. Header rewritten 2026-08-09, both errors fixed, counts re-derived (V1 19, V2 20) |
 | `pages/deals/[id].js`, `pages/provisions/[id].js` orphaned, reachable only by typed URL | GRAVEYARD | |
 | Six large families build rows dynamically with no fixed catalogue | CRITERION | sparse output there can be legitimately deal-driven, not a defect |
 

@@ -2862,6 +2862,722 @@ blind 96-card re-score is the final rung's gate, not the only gate.
 
 ---
 
+# Stage 2Y. Be right unattended, not right after review
+
+**Added 2026-08-09**, after every one of the **4,241 unresolved reason-code
+occurrences** in the corpus was diagnosed to a mechanism. Stage 2X asked why the
+resolver refuses. Stage 2Y is about what has to change so that it stops needing
+to, at a scale where nobody is watching.
+
+**PROPOSED. Four rulings in §"What this stage needs from Ben" are open.** The
+step bodies below say what the default is if he says nothing, so silence is a
+decision rather than a stall.
+
+## The target this stage is written against
+
+Ben, 2026-08-09, correcting an earlier framing of mine that treated human review
+as making correctness less urgent:
+
+> **At thousands of agreements this doesn't work. The system needs to be
+> fucking good! Humans will back fill edits but the system needs to do really
+> well.**
+
+That is the acceptance standard for everything below. Human review is a
+back-fill, not a mechanism. The arithmetic is why: at seven deals the corpus
+carries about **109 held rows and 385 unmapped candidates per agreement**. At a
+thousand agreements that is **109,000 and 385,000**. No review queue absorbs
+that, and a queue that large is not read — it is ignored, which is worse than
+not having one, because it looks like a control.
+
+It also changes what "done" means for every step here. A step that recovers
+claims but publishes some of them wrongly is a **worse** outcome than the hold
+it replaced, because a held row is visibly incomplete and a wrong row is
+invisibly wrong. Every loosening step below therefore carries a precision gate,
+not only a recovery count. That is the single largest difference between this
+stage and Stage 2X.
+
+## What was diagnosed, and how the 4,241 breaks down
+
+Source: `evidence/canonical-v2/corpus-review-20260809.html`, one winning run per
+(deal, family), 151 `resolution.json` runs folded in, 4,141 cards / 5,002 claim
+rows. Parsed directly rather than read off the rendered page. The full row-level
+register is `docs/codex-program/notes/stage-2y/unresolved-register.json` — 155
+rows, one per (family, reason_code) pair, summing to exactly 4,241.
+
+| state | distinct codes | occurrences |
+|---|---|---|
+| HELD | 82 | 762 |
+| OPEN_WORLD | 21 | 2,692 |
+| RESOLVED, auto-pass blocked | 3 | 787 |
+| **total** | **106** | **4,241** |
+
+**A correction is recorded here because I reported the wrong figure.** I told
+Ben open-world was "about 3,479". It is **2,692**. 2,692 + 787 = 3,479 exactly:
+I folded the three auto-pass-blocked codes into open-world, which is precisely
+the conflation my own brief warned against. The three are
+`LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE` (635), `MULTI_SPAN_COMPOSED` (76) and
+`NESTED_OR_CROSS_REFERENCED_EVIDENCE` (76). They are **resolved claims with a
+governed claim-definition key**; the flag blocks the stricter auto-pass status
+only. Fixing them creates no new content — it unblocks content that already
+resolved.
+
+**And a caveat on what auto-pass currently means.** Sampled 118 rows across
+families: `auto_pass` is **false on every one, zero true**. So the flag does not
+today separate a publishable claim from a gated one — it separates nothing. Any
+step that reports "unblocked N claims for auto-pass" is reporting a number with
+no downstream consumer until that is fixed. Named here so it is not discovered
+again as a surprise.
+
+## The six mechanisms
+
+These are **not a disjoint partition** and are not presented as one. Where a
+figure is extrapolated from a pooled measurement rather than counted per family,
+it says so. Ordered by weight.
+
+**1. The context a check reads is a rendering artefact, not document structure.**
+`sourceParagraphForCandidate` (`candidate-resolution.js:5757`) takes a single
+`\n`-bounded line as the claim's context. `sec-html-canonical-text.js` emits a
+hard newline for every `<p>`. SEC filings put each enumerated sub-clause in its
+own `<P>`. So the chapeau — which carries the obligor, the modal verb, and very
+often the standard or threshold — is *always* in a different context window from
+the limb that carries the operative fragment. The check then looks for a word
+that is, by construction, not in the text it was handed.
+
+Measured: **78 of NO_SHOP's 91** occurrences at this site. Confirmed on quotes
+in DNO_INDEMNIFICATION (22), EMPLOYEE_MATTERS (29), TERMINATION (22), part of
+FINANCING_COVENANTS, INTERIM_OPERATING's attachment codes (59 + 23 + 4), and
+about 25 of CLOSING_CONDITIONS' 62 — the whole `FRUSTRATION_CAUSATION` /
+`FRUSTRATION_BREACH` bucket of 14 plus `BRING_DOWN_TIER`. Extrapolated: **762 of
+the 1,147 `NATIVE_OPEN_WORLD_PROPOSAL` candidates (66.4%)** are chapeau-detached
+fragments, measured once on the pooled population, not re-measured per family.
+
+The fix template is **twelve lines away in the same file**:
+`partyContextForCandidate` (`:5769-5784`) already walks back to the chapeau. It
+was written for one purpose and never generalised. And the whole-document
+section tree that would do this properly — `deterministic-sectionizer.js`,
+`structure_context` / `GOVERNING_STRUCTURE`, visible in every review-queue row —
+is computed on every run and never consulted here.
+
+**2. Corroboration regexes encoding one drafter's habit.** Per-kind literal
+tables that hold for the deal they were written against and fail on ordinary
+drafting variation. Confirmed instances, each on real corpus text:
+
+- `/shall not have occurred/i` (`:5097`) misses "**will have** occurred", "no
+  Effect **has** occurred".
+- The obligor regex (`:5137`) over-fits tense and word order.
+- `OFFICER_CERTIFICATE` (`:4989`) requires `/certificate/i` **and**
+  `/certif(?:y|ying|ied)/i` — the conjunction, not a missing lexicon, is the
+  defect. *(I first reported this as "the corroborator only knows five condition
+  kinds". Wrong: the handler exists, in a different code path.)*
+- Stockholder approval requires "stockholder"; Red Hat writes "**Shareholder**
+  Approval", Skechers approves by "Written Consent", SkyWater says "**adopted**
+  by the stockholders".
+- Skechers defines its buy-side as "**the Buyer Parties**"; the regex hard-codes
+  `Parent`. Skechers calls its burdensome condition "**Detriment**".
+- Metsera's `causation_standard: "PRIMARILY_CAUSED"` is not a key in the
+  four-entry patterns dict at `:5017` at all.
+- `MAE_QUALIFIER_IDIOM_PATTERN` in `qualifier-kind-lexicon.js` matches the MAE
+  idiom but **fails on the compound form** "has not had **or would not**
+  reasonably be expected to have" — verified both ways. This is the one Ben
+  pulled out by hand and asked how it could possibly be unclassified.
+- COV-NOTIFY misses "keep the other **apprised**"; COV-FURTHER misses
+  "necessary, proper or advisable". `general-covenant-corroboration.js`'s own
+  header admits **14 of 18 codes are "narrow on purpose"**.
+- The apprised/informed gap appears in **two independent modules** that do not
+  know about each other.
+- `parseFilingDeadlineDays` computes a spelled numeral and then **discards it**
+  unless a parenthetical digit follows: "four (4)" resolves, "at least **four**
+  Business Days" does not.
+
+Roughly **350 occurrences**, spread thin across families — which is exactly why
+it has never been fixed as one thing.
+
+**3. The resolver treats "I could not derive it" as "the model is wrong."**
+`REPRESENTATION_KNOWLEDGE_STANDARD_UNCORROBORATED`, 91 occurrences: the model
+tags `canonical_value: "ACTUAL"`, `deriveKnowledgeStandard` (`:2229-2235`) looks
+for the literal words "actual knowledge" in a quote reading "to the knowledge of
+the Company", finds nothing, returns `null`, and `null !== "ACTUAL"` is scored
+as a **disagreement**. Measured across 82 rows and six deals: **zero
+exceptions**, and not one case of a genuine conflict where the quote says one
+standard and the model tagged another. Same species: the `GENERAL_COVENANTS`
+ternary at `:4869-4873` whose two branches return the identical string, so a
+real ambiguity is indistinguishable from a plain non-match; and
+`ioc-mechanic-resolution.js:115`, which looks up the attachment host by
+**byte-identical equality** against an independently segmented component index.
+
+**4. The reconciliation stage that was deferred and never built.** 707 of the
+713 `UNMAPPED_GENERIC_CLAIM_KEY` occurrences carry
+`NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE` — minted identically **whatever
+the subject matter is**, by three separate shapers.
+`anthropic-provider.js:20-30` says so in terms: *"every response produces the
+same bucket structure regardless of content… That reconciliation is deliberately
+left to a later stage."* The later stage does not exist. 623 of these are
+REPRESENTATIONS — the largest single row in the register.
+
+**5. Representation qualifiers that are governed nowhere.** 485
+`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` — **THRESHOLD 306, TEMPORAL 157,
+100% accounted for** — is a resolver kind-dispatch gap, not missing governance.
+With `QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
+`ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26) it is **675 occurrences resolving to
+three causes**, all replay-validatable, except ~7 of the 22 bring-down rows.
+
+**6. The lexical disagreement net over-triggers on its own success.**
+`matchFamily()` (`lexical-disagreement-net.js:1115`) marks a pattern hit MATCHED
+only if its byte range overlaps an evidence span, and **one** unmatched hit
+anywhere flips the whole family for that section. A single long no-shop covenant
+says "solicit" ten times and is correctly captured by one representative claim
+per concept; three hits match, seven do not, the family fails. **635 flags
+collapse to 164 distinct (deal, section, concept_family) roots** — 3.9 tainted
+claims per root.
+
+Beyond the six: **106 open-world duplicates** and **59 byte-identical MAE
+duplicates** minted twice by the same shaper; **21 open-world concepts recurring
+in three or more deals** (146 occurrences) with nowhere to be promoted to; and a
+genuinely absent shape — the appraisal-settlement-consent covenant, same
+drafting across three deals, **no registered assertion kind at all**.
+
+## What is *not* a defect, and must stop being counted as one
+
+Confirmed correct refusals, mixed into the 4,241 today:
+
+- `PARTY_UNRESOLVED` in MAE_DEFINITION (14) — the party genuinely is not
+  determinable from the evidence.
+- `NO_DAY_COUNT` on "as promptly as reasonably practicable" (3) — there is no
+  day count. The defect is upstream: a day-count claim was proposed for a
+  qualitative timing standard.
+- `MULTIPLE_DAY_COUNTS` on a quote carrying two different day counts for two
+  different obligations (1) — abstaining is right.
+
+About **25 occurrences**. Small, and the point is not the count. A denominator
+that includes correct behaviour cannot tell you when you are finished, and this
+programme has already been misled twice by a number that mixed the two.
+
+## The honest residual
+
+**About 73 occurrences (1.7%)** are named and located but not diagnosed to a
+fix: TAX_MATTERS' two codes (12), TERMINATION_FEE's sole-remedy codes in
+`sole-remedy-resolution.js` (7), a singleton tail across PROXY_MEETING /
+CONSIDERATION / GUARANTY_FINANCING_PARTY / MERGER_STRUCTURE_CLOSING (12),
+GENERAL_COVENANTS' `PARTY_UNRESOLVED` (3), TERMINATION's `NO_CALENDAR_DATE` (2),
+FINANCING_COVENANTS' `FINANCING_SCOPE_UNCORROBORATED` (4), eight
+CLOSING_CONDITIONS singletons, and 25 MAE orphans concentrated in one Concho run
+that may be content loss rather than a routing bug. They are listed rather than
+counted as diagnosed. Step 2Y-K closes them.
+
+## The rule this stage introduces, and why it is a rule and not a fix
+
+Every one of mechanism 2's instances was fixed the same way historically: someone
+read a quote, saw the missing word, and added it to a regex. That does not scale
+to a thousand agreements — it scales to however many quotes a person reads. So
+Stage 2Y adopts three standing rules, and the steps below are the work of making
+the code obey them.
+
+1. **A corroboration check may fail only on a positive contradiction.** Absence
+   of the check's literal in the fragment it was handed is not disagreement with
+   the model. It is the check having nothing to say. Those are different states
+   and must produce different outcomes.
+2. **The context a check reads is the governing structure, never a rendered
+   line.** If a check needs the obligor and the obligor is in the chapeau, the
+   check gets the chapeau.
+3. **A phrase list lives in one place and adding to it helps every family.** A
+   literal written inline in a resolver helps one code path and is invisible to
+   the next person with the same problem — twice over, demonstrably, for
+   "apprised".
+
+## What this stage needs from Ben
+
+**1. The source-of-truth question — Ben's, 2026-08-09: "do we need a js or a
+database with all taxonomy/language in one place… so we have a source of truth?"
+My answer is yes, and Step 2Y-C builds it — but the registry is not the hard
+part and building it without the second half would make things worse.**
+`lib/taxonomy.js` already *is* an attempt at this: 429 codes, 54 vocabularies,
+**four consumed**. It is not unreachable — canonical-V2 requires it in five
+places — it is simply bypassed, because nothing ever forced consumption. The
+KNOWLEDGE branch reinvented a three-value `ACTUAL/CONSTRUCTIVE/AFTER_INQUIRY`
+enum that matches taxonomy's three values **1:1 by name** and never imports it.
+`MAT_MAE_AGGREGATE` is defined twice with different meanings. A second registry
+without a consumption gate produces a second `taxonomy.js`. So 2Y-C is registry
+**plus lint**, and the lint is the load-bearing half.
+*Default if you say nothing: build it, with the lint, scoped to what the
+resolver actually reads today rather than migrating all 429 codes.*
+
+**2. The precision/recall trade.** Every step here loosens a check. How much
+wrongness is acceptable to recover a claim? My recommendation: **publish only at
+or above the precision the current strict behaviour achieves**, measured in
+2Y-0, and hold anything that would lower it. That is conservative and it is what
+"the system needs to be fucking good" implies. *Default: that rule.*
+
+**3. Open-world promotion threshold.** 2X-G left this open and 2Y-J cannot
+proceed without it. The evidence now says a concept-recurrence rule reads better
+than a percentage: **21 concepts recur in three or more deals**; at seven deals a
+percentage rule makes one recurrence 14%. *Default: three deals, and re-examine
+the rule at fifty.*
+
+**4. `MULTI_SPAN_COMPOSED` / `NESTED_OR_CROSS_REFERENCED_EVIDENCE` (76 each) is
+one mechanism, not two** — confirmed on the corpus. I told Ben these were his
+cross-provision thesis; they are not. They are a **definition's own head and
+limb split inside the same section**. Composing them needs a decision about
+whether one claim may carry two spans, which is `finalizeResolvedCandidate`
+(`:5885-5911`) and the identity model, not a resolver tweak. *No default: this
+is Ruling 3 (narrow → limb → clause) in a different costume and should be
+answered once for both.*
+
+---
+
+## Step 2Y-0. Measure precision before loosening anything, and fix the denominator
+
+**What it is.** Two things that must exist before any other step in this stage
+lands. First, a **precision baseline**: a stratified sample of *published*
+claims — not held ones — adjudicated against the source agreement, per family,
+recording what fraction is correct today. Second, a **denominator correction**:
+reclassify the ~25 confirmed correct abstentions out of the failure population
+so that "unresolved" counts only things that should have resolved.
+
+**Why.** Every step below trades precision for recall and there is currently no
+instrument that would notice. The programme's measurement failures have all been
+denominator failures — `review_queue` read as a reject pile, correct abstentions
+read as bugs, auto-pass-blocked rows folded into open-world. Loosening a dozen
+checks against a denominator nobody trusts is how a system gets worse while its
+headline number improves.
+
+**Change.** A new script under `scripts/` producing a committed evidence file, in
+the shape of `evidence/blind-review/2026-08-08/` — which is the precedent to
+copy, including its discipline: **report per-stratum movement, never a bare
+total**. Reclassification lands in the register and in
+`docs/codex-program/notes/stage-2y/unresolved-register.json`.
+
+**Direction of risk: none.** Measurement only.
+
+**Proves it is done.** A committed per-family precision figure with its sample
+size and its adjudications, and a corrected unresolved total with the
+reclassified codes named individually. If the precision baseline is already
+below what the product needs, that is a finding that reorders this entire stage
+and it is better found now.
+
+---
+
+## Step 2Y-A. Read the governing chapeau, not the rendered line
+
+**What it is.** Replace `sourceParagraphForCandidate`'s single-`\n` slice
+(`candidate-resolution.js:5757`) with a governing-context lookup that returns the
+claim's span *plus its chapeau chain*, and route every corroboration check
+through it.
+
+**Why.** The largest single mechanism in the corpus, by a wide margin — mechanism
+1 above. It is also the cheapest, because the context is already computed: the
+whole-document tree from `deterministic-sectionizer.js` and the
+`structure_context` field present on every review-queue row. And the walk-back
+template is twelve lines below the defect, in `partyContextForCandidate`
+(`:5769-5784`).
+
+**Change.** `candidate-resolution.js`, `ioc-mechanic-resolution.js`. Consume
+`segmentSubClauses` (`lib/parser-v2/subclauses.js`) behind
+`lib/canonical-v2/canonical-bytes.js` — **do not port it to bytes**; it works in
+UTF-16 string indices, has passing tests and four live V1 consumers, and
+converting at the boundary is the standing rule. This is 2X-A's structure service
+narrowed to the one consumer that proves it.
+
+**Direction of risk: additive first, then regressive.** Widening the window can
+only move held → resolved. But a check that now sees more text can also match
+something it should not, so this needs a resolution-set diff per deal, not a
+recovery count.
+
+**Proves it is done.** Per family: the before/after count of its context-starved
+reason codes, the count of claims that moved held → resolved, **zero that moved
+the other way**, and — the gate that matters — the 2Y-0 precision figure for
+every family it touches, re-measured and not lower. Specifically: NO_SHOP's 78,
+DNO's 22, EMPLOYEE_MATTERS' 29, TERMINATION's 22, IOC's 59 + 23 + 4, and
+CLOSING_CONDITIONS' `FRUSTRATION_*` 14.
+
+---
+
+## Step 2Y-B. A corroboration check may fail only on a contradiction
+
+**What it is.** Where a check derives a value independently and compares it to
+the model's, distinguish *"I derived a different value"* (a real disagreement)
+from *"I derived nothing"* (the check has nothing to say). Only the first is a
+failure.
+
+**Why.** Mechanism 3. 91 occurrences on one branch, 82 measured, **zero genuine
+conflicts** in the whole sample. The KNOWLEDGE branch discards a correct,
+convention-grounded model answer because the word "actual" is not repeated in a
+quote reading "to the knowledge of the Company" — a phrase whose entire legal
+meaning is the actual-knowledge standard.
+
+**Change.** `candidate-resolution.js` KNOWLEDGE branch (`~9825-9834`): when
+`deriveKnowledgeStandard` returns `null` and `claim.canonical_value` is a member
+of the enum, defer to the model — exactly as the ACCURACY branch already defers
+to `classification.code` without re-deriving it. Reserve the UNCORROBORATED path
+for a derived-value-vs-tagged-value conflict. Fix the dead ternary at
+`:4869-4873` so an ambiguous general-covenant code is distinguishable from a
+non-match. Loosen `ioc-mechanic-resolution.js:115`'s byte-identical `===` to a
+normalised containment match, consistently with the substring fallback
+`diag-ioc.md` already recommends for its sibling code.
+
+**Direction of risk: regressive in principle.** Deferring to the model is exactly
+where a wrong claim gets published. This step is the reason 2Y-0 exists.
+
+**Proves it is done.** The 91 resolve; the *genuine*-conflict path is exercised
+by a test with a quote saying "constructive knowledge" tagged `ACTUAL`, and still
+holds; and the adjudicated precision of the 91 newly published claims is
+measured, not assumed. If any of the 91 is wrong, this step is wrong.
+
+---
+
+## Step 2Y-C. One vocabulary registry, and a lint that forces its use
+
+**What it is.** Ben's source-of-truth question, answered. A single registry of
+the controlled language the resolver matches against — codes, controlled
+vocabularies, and the literal-phrase and pattern sets that corroborate them —
+**plus a lint that fails the build when a resolver module declares an inline enum
+or phrase list that duplicates a registry entry.**
+
+**Why.** `taxonomy.js` is the counter-example that proves the point: 429 codes,
+54 vocabularies, four consumed, one key defined twice with two meanings, and a
+resolver path that reinvented one of its enums 1:1 by name without importing it.
+The registry is not what was missing. **Enforced consumption** is what was
+missing, and a registry without it will be bypassed within a month exactly as
+this one was.
+
+**And the coding-based answer to "how do we loosen will/shall/except".** Ben
+asked whether we could do something more code-based than reading contracts and
+adding synonyms, and noted the flaw in sampling: if a drafter simply picks an
+odd word, no sample surfaces it. Three mechanisms, in order of leverage:
+
+1. **Normalise at the matching boundary, don't enumerate.** Modal auxiliaries
+   (`shall` / `will` / `must` / `agrees to`), tense, and voice get normalised
+   before any pattern runs. "shall not have occurred" and "will have occurred"
+   stop being two patterns. This removes a whole class of variant without a
+   single phrase being added by hand.
+2. **Resolve the agreement's own defined terms** rather than adding synonyms for
+   them — Step 2Y-D.
+3. **Near-miss mining, run as a lint over the corpus.** For every registry
+   pattern, scan for spans where the pattern's *anchor* words are present but the
+   pattern does not fire, and report them for adjudication. This is the direct
+   answer to Ben's objection: a drafter who writes "Shareholder Approval" or
+   "apprised" or "adopted by the stockholders" still trips the anchor, so the
+   variant surfaces **before** anyone notices a missing claim. It converts
+   vocabulary maintenance from *read contracts until you spot a gap* into a
+   report that arrives on every corpus run.
+
+**Change.** New registry module(s) under `lib/`, one per concern
+(materiality/qualifier, condition kinds, covenant codes, party capacity), cross
+-referenced rather than one monolith. `scripts/lint/forbidden-patterns.sh` gains
+the duplication check. Resolve `taxonomy.js`'s duplicate `MAT_MAE_AGGREGATE` —
+**documented, not deleted**, since deleting either entry breaks stored V1 claims.
+Migrate only what the resolver reads today; the other 400 codes stay where they
+are until something needs them, and `GRAVEYARD.md` records that decision.
+
+**Direction of risk: neutral if done as a pure move.** Any behaviour change
+smuggled in during migration is indistinguishable from a migration bug, so the
+move lands first and empty, and 2Y-D/E's content lands after.
+
+**Proves it is done.** The lint fails on a deliberately reintroduced inline
+duplicate and passes on a clean tree; a replay over all importable runs shows a
+**byte-identical** resolution set across the migration; the near-miss report runs
+over seven deals and produces a ranked, human-readable list of candidate
+variants.
+
+---
+
+## Step 2Y-D. Resolve party and defined-term references from the agreement itself
+
+**What it is.** Stop hard-coding `Parent`, `stockholder`, `Burdensome Condition`.
+Resolve the reference against the agreement's own definitions and the resolved
+party-capacity lexicon.
+
+**Why.** Four confirmed failures are one mechanism: Skechers' "**Buyer
+Parties**", Skechers' "**Detriment**", Red Hat's "**Shareholder** Approval",
+SkyWater's "**adopted** by the stockholders". Each looks like a one-line regex
+fix and each would be a one-deal fix. The agreement defines its own terms and we
+already extract them — KEY_DEFINED_TERMS is a live family. This is the mechanism
+that makes deal-specific drafting stop mattering, which is the whole scaling
+argument.
+
+**Change.** `candidate-resolution.js` party and defined-term checks; the capacity
+lexicon that already handles synonyms elsewhere in the same file. Depends on
+2Y-C's registry for where the canonical role names live.
+
+**Direction of risk: additive, with one sharp edge.** Resolving a defined term
+wrongly attributes a covenant to the wrong party, which is the worst single
+failure this product can produce. Party attribution errors get a hard precision
+gate and a fail-closed default: **unresolved beats guessed**.
+
+**Proves it is done.** The four named failures resolve; a test fixture per deal
+pins each agreement's own term for buy-side party, approval and adverse-condition
+concepts; and zero claims change party attribution on a full replay except the
+ones named in the diff, each adjudicated by hand.
+
+---
+
+## Step 2Y-E. Numerals: spelled forms, unit conversion, honest abstention
+
+**What it is.** `parseFilingDeadlineDays` computes a spelled value from "four"
+and then throws it away unless a parenthetical digit follows
+(`antitrust-regulatory-parse.js:37-71`). `singleNumber(quote, 'months?')`
+recognises only digit + "months", so "for a period of **one year**" never
+resolves.
+
+**Why.** This is the named "two-condition regex encoding one drafter's habit"
+pattern, and the day-count parser is its fifth confirmed instance. Some deals
+always write "four (4)"; these do not. The parser has already done the work and
+discards the answer.
+
+**Change.** Return the computed spelled value instead of aborting. Add spelled
+numerals and year→month conversion to the count parsers. Keep
+`MULTIPLE_DAY_COUNTS` abstaining — two day counts for two obligations in one
+quote is a genuine ambiguity and guessing is worse than refusing.
+
+**Direction of risk: additive.** Small, contained, five known occurrences plus
+the month-count family.
+
+**Proves it is done.** "at least four Business Days", "a Match Period of three
+Business Days" and "for a period of one year" all resolve; the two-count quote
+still abstains and has a test that says so.
+
+---
+
+## Step 2Y-F. The lexical net: concept coverage, not hit-by-hit overlap
+
+**What it is.** Change `matchFamily()` (`lexical-disagreement-net.js:1115`) to
+score whether a *concept* was captured in a section, rather than requiring every
+individual phrase recurrence to have its own overlapping evidence span.
+
+**Why.** 635 flags, 164 roots, 3.9 tainted claims each. A single long covenant
+that says "solicit" ten times is correctly captured by one claim per concept; the
+net reads the other nine as nine missed provisions and fails the whole family for
+that section. The three worst-hit families — NO_SHOP (220), MAE_DEFINITION (108),
+MATERIAL_CONTRACTS (84) — are exactly the "one long provision, many phrase
+recurrences" families, which is what you would predict if this diagnosis is
+right.
+
+**Change.** `lexical-disagreement-net.js`; the gate at `candidate-resolution.js`
+`:4412` / `:4419` is untouched.
+
+**Do the classification pass first.** A minority of the 164 roots may be genuine
+coverage gaps — a real second item nobody extracted — and loosening the matcher
+would hide exactly the signal it exists to raise. Script the comparison of each
+root's `disagreement_set` excerpts against that section's compiled candidates,
+**before** the matcher changes, and split "same covenant, phrase repeats" from
+"second uncaptured item". Only the first is fixed here; the second is a finding.
+
+**Direction of risk: regressive.** This net is a safety mechanism. Loosening a
+safety mechanism to make a number go down is the failure mode to avoid, and the
+classification pass is what makes it legitimate.
+
+**Proves it is done.** The 164 roots classified with counts for each verdict; the
+disagreement-set count actually drops on a re-run against the stored roots rather
+than being assumed from the one section sampled in depth; and every root
+classified as a genuine gap is carried forward as its own named item, not closed.
+
+---
+
+## Step 2Y-G. Suppress duplicates where they are minted
+
+**What it is.** 59 `UNMAPPED_GENERIC_CLAIM_KEY` occurrences in MAE_DEFINITION are
+**byte-identical** to an already-resolved `MAE_CARVEOUT` / `PRONG` claim in the
+same instance, minted twice by `shapeMaeDefinitionLimbAssertionProposals`. A
+further 106 open-world candidates are duplicates.
+
+**Why.** Free, replay-validatable, and it removes noise that makes every other
+count harder to read.
+
+**Change.** Suppress at the shaper — skip a limb whose `assertion_quote` exactly
+matches a `carveout_assertions` / `prong_assertions` quote already shaped for the
+same instance. This is a reshape of the stored response, never a model call, so
+it replays. The alternative site is `candidate-resolution.js:~10989`, before the
+generic-fallback `pushOpenWorld`.
+
+**Also, and separately: the remaining 25.** They are orphans concentrated in one
+Concho run that resolved **zero** `MAE_CARVEOUT` claims. That is a possible
+content-loss signature, not a routing bug, and it must not be swept up in the
+duplicate fix. Root-cause it on its own.
+
+**Direction of risk: additive.** Nothing resolved is touched.
+
+**Proves it is done.** 59 duplicates gone with zero change to the resolved set;
+the Concho 25 given a stated root cause, which may be a defect elsewhere.
+
+---
+
+## Step 2Y-H. Build the reconciliation stage that was deferred
+
+**What it is.** Register a controlled "representation topic present" claim family
+and a resolver-side lexical classifier over `attributes.subject` / `raw_value`,
+keyed to the recurring textbook topics — organisation and standing, compliance
+with law, SEC filings, financial statements, ERISA and benefit plans, litigation,
+tax, permits, environmental, IP, ordinary-course conduct, and the rest.
+
+**Why.** 707 of 713 limb-assertion candidates are minted identically whatever
+their subject, because `anthropic-provider.js:20-30` says the reconciliation is
+*"deliberately left to a later stage"* — and that stage was never built. 623 are
+REPRESENTATIONS: the largest row in the register, and the family Ben cares most
+about.
+
+**Note what this is and is not.** It needs taxonomy design — the code list and
+the `canonical_value` shape are judgement, and Opus-level per `CLAUDE.md`'s
+routing. But it needs **no prompt change**: the evidence and the subject label
+are already stored, so once designed the wiring is replay-validatable at zero
+model cost. It ranks first by volume and second by order only because the design
+step comes first.
+
+**Change.** A new claim family in the registry from 2Y-C; a classifier in
+`candidate-resolution.js`; the three shapers stop pretending subject matter does
+not exist.
+
+**Direction of risk: additive in state, design-risk in substance.** Getting the
+topic list wrong bakes a bad taxonomy into hundreds of claims. Design it against
+the corpus evidence, not from memory, and check it against
+`lib/category-summary-features.js`'s expected rows per family, which already
+carries the PW question numbers this is meant to answer.
+
+**Proves it is done.** A named topic list with its evidence; the 623 classified,
+with a hand-adjudicated sample stating what fraction got the right topic; and
+anything the classifier cannot place staying open-world rather than being forced
+into the nearest bucket.
+
+---
+
+## Step 2Y-I. Dispatch the representation qualifier kinds that exist
+
+**What it is.** `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, 485 occurrences —
+**THRESHOLD 306 and TEMPORAL 157, 100% accounted for** — is a resolver
+kind-dispatch gap. The governance exists; nothing routes to it. With
+`QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
+`ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26), 675 occurrences resolve to three
+causes.
+
+**Why.** Second-largest single row in the register, and the diagnosis is
+unusually clean: three causes, cleanly separated by where the check lives — a
+kind-dispatch gap, lexicon front-door gaps inside the ACCURACY path, and a
+wholly different family (closing-conditions bring-down) sharing a claim
+definition but reached through its own prompt with its own unrelated bug.
+
+**Change.** `candidate-resolution.js` qualifier dispatch;
+`qualifier-kind-lexicon.js` for the front-door patterns, including the
+`MAE_QUALIFIER_IDIOM_PATTERN` compound-form failure Ben found by hand. The
+bring-down slice (~22) splits: ~15 resolver-side, **~7 needs a prompt change** —
+its prompt has no controlled-vocabulary block at all, plus a schema/prompt
+contract mismatch on null. Those 7 go to 2Y-M, not here.
+
+**Direction of risk: additive.**
+
+**Proves it is done.** THRESHOLD and TEMPORAL dispatch and resolve; "except as
+has not had **or would not** reasonably be expected to have… a Company Material
+Adverse Effect" classifies, with a test pinning the compound form; the 7
+prompt-dependent bring-down rows are named and deferred rather than quietly
+force-fitted.
+
+---
+
+## Step 2Y-J. Open-world promotion, on a three-deal rule
+
+**What it is.** 2X-G's promotion loop, now with the evidence to size it. 21
+distinct concepts recur in **three or more deals** (146 occurrences), clustered
+from the extractor's own `why_unmapped` labels — 582 of 1,147 candidates carry a
+self-assigned category label, 53 distinct labels. Plus the appraisal-settlement-
+consent covenant: same shape across three deals, **no registered assertion kind
+at all**.
+
+**Why.** This is the structural answer to Ben's scaling point. Without promotion,
+the same shape re-opens on every new deal forever and the backlog grows linearly
+with the corpus — 385 unmapped candidates per agreement, 385,000 at a thousand.
+More approved phrases help; hand-feeding does not scale. A promotion loop is what
+turns a recurring unmapped concept into a governed one **automatically enough**
+that the corpus getting bigger makes the system better rather than worse.
+
+**Change.** The promotion mechanism, the 21 concepts as its first batch, and the
+appraisal covenant as a new registered shape. Uses `expected-sets.js`'s existing
+mechanism, but **not** its 0.66/0.33 thresholds — those answer "is absence
+notable", not "is this real enough to govern". Blocked on Ben's ruling 3.
+
+**Direction of risk: regressive in the long run if the threshold is wrong.**
+Promoting too eagerly writes noise into the taxonomy permanently, and taxonomy
+mistakes are the expensive kind — they corrupt precedent search, which is the
+product. Every promotion carries its evidence and is reversible.
+
+**Proves it is done.** The 21 concepts adjudicated one by one against their
+quotes — promoted, rejected, or held with a reason; the appraisal covenant
+resolves across its three deals; and the loop demonstrably runs on a new deal
+without a human writing a phrase.
+
+---
+
+## Step 2Y-K. The named residual, one quote-pull each
+
+**What it is.** The ~73 occurrences listed under "The honest residual" above.
+Each gets the same treatment the rest got: pull the quote from the agreement,
+read the code at the cited location, state the mechanism.
+
+**Why.** Because the alternative is what this repository does badly — a tail that
+is "probably the same as the others" and is quietly counted as understood.
+Density elsewhere makes it *likely* each is one of the three named mechanisms,
+but that is inference, not diagnosis, and it is recorded as inference.
+
+**Change.** None until diagnosed. Then wherever the diagnosis points.
+
+**Proves it is done.** Every one of the ~73 carries a mechanism and a fix class,
+or an explicit statement that it is correct behaviour. `sole-remedy-resolution.js`
+and the `TAX_TREATMENT_KIND` corroboration table are read directly, since both
+were flagged uncertain purely for want of time.
+
+---
+
+## Step 2Y-M. One prompt bump, not several
+
+**What it is.** The changes that genuinely require re-extraction, batched into a
+single digest invalidation.
+
+**Why.** Everything above is replay-validatable at zero model cost. A prompt
+change invalidates digests and everything after it is a live run at full price —
+REPRESENTATIONS alone burned 2,734,334 output tokens across 172 calls for four
+deals. So the bump is placed deliberately, not wherever implementation order puts
+it. This is the same discipline as 2X-I and it should be **merged with 2X-I into
+one bump** if 2X-I has not yet run.
+
+**Contents, from the diagnosis.** Financing covenants proposing `OBTAIN_EFFORTS`
+for what are plainly payoff covenants and cooperation grants (~3, wrong
+`assertion_kind` at source, unfixable downstream); the closing-conditions
+bring-down prompt's missing controlled-vocabulary block and its null contract
+mismatch (~7); day-count claims being proposed for qualitative "as promptly as
+practicable" timing standards; IOC's 11-category enum against V1's 25; plus
+whatever 2X-I already carries.
+
+**Direction of risk: expensive and irreversible in cost terms.** Nothing else.
+
+**Proves it is done.** One digest invalidation, the live ladder run once, and a
+per-family diff against the last replay baseline.
+
+---
+
+## Step 2Y-N. The ladder, and the blind re-score against its own strata
+
+**What it is.** 2X-K's ladder, applied to this stage: Modiv on a few families,
+Modiv on more, TopBuild, then more deals — climbed **twice**, once free before
+2Y-M and once live after.
+
+**Why.** Stage 2Y changes a dozen checks across every family. Fire all of it at
+seven deals at once and a regression is unattributable.
+
+**And the re-score discipline, which has already been got wrong once.** The
+original blind sample is committed at `evidence/blind-review/2026-08-08/` —
+**96 cards, twelve strata of eight**, with `blind-sample.json`,
+`blind-key.json`, `blind-verdicts.json` and `blind-rescore.json`, joined on `id`.
+It was reported lost; it was not, and it is in the repository now precisely so
+exact replay is always possible. The 2026-08-08 re-score returned 21 of 96, and
+**the 21 is not the result** — the result is that movement sat entirely in the
+four staged reason codes (7/8, 6/8, 4/8, 4/8) while all eight untouched strata
+returned **0/8**. That is what shows nothing moved by accident. A total from a
+different stratification is not comparable to 21 at all.
+
+**Proves it is done.** Per-rung acceptance before the next rung is funded; a
+final re-score reported **per stratum against those twelve strata of eight**; and
+the 2Y-0 precision baseline re-measured at the end and not lower than at the
+start. If recovery is up and precision is down, this stage has failed on Ben's
+own terms and the result is the precision number, not the recovery number.
+
+---
+
 # Stage 3. Close the extraction gaps that are already named and located
 
 Each of these was found, diagnosed and deliberately left. They are the reason
