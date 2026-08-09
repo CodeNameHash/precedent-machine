@@ -10,6 +10,14 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT = resolve(SCRIPT_DIR, '..');
 const DEFAULT_OUTPUT = 'evidence/canonical-v2/corpus-review-20260809.html';
 
+class CorpusReviewArtifactError extends Error {
+  constructor(code, outputPath) {
+    super(`${code}:${outputPath}`);
+    this.name = 'CorpusReviewArtifactError';
+    this.code = code;
+  }
+}
+
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
@@ -186,14 +194,51 @@ const familyFilter=document.querySelector('#family-filter');const statusFilter=d
 </script></body></html>`;
 }
 
-function main() {
-  const model = buildCorpusReviewModel();
-  const output = resolve(DEFAULT_ROOT, process.argv[2] || DEFAULT_OUTPUT);
-  writeFileSync(output, renderCorpusReview(model));
-  process.stdout.write(`${output}\n${model.runs.length} runs, ${model.excerptGroups.length} cards\n`);
+function expectedCorpusReview({ repoRoot = DEFAULT_ROOT, runNames = null } = {}) {
+  const model = buildCorpusReviewModel({ repoRoot, runNames });
+  return Object.freeze({ model, html: renderCorpusReview(model) });
+}
+
+function checkCorpusReviewArtifact({ repoRoot = DEFAULT_ROOT, outputPath = DEFAULT_OUTPUT, runNames = null } = {}) {
+  const output = resolve(repoRoot, outputPath);
+  const expected = expectedCorpusReview({ repoRoot, runNames });
+  if (!existsSync(output) || readFileSync(output, 'utf8') !== expected.html) {
+    throw new CorpusReviewArtifactError('STALE_CORPUS_REVIEW_ARTIFACT', output);
+  }
+  return Object.freeze({ outputPath: output, runs: expected.model.runs.length, cards: expected.model.excerptGroups.length });
+}
+
+function parseArgs(argv) {
+  if (argv.length === 0) return { mode: 'write', outputPath: DEFAULT_OUTPUT };
+  if (argv.length === 1 && !argv[0].startsWith('--')) return { mode: 'write', outputPath: argv[0] };
+  if ((argv[0] === '--write' || argv[0] === '--check') && argv.length <= 2) {
+    return { mode: argv[0].slice(2), outputPath: argv[1] || DEFAULT_OUTPUT };
+  }
+  throw new Error('usage: canonical-v2-corpus-review-artifact.mjs [--write|--check] [output-path]');
+}
+
+function main(argv = process.argv.slice(2)) {
+  const args = parseArgs(argv);
+  if (args.mode === 'check') {
+    const result = checkCorpusReviewArtifact({ outputPath: args.outputPath });
+    process.stdout.write(`CHECKED ${result.outputPath}\n${result.runs} runs, ${result.cards} cards\n`);
+    return result;
+  }
+  const output = resolve(DEFAULT_ROOT, args.outputPath);
+  const expected = expectedCorpusReview();
+  writeFileSync(output, expected.html);
+  process.stdout.write(`${output}\n${expected.model.runs.length} runs, ${expected.model.excerptGroups.length} cards\n`);
+  return Object.freeze({ outputPath: output, runs: expected.model.runs.length, cards: expected.model.excerptGroups.length });
 }
 
 const isMain = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
 if (isMain) main();
 
-export { buildCorpusReviewModel, isFinalCorpusRun, renderCorpusReview };
+export {
+  buildCorpusReviewModel,
+  checkCorpusReviewArtifact,
+  CorpusReviewArtifactError,
+  expectedCorpusReview,
+  isFinalCorpusRun,
+  renderCorpusReview,
+};

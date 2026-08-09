@@ -2,6 +2,9 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { mkdtempSync, readFileSync, rmSync, writeFileSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join } = require('node:path');
 const vm = require('node:vm');
 
 let artifact;
@@ -29,6 +32,29 @@ test('model uses resolved divided by the full review queue and groups claims by 
   assert.equal(
     model.excerptGroups.flatMap((group) => group.claims).filter((claim) => claim.state === 'OPEN_WORLD').length,
     resolution.open_world.length,
+  );
+});
+
+test('artifact check rejects stale bytes without mutating the target, then accepts exact bytes', (t) => {
+  const repoRoot = process.cwd();
+  const runNames = ['modiv-no-shop-20260809-2xk-final'];
+  const tempDir = mkdtempSync(join(tmpdir(), 'canonical-v2-corpus-review-'));
+  t.after(() => rmSync(tempDir, { recursive: true, force: true }));
+  const outputPath = join(tempDir, 'review.html');
+  const stale = '<!doctype html><title>stale</title>';
+  writeFileSync(outputPath, stale);
+
+  assert.throws(
+    () => artifact.checkCorpusReviewArtifact({ repoRoot, runNames, outputPath }),
+    (error) => error && error.code === 'STALE_CORPUS_REVIEW_ARTIFACT',
+  );
+  assert.equal(readFileSync(outputPath, 'utf8'), stale);
+
+  const expected = artifact.expectedCorpusReview({ repoRoot, runNames });
+  writeFileSync(outputPath, expected.html);
+  assert.deepEqual(
+    artifact.checkCorpusReviewArtifact({ repoRoot, runNames, outputPath }),
+    { outputPath, runs: 1, cards: expected.model.excerptGroups.length },
   );
 });
 
