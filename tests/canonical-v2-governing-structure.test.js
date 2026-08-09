@@ -17,6 +17,7 @@ const {
   UNDETERMINED_REASONS,
   SEGMENTER_VERSION,
   MARKER_TIERS,
+  charToByteTable,
 } = require('../lib/canonical-v2/native-producer/governing-structure');
 const {
   annotateEntryStructureContext,
@@ -27,7 +28,7 @@ const {
   loadMisnestSectionText,
 } = require('./fixtures/canonical-v2/step-2x-a-misnest-sections');
 const { findStructuralMarkers } = require('../lib/parser-v2/subclauses');
-const { utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
+const { utf8ByteLength, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 
 test('RESOLVED: clean nested outline returns leaf + chapeau chain in UTF-8 bytes', () => {
   const sectionText = [
@@ -57,6 +58,20 @@ test('RESOLVED: clean nested outline returns leaf + chapeau chain in UTF-8 bytes
   // Offsets are UTF-8 bytes into sectionText.
   assert.equal(typeof result.leaf.start_byte, 'number');
   assert.ok(result.leaf.end_byte > result.leaf.start_byte);
+});
+
+test('UTF-16 boundary table charges supplementary characters as one UTF-8 code point', () => {
+  assert.deepEqual(charToByteTable('A😀B'), [0, 1, 5, 5, 6]);
+  const sectionText = [
+    '😀 Chapeau.',
+    '(a) first item;',
+    '(b) second item.',
+  ].join('\n');
+  const outline = buildSectionOutline(sectionText);
+  const leaf = outline.leaves.find((entry) => entry.path === 'b');
+  assert.ok(leaf);
+  assert.equal(utf8ByteLength(sectionText), outline.total_bytes);
+  assert.equal(utf8Slice(sectionText, leaf.start_byte, leaf.end_byte), leaf.text);
 });
 
 test('UNDETERMINED on same-style mis-nest (colon-restart signature)', () => {
