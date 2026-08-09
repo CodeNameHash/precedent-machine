@@ -2328,7 +2328,8 @@ Skechers, SkyWater, Metsera, Concho and Red Hat. The selected evidence contains
 157 runs and 558 recorded Terra calls. It publishes 1,561 claims from 1,571
 resolved rows, with zero validation residuals and zero quarantines. Every
 selected run passes the V42 dry import. Full evidence and per-deal counts are
-recorded in `COMPLETED.md`.
+recorded in `COMPLETED.md`. All 157 also pass a real, non-dry-run write to a
+fresh in-memory canonical repository, with a real receipt and no refusal.
 
 **Stage 3 entry decision remains.** The deterministic 96-card blind successor
 accounts for all 96 cards and resolves 22 against a floor of 21. Three named

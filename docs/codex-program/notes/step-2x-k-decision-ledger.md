@@ -73,6 +73,11 @@ calls. It publishes 1,561 claims from 1,571 resolved rows. All 157 validations
 are accepted with zero residuals and zero quarantines, and all 157 runs pass a
 V42 dry import.
 
+A separate real-write proof imported each selected run with `dryRun:false` to
+a fresh in-memory canonical repository. It produced 157 real receipts, zero
+refusals, zero first-import replays and 16,811 published canonical objects.
+Every selected manifest records both required M3 conditions.
+
 | deal | runs | calls | claims | resolved |
 |---|---:|---:|---:|---:|
 | Modiv | 10 | 27 | 123 | 123 |

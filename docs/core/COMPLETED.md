@@ -1477,7 +1477,10 @@ the committed `step-2x-j-vocab-inventory.json`, and commit `f99a2be8`.
 **Campaign closed 2026-08-09.** The live ladder ran in the authorised order:
 Modiv, TopBuild, Skechers, SkyWater, Metsera, Concho and Red Hat. The selected
 runs all have accepted validation, zero residuals, zero quarantines and a
-passing V42 dry import.
+passing V42 dry import. A separate non-dry-run proof wrote every selected run
+to a fresh in-memory canonical repository: 157 real receipts, zero refusals,
+zero first-import replays and 16,811 published canonical objects. All 157 run
+manifests record both required M3 conditions.
 
 | deal | selected runs | Terra calls | publishable claims | resolved rows |
 |---|---:|---:|---:|---:|
