@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 243,
-  "importable_run_count": 218,
+  "run_count": 390,
+  "importable_run_count": 365,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,11 +31,11 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 5027,
-    "provisions": 777,
-    "claims": 1979,
+    "excerpts": 8554,
+    "provisions": 1411,
+    "claims": 3417,
     "relationships": 0,
-    "components": 129,
+    "components": 242,
     "definition_occurrences": 0,
     "condition_groups": 0
   },
@@ -64,7 +64,53 @@
       }
     },
     {
+      "run": "concho-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "6.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 11,
+      "review_queue": 17,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 8,
+        "claims": 11,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-appraisal-dissenters-rights-20260808-r1",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "3.4"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-appraisal-dissenters-rights-20260809-2xk-final",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
         "3.4"
@@ -104,6 +150,32 @@
       "import_refusal": null,
       "published": {
         "excerpts": 9,
+        "provisions": 6,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "7.1",
+        "7.2",
+        "7.3",
+        "7.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 8,
+      "review_queue": 15,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
         "provisions": 6,
         "claims": 8,
         "relationships": 0,
@@ -164,7 +236,55 @@
       }
     },
     {
+      "run": "concho-consideration-20260809-2xk-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "3.1",
+        "3.2",
+        "3.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 2,
+      "open_world": 25,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 25,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-dividends-20260808-r1",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "6.21"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-dividends-20260809-2xk-final",
       "section_family": "DIVIDENDS",
       "section_references": [
         "6.21"
@@ -210,6 +330,29 @@
       }
     },
     {
+      "run": "concho-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "6.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 8,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 2,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-employee-matters-20260808-r1",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -233,6 +376,29 @@
       }
     },
     {
+      "run": "concho-employee-matters-20260809-2xk-final",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "6.9"
+      ],
+      "model_call_count": 1,
+      "resolved": 6,
+      "review_queue": 9,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 1,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-financing-covenants-20260808-r1",
       "section_family": "FINANCING_COVENANTS",
       "section_references": [
@@ -247,6 +413,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 5,
+        "provisions": 1,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-financing-covenants-20260809-2xk-final",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "6.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 5,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
         "provisions": 1,
         "claims": 2,
         "relationships": 0,
@@ -286,6 +475,36 @@
       }
     },
     {
+      "run": "concho-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "6.7",
+        "6.11",
+        "6.12",
+        "6.14",
+        "6.15",
+        "6.16",
+        "6.19",
+        "6.20"
+      ],
+      "model_call_count": 8,
+      "resolved": 9,
+      "review_queue": 10,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 9,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-interim-operating-20260808-r1",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -305,6 +524,30 @@
         "claims": 20,
         "relationships": 0,
         "components": 20,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-interim-operating-20260809-2xk-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "6.1",
+        "6.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 18,
+      "review_queue": 70,
+      "open_world": 44,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 58,
+        "provisions": 12,
+        "claims": 18,
+        "relationships": 0,
+        "components": 18,
         "definition_occurrences": 0,
         "condition_groups": 0
       }
@@ -333,6 +576,29 @@
       }
     },
     {
+      "run": "concho-key-defined-terms-20260809-2xk-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "Annex-A"
+      ],
+      "model_call_count": 1,
+      "resolved": 23,
+      "review_queue": 24,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 35,
+        "provisions": 6,
+        "claims": 23,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-mae-definition-20260808-r1",
       "section_family": "MAE_DEFINITION",
       "section_references": [
@@ -347,6 +613,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-mae-definition-20260809-2xk-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "Annex-A"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 15,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
         "provisions": 0,
         "claims": 0,
         "relationships": 0,
@@ -379,6 +668,29 @@
       }
     },
     {
+      "run": "concho-material-contracts-20260809-2xk-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "4.19"
+      ],
+      "model_call_count": 1,
+      "resolved": 16,
+      "review_queue": 16,
+      "open_world": 15,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 1,
+        "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-merger-structure-closing-20260808-r1",
       "section_family": "MERGER_STRUCTURE_CLOSING",
       "section_references": [
@@ -401,6 +713,35 @@
         "excerpts": 15,
         "provisions": 7,
         "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-merger-structure-closing-20260809-2xk-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5",
+        "2.6",
+        "2.7"
+      ],
+      "model_call_count": 7,
+      "resolved": 13,
+      "review_queue": 13,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 13,
+        "provisions": 7,
+        "claims": 13,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -442,6 +783,40 @@
       }
     },
     {
+      "run": "concho-misc-boilerplate-20260809-2xk-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "9.1",
+        "9.2",
+        "9.3",
+        "9.4",
+        "9.5",
+        "9.6",
+        "9.7",
+        "9.8",
+        "9.9",
+        "9.10",
+        "9.12",
+        "9.13"
+      ],
+      "model_call_count": 12,
+      "resolved": 17,
+      "review_queue": 17,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 23,
+        "provisions": 10,
+        "claims": 17,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-no-other-reps-fraud-20260808-r1",
       "section_family": "NO_OTHER_REPS_FRAUD",
       "section_references": [
@@ -459,6 +834,30 @@
         "excerpts": 8,
         "provisions": 4,
         "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "4.27",
+        "5.19"
+      ],
+      "model_call_count": 2,
+      "resolved": 7,
+      "review_queue": 7,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 6,
+        "claims": 7,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -490,6 +889,30 @@
       }
     },
     {
+      "run": "concho-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 2,
+      "resolved": 58,
+      "review_queue": 86,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 62,
+        "provisions": 16,
+        "claims": 58,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-proxy-meeting-20260808-r1",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -507,6 +930,30 @@
         "excerpts": 14,
         "provisions": 2,
         "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "6.5",
+        "6.6"
+      ],
+      "model_call_count": 2,
+      "resolved": 6,
+      "review_queue": 20,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 2,
+        "claims": 6,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -648,6 +1095,140 @@
       }
     },
     {
+      "run": "concho-representations-r1a-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "4.7",
+        "4.8",
+        "4.9",
+        "4.10",
+        "4.11",
+        "4.12"
+      ],
+      "model_call_count": 12,
+      "resolved": 8,
+      "review_queue": 14,
+      "open_world": 157,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 150,
+        "provisions": 6,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-representations-r1b-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "4.13",
+        "4.14",
+        "4.15",
+        "4.16",
+        "4.17",
+        "4.18",
+        "4.19",
+        "4.20",
+        "4.21",
+        "4.22",
+        "4.23",
+        "4.24"
+      ],
+      "model_call_count": 12,
+      "resolved": 12,
+      "review_queue": 21,
+      "open_world": 130,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 111,
+        "provisions": 4,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-representations-r1c-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "4.25",
+        "4.26",
+        "4.27",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8",
+        "5.9"
+      ],
+      "model_call_count": 12,
+      "resolved": 8,
+      "review_queue": 11,
+      "open_world": 61,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 64,
+        "provisions": 5,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-representations-r1d-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "5.10",
+        "5.11",
+        "5.12",
+        "5.13",
+        "5.14",
+        "5.15",
+        "5.16",
+        "5.17",
+        "5.18",
+        "5.19"
+      ],
+      "model_call_count": 10,
+      "resolved": 1,
+      "review_queue": 2,
+      "open_world": 34,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 30,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-specific-performance-remedies-20260808-r1",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -662,6 +1243,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 1,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-specific-performance-remedies-20260809-2xk-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "9.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
         "provisions": 1,
         "claims": 1,
         "relationships": 0,
@@ -696,6 +1300,31 @@
       }
     },
     {
+      "run": "concho-tax-matters-20260809-2xk-final",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "4.12",
+        "5.11",
+        "6.18"
+      ],
+      "model_call_count": 3,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 3,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "concho-termination-20260808-r1",
       "section_family": "TERMINATION",
       "section_references": [
@@ -713,6 +1342,30 @@
         "excerpts": 15,
         "provisions": 0,
         "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "concho-termination-20260809-2xk-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "8.1",
+        "8.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 18,
+      "review_queue": 21,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 12,
+        "claims": 18,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -745,6 +1398,31 @@
       }
     },
     {
+      "run": "concho-termination-fee-20260809-2xk-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "8.1",
+        "8.3",
+        "Annex-A"
+      ],
+      "model_call_count": 3,
+      "resolved": 2,
+      "review_queue": 12,
+      "open_world": 10,
+      "residuals": 1,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 2,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-antitrust-regulatory-20260808-r1",
       "section_family": "ANTITRUST_REGULATORY",
       "section_references": [
@@ -768,6 +1446,29 @@
       }
     },
     {
+      "run": "metsera-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "6.03"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 11,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 7,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-appraisal-dissenters-rights-20260808-r1",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
@@ -782,6 +1483,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 6,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-appraisal-dissenters-rights-20260809-2xk-final",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.01"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
         "provisions": 0,
         "claims": 0,
         "relationships": 0,
@@ -817,6 +1541,32 @@
       }
     },
     {
+      "run": "metsera-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "7.01",
+        "7.02",
+        "7.03",
+        "7.04"
+      ],
+      "model_call_count": 4,
+      "resolved": 5,
+      "review_queue": 13,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 5,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-consideration-20260808-r1",
       "section_family": "CONSIDERATION",
       "section_references": [
@@ -842,7 +1592,55 @@
       }
     },
     {
+      "run": "metsera-consideration-20260809-2xk-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.01",
+        "2.02",
+        "2.03"
+      ],
+      "model_call_count": 3,
+      "resolved": 1,
+      "review_queue": 3,
+      "open_world": 30,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 31,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-dividends-20260808-r1",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.01"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-dividends-20260809-2xk-final",
       "section_family": "DIVIDENDS",
       "section_references": [
         "5.01"
@@ -888,6 +1686,29 @@
       }
     },
     {
+      "run": "metsera-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "6.05"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 7,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 2,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-employee-matters-20260808-r1",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -904,6 +1725,29 @@
         "excerpts": 8,
         "provisions": 1,
         "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-employee-matters-20260809-2xk-final",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "6.04"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 9,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 1,
+        "claims": 5,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -943,6 +1787,38 @@
       }
     },
     {
+      "run": "metsera-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "6.02",
+        "6.03",
+        "6.06",
+        "6.07",
+        "6.08",
+        "6.09",
+        "6.12",
+        "6.13",
+        "6.14",
+        "6.15"
+      ],
+      "model_call_count": 10,
+      "resolved": 8,
+      "review_queue": 10,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 8,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-interim-operating-20260808-r1",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -961,6 +1837,29 @@
         "claims": 14,
         "relationships": 0,
         "components": 14,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-interim-operating-20260809-2xk-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "5.01"
+      ],
+      "model_call_count": 1,
+      "resolved": 18,
+      "review_queue": 56,
+      "open_world": 21,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 36,
+        "provisions": 10,
+        "claims": 18,
+        "relationships": 0,
+        "components": 18,
         "definition_occurrences": 0,
         "condition_groups": 0
       }
@@ -991,6 +1890,31 @@
       }
     },
     {
+      "run": "metsera-key-defined-terms-20260809-2xk-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "9.03",
+        "5.02",
+        "8.02"
+      ],
+      "model_call_count": 3,
+      "resolved": 12,
+      "review_queue": 14,
+      "open_world": 28,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 44,
+        "provisions": 5,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-mae-definition-20260808-r1",
       "section_family": "MAE_DEFINITION",
       "section_references": [
@@ -1014,6 +1938,29 @@
       }
     },
     {
+      "run": "metsera-mae-definition-20260809-2xk-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "9.03"
+      ],
+      "model_call_count": 1,
+      "resolved": 15,
+      "review_queue": 19,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 13,
+        "provisions": 2,
+        "claims": 15,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-material-contracts-20260808-r1",
       "section_family": "MATERIAL_CONTRACTS",
       "section_references": [
@@ -1023,6 +1970,29 @@
       "resolved": 32,
       "review_queue": 32,
       "open_world": 16,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 27,
+        "provisions": 1,
+        "claims": 32,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-material-contracts-20260809-2xk-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.13"
+      ],
+      "model_call_count": 1,
+      "resolved": 32,
+      "review_queue": 32,
+      "open_world": 19,
       "residuals": 0,
       "importable": true,
       "import_refusal": null,
@@ -1065,6 +2035,34 @@
       }
     },
     {
+      "run": "metsera-merger-structure-closing-20260809-2xk-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.01",
+        "1.02",
+        "1.03",
+        "1.04",
+        "1.05",
+        "1.06"
+      ],
+      "model_call_count": 6,
+      "resolved": 10,
+      "review_queue": 10,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 6,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-misc-boilerplate-20260808-r1",
       "section_family": "MISC_BOILERPLATE",
       "section_references": [
@@ -1098,6 +2096,39 @@
       }
     },
     {
+      "run": "metsera-misc-boilerplate-20260809-2xk-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "9.01",
+        "9.02",
+        "9.04",
+        "9.05",
+        "9.06",
+        "9.07",
+        "9.08",
+        "9.09",
+        "9.10",
+        "9.11",
+        "8.04"
+      ],
+      "model_call_count": 11,
+      "resolved": 16,
+      "review_queue": 16,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 24,
+        "provisions": 10,
+        "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-no-other-reps-fraud-20260808-r1",
       "section_family": "NO_OTHER_REPS_FRAUD",
       "section_references": [
@@ -1114,6 +2145,29 @@
         "excerpts": 2,
         "provisions": 0,
         "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "9.07"
+      ],
+      "model_call_count": 1,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 3,
+        "claims": 3,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -1144,6 +2198,29 @@
       }
     },
     {
+      "run": "metsera-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.02"
+      ],
+      "model_call_count": 1,
+      "resolved": 42,
+      "review_queue": 57,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 41,
+        "provisions": 12,
+        "claims": 42,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-proxy-meeting-20260808-r1",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -1160,6 +2237,31 @@
       "import_refusal": null,
       "published": {
         "excerpts": 10,
+        "provisions": 2,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "6.01",
+        "6.10",
+        "6.11"
+      ],
+      "model_call_count": 3,
+      "resolved": 4,
+      "review_queue": 9,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
         "provisions": 2,
         "claims": 4,
         "relationships": 0,
@@ -1270,6 +2372,107 @@
       }
     },
     {
+      "run": "metsera-representations-r1a-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.01",
+        "3.02",
+        "3.03",
+        "3.04",
+        "3.05",
+        "3.06",
+        "3.07",
+        "3.08",
+        "3.09",
+        "3.10",
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 12,
+      "resolved": 10,
+      "review_queue": 17,
+      "open_world": 131,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 127,
+        "provisions": 6,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-representations-r1b-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.13",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18",
+        "3.19",
+        "3.20",
+        "3.21",
+        "3.22",
+        "3.23",
+        "3.24"
+      ],
+      "model_call_count": 12,
+      "resolved": 9,
+      "review_queue": 17,
+      "open_world": 226,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 165,
+        "provisions": 5,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-representations-r1c-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.25",
+        "3.26",
+        "4.01",
+        "4.02",
+        "4.03",
+        "4.04",
+        "4.05",
+        "4.06",
+        "4.07",
+        "4.08",
+        "4.09"
+      ],
+      "model_call_count": 11,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 56,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 48,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-specific-performance-remedies-20260808-r1",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -1293,7 +2496,53 @@
       }
     },
     {
+      "run": "metsera-specific-performance-remedies-20260809-2xk-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "9.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 1,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-tax-matters-20260808-r1",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "3.09"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-tax-matters-20260809-2xk-final",
       "section_family": "TAX_MATTERS",
       "section_references": [
         "3.09"
@@ -1341,6 +2590,31 @@
       }
     },
     {
+      "run": "metsera-termination-20260809-2xk-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "8.01",
+        "8.02",
+        "8.05"
+      ],
+      "model_call_count": 3,
+      "resolved": 12,
+      "review_queue": 15,
+      "open_world": 10,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 18,
+        "provisions": 9,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "metsera-termination-fee-20260808-r1",
       "section_family": "TERMINATION_FEE",
       "section_references": [
@@ -1357,6 +2631,31 @@
       "import_refusal": null,
       "published": {
         "excerpts": 8,
+        "provisions": 3,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "metsera-termination-fee-20260809-2xk-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "8.01",
+        "8.02",
+        "8.05"
+      ],
+      "model_call_count": 3,
+      "resolved": 5,
+      "review_queue": 9,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
         "provisions": 3,
         "claims": 2,
         "relationships": 0,
@@ -3243,6 +4542,29 @@
       }
     },
     {
+      "run": "redhat-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "5.03"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 19,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 9,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-appraisal-dissenters-rights-20260808-r1",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
@@ -3266,6 +4588,29 @@
       }
     },
     {
+      "run": "redhat-appraisal-dissenters-rights-20260809-2xk-final",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.01(d)"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-closing-conditions-20260808-r1",
       "section_family": "CLOSING_CONDITIONS",
       "section_references": [
@@ -3277,6 +4622,32 @@
       "model_call_count": 4,
       "resolved": 7,
       "review_queue": 17,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 6,
+        "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "6.01",
+        "6.02",
+        "6.03",
+        "6.04"
+      ],
+      "model_call_count": 4,
+      "resolved": 7,
+      "review_queue": 16,
       "open_world": 2,
       "residuals": 0,
       "importable": true,
@@ -3317,6 +4688,31 @@
       }
     },
     {
+      "run": "redhat-consideration-20260809-2xk-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.01",
+        "2.02",
+        "5.04"
+      ],
+      "model_call_count": 3,
+      "resolved": 2,
+      "review_queue": 6,
+      "open_world": 23,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 25,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-dno-indemnification-20260808-r1",
       "section_family": "DNO_INDEMNIFICATION",
       "section_references": [
@@ -3340,7 +4736,53 @@
       }
     },
     {
+      "run": "redhat-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "5.05"
+      ],
+      "model_call_count": 1,
+      "resolved": 3,
+      "review_queue": 6,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-employee-matters-20260808-r1",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "5.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 3,
+      "review_queue": 8,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 1,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-employee-matters-20260809-2xk-final",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
         "5.11"
@@ -3390,6 +4832,33 @@
       }
     },
     {
+      "run": "redhat-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.02",
+        "5.07",
+        "5.08",
+        "5.09",
+        "5.10"
+      ],
+      "model_call_count": 5,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 3,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-interim-operating-20260808-r1",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -3408,6 +4877,29 @@
         "claims": 16,
         "relationships": 0,
         "components": 16,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-interim-operating-20260809-2xk-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "4.01"
+      ],
+      "model_call_count": 1,
+      "resolved": 13,
+      "review_queue": 32,
+      "open_world": 16,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 27,
+        "provisions": 9,
+        "claims": 13,
+        "relationships": 0,
+        "components": 13,
         "definition_occurrences": 0,
         "condition_groups": 0
       }
@@ -3436,6 +4928,29 @@
       }
     },
     {
+      "run": "redhat-key-defined-terms-20260809-2xk-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "8.03"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 4,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 19,
+        "provisions": 2,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-mae-definition-20260808-r1",
       "section_family": "MAE_DEFINITION",
       "section_references": [
@@ -3450,6 +4965,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 15,
+        "provisions": 1,
+        "claims": 15,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-mae-definition-20260809-2xk-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "8.03(l)"
+      ],
+      "model_call_count": 1,
+      "resolved": 15,
+      "review_queue": 18,
+      "open_world": 13,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 13,
         "provisions": 1,
         "claims": 15,
         "relationships": 0,
@@ -3483,6 +5021,30 @@
       }
     },
     {
+      "run": "redhat-material-contracts-20260809-2xk-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.01(h)",
+        "3.01(i)"
+      ],
+      "model_call_count": 2,
+      "resolved": 6,
+      "review_queue": 6,
+      "open_world": 19,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 1,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-merger-structure-closing-20260808-r1",
       "section_family": "MERGER_STRUCTURE_CLOSING",
       "section_references": [
@@ -3505,6 +5067,35 @@
         "excerpts": 11,
         "provisions": 6,
         "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-merger-structure-closing-20260809-2xk-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.01",
+        "1.02",
+        "1.03",
+        "1.04",
+        "1.05",
+        "1.06",
+        "1.07"
+      ],
+      "model_call_count": 7,
+      "resolved": 15,
+      "review_queue": 15,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 6,
+        "claims": 15,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -3569,6 +5160,31 @@
       }
     },
     {
+      "run": "redhat-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.01(v)",
+        "3.02(f)",
+        "8.03(p)"
+      ],
+      "model_call_count": 3,
+      "resolved": 5,
+      "review_queue": 5,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 5,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-no-shop-20260808-r1",
       "section_family": "NO_SHOP",
       "section_references": [
@@ -3592,6 +5208,29 @@
       }
     },
     {
+      "run": "redhat-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "4.02"
+      ],
+      "model_call_count": 1,
+      "resolved": 40,
+      "review_queue": 48,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 34,
+        "provisions": 10,
+        "claims": 40,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-proxy-meeting-20260808-r1",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -3608,6 +5247,29 @@
         "excerpts": 15,
         "provisions": 2,
         "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "5.01"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 12,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 2,
+        "claims": 4,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -3687,6 +5349,30 @@
       }
     },
     {
+      "run": "redhat-representations-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.01",
+        "3.02"
+      ],
+      "model_call_count": 2,
+      "resolved": 9,
+      "review_queue": 11,
+      "open_world": 36,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 33,
+        "provisions": 1,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-specific-performance-remedies-20260808-r1",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -3710,6 +5396,29 @@
       }
     },
     {
+      "run": "redhat-specific-performance-remedies-20260809-2xk-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "8.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 4,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-tax-matters-20260808-r1",
       "section_family": "TAX_MATTERS",
       "section_references": [
@@ -3724,6 +5433,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-tax-matters-20260809-2xk-final",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "3.01(m)"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
         "provisions": 0,
         "claims": 0,
         "relationships": 0,
@@ -3757,6 +5489,30 @@
       }
     },
     {
+      "run": "redhat-termination-20260809-2xk-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "7.01",
+        "7.02"
+      ],
+      "model_call_count": 2,
+      "resolved": 11,
+      "review_queue": 18,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 11,
+        "claims": 11,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "redhat-termination-fee-20260808-r1",
       "section_family": "TERMINATION_FEE",
       "section_references": [
@@ -3772,6 +5528,30 @@
       "import_refusal": null,
       "published": {
         "excerpts": 12,
+        "provisions": 3,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "redhat-termination-fee-20260809-2xk-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "5.06",
+        "7.01"
+      ],
+      "model_call_count": 2,
+      "resolved": 4,
+      "review_queue": 8,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
         "provisions": 3,
         "claims": 2,
         "relationships": 0,
@@ -3804,6 +5584,29 @@
       }
     },
     {
+      "run": "skechers-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "6.2"
+      ],
+      "model_call_count": 1,
+      "resolved": 8,
+      "review_queue": 11,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 8,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-appraisal-dissenters-rights-20260808-rung2",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
@@ -3818,6 +5621,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 6,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-appraisal-dissenters-rights-20260809-2xk-final",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.7"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
         "provisions": 2,
         "claims": 2,
         "relationships": 0,
@@ -3845,6 +5671,31 @@
         "excerpts": 8,
         "provisions": 4,
         "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "7.1",
+        "7.2",
+        "7.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 7,
+      "review_queue": 20,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 5,
+        "claims": 7,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -3880,7 +5731,58 @@
       }
     },
     {
+      "run": "skechers-consideration-20260809-2xk-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.7",
+        "2.8",
+        "2.9",
+        "2.10",
+        "2.11",
+        "2.12"
+      ],
+      "model_call_count": 6,
+      "resolved": 3,
+      "review_queue": 7,
+      "open_world": 40,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 43,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-dividends-20260808-rung1",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.2"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-dividends-20260809-2xk-final",
       "section_family": "DIVIDENDS",
       "section_references": [
         "5.2"
@@ -3926,6 +5828,29 @@
       }
     },
     {
+      "run": "skechers-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "6.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 7,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 3,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-employee-matters-20260808-rung2",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -3949,6 +5874,29 @@
       }
     },
     {
+      "run": "skechers-employee-matters-20260809-2xk-final",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "6.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 8,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 1,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-financing-covenants-20260808-r1",
       "section_family": "FINANCING_COVENANTS",
       "section_references": [
@@ -3959,6 +5907,31 @@
       "model_call_count": 3,
       "resolved": 2,
       "review_queue": 22,
+      "open_world": 10,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-financing-covenants-20260809-2xk-final",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "6.5",
+        "6.6",
+        "6.19"
+      ],
+      "model_call_count": 3,
+      "resolved": 2,
+      "review_queue": 8,
       "open_world": 10,
       "residuals": 0,
       "importable": true,
@@ -4007,6 +5980,39 @@
       }
     },
     {
+      "run": "skechers-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "6.1",
+        "6.7",
+        "6.8",
+        "6.9",
+        "6.12",
+        "6.13",
+        "6.14",
+        "6.15",
+        "6.16",
+        "6.20",
+        "6.21"
+      ],
+      "model_call_count": 11,
+      "resolved": 7,
+      "review_queue": 7,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 7,
+        "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-guaranty-financing-party-20260808-rung1",
       "section_family": "GUARANTY_FINANCING_PARTY",
       "section_references": [
@@ -4024,6 +6030,30 @@
         "excerpts": 16,
         "provisions": 1,
         "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-guaranty-financing-party-20260809-2xk-final",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "4.13",
+        "9.15"
+      ],
+      "model_call_count": 2,
+      "resolved": 1,
+      "review_queue": 2,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 1,
+        "claims": 1,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4055,6 +6085,30 @@
       }
     },
     {
+      "run": "skechers-interim-operating-20260809-2xk-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "5.1",
+        "5.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 19,
+      "review_queue": 42,
+      "open_world": 19,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 35,
+        "provisions": 12,
+        "claims": 19,
+        "relationships": 0,
+        "components": 19,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-key-defined-terms-20260808-rung4",
       "section_family": "KEY_DEFINED_TERMS",
       "section_references": [
@@ -4072,6 +6126,30 @@
         "excerpts": 154,
         "provisions": 3,
         "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-key-defined-terms-20260809-2xk-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "1.1",
+        "1.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 6,
+      "review_queue": 11,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 3,
+        "claims": 6,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4102,7 +6180,53 @@
       }
     },
     {
+      "run": "skechers-mae-definition-20260809-2xk-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "1.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 12,
+      "review_queue": 18,
+      "open_world": 14,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 1,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-material-contracts-20260808-rung2",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.13"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-material-contracts-20260809-2xk-final",
       "section_family": "MATERIAL_CONTRACTS",
       "section_references": [
         "3.13"
@@ -4153,6 +6277,34 @@
       }
     },
     {
+      "run": "skechers-merger-structure-closing-20260809-2xk-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5",
+        "2.6"
+      ],
+      "model_call_count": 6,
+      "resolved": 14,
+      "review_queue": 14,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 6,
+        "claims": 14,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-misc-boilerplate-20260808-r1",
       "section_family": "MISC_BOILERPLATE",
       "section_references": [
@@ -4192,6 +6344,45 @@
       }
     },
     {
+      "run": "skechers-misc-boilerplate-20260809-2xk-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "1.3",
+        "8.4",
+        "8.5",
+        "9.1",
+        "9.2",
+        "9.3",
+        "9.4",
+        "9.5",
+        "9.6",
+        "9.7",
+        "9.9",
+        "9.10",
+        "9.11",
+        "9.12",
+        "9.13",
+        "9.14",
+        "9.16"
+      ],
+      "model_call_count": 17,
+      "resolved": 24,
+      "review_queue": 24,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 30,
+        "provisions": 13,
+        "claims": 24,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-no-other-reps-fraud-20260808-rung5",
       "section_family": "NO_OTHER_REPS_FRAUD",
       "section_references": [
@@ -4209,6 +6400,30 @@
         "excerpts": 5,
         "provisions": 3,
         "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.28",
+        "4.17"
+      ],
+      "model_call_count": 2,
+      "resolved": 8,
+      "review_queue": 8,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 4,
+        "claims": 8,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4239,6 +6454,29 @@
       }
     },
     {
+      "run": "skechers-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 38,
+      "review_queue": 47,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 34,
+        "provisions": 7,
+        "claims": 38,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-proxy-meeting-20260808-rung5",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -4255,6 +6493,31 @@
       "import_refusal": null,
       "published": {
         "excerpts": 7,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "6.3",
+        "6.4",
+        "6.17"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 2,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 2,
         "provisions": 0,
         "claims": 0,
         "relationships": 0,
@@ -4397,6 +6660,139 @@
       }
     },
     {
+      "run": "skechers-representations-r1a-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "3.6",
+        "3.7",
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 12,
+      "resolved": 5,
+      "review_queue": 15,
+      "open_world": 76,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 78,
+        "provisions": 4,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-representations-r1b-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.13",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18",
+        "3.19",
+        "3.20",
+        "3.21",
+        "3.22",
+        "3.23",
+        "3.24"
+      ],
+      "model_call_count": 12,
+      "resolved": 23,
+      "review_queue": 35,
+      "open_world": 175,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 176,
+        "provisions": 6,
+        "claims": 23,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-representations-r1c-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.25",
+        "3.26",
+        "3.27",
+        "3.28",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "4.7",
+        "4.8"
+      ],
+      "model_call_count": 12,
+      "resolved": 5,
+      "review_queue": 7,
+      "open_world": 47,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 46,
+        "provisions": 2,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-representations-r1d-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "4.9",
+        "4.10",
+        "4.11",
+        "4.12",
+        "4.13",
+        "4.14",
+        "4.15",
+        "4.16",
+        "4.17"
+      ],
+      "model_call_count": 9,
+      "resolved": 1,
+      "review_queue": 4,
+      "open_world": 58,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 55,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-specific-performance-remedies-20260808-rung5",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -4413,6 +6809,29 @@
         "excerpts": 2,
         "provisions": 1,
         "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-specific-performance-remedies-20260809-2xk-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "9.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 1,
+        "claims": 1,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4447,6 +6866,33 @@
       }
     },
     {
+      "run": "skechers-tax-matters-20260809-2xk-final",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "2.13",
+        "2.14",
+        "3.17",
+        "4.14",
+        "6.18"
+      ],
+      "model_call_count": 5,
+      "resolved": 7,
+      "review_queue": 7,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 5,
+        "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-termination-20260808-rung2",
       "section_family": "TERMINATION",
       "section_references": [
@@ -4471,6 +6917,30 @@
       }
     },
     {
+      "run": "skechers-termination-20260809-2xk-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "8.1",
+        "8.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 14,
+      "review_queue": 20,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 20,
+        "provisions": 10,
+        "claims": 14,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skechers-termination-fee-20260808-rung1",
       "section_family": "TERMINATION_FEE",
       "section_references": [
@@ -4485,6 +6955,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 11,
+        "provisions": 3,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skechers-termination-fee-20260809-2xk-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "8.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 3,
+      "review_queue": 9,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
         "provisions": 3,
         "claims": 2,
         "relationships": 0,
@@ -4517,7 +7010,53 @@
       }
     },
     {
+      "run": "skywater-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "7.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 9,
+      "review_queue": 17,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 8,
+        "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-appraisal-dissenters-rights-20260808-r1",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "1.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-appraisal-dissenters-rights-20260809-2xk-final",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
         "1.6"
@@ -4566,6 +7105,32 @@
       }
     },
     {
+      "run": "skywater-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "8.1",
+        "8.2",
+        "8.3",
+        "8.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 8,
+      "review_queue": 19,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 7,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-consideration-20260808-r1",
       "section_family": "CONSIDERATION",
       "section_references": [
@@ -4594,7 +7159,58 @@
       }
     },
     {
+      "run": "skywater-consideration-20260809-2xk-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "1.4",
+        "1.5",
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "model_call_count": 6,
+      "resolved": 0,
+      "review_queue": 2,
+      "open_world": 36,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 36,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-dividends-20260808-r1",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-dividends-20260809-2xk-final",
       "section_family": "DIVIDENDS",
       "section_references": [
         "5.1"
@@ -4640,6 +7256,29 @@
       }
     },
     {
+      "run": "skywater-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "6.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 8,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 2,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-employee-matters-20260808-r1",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -4663,6 +7302,29 @@
       }
     },
     {
+      "run": "skywater-employee-matters-20260809-2xk-final",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "6.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 8,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 1,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-financing-covenants-20260808-r1",
       "section_family": "FINANCING_COVENANTS",
       "section_references": [
@@ -4677,6 +7339,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 2,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-financing-covenants-20260809-2xk-final",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "5.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 2,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
         "provisions": 0,
         "claims": 0,
         "relationships": 0,
@@ -4721,6 +7406,41 @@
       }
     },
     {
+      "run": "skywater-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "6.2",
+        "6.4",
+        "7.2",
+        "7.3",
+        "7.5",
+        "7.6",
+        "7.7",
+        "7.8",
+        "7.9"
+      ],
+      "model_call_count": 13,
+      "resolved": 12,
+      "review_queue": 12,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 11,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-interim-operating-20260808-r1",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -4745,6 +7465,30 @@
       }
     },
     {
+      "run": "skywater-interim-operating-20260809-2xk-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "5.1",
+        "6.1"
+      ],
+      "model_call_count": 2,
+      "resolved": 19,
+      "review_queue": 45,
+      "open_world": 28,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 45,
+        "provisions": 12,
+        "claims": 19,
+        "relationships": 0,
+        "components": 19,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-key-defined-terms-20260808-r1",
       "section_family": "KEY_DEFINED_TERMS",
       "section_references": [
@@ -4761,6 +7505,29 @@
         "excerpts": 101,
         "provisions": 3,
         "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-key-defined-terms-20260809-2xk-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "Annex-A"
+      ],
+      "model_call_count": 1,
+      "resolved": 9,
+      "review_queue": 11,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 3,
+        "claims": 9,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4791,6 +7558,29 @@
       }
     },
     {
+      "run": "skywater-mae-definition-20260809-2xk-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "Annex-A"
+      ],
+      "model_call_count": 1,
+      "resolved": 28,
+      "review_queue": 30,
+      "open_world": 25,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 21,
+        "provisions": 2,
+        "claims": 28,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-material-contracts-20260808-r1",
       "section_family": "MATERIAL_CONTRACTS",
       "section_references": [
@@ -4814,7 +7604,55 @@
       }
     },
     {
+      "run": "skywater-material-contracts-20260809-2xk-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.20"
+      ],
+      "model_call_count": 1,
+      "resolved": 22,
+      "review_queue": 22,
+      "open_world": 16,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 19,
+        "provisions": 1,
+        "claims": 22,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-merger-structure-closing-20260808-r1",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 17,
+      "review_queue": 17,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 3,
+        "claims": 17,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-merger-structure-closing-20260809-2xk-final",
       "section_family": "MERGER_STRUCTURE_CLOSING",
       "section_references": [
         "1.1",
@@ -4874,6 +7712,41 @@
       }
     },
     {
+      "run": "skywater-misc-boilerplate-20260809-2xk-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "10.1",
+        "10.2",
+        "10.3",
+        "10.4",
+        "10.7",
+        "10.8",
+        "10.9",
+        "10.10",
+        "10.11",
+        "10.12",
+        "10.13",
+        "10.14",
+        "10.15"
+      ],
+      "model_call_count": 13,
+      "resolved": 17,
+      "review_queue": 17,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 21,
+        "provisions": 11,
+        "claims": 17,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-no-other-reps-fraud-20260808-r1",
       "section_family": "NO_OTHER_REPS_FRAUD",
       "section_references": [
@@ -4891,6 +7764,30 @@
         "excerpts": 7,
         "provisions": 5,
         "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.30",
+        "4.16"
+      ],
+      "model_call_count": 2,
+      "resolved": 7,
+      "review_queue": 7,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 4,
+        "claims": 7,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -4922,6 +7819,30 @@
       }
     },
     {
+      "run": "skywater-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.2",
+        "5.3"
+      ],
+      "model_call_count": 2,
+      "resolved": 49,
+      "review_queue": 59,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 46,
+        "provisions": 10,
+        "claims": 49,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-proxy-meeting-20260808-r1",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -4938,6 +7859,29 @@
         "excerpts": 8,
         "provisions": 1,
         "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "5.3"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 12,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
+        "provisions": 1,
+        "claims": 4,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5079,6 +8023,140 @@
       }
     },
     {
+      "run": "skywater-representations-r1a-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "3.6",
+        "3.7",
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 12,
+      "resolved": 5,
+      "review_queue": 10,
+      "open_world": 84,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 82,
+        "provisions": 5,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-representations-r1b-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.13",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18",
+        "3.19",
+        "3.20",
+        "3.21",
+        "3.22",
+        "3.23",
+        "3.24"
+      ],
+      "model_call_count": 12,
+      "resolved": 6,
+      "review_queue": 35,
+      "open_world": 201,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 157,
+        "provisions": 3,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-representations-r1c-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.25",
+        "3.26",
+        "3.27",
+        "3.28",
+        "3.29",
+        "3.30",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6"
+      ],
+      "model_call_count": 12,
+      "resolved": 1,
+      "review_queue": 3,
+      "open_world": 47,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 46,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-representations-r1d-20260809-2xk-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "4.7",
+        "4.8",
+        "4.9",
+        "4.10",
+        "4.11",
+        "4.12",
+        "4.13",
+        "4.14",
+        "4.15",
+        "4.16"
+      ],
+      "model_call_count": 10,
+      "resolved": 2,
+      "review_queue": 3,
+      "open_world": 47,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 46,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-specific-performance-remedies-20260808-r1",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -5102,7 +8180,53 @@
       }
     },
     {
+      "run": "skywater-specific-performance-remedies-20260809-2xk-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "10.9"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-tax-matters-20260808-r1",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "7.4"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-tax-matters-20260809-2xk-final",
       "section_family": "TAX_MATTERS",
       "section_references": [
         "7.4"
@@ -5149,6 +8273,30 @@
       }
     },
     {
+      "run": "skywater-termination-20260809-2xk-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "9.1",
+        "9.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 16,
+      "review_queue": 17,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 20,
+        "provisions": 12,
+        "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "skywater-termination-fee-20260808-r1",
       "section_family": "TERMINATION_FEE",
       "section_references": [
@@ -5163,6 +8311,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 5,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "skywater-termination-fee-20260809-2xk-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "10.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 7,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
         "provisions": 1,
         "claims": 1,
         "relationships": 0,
@@ -5218,7 +8389,53 @@
       }
     },
     {
+      "run": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "4.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 10,
+      "review_queue": 14,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
+        "provisions": 8,
+        "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-appraisal-dissenters-rights-20260808-rung2",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-appraisal-dissenters-rights-20260809-2xk-r2-final",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
         "2.1"
@@ -5266,6 +8483,31 @@
       }
     },
     {
+      "run": "topbuild-closing-conditions-20260809-2xk-r3-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "5.1",
+        "5.2",
+        "5.3"
+      ],
+      "model_call_count": 3,
+      "resolved": 11,
+      "review_queue": 18,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 15,
+        "provisions": 8,
+        "claims": 11,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-consideration-20260808-rung2",
       "section_family": "CONSIDERATION",
       "section_references": [
@@ -5286,6 +8528,33 @@
         "excerpts": 46,
         "provisions": 2,
         "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-consideration-20260809-2xk-r2-final",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5"
+      ],
+      "model_call_count": 5,
+      "resolved": 1,
+      "review_queue": 4,
+      "open_world": 33,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 34,
+        "provisions": 1,
+        "claims": 1,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5341,6 +8610,30 @@
       }
     },
     {
+      "run": "topbuild-dividends-20260809-2xk-r4-final",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "4.1",
+        "4.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 2,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-dno-indemnification-20260808-rung4",
       "section_family": "DNO_INDEMNIFICATION",
       "section_references": [
@@ -5364,6 +8657,29 @@
       }
     },
     {
+      "run": "topbuild-dno-indemnification-20260809-2xk-r4-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "4.13"
+      ],
+      "model_call_count": 1,
+      "resolved": 4,
+      "review_queue": 8,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 2,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-employee-matters-20260808-rung4",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -5379,6 +8695,30 @@
       "import_refusal": null,
       "published": {
         "excerpts": 13,
+        "provisions": 1,
+        "claims": 4,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-employee-matters-20260809-2xk-r4-final",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "3.1",
+        "4.11"
+      ],
+      "model_call_count": 2,
+      "resolved": 4,
+      "review_queue": 9,
+      "open_world": 6,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 10,
         "provisions": 1,
         "claims": 4,
         "relationships": 0,
@@ -5411,6 +8751,29 @@
       }
     },
     {
+      "run": "topbuild-financing-covenants-20260809-2xk-r4-final",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "4.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 5,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-general-covenants-20260808-rung3",
       "section_family": "GENERAL_COVENANTS",
       "section_references": [
@@ -5432,6 +8795,34 @@
         "excerpts": 11,
         "provisions": 7,
         "claims": 7,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-general-covenants-20260809-2xk-r3-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "4.8",
+        "4.9",
+        "4.10",
+        "4.18",
+        "4.19",
+        "4.21"
+      ],
+      "model_call_count": 6,
+      "resolved": 9,
+      "review_queue": 9,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 11,
+        "provisions": 7,
+        "claims": 9,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5485,6 +8876,29 @@
       }
     },
     {
+      "run": "topbuild-guaranty-financing-party-20260809-2xk-r4-final",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "7.16"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-interim-operating-20260808-rung3",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -5509,6 +8923,30 @@
       }
     },
     {
+      "run": "topbuild-interim-operating-20260809-2xk-r3-final",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "4.1",
+        "4.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 26,
+      "review_queue": 68,
+      "open_world": 34,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 59,
+        "provisions": 13,
+        "claims": 26,
+        "relationships": 0,
+        "components": 26,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-key-defined-terms-20260808-rung2",
       "section_family": "KEY_DEFINED_TERMS",
       "section_references": [
@@ -5528,6 +8966,32 @@
         "excerpts": 103,
         "provisions": 9,
         "claims": 21,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-key-defined-terms-20260809-2xk-r2-final",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "3.1",
+        "4.3",
+        "4.4",
+        "6.5"
+      ],
+      "model_call_count": 4,
+      "resolved": 22,
+      "review_queue": 28,
+      "open_world": 42,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 73,
+        "provisions": 10,
+        "claims": 22,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5597,6 +9061,30 @@
       }
     },
     {
+      "run": "topbuild-mae-definition-20260809-2xk-r4-final",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "3.1",
+        "3.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 38,
+      "review_queue": 42,
+      "open_world": 23,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 25,
+        "provisions": 2,
+        "claims": 38,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-material-contracts-20260808-rung3",
       "section_family": "MATERIAL_CONTRACTS",
       "section_references": [
@@ -5613,6 +9101,29 @@
         "excerpts": 22,
         "provisions": 1,
         "claims": 16,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-material-contracts-20260809-2xk-r3-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 20,
+      "review_queue": 20,
+      "open_world": 21,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 21,
+        "provisions": 1,
+        "claims": 20,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5643,6 +9154,36 @@
         "excerpts": 22,
         "provisions": 8,
         "claims": 21,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-merger-structure-closing-20260809-2xk-r4-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "1.5",
+        "1.6",
+        "1.7",
+        "1.8"
+      ],
+      "model_call_count": 8,
+      "resolved": 20,
+      "review_queue": 20,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 8,
+        "claims": 20,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5716,6 +9257,39 @@
       }
     },
     {
+      "run": "topbuild-misc-boilerplate-20260809-2xk-r4-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "7.1",
+        "7.2",
+        "7.3",
+        "7.4",
+        "7.5",
+        "7.7",
+        "7.8",
+        "7.9",
+        "7.13",
+        "7.14",
+        "7.15"
+      ],
+      "model_call_count": 11,
+      "resolved": 26,
+      "review_queue": 26,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 27,
+        "provisions": 10,
+        "claims": 26,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-no-other-reps-fraud-20260808-rung4",
       "section_family": "NO_OTHER_REPS_FRAUD",
       "section_references": [
@@ -5732,6 +9306,30 @@
       "published": {
         "excerpts": 3,
         "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-no-other-reps-fraud-20260809-2xk-r4-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.1",
+        "3.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 2,
+        "provisions": 3,
         "claims": 3,
         "relationships": 0,
         "components": 0,
@@ -5763,6 +9361,30 @@
       }
     },
     {
+      "run": "topbuild-no-shop-20260809-2xk-r4-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "4.3",
+        "4.4"
+      ],
+      "model_call_count": 2,
+      "resolved": 105,
+      "review_queue": 119,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 95,
+        "provisions": 24,
+        "claims": 105,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-proxy-meeting-20260808-rung4",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -5786,6 +9408,29 @@
       }
     },
     {
+      "run": "topbuild-proxy-meeting-20260809-2xk-r4-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "4.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 8,
+      "review_queue": 21,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 13,
+        "provisions": 2,
+        "claims": 8,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-representations-20260808-ceiling128k",
       "section_family": "REPRESENTATIONS",
       "section_references": [
@@ -5802,6 +9447,30 @@
         "excerpts": 17,
         "provisions": 0,
         "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-representations-20260809-2xk-r3-final",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 10,
+      "review_queue": 13,
+      "open_world": 66,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 60,
+        "provisions": 2,
+        "claims": 10,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -5855,7 +9524,54 @@
       }
     },
     {
+      "run": "topbuild-specific-performance-remedies-20260809-2xk-r3-final",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "7.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 2,
+      "review_queue": 2,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 6,
+        "provisions": 1,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-tax-matters-20260808-rung3",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "4.23",
+        "7.11"
+      ],
+      "model_call_count": 2,
+      "resolved": 5,
+      "review_queue": 5,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 3,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-tax-matters-20260809-2xk-r3-final",
       "section_family": "TAX_MATTERS",
       "section_references": [
         "4.23",
@@ -5905,6 +9621,32 @@
       }
     },
     {
+      "run": "topbuild-termination-20260809-2xk-r3-final",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "6.1",
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 20,
+      "review_queue": 24,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 13,
+        "claims": 20,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "topbuild-termination-fee-20260808-rung1",
       "section_family": "TERMINATION_FEE",
       "section_references": [
@@ -5919,6 +9661,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 10,
+        "provisions": 3,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "topbuild-termination-fee-20260809-2xk-r1-final",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "6.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 11,
+      "open_world": 5,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 7,
         "provisions": 3,
         "claims": 2,
         "relationships": 0,
