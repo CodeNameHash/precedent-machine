@@ -13,6 +13,7 @@ const {
   createCanonicalWriter,
 } = require('../lib/canonical-v2/canonical-writer');
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
+const { buildPublicationDispositionV2 } = require('../lib/canonical-v2/publication-disposition');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
@@ -184,6 +185,43 @@ test('DEAL_SCOPE_RUN dry-run resolves stored admission and accepts reference-onl
     'relationships', 'reviewed_source_specific_rows', 'incomplete_canonical_result_rows', 'semantic_impact_closures',
     'source_references', 'validated_semantic_graphs',
   ].sort());
+});
+
+test('DEAL_SCOPE_RUN accepts Stage 2Y publication sidecar collections at the writer boundary', async () => {
+  const { writer, writeSet } = await setup();
+  const result = await writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'qxo-stage-2y-publication-sidecars',
+    dryRun: true,
+    writeSet: {
+      ...writeSet,
+      claims: [],
+      publication_dispositions: [],
+      publication_calibration_authorities: [],
+    },
+  });
+
+  assert.equal(result.validation.accepted, true);
+  assert.deepEqual(result.validation.publishableWriteSet.publication_dispositions, []);
+  assert.deepEqual(result.validation.publishableWriteSet.publication_calibration_authorities, []);
+});
+
+test('DEAL_SCOPE_RUN commits a validated Stage 2Y publication disposition', async () => {
+  const { repository, writer, writeSet } = await setup();
+  const disposition = buildPublicationDispositionV2({
+    claim_revision_id: writeSet.claims[0].claim_revision_id,
+    run_receipt_id: 'b'.repeat(64),
+    resolution_receipt_id: 'c'.repeat(64),
+    evaluated_at: '2026-08-09T12:00:00.000Z',
+  });
+
+  await writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'qxo-stage-2y-publication-disposition-commit',
+    writeSet: { ...writeSet, publication_dispositions: [disposition] },
+  });
+
+  assert.deepEqual(repository.snapshot().publication_dispositions, [disposition]);
 });
 
 test('DEAL_SCOPE_RUN commits one semantic transaction and exact replay is idempotent', async () => {

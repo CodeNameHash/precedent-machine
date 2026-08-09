@@ -147,7 +147,7 @@ async function setup(html = '<body><p>Termination fee formula test fixture.</p><
 // run.
 function minimalRunReceipt(context) {
   const byteLength = Buffer.from(context.canonical_text.text, 'utf8').length;
-  return {
+  const body = {
     schema_version: RUN_RECEIPT_SCHEMA,
     document_hash: context.document_hash,
     source_byte_length: byteLength,
@@ -157,6 +157,7 @@ function minimalRunReceipt(context) {
     evidence_residuals: [],
     scope_violations: [],
   };
+  return { ...body, run_receipt_id: contentId(RUN_RECEIPT_SCHEMA, body) };
 }
 
 // The two real Modiv rows Step 4A2 proved durably (the headline

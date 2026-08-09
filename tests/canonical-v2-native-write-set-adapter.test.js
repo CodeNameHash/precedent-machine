@@ -1148,6 +1148,23 @@ test('rejects malformed inputs instead of silently misbehaving', () => {
   }), NativeWriteSetAdapterError);
 });
 
+test('rejects a complete native run receipt without its content identity as a typed input error', async () => {
+  const receipt = await buildSimpleReceipt();
+  const { run_receipt_id: omitted, ...withoutIdentity } = receipt;
+
+  assert.throws(() => buildNativeWriteSet({
+    run_receipt: withoutIdentity,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  }), (error) => {
+    assert.ok(error instanceof NativeWriteSetAdapterError);
+    assert.equal(error.code, 'INVALID_RUN_RECEIPT');
+    assert.match(error.message, /run_receipt_id/);
+    return true;
+  });
+});
+
 // ─── Component rows for assertion-node claim subjects (docs/superpowers/
 // specs/2026-08-01-component-rows-design.md). Everything above this line is
 // the PRE-EXISTING adapter suite, run unmodified against the new code -- its
