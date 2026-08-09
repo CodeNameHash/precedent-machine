@@ -128,6 +128,51 @@ test('IOC uses the nearest preceding chapeau party on a parent provision and a c
   assert.equal(fieldsForCompareCell('COVENANT_INTERIM_OPERATING')[0], 'iocRestrictionPresent');
 });
 
+test('UTF-8 IOC review keeps the candidate citation, occurrence, and evidence exactly', async () => {
+  const quote = 'Élan shall not take any action.';
+  const sourceText = `Section 6.2 Interim Operations.\n${quote}`;
+  const source = buildImmutableSource({ sourceBytes: sourceText, sourceOccurrenceKey: 'IOC_UTF8_EVIDENCE_FIXTURE' });
+  const admitted = Object.freeze({
+    ...source,
+    governed_deal_key: 'deal:ioc-utf8-evidence',
+    deal_admission_id: sha256Hex('deal-admission:ioc-utf8-evidence'),
+    source_ordinal: 0,
+  });
+  const receipt = await runNativeExtraction({
+    source_text: sourceText,
+    document_hash: source.document_hash,
+    section_references: ['6.2'],
+    contract_bundle: compileFixtureContractV25(),
+    definitions: { known_definitions: [] },
+    provider: async ({ governed_scope: scope }) => {
+      const shaped = shapeIocProposals({
+        ioc_restriction_assertions: [{
+          section_reference: '6.2', assertion_kind: 'RESTRICTION_PRESENT',
+          restriction_category: 'DIVIDENDS_DISTRIBUTIONS', threshold_basis: null, quote,
+        }],
+        open_world_candidates: [],
+      }, scope.source_text, { covenant_side: 'TARGET' });
+      return { provider_id: 'ioc-utf8-evidence/v1', model_id: 'stub', prompt: 'ioc-utf8-evidence', proposals: shaped.proposals, evidence_residuals: shaped.evidence_residuals };
+    },
+  });
+  const hostileReceipt = JSON.parse(JSON.stringify(receipt));
+  const original = hostileReceipt.compiled_candidates[0].candidate.claim;
+  original.source_citation = '§6.2 original UTF-8 citation';
+  const resolution = resolveCandidates({
+    run_receipt: hostileReceipt,
+    contract_vocabulary: compileFixtureContractV25(),
+    admitted_source_context: admitted,
+  });
+  const review = resolution.review_queue.find((entry) => entry.has_resolution === false);
+  assert.ok(review);
+  assert.equal(review.source_citation, original.source_citation);
+  assert.equal(review.raw_value, original.raw_value);
+  assert.equal(review.canonical_value, original.canonical_value);
+  assert.equal(review.original_claim_occurrence_id, original.claim_occurrence_id);
+  assert.deepEqual(review.evidence, original.evidence);
+  assert.equal(Buffer.byteLength(review.raw_value, 'utf8'), Buffer.byteLength(original.raw_value, 'utf8'));
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Step 3F1 (docs/core/PLAN.md, "give the marker a downstream contract"):
 // projectIocWaveAClaims already refuses any party.capacity outside

@@ -132,6 +132,22 @@ test('Landos resolves one Remedies legal effect, two separate exceptions and a r
   assert.equal(remediesProjection.open_items.filter((item) => item.reason === 'SOLE_REMEDY_FEE_CONTEXT_LINKED').length, 1);
 });
 
+test('Landos sole-remedy review items preserve the original candidate evidence without rebuilding it', async () => {
+  const resolution = await resolveSoleRemedy();
+  const feeItem = resolution.open_world.find((entry) => entry.reason === 'SOLE_REMEDY_FEE_CONTEXT_LINKED');
+  const review = resolution.review_queue.find((entry) => (
+    entry.resolved_claim_definition_key === 'SOLE_REMEDY_LEGAL_EFFECT_PRESENT'
+  ));
+  assert.ok(feeItem);
+  assert.ok(review);
+  assert.equal(review.raw_value, feeItem.raw_value);
+  assert.equal(review.canonical_value, feeItem.canonical_value);
+  assert.equal(review.source_citation, feeItem.source_citation);
+  assert.equal(review.original_claim_occurrence_id, feeItem.original_claim_occurrence_id);
+  assert.strictEqual(review.evidence, feeItem.evidence);
+  assert.equal(review.raw_value, SOLE_REMEDY_QUOTE);
+});
+
 test('a bad carve-out kind and an uncorroborated quote stay open world without blocking the legal effect', async () => {
   const resolution = await resolveSoleRemedy({
     carveOuts: [
