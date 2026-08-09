@@ -1,0 +1,172 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "6c93645c4615e6f07a62a30328d2c1c764573a28f12dabedacabdf6360cd9cfc",
+  "review_queue": [
+    {
+      "section_reference": "2.1",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "eefd97a62ba2a475f847ba68fc7dd104becd0b97d66c1afa0d64da723335d770",
+      "closure_id": "26abc0f7acb3872fae4193979dbfe391674a78da681ed7be13f581961dd3ed27",
+      "normalised_phrase": "each Class C Common Share and each Class S Common Share (together with the Class C Common Shares, the “Company Common Shares” and individually each, a “Company Common Share”) (other than any Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall be automatically converted into and shall thereafter represent the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-RATIO",
+          "pattern_id": "CONS-RATIO:PHRASE:IN_LIEU_OF_FRACTIONAL_SHARES",
+          "start": 1749,
+          "end": 1777,
+          "excerpt": "r Company Common Share Merger Consideration”), plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d192ba30a80002109d6e8e5e6fb26d9477d607c6c97e0af74317922ebfb353b5",
+      "closure_id": "688e6545df09450f2cc8148fa519988b8c3eaa67a11c92ecad24a868e2da57aa",
+      "normalised_phrase": "each Company Preferred Share (other than the Excluded Shares) issued and outstanding immediately prior to the Company Merger Effective Time shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.1",
+      "source_citation": "2.1(b)(i)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ec00c8aa18d386517ef76bed3bf0e2044806cc017f700af2d4f83ccbdf1259fa",
+      "closure_id": "afabb3481cc4a974080def5069d145979789df09e9c9985b004823d127160a87",
+      "normalised_phrase": "plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, and without interest (the “Fractional Per Company Common Share Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "NO_MONEY_LITERAL"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "plus the right to receive cash in lieu of fractional interests of Parent OP Units, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, without interest (the “Fractional Per OpCo Common Unit Merger Consideration”).",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "6006092dc48817e0bfc786e1829a27ed7485f4488dca6aa7ff51eec824d16d97",
+      "closure_id": "a967d3f85ec8314963570aecae9d21f2a523f324be2b266464c9facb1983bf91",
+      "normalised_phrase": "plus the right to receive cash in lieu of fractional interests of Parent OP Units, if any, in each case, in accordance with the procedures set forth in Article II, payable to the holder thereof, without interest (the “Fractional Per OpCo Common Unit Merger Consideration”).",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.2",
+      "source_citation": "2.2(a)(ii)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "EXCHANGE_RATIO_VALUE",
+      "concept_key": "CONS-RATIO",
+      "reasons": [
+        "RATIO_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "each Class C Unit (including each Converted Class X Unit), other than Excluded Units, issued and outstanding immediately prior to the OpCo Merger Effective Time, shall be cancelled and extinguished and automatically converted into and shall thereafter represent the right to receive from Parent OpCo that number of validly issued, fully paid and nonassessable OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio (as may be adjusted pursuant to Section 2.7) (the “Per OpCo Common Unit Merger Consideration”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "cf3541641c8dc3b3c4ad2ec99ddf652132b0468597f0883618a1874f6b0d4697",
+      "closure_id": "aadd4f5d04319a4a81ccc5203b7ca6e33e0248dc1acf8011ebe9df666fb874eb",
+      "normalised_phrase": "each Class C Unit (including each Converted Class X Unit), other than Excluded Units, issued and outstanding immediately prior to the OpCo Merger Effective Time, shall be cancelled and extinguished and automatically converted into and shall thereafter represent the right to receive from Parent OpCo that number of validly issued, fully paid and nonassessable OP Units (as defined in the Parent OpCo Partnership Agreement) of Parent OpCo (“Parent OP Units”) equal to the Exchange Ratio (as may be adjusted pursuant to Section 2.7) (the “Per OpCo Common Unit Merger Consideration”)",
+      "attachment_position": null,
+      "concept_family": "CONS-RATIO",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.6",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "82eb33ebeb0b4402e3a68e0d0d077d2635c91a22f8cec74e29e12ffa4d2fe917",
+      "closure_id": "f7dc2025e1976156f9b1c688af8a753f39283504113133bea555727969eeaa05",
+      "normalised_phrase": "No dissenters’ or appraisal rights shall be available with respect to the Mergers.",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "a4f8d3fd1a1d52f4919dc6b0a499c30a3b2c6674960a23c4f92b7a705ae0ea69"
+}

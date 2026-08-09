@@ -1,0 +1,90 @@
+{
+  "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+  "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+  "source_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+  "source_byte_length": 428768,
+  "root_section_id": "15320594801b671dd24dd2404e88ede8dcdd874cb28fc7283ceab4909d9c407b",
+  "requested_section_references": [
+    "2.6"
+  ],
+  "resolved_sections": [
+    {
+      "section_reference": "2.6",
+      "section_id": "32ac42efeb237609e0871d62de9d2f4de0a4abefc976941b02a5cac4a7614f1f",
+      "parent_section_id": "228d29b86d85066a427b12c4f2a0f9576d7da8da7e288cbd67fd2adeda340b8b",
+      "kind": "SECTION",
+      "depth": 2,
+      "start": 50293,
+      "end": 50412,
+      "text_sha256": "d73196aa62db14aa573523d2780ede5f9ced31e30fdd106cc82fd7dccbf74528",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+      "prompt_id": "native-producer-appraisal/v1",
+      "prompt_version": 2,
+      "prompt_digest": "109145ed995dc87b40c44ae7f9c38c68df9589d46f4961d70198cf5b132b25e2",
+      "producer_receipt": {
+        "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt_digest": "109145ed995dc87b40c44ae7f9c38c68df9589d46f4961d70198cf5b132b25e2",
+        "input_scope_digest": "d7a133cbc57c585fb0a3bb31f20669b781e3d75e8017300f227a958bfe859b85",
+        "proposal_count": 0,
+        "evidence_residual_count": 0,
+        "producer_receipt_id": "8cb91a2adc8c7578e90a5157298dea4ac28d9d85e7c4264a2e932f8d2086c776"
+      }
+    }
+  ],
+  "compiled_candidates": [],
+  "evidence_residuals": [],
+  "scope_violations": [],
+  "citation_residuals": [],
+  "coverage_proxies": [
+    {
+      "schema_version": "COVERAGE_PROXY_REPORT/V1",
+      "section_reference": "2.6",
+      "source_byte_length": 119,
+      "covered_byte_length": 0,
+      "coverage_share": 0,
+      "marker_counts": {
+        "as of": 0,
+        "except": 0,
+        "knowledge": 0,
+        "material": 0,
+        "total": 0
+      },
+      "qualifiers_emitted_count": 0,
+      "qualifier_to_marker_ratio": null,
+      "signals": [
+        {
+          "type": "COVERAGE_SUSPECT",
+          "reason": "LOW_SPAN_COVERAGE",
+          "coverage_share": 0,
+          "threshold": 0.5
+        }
+      ]
+    }
+  ],
+  "limb_enumeration_scan": [
+    {
+      "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+      "section_reference": "2.6",
+      "markers_found": [],
+      "classification_counts": {
+        "enumeration_marker": 0,
+        "section_paragraph_marker": 0,
+        "cross_reference_marker": 0
+      },
+      "proposed_tokens": [],
+      "disagreements": [],
+      "disagreement_count": 0
+    }
+  ],
+  "undispatched_sections": [],
+  "evidence_residual_count": 0,
+  "scope_violation_count": 0,
+  "citation_residual_count": 0,
+  "undispatched_section_count": 0,
+  "compiled_candidate_count": 0,
+  "rejected_candidate_count": 0,
+  "run_receipt_id": "1d4234b79646e33b2e1164491c95b2ab7bfdf5de4bf2eae4b00853698e8149d0"
+}
