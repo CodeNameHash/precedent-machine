@@ -125,7 +125,8 @@ button.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
 textarea,input[type=text]{width:100%;font:14px/1.5 var(--sans);padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);resize:vertical}
 textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
 label.fld{display:grid;gap:6px;font:600 13px/1.3 var(--sans)}
-pre.out{margin:0;padding:16px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;overflow:auto;max-height:340px;font-size:12.5px;line-height:1.5}
+textarea.out{margin:0;padding:16px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;width:100%;min-height:300px;max-height:60vh;font-family:var(--mono);font-size:12.5px;line-height:1.5;color:var(--ink);white-space:pre;overflow:auto;resize:vertical}
+textarea.out:focus{outline:2px solid var(--accent);outline-offset:1px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .hidden{display:none!important}
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--faint)}
@@ -403,11 +404,14 @@ footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-si
     <label class="fld">Anything else you want on the record<textarea id="freetext" rows="3" placeholder="Optional."></textarea></label>
     <div class="row">
       <button class="primary" id="btn-build">Build export</button>
-      <button id="btn-copy">Copy</button>
-      <button id="btn-dl">Download</button>
+      <button id="btn-copy">Select all &amp; copy</button>
+      <button id="btn-dl">Try download</button>
       <span class="note" style="margin:0" id="exp-status"></span>
     </div>
-    <pre class="out" id="out">Nothing built yet.</pre>
+    <p class="note">This page runs sandboxed, so the clipboard API and file downloads are often blocked.
+    <strong>Select all &amp; copy</strong> highlights the whole box — if the copy itself is refused, the text
+    stays selected and <span class="kbd">⌘C</span> works. Clicking into the box selects everything too.</p>
+    <textarea class="out" id="out" readonly spellcheck="false">Nothing built yet.</textarea>
   </div>
 </section>
 
@@ -547,24 +551,62 @@ function build(){
       cant_judge_cards: cantJudge
     }
   };
-  $('#out').textContent = JSON.stringify(out, null, 2);
+  $('#out').value = JSON.stringify(out, null, 2);
   $('#exp-status').textContent = `${Object.values(out.rulings).filter(Boolean).length}/7 rulings · ${decisions.length} decided · ${cantJudge.length} flagged`;
   return out;
 }
 $('#btn-build').addEventListener('click', build);
 $('#btn-export').addEventListener('click', () => { build(); $('#out').scrollIntoView({behavior:'smooth',block:'center'}); });
+
+$('#out').addEventListener('focus', e => e.target.select());
+$('#out').addEventListener('click', e => e.target.select());
+
+function selectOut(){
+  const ta = $('#out');
+  ta.removeAttribute('readonly');       // iOS Safari will not select a readonly field
+  ta.focus();
+  ta.setSelectionRange(0, ta.value.length);
+  ta.select();
+  ta.setAttribute('readonly', '');
+  return ta;
+}
 $('#btn-copy').addEventListener('click', async () => {
-  const t = $('#out').textContent;
-  try{ await navigator.clipboard.writeText(t); $('#exp-status').textContent = 'Copied.'; }
-  catch(e){ $('#exp-status').textContent = 'Copy blocked — select the text and copy manually.'; }
+  if($('#out').value.trim() === '' || $('#out').value === 'Nothing built yet.') build();
+  const ta = selectOut();
+  // 1. modern API — usually blocked in a sandboxed frame
+  try{
+    await navigator.clipboard.writeText(ta.value);
+    $('#exp-status').textContent = 'Copied to clipboard.';
+    return;
+  }catch(e){}
+  // 2. legacy command — works from a real click with a live selection
+  try{
+    if(document.execCommand('copy')){
+      $('#exp-status').textContent = 'Copied to clipboard.';
+      return;
+    }
+  }catch(e){}
+  // 3. leave it selected and say so
+  $('#exp-status').textContent = 'Selected — press ⌘C (Ctrl+C) to copy.';
 });
 $('#btn-dl').addEventListener('click', () => {
-  const blob = new Blob([$('#out').textContent], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'stage-2y-console-export.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
+  if($('#out').value.trim() === '' || $('#out').value === 'Nothing built yet.') build();
+  try{
+    const blob = new Blob([$('#out').value], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'stage-2y-console-export.json';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    $('#exp-status').textContent = 'Download attempted. If nothing arrived, downloads are blocked here — use Select all & copy.';
+  }catch(e){
+    selectOut();
+    $('#exp-status').textContent = 'Downloads are blocked here. Text is selected — press ⌘C.';
+  }
 });
 
 paintRulings();
