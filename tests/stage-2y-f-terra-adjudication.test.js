@@ -31,6 +31,16 @@ function genuineDecision(input) {
   };
 }
 
+test('Terra prompt states the exact classification key and output shapes', async () => {
+  const { buildTerraAdjudicationInput, buildTerraPrompt } = await subject();
+  const source = await inventory();
+  const prompt = buildTerraPrompt(buildTerraAdjudicationInput(source.roots[0]));
+  assert.match(prompt, /"classification":"SAME_CONCEPT_REPEAT"/);
+  assert.match(prompt, /"classification":"GENUINE_UNCAPTURED_ITEM"/);
+  assert.match(prompt, /"classification":"AMBIGUOUS_NEEDS_REVIEW"/);
+  assert.match(prompt, /The discriminant key is exactly "classification", not "class"/);
+});
+
 test('Terra adjudication runs one isolated evidence-only call for each of the 164 roots', async () => {
   const { EXPECTED_ROOT_COUNT, runTerraAdjudication, validateTerraAdjudicationArtifact } = await subject();
   const source = await inventory();

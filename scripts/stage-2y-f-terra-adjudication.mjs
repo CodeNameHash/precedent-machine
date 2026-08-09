@@ -93,10 +93,13 @@ function buildTerraAdjudicationInput(root) {
 function buildTerraPrompt(input) {
   return [
     'Classify one lexical-disagreement root from a recorded merger-agreement extraction. Use only this evidence card.',
-    'Choose exactly one class: SAME_CONCEPT_REPEAT, GENUINE_UNCAPTURED_ITEM, or AMBIGUOUS_NEEDS_REVIEW.',
+    'Choose exactly one classification: SAME_CONCEPT_REPEAT, GENUINE_UNCAPTURED_ITEM, or AMBIGUOUS_NEEDS_REVIEW.',
     'SAME_CONCEPT_REPEAT is allowed only when every disagreement signal names the same legal concept already captured by resolved_claims. Same family, nearby text, or a compiled candidate that is not resolved is not enough.',
     'GENUINE_UNCAPTURED_ITEM is allowed only for a distinct legal item absent from resolved_claims. AMBIGUOUS_NEEDS_REVIEW is required whenever the evidence does not prove either result.',
-    'Return one JSON object only. Echo root_id and evidence_fingerprint exactly. For SAME include covered_claim_revision_ids containing every resolved_claims claim_revision_id and covered_disagreement_ids containing every disagreement_id. For GENUINE include missing_item_description, follow_up_id, and non-empty proving_disagreement_ids. For AMBIGUOUS include review_question. All classes require rationale.',
+    'Return one JSON object only. The discriminant key is exactly "classification", not "class". Echo root_id and evidence_fingerprint exactly. Do not add keys that are not in the selected shape.',
+    'SAME_CONCEPT_REPEAT shape: {"root_id":"<exact root_id>","evidence_fingerprint":"<exact evidence_fingerprint>","classification":"SAME_CONCEPT_REPEAT","rationale":"<reason>","covered_claim_revision_ids":["<every resolved_claims claim_revision_id>"],"covered_disagreement_ids":["<every disagreement_id>"]}',
+    'GENUINE_UNCAPTURED_ITEM shape: {"root_id":"<exact root_id>","evidence_fingerprint":"<exact evidence_fingerprint>","classification":"GENUINE_UNCAPTURED_ITEM","rationale":"<reason>","missing_item_description":"<distinct missing legal item>","follow_up_id":"<stable proposed identifier>","proving_disagreement_ids":["<one or more disagreement_id values>"]}',
+    'AMBIGUOUS_NEEDS_REVIEW shape: {"root_id":"<exact root_id>","evidence_fingerprint":"<exact evidence_fingerprint>","classification":"AMBIGUOUS_NEEDS_REVIEW","rationale":"<reason>","review_question":"<specific question needed to decide>"}',
     `EVIDENCE_CARD=${canonicalJson(input)}`,
   ].join('\n\n');
 }
