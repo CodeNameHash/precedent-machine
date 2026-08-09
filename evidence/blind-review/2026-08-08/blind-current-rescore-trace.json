@@ -1,0 +1,2625 @@
+{
+  "schema_version": "BLIND_CURRENT_RESCORE_TRACE/V1",
+  "replay_family_modes": [
+    {
+      "family": "CLOSING_CONDITIONS",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "DNO_INDEMNIFICATION",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "FINANCING_COVENANTS",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "INTERIM_OPERATING",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "MAE_DEFINITION",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "NO_SHOP",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "PROXY_MEETING",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "REPRESENTATIONS",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    },
+    {
+      "family": "TERMINATION",
+      "mode": "replay",
+      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+    }
+  ],
+  "matching": {
+    "exact_first": true,
+    "fallback_only_after_exact_miss": true,
+    "normaliser": "zero-width-strip + NFKC + whitespace-collapse"
+  },
+  "cards": [
+    {
+      "id": "ITEM-001",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-termination-20260808-rung3",
+          "candidate_id": "topbuild-termination-20260808-rung3:review_queue:2",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-termination-20260808-rung3",
+          "candidate_id": "topbuild-termination-20260808-rung3:review_queue:2",
+          "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_RIGHT_GRANT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_RIGHT_GRANT]"
+    },
+    {
+      "id": "ITEM-002",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:13",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-003",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:7",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:8",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:10",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:19",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:20",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:26",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:29",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:40",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+    },
+    {
+      "id": "ITEM-004",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:30",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:30",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-005",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-termination-20260806",
+          "candidate_id": "modiv-termination-20260806:review_queue:5",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-termination-20260806",
+          "candidate_id": "modiv-termination-20260806:review_queue:5",
+          "now": "RESOLVED [TERMINATION_OUTSIDE_DATE]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_OUTSIDE_DATE]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_OUTSIDE_DATE]"
+    },
+    {
+      "id": "ITEM-006",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:23",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:23",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+    },
+    {
+      "id": "ITEM-007",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-closing-conditions-20260808-rung3",
+          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:3",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-closing-conditions-20260808-rung3",
+          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:3",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-008",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:4",
+          "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_RIGHT_GRANT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_RIGHT_GRANT]"
+    },
+    {
+      "id": "ITEM-009",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-termination-20260808-rung2",
+          "candidate_id": "skechers-termination-20260808-rung2:review_queue:14",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-termination-20260808-rung2",
+          "candidate_id": "skechers-termination-20260808-rung2:review_queue:14",
+          "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+          ]
+        }
+      ],
+      "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+    },
+    {
+      "id": "ITEM-010",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:19",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:19",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-011",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:46",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:46",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-012",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:4",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-013",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:0",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:0",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-014",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:7",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:8",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:10",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:19",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:20",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:26",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:29",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:40",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+    },
+    {
+      "id": "ITEM-015",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:3",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:4",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:10",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:21",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:3",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]",
+            "REVIEW:MAE_CARVEOUT_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-016",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-closing-conditions-20260808-r1",
+          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:9",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-closing-conditions-20260808-r1",
+          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:9",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-017",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:33",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:33",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-018",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:4",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:6",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:7",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:9",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:17",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:18",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:19",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:4",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
+    },
+    {
+      "id": "ITEM-019",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-closing-conditions-20260808-r1",
+          "candidate_id": "skywater-closing-conditions-20260808-r1:review_queue:7",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-closing-conditions-20260808-r1",
+          "candidate_id": "skywater-closing-conditions-20260808-r1:review_queue:7",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-020",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:14",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:14",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-021",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:6",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:6",
+          "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_RIGHT_GRANT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_RIGHT_GRANT]"
+    },
+    {
+      "id": "ITEM-022",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-termination-20260808-r1",
+          "candidate_id": "metsera-termination-20260808-r1:review_queue:0",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-termination-20260808-r1",
+          "candidate_id": "metsera-termination-20260808-r1:review_queue:0",
+          "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+          ]
+        }
+      ],
+      "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
+    },
+    {
+      "id": "ITEM-023",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:9",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:9",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-024",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:6",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:6",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-025",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-026",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:13",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-027",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-no-shop-20260808-r1",
+          "candidate_id": "metsera-no-shop-20260808-r1:review_queue:19",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-no-shop-20260808-r1",
+          "candidate_id": "metsera-no-shop-20260808-r1:review_queue:19",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-028",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-proxy-meeting-20260808-rung4",
+          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:2",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-proxy-meeting-20260808-rung4",
+          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:8",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-proxy-meeting-20260808-rung4",
+          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:2",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-029",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-no-shop-20260808-r1",
+          "candidate_id": "redhat-no-shop-20260808-r1:review_queue:51",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-no-shop-20260808-r1",
+          "candidate_id": "redhat-no-shop-20260808-r1:review_queue:51",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-030",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-interim-operating-20260808-r1",
+          "candidate_id": "redhat-interim-operating-20260808-r1:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-interim-operating-20260808-r1",
+          "candidate_id": "redhat-interim-operating-20260808-r1:review_queue:4",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-031",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:82",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:82",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-032",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:20",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:20",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-033",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-dno-indemnification-20260808-rung4",
+          "candidate_id": "topbuild-dno-indemnification-20260808-rung4:review_queue:5",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-dno-indemnification-20260808-rung4",
+          "candidate_id": "topbuild-dno-indemnification-20260808-rung4:review_queue:5",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-034",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:2",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-termination-20260808-r1",
+          "candidate_id": "skywater-termination-20260808-r1:review_queue:2",
+          "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_RIGHT_GRANT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_RIGHT_GRANT]"
+    },
+    {
+      "id": "ITEM-035",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:13",
+          "now": "REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE"
+          ]
+        }
+      ],
+      "now": "REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE"
+    },
+    {
+      "id": "ITEM-036",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-representations-20260808-2xd-replay",
+          "candidate_id": "redhat-representations-20260808-2xd-replay:review_queue:24",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-2xl-replay",
+          "candidate_id": "redhat-representations-20260808-2xl-replay:review_queue:33",
+          "replayable": true
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:31",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-representations-20260808-2xd-replay",
+          "candidate_id": "redhat-representations-20260808-2xd-replay:review_queue:24",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        },
+        {
+          "source_run": "redhat-representations-20260808-2xl-replay",
+          "candidate_id": "redhat-representations-20260808-2xl-replay:review_queue:33",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        },
+        {
+          "source_run": "redhat-representations-20260808-r1",
+          "candidate_id": "redhat-representations-20260808-r1:review_queue:31",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        }
+      ],
+      "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+    },
+    {
+      "id": "ITEM-037",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:43",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:51",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:43",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-038",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:2",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:2",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-039",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-dno-20260806",
+          "candidate_id": "modiv-dno-20260806:review_queue:1",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-dno-20260807-replay",
+          "candidate_id": "modiv-dno-20260807-replay:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-dno-20260806",
+          "candidate_id": "modiv-dno-20260806:review_queue:1",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-dno-20260807-replay",
+          "candidate_id": "modiv-dno-20260807-replay:review_queue:1",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-040",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-termination-20260808-r1",
+          "candidate_id": "redhat-termination-20260808-r1:review_queue:9",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-termination-20260808-r1",
+          "candidate_id": "redhat-termination-20260808-r1:review_queue:9",
+          "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [TERMINATION_RIGHT_GRANT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [TERMINATION_RIGHT_GRANT]"
+    },
+    {
+      "id": "ITEM-041",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:14",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:15",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:14",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        }
+      ],
+      "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+    },
+    {
+      "id": "ITEM-042",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:43",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:43",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-043",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-no-shop-20260808-r1",
+          "candidate_id": "metsera-no-shop-20260808-r1:review_queue:26",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-no-shop-20260808-r1",
+          "candidate_id": "metsera-no-shop-20260808-r1:review_queue:26",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-044",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:13",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-045",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:19",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:20",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:22",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-046",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-closing-conditions-20260808-r1",
+          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:11",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-closing-conditions-20260808-r1",
+          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:11",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-047",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:11",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:11",
+          "now": "RESOLVED [IOC_RESTRICTION_PRESENT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [IOC_RESTRICTION_PRESENT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [IOC_RESTRICTION_PRESENT]"
+    },
+    {
+      "id": "ITEM-048",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-proxy-meeting-20260808-r1",
+          "candidate_id": "redhat-proxy-meeting-20260808-r1:review_queue:6",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-proxy-meeting-20260808-r1",
+          "candidate_id": "redhat-proxy-meeting-20260808-r1:review_queue:6",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-049",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-financing-covenants-20260808-r1",
+          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:3",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-financing-covenants-20260808-r1",
+          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:3",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-050",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-mae-definition-20260807-live",
+          "candidate_id": "modiv-mae-definition-20260807-live:review_queue:6",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-mae-definition-20260807-live",
+          "candidate_id": "modiv-mae-definition-20260807-live:review_queue:14",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-mae-definition-20260807-live",
+          "candidate_id": "modiv-mae-definition-20260807-live:review_queue:19",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-mae-definition-20260807-live",
+          "candidate_id": "modiv-mae-definition-20260807-live:review_queue:25",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-mae-definition-20260807-live",
+          "candidate_id": "modiv-mae-definition-20260807-live:review_queue:6",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-051",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:29",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:29",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-052",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:30",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:30",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-053",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:7",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:7",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-054",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-closing-conditions-6.2-20260807-live",
+          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:1",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-055",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:83",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:83",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-056",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-financing-covenants-20260808-rung4",
+          "candidate_id": "topbuild-financing-covenants-20260808-rung4:review_queue:3",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-financing-covenants-20260808-rung4",
+          "candidate_id": "topbuild-financing-covenants-20260808-rung4:review_queue:3",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-057",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-058",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:19",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:20",
+          "replayable": true
+        },
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:22",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-mae-definition-20260808-r1",
+          "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-059",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:24",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-interim-operating-20260808-r1",
+          "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:24",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-060",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:57",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:57",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-061",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-closing-conditions-20260808-r1",
+          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-closing-conditions-20260808-r1",
+          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:4",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-062",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-proxy-meeting-20260808-rung5",
+          "candidate_id": "skechers-proxy-meeting-20260808-rung5:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-proxy-meeting-20260808-rung5",
+          "candidate_id": "skechers-proxy-meeting-20260808-rung5:review_queue:1",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-063",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-064",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:49",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:49",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    },
+    {
+      "id": "ITEM-065",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:3",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:3",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-066",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-closing-conditions-20260808-rung3",
+          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:13",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-067",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-dno-indemnification-20260808-rung2",
+          "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-dno-indemnification-20260808-rung2",
+          "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:13",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-068",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:11",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:11",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-069",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-mae-definition-20260806",
+          "candidate_id": "topbuild-mae-definition-20260806:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-mae-definition-20260806",
+          "candidate_id": "topbuild-mae-definition-20260806:review_queue:1",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-070",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-interim-operating-20260808-rung4",
+          "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-interim-operating-20260808-rung4",
+          "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:1",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-071",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:52",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:52",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-072",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-dno-indemnification-20260808-rung2",
+          "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:0",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-dno-indemnification-20260808-rung2",
+          "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:0",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-073",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-financing-covenants-20260808-r1",
+          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:6",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-financing-covenants-20260808-r1",
+          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:6",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-074",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-representations-20260807-replay",
+          "candidate_id": "modiv-representations-20260807-replay:review_queue:3",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-representations-20260807-replay",
+          "candidate_id": "modiv-representations-20260807-replay:review_queue:3",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        }
+      ],
+      "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+    },
+    {
+      "id": "ITEM-075",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:0",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:0",
+          "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+          ]
+        }
+      ],
+      "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
+    },
+    {
+      "id": "ITEM-076",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:25",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-interim-operating-20260807-replay",
+          "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:25",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-077",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:43",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-interim-operating-20260808-r1",
+          "candidate_id": "concho-interim-operating-20260808-r1:review_queue:43",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-078",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:35",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-interim-operating-20260808-rung3",
+          "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:35",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-079",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:3",
+          "replayable": true
+        },
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:16",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-representations-20260808-ceiling128k",
+          "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:3",
+          "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+          ]
+        }
+      ],
+      "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
+    },
+    {
+      "id": "ITEM-080",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-mae-definition-20260808-r1",
+          "candidate_id": "concho-mae-definition-20260808-r1:review_queue:1",
+          "now": "REVIEW:MAE_CARVEOUT_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:MAE_CARVEOUT_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:MAE_CARVEOUT_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-081",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-082",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-closing-conditions-20260808-r1",
+          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:5",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-closing-conditions-20260808-r1",
+          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:5",
+          "now": "REVIEW:PARTY_UNRESOLVED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PARTY_UNRESOLVED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PARTY_UNRESOLVED"
+    },
+    {
+      "id": "ITEM-083",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-financing-covenants-20260806",
+          "candidate_id": "modiv-financing-covenants-20260806:review_queue:2",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-financing-covenants-20260807-replay",
+          "candidate_id": "modiv-financing-covenants-20260807-replay:review_queue:1",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-financing-covenants-20260806",
+          "candidate_id": "modiv-financing-covenants-20260806:review_queue:2",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-financing-covenants-20260807-replay",
+          "candidate_id": "modiv-financing-covenants-20260807-replay:review_queue:1",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-084",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-mae-definition-20260806",
+          "candidate_id": "topbuild-mae-definition-20260806:review_queue:7",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-mae-definition-20260806",
+          "candidate_id": "topbuild-mae-definition-20260806:review_queue:7",
+          "now": "RESOLVED [MAE_CARVEOUT]",
+          "error_code": null,
+          "observed_dispositions": [
+            "RESOLVED [MAE_CARVEOUT]"
+          ]
+        }
+      ],
+      "now": "RESOLVED [MAE_CARVEOUT]"
+    },
+    {
+      "id": "ITEM-085",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "topbuild-closing-conditions-20260808-rung3",
+          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:13",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "topbuild-closing-conditions-20260808-rung3",
+          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:13",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-086",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:26",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:26",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-087",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:14",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:14",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-088",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:31",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-interim-operating-20260808-r1",
+          "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:31",
+          "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-089",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:8",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:0",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-proxy-meeting-20260806",
+          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:8",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-proxy-meeting-20260807-replay",
+          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:0",
+          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-090",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:6",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "metsera-dno-indemnification-20260808-r1",
+          "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:6",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-091",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skywater-dno-indemnification-20260808-r1",
+          "candidate_id": "skywater-dno-indemnification-20260808-r1:review_queue:5",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skywater-dno-indemnification-20260808-r1",
+          "candidate_id": "skywater-dno-indemnification-20260808-r1:review_queue:5",
+          "now": "REVIEW:DNO_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:DNO_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:DNO_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-092",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:20",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "concho-no-shop-20260808-r1",
+          "candidate_id": "concho-no-shop-20260808-r1:review_queue:20",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-093",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:14",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-financing-covenants-20260808-r1",
+          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:14",
+          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-094",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "modiv-no-shop-20260806",
+          "candidate_id": "modiv-no-shop-20260806:review_queue:15",
+          "replayable": true
+        },
+        {
+          "source_run": "modiv-no-shop-20260807-replay",
+          "candidate_id": "modiv-no-shop-20260807-replay:review_queue:22",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "modiv-no-shop-20260806",
+          "candidate_id": "modiv-no-shop-20260806:review_queue:15",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        },
+        {
+          "source_run": "modiv-no-shop-20260807-replay",
+          "candidate_id": "modiv-no-shop-20260807-replay:review_queue:22",
+          "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-095",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "redhat-closing-conditions-20260808-r1",
+          "candidate_id": "redhat-closing-conditions-20260808-r1:review_queue:12",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "redhat-closing-conditions-20260808-r1",
+          "candidate_id": "redhat-closing-conditions-20260808-r1:review_queue:12",
+          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+          ]
+        }
+      ],
+      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+    },
+    {
+      "id": "ITEM-096",
+      "match_method": "exact",
+      "matched_candidates": [
+        {
+          "source_run": "skechers-interim-operating-20260808-rung4",
+          "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:41",
+          "replayable": true
+        }
+      ],
+      "observations": [
+        {
+          "source_run": "skechers-interim-operating-20260808-rung4",
+          "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:41",
+          "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+          "error_code": null,
+          "observed_dispositions": [
+            "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+          ]
+        }
+      ],
+      "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+    }
+  ],
+  "successor_comparison": {
+    "comparison_is_invalid": true,
+    "reason": "SUCCESSOR_CARD_MEMBERSHIP_DIFFERS_FROM_THE_RECOVERED_ORIGINAL_SAMPLE",
+    "original_ids_verified": 96,
+    "QUALIFIER_KIND_UNCLASSIFIED": {
+      "original": {
+        "cards": 8,
+        "resolved": 4
+      },
+      "successor": {
+        "cards": 8,
+        "resolved": 6
+      }
+    },
+    "TERMINATING_PARTY_REF_NOT_IN_QUOTE": {
+      "original": {
+        "cards": 8,
+        "resolved": 7
+      },
+      "successor": {
+        "cards": 8,
+        "resolved": 6
+      }
+    }
+  }
+}

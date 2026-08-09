@@ -732,6 +732,7 @@ export {
   indexCurrentOutcomes,
   loadCohort,
   populationFromRun,
+  resolveSourceRun,
   scoreBlindSuccessor,
   selectSample,
 };
