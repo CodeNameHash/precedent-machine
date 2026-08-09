@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile as execFileCallback } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -50,6 +50,15 @@ function plain(value) { return value !== null && typeof value === 'object' && !A
 function nonempty(value) { return typeof value === 'string' && value.length > 0; }
 function digest(value) { return typeof value === 'string' && DIGEST.test(value); }
 function isoTimestamp(value) { return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value); }
+function canonicalRepoRelativePath(path) {
+  const output = relative(REPO_ROOT, resolve(path)).replace(/\\/g, '/');
+  if (!output || output === '..' || output.startsWith('../') || isAbsolute(output)) throw new Error(`OUTPUT_DIRECTORY_OUTSIDE_REPOSITORY:${path}`);
+  return output;
+}
+function isCanonicalRepoRelativePath(path) {
+  if (typeof path !== 'string' || !path || isAbsolute(path)) return false;
+  try { return canonicalRepoRelativePath(resolve(REPO_ROOT, path)) === path.replace(/\\/g, '/'); } catch { return false; }
+}
 function rawBytesDigest(call) {
   const rawPath = resolve(REPO_ROOT, call.raw_html_path);
   if (!existsSync(rawPath)) return null;
@@ -116,7 +125,7 @@ function collectRunOutput({ call, outputDir }) {
       run_manifest: fileDigest(paths['run-manifest.json']), source_reference: fileDigest(paths['source-reference.json']), run_receipt: fileDigest(paths['run-receipt.json']),
       adapter_result: fileDigest(paths['adapter-result.json']), call_telemetry: fileDigest(paths['call-telemetry.json']), recording: fileDigest(paths['recording.json']),
     },
-    output_directory: outputDir,
+    output_directory: canonicalRepoRelativePath(outputDir),
     run_identity: { deal: runManifest.deal, family: runManifest.section_family, section_references: runManifest.section_references, requested_model_profile: runManifest.requested_model_profile },
   };
 }
@@ -131,6 +140,7 @@ function outputErrors(call, output) {
   if (!plain(prompt) || prompt.prompt_id !== call.prompt_identity.prompt_id || prompt.prompt_version !== call.prompt_identity.prompt_version || prompt.section_reference !== call.section_reference || !digest(prompt.prompt_digest)) errors.push('PROMPT_IDENTITY_INVALID');
   if (!plain(artifacts) || !['run_manifest', 'source_reference', 'run_receipt', 'adapter_result', 'call_telemetry', 'recording'].every((key) => digest(artifacts?.[key]))) errors.push('ARTIFACT_DIGESTS_INVALID');
   if (!plain(output.run_identity) || output.run_identity.deal !== call.deal || output.run_identity.family !== call.family || !Array.isArray(output.run_identity.section_references) || output.run_identity.section_references.length !== 1 || output.run_identity.section_references[0] !== call.section_reference || output.run_identity.requested_model_profile !== PROFILE_ID) errors.push('RUN_IDENTITY_INVALID');
+  if (!isCanonicalRepoRelativePath(output.output_directory)) errors.push('OUTPUT_DIRECTORY_INVALID');
   return errors;
 }
 

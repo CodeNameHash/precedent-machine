@@ -26,6 +26,7 @@ function outputFor(call, requestId = 'request-1') {
     prompt_identity: { ...call.prompt_identity, prompt_digest: '1'.repeat(64) },
     artifact_digests: { run_manifest: '2'.repeat(64), source_reference: '3'.repeat(64), run_receipt: '4'.repeat(64), adapter_result: '5'.repeat(64), call_telemetry: '6'.repeat(64), recording: '7'.repeat(64) },
     run_identity: { deal: call.deal, family: call.family, section_references: [call.section_reference], requested_model_profile: 'TERRA_MEDIUM' },
+    output_directory: `evidence/canonical-v2/test-runs/${call.call_id}`,
   };
 }
 function writeJson(file, value) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify(value)); }
@@ -71,20 +72,20 @@ test('2Y-L rejects a forged digest that has the right shape but not the pinned r
 
 test('2Y-L adopts a complete sealed run directory without launching another model call', async () => {
   const { STAGE_2Y_L_CALLS, makeLiveExecutor } = await subject();
-  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'stage-2y-l-adopt-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
+  const scratch = fs.mkdtempSync(path.join(ROOT, '.stage-2y-l-adopt-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
   try {
     completeRunDirectory({ directory: runDir, call }); let invoked = 0;
     const execute = makeLiveExecutor({ runsRoot: scratch, invokeRunner: async () => { invoked += 1; throw new Error('must not call'); } });
     const output = await execute({ call });
     assert.equal(invoked, 0);
     assert.equal(output.artifact_digests.recording, digestFile(path.join(runDir, 'recording.json')));
-    assert.equal(output.output_directory, runDir);
+    assert.equal(output.output_directory, path.relative(ROOT, runDir));
   } finally { fs.rmSync(scratch, { recursive: true, force: true }); }
 });
 
 test('2Y-L refuses a partial existing run directory without launching another model call', async () => {
   const { STAGE_2Y_L_CALLS, makeLiveExecutor } = await subject();
-  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'stage-2y-l-partial-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
+  const scratch = fs.mkdtempSync(path.join(ROOT, '.stage-2y-l-partial-')); const call = STAGE_2Y_L_CALLS[0]; const runDir = path.join(scratch, call.call_id);
   try {
     writeJson(path.join(runDir, 'recording.json'), { incomplete: true }); let invoked = 0;
     const execute = makeLiveExecutor({ runsRoot: scratch, invokeRunner: async () => { invoked += 1; } });
@@ -150,6 +151,15 @@ test('2Y-L requires run identity, one request id per section, and ISO checkpoint
   assert.ok(checked.errors.includes('COMPLETE_OUTPUT_INVALID'));
   assert.ok(checked.errors.includes('SEALED_AT_INVALID'));
   assert.ok(checked.errors.includes('PROVIDER_REQUEST_ID_DUPLICATE'));
+});
+
+test('2Y-L rejects absolute and traversal output directories in sealed batch records', async () => {
+  const { STAGE_2Y_L_CALLS, runStage2yLLiveBatch } = await subject(); const call = STAGE_2Y_L_CALLS[0];
+  for (const outputDirectory of ['/tmp/forbidden', '../outside']) {
+    const artifact = await runStage2yLLiveBatch({ calls: [call], executeSection: async () => ({ ...outputFor(call), output_directory: outputDirectory }) });
+    assert.equal(artifact.calls[0].state, 'MALFORMED_OUTPUT');
+    assert.ok(artifact.calls[0].errors.includes('OUTPUT_DIRECTORY_INVALID'));
+  }
 });
 
 test('2Y-L serializes concurrent checkpoint writes so persisted call counts never regress', async () => {
