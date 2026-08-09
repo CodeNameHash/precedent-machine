@@ -1,5 +1,5 @@
 {
-  "schema_version": "STAGE_2Y_I_QUALIFIER_DISPATCH_MEASUREMENT/V1",
+  "schema_version": "STAGE_2Y_I_QUALIFIER_DISPATCH_MEASUREMENT/V2",
   "mode": "INERT_REPLAY_ONLY",
   "publication": {
     "model_calls": 0,
@@ -146,7 +146,25 @@
     },
     "residual_coded_rows": 359,
     "proposed_claim_count": 127,
-    "accounted_rows": 463
+    "accounted_rows": 463,
+    "fixed_cohort_diff": {
+      "safe": {
+        "THRESHOLD_MATERIALITY": 32,
+        "TEMPORAL_MEASUREMENT_DATE": 31,
+        "TEMPORAL_RETROSPECTIVE_LOOKBACK": 41,
+        "total": 104
+      },
+      "review": {
+        "MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE": 23,
+        "total": 23
+      },
+      "held": {
+        "THRESHOLD_HELD": 251,
+        "TEMPORAL_HELD": 85,
+        "total": 336
+      },
+      "total": 463
+    }
   },
   "rows": [
     {

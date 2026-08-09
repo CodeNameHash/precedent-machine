@@ -81,6 +81,17 @@ test('the 463-row evidence census is deterministic, reconciles the 22-row TopBui
   assert.equal(report.census.register_reconciliation.excluded_rows, 22);
   assert.equal(report.census.register_reconciliation.excluded_run, 'topbuild-representations-20260809-2xk-r3-final');
   assert.equal(report.accounting.accounted_rows, 463);
+  assert.deepEqual(report.accounting.fixed_cohort_diff, {
+    safe: {
+      THRESHOLD_MATERIALITY: 32,
+      TEMPORAL_MEASUREMENT_DATE: 31,
+      TEMPORAL_RETROSPECTIVE_LOOKBACK: 41,
+      total: 104,
+    },
+    review: { MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE: 23, total: 23 },
+    held: { THRESHOLD_HELD: 251, TEMPORAL_HELD: 85, total: 336 },
+    total: 463,
+  });
   // The former broad word matcher left 169 residual-coded rows. Reusing the
   // controlled threshold matcher correctly holds a further 190 false fits.
   assert.equal(report.accounting.residual_coded_rows, 359);

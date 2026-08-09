@@ -19,6 +19,7 @@ const {
   QUALIFIER_CLAIM_KEY,
   LIMB_ASSERTION_CLAIM_KEY,
   BRING_DOWN_TIER_CLAIM_KEY,
+  shapeRepresentationQualifierProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   buildKnownDefectRegistry,
@@ -28,6 +29,7 @@ const {
   materialityFor,
   MATERIALITY_TABLE,
   MAPPING_TABLE_VERSION,
+  REPRESENTATION_QUALIFIER_DISPATCH_MODES,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { QUALIFIER_KIND_LEXICON_VERSION } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 const { MEASUREMENT_DATE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/measurement-date-parse');
@@ -750,6 +752,98 @@ async function resolveSingleQualifier({ quote, attachment, modelKind = null, mod
     agreement_date: resolveOptions.agreement_date,
   });
 }
+
+test('representation qualifier dispatch is default-off, report-only, and rejects activation modes', async () => {
+  const quotes = [
+    ['THRESHOLD', 'material to the Company'],
+    ['TEMPORAL', 'As of April 17, 2026'],
+    ['TEMPORAL', 'Since December 31, 2018'],
+    ['THRESHOLD', 'except as would not reasonably be expected to have, individually or in the aggregate, a Company Material Adverse Effect'],
+    ['THRESHOLD', 'Material Contract'],
+  ];
+  const source = `${qxoFullText}\n${quotes.map(([, quote]) => quote).join('\n')}`;
+  const documentHash = sha256Hex(Buffer.from(source, 'utf8'));
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(source, {
+    dealKey: 'deal:representation-qualifier-dispatch',
+    dealAdmissionId: sha256Hex('deal-admission:representation-qualifier-dispatch'),
+    sourceOrdinal: 0,
+  });
+  const receipt = await runNativeExtraction({
+    source_text: source,
+    document_hash: documentHash,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeRepresentationQualifierProposals({
+        representation_instances: [{
+          section_reference: '3.1(b)',
+          party_making: 'the Company',
+          chapeau_quote: 'Capital Structure.',
+          limbs: [{ limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' }],
+          qualifiers: quotes.map(([kind, quote]) => ({ kind, code: null, quote, attachment: chapeauAttachment() })),
+          definition_uses: [],
+          cross_references: [],
+        }],
+        open_world_candidates: [],
+      }, governedScope.source_text);
+      return {
+        provider_id: 'candidate-resolution-qualifier-dispatch/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-qualifier-dispatch/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+  const baseArgs = {
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: admittedSourceContext,
+    agreement_date: '2026-04-18',
+  };
+  const omitted = resolveCandidates(baseArgs);
+  const explicitOff = resolveCandidates({
+    ...baseArgs,
+    representation_qualifier_dispatch_mode: REPRESENTATION_QUALIFIER_DISPATCH_MODES.OFF,
+  });
+  assert.equal(canonicalJson(omitted), canonicalJson(explicitOff));
+  assert.equal(Object.hasOwn(omitted, 'representation_qualifier_dispatch_decisions'), false);
+
+  const reportOnly = resolveCandidates({
+    ...baseArgs,
+    representation_qualifier_dispatch_mode: REPRESENTATION_QUALIFIER_DISPATCH_MODES.REPORT_ONLY,
+  });
+  assert.equal(canonicalJson({
+    resolved: reportOnly.resolved,
+    review_queue: reportOnly.review_queue,
+    open_world: reportOnly.open_world,
+    residuals: reportOnly.residuals,
+    resolution_receipt: reportOnly.resolution_receipt,
+  }), canonicalJson({
+    resolved: omitted.resolved,
+    review_queue: omitted.review_queue,
+    open_world: omitted.open_world,
+    residuals: omitted.residuals,
+    resolution_receipt: omitted.resolution_receipt,
+  }), 'report-only must not alter claims or the receipt');
+  assert.deepEqual(
+    reportOnly.representation_qualifier_dispatch_decisions
+      .map((decision) => [decision.disposition, decision.dispatch])
+      .sort((left, right) => left.join(':').localeCompare(right.join(':'))),
+    [
+      ['HOLD', 'THRESHOLD_HELD'],
+      ['REVIEW', 'MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE'],
+      ['SAFE', 'TEMPORAL_MEASUREMENT_DATE'],
+      ['SAFE', 'TEMPORAL_RETROSPECTIVE_LOOKBACK'],
+      ['SAFE', 'THRESHOLD_MATERIALITY'],
+    ],
+  );
+  const conflict = reportOnly.representation_qualifier_dispatch_decisions.find((decision) => decision.disposition === 'REVIEW');
+  assert.equal(conflict.reason, 'QUALIFIER_KIND_DISAGREEMENT');
+  assert.throws(() => resolveCandidates({ ...baseArgs, representation_qualifier_dispatch_mode: 'ENFORCE' }), /OFF or REPORT_ONLY/);
+  assert.throws(() => resolveCandidates({ ...baseArgs, representation_qualifier_dispatch_mode: null }), /OFF or REPORT_ONLY/);
+});
 
 test('(QUALIFIER, ACCURACY, ITEM) mints a LIMB-level claim on the assertion-node subject -- never rep-level -- and a pathless ITEM accuracy still routes to review (Stage 3, Ben rulings 4/5)', async () => {
   // HISTORY. This test originally pinned spec section 2 rule 6's blanket

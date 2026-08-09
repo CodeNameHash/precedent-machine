@@ -8,9 +8,20 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const require = createRequire(import.meta.url);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = 'evidence/canonical-v2/stage-2y-i-qualifier-dispatch-measurement.json';
-const SCHEMA = 'STAGE_2Y_I_QUALIFIER_DISPATCH_MEASUREMENT/V1';
+const SCHEMA = 'STAGE_2Y_I_QUALIFIER_DISPATCH_MEASUREMENT/V2';
 const EXPECTED_RUNS = 16;
 const EXPECTED_CENSUS = Object.freeze({ THRESHOLD: 306, TEMPORAL: 157 });
+const FIXED_COHORT_DIFF = Object.freeze({
+  safe: Object.freeze({
+    THRESHOLD_MATERIALITY: 32,
+    TEMPORAL_MEASUREMENT_DATE: 31,
+    TEMPORAL_RETROSPECTIVE_LOOKBACK: 41,
+    total: 104,
+  }),
+  review: Object.freeze({ MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE: 23, total: 23 }),
+  held: Object.freeze({ THRESHOLD_HELD: 251, TEMPORAL_HELD: 85, total: 336 }),
+  total: 463,
+});
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 const { MODE, TARGET_REASON, assessRepresentationQualifierDispatch } = require('../lib/canonical-v2/native-producer/representation-qualifier-dispatch-measurement');
@@ -104,6 +115,25 @@ function buildReport({ repoRoot = ROOT } = {}) {
   const residuals = countBy(residualRows.map((row) => ({ residual_code: row.assessment.residual_code })), 'residual_code');
   const accounted = Object.values(dispatches).reduce((sum, value) => sum + value, 0);
   if (accounted !== rows.length) fail('INPUT_REJECTED', `dispatch partition ${accounted} does not equal census ${rows.length}`);
+  const fixedCohortDiff = Object.freeze({
+    safe: Object.freeze({
+      THRESHOLD_MATERIALITY: dispatches.THRESHOLD_MATERIALITY || 0,
+      TEMPORAL_MEASUREMENT_DATE: dispatches.TEMPORAL_MEASUREMENT_DATE || 0,
+      TEMPORAL_RETROSPECTIVE_LOOKBACK: dispatches.TEMPORAL_RETROSPECTIVE_LOOKBACK || 0,
+      total: (dispatches.THRESHOLD_MATERIALITY || 0) + (dispatches.TEMPORAL_MEASUREMENT_DATE || 0) + (dispatches.TEMPORAL_RETROSPECTIVE_LOOKBACK || 0),
+    }),
+    review: Object.freeze({
+      MODEL_KIND_CONFLICTS_WITH_MAE_TOLERANCE: dispatches.ACCURACY_MAE_TOLERANCE_RECLASSIFICATION || 0,
+      total: dispatches.ACCURACY_MAE_TOLERANCE_RECLASSIFICATION || 0,
+    }),
+    held: Object.freeze({
+      THRESHOLD_HELD: dispatches.THRESHOLD_HELD || 0,
+      TEMPORAL_HELD: dispatches.TEMPORAL_HELD || 0,
+      total: (dispatches.THRESHOLD_HELD || 0) + (dispatches.TEMPORAL_HELD || 0),
+    }),
+    total: accounted,
+  });
+  if (canonicalJson(fixedCohortDiff) !== canonicalJson(FIXED_COHORT_DIFF)) fail('INPUT_REJECTED', `fixed cohort diff ${canonicalJson(fixedCohortDiff)} does not equal ${canonicalJson(FIXED_COHORT_DIFF)}`);
   const officialFinalRows = officialFinalRepresentationRuns({ repoRoot });
   const selectedClosureIds = new Set(rows.map((row) => row.closure_id));
   const difference = officialFinalRows.filter((row) => !selectedClosureIds.has(row.closure_id));
@@ -118,7 +148,7 @@ function buildReport({ repoRoot = ROOT } = {}) {
     publication: Object.freeze({ model_calls: 0, writes_performed: false, serving_activated: false, taxonomy_activated: false, publication_disposition: 'WITHHELD' }),
     census: Object.freeze({ source_reason: TARGET_REASON, selected_run_count: runs.length, measured_rows: rows.length, by_qualifier_kind: kinds, register_reconciliation: Object.freeze({ register_rows: officialFinalRows.length, excluded_rows: difference.length, excluded_by_qualifier_kind: countBy(difference, 'qualifier_kind'), excluded_run: 'topbuild-representations-20260809-2xk-r3-final', selection_basis: 'The 463-row measurement fixes the exact 20260809-2xk-final naming cohort; the register also includes the official TopBuild r3-final run.' }) }),
     inputs: Object.freeze({ contract_bundle: 'V42', runs: runs.map(({ resolution_path, ...run }) => run) }),
-    accounting: Object.freeze({ by_dispatch: dispatches, residuals, residual_coded_rows: residualRows.length, proposed_claim_count: proposedClaims, accounted_rows: accounted }),
+    accounting: Object.freeze({ by_dispatch: dispatches, residuals, residual_coded_rows: residualRows.length, proposed_claim_count: proposedClaims, accounted_rows: accounted, fixed_cohort_diff: fixedCohortDiff }),
     rows: Object.freeze(rows),
   });
 }
@@ -145,4 +175,4 @@ async function main(args = process.argv.slice(2)) {
 const isMain = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
 if (isMain) main().catch((error) => { process.stderr.write(`${error.stack || error}\n`); process.exitCode = 1; });
 
-export { OUTPUT, SCHEMA, EXPECTED_RUNS, EXPECTED_CENSUS, selectedRuns, officialFinalRepresentationRuns, buildReport, parseArgs, main };
+export { OUTPUT, SCHEMA, EXPECTED_RUNS, EXPECTED_CENSUS, FIXED_COHORT_DIFF, selectedRuns, officialFinalRepresentationRuns, buildReport, parseArgs, main };
