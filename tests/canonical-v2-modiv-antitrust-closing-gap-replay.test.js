@@ -214,7 +214,7 @@ test('affected prompts require the source coverage needed by the governed mappin
   assert.equal(antitrust.prompt_version, 6);
   assert.match(antitrust.messages[0].content, /quote must include the exact obligor_party phrase and the operative verb/);
   assert.match(antitrust.messages[0].content, /MANDATORY_DEFEND/);
-  assert.equal(closing.prompt_version, 4);
+  assert.equal(closing.prompt_version, 5);
   assert.match(closing.messages[0].content, /repeat the full exact Registration Statement sentence/);
   assert.match(closing.messages[0].content, /Do not emit a stop-order or proceeding fragment/);
 });

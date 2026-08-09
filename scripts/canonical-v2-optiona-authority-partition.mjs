@@ -82,7 +82,7 @@ const FUNCTIONS = Object.freeze([
     // function body rather than the file and only the full suite runs it. A
     // schema edit therefore has three separate places to update, and nothing
     // tells you that at edit time.
-    digest: 'e7fc80609686a00338cdbb68eabfe332a419ecb3411114ebcda93ddd7297e354',
+    digest: '8c586f5ccc9d46eb9dd6a112168792884812433f1c4ed73cde0014083ad88842',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
