@@ -96,6 +96,36 @@ Routing is the main agent's call. There is no fixed table.
   terminal, and gets no conversation history, so every prompt must be
   self-contained and must never include secrets.
 
+### Routing by role, not by vendor
+
+The four roles above are what matter; the model names are one vendor's
+answer to them. Stated as roles so another vendor can be substituted without
+re-reading the routing:
+
+| role | what it is for | Anthropic | OpenAI | xAI |
+|---|---|---|---|---|
+| **Worker** | anything with a writable spec — implementation, refactors, tests, sweeps, multi-file searches | Sonnet | GPT-5.x via Codex CLI | Grok Code Fast |
+| **Lead** | the main loop, specs, and work where a wrong call corrupts the product: taxonomy and rubric semantics, extraction prompt design, canonical provision design | Opus | GPT-5.x reasoning tier | Grok 4 |
+| **Auditor** | adversarial review before anything reaches Ben | Fable | GPT-5.x reasoning tier, *different session from the drafter* | Grok 4, *different session* |
+| **Independent check** | a second opinion that shares no context with the first | any of the above from another vendor | | |
+
+**The auditor rule is about independence, not about which model.** What makes
+the review worth having is that it did not write the thing it is reviewing and
+does not share its context. A same-vendor auditor in a fresh session satisfies
+that; the same session with a stronger model does not. Never downgrade the
+auditor to save tokens — it is the backstop that makes delegating everything
+else safe.
+
+**Cross-vendor is worth using where a claim is contested.** Two models from
+one family share training and tend to share blind spots. When a finding is
+load-bearing and a single reviewer confirmed it, a check from a different
+vendor is cheap insurance.
+
+**Confirm the exact model identifiers before relying on them.** The Anthropic
+column is what this project actually runs. The OpenAI and xAI columns are
+role equivalences, and their model line-ups move faster than this document
+does — check the current names rather than trusting this table.
+
 The token conservation window that used to constrain this expired on
 8 July 2026. Cost is no longer the binding constraint; judgement is.
 

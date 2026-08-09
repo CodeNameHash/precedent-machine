@@ -886,7 +886,9 @@ but the governing document remains the authority.
 
 ### Decision rights, and the worst failure class
 
-Codex agents DRAFT. **Fable, or an independent high-reasoning reviewer, REVIEWS
+Codex agents DRAFT. **Fable — or the equivalent auditor from another vendor
+(OpenAI's GPT-5.x reasoning tier, xAI's Grok 4), in a session that did not
+write the work — REVIEWS
 every diff that touches legal semantics, identity, or extraction behaviour.**
 Ben DECIDES taxonomy values, codebook vocabularies and freeze-gate changes.
 
