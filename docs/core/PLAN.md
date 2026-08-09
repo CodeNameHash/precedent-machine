@@ -1996,7 +1996,9 @@ Five V1 vocabulary assets were consumed by the staged fixes
 (`party-role-aliases.js`, `TERMF_TRIGGER_META`, `ioc-categories.js`,
 `ioc-components.js`, `MATERIALITY_CODES`). The rest of `taxonomy.js` — 54
 vocabularies, 429 codes — `MAE_CARVEOUT_META`, and the 551 feature definitions
-in `lib/schema/features.js` are not consumed. Step 2X-B and 2X-K address that.
+in `lib/schema/features.js` were accounted for by the completed 2X-J
+disposition inventory. Step 2X-B is report-only and does not consume them;
+2X-K re-validates the existing surfaces.
 
 ### The standing rule this step establishes
 
@@ -2110,50 +2112,21 @@ record for the six-mechanism comparison, pinned fixtures and 19/19 parity.
 
 ---
 
-## Step 2X-A1. Qualifier scope
+## Step 2X-B. The corroboration fallback, HOLD and report-only
 
-**MOVED TO COMPLETED.md (2026-08-08).** `NAMED_SUBSET` now carries every named
-clause path and `in any case` is retired as a false friend. The existing
-corpus observations and focused contract test are recorded there.
+**Decision.** HOLD. The second-chance audit checks primary misses against the
+legacy presentation scaffolds, but it never resolves or promotes a claim. Its
+corpus report contains exactly three General Covenant would-resolves: two
+Concho `COV-TAKEOVER` rows and one Metsera `COV-SECREPORT` row. Guaranty and
+tax-cooperation have zero would-resolves.
 
----
+All three General Covenant rows remain held as evidence for a later decision.
+No vocabulary or primary pattern is authorised from this report, and no
+automatic promotion path may consume the HOLD scaffolds.
 
-## Step 2X-B. The corroboration fallback, in the three families that lack it
-
-**What it is.** `ioc-corroboration.js` retries against a legacy vocabulary when
-its primary pattern matches nothing, tags the hit
-`corroboration_provenance: 'V1_IOC_CATEGORY_VOCABULARY'`, and keeps the
-fail-closed ambiguity discipline on the fallback pass.
-`general-covenant-corroboration.js`, `guaranty-corroboration.js` and
-`tax-cooperation-corroboration.js` are single-shot: a primary miss goes to
-review or open-world permanently.
-
-**Why.** That is the same bug IOC had before Stage 4, still live in three
-families. Stage 4 moved `CATEGORY_UNCORROBORATED` from 105 to 33 by fixing it
-once.
-
-**Change.** Port the fallback to the three. Note the honest obstacle: IOC's
-fallback worked because `lib/vocab/ioc-categories.js` already existed. There is
-no equivalent for general-covenants, guaranty or tax-cooperation, so this is
-vocabulary curation, not a straight port, and general-covenants is the hardest
-of the three. Copy IOC's discipline of leaving the primary-hit path untouched —
-enriching it would re-mint every already-resolved claim for no information gain.
-
-**Direction of risk: additive.** Candidates can only move from held to resolved;
-existing resolved claims are untouched. This is why it precedes 2X-C.
-
-**Proves it is done.** Per family, the count of its uncorroborated reason code
-before and after, from `review-queue.json` files, plus the count of claims that
-changed from held to resolved and zero that moved the other way.
-
----
-
-## Step 2X-C. Enforce the non-collision claim
-
-**MOVED TO COMPLETED.md (2026-08-08).** The widened report covered held quotes
-before enforcement. After specificity and the Merger Sub correction, it found
-zero unresolved collisions, so the enforced guard is a no-op on the scanned
-corpus.
+**Proves the hold.** The report retains exactly three would-resolves, while the
+second-chance path emits zero resolved claims and changes no existing resolved
+claim.
 
 ---
 
@@ -2208,9 +2181,9 @@ pill derives from canonical coverage surfaces minus what canonical produced,
 and no other family has a genuine second source to derive that from. Inventing
 one would have been fabricating a signal.
 
-**Still open.** `NoShopCrossViewPreview.jsx`'s `formatCode(null) → 'Not
-applicable'`, whose fix is to match its own siblings in the same file rather
-than a cross-family port.
+**Closed 2026-08-09.** `NoShopCrossViewPreview.jsx` now renders a null code as
+`Not captured`, matching its sibling missing-data labels. The focused
+cross-surface test passed.
 
 **Proves it is done.** Zero occurrences of the unsafe shapes in
 `components/review/table-configs/`, and `CI=true npm test` exit 0.
@@ -2345,14 +2318,6 @@ than silently accepted.
 
 **Proves it is done.** The disposition table exists, sums to 69, and the
 unaccounted count is zero — computed from the evidence, not asserted.
-
----
-
-## Step 2X-J. Consume the rest of the V1 vocabulary
-
-**MOVED TO COMPLETED.md (2026-08-08).** The committed disposition inventory
-accounts for every vocabulary, helper and feature display group; unaccounted
-is zero.
 
 ---
 

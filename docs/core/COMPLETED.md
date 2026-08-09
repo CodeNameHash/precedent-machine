@@ -1315,7 +1315,8 @@ one-shot empty of the open-world table.
 **Gate.** `lib/canonical-v2/open-world-promotion-gate.js`, re-exported from
 `lib/expected-sets.js`. Ben's ruling (DECISIONS.md §14): promote at **three or
 four deals**, with confidence and fail-closed collision — never a percentage.
-Refuses 2X-B HOLD scaffolds and new names that collide with 2X-J CONSUME.
+Refuses the three General Covenant 2X-B HOLD would-resolves and new names that
+collide with 2X-J CONSUME.
 
 **Corpus scan.** `scripts/audit/step-2x-g-open-world-promotion-scan.js` over
 169 newest evidence resolutions: **27** shapes with ≥3 deals, **27** gate PASS.

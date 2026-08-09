@@ -16,16 +16,19 @@ unchanged. The focused cross-surface test passed.
 
 ## 2X-B adjudication
 
-The second-chance report contained three real operative quotes. Each now has a
-primary pattern. No rubric-presentation fallback resolves a claim.
+**Decision: HOLD and report-only.** The second-chance report contains exactly
+three General Covenant would-resolves. It records evidence but never resolves
+or promotes a claim. No primary-pattern change is authorised by this report.
 
 | code | evidence | decision |
 |---|---|---|
-| `COV-TAKEOVER` | Two Concho clauses require all Parties to avoid or exempt the Transactions from `Takeover Laws` | Promoted. The patterns require the operative action or exemption shape. The Concho replay resolves both claims with the section-grounded `JOINT_MULTI_PARTY` actor. |
-| `COV-SECREPORT` | Metsera clause requires the `Post-Closing SEC Reports` to meet content and legal-compliance standards | Promoted. The pattern requires the named reports and their operative `will` or `shall` obligation. The Metsera replay resolves the cited claim. |
+| `COV-TAKEOVER` | Two Concho clauses require all Parties to avoid or exempt the Transactions from `Takeover Laws` | HOLD. Two report-only would-resolves. Do not auto-promote. |
+| `COV-SECREPORT` | Metsera clause requires the `Post-Closing SEC Reports` to meet content and legal-compliance standards | HOLD. One report-only would-resolve. Do not auto-promote. |
 
 The direct quote checks and hostile cross-code checks pass. Noun-only mentions
 of Takeover Laws, Post-Closing SEC Reports and SEC filings do not corroborate.
+These checks explain why the report surfaced the three rows; they do not change
+the HOLD decision.
 
 ## 2X-G disposition
 
@@ -67,10 +70,12 @@ Focused checks passed:
 
 - Combined cross-surface, General Covenant, Material Contracts and exact
   replay suite: 68 passed, zero failed.
-- Exact replays: Concho resolves both cited `COV-TAKEOVER` rows; Metsera
-  resolves the cited `COV-SECREPORT` row; each of four `COV-MERGESUB` and
-  four `NONCOMPETE` runs resolve five claims, including Modiv's paired bucket
-  and threshold claims, with no target-specific unresolved result.
+- 2X-B report: two Concho `COV-TAKEOVER` rows and one Metsera
+  `COV-SECREPORT` row are would-resolves. All three remain HOLD and report-only;
+  none is auto-promoted.
+- 2X-G exact replays: each of four `COV-MERGESUB` and four `NONCOMPETE` runs
+  resolve five claims, including Modiv's paired bucket and threshold claims,
+  with no target-specific unresolved result.
 - Collision scan: 177 General Covenant quotes checked, zero collisions after
   two governed `COV-LITNOTIFY` specificity decisions; 32 tax-cooperation
   quotes checked, zero collisions.
