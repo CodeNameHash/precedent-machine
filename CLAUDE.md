@@ -104,10 +104,26 @@ re-reading the routing:
 
 | role | what it is for | Anthropic | OpenAI | xAI |
 |---|---|---|---|---|
-| **Worker** | anything with a writable spec — implementation, refactors, tests, sweeps, multi-file searches | Sonnet | GPT-5.x via Codex CLI | Grok Code Fast |
-| **Lead** | the main loop, specs, and work where a wrong call corrupts the product: taxonomy and rubric semantics, extraction prompt design, canonical provision design | Opus | GPT-5.x reasoning tier | Grok 4 |
-| **Auditor** | adversarial review before anything reaches Ben | Fable | GPT-5.x reasoning tier, *different session from the drafter* | Grok 4, *different session* |
+| **Worker** | anything with a writable spec — implementation, refactors, tests, sweeps, multi-file searches | Sonnet | GPT-5.x via Codex CLI | Grok Code Fast; **Compose 2.5** for easy tasks |
+| **Lead** | the main loop, specs, and work where a wrong call corrupts the product: taxonomy and rubric semantics, extraction prompt design, canonical provision design | Opus | **GPT-5.6 Sol** | **Grok 4.5** |
+| **Auditor** | adversarial review before anything reaches Ben | Fable | **GPT-5.6 Sol, high effort**, *different session from the drafter* | **Grok 4.5, high effort**, *different session* |
 | **Independent check** | a second opinion that shares no context with the first | any of the above from another vendor | | |
+
+**Reach down the worker tier, not up.** A task with acceptance criteria you
+could write out does not need the strongest model available; it needs one that
+can hold the spec. Use the cheapest model that can — Compose 2.5 on xAI for
+easy work, and the equivalent elsewhere. The saving is not the point on its
+own: a worker that fails a writable spec is caught by review, so the cost of
+choosing too small is a re-run, while the cost of habitually choosing too large
+is paid on every task. Escalate on the two-strike rule, not in advance.
+
+**Outside Anthropic, lead and auditor are the same model at different effort.**
+GPT-5.6 Sol and Grok 4.5 each serve both roles, with the auditor run at high
+effort. That makes the session boundary the *only* thing separating drafter
+from reviewer, so it must be enforced deliberately: a new session, no shared
+context, and the reviewer must not have written what it reviews. On Anthropic
+the model differs as well, which hides how much of the independence was always
+coming from the separation rather than from the model.
 
 **The auditor rule is about independence, not about which model.** What makes
 the review worth having is that it did not write the thing it is reviewing and
@@ -121,10 +137,9 @@ one family share training and tend to share blind spots. When a finding is
 load-bearing and a single reviewer confirmed it, a check from a different
 vendor is cheap insurance.
 
-**Confirm the exact model identifiers before relying on them.** The Anthropic
-column is what this project actually runs. The OpenAI and xAI columns are
-role equivalences, and their model line-ups move faster than this document
-does — check the current names rather than trusting this table.
+**The identifiers came from Ben, 2026-08-09.** Model line-ups move faster than
+this document does, so confirm before relying on a name that has sat here a
+while.
 
 The token conservation window that used to constrain this expired on
 8 July 2026. Cost is no longer the binding constraint; judgement is.
