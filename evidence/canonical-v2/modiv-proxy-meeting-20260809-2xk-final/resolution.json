@@ -1,0 +1,2665 @@
+{
+  "resolved": [
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "establish a record date for and give notice of a meeting of its stockholders"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "72f63f9ce674a0416f6f8b6bedb515d89ea2e5a02fee40b637b9ec817ebebb71",
+        "claim_occurrence_id": "71c0d4dbef93586e708ec9fb4b4b59ca06b2b33b12978547e83cb9894e0c837d",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "establish a record date for and give notice of a meeting of its stockholders",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "7e878698e19f083a703e5bce7836f0fb404fc3091c00f4e4731f27e75aedb348"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "RECORD_DATE_ESTABLISHMENT",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": "the Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "RECORD_DATE_ESTABLISHMENT"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "7e878698e19f083a703e5bce7836f0fb404fc3091c00f4e4731f27e75aedb348",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "a2f273f982d0633d7db6f676d5e8e117ea9304921a6bc7af5359bc6c4983e181",
+            "document_ordinal": 0,
+            "absolute_start": 7932,
+            "absolute_end": 8008,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "63b39f2469abfb137aa4fa74b32b131529c02aae651a5527227c33357c97cf83"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "72f63f9ce674a0416f6f8b6bedb515d89ea2e5a02fee40b637b9ec817ebebb71",
+            "claim_occurrence_id": "71c0d4dbef93586e708ec9fb4b4b59ca06b2b33b12978547e83cb9894e0c837d",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "establish a record date for and give notice of a meeting of its stockholders",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "7e878698e19f083a703e5bce7836f0fb404fc3091c00f4e4731f27e75aedb348"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "RECORD_DATE_ESTABLISHMENT",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": "the Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "RECORD_DATE_ESTABLISHMENT"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "7e878698e19f083a703e5bce7836f0fb404fc3091c00f4e4731f27e75aedb348",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "a2f273f982d0633d7db6f676d5e8e117ea9304921a6bc7af5359bc6c4983e181",
+                "document_ordinal": 0,
+                "absolute_start": 7932,
+                "absolute_end": 8008,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "63b39f2469abfb137aa4fa74b32b131529c02aae651a5527227c33357c97cf83"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+            "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 7760,
+          "end_byte": 9155
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 7760,
+            "end_byte": 9155,
+            "text": " In accordance with applicable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purpose of voting upon the Company Merger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 42,
+            "text": "Section 5.4 Certain Filings; SEC Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "fb448581b34cef1613c02b8417a3746e3e294975cf4c8d273e9ac224eb057a83",
+        "claim_occurrence_id": "29c96bd5e8530604bf00601527442de4fb0c1c95b137908c3cd9fb7c7d542745",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "34b4c81ac6bf789fccb4732b42f2138b35a5efc9856cf9a838efd04f638801ee"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "BROKER_SEARCH_OBLIGATION",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": "the Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "BROKER_SEARCH_OBLIGATION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "34b4c81ac6bf789fccb4732b42f2138b35a5efc9856cf9a838efd04f638801ee",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "827297c8b910edf4068ed2554c8adad7cd459cad8da308bbcdec877d9b5e47f8",
+            "document_ordinal": 0,
+            "absolute_start": 8252,
+            "absolute_end": 8374,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "53904828190d523b555042b6977c4c555af74bca1f8a4b9cc3503b1d078f425a"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "fb448581b34cef1613c02b8417a3746e3e294975cf4c8d273e9ac224eb057a83",
+            "claim_occurrence_id": "29c96bd5e8530604bf00601527442de4fb0c1c95b137908c3cd9fb7c7d542745",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "34b4c81ac6bf789fccb4732b42f2138b35a5efc9856cf9a838efd04f638801ee"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "BROKER_SEARCH_OBLIGATION",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": "the Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "BROKER_SEARCH_OBLIGATION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "34b4c81ac6bf789fccb4732b42f2138b35a5efc9856cf9a838efd04f638801ee",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "827297c8b910edf4068ed2554c8adad7cd459cad8da308bbcdec877d9b5e47f8",
+                "document_ordinal": 0,
+                "absolute_start": 8252,
+                "absolute_end": 8374,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "53904828190d523b555042b6977c4c555af74bca1f8a4b9cc3503b1d078f425a"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+            "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 7760,
+          "end_byte": 9155
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 7760,
+            "end_byte": 9155,
+            "text": " In accordance with applicable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purpose of voting upon the Company Merger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 42,
+            "text": "Section 5.4 Certain Filings; SEC Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date;"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "798addfd82dcd9cd25d65c4a0a6f2a73850fb63695632536e64ba13d10167ffb",
+        "claim_occurrence_id": "e46e88de15666611d49bf7b437169725ae990ec556a96e6e965eaa49930cc1b1",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date;",
+        "canonical_value": true,
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "e42f800213ffe7f2de11cba57dfc6305e3f8a70636fb58dff150352df50f4a4c"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "CONVENE_OBLIGATION",
+          "anchor_kind": "MAILING",
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": null,
+          "consenting_party": null,
+          "reason_kind": null,
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": "The Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "CONVENE_OBLIGATION"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "e42f800213ffe7f2de11cba57dfc6305e3f8a70636fb58dff150352df50f4a4c",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6df6d4a01f1a42dd55d2c337da95e7e29bc227f5452246045eb0fabbed1d81ed",
+            "document_ordinal": 0,
+            "absolute_start": 8894,
+            "absolute_end": 9042,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "8011cb238fc397d486c5c69f23d3a2288820e0d0de28588f422f1cd6021ed047"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "798addfd82dcd9cd25d65c4a0a6f2a73850fb63695632536e64ba13d10167ffb",
+            "claim_occurrence_id": "e46e88de15666611d49bf7b437169725ae990ec556a96e6e965eaa49930cc1b1",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date;",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "e42f800213ffe7f2de11cba57dfc6305e3f8a70636fb58dff150352df50f4a4c"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "CONVENE_OBLIGATION",
+              "anchor_kind": "MAILING",
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": null,
+              "consenting_party": null,
+              "reason_kind": null,
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": "The Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "CONVENE_OBLIGATION"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "e42f800213ffe7f2de11cba57dfc6305e3f8a70636fb58dff150352df50f4a4c",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6df6d4a01f1a42dd55d2c337da95e7e29bc227f5452246045eb0fabbed1d81ed",
+                "document_ordinal": 0,
+                "absolute_start": 8894,
+                "absolute_end": 9042,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "8011cb238fc397d486c5c69f23d3a2288820e0d0de28588f422f1cd6021ed047"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+            "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c",
+          "depth": 1,
+          "start_byte": 7760,
+          "end_byte": 9155
+        },
+        "chain": [
+          {
+            "path": "c",
+            "start_byte": 7760,
+            "end_byte": 9155,
+            "text": " In accordance with applicable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purpose of voting upon the Company Merger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 42,
+            "text": "Section 5.4 Certain Filings; SEC Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "CORROBORATED",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "(ii) for the absence of a quorum"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "83eb5f33f2a5712c19906df412862c457c1c40ec753e080020ce40effaf47aed",
+        "claim_occurrence_id": "523737811dc689a220c959fc85b75cb91ff831f8b6c2e729f74f8a71503c477c",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "(ii) for the absence of a quorum",
+        "canonical_value": "QUORUM_ABSENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "2042c95d95da97df379e4138841527b2cf04c8f9cd5c4eaf1dd872a3f8a4a4c2"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": "the Company",
+          "consenting_party": null,
+          "reason_kind": "QUORUM_ABSENT",
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": "the Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "2042c95d95da97df379e4138841527b2cf04c8f9cd5c4eaf1dd872a3f8a4a4c2",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "eb6a49c0013606baaa7c5047ad0399b52080d6eb41b74a81d6ac5b3dda63152a",
+            "document_ordinal": 0,
+            "absolute_start": 9254,
+            "absolute_end": 9286,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "10c76ffd2d67f0b340028a55dba3f39a4ee79b2f05d3fc648c3493e51f13baf9"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "83eb5f33f2a5712c19906df412862c457c1c40ec753e080020ce40effaf47aed",
+            "claim_occurrence_id": "523737811dc689a220c959fc85b75cb91ff831f8b6c2e729f74f8a71503c477c",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "(ii) for the absence of a quorum",
+            "canonical_value": "QUORUM_ABSENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "2042c95d95da97df379e4138841527b2cf04c8f9cd5c4eaf1dd872a3f8a4a4c2"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": "the Company",
+              "consenting_party": null,
+              "reason_kind": "QUORUM_ABSENT",
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": "the Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "2042c95d95da97df379e4138841527b2cf04c8f9cd5c4eaf1dd872a3f8a4a4c2",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "eb6a49c0013606baaa7c5047ad0399b52080d6eb41b74a81d6ac5b3dda63152a",
+                "document_ordinal": 0,
+                "absolute_start": 9254,
+                "absolute_end": 9286,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "10c76ffd2d67f0b340028a55dba3f39a4ee79b2f05d3fc648c3493e51f13baf9"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+            "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c.i",
+          "depth": 2,
+          "start_byte": 9158,
+          "end_byte": 12746
+        },
+        "chain": [
+          {
+            "path": "c.i",
+            "start_byte": 9158,
+            "end_byte": 12746,
+            "text": " with the consent of Parent (which shall not be unreasonably withheld, conditioned or delayed), (ii) for the absence of a quorum (in which case the Company shall use its commercially reasonable efforts to obtain such quorum as promptly as practicable), (iii) if, after consultation with Parent, the Company believes in good faith that such postponement, recess or adjournment is reasonably necessary to (A) solicit additional proxies for the purpose of obtaining the Company Requisite Vote, or (B) allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure which the Company Board has determined in good faith (after consultation with its outside legal counsel) is necessary under applicable Laws or the duties of the Company’s directors and for such supplemental or amended disclosure to be disseminated to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii) and (iii), without the written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote. Unless the Company Board shall have effected an Adverse Recommendation Change in accordance with Section 5.6, the Company shall use its commercially reasonable efforts to take, or cause to be taken, all actions, and do or cause to be done all things, necessary, proper or advisable on its part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reasonable efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the prior written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed) or as otherwise required by applicable Law, the matters contemplated by this Agreement shall be the only matters (other than matters of procedure and matters required by applicable Law to be voted on by the Company’s stockholders in connections therewith) that the Company shall propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n"
+          },
+          {
+            "path": "c",
+            "start_byte": 7760,
+            "end_byte": 9155,
+            "text": " In accordance with applicable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purpose of voting upon the Company Merger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 42,
+            "text": "Section 5.4 Certain Filings; SEC Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "citation_context": {
+        "parent_section_reference": "5.4",
+        "child_section_reference": "5.4",
+        "parent_chapeau_quote": "Section 5.4 Certain Filings; SEC Matters.",
+        "child_clause_quote": "(iv) if required by Law;"
+      },
+      "governing_context_quote": null,
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "party": null,
+      "party_source_span": null,
+      "provision_instance": {
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "514be41d77894ede859f9d14e26abaea81eb089d2174391eacf323b722046838",
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "absolute_start": 229977,
+        "absolute_end": 246111,
+        "concept_key": "COV-MEETING",
+        "ordinal": 1,
+        "source_anchor_id": "721dfe21795bfcb36afb6f0adcab4ff44965e75115a39683f036fa041fe8ca1a",
+        "provision_instance_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "closure_id": "f136d4b8a3fbdef081019c184ab71d08cd7997e5acdbab48cb5b9b88de9120a2"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "5e891fa3d9448f98322bc28d49fc4b160df2712ebcb0d1810c4749d06bc6458b",
+        "claim_occurrence_id": "db6c06ea214551c76a43e52e60f6f9871ed6fec64212df2e4571a65bf7eb97b5",
+        "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+        "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+        "claim_definition_version": 1,
+        "ordinal": 1,
+        "state": "PRESENT",
+        "raw_value": "(iv) if required by Law;",
+        "canonical_value": "LEGAL_REQUIREMENT",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "f730b9f459dc6c216780101cdf0b99624522eef7b878d754d9c2e01d6bbba054"
+        ],
+        "attributes": {
+          "section_reference": "5.4",
+          "assertion_kind": "ADJOURNMENT_REASON",
+          "anchor_kind": null,
+          "day_kind": null,
+          "limit_basis": null,
+          "control_party": "the Company",
+          "consenting_party": null,
+          "reason_kind": "LEGAL_REQUIREMENT",
+          "meeting_ref": "the Company Common Stockholders’ Meeting",
+          "document_ref": null,
+          "obligated_party": "the Company",
+          "adoption_mechanism": null,
+          "adoption_timing": null,
+          "proxy_meeting_parse_version": 1,
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            }
+          }
+        },
+        "taxonomy_codes": {
+          "assertion_kind": "ADJOURNMENT_REASON"
+        },
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "f730b9f459dc6c216780101cdf0b99624522eef7b878d754d9c2e01d6bbba054",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "cc96e5f47f296202edb97d0c33c9c8d5cf0aa143a03577404f6fca01d414e284",
+            "document_ordinal": 0,
+            "absolute_start": 10116,
+            "absolute_end": 10140,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "78a36d89ac47de88c4e953b2cdb75bfbdea1581061e6d81c1c27c982f4ac2093"
+      },
+      "compiled_candidate": {
+        "section_reference": "5.4",
+        "ok": true,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "5e891fa3d9448f98322bc28d49fc4b160df2712ebcb0d1810c4749d06bc6458b",
+            "claim_occurrence_id": "db6c06ea214551c76a43e52e60f6f9871ed6fec64212df2e4571a65bf7eb97b5",
+            "subject_occurrence_id": "8344604c615181cf397a13132f30b3d4fc8523aace52a6b5cc75b4d7eb602fe0",
+            "claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+            "claim_definition_version": 1,
+            "ordinal": 1,
+            "state": "PRESENT",
+            "raw_value": "(iv) if required by Law;",
+            "canonical_value": "LEGAL_REQUIREMENT",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "f730b9f459dc6c216780101cdf0b99624522eef7b878d754d9c2e01d6bbba054"
+            ],
+            "attributes": {
+              "section_reference": "5.4",
+              "assertion_kind": "ADJOURNMENT_REASON",
+              "anchor_kind": null,
+              "day_kind": null,
+              "limit_basis": null,
+              "control_party": "the Company",
+              "consenting_party": null,
+              "reason_kind": "LEGAL_REQUIREMENT",
+              "meeting_ref": "the Company Common Stockholders’ Meeting",
+              "document_ref": null,
+              "obligated_party": "the Company",
+              "adoption_mechanism": null,
+              "adoption_timing": null,
+              "proxy_meeting_parse_version": 1,
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 21,
+                  "qualifier_kind_lexicon_version": 5
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "ADJOURNMENT_REASON"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "f730b9f459dc6c216780101cdf0b99624522eef7b878d754d9c2e01d6bbba054",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "cc96e5f47f296202edb97d0c33c9c8d5cf0aa143a03577404f6fca01d414e284",
+                "document_ordinal": 0,
+                "absolute_start": 10116,
+                "absolute_end": 10140,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "78a36d89ac47de88c4e953b2cdb75bfbdea1581061e6d81c1c27c982f4ac2093"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "PROXY_MEETING_COVENANT",
+            "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+            "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+            "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+            "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+        ],
+        "reasons": [
+          "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+        ],
+        "materiality_rank": 80,
+        "materiality_label": "PROXY_MEETING_COVENANTS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "AGREEMENT",
+          "accepted": true,
+          "validation_source": "CONSTRUCTED_FROM_TREE",
+          "model_citation": "5.4",
+          "normalized_citation": "5.4",
+          "derived_citation": "5.4(c)"
+        }
+      },
+      "structure_context": {
+        "status": "RESOLVED",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ",
+        "leaf": {
+          "path": "c.i",
+          "depth": 2,
+          "start_byte": 9158,
+          "end_byte": 12746
+        },
+        "chain": [
+          {
+            "path": "c.i",
+            "start_byte": 9158,
+            "end_byte": 12746,
+            "text": " with the consent of Parent (which shall not be unreasonably withheld, conditioned or delayed), (ii) for the absence of a quorum (in which case the Company shall use its commercially reasonable efforts to obtain such quorum as promptly as practicable), (iii) if, after consultation with Parent, the Company believes in good faith that such postponement, recess or adjournment is reasonably necessary to (A) solicit additional proxies for the purpose of obtaining the Company Requisite Vote, or (B) allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure which the Company Board has determined in good faith (after consultation with its outside legal counsel) is necessary under applicable Laws or the duties of the Company’s directors and for such supplemental or amended disclosure to be disseminated to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii) and (iii), without the written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote. Unless the Company Board shall have effected an Adverse Recommendation Change in accordance with Section 5.6, the Company shall use its commercially reasonable efforts to take, or cause to be taken, all actions, and do or cause to be done all things, necessary, proper or advisable on its part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reasonable efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the prior written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed) or as otherwise required by applicable Law, the matters contemplated by this Agreement shall be the only matters (other than matters of procedure and matters required by applicable Law to be voted on by the Company’s stockholders in connections therewith) that the Company shall propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n"
+          },
+          {
+            "path": "c",
+            "start_byte": 7760,
+            "end_byte": 9155,
+            "text": " In accordance with applicable Law and the Company’s organizational documents, the Company shall use commercially reasonable efforts to, in consultation with Parent, (x) establish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purpose of voting upon the Company Merger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date; provided, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: "
+          },
+          {
+            "path": null,
+            "start_byte": 0,
+            "end_byte": 42,
+            "text": "Section 5.4 Certain Filings; SEC Matters.\n"
+          }
+        ],
+        "markerless": false,
+        "marker_tier": "PERMISSIVE_ONLY",
+        "annotation_only": true
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "83eb5f33f2a5712c19906df412862c457c1c40ec753e080020ce40effaf47aed",
+      "closure_id": "10c76ffd2d67f0b340028a55dba3f39a4ee79b2f05d3fc648c3493e51f13baf9",
+      "normalised_phrase": "(ii) for the absence of a quorum",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "3d98649450c53207c882570f7b26d1fc78e02a982f72a56dabf72abaede4a238",
+      "closure_id": "28ed9e774120ea6738ef78a3812b633e96dd3465e943b75da54f1b705784ea8b",
+      "normalised_phrase": "If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects to have sufficient affirmative votes to obtain the Company Requisite Vote.",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(B) allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0ecd9db91670e59aeca640e6962b191963d385f0c5c7bcfa4b0f30333630fd2b",
+      "closure_id": "37f1aab281eeb7db6afcba147b102b8c47d7cc767a57c3d329a04857d686931a",
+      "normalised_phrase": "(B) allow reasonable additional time for the filing and distribution of any supplemental or amended disclosure",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "As promptly as practicable after the date of this Agreement (with the parties using commercially reasonable efforts to do so within thirty (30) calendar days following the date of this Agreement), the Company and Parent shall jointly prepare and Parent shall file or cause to be filed with the SEC the Registration Statement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "63a97b98c1043d680f372367f134ab71373510e8a88b6bb7706846e83deac7b6",
+      "closure_id": "3dd98ede745990f60c90c5df6784c3231a5af262f500edce395fc2d9b2beb2b4",
+      "normalised_phrase": "As promptly as practicable after the date of this Agreement (with the parties using commercially reasonable efforts to do so within thirty (30) calendar days following the date of this Agreement), the Company and Parent shall jointly prepare and Parent shall file or cause to be filed with the SEC the Registration Statement",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "BROKER_SEARCH_OBLIGATION_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "fb448581b34cef1613c02b8417a3746e3e294975cf4c8d273e9ac224eb057a83",
+      "closure_id": "53904828190d523b555042b6977c4c555af74bca1f8a4b9cc3503b1d078f425a",
+      "normalised_phrase": "commence a broker search (and any additional broker searches, if necessary) pursuant to Section 14a-13 of the Exchange Act",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "RECORD_DATE_ESTABLISHMENT_PRESENT",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "72f63f9ce674a0416f6f8b6bedb515d89ea2e5a02fee40b637b9ec817ebebb71",
+      "closure_id": "63b39f2469abfb137aa4fa74b32b131529c02aae651a5527227c33357c97cf83",
+      "normalised_phrase": "establish a record date for and give notice of a meeting of its stockholders",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_ADJOURNMENT_REASON",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5e891fa3d9448f98322bc28d49fc4b160df2712ebcb0d1810c4749d06bc6458b",
+      "closure_id": "78a36d89ac47de88c4e953b2cdb75bfbdea1581061e6d81c1c27c982f4ac2093",
+      "normalised_phrase": "(iv) if required by Law;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": "MEETING_CONVENE_OBLIGATION",
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "798addfd82dcd9cd25d65c4a0a6f2a73850fb63695632536e64ba13d10167ffb",
+      "closure_id": "8011cb238fc397d486c5c69f23d3a2288820e0d0de28588f422f1cd6021ed047",
+      "normalised_phrase": "The Company shall duly call, convene and hold the Company Common Stockholders’ Meeting as promptly as reasonably practicable after the Proxy Date;",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 610,
+          "end": 633,
+          "excerpt": "arent Prospectus”) and (ii) the proxy statement related to the Company Common Stockholders’ Meeting (together with any amendments thereof or supplements thereto, the “Proxy Stat",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8016,
+          "end": 8027,
+          "excerpt": "blish a record date for and give notice of a meeting of its stockholders, which record date shall be prior to the effectiveness of the Registration Statement, for the purp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8219,
+          "end": 8242,
+          "excerpt": "erger (including any adjournment or postponement thereof, the “Company Common Stockholders’ Meeting”), (y) commence a broker search (and any additional broker searches, if neces",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8388,
+          "end": 8399,
+          "excerpt": "ches, if necessary) pursuant to Section 14a-13 of the Exchange Act prior to the record date and (z) as promptly as reasonably practicable after the Registration Statement ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 8740,
+          "end": 8751,
+          "excerpt": "ve form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 8798,
+          "end": 8821,
+          "excerpt": "mmon Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus (such date, the “Proxy Date”). The Com",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 9130,
+          "end": 9153,
+          "excerpt": "d, however, that the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, cond",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10089,
+          "end": 10112,
+          "excerpt": "ted to and reviewed by the Company’s stockholders prior to the Company Common Stockholders’ Meeting or (iv) if required by Law; provided, further, that, in the case of clauses (ii",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10348,
+          "end": 10371,
+          "excerpt": "sonably withheld, conditioned or delayed), in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times, (II) held on a date late",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10547,
+          "end": 10570,
+          "excerpt": "er of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:RECORD_DATE",
+          "start": 10907,
+          "end": 10918,
+          "excerpt": " Outside Date or (III) postponed if doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the C",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 10942,
+          "end": 10965,
+          "excerpt": " doing so would require the setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicabl",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:PHRASE:POSTPONED_OR_ADJOURNED",
+          "start": 10969,
+          "end": 10991,
+          "excerpt": " setting of a new record date. If the Company Common Stockholders’ Meeting is postponed or adjourned, the Company shall convene or reconvene, as applicable, the Company Common Stoc",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11067,
+          "end": 11090,
+          "excerpt": "rned, the Company shall convene or reconvene, as applicable, the Company Common Stockholders’ Meeting at the earliest practicable date on which the Company Board reasonably expects ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11612,
+          "end": 11635,
+          "excerpt": "s part to cause the Company Requisite Vote to be received at the Company Common Stockholders’ Meeting or any adjournment or postponement thereof, and shall use its commercially reas",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11801,
+          "end": 11824,
+          "excerpt": " efforts to comply with all legal requirements applicable to the Company Common Stockholders’ Meeting. Notwithstanding anything to the contrary contained in this Agreement, the Comp",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 11957,
+          "end": 11980,
+          "excerpt": "in this Agreement, the Company shall not be required to hold the Company Common Stockholders’ Meeting if this Agreement is terminated in accordance with Article VII. Without the pri",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12514,
+          "end": 12537,
+          "excerpt": "ll propose to be voted on by the Company’s stockholders at the Company Common Stockholders’ Meeting. The Company shall provide reasonable updates to Parent with respect to the pro",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-MEETING",
+          "pattern_id": "COV-MEETING:REGEX:STOCKHOLDERS_MEETING",
+          "start": 12656,
+          "end": 12679,
+          "excerpt": "updates to Parent with respect to the proxy solicitation for the Company Common Stockholders’ Meeting (including interim results) as reasonably requested by Parent.\n64\n(d) If the Co",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(a)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Unless an Adverse Recommendation Change has been made in accordance with Section 5.6, the Joint Proxy Statement/Prospectus shall include the Company Recommendation in any iteration of the Joint Proxy Statement/Prospectus filed in preliminary or definitive form.",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f7cf27e18ce5fe1531f6ca939aa326285b9be8b96dcc8f8861af96f50d4cba7d",
+      "closure_id": "8c5e22c3dc588df3630b735b6db8a0435f7ab62de6b31a0d7e1524bf5e75b0ca",
+      "normalised_phrase": "Unless an Adverse Recommendation Change has been made in accordance with Section 5.6, the Joint Proxy Statement/Prospectus shall include the Company Recommendation in any iteration of the Joint Proxy Statement/Prospectus filed in preliminary or definitive form.",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-PROXY",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b7250867b5ad82416ccce5fc2d068abcd359832db7bd1aea9326707760ca8ed4",
+      "closure_id": "8d2e4dddee33ed90efe72f701bc70f33cb2a01cbbc64435585a5ce1062587475",
+      "normalised_phrase": "as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC",
+      "attachment_position": null,
+      "concept_family": "COV-PROXY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "PROXY_MEETING_KIND_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(A) solicit additional proxies for the purpose of obtaining the Company Requisite Vote",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c062991bb5d5a8a6f1022a62b014df228a7c647b1056cefee0e6c1807a38bb89",
+      "closure_id": "8f04363dda8ef484ee1fbcd15366cb33574c783b901e3ee1cebe841ab749edba",
+      "normalised_phrase": "(A) solicit additional proxies for the purpose of obtaining the Company Requisite Vote",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "CONTROL_PARTY_REF_UNCORROBORATED"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9b511ffc5c03cd9ec4cc664184d24e7d2a580e843272f81cd43d95143161e26f",
+      "closure_id": "95cb1418e91035f1ccabd29e4e31004e8bec7953f402aefbec23bcf7ba60736e",
+      "normalised_phrase": "in no event shall the Company Common Stockholders’ Meeting be (I) postponed more than a total of three (3) times",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "generic_claim_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "COV-MEETING",
+      "reasons": [
+        "AMBIGUOUS_PROXY_MEETING_KIND"
+      ],
+      "materiality_rank": 80,
+      "materiality_label": "PROXY_MEETING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(II) held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e56cd34b8304710837d925ba088a92fd84adc53fffeb0c5c3a14dfc0d9084ce0",
+      "closure_id": "fe3a626ed300e063335f057523fa060bce961256f082519cdfcf06beb2bbc6a0",
+      "normalised_phrase": "(II) held on a date later than the earlier of (x) twenty (20) Business Days after the date for which the Company Common Stockholders’ Meeting was originally scheduled prior to such postponement or adjournment (in the case of clause (iii)(B) excluding any postponements or adjournments required by applicable Law or the duties of the Company’s directors) and (y) three (3) Business Days before the Outside Date",
+      "attachment_position": null,
+      "concept_family": "COV-MEETING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "as promptly as reasonably practicable after the Registration Statement is declared effective, and, in any event, within five (5) Business Days after the Registration Statement is declared effective, file the Joint Proxy Statement/Prospectus in definitive form with the SEC and mail to the holders of Company Common Shares as of the record date for notice established for the Company Common Stockholders’ Meeting the Joint Proxy Statement/Prospectus",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "MAILING_DEADLINE",
+        "anchor_kind": "SEC_CLEARANCE",
+        "day_kind": "BUSINESS",
+        "limit_basis": null,
+        "control_party": null,
+        "consenting_party": null,
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": "the Joint Proxy Statement/Prospectus",
+        "obligated_party": "the Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a3f2cd95f561171385e96ff5215ac785225429f3db4e1eabab4e44f3a1060e36",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "f8a7afdf015c3315475277493ae0846efd5194c7a5c46fa51c1c0592af637949",
+          "document_ordinal": 0,
+          "absolute_start": 8408,
+          "absolute_end": 8858,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a032504bb358d70079d3ce60de7e3b392a06f8e6ef5dd95f9a24f80661889bd8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+        "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "the Company may postpone, recess or adjourn the Company Common Stockholders’ Meeting: (i) with the consent of Parent (which shall not be unreasonably withheld, conditioned or delayed)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "ADJOURNMENT_CONTROL",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "the Company",
+        "consenting_party": "Parent",
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": null,
+        "obligated_party": "the Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "64c95c582a97d650e43d48396ca722d9a5e442a298690b62e93349f3fd62e42c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "2865fb890761a43b09893cd691ac818ef861b01900160da6ba9d78b7c9de358b",
+          "document_ordinal": 0,
+          "absolute_start": 9067,
+          "absolute_end": 9252,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "d61732b7ed77d1ad25b78acc028c468d5bffb6502b68a4d9800f605f88c467b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+        "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.4",
+      "source_citation": "5.4(c)",
+      "reason": "PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED",
+      "claim_definition_key": "NATIVE_PROXY_MEETING_COVENANT_CANDIDATE",
+      "raw_value": "without the written consent of Parent (which shall not be unreasonably withheld, conditioned or delayed)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "5.4",
+        "assertion_kind": "ADJOURNMENT_CONSENT_OVERRIDE",
+        "anchor_kind": null,
+        "day_kind": null,
+        "limit_basis": null,
+        "control_party": "the Company",
+        "consenting_party": "Parent",
+        "reason_kind": null,
+        "meeting_ref": "the Company Common Stockholders’ Meeting",
+        "document_ref": null,
+        "obligated_party": "the Company",
+        "adoption_mechanism": null,
+        "adoption_timing": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2e49d76cdb8e0f40dbb9871052131eee0429e78b54c3106cc6f304f6698937f1",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "10fc72ff4264dff77384a3e4d9757dd2349d717ec553754601e4888733e635eb",
+          "document_ordinal": 0,
+          "absolute_start": 10205,
+          "absolute_end": 10309,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2826109acf9d9734af531d12dc9f52c29528de9abe993881625dea3b84c89c80",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "PROXY_MEETING_COVENANT",
+        "prompt_digest": "e5df020112faf7ef4c44cac97d959586b01efa9eb651c08b26ec7a4922e33475",
+        "producer_receipt_id": "98c4ed9c84cf848b104136f48e1d35e0ee0e9fe90bd8e37ed579e7f09afa4e67",
+        "governed_scope_digest": "a2eb48d2a4abff13d3082a8233f082b42f520df5058d4309a5cc1221ff0c3c8e",
+        "extraction_provenance_id": "4a9899682aa660644adf0a40d2a59d639b7d179d3704421dab1e5eceb3eee777"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "5.4",
+        "normalized_citation": "5.4",
+        "derived_citation": "5.4(c)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "cb91c3c4ba82f80a8192432080015ccecae74a9d8a9a0a151b1422ce6a91a9fe",
+    "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 16,
+      "resolved": 5,
+      "auto_pass": 0,
+      "review_queue": 13,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "a427ffa42d0636d642c937fb27fec31313aac03859843b3a1a661b57c7d956e7"
+  }
+}

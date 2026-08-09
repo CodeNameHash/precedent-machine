@@ -50,7 +50,7 @@ const {
   retrievalPolicyDigestFor,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
-const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
@@ -237,7 +237,7 @@ async function runDealScopeWrite({ client, runDirectory }) {
   // --- Step 2: the JS writer side for the DEAL_SCOPE_RUN itself: the
   // bridge revalidates the run's evidence (rebuilding, not trusting, the
   // source chain) and hands it to canonical-writer.js.
-  const contractBundle = compileFixtureContractV38();
+  const contractBundle = compileFixtureContractV42();
   const dealRepository = new InMemoryCanonicalRepository();
   const jsResult = await importRunEvidence({
     runDirectory,

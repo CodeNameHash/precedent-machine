@@ -182,8 +182,8 @@ test('the frozen successor cohort deterministically selects 96 blinded review ho
   const second = successor.buildBlindSuccessorSample({ cohortPath });
 
   assert.deepEqual(first, second);
-  assert.equal(first.sample.sample_id, 'a9fd4a419182ba0520be1fc74e3dc4c9a124602f2932a1137898ba6d4049c424');
-  assert.equal(first.key.key_id, 'e18dfc831a611524968dbedc4b5baae9b7f2d5c7790d87e73caeb674e3f5c7a4');
+  assert.equal(first.sample.sample_id, 'fbc99534518b4b3608eee77c60cd514adb0a0407614519a6250da3f8c6ff65b8');
+  assert.equal(first.key.key_id, 'fbb5619c194d9f32db47c930783ebc1e019bbf6a7485784fe1766f7ba538503d');
   assert.equal(first.sample.cards.length, 96);
   assert.equal(first.key.cards.length, 96);
   assert.equal(first.key.population_count, 1439);

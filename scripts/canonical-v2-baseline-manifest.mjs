@@ -32,7 +32,8 @@ const {
   importRunEvidence,
 } = require('../lib/canonical-v2/evidence-to-write-set-bridge');
 const { InMemoryCanonicalRepository } = require('../lib/canonical-v2/canonical-writer');
-const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV42 } = require('../lib/canonical-v2/contract-bundle');
+const CONTRACT_BUNDLE = compileFixtureContractV42();
 
 const DEFAULT_OUT = 'evidence/canonical-v2/baseline-manifest.json';
 const COUNTED_COLLECTIONS = Object.freeze([
@@ -78,7 +79,7 @@ async function measureRun(runDirectory) {
     const result = await importRunEvidence({
       runDirectory,
       repository: new InMemoryCanonicalRepository(),
-      contractBundle: compileFixtureContractV38(),
+      contractBundle: CONTRACT_BUNDLE,
       dryRun: true,
     });
     const publishable = result.receipt.validation.publishableWriteSet;

@@ -1,8 +1,8 @@
 {
   "schema_version": "CANONICAL_V2_BASELINE_MANIFEST/V1",
   "note": "Re-derived by scripts/canonical-v2-baseline-manifest.mjs. Zero model calls. `published` is what an import WOULD publish, which is not the same as what a run claimed.",
-  "run_count": 215,
-  "importable_run_count": 188,
+  "run_count": 243,
+  "importable_run_count": 218,
   "families_with_an_importable_run": [
     "ANTITRUST_REGULATORY",
     "APPRAISAL_DISSENTERS_RIGHTS",
@@ -31,11 +31,11 @@
     "TERMINATION_FEE"
   ],
   "totals": {
-    "excerpts": 4496,
-    "provisions": 662,
-    "claims": 1654,
+    "excerpts": 5027,
+    "provisions": 777,
+    "claims": 1979,
     "relationships": 0,
-    "components": 115,
+    "components": 129,
     "definition_occurrences": 0,
     "condition_groups": 0
   },
@@ -1404,6 +1404,29 @@
       }
     },
     {
+      "run": "modiv-antitrust-regulatory-20260809-2xk-final",
+      "section_family": "ANTITRUST_REGULATORY",
+      "section_references": [
+        "5.5"
+      ],
+      "model_call_count": 1,
+      "resolved": 12,
+      "review_queue": 19,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 11,
+        "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-appraisal-20260806",
       "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
       "section_references": [
@@ -1442,6 +1465,29 @@
       }
     },
     {
+      "run": "modiv-appraisal-dissenters-rights-20260809-2xk-r2",
+      "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+      "section_references": [
+        "2.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-capitalisation-20260807-replay",
       "section_family": "CAPITALISATION",
       "section_references": [
@@ -1458,6 +1504,58 @@
         "excerpts": 65,
         "provisions": 1,
         "claims": 9,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-closing-conditions-20260809-2xk-final",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "6.1",
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 11,
+      "review_queue": 16,
+      "open_world": 12,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 21,
+        "provisions": 9,
+        "claims": 11,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-closing-conditions-20260809-2xk-r3",
+      "section_family": "CLOSING_CONDITIONS",
+      "section_references": [
+        "6.1",
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "model_call_count": 4,
+      "resolved": 13,
+      "review_queue": 26,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 9,
+        "claims": 13,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -1602,6 +1700,32 @@
       }
     },
     {
+      "run": "modiv-consideration-20260809-2xk-r2",
+      "section_family": "CONSIDERATION",
+      "section_references": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.6"
+      ],
+      "model_call_count": 4,
+      "resolved": 2,
+      "review_queue": 6,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 22,
+        "provisions": 2,
+        "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-consideration-fullpin-20260807-replay",
       "section_family": "CONSIDERATION",
       "section_references": [
@@ -1689,6 +1813,29 @@
       }
     },
     {
+      "run": "modiv-dividends-20260809-2xk-r4",
+      "section_family": "DIVIDENDS",
+      "section_references": [
+        "5.10"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 1,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 1,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-dno-20260806",
       "section_family": "DNO_INDEMNIFICATION",
       "section_references": [
@@ -1727,6 +1874,29 @@
       }
     },
     {
+      "run": "modiv-dno-indemnification-20260809-2xk-final",
+      "section_family": "DNO_INDEMNIFICATION",
+      "section_references": [
+        "5.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 9,
+      "open_world": 7,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 12,
+        "provisions": 3,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-employee-matters-20260806",
       "section_family": "EMPLOYEE_MATTERS",
       "section_references": [
@@ -1750,6 +1920,30 @@
         "3.12"
       ],
       "model_call_count": 0,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-employee-matters-20260809-2xk-r4",
+      "section_family": "EMPLOYEE_MATTERS",
+      "section_references": [
+        "3.11",
+        "3.12"
+      ],
+      "model_call_count": 2,
       "resolved": 0,
       "review_queue": 0,
       "open_world": 3,
@@ -1807,6 +2001,30 @@
       }
     },
     {
+      "run": "modiv-financing-covenants-20260809-2xk-r4",
+      "section_family": "FINANCING_COVENANTS",
+      "section_references": [
+        "4.13",
+        "5.20"
+      ],
+      "model_call_count": 2,
+      "resolved": 0,
+      "review_queue": 2,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-general-covenants-20260806",
       "section_family": "GENERAL_COVENANTS",
       "section_references": [
@@ -1842,6 +2060,60 @@
         "excerpts": 9,
         "provisions": 5,
         "claims": 10,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-general-covenants-20260809-2xk-final",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.7",
+        "5.9",
+        "5.12",
+        "5.13",
+        "5.14",
+        "5.16",
+        "5.18"
+      ],
+      "model_call_count": 7,
+      "resolved": 6,
+      "review_queue": 6,
+      "open_world": 14,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 20,
+        "provisions": 3,
+        "claims": 6,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-general-covenants-20260809-2xk-r3",
+      "section_family": "GENERAL_COVENANTS",
+      "section_references": [
+        "5.3",
+        "5.7",
+        "5.9"
+      ],
+      "model_call_count": 3,
+      "resolved": 8,
+      "review_queue": 9,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 9,
+        "provisions": 4,
+        "claims": 8,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -1910,6 +2182,29 @@
       }
     },
     {
+      "run": "modiv-guaranty-financing-party-20260809-2xk-r4",
+      "section_family": "GUARANTY_FINANCING_PARTY",
+      "section_references": [
+        "5.11"
+      ],
+      "model_call_count": 1,
+      "resolved": 0,
+      "review_queue": 0,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 0,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-interim-operating-20260807-replay",
       "section_family": "INTERIM_OPERATING",
       "section_references": [
@@ -1928,6 +2223,29 @@
         "claims": 10,
         "relationships": 0,
         "components": 10,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-interim-operating-20260809-2xk-r3",
+      "section_family": "INTERIM_OPERATING",
+      "section_references": [
+        "5.1"
+      ],
+      "model_call_count": 1,
+      "resolved": 14,
+      "review_queue": 31,
+      "open_world": 12,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 25,
+        "provisions": 11,
+        "claims": 14,
+        "relationships": 0,
+        "components": 14,
         "definition_occurrences": 0,
         "condition_groups": 0
       }
@@ -1964,6 +2282,30 @@
         "excerpts": 15,
         "provisions": 0,
         "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-key-defined-terms-20260809-2xk-r2",
+      "section_family": "KEY_DEFINED_TERMS",
+      "section_references": [
+        "8.5",
+        "8.12"
+      ],
+      "model_call_count": 2,
+      "resolved": 17,
+      "review_queue": 21,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 25,
+        "provisions": 8,
+        "claims": 17,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -2041,6 +2383,29 @@
       }
     },
     {
+      "run": "modiv-mae-definition-20260809-2xk-r4",
+      "section_family": "MAE_DEFINITION",
+      "section_references": [
+        "8.12"
+      ],
+      "model_call_count": 1,
+      "resolved": 32,
+      "review_queue": 36,
+      "open_world": 30,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 28,
+        "provisions": 2,
+        "claims": 32,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-material-contracts-20260806",
       "section_family": "MATERIAL_CONTRACTS",
       "section_references": [
@@ -2072,6 +2437,52 @@
         "excerpts": 17,
         "provisions": 3,
         "claims": 24,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-material-contracts-20260809-2xk-final",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 20,
+      "review_queue": 20,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 3,
+        "claims": 20,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-material-contracts-20260809-2xk-r3",
+      "section_family": "MATERIAL_CONTRACTS",
+      "section_references": [
+        "3.17"
+      ],
+      "model_call_count": 1,
+      "resolved": 9,
+      "review_queue": 9,
+      "open_world": 11,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 1,
+        "claims": 9,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -2116,6 +2527,58 @@
         "excerpts": 23,
         "provisions": 4,
         "claims": 20,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-merger-structure-closing-20260809-2xk-final",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "1.6"
+      ],
+      "model_call_count": 4,
+      "resolved": 14,
+      "review_queue": 14,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 16,
+        "provisions": 4,
+        "claims": 14,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-merger-structure-closing-20260809-2xk-r4",
+      "section_family": "MERGER_STRUCTURE_CLOSING",
+      "section_references": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "1.6"
+      ],
+      "model_call_count": 4,
+      "resolved": 15,
+      "review_queue": 15,
+      "open_world": 4,
+      "residuals": 1,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 17,
+        "provisions": 4,
+        "claims": 15,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -2171,6 +2634,34 @@
       }
     },
     {
+      "run": "modiv-misc-boilerplate-20260809-2xk-final",
+      "section_family": "MISC_BOILERPLATE",
+      "section_references": [
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.7",
+        "8.9",
+        "8.10"
+      ],
+      "model_call_count": 6,
+      "resolved": 14,
+      "review_queue": 14,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 18,
+        "provisions": 4,
+        "claims": 14,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-no-other-reps-20260806",
       "section_family": null,
       "section_references": null,
@@ -2190,6 +2681,29 @@
         "3.25"
       ],
       "model_call_count": 0,
+      "resolved": 3,
+      "review_queue": 3,
+      "open_world": 0,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 3,
+        "provisions": 2,
+        "claims": 3,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-no-other-reps-fraud-20260809-2xk-final",
+      "section_family": "NO_OTHER_REPS_FRAUD",
+      "section_references": [
+        "3.25"
+      ],
+      "model_call_count": 1,
       "resolved": 3,
       "review_queue": 3,
       "open_world": 0,
@@ -2245,6 +2759,29 @@
       }
     },
     {
+      "run": "modiv-no-shop-20260809-2xk-final",
+      "section_family": "NO_SHOP",
+      "section_references": [
+        "5.6"
+      ],
+      "model_call_count": 1,
+      "resolved": 33,
+      "review_queue": 37,
+      "open_world": 2,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 35,
+        "provisions": 10,
+        "claims": 33,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-proxy-meeting-20260806",
       "section_family": "PROXY_MEETING",
       "section_references": [
@@ -2276,6 +2813,29 @@
         "excerpts": 10,
         "provisions": 1,
         "claims": 2,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-proxy-meeting-20260809-2xk-final",
+      "section_family": "PROXY_MEETING",
+      "section_references": [
+        "5.4"
+      ],
+      "model_call_count": 1,
+      "resolved": 5,
+      "review_queue": 13,
+      "open_world": 3,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 1,
+        "claims": 5,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -2325,6 +2885,31 @@
       }
     },
     {
+      "run": "modiv-representations-20260809-2xk-r3",
+      "section_family": "REPRESENTATIONS",
+      "section_references": [
+        "3.1",
+        "3.3",
+        "3.4"
+      ],
+      "model_call_count": 3,
+      "resolved": 0,
+      "review_queue": 8,
+      "open_world": 20,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 20,
+        "provisions": 0,
+        "claims": 0,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-specific-performance-20260806",
       "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
       "section_references": [
@@ -2354,6 +2939,29 @@
       "import_refusal": null,
       "published": {
         "excerpts": 1,
+        "provisions": 1,
+        "claims": 1,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-specific-performance-remedies-20260809-2xk-r3",
+      "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "section_references": [
+        "8.8"
+      ],
+      "model_call_count": 1,
+      "resolved": 1,
+      "review_queue": 1,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 5,
         "provisions": 1,
         "claims": 1,
         "relationships": 0,
@@ -2405,6 +3013,31 @@
       }
     },
     {
+      "run": "modiv-tax-matters-20260809-2xk-r3",
+      "section_family": "TAX_MATTERS",
+      "section_references": [
+        "3.13",
+        "4.15",
+        "5.12"
+      ],
+      "model_call_count": 3,
+      "resolved": 5,
+      "review_queue": 5,
+      "open_world": 9,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 14,
+        "provisions": 4,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
       "run": "modiv-termination-20260806",
       "section_family": "TERMINATION",
       "section_references": [
@@ -2438,6 +3071,30 @@
         "excerpts": 24,
         "provisions": 9,
         "claims": 12,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
+    },
+    {
+      "run": "modiv-termination-20260809-2xk-r3",
+      "section_family": "TERMINATION",
+      "section_references": [
+        "7.1",
+        "7.2"
+      ],
+      "model_call_count": 2,
+      "resolved": 17,
+      "review_queue": 18,
+      "open_world": 8,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 18,
+        "provisions": 12,
+        "claims": 17,
         "relationships": 0,
         "components": 0,
         "definition_occurrences": 0,
@@ -2485,6 +3142,31 @@
       "importable": false,
       "import_refusal": "PERSISTED_SOURCE_MAP_DIGEST_MISMATCH",
       "published": null
+    },
+    {
+      "run": "modiv-termination-fee-20260809-terra-live-v3",
+      "section_family": "TERMINATION_FEE",
+      "section_references": [
+        "7.1",
+        "7.3",
+        "8.12"
+      ],
+      "model_call_count": 3,
+      "resolved": 8,
+      "review_queue": 14,
+      "open_world": 4,
+      "residuals": 0,
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 8,
+        "provisions": 5,
+        "claims": 5,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
     },
     {
       "run": "modiv-termination-fee-citation-following-20260806",
@@ -2944,9 +3626,17 @@
       "review_queue": 48,
       "open_world": 32,
       "residuals": 0,
-      "importable": false,
-      "import_refusal": "PUBLISHABLE_SHORTFALL",
-      "published": null
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 38,
+        "provisions": 1,
+        "claims": 32,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
     },
     {
       "run": "redhat-representations-20260808-2xl-replay",
@@ -2960,9 +3650,17 @@
       "review_queue": 48,
       "open_world": 100,
       "residuals": 0,
-      "importable": false,
-      "import_refusal": "PUBLISHABLE_SHORTFALL",
-      "published": null
+      "importable": true,
+      "import_refusal": null,
+      "published": {
+        "excerpts": 106,
+        "provisions": 1,
+        "claims": 32,
+        "relationships": 0,
+        "components": 0,
+        "definition_occurrences": 0,
+        "condition_groups": 0
+      }
     },
     {
       "run": "redhat-representations-20260808-r1",

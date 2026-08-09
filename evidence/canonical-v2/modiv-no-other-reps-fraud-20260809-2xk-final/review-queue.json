@@ -1,0 +1,112 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d77efbeacb7142785b0e61812157b7c75fc2498f5bcee9525824234ae85ca8ac",
+  "review_queue": [
+    {
+      "section_reference": "3.25",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-B-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8bb2541d104e82d5c94a3bd69a81701bf1f78c28111c2378124a5389d03c7506",
+      "closure_id": "b297102163aab57376c302a503de712bdd35b884880a2d7476275e6bd09ab04f",
+      "normalised_phrase": "The Company and the Partnership hereby acknowledge that, except for the representations and warranties expressly set forth in Article IV, neither Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub nor any of their affiliates, nor any other Person on behalf of any of them, has made or is making any other express or implied representation or warranty with respect to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective affiliates or their respective business or operations, including with respect to any information provided or made available to the Company, the Partnership or any of their respective affiliates or Representatives.",
+      "attachment_position": null,
+      "concept_family": "REP-B-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-B-NOOTHERREPS",
+          "pattern_id": "REP-B-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.25",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d94c326b01cf487cdbfc60801001bad5b6b560d76af2bc2fe6ef43cf7afdc918",
+      "closure_id": "d4b49fa1869afff22681da348a188452bf040bd22daefa9dd473f06d1fac4e47",
+      "normalised_phrase": "In particular, and without limiting the generality of the foregoing, except for the representations and warranties in this Article III, neither the Company, the Partnership nor any other Person makes or has made any express or implied representation or warranty to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives with respect to (a) any financial projection, forecast, estimate, budget or prospect information relating to the Company, the Partnership, any of the other Company Subsidiaries or their respective businesses or (b) any oral or written information presented to Parent, Company Merger Sub, Parent OpCo, OpCo Merger Sub or any of their respective Representatives in the course of their due diligence investigation of the Company and the Partnership, the negotiation of this Agreement or the course of the Mergers or the other Transactions.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.25",
+      "generic_claim_key": "NATIVE_NO_OTHER_REPS_DISCLAIMER_CANDIDATE",
+      "resolved_claim_definition_key": "NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT",
+      "concept_key": "REP-T-NOOTHERREPS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9bdfdc0e635a31ee7f10bffb8226f872a25a82f0d0a052b7be285812317d4096",
+      "closure_id": "fa870eadf21d33581d30ee9e6164deae322bee1a27c86a6b44a722f4881dd616",
+      "normalised_phrase": "Except for the representations and warranties in this Article III, neither the Company, the Partnership nor any Person on behalf of the Company or the Partnership makes any express or implied representation or warranty with respect to the Company, the Partnership or any other Company Subsidiaries or their respective affiliates, businesses, operations, properties, assets, liabilities, condition (financial or otherwise) or prospects, or any estimates, projections, forecasts and other forward-looking information or business and strategic plan information regarding the Company, the Partnership and the other Company Subsidiaries or with respect to any other information provided or made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in connection with the Mergers or the other Transactions (including any information, documents, projections, forecasts, estimates, predictions or other material made available to Parent, Company Merger Sub, Parent OpCo or OpCo Merger Sub or their respective Representatives in “data rooms,” management presentations or due diligence sessions in expectation of the Mergers or the other Transactions), and each of Parent, Company Merger Sub, Parent OpCo and OpCo Merger Sub acknowledge the foregoing.",
+      "attachment_position": null,
+      "concept_family": "REP-T-NOOTHERREPS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "REP-T-NOOTHERREPS",
+          "pattern_id": "REP-T-NOOTHERREPS:PHRASE:NOOTHERREPS",
+          "start": 32,
+          "end": 56,
+          "excerpt": "Section 3.25 Acknowledgement of No Other Representations or Warranties. Except for the representations and warranties in this Article II",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f915f18b8b19cef31ce0fbaec3d232a5146a276ce4991986461c97df0a36c4b9"
+}
