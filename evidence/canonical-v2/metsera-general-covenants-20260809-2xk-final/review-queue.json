@@ -1,0 +1,377 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "3b3a850d1a6eb5c58274effc7b758d39136780e6662e478abf5fdb69e3b23cce",
+  "review_queue": [
+    {
+      "section_reference": "6.02",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "bca9a781afc2a9455e4d8abcce797b1fccc4461067cdea5217d898909f303e46",
+      "closure_id": "9d807de1d780a0b670fc4651ff9dc75b6cd377e3a24c93f268652bab664fb5f8",
+      "normalised_phrase": "the Company shall, and shall cause each of the Company Subsidiaries to, afford to Parent and to Parent’s Representatives reasonable access solely for the purpose of consummating the Transactions or integration planning purposes, during normal business hours (under the supervision of appropriate personnel and in a manner that does not unreasonably interfere with the normal operation of the business of the Company and the Company Subsidiaries) during the period prior to the Effective Time to all their respective properties, books and records and Contracts and, during such period, the Company shall, and shall cause each Company Subsidiary to, furnish, as promptly as reasonably practicable, to Parent all information concerning its business, assets, operations and properties, and provide access to its personnel, as Parent may reasonably request",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-ACCESS",
+          "pattern_id": "COV-ACCESS:PHRASE:ACCESS",
+          "start": 14,
+          "end": 35,
+          "excerpt": "SECTION 6.02. Access to Information; Confidentiality. Except if prohibited by any applicable Law, the Company shall",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.02",
+      "source_citation": "6.02",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_ACCESS_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-ACCESS",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "All information exchanged pursuant to this Section 6.02 shall be subject to the confidentiality letter agreement, dated April 22, 2024, between the Company and Parent (as amended from time to time, the “Confidentiality Agreement”).",
+      "canonical_value": "COV-ACCESS",
+      "original_claim_occurrence_id": "845f75fd64ac35778e1b062eceb191e07eb4918a2d31bdf2aa0638949c3de7db",
+      "closure_id": "f0bc536ab81088bf85f00ec64f40331ac52068414c9523bb38e719f63f57398c",
+      "normalised_phrase": "All information exchanged pursuant to this Section 6.02 shall be subject to the confidentiality letter agreement, dated April 22, 2024, between the Company and Parent (as amended from time to time, the “Confidentiality Agreement”).",
+      "attachment_position": null,
+      "concept_family": "COV-ACCESS",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.03",
+      "source_citation": "6.03(f)",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_NOTIFY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-NOTIFY",
+      "reasons": [
+        "PARTY_UNRESOLVED"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Each party hereto will deliver prompt notice to the other parties hereto of (i) the occurrence or non-occurrence of any event the occurrence or non-occurrence of which both (A) is materially adverse to the Company and the Company Subsidiaries, taken as a whole, and (B) would cause any representation or warranty made in this Agreement by such party to be untrue or inaccurate at any time from the date of this Agreement to the Effective Time, (ii) the occurrence any condition set forth in Section 7.01, Section 7.02 and Section 7.03 that is unsatisfied at any time between the date of this Agreement and the Effective Time, and (iii) any material failure of such party or any of its Representatives to comply with or satisfy any covenant, condition or agreement to be complied with or satisfied by it hereunder;",
+      "canonical_value": "COV-NOTIFY",
+      "original_claim_occurrence_id": "8148adeeab174b003cf72ef9e9a8636a94898627c464a9fe0178a333a7beeb51",
+      "closure_id": "600fd5e9627590b750564b502974eb8d9970908d558e256abc9a06b68599b846",
+      "normalised_phrase": "Each party hereto will deliver prompt notice to the other parties hereto of (i) the occurrence or non-occurrence of any event the occurrence or non-occurrence of which both (A) is materially adverse to the Company and the Company Subsidiaries, taken as a whole, and (B) would cause any representation or warranty made in this Agreement by such party to be untrue or inaccurate at any time from the date of this Agreement to the Effective Time, (ii) the occurrence any condition set forth in Section 7.01, Section 7.02 and Section 7.03 that is unsatisfied at any time between the date of this Agreement and the Effective Time, and (iii) any material failure of such party or any of its Representatives to comply with or satisfy any covenant, condition or agreement to be complied with or satisfied by it hereunder;",
+      "attachment_position": null,
+      "concept_family": "COV-NOTIFY",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.06",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_PUBLICITY_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-PUBLICITY",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "06e828e9dd0b5ae9cac67a4ed00bd08999a6b682d60abf5cf5f3ea45c31dbc4e",
+      "closure_id": "012fb2ae2bb0a98c670264c81d302e46f22474e2c2f703b3572b646fcb15bc75",
+      "normalised_phrase": "Parent and Merger Sub, on the one hand, and the Company, on the other hand, shall consult with each other before issuing, and provide each other the opportunity to review and comment upon, any press release or other public statements with respect to the Merger and the other Transactions, and shall not issue any such press release or make any such public statement without the prior written consent of the other party (which consent shall not be unreasonably withheld, conditioned or delayed), except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange and except as contemplated, permitted or required by Section 5.02.",
+      "attachment_position": null,
+      "concept_family": "COV-PUBLICITY",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-PUBLICITY",
+          "pattern_id": "COV-PUBLICITY:PHRASE:PUBLICITY",
+          "start": 14,
+          "end": 34,
+          "excerpt": "SECTION 6.06. Public Announcements. Parent and Merger Sub, on the one hand, and the Company, on the other hand, sh",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.08",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_16B_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-16B",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c54647828aeccb6fc45253d0343b2b1370ce58555ea17c3ddaa7780a7b1ea0af",
+      "closure_id": "c2e9114b173f4492b7d0556c2ef3b8b608a83e3c181184bdd547c889580ef758",
+      "normalised_phrase": "The Company shall take all action, prior to the Effective Time, as may be required or advisable to cause any dispositions or cancellations or deemed dispositions or cancellations of Company equity securities (including derivative securities) in connection with this Agreement or the Transactions by each individual who is a director or officer of the Company subject to Section 16 of the Exchange Act to be exempt under Rule 16b-3 under the Exchange Act.",
+      "attachment_position": null,
+      "concept_family": "COV-16B",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-16B",
+          "pattern_id": "COV-16B:PHRASE:16B",
+          "start": 14,
+          "end": 24,
+          "excerpt": "SECTION 6.08. Rule 16b-3 Matters. The Company shall take all action, prior to the Effective Time, as may",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.09",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_MERGESUB_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-MERGESUB",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "957ab18845c06e82d6c7b946d763a27e33bb181e8242d32db753ee0dddb7610b",
+      "closure_id": "8744da531f67ca2e1940715493677d9d13e366a60ebfbc26d9cab9ac91b7e5f1",
+      "normalised_phrase": "Parent shall cause Merger Sub or the Surviving Corporation, as applicable, to comply with all of its respective obligations under this Agreement.",
+      "attachment_position": null,
+      "concept_family": "COV-MERGESUB",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-MERGESUB",
+          "pattern_id": "COV-MERGESUB:PHRASE:MERGESUB",
+          "start": 14,
+          "end": 24,
+          "excerpt": "SECTION 6.09. Merger Sub and Surviving Corporation Compliance. Parent shall cause Merger Sub or the Surv",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.12",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_DELIST_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-DELIST",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "75cfe85afa2ba6c61f6b40e59e7a105225f1d7982273ef23f39c43d97368b642",
+      "closure_id": "ee3479d72ab6cfd9871fc1d07023c1babe54ded5f9c65b7a94fe4945af73b9ed",
+      "normalised_phrase": "the Company will cooperate with Parent and use reasonable best efforts to take, or cause to be taken, all actions, and do or cause to be done all things, reasonably necessary, proper or advisable on its part under Laws and rules and policies of the Nasdaq Stock Market to delist the Company Common Stock from the Nasdaq Stock Exchange and terminate the registration of the Company Common Stock under the Exchange Act promptly after the Effective Time.",
+      "attachment_position": null,
+      "concept_family": "COV-DELIST",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 866,
+          "end": 875,
+          "excerpt": "such period between the Form 25 filing date and the Form 15 filing date, the “Delisting Period”). If the Surviving Corporation is reasonably likely to be required to",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 1020,
+          "end": 1029,
+          "excerpt": " be required to file any reports in accordance with the Exchange Act during the Delisting Period, the Company will deliver to Parent at least five (5) business days prio",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-DELIST",
+          "pattern_id": "COV-DELIST:PHRASE:DELIST",
+          "start": 1230,
+          "end": 1239,
+          "excerpt": "aft of any such reports reasonably likely to be required to be filed during the Delisting Period (“Post-Closing SEC Reports”). The Post-Closing SEC Reports provided ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.13",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_RESIGN_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-RESIGN",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "236b578d006e8360e6363b742842917ad2f1e1a2c5533de985212c6cad456de5",
+      "closure_id": "96bacb2c27aa99bacbeadb963086751dd631c6aae9bc156eb53f5c9defd69b91",
+      "normalised_phrase": "the Company will use its reasonable best efforts to cause each director of the Company and each Company Subsidiary to execute and deliver a letter effectuating such director’s resignation, effective as of the Effective Time, as a director of the Company or such Company Subsidiary, as applicable.",
+      "attachment_position": null,
+      "concept_family": "COV-RESIGN",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-RESIGN",
+          "pattern_id": "COV-RESIGN:PHRASE:RESIGN",
+          "start": 14,
+          "end": 35,
+          "excerpt": "SECTION 6.13. Director Resignations. Prior to the Effective Time, the Company will use its reasonable best efforts ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.14",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_CVR_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-CVR",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "748abe5b5fe9e58affca5123b6382b63b9f74ef5215a8fe971982f2e89cfab5a",
+      "closure_id": "21bc94683ffffdbb49d3da036a410e31448878492d3c83b7a834eddf9806896d",
+      "normalised_phrase": "Parent and the Company shall cooperate, including by making changes to the form of CVR Agreement, as necessary to ensure that the CVRs are not subject to registration under the Securities Act, the Exchange Act or any applicable state securities or “blue sky” laws.",
+      "attachment_position": null,
+      "concept_family": "COV-CVR",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-CVR",
+          "pattern_id": "COV-CVR:PHRASE:CVR",
+          "start": 14,
+          "end": 27,
+          "excerpt": "SECTION 6.14. CVR Agreement. As promptly as practicable after the date of this Agreement and, in any event,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-CVR",
+          "pattern_id": "COV-CVR:PHRASE:CVR",
+          "start": 339,
+          "end": 352,
+          "excerpt": "tes and delivers, the CVR Agreement, subject to any reasonable revisions to the CVR Agreement that are requested by such Rights Agent and agreed to by Parent and the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "6.14",
+      "generic_claim_key": "NATIVE_GENERAL_COVENANT_CVR_PRESENT_CANDIDATE",
+      "resolved_claim_definition_key": "GENERAL_COVENANT_PRESENT",
+      "concept_key": "COV-CVR",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 95,
+      "materiality_label": "GENERAL_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d22d3efb1ed9f7f599e649566a445b7f7c6b8995c99d9f2729367eeaac68b478",
+      "closure_id": "d046a687cf8fe7ac1ec0a57a64b70808396cc07bd65adc04f51360e05026855f",
+      "normalised_phrase": "Parent shall authorize and duly adopt, execute and deliver, and will ensure that a duly qualified Rights Agent executes and delivers, the CVR Agreement",
+      "attachment_position": null,
+      "concept_family": "COV-CVR",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "COV-CVR",
+          "pattern_id": "COV-CVR:PHRASE:CVR",
+          "start": 14,
+          "end": 27,
+          "excerpt": "SECTION 6.14. CVR Agreement. As promptly as practicable after the date of this Agreement and, in any event,",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "COV-CVR",
+          "pattern_id": "COV-CVR:PHRASE:CVR",
+          "start": 339,
+          "end": 352,
+          "excerpt": "tes and delivers, the CVR Agreement, subject to any reasonable revisions to the CVR Agreement that are requested by such Rights Agent and agreed to by Parent and the Company",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "974c284eddeba2309ae64d9670feca7581c928a446c71ec0a52159786cc565f9"
+}

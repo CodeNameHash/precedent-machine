@@ -1,0 +1,24 @@
+[extraction:metsera:MATERIAL_CONTRACTS] prompt_id=native-producer-material-contracts/v1 prompt_version=2
+[extraction:metsera:MATERIAL_CONTRACTS] deal=metsera (Pfizer Inc. / Metsera, Inc.) section_references=["3.13"]
+[extraction:metsera:MATERIAL_CONTRACTS] reused committed raw HTML at /Users/bengoodchild/Documents/Codex/2026-08-08/cursor-step-2x-free-phase-b641/tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm, sha256=d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac (MATCHES pin)
+[extraction:metsera:MATERIAL_CONTRACTS] document_hash = d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac
+[extraction:metsera:MATERIAL_CONTRACTS] canonical_text_sha256 = 4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3 (MATCHES pin)
+[extraction:metsera:MATERIAL_CONTRACTS] sectionizer node count = 282, by kind = {"ROOT":1,"ARTICLE":9,"SECTION":83,"SUBSECTION":189}
+[extraction:metsera:MATERIAL_CONTRACTS] resolved 3.13: heading="Contracts" start=86396 end=95887 bytes=9491
+[extraction:metsera:MATERIAL_CONTRACTS] starting 1 LIVE extraction call(s)...
+[extraction:metsera:MATERIAL_CONTRACTS] extraction complete in 67842ms, 1 model call(s)
+[extraction:metsera:MATERIAL_CONTRACTS] v1v2_comparison: NOT SUPPLIED -- NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then.
+[extraction:metsera:MATERIAL_CONTRACTS] === SUMMARY ===
+total_elapsed_ms: 70825, model_call_count: 1
+compiled_candidates: 51 ok / 0 rejected
+evidence_residuals (producer): 0
+scope_violations: 0
+citation_residuals: 0 -- []
+undispatched_sections: 0
+resolution: resolved=32 auto_pass=0 review_queue=32 open_world=19 residuals=0
+m3_auto_pass_conditions: v1v2_comparison=NOT_EVALUATED lexical_disagreement=EVALUATED (1 section(s)) both_nets_clean=0
+conditional_termination_fee_values: 0
+write_set claims: 32, components: 0, adapter residuals: 0
+validation accepted: true, residuals: 0, quarantines: 0
+review_queue artifact: 32 item(s)
+publishable claims: 32

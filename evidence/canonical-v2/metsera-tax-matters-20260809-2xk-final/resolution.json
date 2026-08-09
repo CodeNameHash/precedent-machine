@@ -1,0 +1,220 @@
+{
+  "resolved": [],
+  "review_queue": [],
+  "open_world": [
+    {
+      "section_reference": "3.09",
+      "source_citation": "3.09(i)",
+      "reason": "TAX_TREATMENT_KIND_UNCORROBORATED",
+      "claim_definition_key": "NATIVE_TAX_MATTERS_CANDIDATE",
+      "raw_value": "Within the past two years, neither the Company nor any Company Subsidiary has been a “distributing corporation” or a “controlled corporation” within the meaning of Section 355(a)(1)(A) of the Code in a distribution intended to qualify for tax-free treatment under Section 355(a) of the Code.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.09",
+        "assertion_kind": "INTENDED_TREATMENT",
+        "treatment_scope_ref": "Section 355(a) of the Code",
+        "treatment_term_ref": "tax-free treatment",
+        "tax_opinion_ref": null,
+        "representation_letter_ref": null,
+        "bearer_ref": null,
+        "dividend_term_ref": null,
+        "statute_ref": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bf29e3a96f2d1b164dd21bbb82d338877c14943a094098112da8d09095c94b5c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "eeaefd3b60f3bcbc2a5a985c7c3bbf070f2ae46d7abc20f7f6324abad693e2ba",
+          "document_ordinal": 0,
+          "absolute_start": 4966,
+          "absolute_end": 5265,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6eb141093d0572c13758da8cc7aede16bf72f43551e89ee3fe4f9fb1d90329d4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "TAX_MATTERS",
+        "prompt_digest": "f0e5c929080d3c6ae44f80b5ac9231cb4455d2b7f4cedeff25a564e0b18b1d7f",
+        "producer_receipt_id": "6e74318af26a99186757dbce11181a9f80af489f8fc46b9c816f589621584e6f",
+        "governed_scope_digest": "6b8cbcd5214d8e2fa5c37551435d8f7005b1854031dac0634a81ba809eaa3ab4",
+        "extraction_provenance_id": "0ea5d3a30a40a896b3120afa32ff8a6ee4b166483a3af353abf84abe988ce874"
+      },
+      "citation_validation": {
+        "status": "AGREEMENT",
+        "accepted": true,
+        "validation_source": "CONSTRUCTED_FROM_TREE",
+        "model_citation": "3.09",
+        "normalized_citation": "3.09",
+        "derived_citation": "3.09(i)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.09",
+      "source_citation": "3.09",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "Neither the Company nor any Company Subsidiary will be required to include any material item of income in, or exclude any material item of deduction from, taxable income for any taxable period (or portion thereof) ending after the Effective Time as a result of (i) any installment sale or open transaction disposition made on or prior to the Closing, (ii) any prepaid amount received prior to the Closing, (iii) Section 481(a) of the Code (or any analogous provision of state, local or foreign Law) by reason of a change in accounting method made prior to the Closing, or (iv) any “closing agreement” as described in Section 7121 of the Code (or any corresponding or similar provision of state, local or foreign Law) executed prior to the Closing.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "TAX_MECHANIC: Post-Effective Time taxable income and deduction inclusion mechanics.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5a032eb4e197d94160576ebececea5c946b6dc8e2efde0360e326e644bff4c14",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5da892a80dcb5a1fbfc70c621a15f728a9bde6f818203510b63bb2edcd93d451",
+          "document_ordinal": 0,
+          "absolute_start": 3028,
+          "absolute_end": 3779,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f6c25759d594f3b8ea67fb59611c13dbbaafe33b592e0b991cc47b83ac7604aa",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f0e5c929080d3c6ae44f80b5ac9231cb4455d2b7f4cedeff25a564e0b18b1d7f",
+        "producer_receipt_id": "6e74318af26a99186757dbce11181a9f80af489f8fc46b9c816f589621584e6f",
+        "governed_scope_digest": "6b8cbcd5214d8e2fa5c37551435d8f7005b1854031dac0634a81ba809eaa3ab4",
+        "extraction_provenance_id": "45b5b6b1ac9b1915cacfcfcf418029c532e99d5868279d9b1e5f74650a0ae1f0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "3.09",
+      "source_citation": "3.09",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "All material Taxes that the Company or any Company Subsidiary is or was required by Law to withhold or collect have been duly and timely withheld or collected, and have been duly and timely paid to the proper Governmental Entity or other proper Person or properly set aside in accounts for this purpose.",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "Withholding mechanics remain open world.",
+        "nearest_concept": null
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "f2c47760819fa88450d7f9f096249dd57ee596431146bc5972093ceb8ea79e6f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cc5d240334b0a3850fb7fe417f888b91de67af90cae942dcdce16dceec41e477",
+          "document_ordinal": 0,
+          "absolute_start": 2098,
+          "absolute_end": 2401,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "ddc26e70813532a19ca26bd3f073227714f187945a12b1ae21707424f16b355a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "f0e5c929080d3c6ae44f80b5ac9231cb4455d2b7f4cedeff25a564e0b18b1d7f",
+        "producer_receipt_id": "6e74318af26a99186757dbce11181a9f80af489f8fc46b9c816f589621584e6f",
+        "governed_scope_digest": "6b8cbcd5214d8e2fa5c37551435d8f7005b1854031dac0634a81ba809eaa3ab4",
+        "extraction_provenance_id": "45b5b6b1ac9b1915cacfcfcf418029c532e99d5868279d9b1e5f74650a0ae1f0"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 5
+        }
+      },
+      "section_family_ai_unverified": null,
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [],
+  "ioc_restriction_components": [],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "4bcfecb335d3b91b7187649b2ac040732269d6cf4bc7b74d9b3625264d51a605",
+    "document_hash": "d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac",
+    "mapping_table_version": 21,
+    "qualifier_kind_lexicon_version": 5,
+    "measurement_date_parse_version": 2,
+    "schedule_reference_parse_version": 1,
+    "share_count_parse_version": 1,
+    "zero_pattern_table_version": 1,
+    "termination_fee_parse_version": 1,
+    "no_shop_period_parse_version": 2,
+    "no_shop_action_corroboration_table_version": 1,
+    "no_shop_prerequisite_corroboration_table_version": 1,
+    "mae_corroboration_table_version": 1,
+    "termination_deadline_parse_version": 1,
+    "cure_period_parse_version": 2,
+    "proxy_meeting_parse_version": 1,
+    "antitrust_regulatory_parse_version": 1,
+    "per_share_cash_parse_version": 1,
+    "exchange_ratio_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "a22751f848db17301ec611e411db0210b08350d17b553c8d634f14cd102d1c2f",
+    "sole_remedy_resolution_schema": "NATIVE_SOLE_REMEDY_RESOLUTION/V1",
+    "lexical_disagreement_counts": {
+      "both_nets_clean": 0,
+      "lexical_receipt_stale_sections": 0,
+      "lexical_receipt_malformed_sections": 0
+    },
+    "counts": {
+      "compiled_candidates": 3,
+      "resolved": 0,
+      "auto_pass": 0,
+      "review_queue": 0,
+      "open_world": 3,
+      "residuals": 0,
+      "provisions": 0,
+      "limb_component_trees": 0,
+      "ioc_restriction_components": 0
+    },
+    "resolution_receipt_id": "5d6a6b268909a9827fd05112c6213fd1cf5434ee16563ce62df8e0230325fe0c"
+  }
+}

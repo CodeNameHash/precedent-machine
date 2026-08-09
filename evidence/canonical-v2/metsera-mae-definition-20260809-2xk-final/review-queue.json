@@ -1,0 +1,1855 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "d0ad1aa4891b3299adf66e8a855b1a341785b369eefaf81cfb5d3c35eabaeae3",
+  "review_queue": [
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "78d7baf043b03c7ab97ca6d839cb8281edda4e5a2792e6c969107d34ee1f315e",
+      "closure_id": "2f9410dd512fed40265475030698f1c5e4475246945edb9567ef050014cc1800",
+      "normalised_phrase": "(D) geopolitical conditions, the outbreak or escalation of hostilities, any acts of war, sabotage, cyber-terrorism or terrorism, or any escalation or worsening of any such acts of war, sabotage, cyber-terrorism or terrorism",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "10d6c1165fea37d02f955465f13d28542083c7d14e716c38b0a7e1f6ddafa991",
+      "closure_id": "2fb8f0778808383c8ec90cdb9b8c151ed830ec3eabfaf3749cf5e1a0085c8ad8",
+      "normalised_phrase": "(I) any epidemic, pandemic or disease outbreak (including COVID-19) or any COVID-19 Measures or any change in such COVID-19 Measures or authoritative interpretations thereof",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(C) changes after the date hereof in applicable Law or GAAP (or the authoritative interpretation thereof)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "576f774ae36be0c97bf9c69130a74e28a803679aab23616926224f860d204672",
+      "closure_id": "3f6cbbf90376ab09b9cbca862a6d2d43d2b7e57749183561059ac6bdecc800e6",
+      "normalised_phrase": "(C) changes after the date hereof in applicable Law or GAAP (or the authoritative interpretation thereof)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "8ff5a12ea5bd5509bb8818541843813c3cdc2542d378bcb619f5ec2c987211f8",
+      "closure_id": "54ff0cda1b0717eca1fee87a8101d9809b89baddc7cdd6105e112a3b5db9b349",
+      "normalised_phrase": "(B) changes in general economic or regulatory, legislative or political conditions (including the imposition of new or increased trade restrictions, tariffs or trade policies) or securities, credit, financial or other capital markets conditions (including changes generally in prevailing interest rates, currency exchange rates, credit markets and price levels or trading volumes), in each case in the United States or elsewhere in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "39d1989b5d035cf8394e60218f13a0399a9a226a5063d113a50da957cae3da69",
+      "closure_id": "56113b493003207b2b4f66f318abe1e364013386a1c3f70997149e2a42707fb0",
+      "normalised_phrase": "(F) the failure, in and of itself, of the Company to meet any internal or external projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics before, on or after the date of this Agreement, or changes or prospective changes in the market price or trading volume of the Company Common Stock or the credit rating of the Company (it being understood that the underlying facts giving rise or contributing to such failure or change may be taken into account in determining whether there has been a Company Material Adverse Effect if such facts are not otherwise excluded under this definition)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(F) the failure, in and of itself, of the Company to meet any internal or external projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics before, on or after the date of this Agreement, or changes or prospective changes in the market price or trading volume of the Company Common Stock or the credit rating of the Company (it being understood that the underlying facts giving rise or contributing to such failure or change may be taken into account in determining whether there has been a Company Material Adverse Effect if such facts are not otherwise excluded under this definition)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f985de3a15be2b8f270c578a15bb1c0abf010f864d4e490ba29b1a0647879718",
+      "closure_id": "6344a002c4162ee99a40a3804c380374bfafbe2bb0b25af98ad54bebbbd1e2ee",
+      "normalised_phrase": "(F) the failure, in and of itself, of the Company to meet any internal or external projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics before, on or after the date of this Agreement, or changes or prospective changes in the market price or trading volume of the Company Common Stock or the credit rating of the Company (it being understood that the underlying facts giving rise or contributing to such failure or change may be taken into account in determining whether there has been a Company Material Adverse Effect if such facts are not otherwise excluded under this definition)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a32edf7d1018993a494506ec55fb8f0e3fcff6416548f88eee0b4369470cc141",
+      "closure_id": "9df699770ac731cddfef9d6630f448ebbda8ed694170b14fcdab4d5b7c10e6ce",
+      "normalised_phrase": "(G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "41b23aa908057e6c188cc738e96fde57e8c1d0d1b30157b42bd37ebd2748b620",
+      "closure_id": "9ef44c7cda26776fe15765e29e0cc249f78ccfe8561a799578856057e3f6b458",
+      "normalised_phrase": "(A) changes in economic, business and financial conditions generally affecting the biopharmaceutical industry",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "0499d2aa01dc7e128a43d1a81577569cb8ce154e9d60145489ac238406653147",
+      "closure_id": "a06686fa407aff6f95288965ce838b745d2617e26ed15db112931af288755706",
+      "normalised_phrase": "(G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "173a51f839b5aeb713dda6bcaa9a67adf6ca1fa91eb2adec68360b4d1ef0a951",
+      "closure_id": "b19e6d9e35d357912bede43d9d8de94bd46b5ac434025b8ad0282497a463fea4",
+      "normalised_phrase": "(E) any hurricane, tornado, flood, volcano, earthquake or other natural or manmade disaster",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ef9d13949b43e4d0abd79086cb6e4e282496cc50550f8fd90a428a0bd5cb4a81",
+      "closure_id": "c2caa81f509db07cd6d5ca5df1827dfcbd7dd262606c87329748582b1bab838c",
+      "normalised_phrase": "(G) the public announcement or performance of any of the Transactions (including as to the identity of Parent or Merger Sub as the acquiror of the Company and any stockholder (direct or derivative) Proceeding in respect of this Agreement or any of the Transactions), actions expressly required to be taken by the covenants contained in this\n-65-\nAgreement (excluding the Company operating in the ordinary course of business) and any loss of or change in relationship, contractual or otherwise, with any customer, supplier, vendor, licensor, licensee, distributor, Governmental Entity, investor or other business partner, or departure of any employee or officer, of the Company or any of the Company Subsidiaries to the extent resulting from or arising in connection with such announcement or performance (provided that this clause (G) shall not apply to any representation or warranty to the extent the purpose of such representation or warranty is to address, as applicable, the consequences resulting from the announcement or performance of this Agreement or the consummation of the Transactions)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "605cea929bfb9d56af901394034cd979cb5e6be487b6d55af44a10da7f07f2ef",
+      "closure_id": "dc81319321fec5d132e5e94af86a7b6739e62edca326fd8f8c7ec0d53a12bf80",
+      "normalised_phrase": "(B) changes in general economic or regulatory, legislative or political conditions (including the imposition of new or increased trade restrictions, tariffs or trade policies) or securities, credit, financial or other capital markets conditions (including changes generally in prevailing interest rates, currency exchange rates, credit markets and price levels or trading volumes), in each case in the United States or elsewhere in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "source_citation": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "MAE_CARVEOUT_UNCORROBORATED"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(H) any action taken by the Company or any of the Company Subsidiaries at Parent’s written request or with Parent’s written consent or that is expressly required by this Agreement",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4f7a1029e27d8b0df94ad4eda3eadc1731028bdf315ab1d3981ae2f03735fb07",
+      "closure_id": "e064bc4d6afe002cdcaa530317f39d11dc6c3c63b0daa0846a2683b75f0983ee",
+      "normalised_phrase": "(H) any action taken by the Company or any of the Company Subsidiaries at Parent’s written request or with Parent’s written consent or that is expressly required by this Agreement",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "180ef5d393b1c7836080c094372d3cd3210b6b390002ffc015106880f98ee1ee",
+      "closure_id": "e0b9510d721042f90470970a11ab05c3ad3242576e555575db2902087e746661",
+      "normalised_phrase": "(B) changes in general economic or regulatory, legislative or political conditions (including the imposition of new or increased trade restrictions, tariffs or trade policies) or securities, credit, financial or other capital markets conditions (including changes generally in prevailing interest rates, currency exchange rates, credit markets and price levels or trading volumes), in each case in the United States or elsewhere in the world",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_CARVEOUT_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_CARVEOUT",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "4d66be5966c942ce9ea0f6f6cb9d5c1b54774d35b103c2aad12104eb6c33e98e",
+      "closure_id": "fe317ca97fe5b50b79a319920e82da67e1a4124cef2147951c3cff9db96920c4",
+      "normalised_phrase": "(C) changes after the date hereof in applicable Law or GAAP (or the authoritative interpretation thereof)",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "01c1960614ed85afb0a1cfa2888c1822ff7d1aa4d23b9a0416cec80cce903192",
+      "closure_id": "285f7ff43cff3fb1f5ea498c343790eaec51146932c7fa49ba38332bb4b54f26",
+      "normalised_phrase": "would or would reasonably be expected to prevent the consummation of, or materially impair the ability of the Company to consummate, the Merger by the Outside Date",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "e8e450ca0913a62e6a4f3a156d617fbb0644d9f54cc06f0f77b9b4f706726521",
+      "closure_id": "3c3b30b3faf4f13148241a8bea227eeadff4eae6b78e0ca7d45f45ac34923b45",
+      "normalised_phrase": "has had, or would reasonably be expected to have, a material adverse effect on the business, assets, condition (financial or otherwise) or results of operations of the Company and the Company Subsidiaries, taken as a whole",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_DEFINITION_PRONG_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DEFINITION_PRONG",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "6ca0a8d9201d22315f35686496b30e09316e0f81fa2b3fd2a1d629483f485483",
+      "closure_id": "8a43ce532ed51ff4236fb397c02feaff804627d10c06afd5bcb462d4c8735c66",
+      "normalised_phrase": "would or would reasonably be expected to prevent the consummation of, or materially impair Parent’s ability to consummate, the Merger by the Outside Date",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "9.03",
+      "generic_claim_key": "NATIVE_MAE_DISPROPORTIONALITY_CANDIDATE",
+      "resolved_claim_definition_key": "MAE_DISPROPORTIONALITY_CARVEBACK",
+      "concept_key": "DEF-MAE",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 30,
+      "materiality_label": "MAE",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "2ffc913b591864b40da3035be2d587eb547f00f4de6365d4815cf1347b22fc99",
+      "closure_id": "ddcc34eedcb2194c0f453d9716761db3a3236f203d1c9ab5c2c731366c5a1277",
+      "normalised_phrase": "except in the case of clause (A), (B), (C), (D), (E) or (I), to the extent that the Company and the Company Subsidiaries, taken as a whole, are disproportionately affected thereby as compared with other participants in the industries in which the Company and the Company Subsidiaries operate (in which case the incremental disproportionate impact or impacts may be taken into account in determining whether there has been a Company Material Adverse Effect).",
+      "attachment_position": null,
+      "concept_family": "DEF-MAE",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1106,
+          "end": 1129,
+          "excerpt": "any ESPP” means the Company’s 2025 Employee Stock Purchase Plan.\n“Company Material Adverse Effect” means any change, event, condition, development, circumstance, effect or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:TAKEN_INTO_ACCOUNT_IN_DETERMINING",
+          "start": 1832,
+          "end": 1865,
+          "excerpt": "circumstance, effect or occurrence resulting from any of the following shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in econom",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 1899,
+          "end": 1922,
+          "excerpt": "ing shall be taken into account in determining whether there has been a Company Material Adverse Effect: (A) changes in economic, business and financial conditions generally affecting",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 5898,
+          "end": 5906,
+          "excerpt": "ument, in each case, whether written or oral.\n“COVID-19” means the COVID-19 pandemic, including any evolutions, mutations or variants of SARS-CoV-2 or the COVID-19 ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6054,
+          "end": 6063,
+          "excerpt": "he COVID-19 disease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6067,
+          "end": 6076,
+          "excerpt": "isease, any “second” or “subsequent” waves and any further epidemics or pandemics arising therefrom.\n“COVID-19 Measures” means any quarantine, “shelter in ",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:EPIDEMIC_STEM",
+          "start": 6781,
+          "end": 6789,
+          "excerpt": "nection with or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value R",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:REGEX:PANDEMIC_STEM",
+          "start": 6791,
+          "end": 6799,
+          "excerpt": "th or in response to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agre",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:DISEASE_OUTBREAK",
+          "start": 6803,
+          "end": 6819,
+          "excerpt": "ponse to COVID-19 or any other related global or regional epidemic, pandemic or disease outbreak.\n“CVR Agreement” means the Contingent Value Rights Agreement between Parent",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "DEF-MAE",
+          "pattern_id": "DEF-MAE:PHRASE:MATERIAL_ADVERSE_EFFECT",
+          "start": 12985,
+          "end": 13008,
+          "excerpt": "ment Date” has the meaning given to such term in the CVR Agreement.\n“Parent Material Adverse Effect” means any change, effect, condition, development, circumstance, event or occ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "b2b7615262eb3820a9934557f006de73d3560844524386256c6e22e17d239297"
+}

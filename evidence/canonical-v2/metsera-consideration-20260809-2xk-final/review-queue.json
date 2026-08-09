@@ -1,0 +1,96 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "1ee9c5c9c40931b7ce3546413a849936a44de6975df4976ea1ac59cf4845d131",
+  "review_queue": [
+    {
+      "section_reference": "2.01",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "APPRAISAL_RIGHTS_STATUS",
+      "concept_key": "CONS-DISSENT",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a1f10c430049074b599589c94a4a0dd17dbee096a759b552a625c8d2525bec48",
+      "closure_id": "74ff47131a22605b897a38bc3398d9c001f3f4d08039cbf98ce35c3fd69cd252",
+      "normalised_phrase": "shares of Company Common Stock that are outstanding immediately prior to the Effective Time and that are held by any Person who is entitled to demand and properly demands appraisal of such shares pursuant to, and who complies in all respects with, Section 262 of the DGCL (“Section 262”)",
+      "attachment_position": null,
+      "concept_family": "CONS-DISSENT",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "CONS-DISSENT",
+          "pattern_id": "CONS-DISSENT:PHRASE:APPRAISAL_RIGHTS",
+          "start": 2423,
+          "end": 2439,
+          "excerpt": "the Merger Consideration in accordance with Section 2.02, without interest.\n(d) Appraisal Rights. Notwithstanding anything in this Agreement to the contrary, shares of Company ",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.01",
+      "source_citation": "2.01(c)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "$47.50 in cash, without interest (the “Closing Amount”)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "1931e10be58b02989b664f30b9f3712c893c81a87e27b3cb55e291951c9e9c72",
+      "closure_id": "cf52789140af716ac49c8f015f22d8266ae3c65aaf076961f62703562c56985a",
+      "normalised_phrase": "$47.50 in cash, without interest (the “Closing Amount”)",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "2.02",
+      "source_citation": "2.02(b)",
+      "generic_claim_key": "NATIVE_CONSIDERATION_CANDIDATE",
+      "resolved_claim_definition_key": "PER_SHARE_CASH_CONSIDERATION",
+      "concept_key": "CONS-PERSHARE",
+      "reasons": [
+        "PER_SHARE_CONTEXT_UNCORROBORATED"
+      ],
+      "materiality_rank": 60,
+      "materiality_label": "CONSIDERATION",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(x) an amount of cash equal to the product of (1) the number of shares of Company Common Stock theretofore represented by such Certificate or Book-Entry Shares and (2) the Closing Amount",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7bfe2ca0f34facadabc5b3ba3475ba4d9d4570a337420f7609abc85f000981a9",
+      "closure_id": "eebbb4108109e5ad7d47271957f264d2d7009fd52506c958e2e3e26dfdaf3764",
+      "normalised_phrase": "(x) an amount of cash equal to the product of (1) the number of shares of Company Common Stock theretofore represented by such Certificate or Book-Entry Shares and (2) the Closing Amount",
+      "attachment_position": null,
+      "concept_family": "CONS-PERSHARE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "b4c220ea1b1dfee822af4376ff04c7c0722d2d2f80ce6ab8c3315610493a98f9"
+}

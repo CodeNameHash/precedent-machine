@@ -1,0 +1,265 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "f08786f54a4ef5d6fd4f967c98520a82a0d49f4cf9066a8966b61155c5eecbd6",
+  "review_queue": [
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_AMOUNT",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1e12fd2719a14f978e24375e9ca8a6961d26bae14c01f15017e6d72d3d59e73e",
+      "closure_id": "6a549ee3edd51f5768bd1a9794ffae38d3737d396978fc633dba4a363bd335ed",
+      "normalised_phrase": "the Company shall pay (or cause to be paid) to Parent a fee of $190,000,000 (the “Company Termination Fee”).",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET",
+      "lexical_disagreement_excerpts": [
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3144,
+          "end": 3159,
+          "excerpt": "dge and agree that in no event shall the Company be required to pay the Company Termination Fee on more than one occasion, whether or not the Company Termination Fee may be pa",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3214,
+          "end": 3229,
+          "excerpt": "e Company Termination Fee on more than one occasion, whether or not the Company Termination Fee may be payable under more than one provision of this Agreement at the same or a",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3549,
+          "end": 3564,
+          "excerpt": "n, warranty or covenant set forth in this Agreement, (x) payment of the Company Termination Fee described in this Section 8.02 shall constitute the sole and exclusive remedy o",
+          "offset_reproducible": true,
+          "failure_code": null
+        },
+        {
+          "family": "TERMF-TARGET",
+          "pattern_id": "TERMF-TARGET:PHRASE:TERMINATION_FEE",
+          "start": 3904,
+          "end": 3919,
+          "excerpt": "lure of the Transactions to be consummated, and (y) upon payment of the Company Termination Fee, none of the Company or the Company Subsidiaries or any of their respective cur",
+          "offset_reproducible": true,
+          "failure_code": null
+        }
+      ],
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "068ef7c00fcfe60f6d7840773e68298422436366c148bf3f0a7e8eddb6f73939",
+      "closure_id": "47a3921ec8adff6e371fa849dda53b66619eb301b567a347da3550c7a7797b00",
+      "normalised_phrase": "within twelve (12) months of such termination (1) the transactions contemplated by a Company Takeover Proposal are consummated or (2) the Company enters into a definitive agreement to consummate the transactions contemplated by a Company Takeover Proposal and such transactions are subsequently consummated (whether during or after such twelve (12)-month period)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(iii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "thereafter this Agreement is terminated by either Parent or the Company pursuant to Section 8.01(b)(i), Section 8.01(c) or Section 8.01(g)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ad58aed2a0e12bcab521a2a419a736fc927ac646a68191eb8279b5cf62287cb5",
+      "closure_id": "7b08fb56c0a1ec6858d650c97db35f72ed9401ebe0a2125b4f51f955f0a6bca2",
+      "normalised_phrase": "thereafter this Agreement is terminated by either Parent or the Company pursuant to Section 8.01(b)(i), Section 8.01(c) or Section 8.01(g)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Parent terminates this Agreement pursuant to Section 8.01(d)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "c39b47d3599519691a6212d54e33a55c8b7cf48cf9588101cb5ec20d398d47c2",
+      "closure_id": "91ffc60a1347f825cbaffef81dbe2d645e119d1890560e03dd076609499fcae3",
+      "normalised_phrase": "Parent terminates this Agreement pursuant to Section 8.01(d)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "source_citation": "8.02(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company terminates this Agreement pursuant to Section 8.01(f)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "4359724a189d28feb96fa1f94c22b0e95d4cf9c6c670b176793ec709321c1484",
+      "closure_id": "f8bfd6005bbf90f648ceced9c5311f27d76f61dfe702e45ffb7b294f8e133fab",
+      "normalised_phrase": "the Company terminates this Agreement pursuant to Section 8.01(f)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.05",
+      "source_citation": "8.05(b)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board authorizes the Company to enter into a definitive written agreement constituting a Superior Company Proposal and immediately following such termination, the Company enters into a binding definitive agreement for such Superior Company Proposal",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a97b9474614eb83465545af173495ad9bac141e8b5da8e60e9cf1a1f7a5a1766",
+      "closure_id": "3e85a9a47d5ce88e541b4b1a5eb75c3eb39996542b71a64d9d94caa6c3a10f45",
+      "normalised_phrase": "the Company Board authorizes the Company to enter into a definitive written agreement constituting a Superior Company Proposal and immediately following such termination, the Company enters into a binding definitive agreement for such Superior Company Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c25a1a5e57010ce48aa1cf4842dd5e16dde1ff12d2300c9e5f36426515277bfb",
+      "closure_id": "1e772c1bd39d79acc3c13355e70d4d450afe79a488145b1e58ca0ee959579c9c",
+      "normalised_phrase": "fraud",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_CARVEOUT_KIND",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "ef2a54f704baf9b545d473d83778651c7fd0880919568596c88df4ca197b07ea",
+      "closure_id": "d3b96494b8fe7f6a3de220ecb1101ea93980c8f68887e33daefdf39bff4c7e2a",
+      "normalised_phrase": "willful and material breach by the company",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "8.02",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": "SOLE_REMEDY_LEGAL_EFFECT_PRESENT",
+      "concept_key": "REM-SOLE",
+      "reasons": [],
+      "materiality_rank": 99,
+      "materiality_label": "UNCLASSIFIED",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "91266891bd60147ab952f2c0fcc95b3cec0302a92e7c4f8552bc370958794e1a",
+      "closure_id": "fc5c405e367f912192476811138664777df7c25e7c546228f432c1162f26ce70",
+      "normalised_phrase": "shall constitute the sole and exclusive remedy",
+      "attachment_position": null,
+      "concept_family": "REM-SOLE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "6fd1816cc246a158579735cf27700d39d2d26d97b82f2230abc3bc2d69bbd962"
+}

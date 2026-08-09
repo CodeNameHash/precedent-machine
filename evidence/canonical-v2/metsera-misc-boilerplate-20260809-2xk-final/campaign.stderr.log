@@ -1,0 +1,34 @@
+[extraction:metsera:MISC_BOILERPLATE] prompt_id=native-producer-remedies-misc/v1 prompt_version=2
+[extraction:metsera:MISC_BOILERPLATE] deal=metsera (Pfizer Inc. / Metsera, Inc.) section_references=["9.01","9.02","9.04","9.05","9.06","9.07","9.08","9.09","9.10","9.11","8.04"]
+[extraction:metsera:MISC_BOILERPLATE] reused committed raw HTML at /Users/bengoodchild/Documents/Codex/2026-08-08/cursor-step-2x-free-phase-b641/tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm, sha256=d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac (MATCHES pin)
+[extraction:metsera:MISC_BOILERPLATE] document_hash = d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac
+[extraction:metsera:MISC_BOILERPLATE] canonical_text_sha256 = 4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3 (MATCHES pin)
+[extraction:metsera:MISC_BOILERPLATE] sectionizer node count = 282, by kind = {"ROOT":1,"ARTICLE":9,"SECTION":83,"SUBSECTION":189}
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.01: heading="Nonsurvival of Representations and Warranties" start=238404 end=238797 bytes=393
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.02: heading="Notices" start=238797 end=240292 bytes=1495
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.04: heading="Interpretation" start=257871 end=260736 bytes=2865
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.05: heading="Severability" start=260736 end=261376 bytes=640
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.06: heading="Counterparts" start=261376 end=261848 bytes=472
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.07: heading="Entire Agreement; Third-Party Beneficiaries; No Other Representations or Warranties" start=261848 end=264854 bytes=3006
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.08: heading="Governing Law" start=264854 end=265103 bytes=249
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.09: heading="Assignment" start=265103 end=265913 bytes=810
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.10: heading="Specific Enforcement; Jurisdiction" start=265913 end=269710 bytes=3797
+[extraction:metsera:MISC_BOILERPLATE] resolved 9.11: heading="Waiver of Jury Trial" start=269710 end=270449 bytes=739
+[extraction:metsera:MISC_BOILERPLATE] resolved 8.04: heading="Amendment; Extension; Waiver" start=235754 end=237158 bytes=1404
+[extraction:metsera:MISC_BOILERPLATE] starting 11 LIVE extraction call(s)...
+[extraction:metsera:MISC_BOILERPLATE] extraction complete in 73568ms, 11 model call(s)
+[extraction:metsera:MISC_BOILERPLATE] v1v2_comparison: NOT SUPPLIED -- NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then.
+[extraction:metsera:MISC_BOILERPLATE] === SUMMARY ===
+total_elapsed_ms: 76228, model_call_count: 11
+compiled_candidates: 24 ok / 0 rejected
+evidence_residuals (producer): 0
+scope_violations: 0
+citation_residuals: 0 -- []
+undispatched_sections: 0
+resolution: resolved=16 auto_pass=0 review_queue=16 open_world=8 residuals=0
+m3_auto_pass_conditions: v1v2_comparison=NOT_EVALUATED lexical_disagreement=EVALUATED (11 section(s)) both_nets_clean=0
+conditional_termination_fee_values: 0
+write_set claims: 16, components: 0, adapter residuals: 0
+validation accepted: true, residuals: 0, quarantines: 0
+review_queue artifact: 16 item(s)
+publishable claims: 16

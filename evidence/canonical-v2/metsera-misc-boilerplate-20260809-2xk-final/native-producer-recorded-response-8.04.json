@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:13:49.936Z",
+  "section_reference": "8.04",
+  "prompt_id": "native-producer-remedies-misc/v1",
+  "prompt_version": 2,
+  "raw_response_text": "{\"boilerplate_assertions\":[{\"assertion_kind\":\"WAIVER_OR_SURVIVAL\",\"quote\":\"The failure of any party to this Agreement to assert any of its rights under this Agreement or otherwise shall not constitute a waiver of such rights.\"}],\"mechanics\":[{\"surface\":\"LITIGATION_EXTENSION\",\"quote\":\"extend the time for the performance of any of the obligations or other acts of the other party\",\"detail\":\"The parties may extend the time for performance before the Effective Time.\"}],\"open_world_candidates\":[{\"observed_quote\":\"This Agreement may not be amended, except by an instrument in writing signed on behalf of each of the parties.\",\"why_unmapped\":\"Amendment-form requirement is outside the requested assertion kinds.\",\"nearest_concept\":null},{\"observed_quote\":\"Any agreement on the part of a party to any extension or waiver with respect to this Agreement shall be valid only if set forth in an instrument in writing signed on behalf of such party.\",\"why_unmapped\":\"Extension and waiver form requirement is outside the requested assertion kinds.\",\"nearest_concept\":null}]}"
+}

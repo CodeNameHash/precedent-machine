@@ -1,0 +1,33 @@
+[extraction:metsera:GENERAL_COVENANTS] prompt_id=native-producer-general-covenants/v1 prompt_version=2
+[extraction:metsera:GENERAL_COVENANTS] deal=metsera (Pfizer Inc. / Metsera, Inc.) section_references=["6.02","6.03","6.06","6.07","6.08","6.09","6.12","6.13","6.14","6.15"]
+[extraction:metsera:GENERAL_COVENANTS] reused committed raw HTML at /Users/bengoodchild/Documents/Codex/2026-08-08/cursor-step-2x-free-phase-b641/tests/fixtures/canonical-v2/metsera-first-live-run/metsera-raw-fetched.htm, sha256=d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac (MATCHES pin)
+[extraction:metsera:GENERAL_COVENANTS] document_hash = d0999e48278050a081e552d3e48d9bc3e0905ae9a6b74e59429d62b11206e4ac
+[extraction:metsera:GENERAL_COVENANTS] canonical_text_sha256 = 4ac7a2b193c291ca692fb1b5f082a245d02474c7db3136bfcebaf5bd7b686ca3 (MATCHES pin)
+[extraction:metsera:GENERAL_COVENANTS] sectionizer node count = 282, by kind = {"ROOT":1,"ARTICLE":9,"SECTION":83,"SUBSECTION":189}
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.02: heading="Access to Information; Confidentiality" start=180030 end=182710 bytes=2680
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.03: heading="Reasonable Best Efforts; Notification" start=182710 end=196842 bytes=14132
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.06: heading="Public Announcements" start=210557 end=211984 bytes=1427
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.07: heading="Stockholder Litigation" start=211984 end=212955 bytes=971
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.08: heading="Rule 16b-3 Matters" start=212955 end=213444 bytes=489
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.09: heading="Merger Sub and Surviving Corporation Compliance" start=213444 end=213653 bytes=209
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.12: heading="Nasdaq; Post-Closing SEC Reports" start=217071 end=218785 bytes=1714
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.13: heading="Director Resignations" start=218785 end=219150 bytes=365
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.14: heading="CVR Agreement" start=219150 end=219931 bytes=781
+[extraction:metsera:GENERAL_COVENANTS] resolved 6.15: heading="Specified Matters" start=219931 end=220057 bytes=126
+[extraction:metsera:GENERAL_COVENANTS] starting 10 LIVE extraction call(s)...
+[extraction:metsera:GENERAL_COVENANTS] extraction complete in 81625ms, 10 model call(s)
+[extraction:metsera:GENERAL_COVENANTS] v1v2_comparison: NOT SUPPLIED -- NO_V1_SNAPSHOT_SUPPLIED: pass --v1-snapshot <path to a committed V1_PROVISION_SNAPSHOT/V1 JSON> to evaluate condition 1 on this run; every claim keeps V1_V2_COMPARATOR_ABSENT until then.
+[extraction:metsera:GENERAL_COVENANTS] === SUMMARY ===
+total_elapsed_ms: 87561, model_call_count: 10
+compiled_candidates: 19 ok / 0 rejected
+evidence_residuals (producer): 1
+scope_violations: 0
+citation_residuals: 0 -- []
+undispatched_sections: 0
+resolution: resolved=8 auto_pass=0 review_queue=10 open_world=9 residuals=0
+m3_auto_pass_conditions: v1v2_comparison=NOT_EVALUATED lexical_disagreement=EVALUATED (10 section(s)) both_nets_clean=0
+conditional_termination_fee_values: 0
+write_set claims: 8, components: 0, adapter residuals: 1
+validation accepted: true, residuals: 0, quarantines: 0
+review_queue artifact: 10 item(s)
+publishable claims: 8

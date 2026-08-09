@@ -1,0 +1,1407 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "8feb5babd5a21c91677a1bf2dd7781f3119aae6950b3698240b686cfe36f2d21",
+  "review_queue": [
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5caabc854380e071a3491b5f4811906b9569f7028edb835cfecf66a06f3821bf",
+      "closure_id": "096c442bba6bea8990acc34d68e51d686dcc8e1ceb5c1f84a99d08942fcde93a",
+      "normalised_phrase": "incur, create, assume or otherwise become liable or responsible for, or amend or modify the terms of, any indebtedness for borrowed money, or guarantee any indebtedness of another Person",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "enter into any “closing agreement” within the meaning of Section 7121 of the Code (or any similar provision of state, local or foreign Law) or other agreement with any Tax authority with respect to any material Taxes",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e8a09462172c29775cfaa5976ed6f43eecdbd7a0f1a5ac6494d3d0067728f6a2",
+      "closure_id": "0c0f5699e9857708a551949bedfb990546a7cb42824fd526a3e22552957415b1",
+      "normalised_phrase": "enter into any “closing agreement” within the meaning of Section 7121 of the Code (or any similar provision of state, local or foreign Law) or other agreement with any Tax authority with respect to any material Taxes",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-TAX",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "27a3ca82ea17d6fc4a2d759a04a23c839cc3825e6ae3af9be4e903d207a825d7",
+      "closure_id": "15ae4d6132fa01d2097903017a39affdc8fd53b453a367a30721ad7aa78cddd9",
+      "normalised_phrase": "file any material amended Tax Return",
+      "attachment_position": null,
+      "concept_family": "IOC-TAX",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(f)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "make any material change in financial accounting methods, principles or practices",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e5ca52d181214e939466f9db7c3bb0a2ecd03ac0a0d570ddd1b06061f8a93b04",
+      "closure_id": "1fcaba4d65b7da938f4aedd1db0f47668c2402f675227ff7e0f650bf2a1f979d",
+      "normalised_phrase": "make any material change in financial accounting methods, principles or practices",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(b)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "issue, grant, deliver, pledge, transfer, dispose of, encumber or sell (or authorize any of the foregoing) any Company Securities, any Company Subsidiary Securities, any Voting Company Debt or any other rights that give any Person the right to receive any economic or voting interest of a nature accruing to the holders of any capital stock or other voting securities or equity interests of the Company or any Company Subsidiary",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "8efcd42d631cec0e08938b6317feae27f727e6debdcfa1606d9e73a419624e06",
+      "closure_id": "217a184987c0daa55b2052ec02d6aba2d82a33ba1f96265658b6ab7a3eaea2ba",
+      "normalised_phrase": "issue, grant, deliver, pledge, transfer, dispose of, encumber or sell (or authorize any of the foregoing) any Company Securities, any Company Subsidiary Securities, any Voting Company Debt or any other rights that give any Person the right to receive any economic or voting interest of a nature accruing to the holders of any capital stock or other voting securities or equity interests of the Company or any Company Subsidiary",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(a)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "repurchase, redeem or otherwise acquire any Company Securities or Company Subsidiary Securities",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e6df22ce27103e962d6b4c5d57d7f2ac14f055dd3a82c9cea6a500b53e0cdafb",
+      "closure_id": "220547ce98a2f43abdba7abbdd8446acad302ff7b96fcf7421aed2e580f5b0d4",
+      "normalised_phrase": "repurchase, redeem or otherwise acquire any Company Securities or Company Subsidiary Securities",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(m)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "settle, release, waive, compromise, assign or resolve, or offer or propose to settle, release, waive, compromise, assign or resolve, any Proceeding involving or against the Company or any of the Company Subsidiaries",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5aa42e8e42dae467cb46d96f0c6077f92dc64aaabccb3fa1e35bc0d9f4df20f4",
+      "closure_id": "2b055a7981475d75e76fb7471afd1794ead5d873e133572fe3c15d1df6864fc2",
+      "normalised_phrase": "settle, release, waive, compromise, assign or resolve, or offer or propose to settle, release, waive, compromise, assign or resolve, any Proceeding involving or against the Company or any of the Company Subsidiaries",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(e)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "grant to any director, employee or other service provider of the Company or any Company Subsidiary any increase in severance or termination pay",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "206a32121912bc9314bf4cf192879183134e6950861f25886e035975ca4a40f9",
+      "closure_id": "2be0d20c576c8e26b0ecbc897750c61297643bd3a20cd5a9d483ea25b0509567",
+      "normalised_phrase": "grant to any director, employee or other service provider of the Company or any Company Subsidiary any increase in severance or termination pay",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-ISSUE",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5b667908142f4b6e07433c4aab5a2257040be205bb7cc9f222326439eda15f0e",
+      "closure_id": "349a9e4e9f23f6e52e6640caa022242ade4ab6cd2e800bbc9ecc07dfc50a1c7b",
+      "normalised_phrase": "issue or authorize the issuance of any other securities in respect of, in lieu of or in substitution for shares of its capital stock",
+      "attachment_position": null,
+      "concept_family": "IOC-ISSUE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(g)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7148bc96101020ca544f135006579c0a89a67ca79e7eb4fff7d31b5ff01afa6e",
+      "closure_id": "3820b4d19914345de1587ee7336060dbcf3c7d7c9408e36ffcde61650bcf0165",
+      "normalised_phrase": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(e)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "hire, engage, promote or terminate (other than for cause) the employment or engagement of any employee or other service provider with annual base compensation in excess of $250,000",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "83a31d72682be88917821479aa335ffa0fa90756df011bb03618429916a83a28",
+      "closure_id": "3b49f7ac1b7f286e8528dbb1c0890b86168a3ae1b2fbd0596bedca8eac24dafa",
+      "normalised_phrase": "hire, engage, promote or terminate (other than for cause) the employment or engagement of any employee or other service provider with annual base compensation in excess of $250,000",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "take any action or step which could change such entity’s country of residence for Tax purposes or cause it to be treated as having a branch or permanent establishment in any country other than its country of incorporation",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "ae35b88544fc131a07f5fcbaa7fdbeac393b2329f56bb230fcd1c3ae8af3bacd",
+      "closure_id": "40594d622683542b4339c61ea080d6d6fa8c803da197353e8436c72d89ccea2a",
+      "normalised_phrase": "take any action or step which could change such entity’s country of residence for Tax purposes or cause it to be treated as having a branch or permanent establishment in any country other than its country of incorporation",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "agree to an extension or waiver of the statute of limitations with respect to any claim or assessment with respect to material Taxes",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f9eef8a5ef4419a100b29e41bd6f61b745b0b60daf2bad52eddecec72107fb9f",
+      "closure_id": "4607282fab6a0f2f8d4eec4a31bf537f8fdadb266b0270b5fe768cda101ea43d",
+      "normalised_phrase": "agree to an extension or waiver of the statute of limitations with respect to any claim or assessment with respect to material Taxes",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-CAPEX",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "72b6fee44cd29ae1a36e7373a9137cc2656e106690c0fec9526c60ecca1c1bff",
+      "closure_id": "4864a75dba555ace734064414ddbf12eb9ea136db211689c9b6f1e67faf962fb",
+      "normalised_phrase": "make or agree to make any capital expenditure or expenditures that individually are in excess of $2,000,000 and in the aggregate are in excess of $2,500,000",
+      "attachment_position": null,
+      "concept_family": "IOC-CAPEX",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "b87f9091bd5bfe1d2d6841e12b0fd8e0bcf7fbf8a66b58ec1c0ae15aceb9156d",
+      "closure_id": "4e470615278dbffd54d74a34a0527be02be9d14458a81fe2c4040d461eeed1d2",
+      "normalised_phrase": "pay, discharge or satisfy any indebtedness that has a prepayment cost, “make whole” amount, prepayment penalty or similar obligation",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-INSURANCE",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "f281e07c241cf1bee5c128813ce8134de3cbac088f38a7ebc03b03724888c291",
+      "closure_id": "4f9f1703b1d6cd7d783c17e6f29e3e302d6a3b50c00666f5167d9e787b93a74c",
+      "normalised_phrase": "fail to use commercially reasonable efforts to maintain in effect material insurance policies covering the Company and each Company Subsidiary and their respective properties, assets and businesses",
+      "attachment_position": null,
+      "concept_family": "IOC-INSURANCE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(g)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9eb99658fee67d04c5c737919cd0571ac9f67376ed25dff03b4afa798e91356f",
+      "closure_id": "576e9d13587ae78e492c48e88881bdbf1cd5a186511df96003e6f47495413553",
+      "normalised_phrase": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(l)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "extend, renew, terminate, enter into, modify or amend, waive, release or assign any material rights in any Specified Contract or any Contract that, if existing on the date hereof, would have been a Specified Contract",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7a8b8f50f917f719b231856f57af3c9ab6fb193ab2e9a8e9ba7bd0dc32a9e1e4",
+      "closure_id": "5ef882c354243a8c7eda8748a32d116bcffe58e82339ed847c9d3e420e047f29",
+      "normalised_phrase": "extend, renew, terminate, enter into, modify or amend, waive, release or assign any material rights in any Specified Contract or any Contract that, if existing on the date hereof, would have been a Specified Contract",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-CHARTER",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "28b59bac20ad0b42406795ee3810c932899c764314cf2b328ef3de2af7ce96f7",
+      "closure_id": "6090816ddf4218fea8fc9adb53ecdbd6d374f598d875fa578c1280f0ccd93fa9",
+      "normalised_phrase": "amend its certificate of incorporation, by-laws or other comparable organizational documents",
+      "attachment_position": null,
+      "concept_family": "IOC-CHARTER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(e)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "materially change the manner in which contributions to broad-based Company Benefit Plans are made or the basis on which such contributions are determined",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f41bd10704ca518a3d8a8fcdd9efc78c3144ea24f85dd4a2a72b7ff96bbe4905",
+      "closure_id": "610a47e60cc9ebb4021381325046bc9d59de48b8015d186066fa13d963eba6e1",
+      "normalised_phrase": "materially change the manner in which contributions to broad-based Company Benefit Plans are made or the basis on which such contributions are determined",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(r)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "authorize, commit or agree to take any of the foregoing actions",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "96d9858005bf5e02564206a4e52eaf2b7940d2a6c72c8c1c9f3779311eeb77e6",
+      "closure_id": "6aea9a39e41b6cfaca117e9896c6be4ac1374465d70b6262cd7280a1a0913db3",
+      "normalised_phrase": "authorize, commit or agree to take any of the foregoing actions",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-COMP",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c08ef96ee59a870031b13e225251706c1fc9c0ceff55aeee246c9e936e79f02a",
+      "closure_id": "6c5cf6b13c8eb970a8cfb112d161ed940f314b78ccc93efde80fa69092c77cf2",
+      "normalised_phrase": "adopt, enter into, establish, terminate, amend or modify any collective bargaining agreement, Company Benefit Plan or any plan, program, policy, practice, agreement or other arrangement that would be a Company Benefit Plan if it had been in existence on the date of this Agreement",
+      "attachment_position": null,
+      "concept_family": "IOC-COMP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(e)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "accelerate or take any action to accelerate any rights, compensation or benefits, or the funding thereof, whether under any Company Benefit Plan or otherwise",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "55a335fb19d6a6986c3977c57a8a78ce5dfda79885be0acd5b5bdca8a9cff31a",
+      "closure_id": "6e17cc8d54a6639d8b1af69e26751f4c0b6a100873bfc87fc7eb1c4b9f143dff",
+      "normalised_phrase": "accelerate or take any action to accelerate any rights, compensation or benefits, or the funding thereof, whether under any Company Benefit Plan or otherwise",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "settle or compromise any material Tax liability or any audit, assessment or other Proceeding with respect to Taxes",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "e3ce1b0c656d2a7f3673f6bf0e392d3eda0aea71eaac98068983097d54c5f24c",
+      "closure_id": "7415a6bc9c0f812f22b90bbc3a2505198bd6cb37518d52ba1eda68355dfce431",
+      "normalised_phrase": "settle or compromise any material Tax liability or any audit, assessment or other Proceeding with respect to Taxes",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-IP",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "5beac9b21e0f36cbfd27f7d453ae2afb91d6b82e8f57cfcc908b1f741584c53b",
+      "closure_id": "76283a35109dbb78b3320dafdea1ce274f49b90769e22cbb978a907f5186ee78",
+      "normalised_phrase": "fail to take or maintain reasonable measures to protect the confidentiality and value of material Trade Secrets included in any of the Company Intellectual Property",
+      "attachment_position": null,
+      "concept_family": "IOC-IP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DIVIDEND",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "27933475c47dec32b53fb1fbfa122f2a7b5de6a65e85e7955d23e99339c90b50",
+      "closure_id": "7f3e94b49034a7544617e6cab4011e996cf4d824ac58af3dad9da75e72023269",
+      "normalised_phrase": "declare, set aside, authorize, establish a record date in respect of, accrue or pay any dividends on, or make any other distributions (whether in cash, stock or property) in respect of, any of its capital stock",
+      "attachment_position": null,
+      "concept_family": "IOC-DIVIDEND",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-COMP",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "9a0ba6a336dd45040e485e450c7524dea5ce534255277767d0c410bdb09abd3d",
+      "closure_id": "862090004bc0243dc38bd3b2b2865c03555486743b5b5d03d66d62f09371ad2c",
+      "normalised_phrase": "adopt, enter into, establish, terminate, amend or modify any collective bargaining agreement",
+      "attachment_position": null,
+      "concept_family": "IOC-COMP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "99d22473670ef28071326f14f71e1c4bf5a671566a47092b41b8c2110c379d86",
+      "closure_id": "8805dd76be0c2fa0ad5cdfcd25df5c55db7bb75cba41564174d483ba4bad19e2",
+      "normalised_phrase": "make any loans, advances or capital contributions to, or investments in, any other Person",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "make (other than in the ordinary course of business consistent with past practice), change or revoke any material Tax election",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "88ccee3831f14dc5a062db27bf4d352e99400fb6a8f9fe1a492e21fe93c5be18",
+      "closure_id": "8833693cbeb2f9733b2341a873ccefabdb8f0192593dc475ab956cf0fcfc0500",
+      "normalised_phrase": "make (other than in the ordinary course of business consistent with past practice), change or revoke any material Tax election",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(g)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "79bb285c9e43ea040e458245ce8c218b6536ccb59999fda3e3507e85088485fa",
+      "closure_id": "8f637a448c6ff4632f309a02961046e69b5b88b4fd56efdc1f3ce69993eb6b66",
+      "normalised_phrase": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(g)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "2859097f6683f9df1f69d61ab8e05be7a06fb6b90aaed20e282cc28612323bf5",
+      "closure_id": "9bf2d206f29e782587e27c5b7735973569f30d10801d4682befd69ffe38ce958",
+      "normalised_phrase": "sell, transfer, lease (as lessor), license, abandon or otherwise dispose of (including through any “spin-off”), or pledge, assign, exchange, encumber or otherwise subject to any Lien (other than a Permitted Lien), any material properties or assets of the Company and/or the Company Subsidiaries (including Company Controlled Intellectual Property)",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "17a7bfd3e6972d032f73456795c005bcb70a1b30a2195d5d249996affb87bf93",
+      "closure_id": "aa498e3a35ccc3bd4a1ec4f493f400698dd3afed423eadd78fd2f784b12ffdde",
+      "normalised_phrase": "issue or sell any debt securities of the Company or any Company Subsidiary, including options, warrants, calls or other rights to acquire any debt securities of the Company or any Company Subsidiary",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "c7b07677f77e9be641b210443d21799f746f036f78114b5e73ecd69160b82fa7",
+      "closure_id": "aee37ce5f6a6838423442b7f063fe017f997ceb43e8956a5d2272f84003e68ac",
+      "normalised_phrase": "forgive any loans or advances to any officers, employees, directors or other individual service providers of the Company or any Company Subsidiary, or any of their respective affiliates, or change its existing borrowing or lending arrangements for or on behalf of any of such Persons",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(h)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "disclose to any Person (other than Representatives of Parent and Merger Sub) any material Trade Secrets, know-how or confidential or proprietary information",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "5a8f6bca2339f9dd5e3c0403eea459d2ab389aa59b7267630c60cad8fd6b2f0c",
+      "closure_id": "bda2f1e8cef27abd7398bafa127355d229418139959e72b289f9a8e276ac8a65",
+      "normalised_phrase": "disclose to any Person (other than Representatives of Parent and Merger Sub) any material Trade Secrets, know-how or confidential or proprietary information",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-COMP",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "659467c5f264b9bb294bd5fc081e44725c16c5fba14669ffb99cc75efd9f9643",
+      "closure_id": "bee88810d0163a7c7c14e15d50a30cdaf0581ed9da36d56a2474bc3478926390",
+      "normalised_phrase": "grant to any director, employee or other service provider of the Company or any Company Subsidiary any increase in compensation or benefits",
+      "attachment_position": null,
+      "concept_family": "IOC-COMP",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(h)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "fail to make any filing, pay any fee, or take any other action necessary to prosecute and maintain in full force and effect any material registered Owned Company Intellectual Property",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a805fe795a7d686834732a7de30e8e0a6fc7bf96e411e9d9fa57512edee08538",
+      "closure_id": "bf7abed3934cf40d38edce39aa90ec3b1f784907d8da5e9351a3e7e6681e407b",
+      "normalised_phrase": "fail to make any filing, pay any fee, or take any other action necessary to prosecute and maintain in full force and effect any material registered Owned Company Intellectual Property",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-TAX",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a8a85aa867ef595340e56fce882440d39ce4476bb4af28c5bbdac8f30fd1e1fe",
+      "closure_id": "c26783a51c24934516994359e113f646f3e92c9f3317034bc83c5e5f62f999b4",
+      "normalised_phrase": "adopt or change any material method of Tax accounting or change any annual Tax accounting period",
+      "attachment_position": null,
+      "concept_family": "IOC-TAX",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(k)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "surrender any right to claim a material Tax refund",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "248b5d54b9b1660e16402039eb55f5821d6286b1e7853109b68a5fa284ed8096",
+      "closure_id": "cdfabd3b085858901230dc7a62a2067d40b1ea0666ca3c08d7c12642fd3f1d61",
+      "normalised_phrase": "surrender any right to claim a material Tax refund",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-MERGE",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "d4095c53f410204b8c39463ffee470ae946736e101ddf2c9bd5f64ff7cfd26b9",
+      "closure_id": "ce459e51c9a009624066217ed3f2b57fd036663511b4e93731577aec566a8641",
+      "normalised_phrase": "merge or consolidate the Company or any Company Subsidiary with any Person or adopt a plan of complete or partial liquidation, dissolution, restructuring, recapitalization or other reorganization of the Company or any Company Subsidiary",
+      "attachment_position": null,
+      "concept_family": "IOC-MERGE",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(h)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "AMBIGUOUS_CATEGORY_CORROBORATION"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "cancel, dedicate to the public, disclaim, forfeit, reissue, reexamine or abandon without filing a substantially identical counterpart in the same jurisdiction with the same priority or allow to lapse (except with respect to Patents expiring in accordance with their final, non-renewable terms) any material Owned Company Intellectual Property",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "59521560d383d899b5fa3958864cb8cc6b61db345cc77ee529f9747775022cb6",
+      "closure_id": "ce603cabb1f2fd63593aa1dcd289a14e5dd4c9cf68d03e4fce38c714637b7bba",
+      "normalised_phrase": "cancel, dedicate to the public, disclaim, forfeit, reissue, reexamine or abandon without filing a substantially identical counterpart in the same jurisdiction with the same priority or allow to lapse (except with respect to Patents expiring in accordance with their final, non-renewable terms) any material Owned Company Intellectual Property",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(e)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "enter into any employment, consulting, severance, termination or any other compensatory agreement with any director, employee or other service provider of the Company or any Company Subsidiary",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "443796f8187ffaf367a86d9bdb7223adfc5fbc080976bbdd72f757d5f145d95f",
+      "closure_id": "e291fe9313b3398a696bdb69ced155782b1b7c018ea59441f518fc332e3333d7",
+      "normalised_phrase": "enter into any employment, consulting, severance, termination or any other compensatory agreement with any director, employee or other service provider of the Company or any Company Subsidiary",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01(q)",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "CATEGORY_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "enter into any new line of business",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d862ddde5a837958a87ea6cffd59a3e4a8436381682ddd9fe68d4ed9cf0c24f5",
+      "closure_id": "e40f5decab339e33c1f215c555ef4258d796916f027aec3e2830d49b427fa34e",
+      "normalised_phrase": "enter into any new line of business",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "generic_claim_key": "NATIVE_IOC_RESTRICTION_CANDIDATE",
+      "resolved_claim_definition_key": "IOC_RESTRICTION_PRESENT",
+      "concept_key": "IOC-DEBT",
+      "reasons": [],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "a104480ff91e5617ff8ef10a0b8d9bcc3df6f9e54161c645de56aa3da9df0371",
+      "closure_id": "f515e55ffbc094cf6b9ed087e2f0aa89785f94f786b8d7208063bb6fe92ea92f",
+      "normalised_phrase": "cancel any material indebtedness (individually or in the aggregate)",
+      "attachment_position": null,
+      "concept_family": "IOC-DEBT",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+        "IOC_NUMERIC_OPERAND_NOT_EXACT"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "087008838663e021b53bdce98eaf0ea66f833b014c17fea71154b320f2e6724e",
+      "normalised_phrase": "other than settlements that result solely in monetary obligations involving payment (without the admission of wrongdoing) by the company or any company subsidiary of an amount (net of insurance proceeds) not greater than $500,000 individually or $2,000,000 in the aggregate",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "0d9fa34450f4ebaed018f7e8a04fad97c633247316680af16a14657b177e0932",
+      "normalised_phrase": "except (i) sales, leases, licenses or other dispositions of inventory or excess or obsolete properties or assets, (ii) permitting any company registered intellectual property to expire at the end of its final, non-renewable statutory term or (iii) licenses or sublicenses of non-exclusive rights to company intellectual property in the ordinary course of business consistent with past practice",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "39652d5e46725d98259bfcbf2a921876f4d97b2796fc903931d91c28c2ea1d4d",
+      "normalised_phrase": "except as may be required by (i) gaap (or any authoritative interpretation thereof) or (ii) applicable law, including regulation s-x under the securities act",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_ZERO_MATCHES"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "4caf69f52bf44fbf9b7b201864119b4b723daaa2598f61014ae29147e21d0750",
+      "normalised_phrase": "hire, engage, promote or terminate (other than for cause) the employment or engagement of any employee or other service provider with annual base compensation in excess of $250,000",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "4d2229ace188e5f517fae140e6431408146502831bdfbb468b2775db26bee5fd",
+      "normalised_phrase": "use commercially reasonable efforts to preserve its present relationships with suppliers, licensors, licensees, governmental entities and others having material business dealings with it, and maintain its material assets and business organization intact in all material respects",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "54e8f1c943ebe9a0395d19b1889e67f25a7953f2d091bbce6f8278f330ac83a7",
+      "normalised_phrase": "conduct its business in the ordinary course",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+        "IOC_NUMERIC_OPERAND_NOT_EXACT"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "ace37e463df230a1c379ebdb00691cecaf4fd8d4757c71f6c15ec9f61201aaf0",
+      "normalised_phrase": "other than settlements that result solely in monetary obligations involving payment (without the admission of wrongdoing) by the company or any company subsidiary of an amount (net of insurance proceeds) not greater than $500,000 individually or $2,000,000 in the aggregate",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+        "IOC_NUMERIC_OPERAND_NOT_EXACT"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "af64383ccfce367083940faec8eeab5c0d7f6d37cb9b8b36397e6b45fc6912e3",
+      "normalised_phrase": "except for short-term borrowings incurred in the ordinary course of business up to $500,000 in the aggregate",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "c1c04351049aaa27b35581db6cb533c1c464ec94f036dfc3e2f4118503da8ed3",
+      "normalised_phrase": "other than (a) to or in the company or any company subsidiary, (b) any acquisition not in violation of clause (d) above or (c) extensions of trade credit and advances of expenses to employees and consultants in the ordinary course of business consistent with past practice",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "c3568792acd657d06e082e6ca5acf7e6d69ac05a4eb4959fc93dddbc821a18e4",
+      "normalised_phrase": "other than dividends and distributions by a direct or indirect wholly owned company subsidiary to its parent",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "d099fcb063bd1c51b02525d7b23d59dcf3c77dd3265ddff83f1d836615b00dd9",
+      "normalised_phrase": "except in the case of any specified contract (or any contract that, if existing on the date hereof, would have been a specified contract) of the type solely described in clauses (v), (vi), (viii), (ix) or (xviii) of section 3.13(a) and not any other clause of section 3.13(a), in the ordinary course of business consistent with past practice",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
+        "IOC_NUMERIC_OPERAND_NOT_EXACT"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "ee05815292f44e706b8b90559974a9953becb33c65290c9b0a141bdea40eb4d5",
+      "normalised_phrase": "if the aggregate amount of consideration paid or transferred by the company and the company subsidiaries would exceed $2,000,000, in the aggregate",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "5.01",
+      "source_citation": "5.01",
+      "generic_claim_key": "OPEN_WORLD_PROPOSITION",
+      "resolved_claim_definition_key": null,
+      "concept_key": "IOC-PENDING",
+      "reasons": [
+        "IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
+      ],
+      "materiality_rank": 65,
+      "materiality_label": "INTERIM_OPERATING_COVENANTS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "claim_revision_id": null,
+      "closure_id": "f8540faac71f592df6d8c726cb6e99c166bb83820097d40d2602f46d044b9578",
+      "normalised_phrase": "except in the ordinary course of business in connection with relocation activities to any employees of the company or any company subsidiary",
+      "attachment_position": null,
+      "concept_family": "IOC-PENDING",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "f7b48d4adb005ed03bd810a658d55629ba47f0a78cd91e1f9d7da78e90bdb9e5"
+}
