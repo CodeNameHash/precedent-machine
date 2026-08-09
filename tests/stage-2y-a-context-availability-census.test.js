@@ -8,6 +8,21 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const script = path.resolve(root, 'scripts/stage-2y-a-context-availability-census.mjs');
 
+test('Stage 2Y-A source fallback joins an open-world claim_definition_key', async () => {
+  const { selectSourceCandidate } = await import(script);
+  const claim = Object.freeze({
+    claim_definition_key: 'OPEN_WORLD_PROPOSITION',
+    raw_value: 'exact sole-remedy residual quote',
+  });
+  const selected = selectSourceCandidate({
+    claim_definition_key: 'OPEN_WORLD_PROPOSITION',
+    raw_value: 'exact sole-remedy residual quote',
+  }, [Object.freeze({ candidate: Object.freeze({ claim }) })]);
+  assert.equal(selected.status, 'UNIQUE');
+  assert.equal(selected.route, 'EXACT_GENERIC_KEY_AND_RAW_VALUE');
+  assert.strictEqual(selected.claim, claim);
+});
+
 test('Stage 2Y-A context census is current and read-only', () => {
   const run = spawnSync(process.execPath, [script, '--check'], {
     cwd: root,

@@ -71,7 +71,7 @@ function sourceCandidates(receipt) {
   return (receipt?.compiled_candidates || []).filter((entry) => entry?.candidate?.claim);
 }
 
-function selectSourceCandidate(row, candidates) {
+export function selectSourceCandidate(row, candidates) {
   const direct = (field, route) => {
     if (typeof row?.[field] !== 'string') return null;
     const matches = candidates.filter((entry) => entry.candidate.claim[field === 'original_claim_occurrence_id'
@@ -86,8 +86,9 @@ function selectSourceCandidate(row, candidates) {
   const byClosure = direct('closure_id', 'CLOSURE_ID');
   if (byClosure) return byClosure;
   const quote = typeof row?.raw_value === 'string' ? row.raw_value : null;
+  const claimDefinitionKey = row?.generic_claim_key ?? row?.claim_definition_key;
   const matches = quote == null ? [] : candidates.filter((entry) => (
-    entry.candidate.claim.claim_definition_key === row.generic_claim_key
+    entry.candidate.claim.claim_definition_key === claimDefinitionKey
       && entry.candidate.claim.raw_value === quote
   ));
   return matches.length === 1 ? { status: 'UNIQUE', route: 'EXACT_GENERIC_KEY_AND_RAW_VALUE', claim: matches[0].candidate.claim }

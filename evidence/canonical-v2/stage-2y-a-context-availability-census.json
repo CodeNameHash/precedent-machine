@@ -306,15 +306,13 @@
       "state": "OPEN_WORLD",
       "reason_code": "SOLE_REMEDY_CARVEOUT_QUOTE_UNCORROBORATED",
       "occurrences": 2,
-      "context_resolved": 0,
-      "leaf_available": 0,
-      "chapeau_available": 0,
-      "structural_host_context_available": 0,
-      "undetermined_reasons": {
-        "SOURCE_CANDIDATE_NOT_LOCATED": 2
-      },
+      "context_resolved": 2,
+      "leaf_available": 2,
+      "chapeau_available": 2,
+      "structural_host_context_available": 2,
+      "undetermined_reasons": {},
       "evidence_preservation": {
-        "SOURCE_CANDIDATE_EVIDENCE_MISSING": 2
+        "EXACT_EVIDENCE_PRESERVED": 2
       }
     }
   ],
@@ -356,17 +354,21 @@
       ],
       "assertion_kind": null,
       "source_candidate": {
-        "status": "NOT_LOCATED",
-        "route": null
+        "status": "UNIQUE",
+        "route": "EXACT_GENERIC_KEY_AND_RAW_VALUE"
       },
-      "evidence_preservation": "SOURCE_CANDIDATE_EVIDENCE_MISSING",
+      "evidence_preservation": "EXACT_EVIDENCE_PRESERVED",
       "context": {
-        "status": "UNDETERMINED",
-        "reason": "SOURCE_CANDIDATE_NOT_LOCATED",
-        "leaf_available": false,
-        "chapeau_available": false,
-        "structural_host_context_available": false,
-        "exact_operational_span": null
+        "status": "RESOLVED",
+        "reason": null,
+        "leaf_available": true,
+        "chapeau_available": true,
+        "structural_host_context_available": true,
+        "exact_operational_span": {
+          "start_byte": 8613,
+          "end_byte": 9706,
+          "exact_bytes_digest": "e9126399e8f6b8059b12c8cedadae8ce0761ba724f00f96ea45f5f0072e07609"
+        }
       }
     },
     {
@@ -4682,17 +4684,21 @@
       ],
       "assertion_kind": null,
       "source_candidate": {
-        "status": "NOT_LOCATED",
-        "route": null
+        "status": "UNIQUE",
+        "route": "EXACT_GENERIC_KEY_AND_RAW_VALUE"
       },
-      "evidence_preservation": "SOURCE_CANDIDATE_EVIDENCE_MISSING",
+      "evidence_preservation": "EXACT_EVIDENCE_PRESERVED",
       "context": {
-        "status": "UNDETERMINED",
-        "reason": "SOURCE_CANDIDATE_NOT_LOCATED",
-        "leaf_available": false,
-        "chapeau_available": false,
-        "structural_host_context_available": false,
-        "exact_operational_span": null
+        "status": "RESOLVED",
+        "reason": null,
+        "leaf_available": true,
+        "chapeau_available": true,
+        "structural_host_context_available": true,
+        "exact_operational_span": {
+          "start_byte": 8613,
+          "end_byte": 9706,
+          "exact_bytes_digest": "e9126399e8f6b8059b12c8cedadae8ce0761ba724f00f96ea45f5f0072e07609"
+        }
       }
     },
     {
@@ -29454,5 +29460,5 @@
       }
     ]
   },
-  "census_digest": "sha256:01818812d769c2a862e4be75c09b56a5fc4b02fe2151ed70e71a1851ab357342"
+  "census_digest": "sha256:7425e9a292afe81fb597b9e2b519344705c32e8230035e281f3c224d281f8cb9"
 }
