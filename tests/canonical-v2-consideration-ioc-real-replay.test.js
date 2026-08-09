@@ -41,7 +41,7 @@ test('recorded multi-deal Consideration pack preserves exact evidence and routes
 test('recorded IOC pack preserves governed restrictions and exhaustive long-tail open-world capture', () => {
   assert.equal(pack.ioc.length, 2);
   const source = pack.ioc.map((item) => item.quote).join('\n');
-  const output = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'DEBT', threshold_basis: null, quote: pack.ioc[0].quote }], ioc_mechanics: [
+  const output = shapeIocProposals({ ioc_restriction_assertions: [{ section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'INDEBTEDNESS', threshold_basis: null, quote: pack.ioc[0].quote }], ioc_mechanics: [
     { surface: 'LONG_TAIL_RESTRICTION', quote: pack.ioc[1].quote, detail: 'dividend restriction preserved without inferred qualifier' },
   ], open_world_candidates: [] }, source, { covenant_side: 'TARGET' });
   assert.equal(output.proposals.length, 2);

@@ -45,9 +45,9 @@ async function resolvedIocMechanics() {
     provider: async ({ governed_scope: governedScope }) => {
       const shaped = shapeIocProposals({
         ioc_restriction_assertions: [
-          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'DEBT', quote: DEBT },
-          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'CAPEX', quote: CAPEX },
-          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'SETTLE', quote: SETTLE },
+          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'INDEBTEDNESS', quote: DEBT },
+          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'CAPITAL_EXPENDITURES', quote: CAPEX },
+          { section_reference: '5.1', assertion_kind: 'RESTRICTION_PRESENT', restriction_category: 'LITIGATION_SETTLEMENTS', quote: SETTLE },
         ],
         ioc_mechanics: [
           {

@@ -240,7 +240,7 @@ test('resolvePromptVersionInfo: TERMINATION_FEE and MAE_DEFINITION report distin
   assert.equal(typeof termFee.prompt_version, 'number');
 
   const mae = mod.resolvePromptVersionInfo('MAE_DEFINITION');
-  assert.equal(mae.prompt_id, 'mae-definition-producer/v2');
+  assert.equal(mae.prompt_id, 'mae-definition-producer/v3');
   assert.equal(typeof mae.prompt_version, 'number');
 
   assert.notEqual(termFee.prompt_id, mae.prompt_id);
@@ -483,7 +483,7 @@ test('CLI dry run: a different family (MAE_DEFINITION) on a different deal (TopB
   assert.deepEqual(report.section_references, ['3.1(d)(iii)']);
   assert.equal(report.would_call_model, false);
   assert.equal(report.projected_model_call_count, 1);
-  assert.equal(report.prompt.prompt_id, 'mae-definition-producer/v2');
+  assert.equal(report.prompt.prompt_id, 'mae-definition-producer/v3');
   assert.equal(report.sections_resolved.length, 1);
   assert.equal(report.sections_resolved[0].kind, 'SUBSECTION');
   assert.equal(report.sections_resolved[0].start, 67578);
