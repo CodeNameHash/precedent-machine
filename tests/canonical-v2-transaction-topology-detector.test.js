@@ -183,6 +183,70 @@ test('Company/OpCo contemporaneous mergers classify as PARALLEL_MERGERS', () => 
   assert.equal(model.warnings.length, 0);
 });
 
+test('production extractor applies cited R4 model-step precedence and rejects ambiguous timing', () => {
+  const text = [
+    '“Company Merger” means the merger of the Company with and into Company Merger Sub.',
+    '“OpCo Merger” means the merger of OpCo Merger Sub with and into the Partnership.',
+    'The Company shall be merged with and into Company Merger Sub at the Company Merger Effective Time.',
+    'OpCo Merger Sub shall be merged with and into the Partnership at the OpCo Merger Effective Time.',
+    'Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.',
+  ].join(' ');
+  const step = ({ section_reference = '1.1', step_order, disappearing_entity, surviving_entity, raw_value }) => ({
+    section_reference,
+    resolved_claim_definition_key: 'MERGER_TRANSACTION_STEP',
+    claim: {
+      raw_value,
+      attributes: {
+        step_order,
+        step_kind: 'MERGER',
+        disappearing_entity,
+        surviving_entity,
+        parent_entity: null,
+        concurrency: 'SEQUENTIAL',
+      },
+    },
+  });
+  const model = extractTransactionSteps(
+    [{ provision_type: 'STRUCT', number: '1.1', title: 'The Mergers', text }],
+    {
+      fullCleanedText: text,
+      resolvedModelClaims: [
+        step({
+          step_order: 1,
+          disappearing_entity: 'Company',
+          surviving_entity: 'Surviving Company',
+          raw_value: 'the Company shall be merged with and into Company Merger Sub and the separate existence of the Company shall thereupon cease and Company Merger Sub shall survive the Company Merger (the “Surviving Company”)',
+        }),
+        step({
+          step_order: 2,
+          disappearing_entity: 'OpCo Merger Sub',
+          surviving_entity: 'Surviving OpCo',
+          raw_value: 'OpCo Merger Sub shall be merged with and into the Partnership and the separate existence of OpCo Merger Sub shall thereupon cease and the Partnership shall be the surviving entity in the OpCo Merger (the “Surviving OpCo”)',
+        }),
+        {
+          section_reference: '1.4',
+          resolved_claim_definition_key: 'MERGER_STRUCTURE_MECHANIC_PRESENT',
+          claim: {
+            raw_value: 'Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.',
+            attributes: { assertion_kind: 'CLOSING_TIMING' },
+          },
+        },
+        step({
+          section_reference: '1.6',
+          step_order: 3,
+          disappearing_entity: 'Duplicate Merger Sub',
+          surviving_entity: 'Duplicate Survivor',
+          raw_value: 'Duplicate Merger Sub merges and Duplicate Survivor survives.',
+        }),
+      ],
+    },
+  );
+  assert.equal(model.topology.topology, TOPOLOGIES.MULTI_STEP_REORG);
+  assert.equal(model.topology.step_source, 'MODEL_EXTRACTED');
+  assert.equal(model.topology.topology_needs_review, true);
+  assert.deepEqual(model.steps.map((entry) => entry.step_order), [1, 2]);
+});
+
 test('seven-deal hash-verified corpus: one right answer each', () => {
   for (const row of SEVEN_DEAL_EXPECTATIONS) {
     const model = detectTopologyFromAdmittedRun(path.join(EVIDENCE, row.run));

@@ -14,6 +14,7 @@ const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/nat
 const {
   STEP_SOURCES,
   mergeDealTopology,
+  mergeDealTopologyAcrossCitedSections,
   stepsFromModelClaims,
 } = require('../lib/canonical-v2/deal-topology-from-claims');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
@@ -146,6 +147,167 @@ test('resolver finalizes MERGER_TRANSACTION_STEP claims with topology attributes
   assert.equal(claims[0].claim.attributes.step_kind, 'MERGER');
   assert.equal(claims[0].claim.attributes.step_order, 1);
   assert.equal(claims[0].concept_key, 'MERGER-STRUCTURE');
+});
+
+test('resolver clears an unquoted optional parent without weakening required entity grounding', async () => {
+  const quote = 'At the Effective Time, Merger Sub shall merge with and into the Company,';
+  const resolution = await resolveTransactionSteps(SINGLE_STEP_SOURCE, [{
+    step_order: 1,
+    step_kind: 'MERGER',
+    disappearing_entity: 'Merger Sub',
+    surviving_entity: 'Company',
+    parent_entity: 'Parent',
+    concurrency: 'SEQUENTIAL',
+    quote,
+  }]);
+  const claims = resolution.resolved.filter(
+    (row) => row.resolved_claim_definition_key === 'MERGER_TRANSACTION_STEP',
+  );
+  assert.equal(claims.length, 1);
+  assert.equal(claims[0].claim.attributes.parent_entity, null);
+});
+
+test('resolver holds transaction steps when either required entity is absent from the quote', async () => {
+  const quote = 'At the Effective Time, Merger Sub shall merge with and into the Company,';
+  const resolution = await resolveTransactionSteps(SINGLE_STEP_SOURCE, [{
+    step_order: 1,
+    step_kind: 'MERGER',
+    disappearing_entity: 'Absent Merger Sub',
+    surviving_entity: 'Company',
+    parent_entity: null,
+    concurrency: 'SEQUENTIAL',
+    quote,
+  }]);
+  assert.equal(resolution.resolved.filter(
+    (row) => row.resolved_claim_definition_key === 'MERGER_TRANSACTION_STEP',
+  ).length, 0);
+  assert.equal(resolution.open_world[0].reason, 'MERGER_TRANSACTION_STEP_ENTITY_NOT_IN_QUOTE');
+});
+
+function citedTopologyStep({
+  sectionReference = '1.1',
+  stepOrder,
+  disappearingEntity,
+  survivingEntity,
+  quote,
+  concurrency = 'SEQUENTIAL',
+} = {}) {
+  return {
+    section_reference: sectionReference,
+    resolved_claim_definition_key: 'MERGER_TRANSACTION_STEP',
+    claim: {
+      raw_value: quote,
+      attributes: {
+        step_order: stepOrder,
+        step_kind: 'MERGER',
+        disappearing_entity: disappearingEntity,
+        surviving_entity: survivingEntity,
+        parent_entity: null,
+        concurrency,
+      },
+    },
+  };
+}
+
+function citedClosingTiming({ sectionReference = '1.4', quote } = {}) {
+  return {
+    section_reference: sectionReference,
+    resolved_claim_definition_key: 'MERGER_STRUCTURE_MECHANIC_PRESENT',
+    claim: { raw_value: quote, attributes: { assertion_kind: 'CLOSING_TIMING' } },
+  };
+}
+
+function primaryParallelSteps() {
+  return [
+    citedTopologyStep({
+      stepOrder: 1,
+      disappearingEntity: 'Company',
+      survivingEntity: 'Surviving Company',
+      quote: 'the Company shall be merged with and into Company Merger Sub and the separate existence of the Company shall thereupon cease and Company Merger Sub shall survive the Company Merger (the “Surviving Company”)',
+    }),
+    citedTopologyStep({
+      stepOrder: 2,
+      disappearingEntity: 'OpCo Merger Sub',
+      survivingEntity: 'Surviving OpCo',
+      quote: 'OpCo Merger Sub shall merge with and into the Partnership, and Surviving OpCo shall continue.',
+    }),
+  ];
+}
+
+test('cross-section merge uses cited 1.1 steps and unambiguous cited 1.4 timing only', () => {
+  const merged = mergeDealTopologyAcrossCitedSections({
+    modelClaims: [
+      ...primaryParallelSteps(),
+      citedTopologyStep({
+        sectionReference: '1.6',
+        stepOrder: 3,
+        disappearingEntity: 'Duplicate Merger Sub',
+        survivingEntity: 'Duplicate Survivor',
+        quote: 'Duplicate Merger Sub merges and Duplicate Survivor survives.',
+      }),
+      citedClosingTiming({
+        quote: 'The Company Merger Effective Time and OpCo Merger Effective Time shall occur contemporaneously.',
+      }),
+    ],
+  });
+  assert.equal(merged.topology, TOPOLOGIES.PARALLEL_MERGERS);
+  assert.equal(merged.step_source, STEP_SOURCES.MODEL_EXTRACTED);
+  assert.equal(merged.step_count, 2);
+  assert.deepEqual(merged.transaction_steps.map((step) => step.step_order), [1, 2]);
+});
+
+test('HOSTILE: ambiguous 1.4 contemporaneous-or-immediately-after timing does not promote parallel', () => {
+  const merged = mergeDealTopologyAcrossCitedSections({
+    modelClaims: [
+      ...primaryParallelSteps(),
+      citedClosingTiming({
+        quote: 'Unless otherwise agreed in writing, the parties shall cause the Company Merger Effective Time and the OpCo Merger Effective Time to occur on the Closing Date, with the OpCo Merger Effective Time occurring contemporaneously with or immediately after the Company Merger Effective Time.',
+      }),
+    ],
+  });
+  assert.equal(merged.topology, TOPOLOGIES.MULTI_STEP_REORG);
+  assert.equal(merged.transaction_steps.every((step) => step.concurrency === CONCURRENCY.SEQUENTIAL), true);
+});
+
+test('HOSTILE: an alternative sequential timing in cited 1.4 does not promote parallel', () => {
+  const merged = mergeDealTopologyAcrossCitedSections({
+    modelClaims: [
+      ...primaryParallelSteps(),
+      citedClosingTiming({
+        quote: 'The Company Merger Effective Time and OpCo Merger Effective Time shall occur contemporaneously or sequentially, as agreed by the parties.',
+      }),
+    ],
+  });
+  assert.equal(merged.topology, TOPOLOGIES.MULTI_STEP_REORG);
+});
+
+test('HOSTILE: absent required primary entity rejects the whole primary set and unrelated timing cannot promote parallel', () => {
+  const fallback = [{
+    step_order: 1,
+    step_kind: 'MERGER',
+    disappearing_entity: 'Fallback Merger Sub',
+    surviving_entity: 'Fallback Survivor',
+    parent_entity: null,
+    concurrency: CONCURRENCY.SEQUENTIAL,
+  }];
+  const merged = mergeDealTopologyAcrossCitedSections({
+    modelClaims: [
+      ...primaryParallelSteps(),
+      citedTopologyStep({
+        stepOrder: 3,
+        disappearingEntity: 'Absent Entity',
+        survivingEntity: 'Surviving Company',
+        quote: 'A different entity shall merge and Surviving Company shall continue.',
+      }),
+      citedClosingTiming({
+        sectionReference: '1.5',
+        quote: 'The Company Merger Effective Time and OpCo Merger Effective Time shall occur contemporaneously.',
+      }),
+    ],
+    detectorSteps: fallback,
+  });
+  assert.equal(merged.step_source, STEP_SOURCES.DETECTOR_INFERRED);
+  assert.equal(merged.topology, TOPOLOGIES.SINGLE_MERGER);
 });
 
 test('mergeDealTopology prefers model steps over detector and flags detector fallback', () => {
