@@ -14,21 +14,22 @@ const { executeDealToMarket } = require('../lib/query/executors/deal-to-market')
 const { provisionFieldValue } = require('../lib/query/types');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
 
-function resolved({ id, definition, value, concept, quote, attributes = {}, capacity = 'EITHER_PRINCIPAL_PARTY' }) {
+function resolved({ id, definition, value, concept, quote, attributes = {}, capacity = 'TARGET' }) {
+  const partyValue = capacity === 'BUYER' ? 'Parent' : 'the Company';
   return {
     resolved_claim_definition_key: definition,
     concept_key: concept,
     section_reference: '8.1',
-    party: { role: 'TERMINATION_RIGHT_HOLDER', value: 'Parent and Company', capacity },
+    party: { role: 'TERMINATION_RIGHT_HOLDER', value: partyValue, capacity },
     provision_instance: {
       provision_instance_id: id,
-      party: { role: 'TERMINATION_RIGHT_HOLDER', value: 'Parent and Company', capacity },
+      party: { role: 'TERMINATION_RIGHT_HOLDER', value: partyValue, capacity },
     },
     claim: {
-      claim_revision_id: `${id}:${definition}:${String(value)}`,
+      claim_revision_id: `${id}:${definition}:${String(value)}:${capacity}`,
       canonical_value: value,
       raw_value: quote,
-      attributes,
+      attributes: { terminating_party_scope: 'EITHER_PARTY', ...attributes },
     },
   };
 }
@@ -73,20 +74,40 @@ test('governed termination rights retain Wave B evidence and expose direct Query
   const resolution = {
     resolved: [
       resolved({
-        id: 'right-mutual',
+        id: 'right-mutual-target',
         definition: 'TERMINATION_RIGHT_GRANT',
         value: true,
         concept: 'TERMR-MUTUAL',
         quote: 'The agreement may be terminated by mutual written consent of Parent and the Company.',
         attributes: { trigger_kind: 'MUTUAL_CONSENT' },
+        capacity: 'TARGET',
       }),
       resolved({
-        id: 'right-outside',
+        id: 'right-mutual-buyer',
+        definition: 'TERMINATION_RIGHT_GRANT',
+        value: true,
+        concept: 'TERMR-MUTUAL',
+        quote: 'The agreement may be terminated by mutual written consent of Parent and the Company.',
+        attributes: { trigger_kind: 'MUTUAL_CONSENT' },
+        capacity: 'BUYER',
+      }),
+      resolved({
+        id: 'right-outside-target',
         definition: 'TERMINATION_OUTSIDE_DATE',
         value: '2027-06-30',
         concept: 'TERMR-OUTSIDE',
         quote: 'Either Parent or the Company may terminate if closing has not occurred by June 30, 2027.',
         attributes: { trigger_kind: 'OUTSIDE_DATE', deadline_term_ref: 'Outside Date' },
+        capacity: 'TARGET',
+      }),
+      resolved({
+        id: 'right-outside-buyer',
+        definition: 'TERMINATION_OUTSIDE_DATE',
+        value: '2027-06-30',
+        concept: 'TERMR-OUTSIDE',
+        quote: 'Either Parent or the Company may terminate if closing has not occurred by June 30, 2027.',
+        attributes: { trigger_kind: 'OUTSIDE_DATE', deadline_term_ref: 'Outside Date' },
+        capacity: 'BUYER',
       }),
       resolved({
         id: 'right-breach',
@@ -107,12 +128,22 @@ test('governed termination rights retain Wave B evidence and expose direct Query
         capacity: 'BUYER',
       }),
       resolved({
-        id: 'right-vote',
+        id: 'right-vote-target',
         definition: 'TERMINATION_RIGHT_GRANT',
         value: true,
         concept: 'TERMR-NOVOTE',
         quote: 'Either party may terminate if the required stockholder vote is not obtained.',
         attributes: { trigger_kind: 'VOTE_FAILURE' },
+        capacity: 'TARGET',
+      }),
+      resolved({
+        id: 'right-vote-buyer',
+        definition: 'TERMINATION_RIGHT_GRANT',
+        value: true,
+        concept: 'TERMR-NOVOTE',
+        quote: 'Either party may terminate if the required stockholder vote is not obtained.',
+        attributes: { trigger_kind: 'VOTE_FAILURE' },
+        capacity: 'BUYER',
       }),
     ],
     open_world: [

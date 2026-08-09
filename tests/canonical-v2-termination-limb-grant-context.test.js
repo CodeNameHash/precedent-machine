@@ -157,7 +157,7 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   // TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE and took the same replay to
   // 12 -- this assertion tracks that later count since it replays the
   // CURRENT resolver, not resolver-as-of-fix-2.
-  assert.equal(resolution.resolved.length, 12, 'resolved rises from the committed 1 to 8 by this fix, then to 12 by Step 3A -- measured by replay, not asserted');
+  assert.equal(resolution.resolved.length, 17, 'resolved rises from 12 post-Step-3A to 17 after Step-2X-I two-row mutual mint (+5 from EITHER_PARTY fan-out)');
   assert.ok(
     resolution.review_queue.every((item) => !item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE')),
     'no candidate anywhere in the review queue may still carry this reason after the fix',
@@ -179,13 +179,16 @@ test('REPLAY (evidence/canonical-v2/modiv-termination-20260806/): every (b)/(c)/
   }
 
   const legalRestraint = bySourceCitation.get('7.1(b)(i)');
-  assert.ok(legalRestraint && legalRestraint.length === 1);
-  assert.deepEqual(legalRestraint[0].party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'either the Company, on the one hand, or Parent, on the other hand', capacity: 'EITHER_PRINCIPAL_PARTY' });
+  assert.ok(legalRestraint && legalRestraint.length === 2);
+  assert.deepEqual(legalRestraint.map((e) => e.party.capacity).sort(), ['BUYER', 'TARGET']);
+  assert.ok(legalRestraint.some((e) => e.party.value === 'the Company' && e.party.capacity === 'TARGET'));
+  assert.ok(legalRestraint.some((e) => e.party.value === 'Parent' && e.party.capacity === 'BUYER'));
 
   const outsideDate = bySourceCitation.get('7.1(b)(ii)');
-  assert.ok(outsideDate && outsideDate.length === 2, 'both the plain and the deadline_term-carrying OUTSIDE_DATE candidates resolve');
+  assert.ok(outsideDate && outsideDate.length === 4, 'both OUTSIDE_DATE candidates resolve as two principal-party rows each');
   for (const entry of outsideDate) {
-    assert.equal(entry.party.capacity, 'EITHER_PRINCIPAL_PARTY');
+    assert.ok(entry.party.capacity === 'TARGET' || entry.party.capacity === 'BUYER');
+    assert.notEqual(entry.party.capacity, 'EITHER_PRINCIPAL_PARTY');
   }
 
   const companyBreach = bySourceCitation.get('7.1(c)(ii)');
