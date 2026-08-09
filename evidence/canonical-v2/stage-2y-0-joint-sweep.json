@@ -1,0 +1,567 @@
+{
+  "artifact_id": "4762b63b02a9a51d022cfe1c8d25731910872527752dfe35fa6e84a47999a83d",
+  "calibration_authority": null,
+  "evidence_blockers": {
+    "b_d": {
+      "false_no_definition_missing_kdt_evidence": {
+        "by_deal": {
+          "skywater": 13,
+          "topbuild": 5
+        },
+        "count": 18,
+        "rows": [
+          {
+            "deal": "skywater",
+            "ledger_id": "14fcca68b705dd76dab3e63a188b935c383cd5b0c30db77a97516a2989e19ef0",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "203494891d396e9e8b73842d367e8298e8fc1a46f5814958e0d0f4fd7c53dd21",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "32edd85f1ee956c6e9ce46d4b2462d344c6874de5d2ef5719b614fcca0c21529",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "4a5400c3f53f7c096c2db1582ba60f5719bd09fa95c884c0e1167c7dafa4187f",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "6ca55b74b15d82c8cacf5cd45071d7b0e1d1cb843171c31233a242e07f1344d6",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "7172fc4a964ed63d8f1de275de92e20946a175ce9e8fcb150cc2849fe7bc4f57",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "9395e99dd9210bed93f95df8a749be16a1f985c5deb3c3afdc2d397089f3fdb8",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "962e82de37315a107b0a5b7bb792807e150f84dd172717b552d86382091dd4cc",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "a75da2e19c92427d4534d67069cf2918da87f54453cf39c403b337254e2224b4",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "aebdb3ea4b6d661f031da0c6ac251c031a526eb4072caf1a5f5b2b3610648032",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "d8e6b3c12492480654c94f5bc0afd039d5a0ae2cb7f03d289d4fd3a84ce018b0",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "de842b871b7c8663a53f327bc2dacf600e77ae6554291dde230ed30f29f253b4",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "skywater",
+            "ledger_id": "e84c4e88dc1129b50089715cf78cbcaa12a5ea7cf5e9415c25e978bba425e62d",
+            "requested_party": "TARGET"
+          },
+          {
+            "deal": "topbuild",
+            "ledger_id": "339e872a82f59c3ae11d61655fd1d29ba120ce4a378efa0370cea18c8c999c00",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "topbuild",
+            "ledger_id": "4846a90567529b05b8df3b5b1e193ce7268d4d7756fea197495947938927c363",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "topbuild",
+            "ledger_id": "8f68a00a4f4296fbe5c2cc9548412dbb273e786fa611c0ad8b868fb87de397df",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "topbuild",
+            "ledger_id": "b8c20afd585e5abb01365ab22bbfcc895283b663235a518d1760ed55c07b67ba",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "topbuild",
+            "ledger_id": "c4eb1d73b75000c0cfe95723eb5c765846c220d46b8457ce4f8483bffb5104c4",
+            "requested_party": "BUYER"
+          }
+        ]
+      },
+      "not_assessable": [
+        {
+          "deal": "modiv",
+          "family": "REPRESENTATIONS",
+          "reason": "MISSING_FINAL_CORPUS_DEFINED_TERM_BINDING"
+        }
+      ],
+      "true_agreement_definition_absence": {
+        "by_deal": {
+          "skechers": 3
+        },
+        "count": 3,
+        "rows": [
+          {
+            "deal": "skechers",
+            "ledger_id": "7a3255e67cd82a7355afb2a952a826a2f64fbe0f71e8c3d8c5f2ba96271cd2b4",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "skechers",
+            "ledger_id": "99dc96e850d05a9732fa4b1944408306f943e1b74e919ac134829456501449b0",
+            "requested_party": "BUYER"
+          },
+          {
+            "deal": "skechers",
+            "ledger_id": "c0929f377c28a8f022b52202776af94cdfd3359ae446cb87392bee8d3f60c467",
+            "requested_party": "BUYER"
+          }
+        ]
+      }
+    }
+  },
+  "human_anchor_gate": {
+    "closed": true,
+    "publication_authorisation": "NONE",
+    "reason": "HUMAN_ANCHOR_REVIEW_PENDING",
+    "reviewed_cards": 0,
+    "total_cards": 80
+  },
+  "input_digests": {
+    "config": "9569c3a57edf7a6ec024ffe598b1077aa6e69cfd65dff2a334149851d613a725",
+    "defined_term_replay": "11bc31c15583e2f5567de006979892c150f2737f0bfa27226181e42dc8307e29",
+    "human_anchor_decision_ledger": "32340d933a17fe57696bb50696021ac78438c1a8b2329b2be53c06bef3ef1031",
+    "human_anchor_machine_packet": "02fb53c2f3a41bab23b42fbde346fcb9b90dffa1131aeb89eb6d6b86633aa250"
+  },
+  "joint_confirmation": null,
+  "model_calls": 0,
+  "per_family_measurements": {
+    "measurements": [],
+    "reason": "HUMAN_ANCHOR_UNREVIEWED",
+    "status": "NOT_RUN"
+  },
+  "plan": {
+    "baseline": {
+      "binary_controls": {
+        "DUPLICATE_SUPPRESSION": false,
+        "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+        "QUALIFIER_DISPATCH": false
+      },
+      "control_rungs": {
+        "CONTEXT_WINDOW": 0,
+        "CORROBORATION_STRICTNESS": 0,
+        "DEFINED_TERMS": 0,
+        "LEXICAL_NET": 0,
+        "NUMERALS": 0,
+        "TOPIC_CLASSIFICATION": 0
+      },
+      "mechanism_id": null,
+      "omitted_mechanism_id": null,
+      "run_kind": "BASELINE",
+      "rung": null
+    },
+    "config": {
+      "binary_controls": {
+        "DUPLICATE_SUPPRESSION": false,
+        "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+        "QUALIFIER_DISPATCH": false
+      },
+      "control_rungs": {
+        "CONTEXT_WINDOW": 0,
+        "CORROBORATION_STRICTNESS": 0,
+        "DEFINED_TERMS": 0,
+        "LEXICAL_NET": 0,
+        "NUMERALS": 0,
+        "TOPIC_CLASSIFICATION": 0
+      },
+      "joint_sweep_config_id": "e937c9bae717cbc78aba2a6057b888c26c07bbc27a3dda7e9354e73bc281c1c9",
+      "schema_version": "STAGE_2Y_JOINT_SWEEP_CONFIG/V1",
+      "selected_joint_rungs": null
+    },
+    "joint_point": null,
+    "leave_one_out": [],
+    "one_at_a_time": [
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 1,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CONTEXT_WINDOW",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 2,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CONTEXT_WINDOW",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 3,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CONTEXT_WINDOW",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 3
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 4,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CONTEXT_WINDOW",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 4
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 1,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CORROBORATION_STRICTNESS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 2,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CORROBORATION_STRICTNESS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 3,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CORROBORATION_STRICTNESS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 3
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 4,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "CORROBORATION_STRICTNESS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 4
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 1,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "DEFINED_TERMS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 2,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "DEFINED_TERMS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 3,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "DEFINED_TERMS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 3
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 1,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "NUMERALS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 2,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "NUMERALS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 3,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "NUMERALS",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 3
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 1,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "LEXICAL_NET",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 2,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 0
+        },
+        "mechanism_id": "LEXICAL_NET",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 1
+        },
+        "mechanism_id": "TOPIC_CLASSIFICATION",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 1
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 2
+        },
+        "mechanism_id": "TOPIC_CLASSIFICATION",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 2
+      },
+      {
+        "binary_controls": {
+          "DUPLICATE_SUPPRESSION": false,
+          "OPEN_WORLD_PROMOTION_REGISTRY_ACTIVATION": false,
+          "QUALIFIER_DISPATCH": false
+        },
+        "control_rungs": {
+          "CONTEXT_WINDOW": 0,
+          "CORROBORATION_STRICTNESS": 0,
+          "DEFINED_TERMS": 0,
+          "LEXICAL_NET": 0,
+          "NUMERALS": 0,
+          "TOPIC_CLASSIFICATION": 3
+        },
+        "mechanism_id": "TOPIC_CLASSIFICATION",
+        "omitted_mechanism_id": null,
+        "run_kind": "ONE_AT_A_TIME",
+        "rung": 3
+      }
+    ]
+  },
+  "publication_authorisation": "NONE",
+  "replay_driver_calls": 0,
+  "schema_version": "STAGE_2Y_JOINT_SWEEP_RUN/V1",
+  "serving_activated": false,
+  "status": "BLOCKED_HUMAN_ANCHOR_UNREVIEWED",
+  "writes_performed": false
+}
