@@ -2736,6 +2736,72 @@ has zero decisions. There is therefore no completed anchor set, calibration,
 passing selected rung, calibration authority, eligible claim or publication
 release. Every current candidate remains `WITHHELD`.
 
+### What the first implementation attempt proved, and the six rules that follow
+
+**Added 2026-08-09 after the first build landed and the corpus moved 68.0% →
+69.3%.** That result is not evidence about the fixes. It is evidence about this
+plan, and the lessons are written here rather than in a note because they change
+how every step below is funded.
+
+**What was actually spent: 46 model calls across three families.** Not a large
+extraction spend — REPRESENTATIONS alone was 172 calls. The cost of the first
+attempt was elapsed time and build effort, not tokens.
+
+**What moved, in four states rather than one rate** — and this is why one rate is
+banned below:
+
+| family | attempted | resolved | open-world | review |
+|---|---|---|---|---|
+| CLOSING_CONDITIONS | 117 → 138 | **57 → 94** | **36 → 13** | 60 → 44 |
+| FINANCING_COVENANTS | 22 → 17 | 5 → 5 | **19 → 35** | 17 → 12 |
+| PROXY_MEETING | 89 → 79 | 31 → 30 | **26 → 45** | 58 → 49 |
+
+Closing Conditions is a real win: content moved out of *both* open-world and
+review into resolved. **Financing and Proxy are regressions that were reported as
+"flat" and "−1".** Their resolved counts barely moved, but 35 claims fell into
+open-world between them. A resolved-count report cannot see that. A four-state
+report cannot miss it.
+
+**Why the corpus barely moved: exactly one claim-recovering step was activated.**
+2Y-A not built, 2Y-F not implemented, 2Y-G report-only with zero suppression,
+2Y-H substrate only, 2Y-I off, 2Y-J held. The only lever that ran was 2Y-L's
+prompt — which produced the entire gain, and which this plan had sequenced
+**last** on the grounds that prompt bumps are expensive.
+
+**The design error was mine, and it is specific.** There are two different acts
+and this plan collapsed them: loosening a check so a claim **resolves into the
+review queue**, and **publishing** a claim unattended. The precision risk that
+justifies the whole calibration apparatus lives only in the second. Gating both
+withheld every measurable recovery to guard against a risk that applies to
+neither the queue nor the reviewer.
+
+### The six rules
+
+1. **Split the gate.** Resolution into the review queue is not publication.
+   Resolver-side loosenings may land live and measured; only publication waits on
+   calibration. This is the single change that unblocks the most work.
+2. **Vertical slice before horizontal build.** Take one family end to end —
+   recover, measure, publish — and prove the whole chain, before building any
+   mechanism across all families. The first attempt built thirteen mechanisms
+   horizontally and activated one.
+3. **A measured cohort before a build, and a kill threshold.** 2Y-I was planned
+   at 463–485 occurrences; its measured safe cohort is **104**. Every step's
+   register estimate is a guess until a report-only pass measures it, and a step
+   whose measured cohort comes in far below its estimate is re-ranked or dropped
+   rather than built on the estimate.
+4. **Nothing lands inert without a named switch-on condition and owner.**
+   "Report-only" with no expiry is how a build produces no result.
+5. **Order by effect, not by cost.** The free-first ordering put the one lever
+   that worked at the end. Replay being free is a reason to *validate* cheaply,
+   not a reason to *sequence* by price.
+6. **Prove the instrument before the human sitting.** See the amendment below on
+   the anchor packet: an instrument that cannot measure what the gate depends on
+   turns a human's time into a re-sit.
+
+**And a reporting rule that follows from the table above: every family is
+reported in four states — attempted, resolved, open-world, review — before and
+after. Never a single rate, and never resolved-count alone.**
+
 ### The ladders
 
 Looseness is not one dial. Each mechanism gets an **ordinal ladder**, rung 0
@@ -2879,6 +2945,28 @@ open-world.
 The design above survived review directionally. Seven things in it did not, and
 each would have produced a confident wrong answer.
 
+0. **The built packet does not yet meet amendments 1 and 3, and sitting with it
+   would force a re-sit.** Checked 2026-08-09 against
+   `evidence/blind-review/2026-08-09/stage-2y-0-human-anchor-machine-packet.json`.
+   Two defects, both cheap to fix and both fatal to a one-shot sitting:
+   **(a) underpowered.** Seeding is correctly *designed* — 8 of 80 cards, 4
+   planted party swaps and 4 planted wrong materiality codes — but **4 seeds per
+   hard class cannot measure a detection rate**. An adjudicator catching 3 of 4
+   scores 75% with a 95% interval running roughly 30–95%: indistinguishable from
+   a poor adjudicator. Raise to **~12 seeds per hard class**. Seeds cost the
+   reviewer exactly what real cards cost, so this is close to free.
+   **(b) unjudgeable for most classes.** Each card carries the bare excerpt and
+   nothing around it — e.g. `"in all material respects"`, 24 bytes. That is
+   enough for the 16 `MATERIALITY_CODE` cards, where the excerpt and the proposed
+   code are the whole question. It is **not** enough for `PARTY_ATTRIBUTION`,
+   `SPAN` or `TOPIC_BUCKET`, which are 48 of the 80: you cannot tell whether the
+   obligor is right without the sentence that names the obligor. The packet needs
+   a **context window per card** — the governing sentence and chapeau, byte-bound
+   like the excerpt. *(Which is the same governing-context lookup 2Y-A needs, so
+   building it serves both.)*
+   Until both are fixed, the sitting produces reliable verdicts on 16 cards and
+   guesses on 64, and the calibration authority built on it would be worth less
+   than it appears.
 1. **The anchor set must contain deliberately wrong claims.** As specified it
    could not validate the thing the gate depends on. 60–100 claims across ~20
    families × 5 error classes gives cells of nought to two, and criterion 3
