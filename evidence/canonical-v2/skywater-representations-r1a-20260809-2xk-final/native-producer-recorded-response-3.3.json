@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:30:33.494Z",
+  "section_reference": "3.3",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.3\",\"party_making\":\"the Company\",\"chapeau_quote\":\"The execution, delivery and performance by the Company of this Agreement and the consummation by the Company of the Transactions require no action by or in respect of, or filing with, a Governmental Authority other than\",\"limbs\":[{\"limb_path\":[\"(f)\"],\"assertion_quote\":\"(f) other actions or filings the absence or omission of which would not, individually or in the aggregate, be reasonably likely to have a Company Material Adverse Effect\",\"subject\":\"other governmental actions or filings\"}],\"qualifiers\":[{\"kind\":\"THRESHOLD\",\"code\":null,\"quote\":\"the absence or omission of which would not, individually or in the aggregate, be reasonably likely to have a Company Material Adverse Effect\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"(f)\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"post-Closing ITAR registration notification for material change\",\"observed_quote\":\"filings required after the Closing with the U.S. Department of State in order to notify it of a material change to the Company’s registration under ITAR as a result of the Transactions\",\"why_unmapped\":\"This is a representation-specific regulatory filing exception and commercial attribute, not an accuracy or knowledge qualifier.\",\"nearest_concept\":null}]}"
+}

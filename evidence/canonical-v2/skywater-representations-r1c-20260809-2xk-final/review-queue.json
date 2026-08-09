@@ -1,0 +1,83 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "57f0476ff8522a44cc9d08ebee431bf2b5ffa6f5f9405d3df2f6a11c38c3dca6",
+  "review_queue": [
+    {
+      "section_reference": "3.26",
+      "source_citation": "3.26",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-T-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "af0c1020cb34cc6fdfa151ffa13f5c4c4ba967150e15ef991bb393b9a761280f",
+      "closure_id": "f2f797cd89e44b17b68881bc2c27042b854b1dce8dee8dfc0df26c7e7fca4f13",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.1",
+      "source_citation": "4.1",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [
+        "QUALIFIER_KIND_UNCLASSIFIED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "true, correct and complete",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "79102d3b107eb90bb557e8dfa92173766c31681481421871b5e0744bb70a1dd7",
+      "closure_id": "97222007e8a74b365ef8dc676e146d03dc03e2cf3fb12f81c5c32d1de881e3f3",
+      "normalised_phrase": "true, correct and complete",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-B-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    },
+    {
+      "section_reference": "4.6",
+      "generic_claim_key": "NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+      "concept_key": "REP-B-QUALIFIER",
+      "reasons": [],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "1bda47446716094379dd0e86c7883b6da13de34ed5d1c5fe149855b64e01ba7d",
+      "closure_id": "afe79c45114f9450abbb081a633a0c530e100da2f06b13f0f176b94103a3b8af",
+      "normalised_phrase": "in all material respects",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-B-QUALIFIER",
+      "structure_context": {
+        "status": "UNDETERMINED",
+        "reason": "NO_EVIDENCE_SPAN",
+        "schema_version": "GOVERNING_STRUCTURE/V1",
+        "segmenter_version": "SEGMENT_SUBCLAUSES/V1+MAX_DEPTH_5+XYZ"
+      }
+    }
+  ],
+  "review_queue_artifact_id": "210d61680cfcbe613b9822dfe2a6a8c53a883af458bd3509d7b51e8004d86878"
+}

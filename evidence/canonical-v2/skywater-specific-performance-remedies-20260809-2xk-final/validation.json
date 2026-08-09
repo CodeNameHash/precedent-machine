@@ -1,0 +1,143 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "c847e594483945e17baf035616ed2927156e6bd1a7fb80f8512a4aec39a13282",
+      "deal_key": "deal:skywater-specific-performance-remedies:96319f6957f87f52",
+      "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 306657,
+        "absolute_start": 306096,
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "closure_id": "1127e579e2617ab5fd3cc01278088aa4d14e497bfa384de1e26fac6570388f93",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "exact_bytes_digest": "8b53f520d0a8ff4d9d06efb1079fa8b1a033aa33010fd436eb752795395ac330",
+        "exact_text": "The parties agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached, for which monetary damages would not be an adequate remedy, and accordingly, each party agrees that the other party shall be entitled to an injunction or injunctions to prevent breaches of this Agreement and to enforce specifically the terms and provisions hereof, this being in addition to any other remedy to which the parties are entitled at law or in equity.",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "95199644b120b0e15e4b8fc7de8e5aadc5a063da44558b30c57012d278152aaf",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "785360f3adcd7462f6846f79378a462ab0e55303d6df1ab2cf6fd9f8c20f1caf"
+          }
+        ],
+        "output_text_hash": "8b53f520d0a8ff4d9d06efb1079fa8b1a033aa33010fd436eb752795395ac330",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "ed3ea87bfee303d4e487a5cfba4ba376aad44866bac6df42b668c6aa6256eeaf",
+        "source_occurrence_id": "3fa59ce61d03d5e2478faa7db41874a7250d49d1a5325d6b62401944bdd86c0e",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 308371,
+        "absolute_start": 306056,
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "closure_id": "fafc0adccf3689d1cd2b3b3ad75e773b9e7ce5429313f98ff457d2b35b26fdb1",
+        "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+        "document_hash": "d65d01126e1b5d6dca50b5811ee17071a4a9d23aaaffdbd6299619695cb8119a",
+        "ordinal": 1,
+        "provision_instance_id": "53c3705f180f2dea969a6122ddb233059cc22502d6248dd5febd9d998f01925a",
+        "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+        "source_anchor_id": "e1e656114effc6c7ba441291d858508b7135ec2d7c5d00599efe12d99c13aa7a",
+        "source_occurrence_id": "3fa59ce61d03d5e2478faa7db41874a7250d49d1a5325d6b62401944bdd86c0e"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 21,
+              "qualifier_kind_lexicon_version": 5
+            },
+            "tag": "MECHANICAL"
+          },
+          "assertion_kind": "SPECIFIC_PERFORMANCE"
+        },
+        "canonical_value": true,
+        "claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "23999efdc170535d445f59462d98250da5f9875a0f3761d646a4acb030e8ebd1",
+        "claim_revision_id": "d303e8d499022d302e4191f6e459585480607fea536e2fa0777e8d13d5ba0139",
+        "closure_id": "db71bb755f8506c3e69f6fd506cb3869834ab2cdec982715a66865487de5c904",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 306657,
+            "absolute_start": 306096,
+            "claim_evidence_id": "f56a703b21f8454cc1a55e48ec2fda9c806eb7c127ec7ff4ef99198f89e7173d",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "95199644b120b0e15e4b8fc7de8e5aadc5a063da44558b30c57012d278152aaf",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "f56a703b21f8454cc1a55e48ec2fda9c806eb7c127ec7ff4ef99198f89e7173d"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "The parties agree that irreparable damage would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or were otherwise breached, for which monetary damages would not be an adequate remedy, and accordingly, each party agrees that the other party shall be entitled to an injunction or injunctions to prevent breaches of this Agreement and to enforce specifically the terms and provisions hereof, this being in addition to any other remedy to which the parties are entitled at law or in equity.",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "53c3705f180f2dea969a6122ddb233059cc22502d6248dd5febd9d998f01925a",
+        "taxonomy_codes": {
+          "assertion_kind": "SPECIFIC_PERFORMANCE"
+        },
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "8c51d2b4f94705d55dc616f5a7841bf6c0a8c00f92a425dcc78e11043af87149",
+        "deal_admission_id": "c847e594483945e17baf035616ed2927156e6bd1a7fb80f8512a4aec39a13282",
+        "governed_deal_key": "deal:skywater-specific-performance-remedies:96319f6957f87f52",
+        "immutable_source_document_id": "b74ed1f02f2e1385121b187cb0bb6dd8144ff18449149b6cf20182eede0eb363",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "8805c4406470b26e795c4698acca0fd08c7bbed1efe3ffdb4f0f3c344a2c342d",
+        "source_admission_manifest_id": "a6ee2c016e1bb83314429ea9f8c76f427e75bbaaeab2bd87f91d5b22655807eb",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

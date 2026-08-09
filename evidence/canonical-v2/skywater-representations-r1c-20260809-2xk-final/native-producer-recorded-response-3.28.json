@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:30:14.872Z",
+  "section_reference": "3.28",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.28\",\"party_making\":\"The Company and the Board of Directors of the Company\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[],\"assertion_quote\":\"The Company and the Board of Directors of the Company have taken all action necessary to render inapplicable to this Agreement, the Mergers, the Voting Agreement, the Transactions and compliance with the terms of this Agreement and the Voting Agreement, the restrictions on transactions with an “interested stockholder” of the Company within the meaning of Section 203 of the DGCL, to the extent, if any, such restrictions would otherwise be applicable to this Agreement, the Mergers, the Voting Agreement, the Transactions and compliance with the terms of this Agreement and the Voting Agreement.\",\"subject\":\"Actions to render interested-stockholder restrictions inapplicable\"}],\"qualifiers\":[{\"kind\":\"THRESHOLD\",\"code\":null,\"quote\":\"all action necessary\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"Conditional applicability of interested-stockholder restrictions\",\"observed_quote\":\"to the extent, if any, such restrictions would otherwise be applicable to this Agreement, the Mergers, the Voting Agreement, the Transactions and compliance with the terms of this Agreement and the Voting Agreement\",\"why_unmapped\":\"This is a representation-specific conditional scope limitation, not an accuracy or knowledge standard.\",\"nearest_concept\":null}]}"
+}

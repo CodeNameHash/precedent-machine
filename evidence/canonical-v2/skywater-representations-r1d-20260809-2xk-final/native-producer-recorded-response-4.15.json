@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:32:04.152Z",
+  "section_reference": "4.15",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"4.15\",\"party_making\":\"Parent\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[\"Reorganization\"],\"assertion_quote\":\"Parent has not taken any action or agreed to take any action, and is not aware, after reasonable diligence, of the existence of any fact or circumstance, that could reasonably be expected to prevent or impede the Mergers from qualifying for the Intended Tax Treatment.\",\"subject\":\"actions, facts or circumstances affecting tax treatment of the Mergers\"}],\"qualifiers\":[{\"kind\":\"KNOWLEDGE\",\"code\":\"AFTER_INQUIRY\",\"quote\":\"after reasonable diligence\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"Reorganization\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"tax qualification impediment standard\",\"observed_quote\":\"that could reasonably be expected to prevent or impede the Mergers from qualifying for the Intended Tax Treatment.\",\"why_unmapped\":\"This is a representation-specific substantive standard, not an accuracy or knowledge qualifier.\",\"nearest_concept\":null}]}"
+}

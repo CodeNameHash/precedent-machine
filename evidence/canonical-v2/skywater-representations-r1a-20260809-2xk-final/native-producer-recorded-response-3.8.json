@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:32:29.974Z",
+  "section_reference": "3.8",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"3.8\",\"party_making\":\"Company\",\"chapeau_quote\":\"The audited consolidated financial statements of the Company (including any related notes and schedules) included in its Annual Reports on Form 10-K referred to in Section 3.7(a)(i)\",\"limbs\":[{\"limb_path\":[\"Financial Statements\"],\"assertion_quote\":\"present fairly, in all material respects, the consolidated financial position of the Company and its consolidated Subsidiaries, as of the dates thereof and the consolidated results of its operations and its cash flows for the periods then ended, in each case, in conformity with GAAP applied on a consistent basis (except as may be indicated in the notes thereto).\",\"subject\":\"audited consolidated financial statements\"}],\"qualifiers\":[{\"kind\":\"ACCURACY\",\"code\":\"MAT_ALL_MATERIAL\",\"quote\":\"in all material respects\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[\"Financial Statements\"],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"GAAP conformity and consistency exception\",\"observed_quote\":\"in conformity with GAAP applied on a consistent basis (except as may be indicated in the notes thereto)\",\"why_unmapped\":\"This is a representation-specific accounting standard and exception, not an accuracy or knowledge qualifier code in this slice.\",\"nearest_concept\":\"ACCURACY\"}]}"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+  "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+  "recorded_at": "2026-08-09T07:29:41.347Z",
+  "section_reference": "4.7",
+  "prompt_id": "native-producer-representations/v1",
+  "prompt_version": 1,
+  "raw_response_text": "{\"representation_instances\":[{\"section_reference\":\"4.7\",\"party_making\":\"Parent\",\"chapeau_quote\":null,\"limbs\":[{\"limb_path\":[],\"assertion_quote\":\"The audited consolidated financial statements of Parent (including any related notes and schedules) included in the Annual Reports on Form 10-K referred to in Section 4.6(a)(i) present fairly, in all material respects, the consolidated financial position of Parent and its consolidated Subsidiaries as of the dates thereof and the consolidated results of their operations and their cash flows for the periods then ended, in each case, in conformity with GAAP applied on a consistent basis (except as may be indicated in the notes thereto).\",\"subject\":\"Parent audited consolidated financial statements\"}],\"qualifiers\":[{\"kind\":\"ACCURACY\",\"code\":\"MAT_ALL_MATERIAL\",\"quote\":\"in all material respects\",\"attachment\":{\"position\":\"ITEM\",\"governs_path\":[],\"ambiguity_signals\":{\"items_grammatically_parallel\":true}}}],\"definition_uses\":[],\"cross_references\":[]}],\"bring_down_conditions\":[],\"open_world_candidates\":[{\"candidate_kind\":\"ATTRIBUTE_OR_QUESTION\",\"observed_category\":\"GAAP consistency and notes exception\",\"observed_quote\":\"in each case, in conformity with GAAP applied on a consistent basis (except as may be indicated in the notes thereto)\",\"why_unmapped\":\"This is a representation-specific accounting standard and exception, not an accuracy or knowledge qualifier code in this slice.\",\"nearest_concept\":\"ACCURACY\"}]}"
+}
