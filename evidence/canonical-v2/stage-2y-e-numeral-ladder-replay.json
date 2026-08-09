@@ -7,13 +7,15 @@
   "selector": "canonical-v2-corpus-review-artifact.mjs:isFinalCorpusRun",
   "final_run_count": 157,
   "affected_recording_count": 19,
-  "input_digest": "sha256:dd20f8b3bd57ed895bbaa12e505e4b41908692ce4695c847735328ba77e560d7",
+  "input_digest": "sha256:c24ff7e4cedd5a9748886d05b8fec75ad688472dd858c4791b6a416b2d170739",
   "rungs": [
     {
       "numeral_rung": 0,
       "counts": {
-        "RESOLVED": 10,
-        "ABSTAIN": 9
+        "RESOLVED": 8,
+        "REVIEW": 11,
+        "OPEN_WORLD": 0,
+        "NOT_LOCATED_IN_OUTPUT": 0
       },
       "results": [
         {
@@ -21,56 +23,20 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "24a7a630b17346b09974940484e7ef57a5fc2ad639e39c0bf916a80f5a65f51f",
+          "claim_occurrence_id": "0793b41e8d7187542cb059df10a3402da2d548fb2e72c41837a94178eb02a76d",
           "closure_id": "67c9c5162b11618493ab7123c60be40bf3a9bea42bc03cf3960a687eb0396594",
           "raw_value_sha256": "sha256:3a1b8180597598e10a612175a926d3a7c5b81b5fa2f1f64f44009bb9d4ac2ef5",
           "raw_value": "For a period of one year following the Effective Time,",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "metsera-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
-          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
-          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
-          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "skechers-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
-          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
-          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
-          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
-          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
-          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
-          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
-          "result": {
+          },
+          "resolver_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "1",
-            "unit": "years"
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
           }
         },
         {
@@ -78,13 +44,87 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "e648c7d896f6011c2e6aaa433a96c9b6ef06acede8ce912cea5e33ec26659eff",
+          "claim_occurrence_id": "763260be023ca4cb9627767607db25c11a0f409179122637de6e9f3ce058e115",
           "closure_id": "cdbb1f47e9326542306145cb0db43d5ff39ea260413d2636ce48cedec547cc3d",
           "raw_value_sha256": "sha256:a2aa02dc3f81d5adc2c204350600fd50e43617864b0313add9b315d3689fd09d",
           "raw_value": "Until December 31 of the calendar year in which the Effective Time occurs",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
+          "claim_occurrence_id": "aa2c2708124d0968debb911fd2924a63766dce14f0b16a92a27e06ed60df72d7",
+          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
+          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
+          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "1",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
+          "claim_occurrence_id": "dec893b47204d2428270914c2c96033903b76d667445ce7835b84fcd803b0cad",
+          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
+          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
+          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
+          }
+        },
+        {
+          "run_name": "skechers-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
+          "claim_occurrence_id": "f53300fc2e06df7b975ace1d766ef2235657de7f746f41e4f511d3016e33f264",
+          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
+          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
+          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
           }
         },
         {
@@ -92,58 +132,21 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "2cae404abbdb28228ef130c9c2196d54a11fabb1cae29f893ea4aa1959d440b7",
+          "claim_occurrence_id": "2aede99daf79c081cad7aedfef7affba9e10f120c2c5e029205172d61b605b47",
           "closure_id": "64ae43fa704913e09cdcfa2050d030fa5faeef5b22fc82b1543a2d22d5827f4f",
           "raw_value_sha256": "sha256:db187339788bb1f11b271f98b463144578cb2271bbfeaad662e5bbe0c68899ee",
           "raw_value": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NON_LITERAL_NUMERAL"
-          }
-        },
-        {
-          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
-          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
-          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
-          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
-          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
-          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
-          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
-          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
-          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
-          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "30",
-            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "OBLIGOR_REF_NOT_IN_QUOTE"
+            ]
           }
         },
         {
@@ -151,29 +154,87 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "e13356679b9a8f97d2b7cedaf489ff266cb5398c7cf7f4ad3a6d48e50e65e5f1",
+          "claim_occurrence_id": "4631d7449866bbdfa58bfe8046e45b8c92826899784acb7177703f7b766a65d5",
           "closure_id": "16aee17a713d2eeba710ecf87adffabe49ac48493bbc705894bc1ca7fedcbfe4",
           "raw_value_sha256": "sha256:2041f11de2ee9eed5d339d2abe2df50a23cf71ae65a07620febe6241ee87627e",
           "raw_value": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "20",
             "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "20",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
-          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
-          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
-          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
-          "result": {
+          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
+          "claim_occurrence_id": "69a41bfdd41a242aa76b19e6990f084ebce4983948f90c5eebfdbc35fb0a8bff",
+          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
+          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
+          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
+          "parser_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
+          "claim_occurrence_id": "88c1b6b7e495aaa95cb6bc10d39adb61cdec2718786f522c6fac0d5dd1774d20",
+          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
+          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
+          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
+          "claim_occurrence_id": "b3aa8dea6f60504a780c15096d50301d3951c10dd49471ade6177c89474b20d3",
+          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
+          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
+          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
@@ -181,14 +242,44 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "2d3e7fde4acae2deac364dc3cedb428a7017265871f774a4e43fafd413b1d7b4",
+          "claim_occurrence_id": "8a00e4732c263dad71bea71f533169bfe42cf116aac20f2dac34ceed000d46c2",
           "closure_id": "9be99f2c56ba644f50b0641914f9e61c0fd207f8d09e843faf01af9284f65907",
           "raw_value_sha256": "sha256:0ce01064c1a711b60cbcb21853ca5a02a5481accf9db5c81b1bba7c034cd5a16",
           "raw_value": "shall continue in full force and effect in accordance with their terms with respect to any claims against any such Indemnified Party arising out of such acts or omissions for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS"
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
+          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
+          "claim_occurrence_id": "de6dfc08bbc13bc03637764f45a055c5259094c8c67105fe93be85bb1b5f812c",
+          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
+          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
+          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -196,72 +287,21 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "7ecc9938dc378fd2ea8511c991f63209686682a67b46fa4c337eb762ce224730",
+          "claim_occurrence_id": "f7c7218ef638282b7103b7de257288ef1c8433d7d86de52ea3e9c619e32cbc85",
           "closure_id": "d3c5c5289c0cfe160ca72ca0160827f729350551b05af0d7fcfcb7e4f1eac227",
           "raw_value_sha256": "sha256:4de60c9cea3aaa9934f57fa0004d40fa5189538d57cd37a79f7465d923155175",
           "raw_value": "during the period commencing at the Effective Time and ending on the sixth anniversary of the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "concho-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
-          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
-          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
-          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
-          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
-          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
-          "raw_value": "with a claims period of six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
-          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
-          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
-          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
-          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
-          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
-          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -269,13 +309,111 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "b6dcf93188f527bfb28e7c96f6d3768e73201dbaf41b9e271932a4f4572c69a5",
+          "claim_occurrence_id": "34e54be9d5e83bd73ca031a1e39390cf31e24aa7a7ad7ec1bceef3d94cdc2507",
           "closure_id": "0143e3ee915ea44448c3c3c84bfd55f32af27cce2a928f523d6e4a329c2bc6b2",
           "raw_value_sha256": "sha256:04cb80fcf4a68a1a430ea5775b67bfb4a1710cdb166a6adf8f00627011008ca6",
           "raw_value": "with a claims reporting or discovery period of at least six years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
+          "claim_occurrence_id": "b6d4064c521993b8ef4556669a8fe46592846217621120dc1bd7799bbd2f242f",
+          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
+          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
+          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
+          "claim_occurrence_id": "c79fd88b4e1c68cd4135db3c39f772f2b7b3d532839dc6f827d38453c3136d64",
+          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
+          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
+          "raw_value": "with a claims period of six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
+          "claim_occurrence_id": "db8c372acb3f4e3a2eab0c0f181bc0099b3a79600ef21e35264db77f0f7f7160",
+          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
+          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
+          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "concho-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
+          "claim_occurrence_id": "e2b3b3027a7ac825384d6be8f67d8a53cefcae2e23bc0514e76267ba608c9ad9",
+          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
+          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
+          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
           }
         },
         {
@@ -283,23 +421,33 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "d2d546136b260b403ef9ac2527fbcaf947d4359d3f68e5c6e1b96a75498ad0b0",
+          "claim_occurrence_id": "f025714c8ee29be3c9155747748d434c6f59422d226d8b2e57a4425085230524",
           "closure_id": "73f5362e6c20e2b15d3657819c41e6386d9b48c5e58bc610d90ec86d71b49286",
           "raw_value_sha256": "sha256:2fe7cd2073ee78df4ce3e719da3a45d7d5f731317a257e6b07c79243c4f0488e",
           "raw_value": "six-year “tail” directors’ and officers’ insurance policies",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
           }
         }
       ],
-      "results_digest": "sha256:3d2ec895bf9f1e60a4a4b9f135d23661187323c4e414437edffee815fb347e10"
+      "results_digest": "sha256:4a04caebc53cf4256ae44ab1ddbc5f453278d4da11521f2e2caaa532ab66fc9a"
     },
     {
       "numeral_rung": 1,
       "counts": {
-        "RESOLVED": 10,
-        "ABSTAIN": 9
+        "RESOLVED": 8,
+        "REVIEW": 11,
+        "OPEN_WORLD": 0,
+        "NOT_LOCATED_IN_OUTPUT": 0
       },
       "results": [
         {
@@ -307,56 +455,20 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "24a7a630b17346b09974940484e7ef57a5fc2ad639e39c0bf916a80f5a65f51f",
+          "claim_occurrence_id": "0793b41e8d7187542cb059df10a3402da2d548fb2e72c41837a94178eb02a76d",
           "closure_id": "67c9c5162b11618493ab7123c60be40bf3a9bea42bc03cf3960a687eb0396594",
           "raw_value_sha256": "sha256:3a1b8180597598e10a612175a926d3a7c5b81b5fa2f1f64f44009bb9d4ac2ef5",
           "raw_value": "For a period of one year following the Effective Time,",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "metsera-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
-          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
-          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
-          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "skechers-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
-          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
-          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
-          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
-          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
-          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
-          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
-          "result": {
+          },
+          "resolver_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "1",
-            "unit": "years"
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
           }
         },
         {
@@ -364,13 +476,87 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "e648c7d896f6011c2e6aaa433a96c9b6ef06acede8ce912cea5e33ec26659eff",
+          "claim_occurrence_id": "763260be023ca4cb9627767607db25c11a0f409179122637de6e9f3ce058e115",
           "closure_id": "cdbb1f47e9326542306145cb0db43d5ff39ea260413d2636ce48cedec547cc3d",
           "raw_value_sha256": "sha256:a2aa02dc3f81d5adc2c204350600fd50e43617864b0313add9b315d3689fd09d",
           "raw_value": "Until December 31 of the calendar year in which the Effective Time occurs",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
+          "claim_occurrence_id": "aa2c2708124d0968debb911fd2924a63766dce14f0b16a92a27e06ed60df72d7",
+          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
+          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
+          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "1",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
+          "claim_occurrence_id": "dec893b47204d2428270914c2c96033903b76d667445ce7835b84fcd803b0cad",
+          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
+          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
+          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
+          }
+        },
+        {
+          "run_name": "skechers-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
+          "claim_occurrence_id": "f53300fc2e06df7b975ace1d766ef2235657de7f746f41e4f511d3016e33f264",
+          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
+          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
+          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
           }
         },
         {
@@ -378,58 +564,21 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "2cae404abbdb28228ef130c9c2196d54a11fabb1cae29f893ea4aa1959d440b7",
+          "claim_occurrence_id": "2aede99daf79c081cad7aedfef7affba9e10f120c2c5e029205172d61b605b47",
           "closure_id": "64ae43fa704913e09cdcfa2050d030fa5faeef5b22fc82b1543a2d22d5827f4f",
           "raw_value_sha256": "sha256:db187339788bb1f11b271f98b463144578cb2271bbfeaad662e5bbe0c68899ee",
           "raw_value": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NON_LITERAL_NUMERAL"
-          }
-        },
-        {
-          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
-          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
-          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
-          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
-          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
-          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
-          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
-          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
-          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
-          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "30",
-            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "OBLIGOR_REF_NOT_IN_QUOTE"
+            ]
           }
         },
         {
@@ -437,29 +586,87 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "e13356679b9a8f97d2b7cedaf489ff266cb5398c7cf7f4ad3a6d48e50e65e5f1",
+          "claim_occurrence_id": "4631d7449866bbdfa58bfe8046e45b8c92826899784acb7177703f7b766a65d5",
           "closure_id": "16aee17a713d2eeba710ecf87adffabe49ac48493bbc705894bc1ca7fedcbfe4",
           "raw_value_sha256": "sha256:2041f11de2ee9eed5d339d2abe2df50a23cf71ae65a07620febe6241ee87627e",
           "raw_value": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "20",
             "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "20",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
-          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
-          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
-          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
-          "result": {
+          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
+          "claim_occurrence_id": "69a41bfdd41a242aa76b19e6990f084ebce4983948f90c5eebfdbc35fb0a8bff",
+          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
+          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
+          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
+          "parser_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
+          "claim_occurrence_id": "88c1b6b7e495aaa95cb6bc10d39adb61cdec2718786f522c6fac0d5dd1774d20",
+          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
+          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
+          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
+          "claim_occurrence_id": "b3aa8dea6f60504a780c15096d50301d3951c10dd49471ade6177c89474b20d3",
+          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
+          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
+          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
@@ -467,14 +674,44 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "2d3e7fde4acae2deac364dc3cedb428a7017265871f774a4e43fafd413b1d7b4",
+          "claim_occurrence_id": "8a00e4732c263dad71bea71f533169bfe42cf116aac20f2dac34ceed000d46c2",
           "closure_id": "9be99f2c56ba644f50b0641914f9e61c0fd207f8d09e843faf01af9284f65907",
           "raw_value_sha256": "sha256:0ce01064c1a711b60cbcb21853ca5a02a5481accf9db5c81b1bba7c034cd5a16",
           "raw_value": "shall continue in full force and effect in accordance with their terms with respect to any claims against any such Indemnified Party arising out of such acts or omissions for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS"
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
+          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
+          "claim_occurrence_id": "de6dfc08bbc13bc03637764f45a055c5259094c8c67105fe93be85bb1b5f812c",
+          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
+          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
+          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -482,72 +719,21 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "7ecc9938dc378fd2ea8511c991f63209686682a67b46fa4c337eb762ce224730",
+          "claim_occurrence_id": "f7c7218ef638282b7103b7de257288ef1c8433d7d86de52ea3e9c619e32cbc85",
           "closure_id": "d3c5c5289c0cfe160ca72ca0160827f729350551b05af0d7fcfcb7e4f1eac227",
           "raw_value_sha256": "sha256:4de60c9cea3aaa9934f57fa0004d40fa5189538d57cd37a79f7465d923155175",
           "raw_value": "during the period commencing at the Effective Time and ending on the sixth anniversary of the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "concho-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
-          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
-          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
-          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
-          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
-          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
-          "raw_value": "with a claims period of six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
-          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
-          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
-          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
-          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
-          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
-          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -555,13 +741,111 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "b6dcf93188f527bfb28e7c96f6d3768e73201dbaf41b9e271932a4f4572c69a5",
+          "claim_occurrence_id": "34e54be9d5e83bd73ca031a1e39390cf31e24aa7a7ad7ec1bceef3d94cdc2507",
           "closure_id": "0143e3ee915ea44448c3c3c84bfd55f32af27cce2a928f523d6e4a329c2bc6b2",
           "raw_value_sha256": "sha256:04cb80fcf4a68a1a430ea5775b67bfb4a1710cdb166a6adf8f00627011008ca6",
           "raw_value": "with a claims reporting or discovery period of at least six years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
+          "claim_occurrence_id": "b6d4064c521993b8ef4556669a8fe46592846217621120dc1bd7799bbd2f242f",
+          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
+          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
+          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
+          "claim_occurrence_id": "c79fd88b4e1c68cd4135db3c39f772f2b7b3d532839dc6f827d38453c3136d64",
+          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
+          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
+          "raw_value": "with a claims period of six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
+          "claim_occurrence_id": "db8c372acb3f4e3a2eab0c0f181bc0099b3a79600ef21e35264db77f0f7f7160",
+          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
+          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
+          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "concho-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
+          "claim_occurrence_id": "e2b3b3027a7ac825384d6be8f67d8a53cefcae2e23bc0514e76267ba608c9ad9",
+          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
+          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
+          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
           }
         },
         {
@@ -569,23 +853,33 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "d2d546136b260b403ef9ac2527fbcaf947d4359d3f68e5c6e1b96a75498ad0b0",
+          "claim_occurrence_id": "f025714c8ee29be3c9155747748d434c6f59422d226d8b2e57a4425085230524",
           "closure_id": "73f5362e6c20e2b15d3657819c41e6386d9b48c5e58bc610d90ec86d71b49286",
           "raw_value_sha256": "sha256:2fe7cd2073ee78df4ce3e719da3a45d7d5f731317a257e6b07c79243c4f0488e",
           "raw_value": "six-year “tail” directors’ and officers’ insurance policies",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
           }
         }
       ],
-      "results_digest": "sha256:3d2ec895bf9f1e60a4a4b9f135d23661187323c4e414437edffee815fb347e10"
+      "results_digest": "sha256:4a04caebc53cf4256ae44ab1ddbc5f453278d4da11521f2e2caaa532ab66fc9a"
     },
     {
       "numeral_rung": 2,
       "counts": {
-        "RESOLVED": 15,
-        "ABSTAIN": 4
+        "RESOLVED": 9,
+        "REVIEW": 10,
+        "OPEN_WORLD": 0,
+        "NOT_LOCATED_IN_OUTPUT": 0
       },
       "results": [
         {
@@ -593,58 +887,21 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "24a7a630b17346b09974940484e7ef57a5fc2ad639e39c0bf916a80f5a65f51f",
+          "claim_occurrence_id": "0793b41e8d7187542cb059df10a3402da2d548fb2e72c41837a94178eb02a76d",
           "closure_id": "67c9c5162b11618493ab7123c60be40bf3a9bea42bc03cf3960a687eb0396594",
           "raw_value_sha256": "sha256:3a1b8180597598e10a612175a926d3a7c5b81b5fa2f1f64f44009bb9d4ac2ef5",
           "raw_value": "For a period of one year following the Effective Time,",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "1",
             "unit": "years"
-          }
-        },
-        {
-          "run_name": "metsera-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
-          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
-          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
-          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
-          "result": {
+          },
+          "resolver_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "1",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "skechers-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
-          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
-          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
-          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
-          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
-          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
-          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "1",
-            "unit": "years"
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
           }
         },
         {
@@ -652,13 +909,88 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "e648c7d896f6011c2e6aaa433a96c9b6ef06acede8ce912cea5e33ec26659eff",
+          "claim_occurrence_id": "763260be023ca4cb9627767607db25c11a0f409179122637de6e9f3ce058e115",
           "closure_id": "cdbb1f47e9326542306145cb0db43d5ff39ea260413d2636ce48cedec547cc3d",
           "raw_value_sha256": "sha256:a2aa02dc3f81d5adc2c204350600fd50e43617864b0313add9b315d3689fd09d",
           "raw_value": "Until December 31 of the calendar year in which the Effective Time occurs",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
+          "claim_occurrence_id": "aa2c2708124d0968debb911fd2924a63766dce14f0b16a92a27e06ed60df72d7",
+          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
+          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
+          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "1",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
+          "claim_occurrence_id": "dec893b47204d2428270914c2c96033903b76d667445ce7835b84fcd803b0cad",
+          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
+          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
+          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "1",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
+          }
+        },
+        {
+          "run_name": "skechers-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
+          "claim_occurrence_id": "f53300fc2e06df7b975ace1d766ef2235657de7f746f41e4f511d3016e33f264",
+          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
+          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
+          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
           }
         },
         {
@@ -666,59 +998,22 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "2cae404abbdb28228ef130c9c2196d54a11fabb1cae29f893ea4aa1959d440b7",
+          "claim_occurrence_id": "2aede99daf79c081cad7aedfef7affba9e10f120c2c5e029205172d61b605b47",
           "closure_id": "64ae43fa704913e09cdcfa2050d030fa5faeef5b22fc82b1543a2d22d5827f4f",
           "raw_value_sha256": "sha256:db187339788bb1f11b271f98b463144578cb2271bbfeaad662e5bbe0c68899ee",
           "raw_value": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "25",
             "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
-          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
-          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
-          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
-          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
-          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
-          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
-          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
-          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
-          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "30",
-            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "OBLIGOR_REF_NOT_IN_QUOTE"
+            ]
           }
         },
         {
@@ -726,29 +1021,87 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "e13356679b9a8f97d2b7cedaf489ff266cb5398c7cf7f4ad3a6d48e50e65e5f1",
+          "claim_occurrence_id": "4631d7449866bbdfa58bfe8046e45b8c92826899784acb7177703f7b766a65d5",
           "closure_id": "16aee17a713d2eeba710ecf87adffabe49ac48493bbc705894bc1ca7fedcbfe4",
           "raw_value_sha256": "sha256:2041f11de2ee9eed5d339d2abe2df50a23cf71ae65a07620febe6241ee87627e",
           "raw_value": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "20",
             "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "20",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
-          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
-          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
-          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
-          "result": {
+          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
+          "claim_occurrence_id": "69a41bfdd41a242aa76b19e6990f084ebce4983948f90c5eebfdbc35fb0a8bff",
+          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
+          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
+          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
+          "parser_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
+          "claim_occurrence_id": "88c1b6b7e495aaa95cb6bc10d39adb61cdec2718786f522c6fac0d5dd1774d20",
+          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
+          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
+          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
+          "claim_occurrence_id": "b3aa8dea6f60504a780c15096d50301d3951c10dd49471ade6177c89474b20d3",
+          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
+          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
+          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
@@ -756,14 +1109,44 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "2d3e7fde4acae2deac364dc3cedb428a7017265871f774a4e43fafd413b1d7b4",
+          "claim_occurrence_id": "8a00e4732c263dad71bea71f533169bfe42cf116aac20f2dac34ceed000d46c2",
           "closure_id": "9be99f2c56ba644f50b0641914f9e61c0fd207f8d09e843faf01af9284f65907",
           "raw_value_sha256": "sha256:0ce01064c1a711b60cbcb21853ca5a02a5481accf9db5c81b1bba7c034cd5a16",
           "raw_value": "shall continue in full force and effect in accordance with their terms with respect to any claims against any such Indemnified Party arising out of such acts or omissions for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS"
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
+          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
+          "claim_occurrence_id": "de6dfc08bbc13bc03637764f45a055c5259094c8c67105fe93be85bb1b5f812c",
+          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
+          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
+          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -771,73 +1154,21 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "7ecc9938dc378fd2ea8511c991f63209686682a67b46fa4c337eb762ce224730",
+          "claim_occurrence_id": "f7c7218ef638282b7103b7de257288ef1c8433d7d86de52ea3e9c619e32cbc85",
           "closure_id": "d3c5c5289c0cfe160ca72ca0160827f729350551b05af0d7fcfcb7e4f1eac227",
           "raw_value_sha256": "sha256:4de60c9cea3aaa9934f57fa0004d40fa5189538d57cd37a79f7465d923155175",
           "raw_value": "during the period commencing at the Effective Time and ending on the sixth anniversary of the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "concho-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
-          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
-          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
-          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
-          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
-          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
-          "raw_value": "with a claims period of six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
-          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
-          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
-          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
-          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
-          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
-          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -845,14 +1176,112 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "b6dcf93188f527bfb28e7c96f6d3768e73201dbaf41b9e271932a4f4572c69a5",
+          "claim_occurrence_id": "34e54be9d5e83bd73ca031a1e39390cf31e24aa7a7ad7ec1bceef3d94cdc2507",
           "closure_id": "0143e3ee915ea44448c3c3c84bfd55f32af27cce2a928f523d6e4a329c2bc6b2",
           "raw_value_sha256": "sha256:04cb80fcf4a68a1a430ea5775b67bfb4a1710cdb166a6adf8f00627011008ca6",
           "raw_value": "with a claims reporting or discovery period of at least six years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
+          "claim_occurrence_id": "b6d4064c521993b8ef4556669a8fe46592846217621120dc1bd7799bbd2f242f",
+          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
+          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
+          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
+          }
+        },
+        {
+          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
+          "claim_occurrence_id": "c79fd88b4e1c68cd4135db3c39f772f2b7b3d532839dc6f827d38453c3136d64",
+          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
+          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
+          "raw_value": "with a claims period of six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
+          "claim_occurrence_id": "db8c372acb3f4e3a2eab0c0f181bc0099b3a79600ef21e35264db77f0f7f7160",
+          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
+          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
+          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "concho-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
+          "claim_occurrence_id": "e2b3b3027a7ac825384d6be8f67d8a53cefcae2e23bc0514e76267ba608c9ad9",
+          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
+          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
+          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
           }
         },
         {
@@ -860,23 +1289,33 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "d2d546136b260b403ef9ac2527fbcaf947d4359d3f68e5c6e1b96a75498ad0b0",
+          "claim_occurrence_id": "f025714c8ee29be3c9155747748d434c6f59422d226d8b2e57a4425085230524",
           "closure_id": "73f5362e6c20e2b15d3657819c41e6386d9b48c5e58bc610d90ec86d71b49286",
           "raw_value_sha256": "sha256:2fe7cd2073ee78df4ce3e719da3a45d7d5f731317a257e6b07c79243c4f0488e",
           "raw_value": "six-year “tail” directors’ and officers’ insurance policies",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
           }
         }
       ],
-      "results_digest": "sha256:83f90f8029537c51b38d75467c3b42377f9c8bc17414f5702a88ac23eca11ad5"
+      "results_digest": "sha256:af7076cba6009d0309a9cbe86838a578b9e0ff3ec26d5f9653e183b7b22300b6"
     },
     {
       "numeral_rung": 3,
       "counts": {
-        "RESOLVED": 15,
-        "ABSTAIN": 4
+        "RESOLVED": 9,
+        "REVIEW": 10,
+        "OPEN_WORLD": 0,
+        "NOT_LOCATED_IN_OUTPUT": 0
       },
       "results": [
         {
@@ -884,58 +1323,21 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "24a7a630b17346b09974940484e7ef57a5fc2ad639e39c0bf916a80f5a65f51f",
+          "claim_occurrence_id": "0793b41e8d7187542cb059df10a3402da2d548fb2e72c41837a94178eb02a76d",
           "closure_id": "67c9c5162b11618493ab7123c60be40bf3a9bea42bc03cf3960a687eb0396594",
           "raw_value_sha256": "sha256:3a1b8180597598e10a612175a926d3a7c5b81b5fa2f1f64f44009bb9d4ac2ef5",
           "raw_value": "For a period of one year following the Effective Time,",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "12",
             "unit": "months"
-          }
-        },
-        {
-          "run_name": "metsera-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
-          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
-          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
-          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
-          "result": {
+          },
+          "resolver_result": {
             "outcome": "RESOLVED",
             "canonical_value": "12",
-            "unit": "months"
-          }
-        },
-        {
-          "run_name": "skechers-employee-matters-20260809-2xk-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
-          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
-          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
-          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
-          "result": {
-            "outcome": "ABSTAIN",
-            "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
-          "section_family": "EMPLOYEE_MATTERS",
-          "assertion_kind": "CONTINUATION_PERIOD",
-          "parser": "MONTHS",
-          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
-          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
-          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
-          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "12",
-            "unit": "months"
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
           }
         },
         {
@@ -943,13 +1345,88 @@
           "section_family": "EMPLOYEE_MATTERS",
           "assertion_kind": "CONTINUATION_PERIOD",
           "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
           "claim_revision_id": "e648c7d896f6011c2e6aaa433a96c9b6ef06acede8ce912cea5e33ec26659eff",
+          "claim_occurrence_id": "763260be023ca4cb9627767607db25c11a0f409179122637de6e9f3ce058e115",
           "closure_id": "cdbb1f47e9326542306145cb0db43d5ff39ea260413d2636ce48cedec547cc3d",
           "raw_value_sha256": "sha256:a2aa02dc3f81d5adc2c204350600fd50e43617864b0313add9b315d3689fd09d",
           "raw_value": "Until December 31 of the calendar year in which the Effective Time occurs",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "topbuild-employee-matters-20260809-2xk-r4-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c794e46d1e9f6528a17c8896eb6cbd29790a82a0a4671b1d8d2a0b160c40ee2f",
+          "claim_occurrence_id": "aa2c2708124d0968debb911fd2924a63766dce14f0b16a92a27e06ed60df72d7",
+          "closure_id": "85644e0dd1eb95316d2b9fab342af9e014d3f3bee65262f1d5c96c35203e63ae",
+          "raw_value_sha256": "sha256:3f89d13a9a45a1683ee663f6e923602b51893f4dc42d5a0a5d93c345f4f56f73",
+          "raw_value": "from and after the Titanium Merger Effective Time and until the one (1)-year anniversary of the Titanium Merger Effective Time (the “Continuation Period”)",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "unit": "months"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "7ec4910f5ceb16c7638572c8db4e10825933b93a13b3d7b4eac948b29838e969",
+          "claim_occurrence_id": "dec893b47204d2428270914c2c96033903b76d667445ce7835b84fcd803b0cad",
+          "closure_id": "a36d63a96c18d5be45a0949d43bf6f9b2d7891966de2c9f393ff20faf2dbd7af",
+          "raw_value_sha256": "sha256:d7909d167464c0102c1523d9ddc8b9b6097aa4333ff9a9fc1ab1271c3135265d",
+          "raw_value": "For a period of one year following the Effective Time, Parent shall provide or cause the Surviving Corporation to provide to each individual who is employed by the Company or any Company Subsidiary immediately prior to the Effective Time (each, a “Continuing Company Employee”) for so long as such individual remains so employed,",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "unit": "months"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "12",
+            "claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS"
+          }
+        },
+        {
+          "run_name": "skechers-employee-matters-20260809-2xk-final",
+          "section_family": "EMPLOYEE_MATTERS",
+          "assertion_kind": "CONTINUATION_PERIOD",
+          "parser": "MONTHS",
+          "resolved_claim_definition_key": "BENEFITS_CONTINUATION_PERIOD_MONTHS",
+          "claim_revision_id": "c706f619f349717909a09f948644265f719da3004c741a93c1f2f408c6c243fb",
+          "claim_occurrence_id": "f53300fc2e06df7b975ace1d766ef2235657de7f746f41e4f511d3016e33f264",
+          "closure_id": "02557ca2b8ad1a2571851c2a68e86d1fc02bca50717f6a5c362532f857d91d8a",
+          "raw_value_sha256": "sha256:280edf6aa2e0785d29aab5a567dbcfc7ceca7b52bd428fa39430dd1481e800d3",
+          "raw_value": "all other employee compensation and benefits (other than defined benefit pension, nonqualified deferred compensation, post-employment or retiree health or welfare, change in control, retention or equity-based benefits) that are substantially comparable in the aggregate to those provided to such Continuing Employees immediately prior to the Effective Time (subject to the same exclusions)",
+          "parser_result": {
+            "outcome": "ABSTAIN",
+            "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "MONTH_COUNT_UNRESOLVED"
+            ]
           }
         },
         {
@@ -957,59 +1434,22 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "2cae404abbdb28228ef130c9c2196d54a11fabb1cae29f893ea4aa1959d440b7",
+          "claim_occurrence_id": "2aede99daf79c081cad7aedfef7affba9e10f120c2c5e029205172d61b605b47",
           "closure_id": "64ae43fa704913e09cdcfa2050d030fa5faeef5b22fc82b1543a2d22d5827f4f",
           "raw_value_sha256": "sha256:db187339788bb1f11b271f98b463144578cb2271bbfeaad662e5bbe0c68899ee",
           "raw_value": "The Buyer Parties (and their respective Affiliates, if applicable), on the one hand, and the Company (and its Subsidiaries, if applicable), on the other hand, will, to the extent required in the reasonable judgment of counsel to Parent and the Company, (i) file with the FTC and the Antitrust Division of the DOJ a Notification and Report Form relating to this Agreement and the Merger as required by the HSR Act within twenty five Business Days following the date hereof",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "25",
             "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
-          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
-          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
-          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
-          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
-          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
-          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "10",
-            "unit": "BUSINESS"
-          }
-        },
-        {
-          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
-          "section_family": "ANTITRUST_REGULATORY",
-          "assertion_kind": "HSR_FILING_DEADLINE",
-          "parser": "FILING_DAYS",
-          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
-          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
-          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
-          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "30",
-            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "OBLIGOR_REF_NOT_IN_QUOTE"
+            ]
           }
         },
         {
@@ -1017,29 +1457,87 @@
           "section_family": "ANTITRUST_REGULATORY",
           "assertion_kind": "HSR_FILING_DEADLINE",
           "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
           "claim_revision_id": "e13356679b9a8f97d2b7cedaf489ff266cb5398c7cf7f4ad3a6d48e50e65e5f1",
+          "claim_occurrence_id": "4631d7449866bbdfa58bfe8046e45b8c92826899784acb7177703f7b766a65d5",
           "closure_id": "16aee17a713d2eeba710ecf87adffabe49ac48493bbc705894bc1ca7fedcbfe4",
           "raw_value_sha256": "sha256:2041f11de2ee9eed5d339d2abe2df50a23cf71ae65a07620febe6241ee87627e",
           "raw_value": "The Company and Parent shall submit, or cause to be submitted, the notifications required under the HSR Act relating to the Mergers within 20 Business Days of the date of this Agreement.",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "20",
             "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "20",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
-          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
-          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
-          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
-          "result": {
+          "run_name": "concho-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "cc23c4fe32dcecdcb47a0ad4f31a3005dbd8f00a1a9a90bc47001b9c10ce91aa",
+          "claim_occurrence_id": "69a41bfdd41a242aa76b19e6990f084ebce4983948f90c5eebfdbc35fb0a8bff",
+          "closure_id": "b49fbfd5cd07d9a8bdd666bcb47b662f668cc69092ee94962ee4c45eb60f0a06",
+          "raw_value_sha256": "sha256:0505a351df571090df2139e036e71898dbbad8601be258c57041d9c44058f865",
+          "raw_value": "As promptly as reasonably practicable following the execution of this Agreement, but in no event later than ten (10) Business Days following the date of this Agreement, the Parties shall make any filings required under the HSR Act.",
+          "parser_result": {
             "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "metsera-antitrust-regulatory-20260809-2xk-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "d4b266c955dc9848c881f0fc28e20f6a15c88e3e39e2131c5ddbc8a9d569867e",
+          "claim_occurrence_id": "88c1b6b7e495aaa95cb6bc10d39adb61cdec2718786f522c6fac0d5dd1774d20",
+          "closure_id": "62f9b6e59325c2a6dd89e1100b0dc6e16ddc4bbd2bc419265371054054ebf77e",
+          "raw_value_sha256": "sha256:6c7c1ff057942b66b1b8e58c77dfebc24d0872e233d4e40c81bb312396b93910",
+          "raw_value": "Parent and the Company shall, in consultation and cooperation with the other, (i) file, within thirty (30) business days after the date of this Agreement, with the United States Federal Trade Commission (the “FTC”) and the U.S. Department of Justice (the “DOJ”) the Notification and Report form, if required under the HSR Act for the Merger or any of the other Transactions",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "30",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
+          }
+        },
+        {
+          "run_name": "topbuild-antitrust-regulatory-20260809-2xk-r4-final",
+          "section_family": "ANTITRUST_REGULATORY",
+          "assertion_kind": "HSR_FILING_DEADLINE",
+          "parser": "FILING_DAYS",
+          "resolved_claim_definition_key": "HSR_FILING_DEADLINE_DAYS",
+          "claim_revision_id": "a670bcb959767acf03725846d0966352eb8a4ae3498e6ca99297a3143b9b6449",
+          "claim_occurrence_id": "b3aa8dea6f60504a780c15096d50301d3951c10dd49471ade6177c89474b20d3",
+          "closure_id": "00fdf14bb733d71b14a3c6943db325d8d12bcadc3b548fa77750039b9c70b32b",
+          "raw_value_sha256": "sha256:96f933b9e05743a4a0736809be86861eaa4106cb171887af742bff60f0835854",
+          "raw_value": "the Company and Parent will each make their respective filings under the HSR Act within ten (10) business days of the execution of this Agreement",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "unit": "BUSINESS"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "10",
+            "claim_definition_key": "HSR_FILING_DEADLINE_DAYS"
           }
         },
         {
@@ -1047,14 +1545,44 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "2d3e7fde4acae2deac364dc3cedb428a7017265871f774a4e43fafd413b1d7b4",
+          "claim_occurrence_id": "8a00e4732c263dad71bea71f533169bfe42cf116aac20f2dac34ceed000d46c2",
           "closure_id": "9be99f2c56ba644f50b0641914f9e61c0fd207f8d09e843faf01af9284f65907",
           "raw_value_sha256": "sha256:0ce01064c1a711b60cbcb21853ca5a02a5481accf9db5c81b1bba7c034cd5a16",
           "raw_value": "shall continue in full force and effect in accordance with their terms with respect to any claims against any such Indemnified Party arising out of such acts or omissions for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS"
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "INDEM_SURVIVAL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
+          "claim_revision_id": "108bdae4a70773a68c76f7ed3751f8290f8ce7c38023e37f184b426fd04b7d9e",
+          "claim_occurrence_id": "de6dfc08bbc13bc03637764f45a055c5259094c8c67105fe93be85bb1b5f812c",
+          "closure_id": "ddb7d10ae17f569429218111710ef781f37a13e96808c19a4e152f3f8572318f",
+          "raw_value_sha256": "sha256:d20120677c20555955354067b6c8901d2e9798152557311939c9d25063c590c6",
+          "raw_value": "For a period of not less than six (6) years from the OpCo Merger Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -1062,73 +1590,21 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "INDEM_SURVIVAL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "INDEMNIFICATION_SURVIVAL_YEARS",
           "claim_revision_id": "7ecc9938dc378fd2ea8511c991f63209686682a67b46fa4c337eb762ce224730",
+          "claim_occurrence_id": "f7c7218ef638282b7103b7de257288ef1c8433d7d86de52ea3e9c619e32cbc85",
           "closure_id": "d3c5c5289c0cfe160ca72ca0160827f729350551b05af0d7fcfcb7e4f1eac227",
           "raw_value_sha256": "sha256:4de60c9cea3aaa9934f57fa0004d40fa5189538d57cd37a79f7465d923155175",
           "raw_value": "during the period commencing at the Effective Time and ending on the sixth anniversary of the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
-          }
-        },
-        {
-          "run_name": "concho-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
-          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
-          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
-          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
-          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
-          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
-          "raw_value": "with a claims period of six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
-          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
-          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
-          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
-          }
-        },
-        {
-          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
-          "section_family": "DNO_INDEMNIFICATION",
-          "assertion_kind": "TAIL_PERIOD",
-          "parser": "YEARS",
-          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
-          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
-          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
-          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
-          "result": {
-            "outcome": "RESOLVED",
-            "canonical_value": "6",
-            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
           }
         },
         {
@@ -1136,14 +1612,112 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "b6dcf93188f527bfb28e7c96f6d3768e73201dbaf41b9e271932a4f4572c69a5",
+          "claim_occurrence_id": "34e54be9d5e83bd73ca031a1e39390cf31e24aa7a7ad7ec1bceef3d94cdc2507",
           "closure_id": "0143e3ee915ea44448c3c3c84bfd55f32af27cce2a928f523d6e4a329c2bc6b2",
           "raw_value_sha256": "sha256:04cb80fcf4a68a1a430ea5775b67bfb4a1710cdb166a6adf8f00627011008ca6",
           "raw_value": "with a claims reporting or discovery period of at least six years from the Effective Time",
-          "result": {
+          "parser_result": {
             "outcome": "RESOLVED",
             "canonical_value": "6",
             "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "modiv-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "881bf0fcc6a2ee4746616569fbeefe2bf1d16d371c9678736efbb69468490cd8",
+          "claim_occurrence_id": "b6d4064c521993b8ef4556669a8fe46592846217621120dc1bd7799bbd2f242f",
+          "closure_id": "8573b8963a7feafb8dd2d85c36a0b91df8b8dd9f864a02bbc114281584fe9dcf",
+          "raw_value_sha256": "sha256:73e9e7cc84eeadf265cb7a2614014b86bd9d01f8a054f23e06a446e8b3a3ca39",
+          "raw_value": "cause a Tail Policy to be maintained in effect for a period of six years following the Company Merger Effective Time.",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
+          }
+        },
+        {
+          "run_name": "redhat-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "7c1a3d307c9c64f4b1ca9f60530a37a81c20705468d3f5022c72c5940ad1023f",
+          "claim_occurrence_id": "c79fd88b4e1c68cd4135db3c39f772f2b7b3d532839dc6f827d38453c3136d64",
+          "closure_id": "055d1358793392fa7a6043019fa80290c1c69e6337b906c65e9902462b8b5ae7",
+          "raw_value_sha256": "sha256:00a3b0ad43f38f3281ccbd3047ba9eef597324a472375f86f739ff92b0e983db",
+          "raw_value": "with a claims period of six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "metsera-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "8b3a6e6e2fdd676174284c3ae06a454cb107f5fe755fe794f02133282a947311",
+          "claim_occurrence_id": "db8c372acb3f4e3a2eab0c0f181bc0099b3a79600ef21e35264db77f0f7f7160",
+          "closure_id": "82b476b0bce4402821c70f7b1a4e4bac25f72bf26791fb12922de355ee758b74",
+          "raw_value_sha256": "sha256:580473ea458d647b1ac7363ca41161e47f503af87cff814efe4910b39dd083cc",
+          "raw_value": "for the period beginning as of the Effective Time and ending six (6) years from the Effective Time",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "DNO_KIND_UNCORROBORATED"
+            ]
+          }
+        },
+        {
+          "run_name": "concho-dno-indemnification-20260809-2xk-final",
+          "section_family": "DNO_INDEMNIFICATION",
+          "assertion_kind": "TAIL_PERIOD",
+          "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
+          "claim_revision_id": "42ee3c709d4b94117e3641402cc9e9999dee1ff990105415892926705805ed1d",
+          "claim_occurrence_id": "e2b3b3027a7ac825384d6be8f67d8a53cefcae2e23bc0514e76267ba608c9ad9",
+          "closure_id": "5a05b90948a450d1b75f289443cdcf65b904ed124c4f369b4c154d9722bca10a",
+          "raw_value_sha256": "sha256:9a74e32516f067f6e7e095aa328df8a64bcc2b6971237e165c81595b6f136806",
+          "raw_value": "with a claims period of at least six (6) years from the Effective Time (the “Tail Period”) from an insurance carrier with the same or better credit rating as the Company’s current insurance carrier with respect to directors’ and officers’ liability insurance (“D&O Insurance”) in an amount and scope at least as favorable as the Company’s existing policies",
+          "parser_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "unit": "years"
+          },
+          "resolver_result": {
+            "outcome": "RESOLVED",
+            "canonical_value": "6",
+            "claim_definition_key": "TAIL_POLICY_PERIOD_YEARS"
           }
         },
         {
@@ -1151,17 +1725,25 @@
           "section_family": "DNO_INDEMNIFICATION",
           "assertion_kind": "TAIL_PERIOD",
           "parser": "YEARS",
+          "resolved_claim_definition_key": "TAIL_POLICY_PERIOD_YEARS",
           "claim_revision_id": "d2d546136b260b403ef9ac2527fbcaf947d4359d3f68e5c6e1b96a75498ad0b0",
+          "claim_occurrence_id": "f025714c8ee29be3c9155747748d434c6f59422d226d8b2e57a4425085230524",
           "closure_id": "73f5362e6c20e2b15d3657819c41e6386d9b48c5e58bc610d90ec86d71b49286",
           "raw_value_sha256": "sha256:2fe7cd2073ee78df4ce3e719da3a45d7d5f731317a257e6b07c79243c4f0488e",
           "raw_value": "six-year “tail” directors’ and officers’ insurance policies",
-          "result": {
+          "parser_result": {
             "outcome": "ABSTAIN",
             "reason": "NUMERIC_DURATION_UNRESOLVED"
+          },
+          "resolver_result": {
+            "outcome": "REVIEW",
+            "reasons": [
+              "YEAR_COUNT_UNRESOLVED"
+            ]
           }
         }
       ],
-      "results_digest": "sha256:a439455624b252b48b5e84a7b4defb09bd27f05867fae8126c3b054e74130278"
+      "results_digest": "sha256:eac4ba0b4d6436d77c29162d9a04a29b76569af36da05189efc46811ae0ef944"
     }
   ]
 }
