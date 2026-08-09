@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import crypto from 'node:crypto';
 import {
   existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync,
 } from 'node:fs';
@@ -194,7 +193,7 @@ function sourceText(item) {
 }
 
 function scoreOrder(seed, id) {
-  return crypto.createHash('sha256').update(`${seed}\0${id}`, 'utf8').digest('hex');
+  return sha256Hex(`${seed}\0${id}`);
 }
 
 function populationFromRun({ run, family, deal, runReceipt, resolution, hashes, source_binding: sourceRunBinding }) {
