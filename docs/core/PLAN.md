@@ -2869,9 +2869,30 @@ occurrences** in the corpus was diagnosed to a mechanism. Stage 2X asked why the
 resolver refuses. Stage 2Y is about what has to change so that it stops needing
 to, at a scale where nobody is watching.
 
-**PROPOSED. Four rulings in §"What this stage needs from Ben" are open.** The
-step bodies below say what the default is if he says nothing, so silence is a
-decision rather than a stall.
+**PROPOSED. Three rulings in §"What this stage needs from Ben" are open** (a
+fourth is answered). Each says what the default is if Ben says nothing, so
+silence is a decision rather than a stall — **except ruling 4, which has no
+default and therefore does stall the 152 occurrences behind it.** That is stated
+rather than papered over.
+
+**Two reading notes, both from Fable's adversarial review of 2026-08-09.**
+
+*Line numbers cited in this stage are from
+`origin/cursor/step-2x-free-phase-b641`, the branch the corpus artifact was
+generated on, and are 100–200 lines ahead of `main`.* Verified equivalents on
+the current branch where they were checked: `sourceParagraphForCandidate` 5615
+(not 5757), its chapeau-walk template 5627, `deriveKnowledgeStandard` 2200,
+the KNOWLEDGE branch 9635, `OFFICER_CERTIFICATE` 4851, the causation dict 4879,
+`finalizeResolvedCandidate` 5726, `matchFamily` 1115 (unchanged). **The
+substance survives at every site checked**; only the numbers drift. Re-derive
+before editing, do not trust the citation.
+
+*The committed register still stamps 90 rows / 732 occurrences `UNDIAGNOSED`.*
+Those were closed afterwards by `diag-gap-remaining.md`, `diag-gap-reps-mae.md`
+and `diag-gap-defterms-contracts.md`, and the register was never re-stamped. So
+the evidence file currently tells a reader the opposite of what this stage says
+— which is precisely this repository's most expensive failure mode. `_meta`
+carries a correction note; the per-row re-stamp is owned by Step 2Y-0.
 
 ## The target this stage is written against
 
@@ -2921,12 +2942,19 @@ governed claim-definition key**; the flag blocks the stricter auto-pass status
 only. Fixing them creates no new content — it unblocks content that already
 resolved.
 
-**And a caveat on what auto-pass currently means.** Sampled 118 rows across
-families: `auto_pass` is **false on every one, zero true**. So the flag does not
-today separate a publishable claim from a gated one — it separates nothing. Any
-step that reports "unblocked N claims for auto-pass" is reporting a number with
-no downstream consumer until that is fixed. Named here so it is not discovered
-again as a surprise.
+**And a caveat on what auto-pass currently means — corrected 2026-08-09, and
+the correction is the more important fact.** I sampled 118 rows across families,
+found `auto_pass` false on every one, zero true, and reported it as a
+measurement. Fable read the code: it is **permanently false by construction**.
+`candidate-resolution.js:5821-5833` unconditionally adds
+`SOURCE_SCOPE_CERTIFICATION_ABSENT`, `V1_V2_COMPARATOR_ABSENT` and
+`LEXICAL_DISAGREEMENT_NET_ABSENT` to every claim, and its own comment says
+auto-pass "stays permanently false for now."
+
+So my sample measured a constant, and I presented a documented, deliberate
+design invariant as a discovery. The consequence is not cosmetic: **a stage
+titled "be right unattended" contained no step that creates an unattended
+publication path.** Step 2Y-0A now exists because of this.
 
 ## The six mechanisms
 
@@ -3015,8 +3043,13 @@ left to a later stage."* The later stage does not exist. 623 of these are
 REPRESENTATIONS — the largest single row in the register.
 
 **5. Representation qualifiers that are governed nowhere.** 485
-`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED` — **THRESHOLD 306, TEMPORAL 157,
-100% accounted for** — is a resolver kind-dispatch gap, not missing governance.
+`REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, of which **463 were measured and
+fully accounted for — THRESHOLD 306, TEMPORAL 157** — is a resolver
+kind-dispatch gap, not missing governance. *(306 + 157 = 463, not 485. The
+22-row difference is a run-set discrepancy `diag-qualifier-proxy.md` flags at
+its own line 38: "owner: 485; measured: 463". An earlier draft of this stage
+said "100% accounted for" against the 485, which was arithmetic that did not
+close. The 22 are not diagnosed.)*
 With `QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
 `ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26) it is **675 occurrences resolving to
 three causes**, all replay-validatable, except ~7 of the 22 bring-down rows.
@@ -3064,6 +3097,27 @@ CLOSING_CONDITIONS singletons, and 25 MAE orphans concentrated in one Concho run
 that may be content loss rather than a routing bug. They are listed rather than
 counted as diagnosed. Step 2Y-K closes them.
 
+**And a second residual Fable found, which is larger and which I had not
+stated: occurrences that are diagnosed but that no step owns.** "Diagnosed"
+and "owned by a step with an acceptance criterion that would notice if it were
+skipped" are different properties, and I had conflated them.
+
+| occurrences | what | now owned by |
+|---|---|---|
+| 66 | `MATERIAL_CONTRACT_BUCKET_UNCORROBORATED` — fully diagnosed (66 = 33 criteria × 2 by shaping construction; fix is widening `MATERIAL_CONTRACT_BUCKET_META` synonyms plus the 2× dedupe), named in no step | **2Y-C** for the synonyms, **2Y-G** for the doubling |
+| 24 | `GENERAL_COVENANT_CODE_UNCORROBORATED` — same status | **2Y-C**, and the dead ternary in **2Y-B** |
+| 762 | the extrapolated open-world fragments. 2Y-A's acceptance lists only held codes, and **reattaching an open-world fragment to a host is a different operation from widening a corroboration window** | **2Y-A**, with a separate acceptance line — see below |
+| ~133 | one-deal labelled concepts below the promotion threshold | **nothing, deliberately** — open-world is their designed home. Stated so it is a decision, not an omission |
+| 152 | `MULTI_SPAN` / `NESTED` | **blocked on ruling 4, which has no default** |
+
+**On the 762 in particular**, two cautions that travel with the number. It is a
+*surface-heuristic* classification — lowercase start, marker prefix, under 60
+bytes — not verified chapeau detachment, so "extrapolated" is the honest word
+and "measured" oversells it. And **762 is coincidentally also the held-row
+total**, two unrelated quantities sharing a value in a stage this number-dense.
+Given this programme has already conflated two populations once, that is worth
+flagging before someone adds them.
+
 ## The rule this stage introduces, and why it is a rule and not a fix
 
 Every one of mechanism 2's instances was fixed the same way historically: someone
@@ -3075,7 +3129,11 @@ the code obey them.
 1. **A corroboration check may fail only on a positive contradiction.** Absence
    of the check's literal in the fragment it was handed is not disagreement with
    the model. It is the check having nothing to say. Those are different states
-   and must produce different outcomes.
+   and must produce different outcomes. **This one is a hypothesis under test,
+   not a settled rule** — it is exactly ladder 2's top rung in 2Y-0, and stating
+   it as a rule pre-commits the outcome the sweep exists to choose. Corrected
+   after Fable pointed out that a sweep whose answer is written above it is
+   theatre.
 2. **The context a check reads is the governing structure, never a rendered
    line.** If a check needs the obligor and the obligor is in the chapeau, the
    check gets the chapeau.
@@ -3124,11 +3182,25 @@ the rule at fifty.*
 **4. `MULTI_SPAN_COMPOSED` / `NESTED_OR_CROSS_REFERENCED_EVIDENCE` (76 each) is
 one mechanism, not two** — confirmed on the corpus. I told Ben these were his
 cross-provision thesis; they are not. They are a **definition's own head and
-limb split inside the same section**. Composing them needs a decision about
-whether one claim may carry two spans, which is `finalizeResolvedCandidate`
-(`:5885-5911`) and the identity model, not a resolver tweak. *No default: this
-is Ruling 3 (narrow → limb → clause) in a different costume and should be
-answered once for both.*
+limb split inside the same section**.
+
+**Reframed 2026-08-09 after Fable checked the code, and the question is much
+smaller than I posed it.** I said this "needs a decision about whether one claim
+may carry two spans". It does not: `finalizeResolvedCandidate` already computes
+`multiSpan` from `evidence.length > 1`, evidence edges already carry roles, and
+`diag-gap-defterms-contracts.md` shows two-span claims **already publish,
+persist and round-trip**. Composition is not merely possible — it has already
+happened. The only live question is whether these two informational flags should
+keep blocking an `auto_pass` that is permanently false anyway (see Step 2Y-0A).
+
+**What remains genuinely open** is the display/storage question Ben raised
+separately as *narrow → limb → clause* — recorded in
+`HANDOFF-2026-08-08.md` under "Open with Ben — component nesting", not in this
+file, which is why an earlier draft's bare cross-reference to "Ruling 3" pointed
+at nothing a reader of `PLAN.md` could find. `provision_components` are flat
+under an instance with no component-to-component parent; that shape supports two
+levels, and `lib/bring-down-tiers.js` stores exactly two. *No default — but note
+this blocks 152 occurrences, so silence here is not free.*
 
 ---
 
@@ -3158,7 +3230,11 @@ always being today's behaviour, so every curve carries its own control.
 | Defined terms (2Y-D) | hard-coded literal | exact defined term | resolved alias from the agreement's own definitions | alias + capacity lexicon | |
 | Numerals (2Y-E) | digit only | spelled **and** digit | spelled alone | spelled + unit conversion | |
 | Lexical net (2Y-F) | hit-by-hit overlap | sentence-deduped | concept coverage | | |
-| Topic classification (2Y-H) | exact match only | high confidence | any classification carrying evidence | | |
+| Topic classification (2Y-H) | **no classifier at all — everything open-world** | exact match only | high confidence | any classification carrying evidence | |
+
+*(2Y-H's rung 0 was mislabelled "exact match only" in the first draft. Today
+there is no classifier, so that would have been a control the system does not
+have and the curve would have had no zero point.)*
 
 ### One at a time, then jointly — and the joint run is the one that gates
 
@@ -3275,10 +3351,84 @@ this programme has had was a denominator failure: `review_queue` read as a rejec
 pile, correct abstentions read as bugs, auto-pass-blocked rows folded into
 open-world.
 
+### Seven amendments from Fable's adversarial review, 2026-08-09
+
+The design above survived review directionally. Seven things in it did not, and
+each would have produced a confident wrong answer.
+
+1. **The anchor set must contain deliberately wrong claims.** As specified it
+   could not validate the thing the gate depends on. 60–100 claims across ~20
+   families × 5 error classes gives cells of nought to two, and criterion 3
+   rests entirely on adjudicators *detecting* party-attribution and
+   materiality-code errors — which are near-absent from any honest draw of real
+   output. So the anchor set is **seeded**: known party swaps and known wrong
+   codes, planted at a recorded rate, and the adjudicator's **detection rate on
+   the seeded errors** is the score that matters. Without this the calibration
+   is unsupported exactly where it is load-bearing.
+2. **A zero-tolerance verdict requires human confirmation, or unanimity at
+   minimum.** "Zero errors at any count" plus imperfect adjudicators means a 1%
+   false-alarm rate manufactures ~6 party-errors on a 623-claim census, and no
+   large rung ever passes. The rule silently becomes zero tolerance for
+   adjudicator noise. Class-1 and class-2 failures therefore fail a rung only on
+   3/3 unanimity **and** human confirmation; the plan previously never said
+   whose verdict counted.
+3. **Define the knee's floor, and state confidence intervals.** Criterion 4's
+   "the floor" was never defined, criteria 1 and 4 can disagree — aggregate
+   precision can hold above baseline while marginal precision falls below it —
+   and marginal sets between adjacent rungs are often under 20 claims, where one
+   verdict moves precision five points. The step demanded stated effect sizes
+   for sampling and did not apply the discipline to itself. Fix: the floor is
+   rung-0 precision for that family; **criterion 4 wins over criterion 1** where
+   they disagree, because the marginal set is what the next rung actually buys;
+   and every reported figure carries an interval.
+4. **The largest bill was missing from the cost line.** "The family's rung-0
+   precision" is the precision of the *currently published* set, which has never
+   been measured — so measuring it means adjudicating the existing published
+   population, of order thousands of claims corpus-wide, **larger than any
+   rung's marginal set**. Honest order of magnitude: **5,000–20,000 adjudication
+   calls** (baseline + marginals × 3 + anchor scoring), each carrying agreement
+   context. That is plausibly the largest model spend in the stage, of the same
+   order as the 2,734,334-token REPRESENTATIONS run. It goes in the plan now
+   rather than being discovered.
+5. **Add leave-one-out at the joint point.** If the joint confirmation fails,
+   the design as written could reject but not attribute — you would know
+   something regressed, not which mechanism. Six extra replays, free on the
+   resolver side; only the diff needs adjudicating.
+6. **Recall floors must be conditional on deal features.**
+   `category-summary-features.js` is a V1 artifact of *expected shapes*, not
+   per-deal ground truth, and a flat floor collides head-on with this
+   repository's own standing rule that **a family returning zero can be
+   correct** — guaranty on an unfinanced deal. A floor that fails a correct deal
+   is worse than no floor.
+7. **State the census denominator.** "Census below ~150 at a rung" never said
+   per family or pooled — the same denominator sloppiness the step spends a
+   paragraph preaching against. It is **per (family, mechanism, rung)**.
+
+### And a reordering, which may save most of the scaffolding cost
+
+Fable's sharpest structural point: **sweep ladder 2 on two or three families
+before** funding rung-selectable scaffolding across 2Y-A–J and before 2Y-C
+migrates the corroboration tables into the registry.
+
+The reason is that this stage's own logic points at retiring the per-kind
+literal tables altogether — standing rule 1, ladder 2's top rungs, and the 82/82
+zero-conflict measurement all say the deterministic layer's real jobs are
+byte-verification, structure attachment, schema validation and *generic*
+contradiction detection, not a hundred per-kind regex tables re-deriving legal
+semantics. If the sweep picks rung 3 or 4 broadly, the tables 2Y-C carefully
+migrates go vestigial the day after migration, and the two-landings-per-step
+scaffolding was built for a layer the sweep retired.
+
+So: ladder 2 first, on a small slice, and let its answer size the rest. **If
+rung 3/4 wins, 2Y-C's registry should hold vocabularies, enums and the near-miss
+miner — not the migrated corroboration tables.**
+
 **Change.** A sweep runner and an adjudication harness under `scripts/`; the
 rung-selection configuration the other steps build against; a committed evidence
 directory in the shape of `evidence/blind-review/2026-08-08/`; reclassification
-into `docs/codex-program/notes/stage-2y/unresolved-register.json`.
+into `docs/codex-program/notes/stage-2y/unresolved-register.json` — **including
+re-stamping the 90 rows still marked `UNDIAGNOSED`**, which the three
+`diag-gap-*` notes closed and nobody wrote back.
 
 **Direction of risk: none to the product, high to the programme if skipped.** No
 resolver change ships from this step. But every later step's gate is defined
@@ -3298,6 +3448,66 @@ replays and nobody ever re-adjudicates by hand.
 **What it leaves behind.** This is not Stage 2Y scaffolding. It is the regression
 instrument every later change gets measured with, and the first thing this
 programme has ever had that could notice the system getting quietly worse.
+
+---
+
+## Step 2Y-0A. The unattended publication gate — the step this stage was missing
+
+**Added 2026-08-09, from Fable's adversarial review.** Asked whether Stage 2Y
+implied any *fundamental* change to the system's structure, its answer was: one,
+and it is the gap between this stage and its own title.
+
+**What it is.** A run-time gate that decides which claims publish without a
+human looking at them, and a risk-tiering of what remains, so that the review
+queue is ordered by how likely a claim is to be wrong rather than by nothing.
+
+**Why, and this is the whole argument for the stage.** `auto_pass` is
+permanently false by construction. Every claim carries
+`SOURCE_SCOPE_CERTIFICATION_ABSENT` and two comparator-absent reasons, always.
+So **every claim Stage 2Y recovers still routes to the queue the preamble itself
+says "is not read — it is ignored"**. Steps 2Y-A through 2Y-M make the system
+know more true things. Not one of them changes what happens to a true thing once
+known. Fixing the 787 auto-pass-blocked occurrences unblocks them into a gate
+that is closed for unrelated reasons — the plan said as much and then assigned
+the fix to no step.
+
+Ben's standard is *"humans will back fill edits but the system needs to do
+really well."* Back-filling presupposes a front fill. There isn't one.
+
+**Change.** Three things, and the second is a decision more than a build.
+
+1. **Close or retire the three absent-certification reasons.** Source-scope
+   certification is a real, unbuilt mechanism. The V1/V2 comparator and the
+   lexical-disagreement net exist — 2Y-F is about the latter. Each is either
+   completed, or **explicitly retired** with the reason recorded in
+   `GRAVEYARD.md`. What is not acceptable is leaving a permanent blocker in
+   place because nobody decided.
+2. **Define what publishes unattended.** The obvious candidate is the output of
+   2Y-0: a claim publishes when its (family, mechanism, rung) sits inside the
+   calibrated envelope and it carries no zero-tolerance error class. That makes
+   2Y-0 a run-time input rather than a one-off report, which is a materially
+   different thing to build — **and it is why 2Y-0A is placed here, before the
+   loosening steps, rather than after them.**
+3. **Tier what does not publish.** A queue ordered by risk is read; a flat queue
+   of 109,000 is not. The tiering signal is already being computed — the
+   adjudicator disagreement rate per (family, mechanism) from 2Y-0.
+
+**Direction of risk: this is the highest-risk step in the stage**, and the only
+one that changes what a user sees without a human in the loop. It ships last in
+implementation order even though it is specified first, and it ships behind a
+per-family switch.
+
+**Proves it is done.** At least one family publishes claims unattended, with the
+gate's decision recorded per claim and reproducible from stored evidence; every
+one of the three absent-certification reasons is either satisfied or retired in
+`GRAVEYARD.md` with its reasoning; the queue is ordered by a stated risk signal;
+and the count of claims publishing unattended is reported per family alongside
+the precision measured on exactly that set — not on the family as a whole.
+
+**Open with Ben, and it is a product decision, not an engineering one.** What
+false-publication rate is acceptable for a claim no human sees before a lawyer
+does? 2Y-0 can measure the rate at any rung. It cannot tell you which one you
+are willing to ship. *No default.*
 
 ---
 
@@ -3334,6 +3544,15 @@ every family it touches, re-measured and not lower. Specifically: NO_SHOP's 78,
 DNO's 22, EMPLOYEE_MATTERS' 29, TERMINATION's 22, IOC's 59 + 23 + 4, and
 CLOSING_CONDITIONS' `FRUSTRATION_*` 14.
 
+**Plus a second, separate acceptance line for the open-world fragments**, added
+2026-08-09 because the criteria above cover only held codes and would have
+passed while the larger population went untouched: of the ~762 fragment-shaped
+`NATIVE_OPEN_WORLD_PROPOSAL` candidates, report how many **reattach to a host**
+— a different operation from widening a corroboration window — and how many of
+those then classify. Re-derive the 762 by actual chapeau detachment rather than
+by the surface heuristic that produced it, and report the corrected figure
+whichever way it moves.
+
 ---
 
 ## Step 2Y-B. A corroboration check may fail only on a contradiction
@@ -3358,6 +3577,23 @@ for a derived-value-vs-tagged-value conflict. Fix the dead ternary at
 non-match. Loosen `ioc-mechanic-resolution.js:115`'s byte-identical `===` to a
 normalised containment match, consistently with the substring fallback
 `diag-ioc.md` already recommends for its sibling code.
+
+**Corrected 2026-08-09 after Fable's review: defer to the model *last*, not
+first.** M&A agreements routinely **define** "Knowledge" — commonly as actual
+knowledge *after due inquiry* of named officers. The 82/82 zero-conflict
+measurement compared the model's tag against the **quote**, never against each
+agreement's own Knowledge definition. So deferring publishes `ACTUAL` wherever
+the model tags it, including on deals whose own definition makes `AFTER_INQUIRY`
+correct — a materiality/qualifier-code error, which is exactly 2Y-0's
+zero-tolerance class. The measurement I relied on could not have detected this,
+because it never looked at the definition.
+
+**So the primary mechanism here is 2Y-D's, not this step's**: resolve "to the
+knowledge of the Company" against the agreement's own defined term.
+KEY_DEFINED_TERMS already extracts it, and `taxonomy.js`'s
+`KNOWLEDGE_STANDARD_META` already carries a `/reasonable inquiry/i` synonym the
+resolver's reinvented enum lacks — a second, independent argument for 2Y-C.
+Model-deferral is the **fallback where the agreement defines nothing**.
 
 **Direction of risk: regressive in principle.** Deferring to the model is exactly
 where a wrong claim gets published. This step is the reason 2Y-0 exists.
@@ -3585,9 +3821,11 @@ into the nearest bucket.
 
 ## Step 2Y-I. Dispatch the representation qualifier kinds that exist
 
-**What it is.** `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, 485 occurrences —
-**THRESHOLD 306 and TEMPORAL 157, 100% accounted for** — is a resolver
-kind-dispatch gap. The governance exists; nothing routes to it. With
+**What it is.** `REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED`, 485 occurrences of
+which **463 are measured and accounted for — THRESHOLD 306 and TEMPORAL 157** —
+is a resolver kind-dispatch gap. The governance exists; nothing routes to it.
+*(The 22-occurrence remainder is a run-set discrepancy, undiagnosed; an earlier
+draft claimed 100% against the 485 and the arithmetic did not close.)* With
 `QUALIFIER_KIND_UNCLASSIFIED` (102), `..._NOT_EXACT` (62) and
 `ACCURACY_STANDARD_OUT_OF_VOCABULARY` (26), 675 occurrences resolve to three
 causes.

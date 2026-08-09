@@ -25,7 +25,15 @@
   "row_grain": "One row per distinct (family, reason_code) pair, 155 rows, summing to exactly 4,241.",
   "ioc_numeric_operand_cascade_note": "IOC_NUMERIC_OPERAND_NOT_EXACT (23 in this run set) is a 100% cascade of IOC_ATTACHMENT_TARGET_QUOTE_MISSING per diag-ioc.md -- its claims_recoverable is folded into that row, not summed separately, per the brief's explicit instruction.",
   "unmapped_generic_claim_key_note": "713-count UNMAPPED_GENERIC_CLAIM_KEY is 100% OPEN_WORLD; 707/713 carry NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE regardless of subject, confirmed per diag-unmapped-lexical.md, matching the brief's stated figure exactly.",
-  "native_open_world_proposal_split_note": "The 66.4% fragment / 19.0% obvious-defect / 9.2% duplicate / 5.3% correctly-open-world split is preserved per-row as an `open_world_split` field on every NATIVE_OPEN_WORLD_PROPOSAL row. It was measured once on the pooled 1,147-claim population in diag-open-world.md, not independently re-measured per family here -- applying it per family row is an extrapolation, flagged in each row's `open_world_split_note`."
+  "native_open_world_proposal_split_note": "The 66.4% fragment / 19.0% obvious-defect / 9.2% duplicate / 5.3% correctly-open-world split is preserved per-row as an `open_world_split` field on every NATIVE_OPEN_WORLD_PROPOSAL row. It was measured once on the pooled 1,147-claim population in diag-open-world.md, not independently re-measured per family here -- applying it per family row is an extrapolation, flagged in each row's `open_world_split_note`.",
+  "undiagnosed_rows_are_stale": {
+   "corrected": "2026-08-09",
+   "finding": "The 90 rows / 732 occurrences stamped fix_class=UNDIAGNOSED in this file were closed AFTER it was generated, by diag-gap-remaining.md (66 rows, 348 occ), diag-gap-reps-mae.md (127 occ) and diag-gap-defterms-contracts.md (233 occ), plus diag-closing-conditions.md. The per-row fix_class fields were never rewritten.",
+   "consequence": "Read alone, this file tells you 17.3% of the corpus is undiagnosed. That is false and is the opposite of what Stage 2Y states. Found by Fable adversarial review, 2026-08-09.",
+   "what_is_still_open": "About 73 occurrences are genuinely diagnosed-but-uncertain, named individually in PLAN.md Stage 2Y under \"The honest residual\" and owned by Step 2Y-K. That is the real number, not 732.",
+   "per_row_restamp_owner": "Step 2Y-0, listed in its Change block."
+  },
+  "code_location_guess_is_unreliable": "Several rows carry a code_location_guess that points at the wrong handler -- ANTITRUST_REGULATORY rows attributed to handleClosingConditionCandidate is the known case. Treat the field as a hint; the diag notes carry the verified locations."
  },
  "rows": [
   {
@@ -35,7 +43,7 @@
    "count": 623,
    "diagnosis": "LIMB_ASSERTION_CLAIM_KEY (kind NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE, 707/713=99.2%) is minted identically regardless of subject matter by three separate shapers (capitalisation, representations, MAE_DEFINITION); GENERIC_CLAIM_KEY_RESOLUTION_TABLE has no entry for it by design (documented decision, not stale), and no \"later stage\" subject-matter reconciliation exists yet.",
    "diagnosis_note": "diag-unmapped-lexical.md",
-   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals \u2014 suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims \u2014 content-loss risk, not yet root-caused (would need the raw provider response).",
+   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals — suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims — content-loss risk, not yet root-caused (would need the raw provider response).",
    "fix_class": "TAXONOMY_DESIGN",
    "claims_recoverable": "guess: most of 623, pending taxonomy design"
   },
@@ -44,7 +52,7 @@
    "reason_code": "REPRESENTATION_QUALIFIER_KIND_NOT_GOVERNED",
    "state": "OPEN_WORLD",
    "count": 485,
-   "diagnosis": "handleRepresentationQualifierCarrier dispatches ACCURACY/KNOWLEDGE only; the prompt also legally emits THRESHOLD (306) and TEMPORAL (157) qualifier kinds (100% of the population, no other kind ever appears) which were never governed \u2014 confirmed via git log this is not a lost/regressed lexicon entry, it is a gap that never had a claim definition.",
+   "diagnosis": "handleRepresentationQualifierCarrier dispatches ACCURACY/KNOWLEDGE only; the prompt also legally emits THRESHOLD (306) and TEMPORAL (157) qualifier kinds (100% of the population, no other kind ever appears) which were never governed — confirmed via git log this is not a lost/regressed lexicon entry, it is a gap that never had a claim definition.",
    "diagnosis_note": "diag-qualifier-proxy.md",
    "fix": "Register new claim definitions (e.g. REPRESENTATION_THRESHOLD_QUALIFIER, REPRESENTATION_TEMPORAL_QUALIFIER) in contracts/canonical-v2/successor/agreement/claim-definitions/ and add branches in handleRepresentationQualifierCarrier (candidate-resolution.js ~9825) mirroring ACCURACY/KNOWLEDGE. No prompt change needed either way; this is a product/governance decision (govern vs. explicitly rename as out-of-scope), not a bug fix.",
    "fix_class": "TAXONOMY_DESIGN",
@@ -133,7 +141,7 @@
    "count": 102,
    "diagnosis": "Inside the ACCURACY branch, classifyQualifierQuote() (qualifier-kind-lexicon.js) routes any unrecognised drafting variant to REVIEW rather than OPEN_WORLD by design. ACCURACY_CODE_WHITELIST does whole-string exact match only; common synonyms (\"complete and accurate in all material respects\") and MAE-tolerance idiom variants (\"except where the failure to so comply...\") are not covered.",
    "diagnosis_note": "diag-qualifier-proxy.md",
-   "fix": "Extend ACCURACY_CODE_WHITELIST and widen MAE_QUALIFIER_IDIOM_PATTERN / MAE_TOLERANCE_FAILURE_IDIOM_PATTERN optional-clause groups in qualifier-kind-lexicon.js. No prompt/digest change, but the module header flags whitelist/pattern edits as \"identity-semantics changes: Fable-tier, Ben-reviewed, versioned\" \u2014 free to replay but governance-gated before shipping.",
+   "fix": "Extend ACCURACY_CODE_WHITELIST and widen MAE_QUALIFIER_IDIOM_PATTERN / MAE_TOLERANCE_FAILURE_IDIOM_PATTERN optional-clause groups in qualifier-kind-lexicon.js. No prompt/digest change, but the module header flags whitelist/pattern edits as \"identity-semantics changes: Fable-tier, Ben-reviewed, versioned\" — free to replay but governance-gated before shipping.",
    "fix_class": "RESOLVER_SIDE",
    "claims_recoverable": "guess: most/all of 102, per note's resolver-side fix (replay-validatable, not independently re-verified per family/row here)"
   },
@@ -160,11 +168,11 @@
    "reason_code": "REPRESENTATION_KNOWLEDGE_STANDARD_UNCORROBORATED",
    "state": "OPEN_WORLD",
    "count": 91,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9833 (representation qualifier handler, KNOWLEDGE-standard-value branch, distinct from the exact-quote-form gate diagnosed as REPRESENTATION_QUALIFIER_KIND_NOT_EXACT at ~9592)"
   },
   {
@@ -174,7 +182,7 @@
    "count": 84,
    "diagnosis": "LIMB_ASSERTION_CLAIM_KEY (kind NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE, 707/713=99.2%) is minted identically regardless of subject matter by three separate shapers (capitalisation, representations, MAE_DEFINITION); GENERIC_CLAIM_KEY_RESOLUTION_TABLE has no entry for it by design (documented decision, not stale), and no \"later stage\" subject-matter reconciliation exists yet.",
    "diagnosis_note": "diag-unmapped-lexical.md",
-   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals \u2014 suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims \u2014 content-loss risk, not yet root-caused (would need the raw provider response).",
+   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals — suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims — content-loss risk, not yet root-caused (would need the raw provider response).",
    "fix_class": "RESOLVER_SIDE",
    "claims_recoverable": "59 of 84 free; remaining 25 uncertain (possible content loss, not a routing bug)"
   },
@@ -194,11 +202,11 @@
    "reason_code": "MULTI_SPAN_COMPOSED",
    "state": "RESOLVED-blocked",
    "count": 76,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5910 (KEY_DEFINED_TERMS evidence-quality gate, sets a RESOLVED-blocking reason alongside NESTED_OR_CROSS_REFERENCED_EVIDENCE)"
   },
   {
@@ -206,11 +214,11 @@
    "reason_code": "NESTED_OR_CROSS_REFERENCED_EVIDENCE",
    "state": "RESOLVED-blocked",
    "count": 76,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5911 (same gate as MULTI_SPAN_COMPOSED, adjacent line)"
   },
   {
@@ -229,11 +237,11 @@
    "reason_code": "MATERIAL_CONTRACT_BUCKET_UNCORROBORATED",
    "state": "OPEN_WORLD",
    "count": 66,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:4764 (material-contracts bucket classification helper)"
   },
   {
@@ -332,11 +340,11 @@
    "reason_code": "CONDITION_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 34,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5058, 5103 (handleClosingConditionCandidate, two separate corroboration checks)"
   },
   {
@@ -344,11 +352,11 @@
    "reason_code": "FEE_SIDE_UNCORROBORATED",
    "state": "HELD",
    "count": 33,
-   "diagnosis": "Two distinct bug shapes. Bug 1 (concho, all 10): the producer prompt's own worked example tells the model to narrow trigger quotes to a bare parenthetical (e.g. \"(No Solicitation by Parent)\"), stripping the Section-N citation that would otherwise license citation-following corroboration \u2014 a producer-stage loss. Bug 2 (metsera/redhat/skechers/skywater/topbuild, remainder): well-formed list-limb quotes correctly state only the ground; the fee-side (\"...the Company shall pay...\") is stated once in the list's closing chapeau, governing all limbs, and never repeated per-limb \u2014 the resolver never reads the limb's own chapeau (findTerminationLimbChapeau already exists and is wired for the sibling TERMINATION_RIGHT family but never called from handleFeeTriggerCandidate).",
+   "diagnosis": "Two distinct bug shapes. Bug 1 (concho, all 10): the producer prompt's own worked example tells the model to narrow trigger quotes to a bare parenthetical (e.g. \"(No Solicitation by Parent)\"), stripping the Section-N citation that would otherwise license citation-following corroboration — a producer-stage loss. Bug 2 (metsera/redhat/skechers/skywater/topbuild, remainder): well-formed list-limb quotes correctly state only the ground; the fee-side (\"...the Company shall pay...\") is stated once in the list's closing chapeau, governing all limbs, and never repeated per-limb — the resolver never reads the limb's own chapeau (findTerminationLimbChapeau already exists and is wired for the sibling TERMINATION_RIGHT family but never called from handleFeeTriggerCandidate).",
    "diagnosis_note": "diag-termination-fee.md",
-   "fix": "Bug 1 (10, concho): PROMPT_CHANGE to termination-fee-producer-prompt.js \u2014 replace the bad worked example, require the Section X.X citation stay attached even when narrowing to a single ground. Digest invalidation, re-extraction needed. Bug 2 (remainder, majority): RESOLVER_SIDE \u2014 add a fourth fallback tier in handleFeeTriggerCandidate calling the already-existing, already-generic findTerminationLimbChapeau, then run FEE_SIDE_CORROBORATION_TABLE patterns over the chapeau text. candidate-resolution.js. No prompt change for this part.",
+   "fix": "Bug 1 (10, concho): PROMPT_CHANGE to termination-fee-producer-prompt.js — replace the bad worked example, require the Section X.X citation stay attached even when narrowing to a single ground. Digest invalidation, re-extraction needed. Bug 2 (remainder, majority): RESOLVER_SIDE — add a fourth fallback tier in handleFeeTriggerCandidate calling the already-existing, already-generic findTerminationLimbChapeau, then run FEE_SIDE_CORROBORATION_TABLE patterns over the chapeau text. candidate-resolution.js. No prompt change for this part.",
    "fix_class": "RESOLVER_SIDE",
-   "claims_recoverable": "Corpus split (latest-per-deal): 10 Bug-1 (concho, needs prompt change) vs remainder Bug-2 (resolver-side). Note's own corpus count was 32 vs corpus-HTML's 33 \u2014 small run-scoping delta, not reconciled further."
+   "claims_recoverable": "Corpus split (latest-per-deal): 10 Bug-1 (concho, needs prompt change) vs remainder Bug-2 (resolver-side). Note's own corpus count was 32 vs corpus-HTML's 33 — small run-scoping delta, not reconciled further."
   },
   {
    "family": "PROXY_MEETING",
@@ -366,7 +374,7 @@
    "reason_code": "PROXY_MEETING_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 31,
-   "diagnosis": "Card #251 (concho \u00a76.6): the ADJOURNMENT_REASON outer gate in PROXY_MEETING_KIND_CORROBORATION requires \"supplement\" directly adjacent to \"proxy\"; the actual quote has \"or amendment to the Joint\" sitting between them. A separate, more tolerant inner gate (ADJOURNMENT_REASON_PATTERNS.SUPPLEMENTAL_DISCLOSURE) would already match this text but never runs because the stricter outer gate fails first \u2014 two redundant checks for the same concept with mismatched tolerance.",
+   "diagnosis": "Card #251 (concho §6.6): the ADJOURNMENT_REASON outer gate in PROXY_MEETING_KIND_CORROBORATION requires \"supplement\" directly adjacent to \"proxy\"; the actual quote has \"or amendment to the Joint\" sitting between them. A separate, more tolerant inner gate (ADJOURNMENT_REASON_PATTERNS.SUPPLEMENTAL_DISCLOSURE) would already match this text but never runs because the stricter outer gate fails first — two redundant checks for the same concept with mismatched tolerance.",
    "diagnosis_note": "diag-qualifier-proxy.md",
    "fix": "Widen PROXY_MEETING_KIND_CORROBORATION.ADJOURNMENT_REASON's window to match the inner pattern's tolerance, or drop the outer check and let the inner per-reason-kind pattern be the sole gate. candidate-resolution.js. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -419,7 +427,7 @@
    "count": 26,
    "diagnosis": "Distinct family (handleClosingConditionCandidate, BRING_DOWN_TIER kind) sharing REPRESENTATION_ACCURACY_STANDARD claim definition. Two sub-causes measured on 22 samples: naming mismatch (7/22, closing-conditions-producer-prompt.js has no CONTROLLED_VOCABULARIES block so the model invents self-consistent but unregistered code names) and null-required-but-disallowed (15/22, the claim definition requires canonical_value_required_when_present:true even though the prompt says \"controlled code or null\").",
    "diagnosis_note": "diag-qualifier-proxy.md",
-   "fix": "Naming mismatch (7/22): add a CONTROLLED_VOCABULARIES block to closing-conditions-producer-prompt.js mapping to MAT_* codes \u2014 PROMPT_CHANGE, digest invalidation. Null-disallowed (15/22): relax the claim definition's required_when_present for the closing-condition consumer, or give BRING_DOWN_TIER's null case its own disposition in handleClosingConditionCandidate \u2014 RESOLVER_SIDE, free.",
+   "fix": "Naming mismatch (7/22): add a CONTROLLED_VOCABULARIES block to closing-conditions-producer-prompt.js mapping to MAT_* codes — PROMPT_CHANGE, digest invalidation. Null-disallowed (15/22): relax the claim definition's required_when_present for the closing-condition consumer, or give BRING_DOWN_TIER's null case its own disposition in handleClosingConditionCandidate — RESOLVER_SIDE, free.",
    "fix_class": "RESOLVER_SIDE",
    "claims_recoverable": "15/22 (68%) resolver-side free; 7/22 (32%) needs a prompt change."
   },
@@ -430,7 +438,7 @@
    "count": 24,
    "diagnosis": "PROXY_MEETING_ASSERTION_MAP (candidate-resolution.js ~3329) has 11 entries but the prompt tells the model to use 14 kinds; ADJOURNMENT_CONTROL, MAILING_DEADLINE, ADJOURNMENT_CONSENT_OVERRIDE are enum-legal and prompted for but have no map entry at all (100% of the 19/24 measured population, no other kind ever appears).",
    "diagnosis_note": "diag-qualifier-proxy.md",
-   "fix": "Add the three missing entries to PROXY_MEETING_ASSERTION_MAP plus corroboration entries in PROXY_MEETING_KIND_CORROBORATION (candidate-resolution.js ~3343) so they resolve rather than merely move to UNCORROBORATED. No prompt change \u2014 the prompt already asks for these kinds.",
+   "fix": "Add the three missing entries to PROXY_MEETING_ASSERTION_MAP plus corroboration entries in PROXY_MEETING_KIND_CORROBORATION (candidate-resolution.js ~3343) so they resolve rather than merely move to UNCORROBORATED. No prompt change — the prompt already asks for these kinds.",
    "fix_class": "RESOLVER_SIDE",
    "claims_recoverable": "guess: most/all of 24, per note's resolver-side fix (replay-validatable, not independently re-verified per family/row here)"
   },
@@ -475,11 +483,11 @@
    "reason_code": "GENERAL_COVENANT_CODE_UNCORROBORATED",
    "state": "OPEN_WORLD",
    "count": 24,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:4873-4874 (general-covenant code classification helper, same value returned on two branches)"
   },
   {
@@ -507,7 +515,7 @@
    "count": 23,
    "diagnosis": "CASCADE, not an independent defect: numericResolution() short-circuits to this reason on ANY non-empty unverified_operand_fields, including target_restriction_quote (an attachment field, not a numeric one). Corpus-wide, 100% of the 23-27 occurrences co-occur with IOC_ATTACHMENT_TARGET_QUOTE_MISSING on the same claim; zero fire independently. The underlying numeric value already parses cleanly once reached.",
    "diagnosis_note": "diag-ioc.md",
-   "fix": "Restrict numericResolution()'s unverified-field gate to numeric-relevant fields only (value_literal, unit_literal, basis_literal, period_literal); ignore target_restriction_quote. ioc-mechanic-resolution.js. Clears on replay automatically once IOC_ATTACHMENT_TARGET_QUOTE_MISSING's own fix lands \u2014 do not count as separately recoverable.",
+   "fix": "Restrict numericResolution()'s unverified-field gate to numeric-relevant fields only (value_literal, unit_literal, basis_literal, period_literal); ignore target_restriction_quote. ioc-mechanic-resolution.js. Clears on replay automatically once IOC_ATTACHMENT_TARGET_QUOTE_MISSING's own fix lands — do not count as separately recoverable.",
    "fix_class": "RESOLVER_SIDE",
    "claims_recoverable": "Non-additive: 100% cascades from IOC_ATTACHMENT_TARGET_QUOTE_MISSING; recoverable count already folded into that row, count here should not be summed separately."
   },
@@ -552,11 +560,11 @@
    "reason_code": "MAE_CARVEOUT_UNCORROBORATED",
    "state": "HELD",
    "count": 19,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9048 (pushMaeReview call in MAE carveout handling)"
   },
   {
@@ -564,11 +572,11 @@
    "reason_code": "NO_SHOP_PERIOD_ROLE_UNCORROBORATED",
    "state": "HELD",
    "count": 19,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8564 (handleNoShopPeriodCandidate)"
   },
   {
@@ -576,11 +584,11 @@
    "reason_code": "NO_SHOP_PREREQUISITE_UNCORROBORATED",
    "state": "HELD",
    "count": 19,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8530 (handleNoShopExceptionPrerequisiteCandidate)"
   },
   {
@@ -588,11 +596,11 @@
    "reason_code": "DNO_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 18,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9882 (employee D&O indemnification kind-pattern table, reviewEmployeeDno)"
   },
   {
@@ -647,11 +655,11 @@
    "reason_code": "MATERIAL_CONTRACT_DEFINITION_REFERENCE_UNRESOLVED",
    "state": "OPEN_WORLD",
    "count": 15,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:4768 (same helper as MATERIAL_CONTRACT_BUCKET_UNCORROBORATED)"
   },
   {
@@ -677,11 +685,11 @@
    "reason_code": "PARTY_UNRESOLVED",
    "state": "HELD",
    "count": 14,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers"
   },
   {
@@ -700,11 +708,11 @@
    "reason_code": "RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED",
    "state": "HELD",
    "count": 13,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- template-built `${assertionKind}_UNCORROBORATED` inside handleNoShopWaveBCandidate (~8605), fires when noShopWaveBValueCorroborated() fails for assertion_kind=RECOMMENDATION_CHANGE_ACTION"
   },
   {
@@ -748,11 +756,11 @@
    "reason_code": "ITEM_OR_STANDARD_UNCORROBORATED",
    "state": "HELD",
    "count": 12,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9874 (employee-matters ITEM_STANDARD pattern table, reviewEmployeeDno)"
   },
   {
@@ -771,11 +779,11 @@
    "reason_code": "NO_SHOP_ACTION_UNCORROBORATED",
    "state": "HELD",
    "count": 11,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8478 (handleNoShopActionCandidate)"
   },
   {
@@ -783,7 +791,7 @@
    "reason_code": "PER_SHARE_CONTEXT_UNCORROBORATED",
    "state": "HELD",
    "count": 10,
-   "diagnosis": "Cards #67/#89 (metsera): perShareContextCorroborated() requires both \"right to receive\" and \"in cash\"/\"receive cash\" inside the single quote. The Merger Consideration mechanism is split by the drafters across \u00a72.01 (rights-granting, has \"right to receive... $47.50 in cash\") and \u00a72.02 (payment-mechanics, restates via the defined term \"Closing Amount\", uses \"entitled to receive...in exchange therefor\" and \"an amount of cash equal to\" instead) \u2014 neither quote alone satisfies the two-literal gate though together they plainly do.",
+   "diagnosis": "Cards #67/#89 (metsera): perShareContextCorroborated() requires both \"right to receive\" and \"in cash\"/\"receive cash\" inside the single quote. The Merger Consideration mechanism is split by the drafters across §2.01 (rights-granting, has \"right to receive... $47.50 in cash\") and §2.02 (payment-mechanics, restates via the defined term \"Closing Amount\", uses \"entitled to receive...in exchange therefor\" and \"an amount of cash equal to\" instead) — neither quote alone satisfies the two-literal gate though together they plainly do.",
    "diagnosis_note": "diag-consideration.md",
    "fix": "Broaden PER_SHARE_CONTEXT_PATTERNS to also accept \"entitled to receive\" and \"amount of cash\" (likely clears both sample cards alone); structurally, when a PER_SHARE_CASH candidate's own quote fails but its consideration_term_ref resolves elsewhere via uniqueQuotedDefinedTerm (once its own citation-heading bug is fixed, see NO_RATIO_LITERAL), corroborate using the union of quote + referenced section text. candidate-resolution.js. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -794,7 +802,7 @@
    "reason_code": "AMBIGUOUS_PROXY_MEETING_KIND",
    "state": "HELD",
    "count": 10,
-   "diagnosis": "Two or more PROXY_MEETING_KIND_CORROBORATION patterns fire on the same quote and the pair is not in the small PROXY_MEETING_COMPATIBLE_KIND_PAIRS whitelist. One sample plausibly fires both PARENT_APPROVAL and MERGER_SUB_APPROVAL on the same \"Parent...shall adopt this Agreement\" sentence. UNCERTAIN \u2014 the note explicitly could not fully trace which pattern(s) fired for all 5 measured cases; flagged in the note itself as the one sub-finding it could not close.",
+   "diagnosis": "Two or more PROXY_MEETING_KIND_CORROBORATION patterns fire on the same quote and the pair is not in the small PROXY_MEETING_COMPATIBLE_KIND_PAIRS whitelist. One sample plausibly fires both PARENT_APPROVAL and MERGER_SUB_APPROVAL on the same \"Parent...shall adopt this Agreement\" sentence. UNCERTAIN — the note explicitly could not fully trace which pattern(s) fired for all 5 measured cases; flagged in the note itself as the one sub-finding it could not close.",
    "diagnosis_note": "diag-qualifier-proxy.md",
    "fix": "Would need full quote-vs-pattern replay for each case to determine whether a priority rule or a whitelist addition is correct. Not yet specified.",
    "fix_class": "RESOLVER_SIDE",
@@ -823,11 +831,11 @@
    "reason_code": "TRIGGER_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 10,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10174 (pushTerminationReview, TERMINATION 'who may terminate' family -- sibling of the already-diagnosed TERMINATION_FEE FEE_SIDE_UNCORROBORATED mechanism)"
   },
   {
@@ -835,11 +843,11 @@
    "reason_code": "ASSERTION_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 8,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9483 (reviewFinancingGuaranty, FINANCING_COVENANTS pattern table)"
   },
   {
@@ -847,11 +855,11 @@
    "reason_code": "PARTY_UNRESOLVED",
    "state": "HELD",
    "count": 8,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers"
   },
   {
@@ -859,11 +867,11 @@
    "reason_code": "OBLIGOR_SCOPE_UNCORROBORATED",
    "state": "HELD",
    "count": 8,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9266, 9269 (handleRegulatoryEffortsCandidate, REGULATORY_MUTUAL_OBLIGOR_PATTERN check)"
   },
   {
@@ -871,11 +879,11 @@
    "reason_code": "COVENANT_OBLIGOR_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 8,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8652 (handleNoShopWaveBCandidate, covenant_obligor substring check)"
   },
   {
@@ -916,11 +924,11 @@
    "reason_code": "REP_SIDE_UNCORROBORATED",
    "state": "HELD",
    "count": 7,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5121, 5123 (handleClosingConditionCandidate, rep-side bring-down check -- NOT in diag-closing-conditions.md's stated scope at all)"
   },
   {
@@ -928,11 +936,11 @@
    "reason_code": "EMPLOYEE_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 7,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9876 (employee-matters kind-pattern table, reviewEmployeeDno)"
   },
   {
@@ -940,11 +948,11 @@
    "reason_code": "TERMINATING_PARTY_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 7,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10165 (pushTerminationReview, TERMINATION family)"
   },
   {
@@ -952,11 +960,11 @@
    "reason_code": "DEFINED_TERM_REF_NOT_IN_HEAD",
    "state": "HELD",
    "count": 7,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8773 (KEY_DEFINED_TERMS head/definition-term match check)"
   },
   {
@@ -982,11 +990,11 @@
    "reason_code": "TAX_TREATMENT_KIND_UNCORROBORATED",
    "state": "OPEN_WORLD",
    "count": 7,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10654 (TAX_MATTERS open-world push)"
   },
   {
@@ -1036,7 +1044,7 @@
    "count": 6,
    "diagnosis": "LIMB_ASSERTION_CLAIM_KEY (kind NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE, 707/713=99.2%) is minted identically regardless of subject matter by three separate shapers (capitalisation, representations, MAE_DEFINITION); GENERIC_CLAIM_KEY_RESOLUTION_TABLE has no entry for it by design (documented decision, not stale), and no \"later stage\" subject-matter reconciliation exists yet.",
    "diagnosis_note": "diag-unmapped-lexical.md",
-   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals \u2014 suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims \u2014 content-loss risk, not yet root-caused (would need the raw provider response).",
+   "fix": "REPRESENTATIONS (623) + NO_OTHER_REPS_FRAUD (6): needs a new controlled \"representation topic present\" claim family plus a resolver-side lexical classifier over attributes.subject/raw_value (design step, then free wiring/replay). MAE_DEFINITION (84): 59/84 are byte-identical duplicates of an already-resolved MAE_CARVEOUT/PRONG claim minted twice by shapeMaeDefinitionLimbAssertionProposals — suppress at candidate-resolution.js ~line 10989 or the shaper (free, resolver-side); remaining 25/84 are orphans concentrated in one Concho run with zero resolved MAE_CARVEOUT claims — content-loss risk, not yet root-caused (would need the raw provider response).",
    "fix_class": "TAXONOMY_DESIGN",
    "claims_recoverable": "guess: most of 6, same pattern as REPRESENTATIONS"
   },
@@ -1045,11 +1053,11 @@
    "reason_code": "SOLE_REMEDY_FEE_CONTEXT_LINKED",
    "state": "OPEN_WORLD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "sole-remedy-resolution.js:197 (TERMINATION_FEE sole-remedy linkage, separate module from candidate-resolution.js)"
   },
   {
@@ -1057,11 +1065,11 @@
    "reason_code": "OBLIGOR_REF_UNCORROBORATED",
    "state": "HELD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5135, 5137 (handleClosingConditionCandidate obligor check -- CLOSING_CONDITIONS portion is stub-scoped in diag-closing-conditions.md but undiagnosed; ANTITRUST_REGULATORY's 2 occurrences aren't even scoped there)"
   },
   {
@@ -1069,11 +1077,11 @@
    "reason_code": "EMPLOYEE_ITEM_OR_STANDARD_OUT_OF_VOCABULARY",
    "state": "OPEN_WORLD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9874 (same block as ITEM_OR_STANDARD_UNCORROBORATED, enum-membership branch)"
   },
   {
@@ -1081,11 +1089,11 @@
    "reason_code": "MONTH_COUNT_UNRESOLVED",
    "state": "HELD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9875 (employee-matters CONTINUATION_PERIOD numeric parse)"
   },
   {
@@ -1093,11 +1101,11 @@
    "reason_code": "NOTIFICATION_OBLIGATION_UNCORROBORATED",
    "state": "HELD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- template-built `${kind}_UNCORROBORATED` inside handleRegulatoryEffortsCandidate, fires when regulatoryValueCorroborated() fails for assertion_kind=NOTIFICATION_OBLIGATION"
   },
   {
@@ -1105,11 +1113,11 @@
    "reason_code": "PERIOD_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10333 (pushTerminationReview, TERMINATION family)"
   },
   {
@@ -1117,11 +1125,11 @@
    "reason_code": "APPRAISAL_ASSERTION_OPEN_WORLD",
    "state": "OPEN_WORLD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10702 (APPRAISAL_DISSENTERS_RIGHTS open-world push)"
   },
   {
@@ -1129,11 +1137,11 @@
    "reason_code": "TAX_ASSERTION_OPEN_WORLD",
    "state": "OPEN_WORLD",
    "count": 5,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10675 (TAX_MATTERS open-world push, sibling of TAX_TREATMENT_KIND_UNCORROBORATED)"
   },
   {
@@ -1141,11 +1149,11 @@
    "reason_code": "FINANCING_SCOPE_UNCORROBORATED",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9487 (reviewFinancingGuaranty, financing_kind corroboration)"
   },
   {
@@ -1153,7 +1161,7 @@
    "reason_code": "NO_RATIO_LITERAL",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "Card #56 (concho \u00a73.2): the uniqueQuotedDefinedTerm fallback finds the \"Exchange Ratio\" means 1.46\" definition uniquely (count 1) but definitionCitation() requires a preceding heading matching \"Section N[.M] Definitions\" literally; Concho's actual headings (\"1.1 Certain Definitions\", \"ANNEX A / Certain Definitions\") never match that pattern, so the citation step returns null and the fallback silently never fires for this document, independent of any other card's outcome (tested and refuted the hypothesis that #55 blocks #56).",
+   "diagnosis": "Card #56 (concho §3.2): the uniqueQuotedDefinedTerm fallback finds the \"Exchange Ratio\" means 1.46\" definition uniquely (count 1) but definitionCitation() requires a preceding heading matching \"Section N[.M] Definitions\" literally; Concho's actual headings (\"1.1 Certain Definitions\", \"ANNEX A / Certain Definitions\") never match that pattern, so the citation step returns null and the fallback silently never fires for this document, independent of any other card's outcome (tested and refuted the hypothesis that #55 blocks #56).",
    "diagnosis_note": "diag-consideration.md",
    "fix": "Broaden the heading regex in definitionCitation() (structured-per-share-cash-source-parser.js) to also match \"N.N Certain Definitions\"/\"ANNEX A\" style headers, or fall back to the nearest preceding numbered section marker (already computed elsewhere in candidate-resolution.js) when no Definitions-specific heading precedes the match. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -1164,7 +1172,7 @@
    "reason_code": "CONTROL_PARTY_REF_ABSENT",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "Card #255 (concho \u00a76.6): ADJOURNMENT_COUNT_CAP/DURATION_CAP claims fail when attrs.control_party is empty. The party grant sits in an earlier limb of the same run-on sentence (\"the Company...may adjourn...\"), the duration-cap limb's own grammatical subject is the passive \"the Company Stockholders Meeting\" with no party token. Same shape as termination-fee's chapeau-inheritance gap; entangled with PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED (ADJOURNMENT_CONTROL, the source of the party, is itself unmapped).",
+   "diagnosis": "Card #255 (concho §6.6): ADJOURNMENT_COUNT_CAP/DURATION_CAP claims fail when attrs.control_party is empty. The party grant sits in an earlier limb of the same run-on sentence (\"the Company...may adjourn...\"), the duration-cap limb's own grammatical subject is the passive \"the Company Stockholders Meeting\" with no party token. Same shape as termination-fee's chapeau-inheritance gap; entangled with PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED (ADJOURNMENT_CONTROL, the source of the party, is itself unmapped).",
    "diagnosis_note": "diag-qualifier-proxy.md",
    "fix": "Two-part: (1) register ADJOURNMENT_CONTROL (see PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED fix); (2) in the COUNT_CAP/DURATION_CAP branch (~5530), before failing on !controlParty, look up an already-resolved ADJOURNMENT_CONTROL claim sharing section_reference+meeting_ref and inherit its party. candidate-resolution.js. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -1175,11 +1183,11 @@
    "reason_code": "IOC_ATTACHMENT_TARGET_ZERO_MATCHES",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "ioc-mechanic-resolution.js:115 (limbAttachment(), sibling of the diagnosed IOC_ATTACHMENT_TARGET_QUOTE_MISSING -- this is the 'quote present but matches nothing in the section' branch, not the 'quote missing' branch; not analysed by diag-ioc.md despite living in the same function)"
   },
   {
@@ -1187,11 +1195,11 @@
    "reason_code": "IOC_LONG_TAIL_RESTRICTION_OPEN_WORLD",
    "state": "OPEN_WORLD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5204 (INTERIM_OPERATING open-world push -- outside diag-ioc.md's scope, which covered only HELD review-queue reasons)"
   },
   {
@@ -1199,11 +1207,11 @@
    "reason_code": "FILING_REGIME_NOT_SINGLE_NAMED_REGIME",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9280, 9295 (handleRegulatoryEffortsCandidate, regulatoryFilingRegimeCorroborated())"
   },
   {
@@ -1211,11 +1219,11 @@
    "reason_code": "FIDUCIARY_ENGAGEMENT_STANDARD_UNCORROBORATED",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site as RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED, assertion_kind=FIDUCIARY_ENGAGEMENT_STANDARD"
   },
   {
@@ -1223,11 +1231,11 @@
    "reason_code": "STANDSTILL_ACTION_UNCORROBORATED",
    "state": "HELD",
    "count": 4,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site, assertion_kind=STANDSTILL_ACTION"
   },
   {
@@ -1275,7 +1283,7 @@
    "reason_code": "ANCHOR_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "Card #252 (concho \u00a76.6, SEC_CLEARANCE anchor): the regex requires the literal token \"SEC\" to precede \"clearance\"/\"cleared\" within 100 chars. The quote uses passive voice (\"the clearance...by the SEC\"), so \"clearance\" precedes \"SEC\" and the directional regex never matches. Confirmed this is a directional/word-order bug, not a missing concept. The claim is genuinely emitted twice in the raw model response (once per party/meeting) \u2014 not a duplication bug.",
+   "diagnosis": "Card #252 (concho §6.6, SEC_CLEARANCE anchor): the regex requires the literal token \"SEC\" to precede \"clearance\"/\"cleared\" within 100 chars. The quote uses passive voice (\"the clearance...by the SEC\"), so \"clearance\" precedes \"SEC\" and the directional regex never matches. Confirmed this is a directional/word-order bug, not a missing concept. The claim is genuinely emitted twice in the raw model response (once per party/meeting) — not a duplication bug.",
    "diagnosis_note": "diag-qualifier-proxy.md",
    "fix": "Widen the SEC_CLEARANCE regex to accept either word order, candidate-resolution.js ~line 5698. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -1286,11 +1294,11 @@
    "reason_code": "NO_DAY_COUNT",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:55 (day-count literal parser, ABSTAIN outcome)"
   },
   {
@@ -1298,11 +1306,11 @@
    "reason_code": "CONSULTATION_RIGHT_UNCORROBORATED",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site as NOTIFICATION_OBLIGATION_UNCORROBORATED, assertion_kind=CONSULTATION_RIGHT"
   },
   {
@@ -1310,11 +1318,11 @@
    "reason_code": "INFORMATION_SHARING_OBLIGATION_UNCORROBORATED",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site, assertion_kind=INFORMATION_SHARING_OBLIGATION"
   },
   {
@@ -1322,11 +1330,11 @@
    "reason_code": "BURDEN_COMMITMENT_UNCORROBORATED",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site, assertion_kind=BURDEN_COMMITMENT"
   },
   {
@@ -1334,11 +1342,11 @@
    "reason_code": "NO_SHOP_PERIOD_HOUR_NOTICE_OPEN_WORLD",
    "state": "OPEN_WORLD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8572 (handleNoShopPeriodCandidate open-world push)"
   },
   {
@@ -1346,11 +1354,11 @@
    "reason_code": "NON_LITERAL_NUMERAL",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:61 (day-count parser, spelled-out-number ABSTAIN) -- also referenced generically in the header comment at candidate-resolution.js:110"
   },
   {
@@ -1358,11 +1366,11 @@
    "reason_code": "PARTY_UNRESOLVED",
    "state": "HELD",
    "count": 3,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers"
   },
   {
@@ -1370,11 +1378,11 @@
    "reason_code": "NON_LITERAL_NUMERAL",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:61 (day-count parser, spelled-out-number ABSTAIN) -- also referenced generically in the header comment at candidate-resolution.js:110"
   },
   {
@@ -1382,11 +1390,11 @@
    "reason_code": "ADJOURNMENT_REASON_NOT_DIRECTLY_GROUNDED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5636 (PROXY_MEETING adjournment-reason grounding check, near but distinct from the #251 corroboration-gate bug diag-qualifier-proxy.md diagnosed under PROXY_MEETING_KIND_UNCORROBORATED)"
   },
   {
@@ -1394,11 +1402,11 @@
    "reason_code": "MEETING_REF_ABSENT",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5499 -- template-built `${refField.toUpperCase()}_ABSENT` inside handleProxyMeetingCandidate, refField='meeting_ref'"
   },
   {
@@ -1424,11 +1432,11 @@
    "reason_code": "SOLE_REMEDY_CARVEOUT_QUOTE_UNCORROBORATED",
    "state": "OPEN_WORLD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "sole-remedy-resolution.js:300 (TERMINATION_FEE sole-remedy carve-out matching, same module as SOLE_REMEDY_FEE_CONTEXT_LINKED)"
   },
   {
@@ -1436,11 +1444,11 @@
    "reason_code": "ANNIVERSARY_PHRASE",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "termination-fee-parse.js:418 (fee-value date-anchor parser, ABSTAIN outcome)"
   },
   {
@@ -1470,11 +1478,11 @@
    "reason_code": "MAE_PARTY_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5131-5132 (handleClosingConditionCandidate, MAE-qualified bring-down party check)"
   },
   {
@@ -1482,11 +1490,11 @@
    "reason_code": "APPROVAL_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5151, 5153 (handleClosingConditionCandidate, HSR/SCHEDULED_APPROVALS enum check)"
   },
   {
@@ -1494,11 +1502,11 @@
    "reason_code": "PERCENT_UNRESOLVED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9882 (same DNO_KIND block, TAIL_CAP_PERCENT numeric-parse branch)"
   },
   {
@@ -1506,11 +1514,11 @@
    "reason_code": "YEAR_COUNT_UNRESOLVED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9882 (same DNO_KIND block, INDEM_SURVIVAL_PERIOD/TAIL_PERIOD numeric-parse branch)"
   },
   {
@@ -1518,11 +1526,11 @@
    "reason_code": "LITIGATION_OBLIGATION_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site as NOTIFICATION_OBLIGATION_UNCORROBORATED, assertion_kind=LITIGATION_OBLIGATION"
   },
   {
@@ -1530,11 +1538,11 @@
    "reason_code": "OBLIGOR_REF_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5135, 5137 (handleClosingConditionCandidate obligor check -- CLOSING_CONDITIONS portion is stub-scoped in diag-closing-conditions.md but undiagnosed; ANTITRUST_REGULATORY's 2 occurrences aren't even scoped there)"
   },
   {
@@ -1542,11 +1550,11 @@
    "reason_code": "NO_CALENDAR_DATE",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "termination-deadline-parse.js:~42 (TERMINATION deadline date parser, ABSTAIN outcome)"
   },
   {
@@ -1554,11 +1562,11 @@
    "reason_code": "RECOMMENDATION_CHANGE_TRIGGER_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site as RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED, assertion_kind=RECOMMENDATION_CHANGE_TRIGGER"
   },
   {
@@ -1566,11 +1574,11 @@
    "reason_code": "RECOMMENDATION_SAFE_DISCLOSURE_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site, assertion_kind=RECOMMENDATION_SAFE_DISCLOSURE"
   },
   {
@@ -1578,11 +1586,11 @@
    "reason_code": "RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site, assertion_kind=RECOMMENDATION_CHANGE_FIDUCIARY_STANDARD"
   },
   {
@@ -1590,11 +1598,11 @@
    "reason_code": "STANDARD_CODE_OUT_OF_ENUM",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8785 (KEY_DEFINED_TERMS standard-code / knowledge-party enum check)"
   },
   {
@@ -1602,11 +1610,11 @@
    "reason_code": "NO_PERCENT_LITERAL",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "defined-term-threshold-parse.js:49 (KEY_DEFINED_TERMS threshold parser, ABSTAIN outcome)"
   },
   {
@@ -1614,11 +1622,11 @@
    "reason_code": "RECORDED_DEFINITION_ENVELOPE_UNCORROBORATED",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8736 (KEY_DEFINED_TERMS recordedReview call)"
   },
   {
@@ -1626,11 +1634,11 @@
    "reason_code": "MULTIPLE_PERCENT_LITERALS",
    "state": "HELD",
    "count": 2,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "defined-term-threshold-parse.js:52 (same parser as NO_PERCENT_LITERAL, multi-token ABSTAIN)"
   },
   {
@@ -1649,11 +1657,11 @@
    "reason_code": "MULTIPLE_DAY_COUNTS",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:70 (day-count parser, multi-candidate ABSTAIN)"
   },
   {
@@ -1661,7 +1669,7 @@
    "reason_code": "ISSUER_STOCK_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "Card #55 (concho \u00a73.1): the issuer-stock check requires the reference inside the literal quote; the extracted quote is only the trailing \"'Exchange Ratio' means 1.46\" definitional sentence \u2014 the issuer-stock language (\"shares of Parent Common Stock\") is one clause earlier in the same sentence-pair, structurally excluded from a \"Term means value\" quote by construction.",
+   "diagnosis": "Card #55 (concho §3.1): the issuer-stock check requires the reference inside the literal quote; the extracted quote is only the trailing \"'Exchange Ratio' means 1.46\" definitional sentence — the issuer-stock language (\"shares of Parent Common Stock\") is one clause earlier in the same sentence-pair, structurally excluded from a \"Term means value\" quote by construction.",
    "diagnosis_note": "diag-consideration.md",
    "fix": "When the quote matches the bare \"Term means value\" definition pattern, also accept an issuer-stock reference found anywhere in the governing section's full text (already available via sectionsByReference/utf8Slice), not just the literal quote. handleConsiderationCandidate, candidate-resolution.js. No prompt change.",
    "fix_class": "RESOLVER_SIDE",
@@ -1672,11 +1680,11 @@
    "reason_code": "NO_MONEY_LITERAL",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:27 (day-count/money parser shared module, ABSTAIN outcome) -- CONSIDERATION family occurrence likely uses an analogous parser in consideration-specific code, not directly located"
   },
   {
@@ -1684,11 +1692,11 @@
    "reason_code": "RATIO_CONTEXT_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:10564 (CONSIDERATION ratio-context check, distinct from the diagnosed NO_RATIO_LITERAL/PER_SHARE_CONTEXT_UNCORROBORATED mechanisms)"
   },
   {
@@ -1696,11 +1704,11 @@
    "reason_code": "CONTROL_PARTY_REF_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5562 (handleProxyMeetingCandidate, control-party post-resolution check, sibling of the diagnosed CONTROL_PARTY_REF_ABSENT)"
   },
   {
@@ -1708,11 +1716,11 @@
    "reason_code": "CONTROL_PARTY_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5547 (handleProxyMeetingCandidate, control_party substring check)"
   },
   {
@@ -1720,11 +1728,11 @@
    "reason_code": "DOCUMENT_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5522 -- template-built `${refField.toUpperCase()}_NOT_IN_QUOTE`, refField='document_ref'"
   },
   {
@@ -1732,11 +1740,11 @@
    "reason_code": "NON_LITERAL_NUMERAL",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "antitrust-regulatory-parse.js:61 (day-count parser, spelled-out-number ABSTAIN) -- also referenced generically in the header comment at candidate-resolution.js:110"
   },
   {
@@ -1744,11 +1752,11 @@
    "reason_code": "CERTIFIED_CONDITION_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5005 (handleClosingConditionCandidate, certification-reference check)"
   },
   {
@@ -1756,11 +1764,11 @@
    "reason_code": "SCRAPE_QUOTE_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5125 (handleClosingConditionCandidate, scrape_quote substring check)"
   },
   {
@@ -1768,11 +1776,11 @@
    "reason_code": "GTY_KIND_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "guaranty-corroboration.js:97 (GUARANTY_FINANCING_PARTY kind corroboration, separate module)"
   },
   {
@@ -1780,11 +1788,11 @@
    "reason_code": "REPRESENTATION_SIDE_UNRESOLVED",
    "state": "OPEN_WORLD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9691 (representation-side open-world push, near handleRepresentationQualifierCarrier)"
   },
   {
@@ -1792,11 +1800,11 @@
    "reason_code": "QUALIFIER_KIND_DISAGREEMENT",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "qualifier-kind-lexicon.js:64 (documented in the module's own header comment as the outcome when both sides of a check disagree; exact push site not located by direct grep -- likely inside classifyQualifierQuote() itself)"
   },
   {
@@ -1815,11 +1823,11 @@
    "reason_code": "WITHDRAWAL_EXCEPTION_PERIOD_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9396 (handleRegulatoryEffortsCandidate, WITHDRAWAL_REFILING_RESTRICTION day-count check)"
   },
   {
@@ -1827,11 +1835,11 @@
    "reason_code": "COOPERATION_OBLIGATION_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site as NOTIFICATION_OBLIGATION_UNCORROBORATED, assertion_kind=COOPERATION_OBLIGATION"
   },
   {
@@ -1839,11 +1847,11 @@
    "reason_code": "STRATEGY_CONTROL_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site, assertion_kind=STRATEGY_CONTROL"
   },
   {
@@ -1869,11 +1877,11 @@
    "reason_code": "OBLIGOR_REF_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9263 (handleRegulatoryEffortsCandidate) and :9528 (reviewFinancingGuaranty, PERFORMANCE_GUARANTY branch) -- two independent sites for the same reason string"
   },
   {
@@ -1881,11 +1889,11 @@
    "reason_code": "PARTY_UNRESOLVED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:5014 and 5076 (handleClosingConditionCandidate, two branches); also raised at 8665 for NO_SHOP wave-B (zero occurrences in this corpus) and generically wherever resolveParty() returns null for MAE_DEFINITION/GENERAL_COVENANTS/ANTITRUST_REGULATORY handlers"
   },
   {
@@ -1893,11 +1901,11 @@
    "reason_code": "INFORMATION_PROTECTION_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9365 (handleRegulatoryEffortsCandidate, INFORMATION_SHARING_OBLIGATION protection-kind pattern table)"
   },
   {
@@ -1905,11 +1913,11 @@
    "reason_code": "NON_IMPEDIMENT_COVENANT_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9318 -- same template site as NOTIFICATION_OBLIGATION_UNCORROBORATED, assertion_kind=NON_IMPEDIMENT_COVENANT"
   },
   {
@@ -1917,11 +1925,11 @@
    "reason_code": "FILING_OBLIGATION_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9297 (handleRegulatoryEffortsCandidate, canonicalValueAllowed + regulatoryValueCorroborated combined check)"
   },
   {
@@ -1929,11 +1937,11 @@
    "reason_code": "CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9176 (pushMaeReview, MAE_DEFINITION carveback clause-label check)"
   },
   {
@@ -1941,11 +1949,11 @@
    "reason_code": "REPRESENTATIVE_CONTROL_STANDARD_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8643 -- same template site as RECOMMENDATION_CHANGE_ACTION_UNCORROBORATED, assertion_kind=REPRESENTATIVE_CONTROL_STANDARD"
   },
   {
@@ -1953,11 +1961,11 @@
    "reason_code": "SUBSTITUTION_UNCORROBORATED",
    "state": "HELD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:8779 (KEY_DEFINED_TERMS threshold-substitution parser fallback)"
   },
   {
@@ -1965,11 +1973,11 @@
    "reason_code": "GENERAL_COVENANT_DEFINITION_REFERENCE_UNRESOLVED",
    "state": "OPEN_WORLD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:4861 (same helper as GENERAL_COVENANT_CODE_UNCORROBORATED)"
   },
   {
@@ -1977,11 +1985,11 @@
    "reason_code": "MERGER_TRANSACTION_STEP_ENTITY_NOT_IN_QUOTE",
    "state": "OPEN_WORLD",
    "count": 1,
-   "diagnosis": "UNDIAGNOSED \u2014 this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body \u2014 that note is a stub).",
+   "diagnosis": "UNDIAGNOSED — this (family, reason_code) pair does not appear with any substantive analysis in any of the six diagnostic notes (or, for CLOSING_CONDITIONS-family CONDITION_KIND_UNCORROBORATED / PARTY_UNRESOLVED / OBLIGOR_REF_UNCORROBORATED, appears only in diag-closing-conditions.md's scope header with no investigation body — that note is a stub).",
    "diagnosis_note": null,
-   "fix": "UNDIAGNOSED \u2014 no fix identified.",
+   "fix": "UNDIAGNOSED — no fix identified.",
    "fix_class": "UNDIAGNOSED",
-   "claims_recoverable": "unknown \u2014 no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
+   "claims_recoverable": "unknown — no diagnosis exists; recoverability not assessed. Guessing would misrepresent confidence.",
    "code_location_guess": "candidate-resolution.js:9568 (MERGER_STRUCTURE_CLOSING open-world push)"
   }
  ]
