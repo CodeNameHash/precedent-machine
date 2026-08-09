@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContractV20, compileFixtureContractV26, compileFixtureContractV36 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
-const { isHsrRegimeRef, parseDivestitureCapAmount, parseFilingDeadlineDays, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
+const { isHsrRegimeRef, parseDivestitureCapAmount, parseFilingDeadlineDays, parseFilingDeadlineDaysAtNumeralRung, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
 const { shapeRegulatoryEffortsProposals, REGULATORY_EFFORTS_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { GENERIC_CLAIM_KEY_RESOLUTION_TABLE, MATERIALITY_TABLE, MAPPING_TABLE_VERSION, regulatoryValueCorroborated, regulatoryFilingRegimeCorroborated } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -35,20 +35,22 @@ test('antitrust parser preserves scaled-money safety and exact literal money', (
   assert.equal(parseDivestitureCapAmount('$12,34').reason, 'MALFORMED_GROUPING');
 });
 
-test('antitrust parser resolves one deadline and abstains on ambiguous or inconsistent counts', () => {
+test('antitrust parser holds the production default at rung 0 and exposes higher numeral rungs', () => {
   assert.equal(parseFilingDeadlineDays('within ten (10) Business Days').canonical_value, '10');
   assert.equal(parseFilingDeadlineDays('within fifteen (15) Business Days').canonical_value, '15');
   assert.equal(parseFilingDeadlineDays('within thirty (30) business days').canonical_value, '30');
-  assert.equal(parseFilingDeadlineDays('at least four Business Days').canonical_value, '4');
-  assert.equal(parseFilingDeadlineDays('a Match Period of three Business Days').canonical_value, '3');
+  assert.equal(parseFilingDeadlineDays('at least four Business Days').reason, 'NON_LITERAL_NUMERAL');
+  assert.equal(parseFilingDeadlineDaysAtNumeralRung('within four (4) Business Days', 1).canonical_value, '4');
+  assert.equal(parseFilingDeadlineDaysAtNumeralRung('at least four Business Days', 2).canonical_value, '4');
+  assert.equal(parseFilingDeadlineDaysAtNumeralRung('a Match Period of three Business Days', 3).canonical_value, '3');
   assert.equal(parseFilingDeadlineDays('within ten (45) Business Days').reason, 'SPELLED_DIGIT_MISMATCH');
   assert.equal(parseFilingDeadlineDays('within four (3) Business Days').reason, 'SPELLED_DIGIT_MISMATCH');
-  assert.equal(parseFilingDeadlineDays('within 10 Business Days and 45 Business Days').reason, 'MULTIPLE_DAY_COUNTS');
-  assert.equal(parseFilingDeadlineDays('within four Business Days and 10 Calendar Days').reason, 'MULTIPLE_DAY_COUNTS');
+  assert.equal(parseFilingDeadlineDaysAtNumeralRung('within 10 Business Days and 45 Business Days', 3).reason, 'MULTIPLE_DAY_COUNTS');
+  assert.equal(parseFilingDeadlineDaysAtNumeralRung('within four Business Days and 10 Calendar Days', 3).reason, 'MULTIPLE_DAY_COUNTS');
   assert.equal(parseFilingDeadlineDays('Four directors may nominate one successor.').reason, 'NO_DAY_COUNT');
   assert.equal(parseFilingDeadlineDays('within 10 days').day_kind, 'UNSPECIFIED');
   assert.equal(parseFilingDeadlineDays('within 10 Calendar Days').day_kind, 'CALENDAR');
-  assert.equal(ANTITRUST_REGULATORY_PARSE_VERSION, 2);
+  assert.equal(ANTITRUST_REGULATORY_PARSE_VERSION, 3);
 });
 
 test('registry, resolver seam and materiality tier include the M3-B antitrust shapes', () => {
