@@ -2455,9 +2455,13 @@ Measured: **78 of NO_SHOP's 91** occurrences at this site. Confirmed on quotes
 in DNO_INDEMNIFICATION (22), EMPLOYEE_MATTERS (29), TERMINATION (22), part of
 FINANCING_COVENANTS, INTERIM_OPERATING's attachment codes (59 + 23 + 4), and
 about 25 of CLOSING_CONDITIONS' 62 — the whole `FRUSTRATION_CAUSATION` /
-`FRUSTRATION_BREACH` bucket of 14 plus `BRING_DOWN_TIER`. Extrapolated: **762 of
-the 1,147 `NATIVE_OPEN_WORLD_PROPOSAL` candidates (66.4%)** are chapeau-detached
-fragments, measured once on the pooled population, not re-measured per family.
+`FRUSTRATION_BREACH` bucket of 14 plus `BRING_DOWN_TIER`. The original
+diagnostic extrapolated **762 of the 1,147 `NATIVE_OPEN_WORLD_PROPOSAL`
+candidates (66.4%)** as chapeau-detached fragments. The faithful recurrence
+collector now produces **756** under the documented rule. Six rows had
+previously been caught by unrecorded prefixes; that is a diagnostic correction,
+not a recovery result. The named discrepancy is recorded in
+`evidence/canonical-v2/open-world-promotion/candidates/b607809bd087e801f20e924e987289711ddaab0ed9e37c07b7c6418f5f7ffe6c/report.md`.
 
 The fix template is **twelve lines away in the same file**:
 `partyContextForCandidate` (`:5769-5784`) already walks back to the chapeau. It
@@ -2545,9 +2549,9 @@ per concept; three hits match, seven do not, the family fails. **635 flags
 collapse to 164 distinct (deal, section, concept_family) roots** — 3.9 tainted
 claims per root.
 
-Beyond the six: **106 open-world duplicates** and **59 byte-identical MAE
-duplicates** minted twice by the same shaper; **21 open-world concepts recurring
-in three or more deals** (146 occurrences) with nowhere to be promoted to; and a
+Beyond the six: **107 open-world duplicates** and **59 byte-identical MAE
+duplicates** minted twice by the same shaper; **22 open-world concepts recurring
+in three or more deals** (147 occurrences) with nowhere to be promoted to; and a
 genuinely absent shape — the appraisal-settlement-consent covenant, same
 drafting across three deals, **no registered assertion kind at all**.
 
@@ -2578,17 +2582,38 @@ skipped" are different properties, and I had conflated them.
 |---|---|---|
 | 66 | `MATERIAL_CONTRACT_BUCKET_UNCORROBORATED` — fully diagnosed (66 = 33 criteria × 2 by shaping construction; fix is widening `MATERIAL_CONTRACT_BUCKET_META` synonyms plus the 2× dedupe), named in no step | **2Y-C** for the synonyms, **2Y-G** for the doubling |
 | 24 | `GENERAL_COVENANT_CODE_UNCORROBORATED` — same status | **2Y-C**, and the dead ternary in **2Y-B** |
-| 762 | the extrapolated open-world fragments. 2Y-A's acceptance lists only held codes, and **reattaching an open-world fragment to a host is a different operation from widening a corroboration window** | **2Y-A**, with a separate acceptance line — see below |
+| 756 | the fragment exclusions produced by the documented rule. The original diagnostic said 762; the discrepancy report names the six unsupported-prefix rows. 2Y-A's acceptance lists only held codes, and **reattaching an open-world fragment to a host is a different operation from widening a corroboration window** | **2Y-A**, with a separate acceptance line — see below |
 | ~133 | one-deal labelled concepts below the promotion threshold | **nothing, deliberately** — open-world is their designed home. Stated so it is a decision, not an omission |
 | 152 | `MULTI_SPAN` / `NESTED` | **blocked on ruling 4, which has no default** |
 
-**On the 762 in particular**, two cautions that travel with the number. It is a
-*surface-heuristic* classification — lowercase start, marker prefix, under 60
-bytes — not verified chapeau detachment, so "extrapolated" is the honest word
-and "measured" oversells it. And **762 is coincidentally also the held-row
-total**, two unrelated quantities sharing a value in a stage this number-dense.
-Given this programme has already conflated two populations once, that is worth
-flagging before someone adds them.
+**On the 756 in particular**, it is still a surface-heuristic classification —
+lowercase start, marker prefix, under 60 bytes — not verified chapeau
+detachment. It must not be called a measured host-reattachment count. The prior
+762 happened to equal the held-reason total; the corrected rules remove that
+coincidence. See the discrepancy report cited above.
+
+**The exact 2Y-K residual census now has its own ownership ledger.**
+`evidence/canonical-v2/stage-2y-k-ownership-ledger.json` maps every one of the
+212 occurrences through explicit mechanism rules. The deterministic check is
+`node scripts/stage-2y-k-ownership-ledger.mjs --check`; an unknown mechanism or
+an unowned fixable occurrence fails instead of falling through.
+
+| disposition | occurrences | owner |
+|---|---:|---|
+| governing context and evidence placement | 27 | **2Y-A** |
+| corroboration semantics | 4 | **2Y-B** |
+| registry vocabulary, patterns and normalisation | 61 | **2Y-C** |
+| agreement-local definitions and party references | 11 | **2Y-D** |
+| one producer prompt bump | 63 | **2Y-L** |
+| legal taxonomy or codebook value | 12 | **Ben**, no default supplied by engineering |
+| correct abstention | 34 | no recovery step; preserve the refusal |
+| **total** | **212** | **zero unowned fixable occurrences** |
+
+The evidence sources classify 184 occurrences outside `NO_FIX`. Six of those
+carry `TAXONOMY_DESIGN` in the source census but the occurrence-level mechanism
+proves a correct abstention: four IOC long-tail restrictions and two unsupported
+Section 355 treatment assertions. The ledger keeps the source class visible and
+does not manufacture an implementation task to make the 184 look recoverable.
 
 ## The rule this stage introduces, and why it is a rule and not a fix
 
@@ -2648,9 +2673,11 @@ is a ratchet. *Default: yes, floors derived from
 
 **3. Open-world promotion threshold.** 2X-G left this open and 2Y-J cannot
 proceed without it. The evidence now says a concept-recurrence rule reads better
-than a percentage: **21 concepts recur in three or more deals**; at seven deals a
-percentage rule makes one recurrence 14%. *Default: three deals, and re-examine
-the rule at fifty.*
+than a percentage: the faithful collector finds **22 concepts recurring in
+three or more deals, across 147 rows**. The original diagnostic reported
+21/146; the discrepancy report names the additional eligible
+`AFFIRMATIVE_COVENANT` row. At seven deals a percentage rule makes one recurrence
+14%. *Default: three deals, and re-examine the rule at fifty.*
 
 **4. `MULTI_SPAN_COMPOSED` / `NESTED_OR_CROSS_REFERENCED_EVIDENCE` (76 each) is
 one mechanism, not two** — confirmed on the corpus. I told Ben these were his
@@ -3032,10 +3059,11 @@ CLOSING_CONDITIONS' `FRUSTRATION_*` 14.
 
 **Plus a second, separate acceptance line for the open-world fragments**, added
 2026-08-09 because the criteria above cover only held codes and would have
-passed while the larger population went untouched: of the ~762 fragment-shaped
+passed while the larger population went untouched: of the 756 fragment-shaped
 `NATIVE_OPEN_WORLD_PROPOSAL` candidates, report how many **reattach to a host**
 — a different operation from widening a corroboration window — and how many of
-those then classify. Re-derive the 762 by actual chapeau detachment rather than
+those then classify. Start from the corrected **756 fragment exclusions**, then
+re-derive the population by actual chapeau detachment rather than
 by the surface heuristic that produced it, and report the corrected figure
 whichever way it moves.
 
@@ -3246,7 +3274,8 @@ classified as a genuine gap is carried forward as its own named item, not closed
 **What it is.** 59 `UNMAPPED_GENERIC_CLAIM_KEY` occurrences in MAE_DEFINITION are
 **byte-identical** to an already-resolved `MAE_CARVEOUT` / `PRONG` claim in the
 same instance, minted twice by `shapeMaeDefinitionLimbAssertionProposals`. A
-further 106 open-world candidates are duplicates.
+further 107 open-world candidates are duplicates: 78 resolved-claim duplicates
+and 29 later same-run identical duplicates under the documented precedence.
 
 **Why.** Free, replay-validatable, and it removes noise that makes every other
 count harder to read.
@@ -3343,10 +3372,13 @@ force-fitted.
 
 ## Step 2Y-J. Open-world promotion candidates, on a three-deal rule
 
-**What it is.** 2X-G's promotion loop, now with the evidence to size it. 21
-distinct concepts recur in **three or more deals** (146 occurrences), clustered
-from the extractor's own `why_unmapped` labels — 582 of 1,147 candidates carry a
-self-assigned category label, 53 distinct labels. Plus the appraisal-settlement-
+**What it is.** 2X-G's promotion loop, now with the evidence to size it. The
+faithful collector finds 22 distinct concepts recurring in **three or more
+deals** (147 occurrences), clustered from the extractor's own `why_unmapped`
+labels. The original diagnostic reported 21/146. The difference is one
+`AFFIRMATIVE_COVENANT` row for which no committed rule permits a name-based
+exclusion; the discrepancy report cited above records it. Of 1,147 candidates,
+582 carry a self-assigned category label, 53 distinct labels. Plus the appraisal-settlement-
 consent covenant: same shape across three deals, **no registered assertion kind
 at all**.
 
@@ -3358,7 +3390,7 @@ turns a recurring unmapped concept into a governed one **automatically enough**
 that the corpus getting bigger makes the system better rather than worse.
 
 **Change.** The recurrence mechanism emits versioned promotion candidates, with
-the 21 concepts as its first batch. Three deals are enough to surface a proposal,
+the 22 concepts as its first batch. Three deals are enough to surface a proposal,
 not enough to mutate the active taxonomy. Registry activation requires
 adjudicated evidence, compatibility analysis and an explicit versioned approval.
 The appraisal covenant is the first such candidate. `expected-sets.js`'s
@@ -3369,7 +3401,7 @@ Promoting too eagerly writes noise into the taxonomy permanently, and taxonomy
 mistakes are the expensive kind — they corrupt precedent search, which is the
 product. Every promotion carries its evidence and is reversible.
 
-**Proves it is done.** The 21 concepts are adjudicated one by one against their
+**Proves it is done.** The 22 concepts are adjudicated one by one against their
 quotes and recorded as approved, rejected or held. A new deal automatically
 creates or strengthens a promotion candidate without writing to the active
 registry. A separately approved appraisal-covenant registry version resolves
