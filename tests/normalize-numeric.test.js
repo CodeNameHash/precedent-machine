@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { parseNumeric, parseDuration, classifyNullReason, wordsToNumber, CLOSED_UNITS } = require('../lib/normalize-numeric');
+const { parseNumeric, parseDuration, parseDurationAtNumeralRung, classifyNullReason, wordsToNumber, CLOSED_UNITS, NUMERAL_LADDER_SCHEMA, NUMERAL_LADDER_RUNGS } = require('../lib/normalize-numeric');
 const {
   ATTRIBUTES,
   ALLOWLISTED_ATTRIBUTES,
@@ -58,6 +58,31 @@ test('parseNumeric: explicit calendar days and elapsed hours retain different cl
 test('parseDuration: legal ordinal and hyphenated business-day forms remain business days', () => {
   assert.deepEqual(parseDuration('the third (3rd) Business Day following delivery'), { value: 3, unit: 'business_days' });
   assert.deepEqual(parseDuration('during the five (5)-Business-Day period'), { value: 5, unit: 'business_days' });
+});
+
+test('parseDuration legacy API remains pinned while the numeral ladder is opt-in', () => {
+  assert.deepEqual(parseDuration('three days'), { value: 3, unit: 'calendar_days' });
+  assert.deepEqual(parseDuration('twenty four months'), { value: 4, unit: 'months' });
+  assert.deepEqual(parseDuration('twenty-four months'), { value: 24, unit: 'months' });
+  assert.deepEqual(parseDuration('twenty-four (24) months'), { value: 24, unit: 'months' });
+  assert.equal(parseDuration('twenty four (24) months'), null);
+  assert.equal(parseDuration('20 to 30 days'), null);
+  assert.equal(parseDuration('twenty (24) months'), null);
+  assert.equal(parseDuration('3 months and 1 year'), null);
+});
+
+test('numeral ladder is opt-in, preserves digit compatibility at rung 0, and converts only at rung 3', () => {
+  assert.equal(NUMERAL_LADDER_SCHEMA, 'NUMERAL_LADDER/V1');
+  assert.deepEqual(NUMERAL_LADDER_RUNGS, { LEGACY_DIGIT_ONLY: 0, SPELLED_AND_DIGIT: 1, SPELLED_ALONE: 2, UNIT_CONVERSION: 3 });
+  assert.deepEqual(parseDurationAtNumeralRung('for one (1) year', { numeralRung: 0 }), { value: 1, unit: 'years' });
+  assert.equal(parseDurationAtNumeralRung('for one year', { numeralRung: 0 }), null);
+  assert.deepEqual(parseDurationAtNumeralRung('for one (1) year', { numeralRung: 1 }), { value: 1, unit: 'years' });
+  assert.deepEqual(parseDurationAtNumeralRung('for twenty-four months', { numeralRung: 2 }), { value: 24, unit: 'months' });
+  assert.deepEqual(parseDurationAtNumeralRung('for two years', { numeralRung: 2, convertToUnit: 'months' }), { value: 2, unit: 'years' });
+  assert.deepEqual(parseDurationAtNumeralRung('for two years', { numeralRung: 3, convertToUnit: 'months' }), { value: 24, unit: 'months' });
+  assert.equal(parseDurationAtNumeralRung('for one year and six months', { numeralRung: 3, convertToUnit: 'months' }), null);
+  assert.equal(parseDurationAtNumeralRung('for one (2) year', { numeralRung: 3, convertToUnit: 'months' }), null);
+  assert.throws(() => parseDurationAtNumeralRung('one year', { numeralRung: 4 }), /0 through 3/);
 });
 
 test('parseNumeric: "2.5%"', () => {
