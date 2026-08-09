@@ -489,6 +489,12 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   // Review-queue items now carry the ruling-corpus key fields (work item 8).
   assert.ok(resolution.review_queue.every((item) => typeof item.normalised_phrase === 'string'));
   assert.ok(resolution.review_queue.some((item) => item.concept_family === 'REP-T-CAP'));
+  const resolvedReview = resolution.review_queue.find((item) => (
+    item.has_resolution === true && item.generic_claim_key === QUALIFIER_CLAIM_KEY
+  ));
+  assert.ok(resolvedReview, 'the resolved candidate still has its review row');
+  assert.strictEqual(resolvedReview.evidence, qualifier.claim.evidence, 'the review row transports the exact resolved-claim evidence array');
+  assert.equal(resolvedReview.structure_context.status, 'RESOLVED');
 
   // NEW (work item 6): a limb component tree is minted for the governed
   // representation regardless of which individual qualifiers resolve.
@@ -519,6 +525,54 @@ test('a proposal with an unmappable concept lands in open_world, never forced to
     !resolution.resolved.some((entry) => entry.generic_claim_key === LIMB_ASSERTION_CLAIM_KEY),
     'an open-world proposal never also appears as resolved',
   );
+});
+
+test('source context binds the evidence occurrence inside its pinned section, not an earlier identical quote', async () => {
+  const source = [
+    `Éarlier, Parent stated that the statement was ${ACCURACY_CHAPEAU_QUOTE}.`,
+    qxoFullText,
+  ].join('\n\n');
+  const documentHash = sha256Hex(Buffer.from(source, 'utf8'));
+  const receipt = await runNativeExtraction({
+    source_text: source,
+    document_hash: documentHash,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        singleQualifierResponse({
+          quote: ACCURACY_CHAPEAU_QUOTE,
+          attachment: chapeauAttachment(),
+          modelKind: 'ACCURACY',
+          modelCode: 'MAT_ALL_RESPECTS',
+        }),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-repeated-evidence/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-repeated-evidence-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(source, {
+    dealKey: 'deal:repeated-evidence-context',
+    dealAdmissionId: sha256Hex('deal-admission:repeated-evidence-context'),
+    sourceOrdinal: 0,
+  });
+
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: admittedSourceContext,
+  });
+  const qualifier = findResolved(resolution, QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier);
+  assert.match(qualifier.governing_context_quote, /The Company represents that the following statement/i);
+  assert.doesNotMatch(qualifier.governing_context_quote, /Éarlier/);
 });
 
 // ─── Defect 4 (V2-era; still true under the V3 rekey): a TEMPORAL or
@@ -1104,6 +1158,11 @@ test('a proposal with an unresolvable party lands in review_queue with PARTY_UNR
   assert.ok(unresolved, 'the unresolvable-party proposal reached the review queue');
   assert.deepEqual(unresolved.reasons, ['PARTY_UNRESOLVED']);
   assert.equal(unresolved.has_resolution, false);
+  const originalClaim = receipt.compiled_candidates.find((entry) => (
+    entry?.candidate?.claim?.raw_value === UNRESOLVED_PARTY_QUOTE
+  )).candidate.claim;
+  assert.strictEqual(unresolved.evidence, originalClaim.evidence, 'the unresolved review row transports the exact original evidence array');
+  assert.equal(unresolved.structure_context.status, 'RESOLVED');
   assert.ok(
     !resolution.resolved.some((entry) => entry.claim.raw_value === UNRESOLVED_PARTY_QUOTE),
     'no provision or claim was minted for the party-unresolved proposal',

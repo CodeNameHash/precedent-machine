@@ -27,6 +27,7 @@ const {
   loadMisnestSectionText,
 } = require('./fixtures/canonical-v2/step-2x-a-misnest-sections');
 const { findStructuralMarkers } = require('../lib/parser-v2/subclauses');
+const { utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
 
 test('RESOLVED: clean nested outline returns leaf + chapeau chain in UTF-8 bytes', () => {
   const sectionText = [
@@ -213,6 +214,66 @@ test('placement annotates structure_context without changing claim identity fiel
   assert.ok(batch.review_queue[0].structure_context);
   assert.equal(batch.open_world[0].structure_context.status, 'UNDETERMINED');
   assert.equal(batch.open_world[0].structure_context.reason, UNDETERMINED_REASONS.NO_EVIDENCE_SPAN);
+});
+
+test('placement uses top-level evidence for open-world and review rows, with byte-safe repeated occurrences', () => {
+  const quote = 'the same quoted obligation';
+  const sectionText = [
+    'Élan chapeau.',
+    `(a) first limb: ${quote};`,
+    `(b) intended limb: ${quote}.`,
+  ].join('\n');
+  const secondStart = Buffer.from(sectionText, 'utf8').lastIndexOf(Buffer.from(quote, 'utf8'));
+  const evidence = Object.freeze([Object.freeze({
+    absolute_start: secondStart,
+    absolute_end: secondStart + utf8ByteLength(quote),
+    evidence_role: 'OPERATIVE_TEXT',
+  })]);
+  const entries = {
+    resolved: [],
+    review_queue: [
+      Object.freeze({ section_reference: '5.1', has_resolution: false, evidence }),
+      Object.freeze({ section_reference: '5.1', has_resolution: true, evidence }),
+    ],
+    open_world: [Object.freeze({ section_reference: '5.1', evidence })],
+    sectionTextByReference: new Map([['5.1', sectionText]]),
+  };
+
+  const annotated = annotateResolutionStructureContexts(entries);
+  assert.equal(annotated.open_world[0].structure_context.status, 'RESOLVED');
+  assert.equal(annotated.open_world[0].structure_context.leaf.path, 'b');
+  assert.ok(annotated.review_queue.every((entry) => entry.structure_context.status === 'RESOLVED'));
+  assert.ok(annotated.review_queue.every((entry) => entry.structure_context.leaf.path === 'b'));
+});
+
+test('placement fails closed for missing, conflicting, and invalid evidence', () => {
+  const sectionText = '(a) first limb;\n(b) second limb.';
+  const first = utf8ByteLength('(a) ');
+  const second = utf8ByteLength('(a) first limb;\n(b) ');
+  const edge = (start, end) => Object.freeze({
+    absolute_start: start,
+    absolute_end: end,
+    evidence_role: 'OPERATIVE_TEXT',
+  });
+  const options = { sectionTextByReference: new Map([['5.1', sectionText]]) };
+
+  const missing = annotateEntryStructureContext({ section_reference: '5.1' }, options);
+  assert.equal(missing.structure_context.reason, UNDETERMINED_REASONS.NO_EVIDENCE_SPAN);
+
+  const conflicting = annotateEntryStructureContext({
+    section_reference: '5.1',
+    claim: { evidence: [edge(first, first + 5)] },
+    evidence: [edge(second, second + 6)],
+  }, options);
+  assert.equal(conflicting.structure_context.status, 'UNDETERMINED');
+  assert.equal(conflicting.structure_context.reason, UNDETERMINED_REASONS.EVIDENCE_CONFLICT);
+
+  const invalid = annotateEntryStructureContext({
+    section_reference: '5.1',
+    evidence: [edge(second, second)],
+  }, options);
+  assert.equal(invalid.structure_context.status, 'UNDETERMINED');
+  assert.equal(invalid.structure_context.reason, UNDETERMINED_REASONS.NO_EVIDENCE_SPAN);
 });
 
 test('six pinned mis-nest sections each expose a same-style path the service refuses', () => {
