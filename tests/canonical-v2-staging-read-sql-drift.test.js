@@ -123,6 +123,7 @@ test('every canonical_v2_staging_read_* function REVOKEs from PUBLIC, anon, auth
     'canonical_v2_staging_read_open_world_candidate_occurrences',
     'canonical_v2_staging_read_open_world_evidence_references',
     'canonical_v2_staging_read_conditional_termination_fee_values',
+    'canonical_v2_staging_read_claim_publication_dispositions',
   ];
   for (const functionName of functionNames) {
     const revokeMatch = new RegExp(
@@ -136,6 +137,17 @@ test('every canonical_v2_staging_read_* function REVOKEs from PUBLIC, anon, auth
     ).test(sqlText);
     assert.ok(grantMatch, `${functionName} is missing its GRANT EXECUTE ... TO canonical_v2_staging_reader`);
   }
+});
+
+test('publication disposition RPC uses one named immutable decision id, never a set, clock, or latest-state selector', () => {
+  const functionText = sqlText.slice(
+    sqlText.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_staging_read_claim_publication_dispositions('),
+    sqlText.indexOf('$$;', sqlText.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_staging_read_claim_publication_dispositions(')) + 3,
+  );
+  const body = extractFunctionBody('canonical_v2_staging_read_claim_publication_dispositions');
+  assert.match(functionText, /p_claim_revision_ids text\[\], p_decision_id text/);
+  assert.match(body, /row\.decision_id\s*=\s*ANY\(canonical_v2_staging\.staging_read_id_array\(ARRAY\[p_decision_id\]\)\)/);
+  assert.doesNotMatch(functionText, /disposition_set_id|latest|now\s*\(|current_timestamp/i);
 });
 
 test('the SQL file introduces no CREATE POLICY and no FORCE ROW LEVEL SECURITY -- the ruling\'s hard constraint '

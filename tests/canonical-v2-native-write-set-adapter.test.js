@@ -788,6 +788,11 @@ test('the assembled write set passes validate-write-set.js\'s real validation wi
   assert.equal(validation.accepted, true);
   assert.ok(Array.isArray(validation.residuals));
   assert.ok(Array.isArray(validation.quarantines));
+  assert.equal(Object.hasOwn(result.write_set, 'publication_calibration_authorities'), false);
+  assert.ok(result.write_set.publication_dispositions.every((sidecar) => sidecar.disposition === 'WITHHELD'));
+  assert.deepEqual(validation.unattendedPublicationCandidateWriteSet, {
+    claims: [], publication_dispositions: [],
+  });
 });
 
 // ─── Task 5 (docs/superpowers/plans/2026-08-01-claim-identity-provenance-

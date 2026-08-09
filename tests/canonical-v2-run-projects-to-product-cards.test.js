@@ -107,3 +107,31 @@ test('the runner\'s resolved entries carry every field the projection reads', ()
     );
   }
 });
+
+test('publication filters are inert when omitted and fail closed for missing or forged sidecars', () => {
+  const resolution = resolutionFor('modiv-termination-fee-20260807-replay');
+  const baseline = projectTerminationFeeProductSurfaces({ resolution, deal_id: 'modiv-gnl' });
+  const forgedResolution = {
+    ...resolution,
+    resolved: resolution.resolved.map((entry, index) => (index === 0 ? {
+      ...entry,
+      publication_disposition: {
+        schema_version: 'CANONICAL_V2_PUBLICATION_DISPOSITION/V2',
+        claim_revision_id: entry.claim.claim_revision_id,
+        decision_id: 'f'.repeat(64),
+        disposition: 'ELIGIBLE',
+      },
+    } : entry)),
+  };
+  const omitted = projectTerminationFeeProductSurfaces({ resolution: forgedResolution, deal_id: 'modiv-gnl' });
+  assert.equal(JSON.stringify(omitted), JSON.stringify(baseline));
+  const candidate = projectTerminationFeeProductSurfaces({
+    resolution: forgedResolution, deal_id: 'modiv-gnl', publication_filter: 'CANDIDATE_ELIGIBLE',
+  });
+  const published = projectTerminationFeeProductSurfaces({
+    resolution: forgedResolution, deal_id: 'modiv-gnl', publication_filter: 'REQUIRE_PUBLISHED',
+    release_receipt_id: 'a'.repeat(64),
+  });
+  assert.deepEqual(candidate.cards, []);
+  assert.deepEqual(published.cards, []);
+});

@@ -2095,8 +2095,9 @@ async function main() {
 
   // ─── Step 4: resolveCandidates -> buildNativeWriteSet (WITH resolution context) -> validate ───
 
-  // Stage 2Y is deliberately inert unless the operator names both a sealed
-  // KEY_DEFINED_TERMS receipt set and its explicit calibration. It reads
+  // The optional KEY_DEFINED_TERMS receipt/calibration feature is inert unless
+  // the operator names both a sealed receipt set and its explicit calibration.
+  // Publication disposition is separately WITHHELD by default. It reads
   // compiled candidates, never another family's resolution output.
   const sameDealDefinedTerms = config.sameDealDefinedTermCalibrationPath
     ? buildSameDealDefinedTermIndex({
@@ -2196,7 +2197,13 @@ async function main() {
     document_hash: documentHash,
     admitted_source_context: admittedSourceContext,
     resolution,
+    publication_gate: {
+      resolution_receipt_id: resolution.resolution_receipt.resolution_receipt_id,
+      review_queue_artifact_id: reviewQueueArtifact.review_queue_artifact_id,
+    },
   });
+  const publicationDispositions = adapterResult.write_set.publication_dispositions || [];
+  writeFileSync(resolve(outDir, 'publication-dispositions.json'), JSON.stringify(publicationDispositions, null, 2));
   writeFileSync(resolve(outDir, 'adapter-result.json'), JSON.stringify(adapterResult, null, 2));
 
   const provisionsById = new Map(
@@ -2212,6 +2219,10 @@ async function main() {
     writeSet,
     contractBundle,
     admittedSourceContexts: adapterResult.admitted_source_contexts,
+    publicationGate: {
+      resolution_receipt_id: resolution.resolution_receipt.resolution_receipt_id,
+      review_queue_artifact_id: reviewQueueArtifact.review_queue_artifact_id,
+    },
   });
   writeFileSync(resolve(outDir, 'validation.json'), JSON.stringify(validation, null, 2));
 
@@ -2267,6 +2278,11 @@ async function main() {
     run_receipt_id: receipt.run_receipt_id,
     document_hash: documentHash,
     source_sha256: verified.conversion.canonical_text_sha256,
+    publication_gate_mode: 'INERT_WITHHELD',
+    publication_dispositions: {
+      content_id: contentId('CANONICAL_V2_PUBLICATION_DISPOSITION_SET/V1', publicationDispositions),
+      count: publicationDispositions.length,
+    },
     // Ben's two M3 auto-pass conditions (docs/core/PLAN.md prerequisite):
     // whether each condition was evaluated on THIS rung, and its outcome,
     // recorded here rather than left implicit in resolution.json alone --

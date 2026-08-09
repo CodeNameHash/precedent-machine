@@ -342,6 +342,25 @@ AS $$
   WHERE row.document_hash = canonical_v2_staging.staging_read_document_hash(p_document_hash);
 $$;
 
+-- A caller names one immutable decision id. This is intentionally an
+-- exact predicate, not a current-state or database-clock selection.
+CREATE OR REPLACE FUNCTION public.canonical_v2_staging_read_claim_publication_dispositions(
+  p_claim_revision_ids text[], p_decision_id text
+)
+RETURNS jsonb
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+AS $$
+  SELECT canonical_v2_staging.staging_read_bound(
+    coalesce(jsonb_agg(row.canonical_payload ORDER BY row.decision_id), '[]'::jsonb),
+    'canonical_v2_staging_read_claim_publication_dispositions'
+  )
+  FROM canonical_v2_staging.claim_publication_dispositions row
+  WHERE row.claim_revision_id = ANY(canonical_v2_staging.staging_read_id_array(p_claim_revision_ids))
+    AND row.decision_id = ANY(canonical_v2_staging.staging_read_id_array(ARRAY[p_decision_id]));
+$$;
+
 -- ── Grants. EXECUTE revoked from PUBLIC, anon, authenticated, service_role,
 -- canonical_v2_writer AND canonical_v2_serving on every function above --
 -- canonical_v2_serving is deliberately excluded even though it is a reader
@@ -372,6 +391,8 @@ REVOKE ALL ON FUNCTION public.canonical_v2_staging_read_open_world_evidence_refe
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer, canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_staging_read_conditional_termination_fee_values(text)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer, canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_staging_read_claim_publication_dispositions(text[], text)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer, canonical_v2_serving;
 
 GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_provision_instances(text)
   TO canonical_v2_staging_reader;
@@ -388,6 +409,8 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_open_world_candidate_
 GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_open_world_evidence_references(text[])
   TO canonical_v2_staging_reader;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_conditional_termination_fee_values(text)
+  TO canonical_v2_staging_reader;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_claim_publication_dispositions(text[], text)
   TO canonical_v2_staging_reader;
 
 -- ── Verification block. Kept mechanical on purpose -- decision 1's second
@@ -417,7 +440,7 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_staging_read_conditional_terminati
 --
 --   -- 3. Every function this file defines has EXACTLY ONE EXECUTE grantee
 --   --    besides its own owner, canonical_v2_staging_reader (must return
---   --    exactly the 8 rows named above, each with
+--   --    exactly the 9 rows named above, each with
 --   --    grantee = 'canonical_v2_staging_reader'). The function owner
 --   --    always appears too (grantor = grantee = the owning role) --
 --   --    Postgres grants the owner an implicit, unrevokable EXECUTE right

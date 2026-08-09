@@ -449,6 +449,31 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.claim_revisions (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+-- Publication is an immutable sidecar. It must never alter the
+-- content-addressed CLAIM_REVISION/V1 payload or select a database-clock
+-- "latest" state.
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.publication_calibration_authorities (
+  calibration_authority_id text PRIMARY KEY,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.claim_publication_dispositions (
+  decision_id text PRIMARY KEY,
+  claim_revision_id text NOT NULL,
+  calibration_authority_id text NULL,
+  disposition text NOT NULL CHECK (disposition IN ('WITHHELD', 'ELIGIBLE', 'PUBLISHED')),
+  run_receipt_id text NOT NULL,
+  resolution_receipt_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED,
+  FOREIGN KEY (claim_revision_id) REFERENCES canonical_v2_staging.claim_revisions(claim_revision_id),
+  FOREIGN KEY (calibration_authority_id) REFERENCES canonical_v2_staging.publication_calibration_authorities(calibration_authority_id)
+);
+CREATE INDEX IF NOT EXISTS canonical_v2_claim_publication_dispositions_claim_disposition_idx
+  ON canonical_v2_staging.claim_publication_dispositions(claim_revision_id, disposition);
+CREATE INDEX IF NOT EXISTS canonical_v2_claim_publication_dispositions_authority_idx
+  ON canonical_v2_staging.claim_publication_dispositions(calibration_authority_id);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.relationship_revisions (
   relationship_revision_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -3067,13 +3092,22 @@ BEGIN
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
         'reviewed_source_specific_rows', 'incomplete_canonical_result_rows',
-        'persisted_object_references', 'conditional_termination_fee_values'
+        'persisted_object_references', 'conditional_termination_fee_values',
+        'publication_dispositions', 'publication_calibration_authorities'
       ]::text[] <> '{}'::jsonb
       OR jsonb_typeof(p_write_set->'source_references') IS DISTINCT FROM 'array'
       OR jsonb_typeof(p_write_set->'deal') IS DISTINCT FROM 'object'
       OR (
         p_write_set ? 'persisted_object_references'
         AND jsonb_typeof(p_write_set->'persisted_object_references') IS DISTINCT FROM 'array'
+      )
+      OR (
+        p_write_set ? 'publication_dispositions'
+        AND jsonb_typeof(p_write_set->'publication_dispositions') IS DISTINCT FROM 'array'
+      )
+      OR (
+        p_write_set ? 'publication_calibration_authorities'
+        AND jsonb_typeof(p_write_set->'publication_calibration_authorities') IS DISTINCT FROM 'array'
       )
       -- conditional_termination_fee_values (PLAN.md Step 4A2) is OPTIONAL,
       -- like persisted_object_references above: most deals have no Modiv-
@@ -3110,7 +3144,7 @@ BEGIN
     SELECT coalesce(sum(jsonb_array_length(value)), 0)::integer
     INTO publishable_object_count
     FROM jsonb_each(p_write_set)
-    WHERE key NOT IN ('source_references', 'deal', 'persisted_object_references');
+    WHERE key NOT IN ('source_references', 'deal', 'persisted_object_references', 'publication_dispositions', 'publication_calibration_authorities');
     IF source_reference_count NOT BETWEEN 1 AND 32
       OR persisted_reference_count > 4096
       OR residual_count > 16384
@@ -8729,6 +8763,107 @@ BEGIN
     FROM canonical_v2_staging.relationship_revisions WHERE relationship_revision_id = item_id;
     IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
       RAISE EXCEPTION 'canonical relationship identity conflict' USING ERRCODE = '23505';
+    END IF;
+  END LOOP;
+
+  -- Immutable publication sidecars. These are admitted only as supplied
+  -- records; this function never asks which decision is "latest".
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'publication_calibration_authorities', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'calibration_authority_id'
+  LOOP
+    item_id := item->>'calibration_authority_id';
+    IF item_id !~ '^[0-9a-f]{64}$'
+      OR item->>'schema_version' IS DISTINCT FROM 'CANONICAL_V2_CALIBRATION_AUTHORITY/V1'
+      OR item_id <> canonical_v2_staging.content_id(
+        'CANONICAL_V2_CALIBRATION_AUTHORITY/V1', item - 'calibration_authority_id'
+      ) THEN
+      RAISE EXCEPTION 'publication calibration authority identity or schema is invalid' USING ERRCODE = '23514';
+    END IF;
+    INSERT INTO canonical_v2_staging.publication_calibration_authorities(
+      calibration_authority_id, canonical_payload
+    ) VALUES (item_id, item) ON CONFLICT (calibration_authority_id) DO NOTHING;
+    IF NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.publication_calibration_authorities
+      WHERE calibration_authority_id = item_id
+        AND canonical_payload_digest = canonical_v2_staging.payload_digest(item)
+    ) THEN
+      RAISE EXCEPTION 'publication calibration authority identity conflict' USING ERRCODE = '23505';
+    END IF;
+  END LOOP;
+
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'publication_dispositions', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'decision_id'
+  LOOP
+    item_id := item->>'decision_id';
+    IF item_id !~ '^[0-9a-f]{64}$'
+      OR item->>'claim_revision_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'run_receipt_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'resolution_receipt_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'schema_version' IS DISTINCT FROM 'CANONICAL_V2_PUBLICATION_DISPOSITION/V2'
+      OR item->>'disposition' NOT IN ('WITHHELD', 'ELIGIBLE', 'PUBLISHED')
+      OR item->>'disposition' = 'PUBLISHED'
+      OR NOT item ?& ARRAY[
+        'authority_id', 'canonical_validation_state', 'claim_kind', 'claim_revision_id',
+        'decision_id', 'disposition', 'evaluated_at', 'family', 'mechanism',
+        'prior_eligible_decision', 'prior_eligible_decision_id', 'publication_input_digest',
+        'reason_codes', 'resolution_receipt_id', 'review_queue_artifact_id', 'risk_signals',
+        'run_receipt_id', 'schema_version', 'selected_rung'
+      ]
+      OR item - ARRAY[
+        'authority_id', 'canonical_validation_state', 'claim_kind', 'claim_revision_id',
+        'decision_id', 'disposition', 'evaluated_at', 'family', 'mechanism',
+        'prior_eligible_decision', 'prior_eligible_decision_id', 'publication_input_digest',
+        'reason_codes', 'resolution_receipt_id', 'review_queue_artifact_id', 'risk_signals',
+        'run_receipt_id', 'schema_version', 'selected_rung'
+      ]::text[] <> '{}'::jsonb
+      OR item->>'publication_input_digest' !~ '^[0-9a-f]{64}$'
+      OR item->>'canonical_validation_state' NOT IN ('VALIDATED', 'QUARANTINED')
+      OR item->>'selected_rung' !~ '^[1-9][0-9]*$'
+      OR jsonb_typeof(item->'reason_codes') IS DISTINCT FROM 'array'
+      OR jsonb_array_length(item->'reason_codes') = 0
+      OR item->'prior_eligible_decision_id' IS DISTINCT FROM 'null'::jsonb
+      OR item->'prior_eligible_decision' IS DISTINCT FROM 'null'::jsonb
+      OR jsonb_typeof(item->'risk_signals') IS DISTINCT FROM 'object'
+      OR NOT item->'risk_signals' ?& ARRAY[
+        'structural_uncertainty', 'definition_ambiguity', 'model_fallback', 'party_attribution_risk'
+      ]
+      OR item->'risk_signals' - ARRAY[
+        'structural_uncertainty', 'definition_ambiguity', 'model_fallback', 'party_attribution_risk'
+      ]::text[] <> '{}'::jsonb
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_each(item->'risk_signals') AS risk(name, value)
+        WHERE jsonb_typeof(risk.value) IS DISTINCT FROM 'boolean'
+      )
+      OR item_id <> canonical_v2_staging.content_id(
+        'CANONICAL_V2_PUBLICATION_DISPOSITION/V2', item - 'decision_id'
+      )
+      OR NOT EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(p_write_set->'claims') AS supplied_claim(value)
+        WHERE supplied_claim.value->>'claim_revision_id' = item->>'claim_revision_id'
+      ) THEN
+      RAISE EXCEPTION 'publication disposition identity, trace or schema is invalid' USING ERRCODE = '23514';
+    END IF;
+    INSERT INTO canonical_v2_staging.claim_publication_dispositions(
+      decision_id, claim_revision_id, calibration_authority_id, disposition,
+      run_receipt_id, resolution_receipt_id, canonical_payload
+    ) VALUES (
+      item_id, item->>'claim_revision_id', nullif(item->>'authority_id', ''), item->>'disposition',
+      item->>'run_receipt_id', item->>'resolution_receipt_id', item
+    ) ON CONFLICT (decision_id) DO NOTHING;
+    IF NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.claim_publication_dispositions
+      WHERE decision_id = item_id
+        AND canonical_payload_digest = canonical_v2_staging.payload_digest(item)
+    ) THEN
+      RAISE EXCEPTION 'publication disposition identity conflict' USING ERRCODE = '23505';
     END IF;
   END LOOP;
 

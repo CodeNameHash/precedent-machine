@@ -16,6 +16,9 @@ const {
   evaluatePublicationDisposition,
   validatePublicationDispositionDecision,
   transitionPublicationDisposition,
+  PUBLICATION_DISPOSITION_V2_SCHEMA,
+  buildPublicationDispositionV2,
+  validatePublicationDispositionV2,
 } = require('../lib/canonical-v2/publication-disposition');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 
@@ -327,5 +330,73 @@ test('PUBLISHED is reachable only by the explicit transition from ELIGIBLE', () 
   assert.throws(
     () => validatePublicationDispositionDecision(invalidPredecessor),
     (error) => error.code === 'INVALID_PUBLICATION_DECISION',
+  );
+});
+
+test('V2 sidecar is deterministic, withheld without authority, and rejects trace tampering', () => {
+  const trace = {
+    claim_revision_id: 'a'.repeat(64),
+    run_receipt_id: 'b'.repeat(64),
+    resolution_receipt_id: 'c'.repeat(64),
+    evaluated_at: EVALUATION_TIME,
+  };
+  const withheld = buildPublicationDispositionV2(trace);
+  assert.equal(withheld.schema_version, PUBLICATION_DISPOSITION_V2_SCHEMA);
+  assert.equal(withheld.disposition, 'WITHHELD');
+  assert.deepEqual(withheld.reason_codes, ['MISSING_CALIBRATION_AUTHORITY']);
+  assert.doesNotThrow(() => validatePublicationDispositionV2(withheld, { rebuild: true }));
+
+  const authority = buildCalibrationAuthority(authorityInput());
+  const eligible = buildPublicationDispositionV2({
+    ...trace,
+    calibration_authority: authority,
+    publication_input: publicationInput(),
+    rebuild: true,
+    canonical_validation_state: 'VALIDATED',
+  });
+  assert.equal(eligible.disposition, 'ELIGIBLE');
+  assert.doesNotThrow(() => validatePublicationDispositionV2(eligible, {
+    calibration_authority: authority,
+    publication_input: publicationInput(),
+  }));
+  for (const field of [
+    'claim_revision_id', 'run_receipt_id', 'resolution_receipt_id',
+    'publication_input_digest', 'authority_id', 'decision_id', 'reason_codes',
+  ]) {
+    const tampered = { ...eligible, [field]: field === 'reason_codes' ? ['TAMPERED'] : 'd'.repeat(64) };
+    assert.throws(() => validatePublicationDispositionV2(tampered, {
+      calibration_authority: authority,
+      publication_input: publicationInput(),
+    }), /publication disposition/i, field);
+  }
+});
+
+test('the V2 validator rebuilds the evaluator result when asked to validate a write-set sidecar', () => {
+  const authority = buildCalibrationAuthority(authorityInput());
+  const trace = {
+    claim_revision_id: 'a'.repeat(64),
+    run_receipt_id: 'b'.repeat(64),
+    resolution_receipt_id: 'c'.repeat(64),
+    evaluated_at: EVALUATION_TIME,
+    calibration_authority: authority,
+    publication_input: publicationInput(),
+    canonical_validation_state: 'VALIDATED',
+  };
+  const eligible = buildPublicationDispositionV2(trace);
+  const { decision_id: _oldDecisionId, ...forgedBody } = eligible;
+  const forged = {
+    ...forgedBody,
+    disposition: 'WITHHELD',
+    reason_codes: ['MISSING_CALIBRATION_AUTHORITY'],
+  };
+  forged.decision_id = contentId(PUBLICATION_DISPOSITION_V2_SCHEMA, forged);
+  assert.doesNotThrow(() => validatePublicationDispositionV2(forged));
+  assert.throws(
+    () => validatePublicationDispositionV2(forged, {
+      calibration_authority: authority,
+      publication_input: publicationInput(),
+      rebuild: true,
+    }),
+    /independent evaluation/,
   );
 });

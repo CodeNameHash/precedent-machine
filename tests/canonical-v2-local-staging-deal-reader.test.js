@@ -31,6 +31,8 @@ const {
   readIocRestrictionComponentsForDeal,
   readRelationshipsForDeal,
   readConditionalTerminationFeeValuesForDeal,
+  createLocalStagingQueryInterface,
+  createHostedStagingQueryInterface,
   LocalStagingReadError,
   OPEN_WORLD_EVIDENCE_GOVERNANCE_MARKER,
 } = require('../lib/canonical-v2/local-staging-deal-reader');
@@ -55,7 +57,11 @@ function fakeClient(tables) {
       // column query would match that regex too and route through the
       // wrong (payload-based) filter for a table that has no such payload
       // field to filter on.
-      if (/(?<!')document_hash = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/parent_provision_instance_id' = ANY/.test(text)) { field = 'parent_provision_instance_id'; mode = 'any'; } else if (/closure_id = ANY/.test(text)) {
+      if (/claim_revision_id = ANY\(\$1::text\[\]\)\s*AND decision_id = \$2/.test(text)) {
+        const matched = rows.filter((row) => values[0].includes(row.claim_revision_id)
+          && row.decision_id === values[1]);
+        return { rows: matched.map((row) => ({ canonical_payload: row })) };
+      } else if (/(?<!')document_hash = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/document_hash' = \$1/.test(text)) { field = 'document_hash'; mode = 'eq'; } else if (/parent_provision_instance_id' = ANY/.test(text)) { field = 'parent_provision_instance_id'; mode = 'any'; } else if (/closure_id = ANY/.test(text)) {
         // PLAN.md Step 2B3: claims are fetched by closure OR subject so that
         // an unresolvable subject actually reaches ORPHAN_CLAIM_REVISION.
         // The old form selected on the very ids it then checked against,
@@ -356,6 +362,61 @@ test('readDealFromLocalCanonicalV2Staging succeeds and returns non-empty for the
   });
   assert.equal(result.resolved.length, 1);
   assert.equal(result.open_world.length, 1);
+});
+
+test('publication disposition reads use the exact immutable decision id in both local and hosted paths', async () => {
+  const decisionId = 'd'.repeat(64);
+  const otherDecisionId = 'e'.repeat(64);
+  const claimRevisionId = fixture.writeSet.claims[0].claim_revision_id;
+  const sidecar = {
+    schema_version: 'CANONICAL_V2_PUBLICATION_DISPOSITION/V2',
+    decision_id: decisionId,
+    claim_revision_id: claimRevisionId,
+    disposition: 'WITHHELD',
+  };
+  const local = createLocalStagingQueryInterface(fakeClient({
+    claim_publication_dispositions: [sidecar, { ...sidecar, decision_id: otherDecisionId }],
+  }));
+  const localRows = await local.claimPublicationDispositionsByClaimRevisionIds([claimRevisionId], decisionId);
+  assert.deepEqual(localRows, [sidecar]);
+
+  const calls = [];
+  const hosted = createHostedStagingQueryInterface({
+    async rpc(name, params) {
+      calls.push({ name, params });
+      return { data: params.p_decision_id === decisionId ? [sidecar] : [], error: null };
+    },
+  });
+  const hostedRows = await hosted.claimPublicationDispositionsByClaimRevisionIds([claimRevisionId], decisionId);
+  assert.deepEqual(hostedRows, localRows);
+  assert.deepEqual(calls, [{
+    name: 'canonical_v2_staging_read_claim_publication_dispositions',
+    params: { p_claim_revision_ids: [claimRevisionId], p_decision_id: decisionId },
+  }]);
+  assert.equal(Object.hasOwn(sidecar, 'disposition_set_id'), false);
+});
+
+test('an omitted publication decision selector preserves the resolved output byte-for-byte', async () => {
+  const client = fakeClient(tablesFromFixture());
+  const baseline = await readDealFromLocalCanonicalV2Staging({
+    client, documentHash: fixture.documentHash, env: { NODE_ENV: 'test' },
+  });
+  assert.equal(Object.hasOwn(baseline.resolved[0], 'publication_disposition'), false);
+  const second = await readDealFromLocalCanonicalV2Staging({
+    client, documentHash: fixture.documentHash, env: { NODE_ENV: 'test' },
+  });
+  assert.equal(JSON.stringify(second.resolved), JSON.stringify(baseline.resolved));
+});
+
+test('publication disposition decision selector rejects a non-immutable value before querying', async () => {
+  const client = { query: async () => { throw new Error('must not query'); } };
+  await assert.rejects(
+    () => readDealFromLocalCanonicalV2Staging({
+      client, documentHash: fixture.documentHash, env: { NODE_ENV: 'test' },
+      publicationDispositionDecisionId: 'latest',
+    }),
+    /immutable SHA-256 decision id/,
+  );
 });
 
 // ── Fails closed in a production-shaped runtime, and never even queries. ──

@@ -71,7 +71,7 @@ const EXPECTED_DIGESTS = Object.freeze({
   // recompute the identity of, and durably write that write-set object kind.
   // See docs/codex-program/notes/step-4a2-conditional-fee-table.md for that
   // local-container proof.
-  'canonical-v2-foundation.sql': '831efd09d016f204ca474e316efc83d2a42ab0acf01dd044232381d87d8c637e',
+  'canonical-v2-foundation.sql': '62dff9b87f2fc1716ca40ccd8767867afe7b095ced4fe8de8b54e59858ecb84b',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
