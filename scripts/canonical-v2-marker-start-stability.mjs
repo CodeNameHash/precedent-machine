@@ -28,8 +28,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
-import { spawnSync } from 'node:child_process';
+import { createRequire, Module } from 'node:module';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import os from 'node:os';
@@ -43,6 +42,9 @@ const {
   AdmittedSourceChainError,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
 const { utf8Slice, utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  loadSubclausesSourceFromGit,
+} = require('../lib/canonical-v2/marker-start-git-baseline');
 const {
   SEGMENTER_VERSION,
   findStructuralMarkers,
@@ -78,26 +80,33 @@ function parseArgs(argv) {
 }
 
 function loadSegmenterFromGit(ref, label) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), `marker-start-${label}-`));
-  const dest = path.join(tmpDir, 'subclauses-baseline.js');
-  const shown = spawnSync(
-    'git',
-    ['show', `${ref}:lib/parser-v2/subclauses.js`],
-    { cwd: REPO_ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 },
-  );
-  if (shown.status !== 0) {
-    throw new Error(`git show ${ref} segmenter failed: ${shown.stderr || shown.stdout}`);
+  // Git inspection lives in marker-start-git-baseline.js (READ_ONLY_GIT_
+  // INSPECTOR). Compile in memory so this writer never launches a process
+  // and never needs a temp-file require.
+  let source;
+  try {
+    source = loadSubclausesSourceFromGit(ref, { repositoryRoot: REPO_ROOT });
+  } catch (err) {
+    throw new Error(`git show ${ref} segmenter failed: ${err.message || err}`);
   }
-  fs.writeFileSync(dest, shown.stdout);
-  const mod = require(dest);
-  if (typeof mod.findStructuralMarkers !== 'function') {
+  const filename = path.join(
+    REPO_ROOT,
+    'lib',
+    'parser-v2',
+    `.marker-start-baseline-${label}.js`,
+  );
+  const mod = new Module(filename);
+  mod.filename = filename;
+  mod.paths = Module._nodeModulePaths(path.dirname(filename));
+  mod._compile(source, filename);
+  if (typeof mod.exports.findStructuralMarkers !== 'function') {
     throw new Error(`baseline ${ref} missing findStructuralMarkers`);
   }
   return {
-    findStructuralMarkers: mod.findStructuralMarkers,
-    tmpDir,
+    findStructuralMarkers: mod.exports.findStructuralMarkers,
+    tmpDir: null,
     ref,
-    maxDepth: mod.MAX_DEPTH ?? 3,
+    maxDepth: mod.exports.MAX_DEPTH ?? 3,
   };
 }
 
@@ -389,14 +398,6 @@ function runSurvey() {
           depth: s.depth,
         });
       }
-    }
-  }
-
-  for (const b of [preThree, preDepthXyz]) {
-    try {
-      fs.rmSync(b.tmpDir, { recursive: true, force: true });
-    } catch {
-      // ignore
     }
   }
 

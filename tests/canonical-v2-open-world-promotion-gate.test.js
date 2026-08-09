@@ -21,24 +21,25 @@ const {
   evaluatePromotionGate,
   checkPromotionCollision,
   loadStep2xJConsumeVocabularies,
+} = require('../lib/canonical-v2/open-world-promotion-gate');
+const {
   noShopWaveBValueCorroborated,
   resolveCandidates,
-} = (() => {
-  const gate = require('../lib/canonical-v2/open-world-promotion-gate');
-  const expected = require('../lib/expected-sets');
-  const resolution = require('../lib/canonical-v2/native-producer/candidate-resolution');
-  return { ...gate, ...expected, ...resolution };
-})();
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { compileFixtureContractV41 } = require('../lib/canonical-v2/contract-bundle');
+// expected-sets must stay free of the gate module: the review page imports it.
+const expectedSets = require('../lib/expected-sets');
 
 const EVIDENCE_ROOT = path.join(__dirname, '..', 'evidence', 'canonical-v2');
 
-test('expected-sets re-exports the 2X-G deal-count gate (not fraction thresholds)', () => {
+test('2X-G deal-count gate lives beside expected-sets, not inside it', () => {
   assert.equal(MIN_PROMOTION_DEAL_COUNT, 3);
   assert.equal(PREFERRED_PROMOTION_DEAL_COUNT, 4);
   assert.ok(HOLD_SCAFFOLD_MODULES.includes('lib/vocab/guaranty-assertion-legacy.js'));
   assert.ok(HOLD_SCAFFOLD_MODULES.includes('lib/vocab/tax-cooperation-legacy.js'));
   assert.ok(HOLD_SCAFFOLD_MODULES.includes('lib/vocab/general-covenant-rubric-presentation.js'));
+  assert.equal(typeof expectedSets.evaluatePromotionGate, 'undefined');
+  assert.equal(typeof expectedSets.CORE_THRESHOLD, 'number');
 });
 
 test('gate refuses below three deals even at 100% of a tiny corpus', () => {

@@ -16,19 +16,15 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {
   generalCovenantPrimaryMatchingCodes,
-  corroborateGeneralCovenantCode,
 } = require('../lib/canonical-v2/native-producer/general-covenant-corroboration.js');
 const { rubricPresentationCodeMatches } = require('../lib/vocab/general-covenant-rubric-presentation.js');
 const {
   primaryGuarantyKindMatches,
-  corroborateGuarantyKind,
   GUARANTY_ASSERTION_KINDS,
 } = require('../lib/canonical-v2/native-producer/guaranty-corroboration.js');
 const { legacyGuarantyKindMatches } = require('../lib/vocab/guaranty-assertion-legacy.js');
 const {
   taxCooperationPrimaryMatchingKinds,
-  corroborateTaxOpinionCooperation,
-  corroborateTransferCooperation,
 } = require('../lib/canonical-v2/native-producer/tax-cooperation-corroboration.js');
 const { taxCooperationLegacyKindMatches } = require('../lib/vocab/tax-cooperation-legacy.js');
 

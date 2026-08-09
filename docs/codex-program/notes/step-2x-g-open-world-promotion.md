@@ -15,7 +15,7 @@ recurrence is 14%; a fraction is the wrong instrument.
 | Piece | Path |
 |---|---|
 | Gate | `lib/canonical-v2/open-world-promotion-gate.js` |
-| Discoverability | re-exported from `lib/expected-sets.js` (fractions stay for expected-set importance only) |
+| Discoverability | pointed from `lib/expected-sets.js` header (not required — review page imports expected-sets; gate reads the filesystem) |
 | Corpus scan | `scripts/audit/step-2x-g-open-world-promotion-scan.js` |
 | Tests | `tests/canonical-v2-open-world-promotion-gate.test.js` (7/7) |
 | First promotion | `REQUEST_RETURN_OR_DESTRUCTION_OF_INFORMATION` ungated in `candidate-resolution.js` |
