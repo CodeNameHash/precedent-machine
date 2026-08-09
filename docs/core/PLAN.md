@@ -2323,44 +2323,19 @@ unaccounted count is zero — computed from the evidence, not asserted.
 
 ## Step 2X-K. The re-validation ladder
 
-**What it is.** How Step 2X is proven, once implemented. **Ben's ruling,
-2026-08-08**, superseding "run it against all seven deals, then expand":
-Modiv on a few families, then Modiv on more families, then TopBuild, then more
-deals.
+**Campaign closed 2026-08-09.** The ladder completed across Modiv, TopBuild,
+Skechers, SkyWater, Metsera, Concho and Red Hat. The selected evidence contains
+157 runs and 558 recorded Terra calls. It publishes 1,561 claims from 1,571
+resolved rows, with zero validation residuals and zero quarantines. Every
+selected run passes the V42 dry import. Full evidence and per-deal counts are
+recorded in `COMPLETED.md`.
 
-**Why.** It is the ladder discipline the programme already runs on, applied to
-validation rather than build-out. Step 2X lands a structure service, vocabulary
-consumption, absence discipline, a corroboration fallback, an ambiguity guard
-and a prompt bump. Fire all of that at seven deals across 25 families at once
-and a regression is unattributable.
-
-Modiv is first on the evidence: **62 evidence directories**, the deepest
-baseline in the corpus (TopBuild next at 33), and it was already the explicit
-regression pin in the Stage 1 termination work, held at 12 → 12 unchanged as a
-control while six other deals moved. TopBuild is second for the next-deepest
-baseline and because it is a genuine sequential two-step chain, so it exercises
-2X-F where the four single-step deals cannot.
-
-**The consequence for sequencing.** Replay costs zero model calls, so every rung
-before the prompt bump is free. Everything after 2X-I is a live run at full
-cost. So the ladder is climbed **twice**: a replay-validated resolver phase
-(2X-A through 2X-E, 2X-H, 2X-J and **2X-L**), then one prompt bump, then a live
-phase for the producer-side changes.
-
-**Corrected 2026-08-08 after Fable's review.** The original phase list omitted
-2X-F, 2X-G and 2X-H. As of 2026-08-09, 2X-H and 2X-G (gate + first promo) and
-the 2X-F detector half are closed. **2X-F straddled**: detector half closed;
-model-extracted `transaction_steps` + precedence remain inside 2X-I. 2X-D is
-confirmed replay-safe — the retired code was already absent from the prompt.
-This places 2X-I by design rather than letting implementation order decide it.
-
-**One tie-back to derived identity.** When the stability criterion is met,
-mint only **CORROBORATED** starts. Two independent detectors agreeing on
-`{canonical_text_id, start_byte}` is the closest a derived limb gets to the
-attestation a model-declared limb has by construction.
-
-**Proves it is done.** Each rung has its own pass before the next is funded. The
-blind 96-card re-score is the final rung's gate, not the only gate.
+**Stage 3 entry decision remains.** The deterministic 96-card blind successor
+accounts for all 96 cards and resolves 22 against a floor of 21. Three named
+strata pass. `TERMINATING_PARTY_REF_NOT_IN_QUOTE` resolves 6 against a floor of
+7, so the score correctly records `accepted=false`. The original 2026-08-08
+sample is lost, so exact replay is unavailable. Stage 3 needs Ben's explicit
+decision to accept this successor evidence or require another recovery route.
 
 ---
 

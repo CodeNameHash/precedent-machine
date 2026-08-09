@@ -1469,3 +1469,41 @@ external-asset rows, 7 helpers, and 12 feature display groups.
 
 **Evidence.** `docs/codex-program/notes/step-2x-j-vocabulary-dispositions.md`,
 the committed `step-2x-j-vocab-inventory.json`, and commit `f99a2be8`.
+
+---
+
+## Step 2X-K. The re-validation ladder
+
+**Campaign closed 2026-08-09.** The live ladder ran in the authorised order:
+Modiv, TopBuild, Skechers, SkyWater, Metsera, Concho and Red Hat. The selected
+runs all have accepted validation, zero residuals, zero quarantines and a
+passing V42 dry import.
+
+| deal | selected runs | Terra calls | publishable claims | resolved rows |
+|---|---:|---:|---:|---:|
+| Modiv | 10 | 27 | 123 | 123 |
+| TopBuild | 24 | 66 | 349 | 352 |
+| Skechers | 27 | 119 | 219 | 220 |
+| SkyWater | 26 | 106 | 244 | 244 |
+| Metsera | 24 | 93 | 221 | 224 |
+| Concho | 26 | 106 | 252 | 253 |
+| Red Hat | 20 | 41 | 153 | 155 |
+| **Total** | **157** | **558** | **1,561** | **1,571** |
+
+The selected resolutions also retain 2,310 review rows and 2,692 open-world
+rows. These are evidence for later taxonomy work. They do not invalidate the
+campaign. Capitalisation stayed parked. Red Hat miscellaneous boilerplate also
+stayed parked after both bounded attempts returned two JSON objects and
+produced no selectable run.
+
+**Persisted payload seam fixed.** Rebuild and live-run paths now require the
+exact canonical-text-addressed payload path. Absolute paths, traversal and
+symbolic-link components are refused before read or write. A persisted payload
+compressed by a different zlib version is still adopted only after its
+inflated map matches the independently rebuilt map and its recorded digest.
+
+**Blind successor recorded, not waived.** The deterministic successor accounts
+for all 96 cards and resolves 22 against the total floor of 21. Category 4/4,
+clause label 6/6 and qualifier 6/4 pass. Terminating party resolves 6/7 and
+fails. The score therefore records `accepted=false`. The original sample is
+lost, so Ben must rule on the successor before Stage 3 begins.

@@ -66,6 +66,31 @@ after a code change until the source run is replayed.
 
 ## Verification
 
+### Live re-validation ladder
+
+The selected seven-deal campaign contains 157 runs and 558 recorded Terra
+calls. It publishes 1,561 claims from 1,571 resolved rows. All 157 validations
+are accepted with zero residuals and zero quarantines, and all 157 runs pass a
+V42 dry import.
+
+| deal | runs | calls | claims | resolved |
+|---|---:|---:|---:|---:|
+| Modiv | 10 | 27 | 123 | 123 |
+| TopBuild | 24 | 66 | 349 | 352 |
+| Skechers | 27 | 119 | 219 | 220 |
+| SkyWater | 26 | 106 | 244 | 244 |
+| Metsera | 24 | 93 | 221 | 224 |
+| Concho | 26 | 106 | 252 | 253 |
+| Red Hat | 20 | 41 | 153 | 155 |
+
+### Blind successor
+
+The deterministic successor accounts for all 96 cards and resolves 22 against
+the total floor of 21. Category, clause-label and qualifier floors pass.
+Terminating-party resolution is 6 against a floor of 7, so the committed score
+correctly records `accepted=false`. It does not claim exact replay of the lost
+2026-08-08 sample. Stage 3 entry needs an explicit ruling on this successor.
+
 Focused checks passed:
 
 - Combined cross-surface, General Covenant, Material Contracts and exact
