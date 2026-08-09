@@ -3458,7 +3458,7 @@ definition but reached through its own prompt with its own unrelated bug.
 `MAE_QUALIFIER_IDIOM_PATTERN` compound-form failure Ben found by hand. The
 bring-down slice (~22) splits: ~15 resolver-side, **~7 needs a prompt change** —
 its prompt has no controlled-vocabulary block at all, plus a schema/prompt
-contract mismatch on null. Those 7 go to 2Y-M, not here.
+contract mismatch on null. Those 7 go to 2Y-L, not here.
 
 **Direction of risk: additive.**
 
@@ -3523,7 +3523,7 @@ were flagged uncertain purely for want of time.
 
 ---
 
-## Step 2Y-M. One prompt bump, not several
+## Step 2Y-L. One prompt bump, not several
 
 **What it is.** The changes that genuinely require re-extraction, batched into a
 single digest invalidation.
@@ -3550,11 +3550,11 @@ per-family diff against the last replay baseline.
 
 ---
 
-## Step 2Y-N. The ladder, and the blind re-score against its own strata
+## Step 2Y-M. The ladder, and the blind re-score against its own strata
 
 **What it is.** 2X-K's ladder, applied to this stage: Modiv on a few families,
 Modiv on more, TopBuild, then more deals — climbed **twice**, once free before
-2Y-M and once live after.
+2Y-L and once live after.
 
 **Why.** Stage 2Y changes a dozen checks across every family. Fire all of it at
 seven deals at once and a regression is unattributable.
