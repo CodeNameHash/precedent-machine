@@ -3,8 +3,13 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
-const { existsSync, readFileSync } = require('node:fs');
-const { resolve } = require('node:path');
+const { createHash } = require('node:crypto');
+const {
+  existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+} = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join, resolve } = require('node:path');
+const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 
 let scorer;
 
@@ -45,6 +50,10 @@ function rowFor(card, key, now, source = 'replay') {
     orig_reason: key.find((item) => item.id === card.id)._reason,
     now, source,
   };
+}
+
+function canonicalDigest(value) {
+  return createHash('sha256').update(canonicalJson(value)).digest('hex');
 }
 
 test('current output has the exact public schema and all 96 original IDs', () => {
@@ -114,7 +123,11 @@ test('the gate reports all twelve original strata and keeps Stage 3 closed on th
     assert.equal(typeof row.artifact_missing, 'number');
   }
   assert.deepEqual(gate.failures.map((row) => row.reason).sort(), [
-    'CATEGORY_UNCORROBORATED', 'TERMINATING_PARTY_REF_NOT_IN_QUOTE',
+    'CATEGORY_UNCORROBORATED',
+    'CONDITION_KIND_UNCORROBORATED',
+    'PARTY_UNRESOLVED',
+    'PROXY_MEETING_KIND_UNCORROBORATED',
+    'TERMINATING_PARTY_REF_NOT_IN_QUOTE',
   ]);
 });
 
@@ -231,17 +244,67 @@ test('duplicate exact matches from different recordings fail when their selected
   );
 });
 
-test('source manifest replays every sampled family changed by the shared resolver', () => {
+test('source manifest uses the audited 74 replay / 22 current committed split', () => {
   const { sample } = originalInputs();
   const counts = { replay: 0, committed: 0 };
+  const committedFamilies = new Set(['CLOSING_CONDITIONS', 'FINANCING_COVENANTS']);
   for (const family of new Set(sample.map((card) => card.family))) {
     const mode = scorer.sourceModeForFamily(family);
-    assert.equal(mode.source, 'replay', family);
-    assert.ok(mode.resolver_paths.includes('lib/canonical-v2/native-producer/candidate-resolution.js'), family);
-    assert.match(mode.reason, /^STAGE_2Y_/);
+    assert.equal(mode.source, committedFamilies.has(family) ? 'committed' : 'replay', family);
+    if (mode.source === 'replay') {
+      assert.ok(mode.resolver_paths.includes('lib/canonical-v2/native-producer/candidate-resolution.js'), family);
     }
+    if (committedFamilies.has(family) || family === 'PROXY_MEETING') {
+      assert.equal(mode.current_batch_path, 'evidence/canonical-v2/stage-2y-l-live-batch.json', family);
+    }
+  }
   for (const card of sample) counts[scorer.sourceModeForFamily(card.family).source] += 1;
-  assert.deepEqual(counts, { replay: 96, committed: 0 });
+  assert.deepEqual(counts, { replay: 74, committed: 22 });
+});
+
+test('changed-prompt families select nested Stage 2Y-L runs and every fallback stays visible', () => {
+  const trace = JSON.parse(readFileSync(resolve(
+    __dirname, '../evidence/blind-review/2026-08-08/blind-current-rescore-trace.json',
+  ), 'utf8'));
+  const { sample } = originalInputs();
+  const changed = new Set(['CLOSING_CONDITIONS', 'FINANCING_COVENANTS', 'PROXY_MEETING']);
+  const changedIds = new Set(sample.filter((card) => changed.has(card.family)).map((card) => card.id));
+  const cards = trace.cards.filter((card) => changedIds.has(card.id));
+  assert.equal(cards.length, 30);
+  assert.equal(cards.every((card) => card.source_selection === 'current_batch'), true);
+  assert.equal(cards.every((card) => card.matched_candidates.length === 1), true);
+  assert.equal(cards.every((card) => card.matched_candidates[0].source_run.startsWith('stage-2y-l-live-runs/')), true);
+  assert.deepEqual(trace.matching.fallback_card_ids, [
+    'ITEM-002', 'ITEM-007', 'ITEM-013', 'ITEM-016', 'ITEM-023',
+    'ITEM-024', 'ITEM-025', 'ITEM-028', 'ITEM-046', 'ITEM-054',
+    'ITEM-056', 'ITEM-061', 'ITEM-063', 'ITEM-082', 'ITEM-089',
+  ]);
+});
+
+test('source selection rejects a forged and internally resealed Stage 2Y-L batch', () => {
+  const repoRoot = resolve(__dirname, '..');
+  const original = JSON.parse(readFileSync(resolve(
+    repoRoot, 'evidence/canonical-v2/stage-2y-l-live-batch.json',
+  ), 'utf8'));
+  const forged = structuredClone(original);
+  forged.call_manifest[0].deal = 'forged-deal';
+  forged.calls[0].spec = structuredClone(forged.call_manifest[0]);
+  forged.call_manifest_digest = canonicalDigest(forged.call_manifest);
+  delete forged.artifact_id;
+  forged.artifact_id = canonicalDigest(forged);
+  const scratch = mkdtempSync(join(tmpdir(), 'blind-current-batch-'));
+  const batchPath = resolve(scratch, 'forged.json');
+  try {
+    writeFileSync(batchPath, JSON.stringify(forged));
+    assert.throws(
+      () => scorer.currentBatchRuns({ repoRoot, batchPath }),
+      (error) => error.code === 'CURRENT_BATCH_INVALID'
+        && error.details.errors.includes('CALL_MANIFEST_INVALID')
+        && !error.details.errors.includes('ARTIFACT_ID_INVALID'),
+    );
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
 });
 
 test('committed mode fails closed when it points at the historical score', () => {

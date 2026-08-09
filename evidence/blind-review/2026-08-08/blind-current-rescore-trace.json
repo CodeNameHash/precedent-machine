@@ -1,60 +1,122 @@
 {
   "schema_version": "BLIND_CURRENT_RESCORE_TRACE/V1",
-  "replay_family_modes": [
+  "family_source_modes": [
     {
       "family": "CLOSING_CONDITIONS",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "committed",
+      "current_score_path": null,
+      "current_batch_path": "evidence/canonical-v2/stage-2y-l-live-batch.json",
+      "reason": "STAGE_2Y_L_POST_CHANGE_RECORDING_IS_CURRENT"
     },
     {
       "family": "DNO_INDEMNIFICATION",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/normalize-numeric.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "DNO_NUMERAL_RESOLVER_CHANGED_AFTER_SAMPLE"
     },
     {
       "family": "FINANCING_COVENANTS",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "committed",
+      "current_score_path": null,
+      "current_batch_path": "evidence/canonical-v2/stage-2y-l-live-batch.json",
+      "reason": "STAGE_2Y_L_POST_CHANGE_RECORDING_IS_CURRENT"
     },
     {
       "family": "INTERIM_OPERATING",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/canonical-v2/native-producer/corroboration-ladder.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "INTERIM_OPERATING_RESOLVER_CHANGED_AFTER_SAMPLE"
     },
     {
       "family": "MAE_DEFINITION",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/canonical-v2/native-producer/duplicate-suppression.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "MAE_RESOLVER_CHANGED_AFTER_SAMPLE"
     },
     {
       "family": "NO_SHOP",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "NO_SHOP_RESOLVER_CHANGED_AFTER_SAMPLE"
     },
     {
       "family": "PROXY_MEETING",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": "evidence/canonical-v2/stage-2y-l-live-batch.json",
+      "reason": "PROXY_RESOLVER_CHANGED_AFTER_STAGE_2Y_L_RECORDING"
     },
     {
       "family": "REPRESENTATIONS",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js",
+        "lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "REPRESENTATIONS_RESOLVER_CHANGED_AFTER_SAMPLE"
     },
     {
       "family": "TERMINATION",
-      "mode": "replay",
-      "reason": "CURRENT_GENERIC_RESOLVER_AND_CONTRACT_BUNDLE_POSTDATE_2026_08_08_SAMPLE"
+      "source": "replay",
+      "resolver_paths": [
+        "lib/canonical-v2/native-producer/candidate-resolution.js"
+      ],
+      "current_score_path": null,
+      "current_batch_path": null,
+      "reason": "TERMINATION_RESOLVER_CHANGED_AFTER_SAMPLE"
     }
   ],
   "matching": {
     "exact_first": true,
     "fallback_only_after_exact_miss": true,
-    "normaliser": "zero-width-strip + NFKC + whitespace-collapse"
+    "normaliser": "zero-width-strip + NFKC + whitespace-collapse",
+    "fallback_card_ids": [
+      "ITEM-002",
+      "ITEM-007",
+      "ITEM-013",
+      "ITEM-016",
+      "ITEM-023",
+      "ITEM-024",
+      "ITEM-025",
+      "ITEM-028",
+      "ITEM-046",
+      "ITEM-054",
+      "ITEM-056",
+      "ITEM-061",
+      "ITEM-063",
+      "ITEM-082",
+      "ITEM-089"
+    ]
   },
   "cards": [
     {
       "id": "ITEM-001",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -69,6 +131,7 @@
           "candidate_id": "topbuild-termination-20260808-rung3:review_queue:2",
           "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_RIGHT_GRANT]"
           ]
@@ -78,29 +141,34 @@
     },
     {
       "id": "ITEM-002",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:13",
+          "source_run": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e",
+          "candidate_id": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e:ITEM-002",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:13",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e",
+          "candidate_id": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e:ITEM-002",
+          "now": "REVIEW:NON_LITERAL_NUMERAL",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+            "REVIEW:NON_LITERAL_NUMERAL"
           ]
         }
       ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "now": "REVIEW:NON_LITERAL_NUMERAL"
     },
     {
       "id": "ITEM-003",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -155,6 +223,7 @@
           "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
           "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
@@ -164,6 +233,8 @@
     },
     {
       "id": "ITEM-004",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -178,6 +249,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:30",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -187,6 +259,8 @@
     },
     {
       "id": "ITEM-005",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -201,6 +275,7 @@
           "candidate_id": "modiv-termination-20260806:review_queue:5",
           "now": "RESOLVED [TERMINATION_OUTSIDE_DATE]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_OUTSIDE_DATE]"
           ]
@@ -210,6 +285,8 @@
     },
     {
       "id": "ITEM-006",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -224,6 +301,7 @@
           "candidate_id": "redhat-representations-20260808-r1:review_queue:23",
           "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
@@ -233,20 +311,23 @@
     },
     {
       "id": "ITEM-007",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "topbuild-closing-conditions-20260808-rung3",
-          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:3",
+          "source_run": "stage-2y-l-live-runs/9238b7d48ce7ad2c5c30d689a5fac4ae0b1e29341f8dd5d04e1745826e0e1948",
+          "candidate_id": "stage-2y-l-live-runs/9238b7d48ce7ad2c5c30d689a5fac4ae0b1e29341f8dd5d04e1745826e0e1948:ITEM-007",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "topbuild-closing-conditions-20260808-rung3",
-          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:3",
+          "source_run": "stage-2y-l-live-runs/9238b7d48ce7ad2c5c30d689a5fac4ae0b1e29341f8dd5d04e1745826e0e1948",
+          "candidate_id": "stage-2y-l-live-runs/9238b7d48ce7ad2c5c30d689a5fac4ae0b1e29341f8dd5d04e1745826e0e1948:ITEM-007",
           "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
             "REVIEW:CONDITION_KIND_UNCORROBORATED"
           ]
@@ -256,6 +337,8 @@
     },
     {
       "id": "ITEM-008",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -270,6 +353,7 @@
           "candidate_id": "skywater-termination-20260808-r1:review_queue:4",
           "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_RIGHT_GRANT]"
           ]
@@ -279,6 +363,8 @@
     },
     {
       "id": "ITEM-009",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -293,6 +379,7 @@
           "candidate_id": "skechers-termination-20260808-rung2:review_queue:14",
           "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
           ]
@@ -302,6 +389,8 @@
     },
     {
       "id": "ITEM-010",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -316,6 +405,7 @@
           "candidate_id": "concho-no-shop-20260808-r1:review_queue:19",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -325,6 +415,8 @@
     },
     {
       "id": "ITEM-011",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -339,6 +431,7 @@
           "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:46",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -348,52 +441,49 @@
     },
     {
       "id": "ITEM-012",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:4",
+          "source_run": "stage-2y-l-live-runs/036700543d33cd8ee5c37be9c4de98d477232808ba41208cab409287c75cca14",
+          "candidate_id": "stage-2y-l-live-runs/036700543d33cd8ee5c37be9c4de98d477232808ba41208cab409287c75cca14:ITEM-012",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:4",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-013",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:0",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-013",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:0",
-          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-013",
+          "now": "REVIEW:REP_SIDE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+            "REVIEW:REP_SIDE_UNCORROBORATED"
           ]
         }
       ],
-      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+      "now": "REVIEW:REP_SIDE_UNCORROBORATED"
     },
     {
       "id": "ITEM-014",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -448,6 +538,7 @@
           "candidate_id": "redhat-representations-20260808-r1:review_queue:3",
           "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
@@ -457,6 +548,8 @@
     },
     {
       "id": "ITEM-015",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -486,6 +579,7 @@
           "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:3",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]",
             "REVIEW:MAE_CARVEOUT_UNCORROBORATED"
@@ -496,29 +590,34 @@
     },
     {
       "id": "ITEM-016",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "concho-closing-conditions-20260808-r1",
-          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:9",
+          "source_run": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145",
+          "candidate_id": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145:ITEM-016",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "concho-closing-conditions-20260808-r1",
-          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:9",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145",
+          "candidate_id": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145:ITEM-016",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
     },
     {
       "id": "ITEM-017",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -533,6 +632,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:33",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
           ]
@@ -542,6 +642,8 @@
     },
     {
       "id": "ITEM-018",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -586,6 +688,7 @@
           "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:4",
           "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
@@ -595,29 +698,35 @@
     },
     {
       "id": "ITEM-019",
+      "source": "committed",
+      "source_selection": "current_batch",
       "match_method": "exact",
       "matched_candidates": [
         {
-          "source_run": "skywater-closing-conditions-20260808-r1",
-          "candidate_id": "skywater-closing-conditions-20260808-r1:review_queue:7",
+          "source_run": "stage-2y-l-live-runs/a2982d28a2ccee76a4d7ee5280e4f39c09af0a87deeabca69e8e5158a2d87714",
+          "candidate_id": "stage-2y-l-live-runs/a2982d28a2ccee76a4d7ee5280e4f39c09af0a87deeabca69e8e5158a2d87714:ITEM-019",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "skywater-closing-conditions-20260808-r1",
-          "candidate_id": "skywater-closing-conditions-20260808-r1:review_queue:7",
-          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/a2982d28a2ccee76a4d7ee5280e4f39c09af0a87deeabca69e8e5158a2d87714",
+          "candidate_id": "stage-2y-l-live-runs/a2982d28a2ccee76a4d7ee5280e4f39c09af0a87deeabca69e8e5158a2d87714:ITEM-019",
+          "now": "RESOLVED [NO_MAE_CONDITION]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
+            "RESOLVED [NO_MAE_CONDITION]",
             "REVIEW:CONDITION_KIND_UNCORROBORATED"
           ]
         }
       ],
-      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+      "now": "RESOLVED [NO_MAE_CONDITION]"
     },
     {
       "id": "ITEM-020",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -632,6 +741,7 @@
           "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:14",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -641,6 +751,8 @@
     },
     {
       "id": "ITEM-021",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -655,6 +767,7 @@
           "candidate_id": "skywater-termination-20260808-r1:review_queue:6",
           "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_RIGHT_GRANT]"
           ]
@@ -664,6 +777,8 @@
     },
     {
       "id": "ITEM-022",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -678,6 +793,7 @@
           "candidate_id": "metsera-termination-20260808-r1:review_queue:0",
           "now": "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:TERMINATING_PARTY_REF_NOT_IN_QUOTE"
           ]
@@ -687,20 +803,23 @@
     },
     {
       "id": "ITEM-023",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:9",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-023",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:9",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-023",
           "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
             "REVIEW:CONDITION_KIND_UNCORROBORATED"
           ]
@@ -710,57 +829,49 @@
     },
     {
       "id": "ITEM-024",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:6",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-024",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:6",
-          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-024",
+          "now": "REVIEW:REP_SIDE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:CONDITION_KIND_UNCORROBORATED"
+            "REVIEW:REP_SIDE_UNCORROBORATED"
           ]
         }
       ],
-      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+      "now": "REVIEW:REP_SIDE_UNCORROBORATED"
     },
     {
       "id": "ITEM-025",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-025",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-025",
           "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
           "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
             "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
           ]
@@ -770,6 +881,8 @@
     },
     {
       "id": "ITEM-026",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -784,6 +897,7 @@
           "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:13",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -793,6 +907,8 @@
     },
     {
       "id": "ITEM-027",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -807,6 +923,7 @@
           "candidate_id": "metsera-no-shop-20260808-r1:review_queue:19",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -816,34 +933,35 @@
     },
     {
       "id": "ITEM-028",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "topbuild-proxy-meeting-20260808-rung4",
-          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:2",
-          "replayable": true
-        },
-        {
-          "source_run": "topbuild-proxy-meeting-20260808-rung4",
-          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:8",
+          "source_run": "stage-2y-l-live-runs/e814de728a51fb80b5f093d70361a3f97e34d3d67ee533c4bdf2df356154ca0d",
+          "candidate_id": "stage-2y-l-live-runs/e814de728a51fb80b5f093d70361a3f97e34d3d67ee533c4bdf2df356154ca0d:ITEM-028",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "topbuild-proxy-meeting-20260808-rung4",
-          "candidate_id": "topbuild-proxy-meeting-20260808-rung4:review_queue:2",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/e814de728a51fb80b5f093d70361a3f97e34d3d67ee533c4bdf2df356154ca0d",
+          "candidate_id": "stage-2y-l-live-runs/e814de728a51fb80b5f093d70361a3f97e34d3d67ee533c4bdf2df356154ca0d:ITEM-028",
+          "now": "RESOLVED [MEETING_CONVENE_OBLIGATION]",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+            "RESOLVED [MEETING_CONVENE_OBLIGATION]",
+            "RESOLVED [MEETING_DEADLINE_DAYS]"
           ]
         }
       ],
-      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+      "now": "RESOLVED [MEETING_CONVENE_OBLIGATION]"
     },
     {
       "id": "ITEM-029",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -858,6 +976,7 @@
           "candidate_id": "redhat-no-shop-20260808-r1:review_queue:51",
           "now": "REVIEW:PARTY_UNRESOLVED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:PARTY_UNRESOLVED"
           ]
@@ -867,6 +986,8 @@
     },
     {
       "id": "ITEM-030",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -881,6 +1002,7 @@
           "candidate_id": "redhat-interim-operating-20260808-r1:review_queue:4",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -890,6 +1012,8 @@
     },
     {
       "id": "ITEM-031",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -904,6 +1028,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:82",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -913,29 +1038,23 @@
     },
     {
       "id": "ITEM-032",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:20",
+          "source_run": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e",
+          "candidate_id": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e:ITEM-032",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:20",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-033",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -950,6 +1069,7 @@
           "candidate_id": "topbuild-dno-indemnification-20260808-rung4:review_queue:5",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -959,6 +1079,8 @@
     },
     {
       "id": "ITEM-034",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -973,6 +1095,7 @@
           "candidate_id": "skywater-termination-20260808-r1:review_queue:2",
           "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_RIGHT_GRANT]"
           ]
@@ -982,6 +1105,8 @@
     },
     {
       "id": "ITEM-035",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -996,6 +1121,7 @@
           "candidate_id": "concho-mae-definition-20260808-r1:review_queue:13",
           "now": "REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:CLAUSE_LABEL_NOT_IN_QUOTE"
           ]
@@ -1005,6 +1131,8 @@
     },
     {
       "id": "ITEM-036",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1029,6 +1157,7 @@
           "candidate_id": "redhat-representations-20260808-2xd-replay:review_queue:24",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -1038,6 +1167,7 @@
           "candidate_id": "redhat-representations-20260808-2xl-replay:review_queue:33",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -1047,6 +1177,7 @@
           "candidate_id": "redhat-representations-20260808-r1:review_queue:31",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -1056,6 +1187,8 @@
     },
     {
       "id": "ITEM-037",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1075,6 +1208,7 @@
           "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:43",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
@@ -1085,6 +1219,8 @@
     },
     {
       "id": "ITEM-038",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1099,6 +1235,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:2",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -1108,6 +1245,8 @@
     },
     {
       "id": "ITEM-039",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1127,6 +1266,7 @@
           "candidate_id": "modiv-dno-20260806:review_queue:1",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -1136,6 +1276,7 @@
           "candidate_id": "modiv-dno-20260807-replay:review_queue:1",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -1145,6 +1286,8 @@
     },
     {
       "id": "ITEM-040",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1159,6 +1302,7 @@
           "candidate_id": "redhat-termination-20260808-r1:review_queue:9",
           "now": "RESOLVED [TERMINATION_RIGHT_GRANT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [TERMINATION_RIGHT_GRANT]"
           ]
@@ -1168,6 +1312,8 @@
     },
     {
       "id": "ITEM-041",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1187,6 +1333,7 @@
           "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:14",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -1196,6 +1343,8 @@
     },
     {
       "id": "ITEM-042",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1210,6 +1359,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:43",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
@@ -1220,6 +1370,8 @@
     },
     {
       "id": "ITEM-043",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1234,6 +1386,7 @@
           "candidate_id": "metsera-no-shop-20260808-r1:review_queue:26",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -1243,6 +1396,8 @@
     },
     {
       "id": "ITEM-044",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1257,6 +1412,7 @@
           "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:13",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -1266,6 +1422,8 @@
     },
     {
       "id": "ITEM-045",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1295,6 +1453,7 @@
           "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]"
           ]
@@ -1304,29 +1463,34 @@
     },
     {
       "id": "ITEM-046",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "concho-closing-conditions-20260808-r1",
-          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:11",
+          "source_run": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145",
+          "candidate_id": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145:ITEM-046",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "concho-closing-conditions-20260808-r1",
-          "candidate_id": "concho-closing-conditions-20260808-r1:review_queue:11",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145",
+          "candidate_id": "stage-2y-l-live-runs/5f8ae0048dd175baf2e6dea1c0dde70257989587d7a968f52d89c6178260f145:ITEM-046",
+          "now": "REVIEW:COVERED_SCOPE_REF_NOT_IN_QUOTE",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "REVIEW:COVERED_SCOPE_REF_NOT_IN_QUOTE"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "REVIEW:COVERED_SCOPE_REF_NOT_IN_QUOTE"
     },
     {
       "id": "ITEM-047",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1341,6 +1505,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:11",
           "now": "RESOLVED [IOC_RESTRICTION_PRESENT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [IOC_RESTRICTION_PRESENT]"
           ]
@@ -1350,52 +1515,38 @@
     },
     {
       "id": "ITEM-048",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "redhat-proxy-meeting-20260808-r1",
-          "candidate_id": "redhat-proxy-meeting-20260808-r1:review_queue:6",
+          "source_run": "stage-2y-l-live-runs/81b10209502dfa2bf1647e2b7b1e9c3d338262cb2d95152dd8e69769992944c9",
+          "candidate_id": "stage-2y-l-live-runs/81b10209502dfa2bf1647e2b7b1e9c3d338262cb2d95152dd8e69769992944c9:ITEM-048",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "redhat-proxy-meeting-20260808-r1",
-          "candidate_id": "redhat-proxy-meeting-20260808-r1:review_queue:6",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-049",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "concho-financing-covenants-20260808-r1",
-          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:3",
+          "source_run": "stage-2y-l-live-runs/3a3933ba2639a50e0a716c4a4b33fa5275b14688082a0e3c437fce667b018e01",
+          "candidate_id": "stage-2y-l-live-runs/3a3933ba2639a50e0a716c4a4b33fa5275b14688082a0e3c437fce667b018e01:ITEM-049",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "concho-financing-covenants-20260808-r1",
-          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:3",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-050",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1425,6 +1576,7 @@
           "candidate_id": "modiv-mae-definition-20260807-live:review_queue:6",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]"
           ]
@@ -1434,6 +1586,8 @@
     },
     {
       "id": "ITEM-051",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1448,6 +1602,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:29",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
           ]
@@ -1457,6 +1612,8 @@
     },
     {
       "id": "ITEM-052",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1471,6 +1628,7 @@
           "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:30",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
           ]
@@ -1480,52 +1638,60 @@
     },
     {
       "id": "ITEM-053",
+      "source": "committed",
+      "source_selection": "current_batch",
       "match_method": "exact",
       "matched_candidates": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:7",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-053",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:7",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-053",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
     },
     {
       "id": "ITEM-054",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:1",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-054",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-closing-conditions-6.2-20260807-live",
-          "candidate_id": "modiv-closing-conditions-6.2-20260807-live:review_queue:1",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f",
+          "candidate_id": "stage-2y-l-live-runs/9c76ef24a7f8e682b4d0a22b65c81c467e1d2f6640e8e9158adddf4853852f1f:ITEM-054",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
     },
     {
       "id": "ITEM-055",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1540,6 +1706,7 @@
           "candidate_id": "concho-no-shop-20260808-r1:review_queue:83",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -1549,66 +1716,49 @@
     },
     {
       "id": "ITEM-056",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "topbuild-financing-covenants-20260808-rung4",
-          "candidate_id": "topbuild-financing-covenants-20260808-rung4:review_queue:3",
+          "source_run": "stage-2y-l-live-runs/cb6ac185107768064aee654e21b07ca40cb5930a2d722c8d5581784bb386e94c",
+          "candidate_id": "stage-2y-l-live-runs/cb6ac185107768064aee654e21b07ca40cb5930a2d722c8d5581784bb386e94c:ITEM-056",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "topbuild-financing-covenants-20260808-rung4",
-          "candidate_id": "topbuild-financing-covenants-20260808-rung4:review_queue:3",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
+          "source_run": "stage-2y-l-live-runs/cb6ac185107768064aee654e21b07ca40cb5930a2d722c8d5581784bb386e94c",
+          "candidate_id": "stage-2y-l-live-runs/cb6ac185107768064aee654e21b07ca40cb5930a2d722c8d5581784bb386e94c:ITEM-056",
+          "now": "REVIEW:MULTIPLE_DAY_COUNTS",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+            "REVIEW:MULTIPLE_DAY_COUNTS"
           ]
         }
       ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "now": "REVIEW:MULTIPLE_DAY_COUNTS"
     },
     {
       "id": "ITEM-057",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-057",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-058",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1638,6 +1788,7 @@
           "candidate_id": "skywater-mae-definition-20260808-r1:review_queue:13",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]"
           ]
@@ -1647,6 +1798,8 @@
     },
     {
       "id": "ITEM-059",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1661,6 +1814,7 @@
           "candidate_id": "skywater-interim-operating-20260808-r1:review_queue:24",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -1670,6 +1824,8 @@
     },
     {
       "id": "ITEM-060",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1684,6 +1840,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:57",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
@@ -1694,80 +1851,64 @@
     },
     {
       "id": "ITEM-061",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "metsera-closing-conditions-20260808-r1",
-          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:4",
+          "source_run": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291",
+          "candidate_id": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291:ITEM-061",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "metsera-closing-conditions-20260808-r1",
-          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:4",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291",
+          "candidate_id": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291:ITEM-061",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
     },
     {
       "id": "ITEM-062",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "skechers-proxy-meeting-20260808-rung5",
-          "candidate_id": "skechers-proxy-meeting-20260808-rung5:review_queue:1",
+          "source_run": "stage-2y-l-live-runs/3d1b4380fc925fbc1e0a1f7b4abc1444f05e1ab268e30d997a69e4b559c045d6",
+          "candidate_id": "stage-2y-l-live-runs/3d1b4380fc925fbc1e0a1f7b4abc1444f05e1ab268e30d997a69e4b559c045d6:ITEM-062",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "skechers-proxy-meeting-20260808-rung5",
-          "candidate_id": "skechers-proxy-meeting-20260808-rung5:review_queue:1",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-063",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-063",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:6",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-063",
           "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
           "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:1",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
             "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
           ]
@@ -1777,6 +1918,8 @@
     },
     {
       "id": "ITEM-064",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1791,6 +1934,7 @@
           "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:49",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
           ]
@@ -1800,6 +1944,8 @@
     },
     {
       "id": "ITEM-065",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1814,6 +1960,7 @@
           "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:3",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -1823,20 +1970,23 @@
     },
     {
       "id": "ITEM-066",
+      "source": "committed",
+      "source_selection": "current_batch",
       "match_method": "exact",
       "matched_candidates": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:13",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-066",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "skechers-closing-conditions-20260808-rung3",
-          "candidate_id": "skechers-closing-conditions-20260808-rung3:review_queue:13",
+          "source_run": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a",
+          "candidate_id": "stage-2y-l-live-runs/80f322195d06f4ca168cd74bc690ccfd63af982c7cd67a196d9bab2bd47e211a:ITEM-066",
           "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:CONDITION_KIND_UNCORROBORATED"
           ]
@@ -1846,6 +1996,8 @@
     },
     {
       "id": "ITEM-067",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1860,6 +2012,7 @@
           "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:13",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -1869,6 +2022,8 @@
     },
     {
       "id": "ITEM-068",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1883,6 +2038,7 @@
           "candidate_id": "concho-mae-definition-20260808-r1:review_queue:11",
           "now": "REVIEW:PARTY_UNRESOLVED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:PARTY_UNRESOLVED"
           ]
@@ -1892,6 +2048,8 @@
     },
     {
       "id": "ITEM-069",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1906,6 +2064,7 @@
           "candidate_id": "topbuild-mae-definition-20260806:review_queue:1",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]"
           ]
@@ -1915,6 +2074,8 @@
     },
     {
       "id": "ITEM-070",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1929,6 +2090,7 @@
           "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:1",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -1938,6 +2100,8 @@
     },
     {
       "id": "ITEM-071",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1952,6 +2116,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:52",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -1961,6 +2126,8 @@
     },
     {
       "id": "ITEM-072",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -1975,6 +2142,7 @@
           "candidate_id": "skechers-dno-indemnification-20260808-rung2:review_queue:0",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -1984,29 +2152,23 @@
     },
     {
       "id": "ITEM-073",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "concho-financing-covenants-20260808-r1",
-          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:6",
+          "source_run": "stage-2y-l-live-runs/3a3933ba2639a50e0a716c4a4b33fa5275b14688082a0e3c437fce667b018e01",
+          "candidate_id": "stage-2y-l-live-runs/3a3933ba2639a50e0a716c4a4b33fa5275b14688082a0e3c437fce667b018e01:ITEM-073",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "concho-financing-covenants-20260808-r1",
-          "candidate_id": "concho-financing-covenants-20260808-r1:review_queue:6",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-074",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2021,6 +2183,7 @@
           "candidate_id": "modiv-representations-20260807-replay:review_queue:3",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -2030,6 +2193,8 @@
     },
     {
       "id": "ITEM-075",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2044,6 +2209,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:0",
           "now": "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:RESTRICTION_CATEGORY_OUT_OF_ENUM"
           ]
@@ -2053,6 +2219,8 @@
     },
     {
       "id": "ITEM-076",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2067,6 +2235,7 @@
           "candidate_id": "modiv-interim-operating-20260807-replay:review_queue:25",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "OPEN_WORLD:NATIVE_OPEN_WORLD_PROPOSAL",
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
@@ -2077,6 +2246,8 @@
     },
     {
       "id": "ITEM-077",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2091,6 +2262,7 @@
           "candidate_id": "concho-interim-operating-20260808-r1:review_queue:43",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -2100,6 +2272,8 @@
     },
     {
       "id": "ITEM-078",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2114,6 +2288,7 @@
           "candidate_id": "topbuild-interim-operating-20260808-rung3:review_queue:35",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -2123,6 +2298,8 @@
     },
     {
       "id": "ITEM-079",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2142,6 +2319,7 @@
           "candidate_id": "topbuild-representations-20260808-ceiling128k:review_queue:3",
           "now": "REVIEW:QUALIFIER_KIND_UNCLASSIFIED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:QUALIFIER_KIND_UNCLASSIFIED"
           ]
@@ -2151,6 +2329,8 @@
     },
     {
       "id": "ITEM-080",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2165,6 +2345,7 @@
           "candidate_id": "concho-mae-definition-20260808-r1:review_queue:1",
           "now": "REVIEW:MAE_CARVEOUT_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:MAE_CARVEOUT_UNCORROBORATED"
           ]
@@ -2174,94 +2355,64 @@
     },
     {
       "id": "ITEM-081",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-081",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:4",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:4",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-082",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "metsera-closing-conditions-20260808-r1",
-          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:5",
+          "source_run": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291",
+          "candidate_id": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291:ITEM-082",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "metsera-closing-conditions-20260808-r1",
-          "candidate_id": "metsera-closing-conditions-20260808-r1:review_queue:5",
-          "now": "REVIEW:PARTY_UNRESOLVED",
+          "source_run": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291",
+          "candidate_id": "stage-2y-l-live-runs/394c42e8ff65625ae0d8a481fbee5b2a13177a3aa19ab40c0d75a653d742f291:ITEM-082",
+          "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]",
           "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
-            "REVIEW:PARTY_UNRESOLVED"
+            "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
           ]
         }
       ],
-      "now": "REVIEW:PARTY_UNRESOLVED"
+      "now": "RESOLVED [REPRESENTATION_ACCURACY_STANDARD]"
     },
     {
       "id": "ITEM-083",
+      "source": "committed",
+      "source_selection": "current_batch",
       "match_method": "exact",
       "matched_candidates": [
         {
-          "source_run": "modiv-financing-covenants-20260806",
-          "candidate_id": "modiv-financing-covenants-20260806:review_queue:2",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-financing-covenants-20260807-replay",
-          "candidate_id": "modiv-financing-covenants-20260807-replay:review_queue:1",
+          "source_run": "stage-2y-l-live-runs/b2fc286a3405e271ddd65c291be69f66bb4af471f81c5dfcfa634c002d7b6486",
+          "candidate_id": "stage-2y-l-live-runs/b2fc286a3405e271ddd65c291be69f66bb4af471f81c5dfcfa634c002d7b6486:ITEM-083",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-financing-covenants-20260806",
-          "candidate_id": "modiv-financing-covenants-20260806:review_queue:2",
+          "source_run": "stage-2y-l-live-runs/b2fc286a3405e271ddd65c291be69f66bb4af471f81c5dfcfa634c002d7b6486",
+          "candidate_id": "stage-2y-l-live-runs/b2fc286a3405e271ddd65c291be69f66bb4af471f81c5dfcfa634c002d7b6486:ITEM-083",
           "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
           "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-financing-covenants-20260807-replay",
-          "candidate_id": "modiv-financing-covenants-20260807-replay:review_queue:1",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:ASSERTION_KIND_UNCORROBORATED"
           ]
@@ -2271,6 +2422,8 @@
     },
     {
       "id": "ITEM-084",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2285,6 +2438,7 @@
           "candidate_id": "topbuild-mae-definition-20260806:review_queue:7",
           "now": "RESOLVED [MAE_CARVEOUT]",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "RESOLVED [MAE_CARVEOUT]"
           ]
@@ -2294,20 +2448,23 @@
     },
     {
       "id": "ITEM-085",
+      "source": "committed",
+      "source_selection": "current_batch",
       "match_method": "exact",
       "matched_candidates": [
         {
-          "source_run": "topbuild-closing-conditions-20260808-rung3",
-          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:13",
+          "source_run": "stage-2y-l-live-runs/658bf46b3f440e502b441663eccf4f4aa2102450aa778577bd43d6149d211f7b",
+          "candidate_id": "stage-2y-l-live-runs/658bf46b3f440e502b441663eccf4f4aa2102450aa778577bd43d6149d211f7b:ITEM-085",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "topbuild-closing-conditions-20260808-rung3",
-          "candidate_id": "topbuild-closing-conditions-20260808-rung3:review_queue:13",
+          "source_run": "stage-2y-l-live-runs/658bf46b3f440e502b441663eccf4f4aa2102450aa778577bd43d6149d211f7b",
+          "candidate_id": "stage-2y-l-live-runs/658bf46b3f440e502b441663eccf4f4aa2102450aa778577bd43d6149d211f7b:ITEM-085",
           "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:CONDITION_KIND_UNCORROBORATED"
           ]
@@ -2317,6 +2474,8 @@
     },
     {
       "id": "ITEM-086",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2331,6 +2490,7 @@
           "candidate_id": "concho-no-shop-20260808-r1:review_queue:26",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -2340,6 +2500,8 @@
     },
     {
       "id": "ITEM-087",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2354,6 +2516,7 @@
           "candidate_id": "concho-no-shop-20260808-r1:review_queue:14",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -2363,6 +2526,8 @@
     },
     {
       "id": "ITEM-088",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2377,6 +2542,7 @@
           "candidate_id": "metsera-interim-operating-20260808-r1:review_queue:31",
           "now": "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_PARENT_ATTACHMENT_SCOPE_UNCORROBORATED"
           ]
@@ -2386,34 +2552,23 @@
     },
     {
       "id": "ITEM-089",
-      "match_method": "exact",
+      "source": "replay",
+      "source_selection": "current_batch",
+      "match_method": "fallback",
       "matched_candidates": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:8",
-          "replayable": true
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:0",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-089",
           "replayable": true
         }
       ],
       "observations": [
         {
-          "source_run": "modiv-proxy-meeting-20260806",
-          "candidate_id": "modiv-proxy-meeting-20260806:review_queue:8",
+          "source_run": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933",
+          "candidate_id": "stage-2y-l-live-runs/b99ad84427a121724734069645b5ec0648e01e9d674c22679153b098dcf4f933:ITEM-089",
           "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
           "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
-          ]
-        },
-        {
-          "source_run": "modiv-proxy-meeting-20260807-replay",
-          "candidate_id": "modiv-proxy-meeting-20260807-replay:review_queue:0",
-          "now": "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED",
-          "error_code": null,
+          "match_method": "fallback",
           "observed_dispositions": [
             "REVIEW:PROXY_MEETING_KIND_UNCORROBORATED"
           ]
@@ -2423,6 +2578,8 @@
     },
     {
       "id": "ITEM-090",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2437,6 +2594,7 @@
           "candidate_id": "metsera-dno-indemnification-20260808-r1:review_queue:6",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -2446,6 +2604,8 @@
     },
     {
       "id": "ITEM-091",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2460,6 +2620,7 @@
           "candidate_id": "skywater-dno-indemnification-20260808-r1:review_queue:5",
           "now": "REVIEW:DNO_KIND_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:DNO_KIND_UNCORROBORATED"
           ]
@@ -2469,6 +2630,8 @@
     },
     {
       "id": "ITEM-092",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2483,6 +2646,7 @@
           "candidate_id": "concho-no-shop-20260808-r1:review_queue:20",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -2492,29 +2656,23 @@
     },
     {
       "id": "ITEM-093",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:14",
+          "source_run": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e",
+          "candidate_id": "stage-2y-l-live-runs/a394362b19ff7b0f406905b4a375c354a52504dcf69a7a8da36e74eb7f747d5e:ITEM-093",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "skechers-financing-covenants-20260808-r1",
-          "candidate_id": "skechers-financing-covenants-20260808-r1:review_queue:14",
-          "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:ASSERTION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:ASSERTION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-094",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2534,6 +2692,7 @@
           "candidate_id": "modiv-no-shop-20260806:review_queue:15",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -2543,6 +2702,7 @@
           "candidate_id": "modiv-no-shop-20260807-replay:review_queue:22",
           "now": "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:NO_SHOP_PREREQUISITE_UNCORROBORATED"
           ]
@@ -2552,29 +2712,23 @@
     },
     {
       "id": "ITEM-095",
-      "match_method": "exact",
+      "source": "committed",
+      "source_selection": "current_batch",
+      "match_method": "not_located",
       "matched_candidates": [
         {
-          "source_run": "redhat-closing-conditions-20260808-r1",
-          "candidate_id": "redhat-closing-conditions-20260808-r1:review_queue:12",
+          "source_run": "stage-2y-l-live-runs/e168e8f70ecafb6d7a22e8a52486b8d20aba45d04c0a8d7b27fbc9f9efa40565",
+          "candidate_id": "stage-2y-l-live-runs/e168e8f70ecafb6d7a22e8a52486b8d20aba45d04c0a8d7b27fbc9f9efa40565:ITEM-095",
           "replayable": true
         }
       ],
-      "observations": [
-        {
-          "source_run": "redhat-closing-conditions-20260808-r1",
-          "candidate_id": "redhat-closing-conditions-20260808-r1:review_queue:12",
-          "now": "REVIEW:CONDITION_KIND_UNCORROBORATED",
-          "error_code": null,
-          "observed_dispositions": [
-            "REVIEW:CONDITION_KIND_UNCORROBORATED"
-          ]
-        }
-      ],
-      "now": "REVIEW:CONDITION_KIND_UNCORROBORATED"
+      "observations": [],
+      "now": "NOT_LOCATED_IN_OUTPUT"
     },
     {
       "id": "ITEM-096",
+      "source": "replay",
+      "source_selection": "original_pre_cutoff_recording",
       "match_method": "exact",
       "matched_candidates": [
         {
@@ -2589,6 +2743,7 @@
           "candidate_id": "skechers-interim-operating-20260808-rung4:review_queue:41",
           "now": "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING",
           "error_code": null,
+          "match_method": "exact",
           "observed_dispositions": [
             "REVIEW:IOC_ATTACHMENT_TARGET_QUOTE_MISSING"
           ]

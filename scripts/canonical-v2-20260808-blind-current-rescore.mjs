@@ -16,6 +16,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   resolveSourceRun,
 } from './canonical-v2-step-2x-k-blind-successor.mjs';
+import {
+  validateStage2yLArtifact,
+} from './stage-2y-l-live-batch.mjs';
 
 const require = createRequire(import.meta.url);
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -29,6 +32,7 @@ const BASELINE_SCORE_PATH = 'evidence/blind-review/2026-08-08/blind-rescore.json
 const SUCCESSOR_SCORE_PATH = 'evidence/canonical-v2/step-2x-k-blind-successor-20260809/score/score.json';
 const OUTPUT_PATH = 'evidence/blind-review/2026-08-08/blind-current-rescore.json';
 const TRACE_PATH = 'evidence/blind-review/2026-08-08/blind-current-rescore-trace.json';
+const STAGE_2Y_L_BATCH_PATH = 'evidence/canonical-v2/stage-2y-l-live-batch.json';
 const SAMPLE_CUTOFF = '2026-08-08T23:59:59.999Z';
 const OUTPUT_KEYS = Object.freeze(['id', 'deal', 'family', 'orig_reason', 'now', 'source']);
 const SAMPLE_CARD_KEYS = Object.freeze(['deal', 'family', 'section', 'quote', 'claim_key', 'id']);
@@ -51,19 +55,21 @@ const AUTHORISED_STRATUM_BASELINE = Object.freeze({
 
 const SHARED_RESOLVER_PATH = 'lib/canonical-v2/native-producer/candidate-resolution.js';
 
-// This manifest is the audit record for source selection. Stage 2Y changes
-// the shared resolver dispatcher, so every sampled family replays. A future
-// committed entry must name a new score artefact, never blind-rescore.json.
+// This manifest is the audit record for source selection. Closing and
+// financing have post-change Stage 2Y-L recordings whose committed resolver
+// output is current. Proxy uses the same new recording, but replays it because
+// its resolver changed after the recording. The other families replay the
+// original receipts through their changed resolver paths.
 const FAMILY_SOURCE_MANIFEST = Object.freeze({
-  TERMINATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  REPRESENTATIONS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  INTERIM_OPERATING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/corroboration-ladder.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  MAE_DEFINITION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/duplicate-suppression.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  DNO_INDEMNIFICATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/normalize-numeric.js']), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  FINANCING_COVENANTS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  CLOSING_CONDITIONS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  NO_SHOP: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
-  PROXY_MEETING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'STAGE_2Y_SHARED_RESOLVER_CHANGED' }),
+  TERMINATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'TERMINATION_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  REPRESENTATIONS: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/same-deal-defined-term-resolution.js']), reason: 'REPRESENTATIONS_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  INTERIM_OPERATING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/corroboration-ladder.js']), reason: 'INTERIM_OPERATING_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  MAE_DEFINITION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/canonical-v2/native-producer/duplicate-suppression.js']), reason: 'MAE_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  DNO_INDEMNIFICATION: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH, 'lib/normalize-numeric.js']), reason: 'DNO_NUMERAL_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  FINANCING_COVENANTS: Object.freeze({ source: 'committed', current_batch_path: STAGE_2Y_L_BATCH_PATH, reason: 'STAGE_2Y_L_POST_CHANGE_RECORDING_IS_CURRENT' }),
+  CLOSING_CONDITIONS: Object.freeze({ source: 'committed', current_batch_path: STAGE_2Y_L_BATCH_PATH, reason: 'STAGE_2Y_L_POST_CHANGE_RECORDING_IS_CURRENT' }),
+  NO_SHOP: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), reason: 'NO_SHOP_RESOLVER_CHANGED_AFTER_SAMPLE' }),
+  PROXY_MEETING: Object.freeze({ source: 'replay', resolver_paths: Object.freeze([SHARED_RESOLVER_PATH]), current_batch_path: STAGE_2Y_L_BATCH_PATH, reason: 'PROXY_RESOLVER_CHANGED_AFTER_STAGE_2Y_L_RECORDING' }),
 });
 
 class CurrentBlindRescoreError extends Error {
@@ -163,10 +169,72 @@ function sourceModeForFamily(family) {
   if (mode.source === 'replay' && (!Array.isArray(mode.resolver_paths) || mode.resolver_paths.length === 0)) {
     fail('FAMILY_SOURCE_MANIFEST_INVALID', 'a replay family must name its changed resolver path', { family });
   }
-  if (mode.source === 'committed' && typeof mode.current_score_path !== 'string') {
-    fail('CURRENT_COMMITTED_EVIDENCE_REQUIRED', 'a committed family must name a current score artefact', { family });
+  if (mode.source === 'committed'
+    && typeof mode.current_score_path !== 'string'
+    && typeof mode.current_batch_path !== 'string') {
+    fail('CURRENT_COMMITTED_EVIDENCE_REQUIRED', 'a committed family must name a current score artefact or current batch', { family });
   }
   return mode;
+}
+
+function currentBatchRuns({ repoRoot = DEFAULT_ROOT, batchPath = STAGE_2Y_L_BATCH_PATH }) {
+  const batch = readJson(resolve(repoRoot, batchPath));
+  const validation = validateStage2yLArtifact({ artifact: batch });
+  if (!validation.ok) {
+    fail('CURRENT_BATCH_INVALID', 'current batch is not the sealed authorised Stage 2Y-L batch', {
+      batch_path: batchPath,
+      errors: validation.errors,
+    });
+  }
+  const complete = new Set((batch.calls || [])
+    .filter((call) => call.state === 'COMPLETE')
+    .map((call) => call.call_id));
+  const runs = new Map();
+  for (const call of batch.call_manifest || []) {
+    if (!complete.has(call.call_id)) continue;
+    const key = canonicalJson([call.deal, call.family, String(call.section_reference)]);
+    if (runs.has(key)) {
+      fail('CURRENT_BATCH_RUN_AMBIGUOUS', 'current batch has duplicate deal-family-section calls', {
+        deal: call.deal, family: call.family, section: call.section_reference,
+      });
+    }
+    runs.set(key, `stage-2y-l-live-runs/${call.call_id}`);
+  }
+  return runs;
+}
+
+function currentBatchCandidate({ repoRoot, card, sourceMode, batchCache }) {
+  const batchPath = sourceMode.current_batch_path;
+  if (!batchCache.has(batchPath)) {
+    batchCache.set(batchPath, currentBatchRuns({ repoRoot, batchPath }));
+  }
+  const sourceRun = batchCache.get(batchPath).get(canonicalJson([
+    card.deal, card.family, String(card.section),
+  ]));
+  if (!sourceRun) return null;
+  const runDir = resolve(repoRoot, 'evidence/canonical-v2', sourceRun);
+  const required = sourceMode.source === 'committed'
+    ? ['run-receipt.json', 'resolution.json']
+    : ['run-manifest.json', 'run-receipt.json', 'source-reference.json'];
+  return Object.freeze({
+    source_run: sourceRun,
+    deal: card.deal,
+    family: card.family,
+    section: card.section,
+    claim_key: card.claim_key,
+    raw_value: card.quote,
+    orig_reasons: Object.freeze([card._reason]),
+    candidate_id: `${sourceRun}:${card.id}`,
+    replayable: required.every((name) => existsSync(resolve(runDir, name))),
+  });
+}
+
+async function readCommittedRun({ repoRoot, sourceRun }) {
+  const runDir = resolve(repoRoot, 'evidence/canonical-v2', sourceRun);
+  return Object.freeze({
+    runReceipt: readJson(resolve(runDir, 'run-receipt.json')),
+    resolution: readJson(resolve(runDir, 'resolution.json')),
+  });
 }
 
 function normalise(value) {
@@ -383,6 +451,7 @@ function familyModes(cards) {
       source: mode.source,
       resolver_paths: mode.resolver_paths,
       current_score_path: mode.current_score_path || null,
+      current_batch_path: mode.current_batch_path || null,
       reason: mode.reason,
     });
   });
@@ -458,10 +527,54 @@ async function buildCurrentBlindRescore({
   const rows = [];
   const matchTrace = [];
   const committedEvidenceCache = new Map();
+  const batchCache = new Map();
   for (const card of sample) {
     const keyedCard = Object.freeze({ ...card, _reason: keyById.get(card.id)._reason });
     const sourceMode = sourceModeForFamily(card.family);
     const origReason = keyById.get(card.id)._reason;
+    if (sourceMode.current_batch_path) {
+      const selected = currentBatchCandidate({
+        repoRoot, card: keyedCard, sourceMode, batchCache,
+      });
+      const resolved = selected === null
+        ? { now: 'ARTIFACT_MISSING', observations: [] }
+        : await resolveMatches({
+          repoRoot,
+          card,
+          matched: [selected],
+          resolveRun: sourceMode.source === 'committed' ? readCommittedRun : cachedResolveRun,
+        });
+      const currentMatchMethod = resolved.observations.some((observation) => observation.match_method === 'exact')
+        ? 'exact'
+        : resolved.observations.some((observation) => observation.match_method === 'fallback')
+          ? 'fallback'
+          : 'not_located';
+      rows.push(Object.freeze({
+        id: card.id, deal: card.deal, family: card.family,
+        orig_reason: origReason, now: resolved.now, source: sourceMode.source,
+      }));
+      matchTrace.push(Object.freeze({
+        id: card.id,
+        source: sourceMode.source,
+        source_selection: 'current_batch',
+        match_method: currentMatchMethod,
+        matched_candidates: selected === null ? [] : [{
+          source_run: selected.source_run,
+          candidate_id: selected.candidate_id,
+          replayable: selected.replayable,
+        }],
+        observations: resolved.observations.map((observation) => ({
+          source_run: observation.candidate.source_run,
+          candidate_id: observation.candidate.candidate_id,
+          now: observation.now,
+          error_code: observation.error_code,
+          match_method: observation.match_method,
+          observed_dispositions: observation.observed_dispositions || [observation.now],
+        })),
+        now: resolved.now,
+      }));
+      continue;
+    }
     if (sourceMode.source === 'committed') {
       const committed = currentCommittedRows({
         repoRoot, sourceMode, sample, key, baselinePath, cache: committedEvidenceCache,
@@ -473,6 +586,7 @@ async function buildCurrentBlindRescore({
       matchTrace.push(Object.freeze({
         id: card.id,
         source: 'committed',
+        source_selection: 'current_committed_evidence',
         match_method: 'current_committed_evidence',
         matched_candidates: [],
         observations: [],
@@ -492,6 +606,7 @@ async function buildCurrentBlindRescore({
     matchTrace.push(Object.freeze({
       id: card.id,
       source: 'replay',
+      source_selection: 'original_pre_cutoff_recording',
       match_method: match.method,
       matched_candidates: match.candidates.map((candidate) => ({ source_run: candidate.source_run, candidate_id: candidate.candidate_id, replayable: candidate.replayable })),
       observations: resolved.observations.map((observation) => ({
@@ -499,6 +614,7 @@ async function buildCurrentBlindRescore({
         candidate_id: observation.candidate.candidate_id,
         now: observation.now,
         error_code: observation.error_code,
+        match_method: observation.match_method,
         observed_dispositions: observation.observed_dispositions || [observation.now],
       })),
       now: resolved.now,
@@ -512,7 +628,10 @@ async function buildCurrentBlindRescore({
       exact_first: true,
       fallback_only_after_exact_miss: true,
       normaliser: 'zero-width-strip + NFKC + whitespace-collapse',
-      fallback_card_ids: matchTrace.filter((card) => card.match_method === 'fallback').map((card) => card.id),
+      fallback_card_ids: matchTrace.filter((card) => (
+        card.match_method === 'fallback'
+        || card.observations.some((observation) => observation.match_method === 'fallback')
+      )).map((card) => card.id),
     },
     cards: matchTrace,
     successor_comparison: successorComparison({
@@ -644,6 +763,7 @@ export {
   assertOutput,
   assertStrata,
   buildCurrentBlindRescore,
+  currentBatchRuns,
   currentCommittedRows,
   evaluateStratumGate,
   fallbackMatch,
