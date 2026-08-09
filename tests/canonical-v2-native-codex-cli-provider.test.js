@@ -33,6 +33,7 @@ function successfulClient(onRequest = () => {}) {
       async create(request) {
         onRequest(request);
         return {
+          codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
           content: [{
             text: JSON.stringify({ general_covenants: [], open_world_candidates: [] }),
           }],
@@ -116,7 +117,10 @@ test('native Codex provider retains the literal response for exact replay', asyn
     client: {
       messages: {
         async create() {
-          return { content: [{ text: response }] };
+          return {
+            codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+            content: [{ text: response }],
+          };
         },
       },
     },
@@ -134,6 +138,7 @@ test('native Codex provider preserves request identity and usage for durable run
           return {
             id: 'codex-request-123',
             usage: { input_tokens: 123, output_tokens: 45 },
+            codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
             content: [{ text: JSON.stringify({ general_covenants: [], open_world_candidates: [] }) }],
           };
         },
@@ -143,6 +148,59 @@ test('native Codex provider preserves request identity and usage for durable run
   const output = await provider(INPUT);
   assert.equal(output.provider_request_id, 'codex-request-123');
   assert.deepEqual(output.provider_usage, { input_tokens: 123, output_tokens: 45 });
+});
+
+test('Codex system-wrapper bytes change prompt and producer receipt identity', async () => {
+  const make = (prefix) => createCodexCliProvider({
+    promptPrefix: prefix,
+    client: successfulClient(),
+  });
+  const a = await produceCandidateProposals({ ...INPUT, provider: make('PREFIX-A') });
+  const b = await produceCandidateProposals({ ...INPUT, provider: make('PREFIX-B') });
+  assert.notEqual(a.producer_receipt.prompt_digest, b.producer_receipt.prompt_digest);
+  assert.notEqual(a.producer_receipt.producer_receipt_id, b.producer_receipt.producer_receipt_id);
+});
+
+test('malformed Codex response failure metadata never carries the Anthropic provider identity', async () => {
+  const provider = createCodexCliProvider({
+    client: { messages: { async create() {
+      return {
+        codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+        content: [{ text: 'not-json' }],
+      };
+    } } },
+  });
+  await assert.rejects(
+    () => provider(INPUT),
+    (error) => error.details.provider_id === PROVIDER_ID
+      && error.details.model_id === 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM'
+      && error.details.provider_output.provider_id === PROVIDER_ID
+      && error.details.provider_output.model_id === 'gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM',
+  );
+});
+
+test('Codex completeness uses the terminal event, not the Claude 64k ceiling', async () => {
+  const provider = createCodexCliProvider({
+    client: {
+      messages: {
+        async create() {
+          return {
+            codex_completion: { status: 'COMPLETE', terminal_event: 'turn.completed' },
+            usage: { input_tokens: 1, output_tokens: 64000 },
+            content: [{ text: JSON.stringify({ general_covenants: [], open_world_candidates: [] }) }],
+          };
+        },
+      },
+    },
+  });
+  await assert.doesNotReject(() => provider(INPUT));
+});
+
+test('Codex refuses a response without its unique completed terminal event', async () => {
+  const provider = createCodexCliProvider({
+    client: { messages: { async create() { return { content: [{ text: '{}' }] }; } } },
+  });
+  await assert.rejects(() => provider(INPUT), /CODEX_COMPLETION_UNPROVEN/);
 });
 
 test('Codex CLI controls reject invalid retry and reasoning settings', () => {
@@ -159,8 +217,8 @@ test('native Codex execution is pinned, ephemeral, read-only and isolated from r
     ignoreRules: true,
     isolated: true,
   });
-  assert.deepEqual(args.slice(0, 9), [
-    'exec', '-s', 'read-only', '--color', 'never',
+  assert.deepEqual(args.slice(0, 10), [
+    'exec', '--json', '-s', 'read-only', '--color', 'never',
     '-m', 'gpt-5.6-terra', '-c', 'model_reasoning_effort="medium"',
   ]);
   assert.ok(args.includes('--ephemeral'));

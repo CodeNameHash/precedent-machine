@@ -8,6 +8,7 @@ const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const {
   buildVerifiedSecSourceAdmission,
+  buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload,
   validateVerifiedSecSourceAdmission,
 } = require('../lib/canonical-v2/sec-source-admission');
 
@@ -148,6 +149,67 @@ test('rejects a self-consistently rehashed alternative compressed map representa
     contentId('SEC_CANONICAL_TEXT_SOURCE_MAP/V2', unchangedMap),
   );
   assert.equal(sourceMapBytes.toString('utf8'), canonicalJson(unchangedMap));
+});
+
+test('uses a run-recorded equivalent compressed map only after strict local conversion validation', () => {
+  const source = inputs(`<body>${'<p>Mapped source text.</p>'.repeat(100)}</body>`);
+  const sourceMapBytes = inflateRawSync(Buffer.from(
+    source.conversion.source_map_payload_base64,
+    'base64',
+  ));
+  const alternative = deflateRawSync(sourceMapBytes, { level: 1 });
+  assert.notEqual(alternative.toString('base64'), source.conversion.source_map_payload_base64);
+
+  const adoptedConversion = {
+    ...source.conversion,
+    source_map_payload_base64: alternative.toString('base64'),
+    source_map_compressed_sha256: sha256Hex(alternative),
+  };
+  const sourceInputs = {
+    capture: source.capture,
+    locally_validated_conversion: source.conversion,
+    adopted_conversion: adoptedConversion,
+    verification: source.verification,
+    recorded_source_map_provenance: {
+      source_map_payload_path: 'evidence/canonical-v2/example.deflate',
+      source_map_compressed_sha256: sha256Hex(alternative),
+    },
+  };
+  const bundle = buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload(sourceInputs);
+  assert.equal(
+    bundle.immutable_source_document.source_map_compressed_sha256,
+    sha256Hex(alternative),
+  );
+  assert.throws(
+    () => buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload({
+      ...sourceInputs,
+      recorded_source_map_provenance: {
+        ...sourceInputs.recorded_source_map_provenance,
+        source_map_compressed_sha256: 'f'.repeat(64),
+      },
+    }),
+    (error) => error.code === 'ADOPTED_SOURCE_MAP_DIGEST_MISMATCH',
+  );
+  assert.throws(
+    () => buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload({
+      ...sourceInputs,
+      recorded_source_map_provenance: {
+        ...sourceInputs.recorded_source_map_provenance,
+        source_map_payload_path: '../outside.deflate',
+      },
+    }),
+    (error) => error.code === 'INVALID_RECORDED_SOURCE_MAP_PROVENANCE',
+  );
+  assert.throws(
+    () => buildVerifiedSecSourceAdmissionForRecordedSourceMapPayload({
+      ...sourceInputs,
+      recorded_source_map_provenance: {
+        ...sourceInputs.recorded_source_map_provenance,
+        source_map_payload_path: '/tmp/outside.deflate',
+      },
+    }),
+    (error) => error.code === 'INVALID_RECORDED_SOURCE_MAP_PROVENANCE',
+  );
 });
 
 test('rejects tampered capture, conversion and independent verification', () => {

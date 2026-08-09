@@ -1404,3 +1404,67 @@ skywater+topbuild `REVERSE_TRIANGULAR_THEN_LLC` (0 chaining warnings), modiv
 `PARALLEL_MERGERS`. Was 4/7; now 7/7 on the detector half.
 
 Evidence and commands: `docs/codex-program/notes/step-2x-f-topology.md`.
+
+---
+
+## Step 2X-A. One structure service, and point it at every family
+
+**Closed 2026-08-08 for the replay-validated structure and placement work.**
+`resolveGoverningStructure` is the shared UTF-8 boundary service over
+`segmentSubClauses`; it returns a resolved leaf and chapeau chain, or a typed
+undetermined result. `structure-placement.js` annotates resolved, review-queue
+and open-world rows without changing claim identity. The termination structural
+adapter landed separately with 19 of 19 pinned Modiv, Concho and TopBuild spans
+byte-identical to the previous implementation.
+
+The six-mechanism comparison is recorded in
+`docs/codex-program/notes/step-2x-a-mechanism-comparison.md`. The implementation
+record, fixtures and exact parity result are in
+`docs/codex-program/notes/step-2x-a-structure-service.md`.
+
+**Deferred without blocking 2X-K.** The human spot-audit of unflagged
+marker-bearing sections remains a quality follow-up. Derived-limb minting also
+remains separate: the marker-start gate has passed, but no product mint path is
+wired.
+
+---
+
+## Step 2X-A1. Qualifier scope
+
+**Closed 2026-08-08.** A trailing qualifier that names multiple clauses now
+resolves as `NAMED_SUBSET` with each stated path. `in any case` no longer
+forces the all-items reading, because corpus evidence showed it is a false
+friend. The deterministic marker test remains the sole source of the scope
+reading.
+
+**Evidence.** Commit `08f14916`; the focused contract is
+`tests/canonical-v2-qualifier-attachment.test.js`. The corpus finding was 98
+uses of `in the case of clauses (ii) and (iii)`, 40 of `(A) and (B)`, 32 of
+`(B) and (C)`, plus 299 uses of the false-friend phrase in predominately
+non-scope senses.
+
+---
+
+## Step 2X-C. Enforce the non-collision claim
+
+**Closed 2026-08-08.** The report widened to held review-queue quotes before
+enforcement. After the agreed lex-specialis treatment of NOTIFY and LITNOTIFY
+and the Merger Sub pattern correction, it found zero unresolved collisions
+across resolved, open-world and held rows. Primary multi-match enforcement then
+landed as a no-op for the scanned corpus.
+
+**Evidence.** `docs/codex-program/notes/step-2x-c-collision-report.md`,
+`docs/codex-program/notes/step-2x-c-followup.md`, Decision 16, and commit
+`47db480d`.
+
+---
+
+## Step 2X-J. Consume the rest of the V1 vocabulary
+
+**Closed 2026-08-08.** Every taxonomy vocabulary, helper and feature display
+group has a `CONSUME`, `WIDEN` or `DELIBERATELY_UNUSED` disposition. The
+machine-derived inventory reports zero unaccounted entries: 70 vocabulary and
+external-asset rows, 7 helpers, and 12 feature display groups.
+
+**Evidence.** `docs/codex-program/notes/step-2x-j-vocabulary-dispositions.md`,
+the committed `step-2x-j-vocab-inventory.json`, and commit `f99a2be8`.

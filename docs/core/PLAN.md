@@ -1385,15 +1385,15 @@ only when something it depends on changed since its last green receipt: code,
 unchanged-input re-run against a live model is sampling noise, not a regression
 check. **The runner change this needed is done** (2026-08-07). The manifest now
 carries `code_provenance` (commit plus whether the working tree was clean, so
-a dirty-tree run cannot be mistaken for one the commit describes) and
-`resolved_models` (what the CLI reported actually serving each call, not the
-alias the operator typed — a model swap behind an unchanged alias would
-otherwise trigger no re-run at all).
-
-One correction to an earlier draft of this step: it said the only model field
-was a CLI alias. That was true of `run-manifest.json` and **false of
-`call-telemetry.json`**, which has recorded `served_model` per call all along.
-The manifest was the gap, not the runner.
+a dirty-tree run cannot be mistaken for one the commit describes),
+`requested_models`, and `resolved_models`. The Codex JSONL contract reports
+the requested model in the command but does not report the model actually
+served. Therefore Codex calls record `requested_model_id` explicitly,
+`served_model: null`, and `served_model_status: NOT_REPORTED_BY_CODEX_JSONL`.
+`resolved_models` stays empty unless a future transport event supplies actual
+served-model evidence. A model swap behind an unchanged request cannot be
+detected today. The manifest must state that limitation rather than relabel a
+requested model as an observed one.
 
 **What is still undecided:** what counts as a family run's code footprint —
 which paths, changing, should invalidate it. That is a judgement call, and
@@ -2103,328 +2103,18 @@ before touching this branch.
 
 ## Step 2X-A. One structure service, and point it at every family
 
-**What it is.** There are **six** mechanisms in the tree that answer some
-version of "what governs this span": the termination limb finder in
-`candidate-resolution.js`, `findIocChapeau`, `qualifier-attachment.js`,
-`limb-components.js`, `segmentSubClauses`, and
-`deterministic-sectionizer.js`'s `buildMarkerTree` — the sixth found only after
-the comparison had been made. None is aware of the others.
+**MOVED TO COMPLETED.md (2026-08-08).** The replay-validated service,
+placement pass and termination structural adapter are complete. See the closure
+record for the six-mechanism comparison, pinned fixtures and 19/19 parity.
 
-**Why.** Each family's inheritance is currently fixed separately and drifts
-separately. But convergence is a hypothesis, not a conclusion — some of the
-five may differ for good reasons, and collapsing them would then lose
-behaviour.
-
-**DECIDED 2026-08-08 by Fable, and re-confirmed after the sixth mechanism was
-found: converge two of the SIX, not all of them.** Build
-the service; adapt `findTerminationLimbGrantContext`'s structural half and the
-limb pre-pass onto it; keep `findIocChapeau`, `qualifier-attachment.js` and
-`limb-components.js` separate.
-
-The deciding facts. Only two of the six discover structure from text *and*
-answer the governing-span question — `deterministic-sectionizer.js` discovers
-structure but is the section INVENTORY and the service's second input, not a
-candidate for the base (see above) —
-`qualifier-attachment.js` takes no span and answers scope-of-wording, and
-`limb-components.js` consumes model-declared paths including descriptive
-headings a segmenter can never produce. And there is a concrete input where the
-proposed base mechanism is **wrong** and a supposedly redundant one is right: on
-a section carrying two "shall not" lists, `segmentSubClauses` mis-nests the
-second `(a)` under `(b)` via the colon rule landed today, while `findIocChapeau`
-— anchored on a lexical verb pattern at no outline position — is correct. The
-service is therefore not a superset of `findIocChapeau`, and collapsing it would
-lose behaviour silently.
-
-**Contract.** `resolveGoverningStructure({ sectionText, startByte, endByte })`
-returns either a RESOLVED leaf plus its chapeau chain, in UTF-8 bytes, or a
-typed UNDETERMINED. Never a guess. The termination adapter keeps its own
-direction grammar and capacity comparison; only the structural half moves.
-
-**Change.** First, a written comparison: for each of the five, its real input,
-its real output, and the specific question it answers. Then either a single
-structure-context service over `segmentSubClauses` answering "given a section
-and a span, return its governing chapeau chain", with the other four as
-adapters — or a written statement of which must stay separate and why. Both
-outcomes are acceptable. Silently building the service without the comparison
-is not.
-
-Segmentation runs in string indices (UTF-16). The V2 pipeline slices by UTF-8
-bytes. Convert at the boundary using `lib/canonical-v2/canonical-bytes.js`
-(`utf8ByteLength`, `utf8Slice`). Do **not** port `subclauses.js` to bytes: it
-has 8 passing tests and live V1 callers in `span-claims.js`,
-`span-residual.js`, `consideration-equity.js` and `bring-down-tiers.js`.
-
-**BROADENED 2026-08-08, on Ben's question, after Fable measured it.** The
-first decision scoped the service to the families that already declare limbs.
-Ben asked why a *deterministic* mechanism was not simply pointed at all of them.
-Fable's answer: broadening had **not been considered** — the scope was inherited
-from how the question was posed, not decided on evidence. There was no rejection
-to defend, and on measurement the answer is to broaden.
-
-**The survey that motivates it.** Only 2 of 25 prompts declare a `limbs` array
-(capitalisation, representations); 3 reference `limb_path` (those plus
-mae-definition, which can cite a path but not declare a tree). IOC is a separate
-mechanism — `ioc_restriction_assertions` producing `ioc_restriction_components`,
-105 across six runs, and the only structural output landing anywhere today. The
-remaining **22 families have no sub-clause representation at all**: flat
-assertion lists, one assertion per row, no parent. Two carry narrow
-domain-specific nesting only (termination-fee `carve_outs`, capitalisation
-`tiers`). Those 22 include every family in the 13–26% band.
-
-**Why broadening is safe, and this is the distinction that makes it so.** The
-limb families use model-declared trees to mint **claim identity** — new
-subjects, content-derived ids. Placing an existing flat assertion into a
-text-derived tree adds only **inheritance context** to a claim whose identity
-already exists. It is additive, reversible, and cannot re-mint or regress
-anything. **The derived tree annotates for flat families and never mints for
-them**; identity stays with model-declared limbs (2X-L, 2X-I).
-
-**Reliability, measured rather than assumed — and the measurement is narrower
-than it sounds.** It counts SIGNATURE-CLEANLINESS, not correctness: the
-detector only sees same-style parent-child links, so a mis-nest that happens to
-change style, and a phantom marker recognised where none exists, are both
-uncounted. Do not quote 98.9% as a correctness figure. A human spot-audit of
-roughly 30 UNFLAGGED sections is what would turn it into one, and it is an
-acceptance criterion of this step. `segmentSubClauses` was run over
-every resolved section of all 213 evidence runs across all seven deals: 538
-unique sections, 171 of them markerless and trivially safe, 367 carrying 2,360
-markers. The mis-nest signature appears in **45 markers across 6 sections —
-1.1%** (concho Annex-A, modiv 8.12 and 8.3, redhat 3.01, skywater 3.21,
-topbuild 2.1).
-
-**The failure is detectable, which is what converts it from silent to visible.**
-The signature is a **same-style parent-child link** in the segmenter's own
-output paths — a second colon-introduced list's `(a)` landing as `b.a` under the
-first list's `(b)`. Real legal outlining always changes style when it nests
-(`(a)` → `(i)` → `(A)`), so same-style nesting is structurally impossible and
-two lines of code catch it. Verified independently by reproducing the shape.
-
-Note the loop this closes: the two-"shall not"-list section that decided
-`findIocChapeau` must stay separate **is** the same-style signature. The
-broadened service refuses precisely where it was shown to be wrong, and
-`findIocChapeau` still covers that case.
-
-**A SIXTH mechanism, found 2026-08-08 after the five-way comparison, on Ben's
-question.** `lib/canonical-v2/native-producer/deterministic-sectionizer.js`
-already builds a whole-document section tree with exact UTF-8 byte offsets, no
-model calls, and it is **on the live extraction path** — required by
-`native-extraction-run.js` and by `scripts/canonical-v2-live-extraction-run.mjs`.
-It replaced the hand-typed `{start,end}` intervals that used to live in
-per-deal `reviewed-*-slice.js` files.
-
-It also contains its own sub-clause detector. Its header is explicit that
-`structural.js` exports no sub-item tree builder, so `buildMarkerTree` is new
-code written for that module. Fable's five-way comparison did not include it,
-because the brief did not know it existed.
-
-**The two sub-clause detectors make opposite trade-offs, and that is the
-useful part.**
-
-| | `deterministic-sectionizer` `buildMarkerTree` | `segmentSubClauses` |
-|---|---|---|
-| marker pattern | `/(?:^\|\n)[ \t]*\(([A-Za-z]{1,9}\|[0-9]{1,3})\)/g` — **line-start anchored** | eligibility-tested, **not** line-anchored |
-| label width | up to 9 characters | up to 3 |
-| inline enumerations | **misses them** | **catches them** (QXO inline `(A)`–`(D)`, Concho colon lists) |
-| inline references | **immune** — its header says the line-start anchor alone screens out "the items referred to in clauses (B) and (C)" | **vulnerable** — the colon back-reference and the forward-reference holes both live here |
-| scope | whole document | per section |
-| offsets | UTF-8 bytes | UTF-16 string indices |
-
-Neither is better. **They are complementary on marker RECALL, not on tree
-SHAPE** — a correction Fable made from the code after this table was first
-written. An unmatched candidate in `buildMarkerTree` opens a new child under
-the deepest open frame, so a restarting `(a)` mis-nests there exactly as it does
-in `segmentSubClauses`. **Agreement between the two detectors therefore does NOT
-confirm parentage**, and the same-style refusal stays mandatory regardless of
-what they agree on.
-
-On recall they genuinely differ, and there the disagreement is a signal:
-
-- **Both find a marker** → high confidence.
-- **Line-anchored only** → not merely "safe to annotate": the sectionizer's
-  label width is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and
-  long doubled-letter overflow are markers `segmentSubClauses` **structurally
-  cannot see**. These must be UNIONED IN, not just noted as agreed-absent.
-- **`segmentSubClauses` only** → an inline enumeration. This is exactly the set
-  that is either a genuine inline list (which is why the permissive rule
-  exists) **or** a cross-reference, back-reference or forward-reference. It is
-  the risky zone, and it is now identifiable rather than diffuse.
-
-That last row is the answer to the reference problem without new machinery: a
-marker seen only by the permissive detector requires corroboration, where a
-line-anchored marker does not. Two mechanisms we already own, used against each
-other.
-
-**One caveat on the line-anchor immunity.** It assumes structural line breaks,
-which holds for HTML-derived `cleanText` and therefore for all seven corpus
-deals. It is void for a hard-wrapped plain-text filing, where the anchor would
-fire mid-sentence. Test before relying on it outside the current corpus.
-
-**The corroboration tiers.** Marker existence gets one of three tiers, from
-the two detectors:
-
-- **CORROBORATED** — both find a marker at the same start. Highest confidence.
-- **LINE_ANCHORED_ONLY** — the sectionizer only. Union these in: its label width
-  is 9 characters against `MARKER_TOKEN_RE`'s 3, so `(viii)` and doubled-letter
-  overflow are markers `segmentSubClauses` cannot see at all.
-- **PERMISSIVE_ONLY** — `segmentSubClauses` only. The risky set: either a
-  genuine inline enumeration, which is why the permissive rule exists, or a
-  reference. **Annotation is allowed with the tier recorded; identity and
-  absence assertions are not, without corroboration.**
-
-Both of Ben's reference hazards land handled by this. The colon back-reference
-is PERMISSIVE_ONLY and sequence-breaking. The forward reference produces a
-*same-expected-label, two-starts disagreement* — an inline `(D)` and a
-line-anchored `(D)` — and **the line-anchored start wins**, which is what stops
-the real limb being swallowed.
-
-**What corroboration does NOT fix: parentage.** Tiers are about whether a marker
-exists, not about which parent it hangs from. Both detectors mis-nest a
-restarting `(a)`, so the same-style refusal remains mandatory on top of the
-tiers.
-
-**Scope: ALL sections, not only extracted ones. Decided 2026-08-08 by Ben.**
-The placement pass as first drafted covered every section that produced claims
-— which is the part we already looked at. That can answer "this section has a
-limb with no claim against it" but **not** "there is a section nobody extracted
-from at all". Since the whole argument for structure is that only structure
-answers absence, restricting it to extracted sections defeats half its purpose.
-The sectionizer already enumerates every section in the document with byte
-offsets whether or not extraction touched it, so document-level absence is a
-join between two things that both exist, not new machinery.
-
-**Identity: decided 2026-08-08, after Fable tested the alternatives.** The pass
-is annotation only, and that is not a permanent answer — see
-`docs/codex-program/notes/derived-structure-identity.md`. Annotation can answer
-any question about what we extracted; only identity can answer questions about
-what we did not, and absence is a large share of what the product is asked. So
-derived limbs will need identity eventually. They must not get it yet:
-
-- **Excerpts are not the answer**, and this was checked against the code rather
-  than assumed. `excerpt_id` content-addresses over the text hash plus a
-  `semantic_span_id` that hashes `{canonical_text_id, absolute_start,
-  absolute_end}`, so excerpt identity moves whenever the END moves — re-minting
-  under the MAX_DEPTH change exactly as components would. Excerpts also carry no
-  parent and no position, so the absence question cannot be asked of them
-  without a mapping that is the identity problem renamed. Excerpts are the right
-  way to hold a limb's extent as evidence; the wrong thing to BE the limb.
-- **When it comes, identity is `{canonical_text_id, marker_start_byte}`.** A
-  limb's beginning is a fact about the document; its extent, depth, path and
-  parentage are facts about our algorithm and must all stay out of the identity
-  payload — parentage especially, since the six mis-nesting sections are
-  re-parenting fixes waiting to happen. `ordinal` is dropped rather than
-  stabilised: start byte already totally orders limbs. This needs a new schema,
-  not a bent `PROVISION_COMPONENT/V1`, whose payload hard-codes parent id, both
-  offsets and ordinal.
-- **The stability criterion is concrete.** Re-run the corpus survey after the
-  depth and `(x)/(y)/(z)` changes land; zero start moves across all 2,360
-  markers. Until then, derived facts stay out of every `contentId` payload and
-  every derived output carries the segmenter version.
-- **The phantom-limb risk survives any scheme** and lands precisely on absence
-  answers. A derived absence must carry its derivation provenance and must never
-  render as ground truth.
-
-**Change, broadened.** A corpus-wide placement pass: every family's assertions
-gain a `structure_context` — the governing chapeau chain, by containment on
-their existing byte spans. Replay-validated, so it costs no model calls.
-Fail closed on span-crossing quotes, on same-style chains, and on markerless
-sections (which get section context only). Sits in the free replay phase
-immediately after 2X-L.
-
-**The three ways more structure can hurt, and the policy for each.** Ben's
-thesis — process the whole document deterministically into a structured form —
-survives adversarial review, in disciplined form: *more structure is better is
-true of structure computed and versioned, false of structure trusted and baked
-in.* The three real hazards:
-
-1. **Gating model input.** Chunking prompts by derived limbs would turn a 1%
-   segmentation error into an invisible coverage hole with no disagreement
-   signal. This is the one undetectable failure. **Derived structure must never
-   gate what the model sees.** Post-hoc corroboration is fine — disagreement is
-   the product.
-2. **Absence read as ground truth.** Covered by the provenance rule above.
-3. **Leaking into permanent identity.** Covered by the stability criterion
-   above.
-
-Prose sections raise no surviving objection: 171 of 538 sections are markerless,
-and section-level context is the honest floor for them.
-`lib/parser-v2/deterministic-sectionizer.js` already builds the whole-document
-section tree, so the document-level half of Ben's thesis is partly built.
-
-Three failure modes to handle explicitly. A quote spanning a chapeau plus its
-first limb — whole-sentence quoting is explicit in termination-fee
-PROMPT_VERSION 2 — returns UNDETERMINED. An assertion whose quote **is** the
-chapeau is not a failure: containment correctly returns the chapeau leaf.
-MAX_DEPTH truncation and unfired CHILD-OPEN are conservative — coarser leaves,
-never a wrong parent.
-
-**Proves it is done.** The comparison exists and names, per mechanism, at least
-one input on which it differs from the others or a statement that it does not.
-Where the service is built, `CI=true npm test` stays exit 0 and the four
-existing V1 consumers produce byte-identical output on the pinned fixtures — a
-moved consumer is a regression to explain, not a fixture to regenerate.
-
-For the broadened pass: every assertion in every family carries either a
-`structure_context` or a typed UNDETERMINED, with zero silently absent; the six
-mis-nesting sections become a pinned fixture list; and no claim identity changes
-anywhere, which is checkable because the pass is annotation-only.
 
 ---
 
-## Step 2X-A1. Two live defects in qualifier scope, found by corpus grep
+## Step 2X-A1. Qualifier scope
 
-**What it is.** `lib/canonical-v2/native-producer/qualifier-attachment.js`
-carries two defects that resolve **deterministically wrong** rather than
-refusing. Both were found by Fable on 2026-08-08 and both verified against the
-corpus before being written here.
-
-**Defect 1 — a named subset of clauses is read as a single clause.**
-`SINGLE_CLAUSE_MARKER_PATTERNS` is
-`/in the case of clauses?(?:\s*\([^)]{1,20}\))?/i`, which swallows only the
-**first** parenthetical. So `in the case of clauses (ii) and (iii)` matches at
-`(ii)`, classifies as a single-clause marker, and resolves `THIS_ITEM_ONLY` —
-when the drafting names two clauses. Corpus counts in `evidence/canonical-v2`:
-**98** occurrences of `in the case of clauses (ii) and (iii)`, 40 of
-`(A) and (B)`, 32 of `(B) and (C)`.
-
-There is no `NAMED_SUBSET` scope reading. The taxonomy has `ALL_ITEMS` and
-`THIS_ITEM_ONLY`; a qualifier governing an explicitly named subset of limbs is
-neither.
-
-**Defect 2 — `in any case` is a false friend.** It is a shipped ALL_ITEMS
-marker pattern (line 62). The corpus has 299 occurrences and they are dominated
-by non-scope senses: `in any case within twenty (20) days`, `in any case no
-later than`, `in any case obligating Parent`. Read as a scope disambiguator it
-will assert series-scope on timing and obligation language.
-
-Fable also reports two shipped patterns with **zero** corpus occurrences, which
-is a separate smell: a lexicon entry that never fires is untested in production
-and may be wrong in a way nothing reveals.
-
-**Why this step exists at all.** These are the sharpest available evidence for
-the standing rule in Step 2X. Both are *deterministic generation* failing
-*silently on unseen drafting* — precisely the counter-position's argument
-against pushing determinism further. They are not a reason to abandon the rule;
-they are the reason its second clause is mandatory. A deterministic component
-that cannot say `UNDETERMINED` will assert a wrong answer at corpus scale, and
-here it has.
-
-**Change.** Widen the named-subset pattern to capture every parenthetical in
-the run; add a `NAMED_SUBSET` scope reading carrying the clause list it names;
-remove or re-scope `in any case`; and audit every shipped pattern against corpus
-frequency, retiring or justifying the zero-occurrence entries.
-
-**Do not seed new disambiguator phrases by intuition.** Apply Step 2X-G's
-promotion gate to phrases: blind adjudication, zero counterexamples across at
-least three deals, plus a collision test against non-scope senses — which is
-exactly the test `in any case` fails. Fable's seed candidates, with corpus
-counts: `in the case of each` (272), `in any such case` (115), `in respect of
-each` (109), `for purposes of the foregoing` (30).
-
-**Proves it is done.** `in the case of clauses (ii) and (iii)` resolves to a
-named subset of two, not to one item; every shipped pattern has either a
-non-zero corpus count or a written justification; and the corpus count of
-claims whose scope reading changes is reported, since this alters the meaning
-of already-extracted qualifiers rather than adding new ones.
+**MOVED TO COMPLETED.md (2026-08-08).** `NAMED_SUBSET` now carries every named
+clause path and `in any case` is retired as a false friend. The existing
+corpus observations and focused contract test are recorded there.
 
 ---
 
@@ -2458,34 +2148,12 @@ changed from held to resolved and zero that moved the other way.
 
 ---
 
-## Step 2X-C. Enforce the non-collision claim that is currently only a comment
+## Step 2X-C. Enforce the non-collision claim
 
-**What it is.** `guaranty-corroboration.js` and `ioc-corroboration.js` check a
-quote against every code's pattern and refuse when more than one matches.
-`general-covenant-corroboration.js` and `tax-cooperation-corroboration.js` rely
-instead on a comment asserting that their patterns are written to avoid
-cross-code collision. That claim is never checked at run time.
-
-**Why.** It is the read-the-code-not-the-comment failure one level down: not a
-stale description of behaviour, but a **safety property asserted in prose and
-never verified**. If it is false anywhere in the corpus we are mis-resolving
-today and nothing tells us.
-
-**Change.** Run all codes' patterns against the quote and refuse on more than
-one hit, as guaranty and IOC already do.
-
-**Land it report-only first (Fable, 2026-08-08).** The enforcing code generates
-its own diff, so run it in report mode over **all importable runs by replay**,
-not merely the ladder rungs — collisions are corpus-dependent and replay is
-free. Enforce only once that report is read.
-
-**Direction of risk: regressive.** Enforcing the check can move currently
-resolved claims to review. It therefore requires a deal-by-deal diff of the
-resolution set before it lands, and must not ship as a pure additive change.
-
-**Proves it is done.** A diff of the resolution set per deal, and for every
-claim that moved from resolved to review, the two codes that collided, quoted.
-If the count is zero the comment was true and that is a result worth recording.
+**MOVED TO COMPLETED.md (2026-08-08).** The widened report covered held quotes
+before enforcement. After specificity and the Merger Sub correction, it found
+zero unresolved collisions, so the enforced guard is a no-op on the scanned
+corpus.
 
 ---
 
@@ -2682,20 +2350,9 @@ unaccounted count is zero — computed from the evidence, not asserted.
 
 ## Step 2X-J. Consume the rest of the V1 vocabulary
 
-**What it is.** Five V1 assets are consumed. `taxonomy.js`'s remaining
-vocabularies, `MAE_CARVEOUT_META`'s 27 codes, and `lib/schema/features.js`'s 551
-feature definitions are not.
-
-**Why.** Every one is a concept the corpus may already be producing as an
-open-world candidate because nothing can express it. This is the cheapest
-possible source of new coverage: it is curation, not design.
-
-**Change.** Per vocabulary, a decision to consume, to widen, or to record as
-deliberately unused. `lib/category-summary-features.js`'s roughly 200 expected
-rows give a per-family target to measure against.
-
-**Proves it is done.** Every vocabulary in `taxonomy.js` has one of the three
-dispositions recorded against it, and the count with none is zero.
+**MOVED TO COMPLETED.md (2026-08-08).** The committed disposition inventory
+accounts for every vocabulary, helper and feature display group; unaccounted
+is zero.
 
 ---
 

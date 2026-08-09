@@ -50,6 +50,24 @@ const REAL_PUBLICITY_QUOTE_2 = 'shall not issue any such press release or make a
 const REAL_NOTIFY_QUOTE = 'The Company shall give prompt notice to Parent, and Parent shall give prompt notice to '
   + 'the Company, of any notice or other communication received by such party from any Person alleging that the '
   + 'consent of such Person is or may be required in connection with the Mergers or the other Transactions.';
+const REAL_TAKEOVER_QUOTE_1 = 'None of the Parties will take any action that would cause the Transactions to be '
+  + 'subject to requirements imposed by any Takeover Laws';
+const REAL_TAKEOVER_QUOTE_2 = 'each of them will take all reasonable steps within its control to exempt (or ensure '
+  + 'the continued exemption of) the Transactions from the Takeover Laws of any state that purport to apply to this '
+  + 'Agreement or the Transactions';
+const REAL_SEC_REPORT_QUOTE = 'The Post-Closing SEC Reports provided by the Company in accordance with this '
+  + 'Section 6.12 will (i) not contain any untrue statement of a material fact or omit to state any material fact '
+  + 'required to be stated therein or necessary in order to make the statements made therein, in the light of the '
+  + 'circumstances under which they were made, not misleading and (ii) comply in all material respects with the '
+  + 'provisions of applicable Laws.';
+const REAL_MERGESUB_QUOTE_1 = 'Parent shall take all action necessary to cause Merger Sub and the Surviving '
+  + 'Corporation to perform their respective obligations under this Agreement.';
+const REAL_MERGESUB_QUOTE_2 = 'Parent shall cause Merger Sub or the Surviving Corporation, as applicable, to '
+  + 'comply with all of its respective obligations under this Agreement.';
+const REAL_MERGESUB_QUOTE_3 = 'Parent will take all action necessary to cause Merger Sub and the Surviving '
+  + 'Corporation to perform their respective obligations pursuant to this Agreement and to consummate the Mergers.';
+const REAL_MERGESUB_QUOTE_4 = 'Parent shall take all actions necessary to cause each of the Merger Subsidiaries '
+  + 'to perform its respective obligations under this Agreement and to consummate the Mergers on the terms set forth herein.';
 
 test('every GENERAL_COVENANT_FOLLOW_ON_OWNERS code has at least one pattern', () => {
   const { GENERAL_COVENANT_FOLLOW_ON_OWNERS } = require('../lib/canonical-v2/p0-product-surface-routing');
@@ -75,6 +93,30 @@ test('real Modiv COV-NOTIFY candidate corroborates', () => {
   assert.equal(generalCovenantCodeCorroborated({ quote: REAL_NOTIFY_QUOTE, code: 'COV-NOTIFY' }), true);
 });
 
+test('Step 2X-B corpus-pass Takeover Laws candidates corroborate through operative text', () => {
+  assert.equal(generalCovenantCodeCorroborated({ quote: REAL_TAKEOVER_QUOTE_1, code: 'COV-TAKEOVER' }), true);
+  assert.equal(generalCovenantCodeCorroborated({ quote: REAL_TAKEOVER_QUOTE_2, code: 'COV-TAKEOVER' }), true);
+  assert.deepEqual(generalCovenantPrimaryMatchingCodes(REAL_TAKEOVER_QUOTE_1), ['COV-TAKEOVER']);
+  assert.deepEqual(generalCovenantPrimaryMatchingCodes(REAL_TAKEOVER_QUOTE_2), ['COV-TAKEOVER']);
+});
+
+test('Step 2X-B corpus-pass Post-Closing SEC Reports candidate corroborates through operative text', () => {
+  assert.equal(generalCovenantCodeCorroborated({ quote: REAL_SEC_REPORT_QUOTE, code: 'COV-SECREPORT' }), true);
+  assert.deepEqual(generalCovenantPrimaryMatchingCodes(REAL_SEC_REPORT_QUOTE), ['COV-SECREPORT']);
+});
+
+test('Step 2X-G recurring Merger Sub compliance candidates corroborate without joint-obligor expansion', () => {
+  for (const quote of [
+    REAL_MERGESUB_QUOTE_1,
+    REAL_MERGESUB_QUOTE_2,
+    REAL_MERGESUB_QUOTE_3,
+    REAL_MERGESUB_QUOTE_4,
+  ]) {
+    assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-MERGESUB' }), true);
+    assert.deepEqual(generalCovenantPrimaryMatchingCodes(quote), ['COV-MERGESUB']);
+  }
+});
+
 // HOSTILE: real Modiv operative text, cross-wired against a covenant code it
 // does NOT belong to. Each of these is a genuinely wrong candidate -- proof
 // the widened lexicon does not degrade into "any operative clause matches
@@ -96,6 +138,22 @@ test('HOSTILE: real NOTIFY quote does not corroborate as ACCESS, PUBLICITY, or I
   assert.equal(generalCovenantCodeCorroborated({ quote: REAL_NOTIFY_QUOTE, code: 'COV-INDEMN' }), false);
 });
 
+test('HOSTILE: Step 2X-B corpus-pass phrases do not cross-corrobate', () => {
+  assert.equal(generalCovenantCodeCorroborated({ quote: REAL_TAKEOVER_QUOTE_1, code: 'COV-SECREPORT' }), false);
+  assert.equal(generalCovenantCodeCorroborated({ quote: REAL_SEC_REPORT_QUOTE, code: 'COV-TAKEOVER' }), false);
+});
+
+test('HOSTILE: Takeover Laws and Post-Closing SEC Reports noun mentions are not operative covenants', () => {
+  assert.equal(generalCovenantCodeCorroborated({
+    quote: 'The definition of Takeover Laws appears in Section 1.1.',
+    code: 'COV-TAKEOVER',
+  }), false);
+  assert.equal(generalCovenantCodeCorroborated({
+    quote: 'The disclosure schedule identifies the Post-Closing SEC Reports.',
+    code: 'COV-SECREPORT',
+  }), false);
+});
+
 // HOSTILE (review condition 2a). The pairs above are textually disjoint and
 // refuse trivially. These two pairs are the genuinely confusable ones the
 // review located: real drafting shapes that legitimately fire BOTH codes'
@@ -111,11 +169,11 @@ test('HOSTILE (confusable pair): a Transaction-Litigation notice quote fires bot
   assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-LITNOTIFY' }), true);
 });
 
-test('HOSTILE (confusable pair): a publicity covenant mentioning SEC filings fires both COV-PUBLICITY and COV-SECREPORT', () => {
+test('HOSTILE: a publicity covenant that only mentions SEC filings does not become an SEC-reporting covenant', () => {
   const quote = 'The Company shall not issue any press release or other public announcement or SEC filings '
     + 'without the prior written consent of Parent.';
   assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-PUBLICITY' }), true);
-  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-SECREPORT' }), true);
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-SECREPORT' }), false);
 });
 
 test('HOSTILE: an unknown code never corroborates, whatever the quote', () => {
@@ -175,4 +233,9 @@ test('COV-MERGESUB no longer fires on publicity joint-obligor drafting', () => {
   const matches = generalCovenantPrimaryMatchingCodes(quote);
   assert.ok(matches.includes('COV-PUBLICITY'));
   assert.ok(!matches.includes('COV-MERGESUB'), `unexpected MERGESUB hit: ${matches.join(',')}`);
+});
+
+test('HOSTILE: COV-MERGESUB does not jump from a different Merger Sub action to another subject performance clause', () => {
+  const quote = 'Parent shall cause Merger Sub to enter the agreement and the Surviving Corporation to perform its obligations.';
+  assert.equal(generalCovenantCodeCorroborated({ quote, code: 'COV-MERGESUB' }), false);
 });

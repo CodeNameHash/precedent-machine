@@ -23,6 +23,7 @@ const {
   explainReferenceDivergence,
   createRebuildingSourceReferenceResolver,
 } = require('../lib/canonical-v2/admitted-source-chain-rebuild');
+const { CONVERTER_DIGEST } = require('../lib/canonical-v2/sec-html-canonical-text');
 
 const REPO = path.join(__dirname, '..');
 const REBUILDABLE = path.join(REPO, 'evidence/canonical-v2/modiv-antitrust-20260807-replay');
@@ -60,7 +61,17 @@ test('it rebuilds the four primitives the writer asks for, and nothing else', ()
 test('the rebuild lands on the identity the run committed', () => {
   const primitives = rebuildAdmittedSourcePrimitives({ runDirectory: REBUILDABLE });
   const adapter = JSON.parse(fs.readFileSync(path.join(REBUILDABLE, 'adapter-result.json'), 'utf8'));
+  const sourceReference = JSON.parse(fs.readFileSync(path.join(REBUILDABLE, 'source-reference.json'), 'utf8'));
   const reference = adapter.write_set.source_references[0];
+  assert.equal(primitives.conversion.converter_digest, CONVERTER_DIGEST);
+  assert.equal(
+    primitives.conversion.source_map_digest,
+    sourceReference.admitted_source_capture_inputs.source_map_digest,
+  );
+  assert.equal(
+    primitives.conversion.source_map_compressed_sha256,
+    sourceReference.admitted_source_capture_inputs.source_map_compressed_sha256,
+  );
   assert.equal(
     primitives.immutable_source_document.immutable_source_document_id,
     reference.immutable_source_document_id,
@@ -146,7 +157,7 @@ test('a divergence is diagnosed by what actually differs', () => {
   assert.match(documentDrift.diagnosis, /text it never saw/);
 });
 
-test('the identity contract depends on DEFLATE output, which is why history is unimportable', () => {
+test('the identity contract distinguishes DEFLATE output for the same source map', () => {
   // This is the measurement behind that diagnosis, kept as a test so the
   // claim in the module header stays true or fails loudly.
   //
@@ -164,24 +175,16 @@ test('the identity contract depends on DEFLATE output, which is why history is u
   );
   assert.equal(uncompressed.length, conversion.source_map_uncompressed_byte_length);
 
-  // The historical run's compressed digest is unreachable from these bytes at
-  // any available setting. If a future zlib change made it reachable, this
-  // assertion fails and the header's claim needs revisiting -- which is the
-  // point of pinning it.
-  const historical = 'd9da156bd091bc9ed1d3ae4609814b0fa2e016d1da270acc771d57c3f691cb50';
-  let reachable = null;
-  for (const level of [1, 5, 9]) {
-    for (const memLevel of [7, 8, 9]) {
-      const candidate = zlib.deflateRawSync(uncompressed, {
-        level, memLevel, windowBits: 15, strategy: zlib.constants.Z_DEFAULT_STRATEGY,
-      });
-      if (crypto.createHash('sha256').update(candidate).digest('hex') === historical) {
-        reachable = { level, memLevel };
-      }
-    }
-  }
-  assert.equal(reachable, null, 'the historical compressed source map is not reproducible here');
-  assert.notEqual(conversion.source_map_compressed_sha256, historical);
+  const alternative = zlib.deflateRawSync(uncompressed, {
+    level: 1,
+    memLevel: 8,
+    windowBits: 15,
+    strategy: zlib.constants.Z_DEFAULT_STRATEGY,
+  });
+  assert.notEqual(
+    crypto.createHash('sha256').update(alternative).digest('hex'),
+    conversion.source_map_compressed_sha256,
+  );
 });
 
 // ─── The persisted compressed source map ─────────────────────────────────
